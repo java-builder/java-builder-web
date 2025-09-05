@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="grid" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" style="stop-color:#4338ca;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#4338ca;stop-opacity:0.05"/>
+    </radialGradient>
+    <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.3)"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background with gradient -->
+  <rect width="100%" height="100%" fill="#3730a3"/>
+  
+  <!-- Grid pattern overlay -->
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+  
+  <!-- Dot pattern overlay -->
+  <rect width="100%" height="100%" fill="url(#dots)"/>
+  
+  <!-- Abstract shapes -->
+  <g fill="rgba(255,255,255,0.1)">
+    <circle cx="100" cy="100" r="150"/>
+    <circle cx="1100" cy="700" r="200"/>
+  </g>
+  
+  <!-- Flowing lines -->
+  <path d="M-100,200 C300,150 700,250 1300,200" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/>
+  <path d="M-100,400 C300,350 700,450 1300,400" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/>
+  <path d="M-100,600 C300,550 700,650 1300,600" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/>
+</svg>
