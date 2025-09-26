@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { UserStatus } from '@/types/api';
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { userApi } from '@/services/user.service';
 import Link from 'next/link';
 import { useConfirm } from '@/hooks/useConfirm';
+import { UserDetailResponse, UserStatus } from '@/types/user';
+import { ApiResponse, PageResponse } from '@/types/api';
 
 const StatusBadge = ({ status }: { status: UserStatus | string }) => {
     const getStatusConfig = (status: UserStatus | string) => {
@@ -31,13 +33,13 @@ const StatusBadge = ({ status }: { status: UserStatus | string }) => {
 export default function UsersPage() {
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
-    const [response, setResponse] = useState<any>(null);
+    const [response, setResponse] = useState<ApiResponse<PageResponse<UserDetailResponse>> | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>('');
     const [isDeleting, setIsDeleting] = useState<string>('');
     const { confirm } = useConfirm();
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         try {
             setIsLoading(true);
             setError('');
@@ -53,7 +55,7 @@ export default function UsersPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentPage, search]);
 
     const handleDelete = async (id: string, userName: string) => {
         await confirm(
@@ -61,8 +63,7 @@ export default function UsersPage() {
                 setIsDeleting(id);
                 try {
                     await userApi.delete(id);
-                    console.log('✅ Delete Success');
-                    fetchUsers(); // Refresh data after delete
+                    fetchUsers();
                 } finally {
                     setIsDeleting('');
                 }
@@ -93,17 +94,16 @@ export default function UsersPage() {
 
     const handleSearch = (value: string) => {
         setSearch(value);
-        setCurrentPage(0); // Reset to first page when searching
+        setCurrentPage(0);
     };
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
 
-    // Fetch data when component mounts or dependencies change
     useEffect(() => {
         fetchUsers();
-    }, [currentPage, search]);
+    }, [fetchUsers]);
 
     console.log('🔍 Component State:', { isLoading, error, response });
 
@@ -214,7 +214,7 @@ export default function UsersPage() {
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600">Đang hoạt động</p>
                             <p className="text-2xl font-bold text-gray-900">
-                                {response?.result?.result?.filter((user: any) => user.status === 'ACTIVE').length || 0}
+                                {response?.result?.result?.filter((user: UserDetailResponse) => user.userStatus === 'ACTIVE').length || 0}
                             </p>
                         </div>
                     </div>
@@ -229,7 +229,7 @@ export default function UsersPage() {
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600">Không hoạt động</p>
                             <p className="text-2xl font-bold text-gray-900">
-                                {response?.result?.result?.filter((user: any) => user.status === 'INACTIVE').length || 0}
+                                {response?.result?.result?.filter((user: UserDetailResponse) => user.userStatus === 'INACTIVE').length || 0}
                             </p>
                         </div>
                     </div>
@@ -244,7 +244,7 @@ export default function UsersPage() {
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600">Bị cấm</p>
                             <p className="text-2xl font-bold text-gray-900">
-                                {response?.result?.result?.filter((user: any) => user.status === 'BANNED').length || 0}
+                                {response?.result?.result?.filter((user: UserDetailResponse) => user.userStatus === 'BANNED').length || 0}
                             </p>
                         </div>
                     </div>
@@ -322,23 +322,33 @@ export default function UsersPage() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {response.result.result?.map((user: any) => (
+                            {(response?.result?.result ?? []).map((user: UserDetailResponse) => (
                                 <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-200">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0 h-10 w-10">
-                                                <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                                                {user.avatar ? (
+                                                    <div className="relative h-10 w-10">
+                                                        <Image
+                                                            src={user.avatar}
+                                                            alt={user.username}
+                                                            fill
+                                                            sizes="40px"
+                                                            className="rounded-full object-cover"
+                                                        />
+                                                    </div>
+                                                ) : null}
+                                                <div
+                                                    className={`h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center ${user.avatar ? 'hidden' : ''}`}
+                                                >
                                                     <span className="text-sm font-medium text-white">
-                                                        {user.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                                                        {user.username?.charAt(0)?.toUpperCase() || 'U'}
                                                     </span>
                                                 </div>
                                             </div>
                                             <div className="ml-4">
                                                 <div className="text-sm font-medium text-gray-900">
-                                                    {user.firstName} {user.lastName}
-                                                </div>
-                                                <div className="text-sm text-gray-500">
-                                                    ID: {user.id}
+                                                    {user.username}
                                                 </div>
                                             </div>
                                         </div>
@@ -347,10 +357,11 @@ export default function UsersPage() {
                                         <div className="text-sm text-gray-900">{user.email}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <StatusBadge status={user.status} />
+                                        <StatusBadge status={user.userStatus} />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : 'N/A'}
+                                        {/* Add created date if available in API response */}
+                                        N/A
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex items-center justify-end space-x-2">
@@ -364,7 +375,7 @@ export default function UsersPage() {
                                                 Sửa
                                             </Link>
                                             <button
-                                                onClick={() => handleDelete(user.id, `${user.firstName} ${user.lastName}`)}
+                                                onClick={() => handleDelete(user.id, user.username)}
                                                 disabled={isDeleting === user.id}
                                                 className="inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                                             >
@@ -395,7 +406,7 @@ export default function UsersPage() {
             </div>
 
             {/* Pagination */}
-            {response.result.totalPages > 1 && (
+            {(response?.result?.totalPages || 0) > 1 && (
                 <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-gray-200 rounded-b-xl">
                     <div className="flex-1 flex justify-between sm:hidden">
                         <button
@@ -407,7 +418,7 @@ export default function UsersPage() {
                         </button>
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === (response.result.totalPages || 0) - 1 || isLoading}
+                            disabled={currentPage === ((response?.result?.totalPages || 0) - 1) || isLoading}
                             className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Sau
@@ -418,14 +429,14 @@ export default function UsersPage() {
                             <p className="text-sm text-gray-700">
                                 Hiển thị{' '}
                                 <span className="font-medium">
-                                    {(currentPage * (response.result.pageSizes || 10)) + 1}
+                                    {(currentPage * ((response?.result?.pageSizes || 10))) + 1}
                                 </span>{' '}
                                 đến{' '}
                                 <span className="font-medium">
-                                    {Math.min((currentPage + 1) * (response.result.pageSizes || 10), response.result.totalElements || 0)}
+                                    {Math.min((currentPage + 1) * ((response?.result?.pageSizes || 10)), (response?.result?.totalElements || 0))}
                                 </span>{' '}
                                 trong số{' '}
-                                <span className="font-medium">{response.result.totalElements || 0}</span> kết quả
+                                <span className="font-medium">{response?.result?.totalElements || 0}</span> kết quả
                             </p>
                         </div>
                         <div>
@@ -453,10 +464,10 @@ export default function UsersPage() {
 
                                 {/* Page numbers */}
                                 {(() => {
-                                    const totalPages = response.result.totalPages || 0;
+                                    const totalPages = response?.result?.totalPages || 0;
                                     const maxVisiblePages = 5;
                                     let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-                                    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+                                    const endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
 
                                     if (endPage - startPage < maxVisiblePages - 1) {
                                         startPage = Math.max(0, endPage - maxVisiblePages + 1);
@@ -484,7 +495,7 @@ export default function UsersPage() {
 
                                 <button
                                     onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage === (response.result.totalPages || 0) - 1 || isLoading}
+                                    disabled={currentPage === ((response?.result?.totalPages || 0) - 1) || isLoading}
                                     className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                                 >
                                     <span className="sr-only">Next</span>
@@ -493,8 +504,8 @@ export default function UsersPage() {
                                     </svg>
                                 </button>
                                 <button
-                                    onClick={() => handlePageChange((response.result.totalPages || 1) - 1)}
-                                    disabled={currentPage === (response.result.totalPages || 0) - 1 || isLoading}
+                                    onClick={() => handlePageChange(((response?.result?.totalPages ?? 1) - 1))}
+                                    disabled={currentPage === ((response?.result?.totalPages || 0) - 1) || isLoading}
                                     className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                                 >
                                     <span className="sr-only">Last page</span>

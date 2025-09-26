@@ -1,11 +1,16 @@
 import { apiClient } from '@/lib/axios';
-import { ApiResponse, LoginRequest, LoginResponse, LogoutResponse, CreateUserRequest, CreateUserResponse } from '@/types/api';
+import { ApiResponse } from '@/types/api';
+import { LoginRequest, LoginResponse, LogoutResponse } from '@/types/auth';
+import { CreateUserRequest, CreateUserResponse } from '@/types/user';
 
 export const authApi = {
     login: async (data: LoginRequest) => {
         const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', data);
 
-        localStorage.setItem('access_token', response.data.result.accessToken);
+        if (response.data.code === 200 && response.data.result) {
+
+            localStorage.setItem('access_token', response.data.result.accessToken);
+        }
 
         return response.data;
     },

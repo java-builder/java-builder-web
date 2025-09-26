@@ -111,7 +111,7 @@ export default function CoursesPage() {
     const { confirm } = useConfirm();
 
     // Mock data - thay thế bằng API call thực tế
-    const [stats, setStats] = useState<CourseStats>({
+    const [stats] = useState<CourseStats>({
         total: 48,
         published: 32,
         draft: 12,

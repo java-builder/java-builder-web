@@ -1,0 +1,381 @@
+'use client';
+
+import { useState } from 'react';
+import { 
+  FaFacebook, 
+  FaYoutube, 
+  FaPhone, 
+  FaEnvelope, 
+  FaMapMarkerAlt, 
+  FaGraduationCap, 
+  FaBriefcase, 
+  FaCode,
+  FaCoffee,
+  FaHeart,
+  FaUsers,
+  FaAward,
+  FaLaptopCode,
+  FaServer,
+  FaCloud,
+  FaDocker
+} from 'react-icons/fa';
+import MotionWrapper from '@/components/MotionWrapper';
+import Header from '@/components/Header';
+
+export default function AboutPage() {
+  const [activeTab, setActiveTab] = useState('about');
+
+  const skills = [
+    { name: 'Java', icon: FaCode, description: 'Ngôn ngữ lập trình chính, phát triển các ứng dụng web và backend' },
+    { name: 'Spring Boot', icon: FaServer, description: 'Framework mạnh mẽ để xây dựng các ứng dụng Java' },
+    { name: 'Microservice', icon: FaLaptopCode, description: 'Kiến trúc phân tán, mỗi service độc lập và dễ mở rộng' },
+    { name: 'AWS', icon: FaCloud, description: 'Dịch vụ điện toán đám mây, deploy và quản lý ứng dụng' },
+    { name: 'Docker', icon: FaDocker, description: 'Công nghệ container hóa, đảm bảo ứng dụng chạy ổn định' },
+    { name: 'CI/CD', icon: FaServer, description: 'Tự động hóa quá trình build, test và deploy code' },
+  ];
+
+
+  const achievements = [
+    { icon: FaUsers, number: '500+', text: 'Học viên đã đào tạo' },
+    { icon: FaGraduationCap, number: '50+', text: 'Khóa học đã tạo' },
+    { icon: FaAward, number: '5+', text: 'Năm kinh nghiệm' },
+    { icon: FaLaptopCode, number: '100+', text: 'Dự án đã hoàn thành' },
+  ];
+
+  const tabButtons = [
+    { id: 'about', label: 'Giới thiệu', icon: FaHeart },
+    { id: 'skills', label: 'Kỹ năng', icon: FaCode },
+    { id: 'contact', label: 'Liên hệ', icon: FaEnvelope },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Header />
+      {/* Header Section */}
+      <div className="relative bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/10 via-transparent to-emerald-800/10 opacity-30"></div>
+        </div>
+        
+<div className="relative z-10 max-w-6xl mx-auto px-4 text-center">
+<MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
+            <div className="mb-8">
+              <div className="w-32 h-32 mx-auto mb-6 rounded-full border-4 border-white/20 bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                <FaGraduationCap className="text-6xl text-white" />
+              </div>
+              <h1 className="text-5xl font-bold mb-4">Lê Khánh Đức</h1>
+              <p className="text-xl text-emerald-100 mb-6">Java Developer & Founder of F Learning</p>
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">Java Expert</span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">Spring Boot</span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">Educational Content Creator</span>
+              </div>
+            </div>
+          </MotionWrapper>
+
+          {/* Stats */}
+<MotionWrapper animation="fadeInUp" duration={1.0} delay={0.2} mode="mount">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+              {achievements.map((achievement, index) => (
+                <div key={index} className="text-center">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-lg p-6 hover:bg-white/30 transition-all duration-300">
+                    <achievement.icon className="text-3xl mx-auto mb-3 text-emerald-200" />
+                    <div className="text-2xl font-bold mb-1">{achievement.number}</div>
+                    <div className="text-sm text-emerald-100">{achievement.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </MotionWrapper>
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="bg-white shadow-lg sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex overflow-x-auto">
+            {tabButtons.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-4 font-medium transition-all duration-300 border-b-2 whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'text-emerald-600 border-emerald-600 bg-emerald-50'
+                    : 'text-gray-600 border-transparent hover:text-emerald-600 hover:bg-gray-50'
+                }`}
+              >
+                <tab.icon className="text-lg" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        {/* About Tab */}
+        {activeTab === 'about' && (
+          <MotionWrapper animation="fadeInUp" duration={0.6}>
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-6">Câu chuyện của tôi</h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed">
+                  <p>
+                    Xin chào! Tôi là <strong>Lê Khánh Đức</strong>, một Java Developer đam mê với việc học hỏi 
+                    và chia sẻ kiến thức công nghệ.
+                  </p>
+                  <p>
+                    Xuất phát từ niềm yêu thích lập trình và mong muốn giúp đỡ cộng đồng, tôi đã tạo ra 
+                    <strong> F Learning</strong> - một nền tảng học tập trực tuyến để chia sẻ những kiến thức 
+                    và kinh nghiệm mà tôi đã tích lũy được trong quá trình học tập và làm việc.
+                  </p>
+                  <p>
+                    Tôi tin rằng việc học lập trình không chỉ là học syntax mà còn là học cách tư duy logic, 
+                    giải quyết vấn đề và xây dựng những sản phẩm có ý nghĩa. Hãy cùng nhau khám phá 
+                    thế giới công nghệ thú vị này!
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Tại sao chọn F Learning?</h3>
+                  <ul className="space-y-3">
+                    {[
+                      'Khóa học thực tế, dựa trên dự án thực tế',
+                      'Hỗ trợ học viên 24/7 qua các kênh liên lạc',
+                      'Cộng đồng học viên năng động và tích cực',
+                      'Cập nhật liên tục với công nghệ mới nhất',
+                      'Lộ trình học tập rõ ràng từ cơ bản đến nâng cao'
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-center gap-3">
+                        <FaHeart className="text-emerald-600 flex-shrink-0" />
+                        <span className="text-gray-600">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl shadow-xl p-8">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-6">Thông tin cá nhân</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <FaMapMarkerAlt className="text-emerald-600 text-lg" />
+                      <span className="text-gray-600">Hà Nội, Việt Nam</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <FaBriefcase className="text-emerald-600 text-lg" />
+                      <span className="text-gray-600">Java Developer</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <FaCoffee className="text-emerald-600 text-lg" />
+                      <span className="text-gray-600">Coffee Lover & Tech Enthusiast</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <FaGraduationCap className="text-emerald-600 text-lg" />
+                      <span className="text-gray-600">Founder of F Learning Platform</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white">
+                  <h3 className="text-xl font-semibold mb-4">Triết lý giảng dạy</h3>
+                  <blockquote className="italic">
+                    &quot;Học lập trình không chỉ là học code, mà là học cách tư duy logic, 
+                    giải quyết vấn đề và không ngừng học hỏi. Mỗi dòng code bạn viết 
+                    đều là một bước tiến về phía trước.&quot;
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+          </MotionWrapper>
+        )}
+
+        
+        {activeTab === 'skills' && (
+          <MotionWrapper animation="fadeInUp" duration={0.6}>
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Kỹ năng chuyên môn</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                {skills.map((skill, index) => (
+                  <div key={index} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 group">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors duration-300">
+                        <skill.icon className="text-2xl text-emerald-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{skill.name}</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">{skill.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-12 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white text-center">
+                <h3 className="text-2xl font-bold mb-4">Cam kết của tôi</h3>
+                <p className="text-lg leading-relaxed">
+                  Tôi luôn cập nhật và học hỏi các công nghệ mới để mang đến cho học viên 
+                  những kiến thức thực tế và hữu ích nhất trong thị trường lập trình hiện tại.
+                </p>
+              </div>
+            </div>
+          </MotionWrapper>
+        )}
+
+        {/* Contact Tab */}
+        {activeTab === 'contact' && (
+          <MotionWrapper animation="fadeInUp" duration={0.6}>
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Liên hệ với tôi</h2>
+              
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* Contact Info */}
+                <div>
+                  <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6">Thông tin liên hệ</h3>
+                    <div className="space-y-6">
+                      <a 
+                        href="tel:0368103455"
+                        className="flex items-center gap-4 p-4 rounded-lg hover:bg-emerald-50 transition-colors duration-300 group"
+                      >
+                        <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors duration-300">
+                          <FaPhone className="text-emerald-600 text-lg" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Điện thoại / Zalo</p>
+                          <p className="text-lg font-medium text-gray-800">0368 103 455</p>
+                        </div>
+                      </a>
+
+                      <a 
+                        href="mailto:lekhanhduc@flearning.com"
+                        className="flex items-center gap-4 p-4 rounded-lg hover:bg-emerald-50 transition-colors duration-300 group"
+                      >
+                        <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors duration-300">
+                          <FaEnvelope className="text-emerald-600 text-lg" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Email</p>
+                          <p className="text-lg font-medium text-gray-800">lekhanhduc@flearning.com</p>
+                        </div>
+                      </a>
+
+                      <div className="flex items-center gap-4 p-4 rounded-lg">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                          <FaMapMarkerAlt className="text-emerald-600 text-lg" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Địa chỉ</p>
+                          <p className="text-lg font-medium text-gray-800">Hà Nội, Việt Nam</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Social Media */}
+                  <div className="bg-white rounded-2xl shadow-xl p-8">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6">Kết nối với tôi</h3>
+                    <div className="space-y-4">
+                      <a 
+                        href="https://www.facebook.com/le.khanh.uc.10632"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-4 rounded-lg hover:bg-blue-50 transition-colors duration-300 group"
+                      >
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors duration-300">
+                          <FaFacebook className="text-blue-600 text-xl" />
+                        </div>
+                        <div>
+                          <p className="text-lg font-medium text-gray-800">Facebook</p>
+                          <p className="text-sm text-gray-500">Theo dõi để cập nhật thông tin mới nhất</p>
+                        </div>
+                      </a>
+
+                      <a 
+                        href="https://www.youtube.com/@lekhanhduc-212"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-4 rounded-lg hover:bg-red-50 transition-colors duration-300 group"
+                      >
+                        <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors duration-300">
+                          <FaYoutube className="text-red-600 text-xl" />
+                        </div>
+                        <div>
+                          <p className="text-lg font-medium text-gray-800">YouTube Channel</p>
+                          <p className="text-sm text-gray-500">Java Developer - Kênh chia sẻ kiến thức lập trình</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Form */}
+                <div>
+                  <div className="bg-white rounded-2xl shadow-xl p-8">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6">Gửi tin nhắn cho tôi</h3>
+                    <form className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Họ và tên</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300"
+                          placeholder="Nhập họ và tên của bạn"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input 
+                          type="email" 
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300"
+                          placeholder="Nhập email của bạn"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Số điện thoại</label>
+                        <input 
+                          type="tel" 
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300"
+                          placeholder="Nhập số điện thoại của bạn"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Tin nhắn</label>
+                        <textarea 
+                          rows={5}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300"
+                          placeholder="Nhập tin nhắn của bạn..."
+                        ></textarea>
+                      </div>
+                      
+                      <button 
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
+                      >
+                        Gửi tin nhắn
+                      </button>
+                    </form>
+                  </div>
+
+                  <div className="mt-8 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white text-center">
+                    <FaHeart className="text-3xl mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Hỗ trợ học viên 24/7</h3>
+                    <p className="text-emerald-100">
+                      Tôi luôn sẵn sàng hỗ trợ và giải đáp thắc mắc của các bạn học viên. 
+                      Đừng ngại liên hệ với tôi qua bất kỳ kênh nào bạn thấy thuận tiện!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </MotionWrapper>
+        )}
+      </div>
+    </div>
+  );
+}

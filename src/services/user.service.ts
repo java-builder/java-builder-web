@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { apiClient } from '@/lib/axios';
-import { ApiResponse, UserDetailResponse, PageResponse } from '@/types/api';
+import { ApiResponse, PageResponse } from '@/types/api';
+import { UserDetailResponse } from '@/types/user';
 
 export interface UserSearchParams {
     page?: number;
@@ -22,6 +22,7 @@ export const userApi = {
             if (error instanceof Error) {
             }
             throw error;
+
         }
     },
 

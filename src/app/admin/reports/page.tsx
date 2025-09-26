@@ -79,7 +79,7 @@ export default function ReportsPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     // Mock data - thay thế bằng API call thực tế
-    const [stats, setStats] = useState<ReportStats>({
+    const [stats] = useState<ReportStats>({
         totalRevenue: 125600000,
         totalUsers: 2847,
         totalCourses: 48,
@@ -91,7 +91,7 @@ export default function ReportsPage() {
     });
 
     // Dữ liệu biểu đồ doanh thu
-    const [revenueData, setRevenueData] = useState<RevenueData>({
+    const [revenueData] = useState<RevenueData>({
         labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
         datasets: [
             {
@@ -105,7 +105,7 @@ export default function ReportsPage() {
     });
 
     // Dữ liệu biểu đồ người dùng mới
-    const [userData, setUserData] = useState<UserData>({
+    const [userData] = useState<UserData>({
         labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
         datasets: [
             {
@@ -119,7 +119,7 @@ export default function ReportsPage() {
     });
 
     // Dữ liệu biểu đồ phân bố khóa học
-    const [courseData, setCourseData] = useState<CourseData>({
+    const [courseData] = useState<CourseData>({
         labels: ['Frontend', 'Backend', 'Mobile', 'Design', 'DevOps', 'Data Science'],
         datasets: [
             {

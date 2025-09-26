@@ -36,7 +36,7 @@ export default function SettingsPage() {
         }
     };
 
-    const handleSettingChange = (tabId: string, sectionId: string, fieldId: string, value: any) => {
+    const handleSettingChange = (tabId: string, sectionId: string, fieldId: string, value: string | number | boolean) => {
         const newSettings = settingsService.setSetting(settings, tabId, sectionId, fieldId, value);
         setSettings(newSettings);
     };
@@ -79,7 +79,7 @@ export default function SettingsPage() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        } catch (error) {
+        } catch {
             setMessage({ type: 'error', text: 'Không thể export cài đặt' });
         }
     };

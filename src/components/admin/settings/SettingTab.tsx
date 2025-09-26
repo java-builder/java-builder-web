@@ -6,7 +6,7 @@ import SettingSection from './SettingSection';
 interface SettingTabProps {
     tab: SettingTabType;
     settings: SettingsData;
-    onSettingChange: (tabId: string, sectionId: string, fieldId: string, value: any) => void;
+    onSettingChange: (tabId: string, sectionId: string, fieldId: string, value: string | number | boolean) => void;
     onSave: () => void;
     isSaving: boolean;
 }

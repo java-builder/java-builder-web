@@ -8,7 +8,7 @@ interface SettingSectionProps {
     section: SettingSectionType;
     tabId: string;
     settings: SettingsData;
-    onSettingChange: (tabId: string, sectionId: string, fieldId: string, value: any) => void;
+    onSettingChange: (tabId: string, sectionId: string, fieldId: string, value: string | number | boolean) => void;
 }
 
 export default function SettingSection({

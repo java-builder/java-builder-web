@@ -1,4 +1,4 @@
-import { SettingsData } from '@/types/settings';
+import { SettingsData, SettingValue } from '@/types/settings';
 import { settingsConfig } from '@/lib/settings-config';
 
 class SettingsService {
@@ -49,12 +49,12 @@ class SettingsService {
     }
 
     // Get setting value by path
-    getSetting(settings: SettingsData, tabId: string, sectionId: string, fieldId: string): any {
-        return settings[tabId]?.[sectionId]?.[fieldId];
+    getSetting<T = unknown>(settings: SettingsData, tabId: string, sectionId: string, fieldId: string): T | undefined {
+        return settings[tabId]?.[sectionId]?.[fieldId] as T | undefined;
     }
 
     // Set setting value by path
-    setSetting(settings: SettingsData, tabId: string, sectionId: string, fieldId: string, value: any): SettingsData {
+    setSetting<T = unknown>(settings: SettingsData, tabId: string, sectionId: string, fieldId: string, value: T): SettingsData {
         const newSettings = { ...settings };
 
         if (!newSettings[tabId]) {
@@ -64,7 +64,7 @@ class SettingsService {
             newSettings[tabId][sectionId] = {};
         }
 
-        newSettings[tabId][sectionId][fieldId] = value;
+        (newSettings[tabId][sectionId] as SettingValue)[fieldId] = value as unknown;
         return newSettings;
     }
 

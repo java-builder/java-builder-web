@@ -4,13 +4,13 @@ import { SettingField as SettingFieldType } from '@/types/settings';
 
 interface SettingFieldProps {
     field: SettingFieldType;
-    value: any;
-    onChange: (value: any) => void;
+    value: unknown;
+    onChange: (value: string | number | boolean) => void;
 }
 
 export default function SettingField({ field, value, onChange }: SettingFieldProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        let newValue: any = e.target.value;
+        let newValue: string | number | boolean = e.target.value;
 
         if (field.type === 'number') {
             newValue = Number(newValue);
@@ -29,7 +29,7 @@ export default function SettingField({ field, value, onChange }: SettingFieldPro
                 return (
                     <input
                         type={field.type}
-                        value={value || ''}
+                        value={(value as string) || ''}
                         onChange={handleChange}
                         placeholder={field.placeholder}
                         required={field.required}
@@ -41,7 +41,7 @@ export default function SettingField({ field, value, onChange }: SettingFieldPro
                 return (
                     <input
                         type="number"
-                        value={value || ''}
+                        value={(value as number | string) || ''}
                         onChange={handleChange}
                         placeholder={field.placeholder}
                         required={field.required}
@@ -54,7 +54,7 @@ export default function SettingField({ field, value, onChange }: SettingFieldPro
             case 'textarea':
                 return (
                     <textarea
-                        value={value || ''}
+                        value={(value as string) || ''}
                         onChange={handleChange}
                         placeholder={field.placeholder}
                         required={field.required}
@@ -66,7 +66,7 @@ export default function SettingField({ field, value, onChange }: SettingFieldPro
             case 'select':
                 return (
                     <select
-                        value={value || ''}
+                        value={(value as string) || ''}
                         onChange={handleChange}
                         required={field.required}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -85,7 +85,7 @@ export default function SettingField({ field, value, onChange }: SettingFieldPro
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input
                             type="checkbox"
-                            checked={value || false}
+                            checked={Boolean(value) || false}
                             onChange={handleChange}
                             className="sr-only peer"
                         />

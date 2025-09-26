@@ -4,7 +4,7 @@ export interface SettingField {
     label: string;
     description?: string;
     placeholder?: string;
-    defaultValue?: any;
+    defaultValue?: string | number | boolean;
     options?: { value: string; label: string }[];
     required?: boolean;
     validation?: {
@@ -34,13 +34,13 @@ export interface SettingsConfig {
 }
 
 export interface SettingValue {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface SettingsData {
     [tabId: string]: {
         [sectionId: string]: {
-            [fieldId: string]: any;
+            [fieldId: string]: unknown;
         };
     };
 }

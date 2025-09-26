@@ -10,7 +10,7 @@ interface AdminLayoutProps {
 
 const navigation = [
     {
-        name: 'Dashboard',
+        name: 'Trang chủ',
         href: '/admin',
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@ const navigation = [
         )
     },
     {
-        name: 'Quản lý Blog',
+        name: 'Quản lý bài viết',
         href: '/admin/blogs',
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -50,7 +50,7 @@ export default function RevenueReportPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     // Mock data
-    const [revenueDetails, setRevenueDetails] = useState<RevenueDetail[]>([
+    const [revenueDetails] = useState<RevenueDetail[]>([
         { date: '2024-12-01', revenue: 15000000, orders: 45, avgOrderValue: 333333, refunds: 500000 },
         { date: '2024-12-02', revenue: 18000000, orders: 52, avgOrderValue: 346154, refunds: 300000 },
         { date: '2024-12-03', revenue: 12000000, orders: 38, avgOrderValue: 315789, refunds: 200000 },
@@ -58,7 +58,7 @@ export default function RevenueReportPage() {
         { date: '2024-12-05', revenue: 25000000, orders: 78, avgOrderValue: 320513, refunds: 400000 },
     ]);
 
-    const [topCourses, setTopCourses] = useState<TopCourse[]>([
+    const [topCourses] = useState<TopCourse[]>([
         { id: '1', name: 'React & Next.js - Từ Zero đến Hero', revenue: 45000000, enrollments: 350, avgPrice: 1285714, growth: 15.2 },
         { id: '2', name: 'Node.js & Express API Development', revenue: 38000000, enrollments: 280, avgPrice: 1357143, growth: 12.8 },
         { id: '3', name: 'Python for Data Science', revenue: 32000000, enrollments: 245, avgPrice: 1306122, growth: 8.5 },
@@ -122,7 +122,7 @@ export default function RevenueReportPage() {
             await new Promise(resolve => setTimeout(resolve, 2000));
             const formatNames = { pdf: 'PDF', excel: 'Excel', csv: 'CSV' };
             toast.success(`Xuất báo cáo doanh thu ${formatNames[format]} thành công!`);
-        } catch (error) {
+        } catch {
             toast.error('Có lỗi xảy ra khi xuất báo cáo');
         }
     };

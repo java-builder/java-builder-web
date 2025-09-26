@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useConfirm } from '@/hooks/useConfirm';
+import CreateBlogModal from '@/components/admin/blogs/CreateBlogModal';
+import BlogGrid from '@/components/admin/blogs/BlogGrid';
+import BlogSuccessToast from '@/components/admin/blogs/BlogSuccessToast';
+import BlogPreviewModal from '@/components/admin/blogs/BlogPreviewModal';
+import { Blog, BlogType } from '@/types/blog';
 
 interface BlogStats {
     total: number;
@@ -11,16 +16,7 @@ interface BlogStats {
     archived: number;
 }
 
-interface Blog {
-    id: string;
-    title: string;
-    author: string;
-    status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
-    publishedAt: string;
-    views: number;
-    likes: number;
-    comments: number;
-}
+// Using shared `Blog` type from `@/types/blog`
 
 type FilterType = 'day' | 'week' | 'month' | 'year';
 
@@ -52,10 +48,14 @@ export default function BlogsPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState('');
     const [isDeleting, setIsDeleting] = useState<string>('');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+    const [previewBlog, setPreviewBlog] = useState<Blog | null>(null);
     const { confirm } = useConfirm();
 
     // Mock data - thay thế bằng API call thực tế
-    const [stats, setStats] = useState<BlogStats>({
+    const [stats] = useState<BlogStats>({
         total: 156,
         published: 98,
         draft: 45,
@@ -66,32 +66,46 @@ export default function BlogsPage() {
         {
             id: '1',
             title: 'Hướng dẫn học React từ cơ bản đến nâng cao',
+            content: 'Nội dung chi tiết về React...',
+            summary: 'Bài viết hướng dẫn toàn diện về React từ những khái niệm cơ bản đến các kỹ thuật nâng cao',
+            blogType: BlogType.TUTORIAL,
+            featuredImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
+            viewCount: 1250,
+            likeCount: 89,
             author: 'Nguyễn Văn A',
             status: 'PUBLISHED',
             publishedAt: '2024-12-15T10:30:00Z',
-            views: 1250,
-            likes: 89,
-            comments: 23
+            createdAt: '2024-12-15T10:30:00Z',
+            updatedAt: '2024-12-15T10:30:00Z'
         },
         {
             id: '2',
             title: 'Top 10 thư viện JavaScript hữu ích nhất 2024',
+            content: 'Danh sách các thư viện JavaScript...',
+            summary: 'Khám phá những thư viện JavaScript mới nhất và hữu ích nhất trong năm 2024',
+            blogType: BlogType.REVIEW,
+            featuredImage: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
+            viewCount: 890,
+            likeCount: 67,
             author: 'Trần Thị B',
             status: 'PUBLISHED',
             publishedAt: '2024-12-10T14:20:00Z',
-            views: 890,
-            likes: 67,
-            comments: 15
+            createdAt: '2024-12-10T14:20:00Z',
+            updatedAt: '2024-12-10T14:20:00Z'
         },
         {
             id: '3',
             title: 'Tối ưu hóa hiệu suất ứng dụng Next.js',
+            content: 'Các kỹ thuật tối ưu hóa...',
+            summary: 'Những mẹo và kỹ thuật để cải thiện hiệu suất ứng dụng Next.js',
+            blogType: BlogType.TIPS,
+            viewCount: 0,
+            likeCount: 0,
             author: 'Lê Văn C',
             status: 'DRAFT',
             publishedAt: '2024-12-08T09:15:00Z',
-            views: 0,
-            likes: 0,
-            comments: 0
+            createdAt: '2024-12-08T09:15:00Z',
+            updatedAt: '2024-12-08T09:15:00Z'
         }
     ]);
 
@@ -189,15 +203,15 @@ export default function BlogsPage() {
                         </p>
                     </div>
                     <div className="mt-4 sm:mt-0">
-                        <Link
-                            href="/admin/blogs/new"
+                        <button
+                            onClick={() => setIsCreateModalOpen(true)}
                             className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
                         >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
                             Tạo bài viết mới
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -255,6 +269,35 @@ export default function BlogsPage() {
                         <div className="text-sm text-gray-600">
                             Hiển thị dữ liệu: <span className="font-medium text-gray-900">{getFilterLabel()}</span>
                         </div>
+
+                        {/* View Mode Toggle */}
+                        <div className="flex items-center border border-gray-300 rounded-lg p-1">
+                            <button
+                                onClick={() => setViewMode('grid')}
+                                className={`p-2 rounded-md transition-colors duration-200 ${viewMode === 'grid'
+                                    ? 'bg-blue-100 text-blue-600'
+                                    : 'text-gray-400 hover:text-gray-600'
+                                    }`}
+                                title="Xem dạng lưới"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                </svg>
+                            </button>
+                            <button
+                                onClick={() => setViewMode('table')}
+                                className={`p-2 rounded-md transition-colors duration-200 ${viewMode === 'table'
+                                    ? 'bg-blue-100 text-blue-600'
+                                    : 'text-gray-400 hover:text-gray-600'
+                                    }`}
+                                title="Xem dạng bảng"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                            </button>
+                        </div>
+
                         <button
                             onClick={fetchBlogs}
                             disabled={isLoading}
@@ -360,129 +403,160 @@ export default function BlogsPage() {
                 </div>
             )}
 
-            {/* Blog Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Bài viết
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Tác giả
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Trạng thái
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Thống kê
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Ngày xuất bản
-                                </th>
-                                <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Thao tác
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {blogs.map((blog) => (
-                                <tr key={blog.id} className="hover:bg-gray-50 transition-colors duration-200">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center">
-                                            <div className="flex-shrink-0 h-10 w-10">
-                                                <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-                                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900 line-clamp-2">
-                                                    {blog.title}
-                                                </div>
-                                                <div className="text-sm text-gray-500">
-                                                    ID: {blog.id}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">{blog.author}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <StatusBadge status={blog.status} />
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">
-                                            <div className="flex items-center space-x-4">
-                                                <span className="flex items-center">
-                                                    <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                    {blog.views}
-                                                </span>
-                                                <span className="flex items-center">
-                                                    <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                    </svg>
-                                                    {blog.likes}
-                                                </span>
-                                                <span className="flex items-center">
-                                                    <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                                    </svg>
-                                                    {blog.comments}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString('vi-VN') : 'Chưa xuất bản'}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div className="flex items-center justify-end space-x-2">
-                                            <Link
-                                                href={`/admin/blogs/${blog.id}/edit`}
-                                                className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                                            >
-                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                                Sửa
-                                            </Link>
-                                            <button
-                                                onClick={() => handleDelete(blog.id, blog.title)}
-                                                disabled={isDeleting === blog.id}
-                                                className="inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                                            >
-                                                {isDeleting === blog.id ? (
-                                                    <>
-                                                        <svg className="animate-spin w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24">
-                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                        </svg>
-                                                        Đang xóa...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                        Xóa
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </td>
+            {/* Blog Content */}
+            {viewMode === 'grid' ? (
+                <BlogGrid
+                    blogs={blogs}
+                    onEdit={(blog) => {
+                        // Handle edit - có thể mở modal edit hoặc navigate
+                        console.log('Edit blog:', blog);
+                    }}
+                    onDelete={handleDelete}
+                    onPreview={(blog) => setPreviewBlog(blog)}
+                    isDeleting={isDeleting}
+                    isLoading={isLoading}
+                />
+            ) : (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Bài viết
+                                    </th>
+                                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tác giả
+                                    </th>
+                                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Trạng thái
+                                    </th>
+                                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Thống kê
+                                    </th>
+                                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Ngày xuất bản
+                                    </th>
+                                    <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Thao tác
+                                    </th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {blogs.map((blog) => (
+                                    <tr key={blog.id} className="hover:bg-gray-50 transition-colors duration-200">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-10 w-10">
+                                                    <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
+                                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900 line-clamp-2">
+                                                        {blog.title}
+                                                    </div>
+                                                    <div className="text-sm text-gray-500">
+                                                        ID: {blog.id}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">{blog.author}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <StatusBadge status={blog.status} />
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">
+                                                <div className="flex items-center space-x-4">
+                                                    <span className="flex items-center">
+                                                        <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                        {blog.viewCount}
+                                                    </span>
+                                                    <span className="flex items-center">
+                                                        <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                        </svg>
+                                                        {blog.likeCount}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString('vi-VN') : 'Chưa xuất bản'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <div className="flex items-center justify-end space-x-2">
+                                                <Link
+                                                    href={`/admin/blogs/${blog.id}/edit`}
+                                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                                                >
+                                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                    Sửa
+                                                </Link>
+                                                <button
+                                                    onClick={() => handleDelete(blog.id, blog.title)}
+                                                    disabled={isDeleting === blog.id}
+                                                    className="inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                                                >
+                                                    {isDeleting === blog.id ? (
+                                                        <>
+                                                            <svg className="animate-spin w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24">
+                                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                            </svg>
+                                                            Đang xóa...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                            Xóa
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {/* Create Blog Modal */}
+            <CreateBlogModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSuccess={() => {
+                    fetchBlogs(); // Refresh the blog list
+                    setShowSuccessToast(true);
+                }}
+            />
+
+            {/* Success Toast */}
+            <BlogSuccessToast
+                show={showSuccessToast}
+                onClose={() => setShowSuccessToast(false)}
+            />
+
+            {/* Preview Modal */}
+            <BlogPreviewModal
+                isOpen={!!previewBlog}
+                onClose={() => setPreviewBlog(null)}
+                blog={previewBlog}
+            />
         </div>
     );
 }

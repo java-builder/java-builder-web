@@ -27,7 +27,7 @@ export function useSettings() {
         }
     };
 
-    const updateSetting = async (tabId: string, sectionId: string, fieldId: string, value: any) => {
+    const updateSetting = async (tabId: string, sectionId: string, fieldId: string, value: unknown) => {
         try {
             const newSettings = settingsService.setSetting(settings, tabId, sectionId, fieldId, value);
             setSettings(newSettings);
@@ -40,8 +40,8 @@ export function useSettings() {
         }
     };
 
-    const getSetting = (tabId: string, sectionId: string, fieldId: string, defaultValue?: any) => {
-        return settingsService.getSetting(settings, tabId, sectionId, fieldId) ?? defaultValue;
+    const getSetting = <T = unknown>(tabId: string, sectionId: string, fieldId: string, defaultValue?: T) => {
+        return (settingsService.getSetting<T>(settings, tabId, sectionId, fieldId) ?? defaultValue) as T;
     };
 
     const resetSettings = async () => {
@@ -49,7 +49,7 @@ export function useSettings() {
             localStorage.removeItem('f-learning-settings');
             await loadSettings();
             return true;
-        } catch (err) {
+        } catch {
             setError('Không thể reset cài đặt');
             return false;
         }

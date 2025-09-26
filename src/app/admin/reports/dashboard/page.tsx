@@ -39,7 +39,7 @@ export default function ReportsDashboard() {
     const [activeTab, setActiveTab] = useState('overview');
 
     // Mock data
-    const [dashboardData, setDashboardData] = useState({
+    const [dashboardData] = useState({
         kpis: {
             totalRevenue: 125600000,
             totalUsers: 2847,
@@ -199,7 +199,7 @@ export default function ReportsDashboard() {
             await new Promise(resolve => setTimeout(resolve, 2000));
             const formatNames = { pdf: 'PDF', excel: 'Excel', csv: 'CSV' };
             toast.success(`Xuất dashboard ${formatNames[format]} thành công!`);
-        } catch (error) {
+        } catch {
             toast.error('Có lỗi xảy ra khi xuất báo cáo');
         }
     };
