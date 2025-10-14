@@ -13,14 +13,6 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        console.log('🔗 Axios Request Config:', {
-            baseURL: config.baseURL,
-            url: config.url,
-            fullURL: `${config.baseURL}${config.url}`,
-            method: config.method,
-            params: config.params,
-            headers: config.headers
-        });
 
         if (typeof window !== 'undefined') {
             const token = localStorage.getItem('access_token');
