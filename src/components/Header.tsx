@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import { authApi } from '@/services/auth.service';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,25 +13,32 @@ export default function Header() {
 
   // Check if user is logged in
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    setIsLoggedIn(!!token);
+    setIsLoggedIn(authApi.isAuthenticated());
   }, []);
 
   // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    setIsLoggedIn(false);
-    setIsUserMenuOpen(false);
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      setIsLoggedIn(false);
+      setIsUserMenuOpen(false);
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Vẫn logout local ngay cả khi API call thất bại
+      authApi.clearAuthData();
+      setIsLoggedIn(false);
+      setIsUserMenuOpen(false);
+      router.push('/');
+    }
   };
 
   return (
-    <nav className="w-full px-6 py-4 bg-white border-b border-gray-100 relative z-50">
+    <nav className="w-full px-6 py-4 bg-gray-50 border-b border-gray-200 relative z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">FL</span>
           </div>
           <span className="text-xl font-bold text-gray-800">F Learning</span>
@@ -38,22 +46,22 @@ export default function Header() {
         </div>
 
         <div className="hidden lg:flex items-center space-x-8">
-          <Link href="/" className="text-gray-700 hover:text-emerald-600 font-medium transition-colors">
+          <Link href="/" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
             Trang chủ
           </Link>
-          <Link href="/courses" className="text-gray-700 hover:text-emerald-600 font-medium transition-colors">
+          <Link href="/courses" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
             Khóa học
           </Link>
-          <Link href="/create-learning-path" className="text-gray-700 hover:text-emerald-600 font-medium transition-colors">
+          <Link href="/create-learning-path" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
             Lộ trình học tập
           </Link>
-          <Link href="/blogs" className="text-gray-700 hover:text-emerald-600 font-medium transition-colors">
+          <Link href="/blogs" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
             Bài viết
           </Link>
-          <Link href="/about" className="text-gray-700 hover:text-emerald-600 font-medium transition-colors">
+          <Link href="/about" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
             Giới thiệu
           </Link>
-          <Link href="/contact" className="text-gray-700 hover:text-emerald-600 font-medium transition-colors">
+          <Link href="/contact" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
             Liên hệ
           </Link>
         </div>
@@ -78,9 +86,9 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-emerald-600 transition-colors rounded-lg hover:bg-gray-50"
+                className="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-orange-500 transition-colors rounded-lg hover:bg-gray-50"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
@@ -94,7 +102,7 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <Link
                     href="/profile"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600 transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <div className="flex items-center space-x-2">
@@ -106,7 +114,7 @@ export default function Header() {
                   </Link>
                   <Link
                     href="/my-learning-path"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600 transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <div className="flex items-center space-x-2">
@@ -141,7 +149,7 @@ export default function Header() {
               </Link>
               <Link
                 href="/register"
-                className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors"
+                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors"
               >
                 Đăng ký
               </Link>
@@ -151,64 +159,64 @@ export default function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div className="lg:hidden bg-gray-50 border-t border-gray-200 shadow-lg">
           <div className="px-6 py-4 space-y-3">
             <Link
               href="/"
-              className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+              className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Trang chủ
             </Link>
             <Link
               href="/courses"
-              className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+              className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Khóa học
             </Link>
             <Link
               href="/create-learning-path"
-              className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+              className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Lộ trình học tập
             </Link>
             <Link
               href="/blogs"
-              className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+              className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Bài viết
             </Link>
             <Link
-              href="/gioi-thieu"
-              className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+              href="/about"
+              className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+              className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Liên hệ
             </Link>
-            
+
             {isLoggedIn && (
               <>
                 <div className="border-t border-gray-200 my-3"></div>
                 <Link
                   href="/profile"
-                  className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+                  className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Thông tin cá nhân
                 </Link>
                 <Link
                   href="/my-learning-path"
-                  className="block py-2 text-gray-700 hover:text-emerald-600 font-medium transition-colors"
+                  className="block py-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Lộ trình học tập

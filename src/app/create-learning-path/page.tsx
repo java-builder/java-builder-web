@@ -148,43 +148,33 @@ export default function CreateLearningPathPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-neutral-50 via-white to-neutral-100">
-            {/* Navigation */}
-            <nav className="w-full px-6 py-3 bg-white/80 backdrop-blur-xl border-b border-white/20">
+        <div className="min-h-screen bg-white">
+            <Header />
+
+            {/* Main Content */}
+            <main className="max-w-3xl mx-auto px-6 py-8">
                 <div className="max-w-3xl mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-emerald-600 transition-colors">
+                    <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-orange-500 transition-colors pb-5">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                         <span className="font-medium">Quay về trang chủ</span>
                     </Link>
 
-                    <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">FL</span>
-                        </div>
-                        <span className="text-lg font-bold text-gray-900">F Learning</span>
-                    </div>
-
                     <div className="text-sm text-gray-500">
                         Bước {step}/{totalSteps}
                     </div>
                 </div>
-            </nav>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-200 h-0.5">
-                <div
-                    className="h-0.5 bg-emerald-600 transition-all duration-500 ease-out"
-                    style={{ width: `${(step / totalSteps) * 100}%` }}
-                ></div>
-            </div>
-
-            {/* Main Content */}
-            <main className="max-w-3xl mx-auto px-6 py-8">
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 h-0.5">
+                    <div
+                        className="h-0.5 bg-orange-500 transition-all duration-500 ease-out"
+                        style={{ width: `${(step / totalSteps) * 100}%` }}
+                    ></div>
+                </div>
                 <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg border border-white/50 overflow-hidden">
 
-                    {/* Step 1: Personal Info */}
                     {step === 1 && (
                         <MotionWrapper animation="fadeInUp" duration={0.6}>
                             <div className="p-8 text-center">
@@ -206,7 +196,7 @@ export default function CreateLearningPathPage() {
                                             placeholder="Tên của bạn"
                                             value={preferences.name}
                                             onChange={(e) => setPreferences(prev => ({ ...prev, name: e.target.value }))}
-                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-base"
+                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base"
                                         />
                                     </div>
 
@@ -216,7 +206,7 @@ export default function CreateLearningPathPage() {
                                             placeholder="Công việc hiện tại (tùy chọn)"
                                             value={preferences.currentJob}
                                             onChange={(e) => setPreferences(prev => ({ ...prev, currentJob: e.target.value }))}
-                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-base"
+                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base"
                                         />
                                     </div>
                                 </div>
@@ -242,7 +232,7 @@ export default function CreateLearningPathPage() {
                                             key={goal.id}
                                             onClick={() => handleGoalToggle(goal.id)}
                                             className={`p-5 rounded-2xl border transition-all duration-200 text-left hover:bg-gray-50 ${preferences.goals.includes(goal.id)
-                                                ? 'border-emerald-500 bg-white shadow'
+                                                ? 'border-orange-500 bg-white shadow'
                                                 : 'border-gray-200'
                                                 }`}
                                         >
@@ -278,7 +268,7 @@ export default function CreateLearningPathPage() {
                                             key={skill.id}
                                             onClick={() => handleSkillToggle(skill.id)}
                                             className={`p-4 rounded-xl border transition-all duration-200 text-left hover:bg-gray-50 ${preferences.skills.includes(skill.id)
-                                                ? 'border-emerald-500 bg-white shadow'
+                                                ? 'border-orange-500 bg-white shadow'
                                                 : 'border-gray-200'
                                                 }`}
                                         >
@@ -319,7 +309,7 @@ export default function CreateLearningPathPage() {
                                             key={level.id}
                                             onClick={() => setPreferences(prev => ({ ...prev, experience: level.id }))}
                                             className={`w-full p-5 rounded-2xl border transition-all duration-200 text-left hover:bg-gray-50 ${preferences.experience === level.id
-                                                ? 'border-emerald-500 bg-white shadow'
+                                                ? 'border-orange-500 bg-white shadow'
                                                 : 'border-gray-200'
                                                 }`}
                                         >
@@ -360,7 +350,7 @@ export default function CreateLearningPathPage() {
                                             key={time.id}
                                             onClick={() => setPreferences(prev => ({ ...prev, timeCommitment: time.id }))}
                                             className={`w-full p-5 rounded-2xl border transition-all duration-200 text-left hover:bg-gray-50 ${preferences.timeCommitment === time.id
-                                                ? 'border-emerald-500 bg-white shadow'
+                                                ? 'border-orange-500 bg-white shadow'
                                                 : 'border-gray-200'
                                                 }`}
                                         >
@@ -399,7 +389,7 @@ export default function CreateLearningPathPage() {
                                             placeholder="Ví dụ: Tôi muốn trở thành một lập trình viên full-stack trong 6 tháng, có thể làm việc remote và kiếm được mức lương 20-30 triệu..."
                                             value={preferences.specificGoals}
                                             onChange={(e) => setPreferences(prev => ({ ...prev, specificGoals: e.target.value }))}
-                                            className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 resize-none h-32"
+                                            className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none h-32"
                                             rows={4}
                                         />
                                     </div>
@@ -412,7 +402,7 @@ export default function CreateLearningPathPage() {
                                             placeholder="Ví dụ: Tôi không có nhiều thời gian, khó tập trung học online, không biết bắt đầu từ đâu..."
                                             value={preferences.challenges}
                                             onChange={(e) => setPreferences(prev => ({ ...prev, challenges: e.target.value }))}
-                                            className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 resize-none h-24"
+                                            className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none h-24"
                                             rows={3}
                                         />
                                     </div>
@@ -425,7 +415,7 @@ export default function CreateLearningPathPage() {
                                             placeholder="Ví dụ: React, Node.js, MongoDB, UI/UX Design, Digital Marketing, SEO..."
                                             value={preferences.preferredTopics}
                                             onChange={(e) => setPreferences(prev => ({ ...prev, preferredTopics: e.target.value }))}
-                                            className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 resize-none h-24"
+                                            className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none h-24"
                                             rows={3}
                                         />
                                     </div>
@@ -445,7 +435,7 @@ export default function CreateLearningPathPage() {
                                                     key={timeline.id}
                                                     onClick={() => setPreferences(prev => ({ ...prev, timeline: timeline.id }))}
                                                     className={`p-3 rounded-lg border transition-all duration-200 text-center hover:bg-gray-50 ${preferences.timeline === timeline.id
-                                                        ? 'border-emerald-500 bg-white shadow'
+                                                        ? 'border-orange-500 bg-white shadow'
                                                         : 'border-gray-200'
                                                         }`}
                                                 >
@@ -488,7 +478,7 @@ export default function CreateLearningPathPage() {
                             {Array.from({ length: totalSteps }, (_, i) => (
                                 <div
                                     key={i + 1}
-                                    className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${i + 1 <= step ? 'bg-emerald-600' : 'bg-gray-300'
+                                    className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${i + 1 <= step ? 'bg-orange-500' : 'bg-gray-300'
                                         }`}
                                 />
                             ))}
@@ -508,7 +498,7 @@ export default function CreateLearningPathPage() {
                                 <button
                                     onClick={handleNext}
                                     disabled={!isStepValid()}
-                                    className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow"
+                                    className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow"
                                 >
                                     Tiếp tục
                                 </button>

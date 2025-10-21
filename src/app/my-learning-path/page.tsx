@@ -128,13 +128,13 @@ export default function MyLearningPathPage() {
     // removed unused formatDate
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-neutral-50 via-white to-neutral-100">
+        <div className="min-h-screen bg-white">
             <Header />
 
             {/* Simple Header */}
             <div className="max-w-6xl mx-auto px-6 py-8">
                 <div className="text-center mb-12">
-                    <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <span className="text-2xl">🎯</span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-3">
@@ -148,7 +148,7 @@ export default function MyLearningPathPage() {
                 {/* Loading State */}
                 {isLoading && (
                     <div className="flex flex-col items-center justify-center py-24">
-                        <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
+                        <div className="w-12 h-12 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mb-4"></div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Đang tải lộ trình học tập</h3>
                         <p className="text-gray-600">Vui lòng đợi một chút...</p>
                     </div>
@@ -163,7 +163,7 @@ export default function MyLearningPathPage() {
                             <p className="text-red-700 mb-4">{error}</p>
                             <button
                                 onClick={loadLearningPaths}
-                                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
                             >
                                 Thử lại
                             </button>
@@ -183,7 +183,7 @@ export default function MyLearningPathPage() {
                         </p>
                         <Link
                             href="/create-learning-path"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -203,7 +203,7 @@ export default function MyLearningPathPage() {
                         {learningPaths.map((path) => (
                             <div key={path.id} className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300">
                                 {/* Card Header */}
-                                <div className="p-6 bg-gradient-to-r from-emerald-500 to-teal-600">
+                                <div className="p-6 bg-gradient-to-r from-orange-500 to-orange-600">
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">
@@ -238,10 +238,10 @@ export default function MyLearningPathPage() {
                                     <div className="mb-6">
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="text-sm font-medium text-gray-700">Tiến độ học tập</span>
-                                            <span className="text-sm font-bold text-emerald-600">0%</span>
+                                            <span className="text-sm font-bold text-orange-600">0%</span>
                                         </div>
                                         <div className="w-full h-2 bg-gray-200 rounded-full">
-                                            <div className="h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full" style={{ width: '0%' }}></div>
+                                            <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full" style={{ width: '0%' }}></div>
                                         </div>
                                     </div>
 
@@ -251,7 +251,7 @@ export default function MyLearningPathPage() {
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                             {path.periods?.slice(0, 6).map((period, periodIndex) => (
                                                 <div key={period.id || periodIndex} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                                    <div className="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                                    <div className="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0">
                                                         {period.periodNumber}
                                                     </div>
                                                     <div className="min-w-0 flex-1">
@@ -276,7 +276,7 @@ export default function MyLearningPathPage() {
                                     <div className="flex flex-col sm:flex-row gap-3">
                                         <button
                                             onClick={() => handleViewDetails(path)}
-                                            className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                                            className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
                                         >
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -302,7 +302,7 @@ export default function MyLearningPathPage() {
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden flex flex-col">
                             {/* Modal Header */}
-                            <div className="flex-shrink-0 p-6 bg-gradient-to-r from-emerald-500 to-teal-600">
+                            <div className="flex-shrink-0 p-6 bg-gradient-to-r from-orange-500 to-orange-600">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h3 className="text-2xl font-bold text-white mb-1">{selectedPath.title}</h3>
@@ -328,7 +328,7 @@ export default function MyLearningPathPage() {
                                     {selectedPath.periods?.map((period) => (
                                         <div key={period.id || period.periodNumber} className="bg-gray-50 rounded-xl p-5">
                                             <div className="flex items-center gap-3 mb-4">
-                                                <div className="w-10 h-10 bg-emerald-500 text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                                                <div className="w-10 h-10 bg-orange-500 text-white rounded-lg flex items-center justify-center text-sm font-bold">
                                                     {period.periodNumber}
                                                 </div>
                                                 <div>
@@ -484,7 +484,7 @@ export default function MyLearningPathPage() {
                                     >
                                         Đóng
                                     </button>
-                                    <button className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors">
+                                    <button className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors">
                                         Bắt đầu học ngay
                                     </button>
                                 </div>

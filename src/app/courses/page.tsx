@@ -1,115 +1,26 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import Header from '@/components/Header';
-import CourseCard, { Course } from '@/components/courses/CourseCard';
+import CourseCard from '@/components/courses/CourseCard';
 import MotionWrapper from '@/components/MotionWrapper';
 import Link from 'next/link';
-
-// const USE_MOCK = true; // keep for future API integration
-
-const MOCK_COURSES: Course[] = [
-  {
-    id: 'c1',
-    title: 'React & Next.js Mastery 2025',
-    description: 'Xây dựng ứng dụng web hiện đại với React 19 và Next.js 15, tối ưu hiệu năng và SEO.',
-    thumbnail: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop',
-    category: 'Frontend',
-    level: 'Intermediate',
-    rating: 4.8,
-    reviews: 124,
-    price: 899000,
-    oldPrice: 1299000,
-    duration: '32 giờ',
-    lessons: 120,
-    author: 'Lê Khánh Đức',
-  },
-  {
-    id: 'c2',
-    title: 'Java Spring Boot thực chiến',
-    description: 'Thiết kế API, bảo mật JWT, làm việc với database, và triển khai production.',
-    thumbnail: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop',
-    category: 'Backend',
-    level: 'Intermediate',
-    rating: 4.7,
-    reviews: 98,
-    price: 949000,
-    oldPrice: 1399000,
-    duration: '28 giờ',
-    lessons: 96,
-    author: 'F Learning Team',
-  },
-  {
-    id: 'c3',
-    title: 'Data Structures & Algorithms chuyên sâu',
-    description: 'Nắm vững DSA để phỏng vấn, luyện LeetCode, tối ưu tư duy giải thuật.',
-    thumbnail: 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop',
-    category: 'CS Fundamentals',
-    level: 'Advanced',
-    rating: 4.9,
-    reviews: 210,
-    price: 1099000,
-    oldPrice: 1699000,
-    duration: '40 giờ',
-    lessons: 150,
-    author: 'F Learning Team',
-  },
-  {
-    id: 'c4',
-    title: 'TypeScript từ A đến Z',
-    description: 'Học TS hiện đại, generic, utility types, narrowing và best practices.',
-    thumbnail: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1200&auto=format&fit=crop',
-    category: 'Frontend',
-    level: 'Beginner',
-    rating: 4.6,
-    reviews: 75,
-    price: 599000,
-    oldPrice: 899000,
-    duration: '18 giờ',
-    lessons: 72,
-    author: 'F Learning Team',
-  },
-  {
-    id: 'c5',
-    title: 'Database Design & SQL thực tiễn',
-    description: 'Chuẩn hóa dữ liệu, quan hệ, chỉ mục, transaction và tối ưu truy vấn.',
-    thumbnail: 'https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=1200&auto=format&fit=crop',
-    category: 'Database',
-    level: 'Intermediate',
-    rating: 4.5,
-    reviews: 63,
-    price: 649000,
-    duration: '22 giờ',
-    lessons: 88,
-    author: 'F Learning Team',
-  },
-  {
-    id: 'c6',
-    title: 'Docker & CI/CD cho Developer',
-    description: 'Container hóa, compose, pipeline CI/CD, deploy hiệu quả.',
-    thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop',
-    category: 'DevOps',
-    level: 'Intermediate',
-    rating: 4.7,
-    reviews: 82,
-    price: 799000,
-    duration: '20 giờ',
-    lessons: 64,
-    author: 'F Learning Team',
-  },
-];
+import { courseApi } from '@/services/course.service';
+import { CourseDetailResponse } from '@/types/course';
 
 export default function CoursesPage() {
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [level, setLevel] = useState<'ALL' | 'Beginner' | 'Intermediate' | 'Advanced'>('ALL');
+  const [level, setLevel] = useState<'ALL' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'>('ALL');
   const [category, setCategory] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'popular' | 'new' | 'rating' | 'price-asc' | 'price-desc'>('popular');
 
   const [page, setPage] = useState(1);
   const [size] = useState(9);
   const [totalPages, setTotalPages] = useState(1);
-  const [visible, setVisible] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchText.trim()), 350);
@@ -118,43 +29,109 @@ export default function CoursesPage() {
 
   const categories = useMemo(() => {
     const set = new Set<string>(['ALL']);
-    MOCK_COURSES.forEach((c) => set.add(c.category));
+    if (Array.isArray(courses)) {
+      courses.forEach((c) => {
+        if (c.title.toLowerCase().includes('react') || c.title.toLowerCase().includes('frontend')) {
+          set.add('Frontend');
+        } else if (c.title.toLowerCase().includes('java') || c.title.toLowerCase().includes('spring') || c.title.toLowerCase().includes('backend')) {
+          set.add('Backend');
+        } else if (c.title.toLowerCase().includes('database') || c.title.toLowerCase().includes('sql')) {
+          set.add('Database');
+        } else if (c.title.toLowerCase().includes('docker') || c.title.toLowerCase().includes('devops')) {
+          set.add('DevOps');
+        } else {
+          set.add('CS Fundamentals');
+        }
+      });
+    }
     return Array.from(set);
-  }, []);
+  }, [courses]);
+
+  const fetchCourses = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError('');
+
+      const response = await courseApi.getCourses(page, size);
+
+      if (response.code === 200 && response.result) {
+        setCourses(response.result.result || []);
+        setTotalPages(response.result.totalPages || 1);
+      } else {
+        throw new Error('Không thể tải danh sách khóa học');
+      }
+    } catch (err) {
+      console.error('Error fetching courses:', err);
+      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi tải khóa học');
+      setCourses([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [page, size]);
 
   useEffect(() => {
-    // client filter/sort/paginate
-    const keyword = (debouncedSearch || '').toLowerCase();
-    let list = [...MOCK_COURSES];
+    fetchCourses();
+  }, [page, fetchCourses]);
 
-    if (level !== 'ALL') list = list.filter((c) => c.level === level);
-    if (category !== 'ALL') list = list.filter((c) => c.category === category);
-    if (keyword) list = list.filter((c) => `${c.title} ${c.description}`.toLowerCase().includes(keyword));
+  const filteredCourses = useMemo(() => {
+    const keyword = (debouncedSearch || '').toLowerCase();
+    let filtered = Array.isArray(courses) ? [...courses] : [];
+
+    if (level !== 'ALL') {
+      filtered = filtered.filter((c) => {
+        const courseLevel = c.level === 'BEGINNER' ? 'Beginner' :
+          c.level === 'INTERMEDIATE' ? 'Intermediate' :
+            c.level === 'ADVANCED' ? 'Advanced' :
+              c.level === 'EXPERT' ? 'Expert' : 'Beginner';
+        return courseLevel === level;
+      });
+    }
+
+    if (category !== 'ALL') {
+      filtered = filtered.filter((c) => {
+        if (category === 'Frontend') {
+          return c.title.toLowerCase().includes('react') || c.title.toLowerCase().includes('frontend');
+        } else if (category === 'Backend') {
+          return c.title.toLowerCase().includes('java') || c.title.toLowerCase().includes('spring') || c.title.toLowerCase().includes('backend');
+        } else if (category === 'Database') {
+          return c.title.toLowerCase().includes('database') || c.title.toLowerCase().includes('sql');
+        } else if (category === 'DevOps') {
+          return c.title.toLowerCase().includes('docker') || c.title.toLowerCase().includes('devops');
+        } else if (category === 'CS Fundamentals') {
+          return c.title.toLowerCase().includes('algorithm') || c.title.toLowerCase().includes('data structure');
+        }
+        return true;
+      });
+    }
+
+    if (keyword) {
+      filtered = filtered.filter((c) =>
+        `${c.title} ${c.description}`.toLowerCase().includes(keyword)
+      );
+    }
 
     switch (sortBy) {
       case 'rating':
-        list.sort((a, b) => b.rating - a.rating);
+        // Since we don't have rating in API, sort by title
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case 'price-asc':
-        list.sort((a, b) => a.price - b.price);
+        filtered.sort((a, b) => a.price - b.price);
         break;
       case 'price-desc':
-        list.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => b.price - a.price);
         break;
       case 'new':
-        list.sort((a, b) => b.reviews - a.reviews);
+        // Sort by creation date if available
+        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
       default:
-        list.sort((a, b) => b.reviews - a.reviews);
+        // Default sort by title
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
     }
 
-    const tp = Math.max(1, Math.ceil(list.length / size));
-    const start = (page - 1) * size;
-    const paged = list.slice(start, start + size);
-
-    setTotalPages(tp);
-    setVisible(paged);
-  }, [debouncedSearch, level, category, sortBy, page, size]);
+    return filtered;
+  }, [courses, debouncedSearch, level, category, sortBy]);
 
   const goTo = (p: number) => setPage(Math.max(1, Math.min(totalPages, p)));
 
@@ -163,21 +140,34 @@ export default function CoursesPage() {
       <Header />
 
       {/* Hero */}
-      <section className="relative min-h-[80vh]">
-        {/* Background Image like Home */}
+      <section className="relative min-h-[70vh] bg-gray-900">
+        {/* Background with code snippets */}
         <div className="absolute inset-0 z-0">
-          <div className="w-full h-full relative overflow-hidden">
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: 'url(/hero-background.jpg)', filter: 'brightness(0.4) contrast(1.1)' }}
-            ></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+          <div className="w-full h-full relative overflow-hidden bg-gray-900">
+            {/* Code snippets overlay */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-20 left-10 text-orange-400 font-mono text-xs">
+                <div>const courses = [</div>
+                <div>&nbsp;&nbsp;&quot;React&quot;, &quot;Next.js&quot;,</div>
+                <div>&nbsp;&nbsp;&quot;TypeScript&quot;, &quot;Node.js&quot;</div>
+                <div>];</div>
+              </div>
+              <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs">
+                <div>function learn() {`{`}</div>
+                <div>&nbsp;&nbsp;return &quot;success&quot;;</div>
+                <div>{`}`}</div>
+              </div>
+              <div className="absolute bottom-40 left-20 text-purple-400 font-mono text-xs">
+                <div>if (dedication) {`{`}</div>
+                <div>&nbsp;&nbsp;masterSkills();</div>
+                <div>{`}`}</div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-white flex items-center min-h-[60vh]">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-white flex items-center min-h-[70vh]">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
             {/* Badge */}
             <div className="inline-block">
@@ -186,7 +176,7 @@ export default function CoursesPage() {
 
             {/* Heading */}
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-              Khóa học <span className="text-emerald-400">chất lượng</span>
+              Khóa học <span className="text-orange-400">chất lượng</span>
             </h1>
 
             {/* Sub text */}
@@ -195,10 +185,10 @@ export default function CoursesPage() {
             </p>
 
             {/* CTA */}
-            <div className="pt-6">
+            <div className="pt-5">
               <Link
                 href="#list"
-                className="inline-flex items-center px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white text-lg font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Khám phá khóa học
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,7 +203,7 @@ export default function CoursesPage() {
       <div id="list" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Search & filters */}
         <div className="relative mb-8">
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-cyan-500/15 blur-xl" />
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/15 via-orange-500/15 to-orange-500/15 blur-xl" />
           <div className="relative bg-white/90 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col lg:flex-row lg:items-center gap-4">
@@ -228,7 +218,7 @@ export default function CoursesPage() {
                     <input
                       type="text"
                       placeholder="Tìm khóa học..."
-                      className="w-full h-12 rounded-full border border-gray-300 pl-11 pr-12 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm focus:shadow-md transition"
+                      className="w-full h-12 rounded-full border border-gray-300 pl-11 pr-12 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-sm focus:shadow-md transition"
                       value={searchText}
                       onChange={(e) => { setSearchText(e.target.value); setPage(1); }}
                     />
@@ -250,17 +240,17 @@ export default function CoursesPage() {
                 {/* selects */}
                 <div className="flex gap-3">
                   <select
-                    className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     value={level}
-                    onChange={(e) => { setLevel(e.target.value as 'ALL' | 'Beginner' | 'Intermediate' | 'Advanced'); setPage(1); }}
+                    onChange={(e) => { setLevel(e.target.value as 'ALL' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'); setPage(1); }}
                   >
-                    {['ALL', 'Beginner', 'Intermediate', 'Advanced'].map((lv) => (
+                    {['ALL', 'Beginner', 'Intermediate', 'Advanced', 'Expert'].map((lv) => (
                       <option key={lv} value={lv}>{lv === 'ALL' ? 'Tất cả level' : lv}</option>
                     ))}
                   </select>
 
                   <select
-                    className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     value={category}
                     onChange={(e) => { setCategory(e.target.value); setPage(1); }}
                   >
@@ -270,7 +260,7 @@ export default function CoursesPage() {
                   </select>
 
                   <select
-                    className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'popular' | 'new' | 'rating' | 'price-asc' | 'price-desc')}
                   >
@@ -291,20 +281,41 @@ export default function CoursesPage() {
                       key={c}
                       type="button"
                       onClick={() => { setCategory(c); setPage(1); }}
-                      className={`px-3 py-1.5 rounded-full border text-sm transition ${category === c ? 'bg-emerald-600 text-white border-emerald-600 shadow' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                      className={`px-3 py-1.5 rounded-full border text-sm transition ${category === c ? 'bg-orange-500 text-white border-orange-500 shadow' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
                     >
                       {c}
                     </button>
                   ))}
                 </div>
-                <div className="text-sm text-gray-500">Hiển thị {visible.length} / {MOCK_COURSES.length} khóa học</div>
+                <div className="text-sm text-gray-500">Hiển thị {filteredCourses.length} / {courses.length} khóa học</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Grid */}
-        {visible.length === 0 ? (
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="text-center py-16">
+            <div className="mx-auto w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-600">Đang tải khóa học...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16">
+            <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Có lỗi xảy ra</h3>
+            <p className="text-gray-500 mb-4">{error}</p>
+            <button
+              onClick={fetchCourses}
+              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors"
+            >
+              Thử lại
+            </button>
+          </div>
+        ) : filteredCourses.length === 0 ? (
           <div className="text-center py-16">
             <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,8 +327,8 @@ export default function CoursesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {visible.map((c) => (
-              <CourseCard key={c.id} course={c} />
+            {filteredCourses.map((course, index) => (
+              <CourseCard key={course.id} course={course} index={index} />
             ))}
           </div>
         )}
@@ -336,7 +347,7 @@ export default function CoursesPage() {
               <button
                 key={i}
                 onClick={() => goTo(i + 1)}
-                className={`px-3 py-2 rounded-lg border ${page === i + 1 ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                className={`px-3 py-2 rounded-lg border ${page === i + 1 ? 'border-orange-500 bg-orange-50 text-orange-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
               >
                 {i + 1}
               </button>

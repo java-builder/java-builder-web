@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useConfirm } from '@/hooks/useConfirm';
 import CreateBlogModal from '@/components/admin/blogs/CreateBlogModal';
 import BlogGrid from '@/components/admin/blogs/BlogGrid';
 import BlogSuccessToast from '@/components/admin/blogs/BlogSuccessToast';
 import BlogPreviewModal from '@/components/admin/blogs/BlogPreviewModal';
-import { Blog, BlogType } from '@/types/blog';
+import { Blog } from '@/types/blog';
+import { blogService } from '@/services/blog.service';
+import { formatApiDateOnly } from '@/utils/dateUtils';
 
 interface BlogStats {
     total: number;
@@ -16,31 +18,7 @@ interface BlogStats {
     archived: number;
 }
 
-// Using shared `Blog` type from `@/types/blog`
-
 type FilterType = 'day' | 'week' | 'month' | 'year';
-
-const StatusBadge = ({ status }: { status: string }) => {
-    const getStatusConfig = (status: string) => {
-        switch (status) {
-            case 'PUBLISHED':
-                return { color: 'bg-green-100 text-green-800', text: 'Đã xuất bản' };
-            case 'DRAFT':
-                return { color: 'bg-yellow-100 text-yellow-800', text: 'Bản nháp' };
-            case 'ARCHIVED':
-                return { color: 'bg-gray-100 text-gray-800', text: 'Lưu trữ' };
-            default:
-                return { color: 'bg-gray-100 text-gray-800', text: status };
-        }
-    };
-
-    const config = getStatusConfig(status);
-    return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
-            {config.text}
-        </span>
-    );
-};
 
 export default function BlogsPage() {
     const [filterType, setFilterType] = useState<FilterType>('month');
@@ -54,68 +32,51 @@ export default function BlogsPage() {
     const [previewBlog, setPreviewBlog] = useState<Blog | null>(null);
     const { confirm } = useConfirm();
 
-    // Mock data - thay thế bằng API call thực tế
-    const [stats] = useState<BlogStats>({
-        total: 156,
-        published: 98,
-        draft: 45,
-        archived: 13
+    // State cho blogs và pagination
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [stats, setStats] = useState<BlogStats>({
+        total: 0,
+        published: 0,
+        draft: 0,
+        archived: 0
+    });
+    const [pagination, setPagination] = useState({
+        page: 1,
+        size: 20,
+        totalElements: 0,
+        totalPages: 0
     });
 
-    const [blogs, setBlogs] = useState<Blog[]>([
-        {
-            id: '1',
-            title: 'Hướng dẫn học React từ cơ bản đến nâng cao',
-            content: 'Nội dung chi tiết về React...',
-            summary: 'Bài viết hướng dẫn toàn diện về React từ những khái niệm cơ bản đến các kỹ thuật nâng cao',
-            blogType: BlogType.TUTORIAL,
-            featuredImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
-            viewCount: 1250,
-            likeCount: 89,
-            author: 'Nguyễn Văn A',
-            status: 'PUBLISHED',
-            publishedAt: '2024-12-15T10:30:00Z',
-            createdAt: '2024-12-15T10:30:00Z',
-            updatedAt: '2024-12-15T10:30:00Z'
-        },
-        {
-            id: '2',
-            title: 'Top 10 thư viện JavaScript hữu ích nhất 2024',
-            content: 'Danh sách các thư viện JavaScript...',
-            summary: 'Khám phá những thư viện JavaScript mới nhất và hữu ích nhất trong năm 2024',
-            blogType: BlogType.REVIEW,
-            featuredImage: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
-            viewCount: 890,
-            likeCount: 67,
-            author: 'Trần Thị B',
-            status: 'PUBLISHED',
-            publishedAt: '2024-12-10T14:20:00Z',
-            createdAt: '2024-12-10T14:20:00Z',
-            updatedAt: '2024-12-10T14:20:00Z'
-        },
-        {
-            id: '3',
-            title: 'Tối ưu hóa hiệu suất ứng dụng Next.js',
-            content: 'Các kỹ thuật tối ưu hóa...',
-            summary: 'Những mẹo và kỹ thuật để cải thiện hiệu suất ứng dụng Next.js',
-            blogType: BlogType.TIPS,
-            viewCount: 0,
-            likeCount: 0,
-            author: 'Lê Văn C',
-            status: 'DRAFT',
-            publishedAt: '2024-12-08T09:15:00Z',
-            createdAt: '2024-12-08T09:15:00Z',
-            updatedAt: '2024-12-08T09:15:00Z'
-        }
-    ]);
-
-    const fetchBlogs = async () => {
+    const fetchBlogs = useCallback(async () => {
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const response = await blogService.getBlogs({
+                page: pagination.page,
+                search: search || undefined
+            });
+
+            setBlogs(response.result);
+            setPagination({
+                page: response.currentPages,
+                size: response.pageSizes,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages
+            });
+
+            const total = response.totalElements;
+            const published = response.result.length;
+            const draft = 0;
+            const archived = 0;
+
+            setStats({ total, published, draft, archived });
+        } catch (error) {
+            console.error('Error fetching blogs:', error);
+            setBlogs([]);
+            setStats({ total: 0, published: 0, draft: 0, archived: 0 });
+        } finally {
             setIsLoading(false);
-        }, 1000);
-    };
+        }
+    }, [pagination.page, search]);
 
     const handleFilterChange = (type: FilterType) => {
         setFilterType(type);
@@ -153,12 +114,14 @@ export default function BlogsPage() {
             async () => {
                 setIsDeleting(id);
                 try {
-                    // Replace with actual API call
-                    // await blogApi.delete(id);
+                    await blogService.deleteBlog(id);
                     console.log('✅ Delete Blog Success');
 
-                    // Remove from local state for demo
-                    setBlogs(blogs.filter(blog => blog.id !== id));
+                    // Refresh the blog list
+                    await fetchBlogs();
+                } catch (error) {
+                    console.error('Error deleting blog:', error);
+                    // You might want to show an error toast here
                 } finally {
                     setIsDeleting('');
                 }
@@ -185,7 +148,7 @@ export default function BlogsPage() {
 
     useEffect(() => {
         fetchBlogs();
-    }, [filterType, selectedYear, search]);
+    }, [filterType, selectedYear, search, fetchBlogs]);
 
     const filteredStats = getFilteredStats();
     const currentYear = new Date().getFullYear();
@@ -205,7 +168,7 @@ export default function BlogsPage() {
                     <div className="mt-4 sm:mt-0">
                         <button
                             onClick={() => setIsCreateModalOpen(true)}
-                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
+                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200"
                         >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -235,7 +198,7 @@ export default function BlogsPage() {
                                         key={filter.key}
                                         onClick={() => handleFilterChange(filter.key as FilterType)}
                                         className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${filterType === filter.key
-                                            ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                                            ? 'bg-orange-100 text-orange-700 border border-orange-200'
                                             : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100'
                                             }`}
                                     >
@@ -253,7 +216,7 @@ export default function BlogsPage() {
                                 <select
                                     value={selectedYear}
                                     onChange={(e) => handleYearChange(Number(e.target.value))}
-                                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                 >
                                     {years.map((year) => (
                                         <option key={year} value={year}>
@@ -275,7 +238,7 @@ export default function BlogsPage() {
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-2 rounded-md transition-colors duration-200 ${viewMode === 'grid'
-                                    ? 'bg-blue-100 text-blue-600'
+                                    ? 'bg-orange-100 text-orange-600'
                                     : 'text-gray-400 hover:text-gray-600'
                                     }`}
                                 title="Xem dạng lưới"
@@ -287,7 +250,7 @@ export default function BlogsPage() {
                             <button
                                 onClick={() => setViewMode('table')}
                                 className={`p-2 rounded-md transition-colors duration-200 ${viewMode === 'table'
-                                    ? 'bg-blue-100 text-blue-600'
+                                    ? 'bg-orange-100 text-orange-600'
                                     : 'text-gray-400 hover:text-gray-600'
                                     }`}
                                 title="Xem dạng bảng"
@@ -301,7 +264,7 @@ export default function BlogsPage() {
                         <button
                             onClick={fetchBlogs}
                             disabled={isLoading}
-                            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                         >
                             <svg className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -316,8 +279,8 @@ export default function BlogsPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                     <div className="flex items-center">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-2 bg-orange-100 rounded-lg">
+                            <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                             </svg>
                         </div>
@@ -378,7 +341,7 @@ export default function BlogsPage() {
                                 placeholder="Tìm kiếm bài viết theo tiêu đề, tác giả..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                                className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200"
                             />
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -392,13 +355,13 @@ export default function BlogsPage() {
 
             {/* Loading overlay */}
             {isLoading && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
                     <div className="flex items-center">
-                        <svg className="animate-spin h-4 w-4 text-blue-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-4 w-4 text-orange-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="text-sm text-blue-700">Đang cập nhật dữ liệu...</span>
+                        <span className="text-sm text-orange-700">Đang cập nhật dữ liệu...</span>
                     </div>
                 </div>
             )}
@@ -465,10 +428,12 @@ export default function BlogsPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{blog.author}</div>
+                                            <div className="text-sm text-gray-900">Admin</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <StatusBadge status={blog.status} />
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                                Đã xuất bản
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm text-gray-900">
@@ -490,13 +455,13 @@ export default function BlogsPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString('vi-VN') : 'Chưa xuất bản'}
+                                            {formatApiDateOnly(blog.createdAt)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div className="flex items-center justify-end space-x-2">
                                                 <Link
                                                     href={`/admin/blogs/${blog.id}/edit`}
-                                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200"
                                                 >
                                                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

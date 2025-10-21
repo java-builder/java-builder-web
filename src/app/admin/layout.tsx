@@ -179,7 +179,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}>
                     <div className="flex flex-col h-full">
                         {/* Logo */}
-                        <div className="relative flex items-center justify-between h-16 px-6 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 flex-shrink-0 overflow-hidden">
+                        <div className="relative flex items-center justify-between h-16 px-6 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 flex-shrink-0 overflow-hidden">
                             {/* Animated background particles */}
                             <div className="absolute inset-0 opacity-20">
                                 <div className="absolute top-2 left-8 w-1 h-1 bg-white rounded-full animate-pulse"></div>
@@ -191,8 +191,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             <Link href="/admin" className="group flex items-center space-x-3 relative z-10 transition-all duration-300 hover:scale-105">
                                 {/* Logo container with enhanced effects */}
                                 <div className="relative">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-white to-blue-50 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:rotate-12 group-hover:shadow-xl">
-                                        <span className="text-blue-600 font-bold text-xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-white to-orange-50 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:rotate-12 group-hover:shadow-xl">
+                                        <span className="text-orange-600 font-bold text-xl bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
                                             F
                                         </span>
                                     </div>
@@ -202,7 +202,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
                                 {/* Text with gradient and animation */}
                                 <div className="flex flex-col">
-                                    <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-blue-100">
+                                    <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-orange-100">
                                         F-Learning
                                     </span>
                                     <div className="h-0.5 bg-gradient-to-r from-white to-transparent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -211,7 +211,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
                             <button
                                 onClick={() => setSidebarOpen(false)}
-                                className="lg:hidden relative z-10 p-2 text-white hover:text-blue-200 hover:bg-white/10 rounded-lg transition-all duration-200 transform hover:scale-110"
+                                className="lg:hidden relative z-10 p-2 text-white hover:text-orange-200 hover:bg-white/10 rounded-lg transition-all duration-200 transform hover:scale-110"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -231,11 +231,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                         key={item.name}
                                         href={item.href}
                                         className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
-                                            ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
+                                            ? 'bg-orange-50 text-orange-700 border-r-2 border-orange-700'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                             }`}
                                     >
-                                        <span className={`mr-3 ${isActive ? 'text-blue-700' : 'text-gray-400'}`}>
+                                        <span className={`mr-3 ${isActive ? 'text-orange-700' : 'text-gray-400'}`}>
                                             {item.icon}
                                         </span>
                                         {item.name}
@@ -247,7 +247,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         {/* User profile - Fixed at bottom */}
                         <div className="p-4 border-t border-gray-200 flex-shrink-0">
                             <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
                                     <span className="text-white font-medium">A</span>
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -290,7 +290,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                         <input
                                             type="text"
                                             placeholder="Tìm kiếm..."
-                                            className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         />
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,7 +301,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                 </div>
 
                                 {/* Notifications */}
-                                <button className="relative p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg">
+                                <button className="relative p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-lg">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                     </svg>

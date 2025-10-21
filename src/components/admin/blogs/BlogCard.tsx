@@ -2,6 +2,7 @@ import { Blog, BlogTypeDisplayNames } from '@/types/blog';
 import Image from 'next/image';
 import BlogTypeIcon from './BlogTypeIcon';
 import MarkdownRenderer from './MarkdownRenderer';
+import { formatApiDate } from '@/utils/dateUtils';
 
 interface BlogCardProps {
     blog: Blog;
@@ -11,38 +12,7 @@ interface BlogCardProps {
     isDeleting?: boolean;
 }
 
-const StatusBadge = ({ status }: { status: string }) => {
-    const getStatusConfig = (status: string) => {
-        switch (status) {
-            case 'PUBLISHED':
-                return { color: 'bg-green-100 text-green-800 border-green-200', text: 'Đã xuất bản' };
-            case 'DRAFT':
-                return { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', text: 'Bản nháp' };
-            case 'ARCHIVED':
-                return { color: 'bg-gray-100 text-gray-800 border-gray-200', text: 'Lưu trữ' };
-            default:
-                return { color: 'bg-gray-100 text-gray-800 border-gray-200', text: status };
-        }
-    };
-
-    const config = getStatusConfig(status);
-    return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${config.color}`}>
-            {config.text}
-        </span>
-    );
-};
-
 export default function BlogCard({ blog, onEdit, onDelete, onPreview, isDeleting }: BlogCardProps) {
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('vi-VN', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden">
@@ -70,9 +40,6 @@ export default function BlogCard({ blog, onEdit, onDelete, onPreview, isDeleting
                             <span className="text-xs font-medium text-blue-600">
                                 {BlogTypeDisplayNames[blog.blogType]}
                             </span>
-                            <div className="flex items-center space-x-2 mt-1">
-                                <StatusBadge status={blog.status} />
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,7 +55,6 @@ export default function BlogCard({ blog, onEdit, onDelete, onPreview, isDeleting
                         <MarkdownRenderer
                             content={blog.summary}
                             className="text-sm text-gray-600"
-                            maxLines={3}
                         />
                     </div>
                 )}
@@ -112,8 +78,7 @@ export default function BlogCard({ blog, onEdit, onDelete, onPreview, isDeleting
 
                 {/* Meta */}
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                    <span>Tác giả: {blog.author}</span>
-                    <span>{formatDate(blog.createdAt)}</span>
+                    <span>Tạo lúc: {formatApiDate(blog.createdAt)}</span>
                 </div>
 
                 {/* Actions */}

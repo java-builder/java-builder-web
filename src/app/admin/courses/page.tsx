@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useConfirm } from '@/hooks/useConfirm';
+import CreateCourseModal from '@/components/admin/courses/CreateCourseModal';
+import { courseApi } from '@/services/course.service';
+import { CourseDetailResponse, CourseLevel } from '@/types/course';
 
 interface CourseStats {
     total: number;
@@ -13,74 +17,22 @@ interface CourseStats {
     totalRevenue: number;
 }
 
-interface Course {
-    id: string;
-    title: string;
-    description: string;
-    instructor: string;
-    category: string;
-    level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
-    status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
-    price: number;
-    originalPrice?: number;
-    duration: string;
-    lessons: number;
-    students: number;
-    rating: number;
-    reviews: number;
-    thumbnail: string;
-    createdAt: string;
-    updatedAt: string;
-}
+// Using CourseDetailResponse from types
 
-const StatusBadge = ({ status }: { status: string }) => {
-    const getStatusConfig = (status: string) => {
-        switch (status) {
-            case 'PUBLISHED':
-                return {
-                    color: 'bg-green-100 text-green-800',
-                    text: 'Đã xuất bản'
-                };
-            case 'DRAFT':
-                return {
-                    color: 'bg-yellow-100 text-yellow-800',
-                    text: 'Bản nháp'
-                };
-            case 'ARCHIVED':
-                return {
-                    color: 'bg-gray-100 text-gray-800',
-                    text: 'Lưu trữ'
-                };
-            default:
-                return {
-                    color: 'bg-gray-100 text-gray-800',
-                    text: status
-                };
-        }
-    };
-
-    const config = getStatusConfig(status);
-    return (
-        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
-            {config.text}
-        </span>
-    );
-};
-
-const LevelBadge = ({ level }: { level: string }) => {
-    const getLevelConfig = (level: string) => {
+const LevelBadge = ({ level }: { level: CourseLevel }) => {
+    const getLevelConfig = (level: CourseLevel) => {
         switch (level) {
-            case 'BEGINNER':
+            case CourseLevel.BEGINNER:
                 return {
-                    color: 'bg-blue-100 text-blue-800',
+                    color: 'bg-orange-100 text-orange-800',
                     text: 'Cơ bản'
                 };
-            case 'INTERMEDIATE':
+            case CourseLevel.INTERMEDIATE:
                 return {
                     color: 'bg-orange-100 text-orange-800',
                     text: 'Trung cấp'
                 };
-            case 'ADVANCED':
+            case CourseLevel.ADVANCED:
                 return {
                     color: 'bg-purple-100 text-purple-800',
                     text: 'Nâng cao'
@@ -108,85 +60,39 @@ export default function CoursesPage() {
     const [levelFilter, setLevelFilter] = useState('all');
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState<string>('');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
+    const [error, setError] = useState<string>('');
     const { confirm } = useConfirm();
 
-    // Mock data - thay thế bằng API call thực tế
-    const [stats] = useState<CourseStats>({
-        total: 48,
-        published: 32,
-        draft: 12,
-        archived: 4,
-        totalStudents: 2847,
-        totalRevenue: 125600000
+    // Mock stats - có thể thay thế bằng API call thực tế sau
+    const [stats, setStats] = useState<CourseStats>({
+        total: 0,
+        published: 0,
+        draft: 0,
+        archived: 0,
+        totalStudents: 0,
+        totalRevenue: 0
     });
-
-    const [courses, setCourses] = useState<Course[]>([
-        {
-            id: '1',
-            title: 'React & Next.js - Từ Zero đến Hero',
-            description: 'Khóa học toàn diện về React và Next.js với các dự án thực tế',
-            instructor: 'Nguyễn Văn A',
-            category: 'Frontend Development',
-            level: 'INTERMEDIATE',
-            status: 'PUBLISHED',
-            price: 1299000,
-            originalPrice: 1999000,
-            duration: '24 giờ',
-            lessons: 156,
-            students: 1247,
-            rating: 4.8,
-            reviews: 324,
-            thumbnail: '/api/placeholder/300/200',
-            createdAt: '2024-01-15T10:30:00Z',
-            updatedAt: '2024-12-10T14:20:00Z'
-        },
-        {
-            id: '2',
-            title: 'Node.js & Express API Development',
-            description: 'Xây dựng RESTful API chuyên nghiệp với Node.js và Express',
-            instructor: 'Trần Thị B',
-            category: 'Backend Development',
-            level: 'ADVANCED',
-            status: 'PUBLISHED',
-            price: 1599000,
-            originalPrice: 2299000,
-            duration: '32 giờ',
-            lessons: 198,
-            students: 892,
-            rating: 4.9,
-            reviews: 267,
-            thumbnail: '/api/placeholder/300/200',
-            createdAt: '2024-02-20T09:15:00Z',
-            updatedAt: '2024-12-08T16:45:00Z'
-        },
-        {
-            id: '3',
-            title: 'UI/UX Design với Figma',
-            description: 'Thiết kế giao diện người dùng chuyên nghiệp từ cơ bản đến nâng cao',
-            instructor: 'Lê Văn C',
-            category: 'Design',
-            level: 'BEGINNER',
-            status: 'DRAFT',
-            price: 999000,
-            duration: '18 giờ',
-            lessons: 89,
-            students: 0,
-            rating: 0,
-            reviews: 0,
-            thumbnail: '/api/placeholder/300/200',
-            createdAt: '2024-11-01T14:30:00Z',
-            updatedAt: '2024-12-15T10:20:00Z'
-        }
-    ]);
 
     const categories = ['Frontend Development', 'Backend Development', 'Mobile Development', 'Design', 'DevOps', 'Data Science'];
 
     const fetchCourses = async () => {
-        setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            setIsLoading(true);
+            setError('');
+            const result = await courseApi.getCourses(1, 20);
+            setCourses(result.result?.result || []);
+            setStats(prev => ({
+                ...prev,
+                total: result.result?.totalElements || 0
+            }));
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra khi tải dữ liệu';
+            setError(errorMessage);
+        } finally {
             setIsLoading(false);
-        }, 1000);
+        }
     };
 
     const handleDelete = async (id: string, title: string) => {
@@ -194,11 +100,7 @@ export default function CoursesPage() {
             async () => {
                 setIsDeleting(id);
                 try {
-                    // Replace with actual API call
-                    // await courseApi.delete(id);
-                    console.log('✅ Delete Course Success');
 
-                    // Remove from local state for demo
                     setCourses(courses.filter(course => course.id !== id));
                 } finally {
                     setIsDeleting('');
@@ -240,12 +142,39 @@ export default function CoursesPage() {
         return formatPrice(revenue);
     };
 
+    const formatDate = (dateString: string) => {
+        try {
+            const [datePart, timePart] = dateString.split(' ');
+            const [day, month, year] = datePart.split('-');
+            const [hour, minute, second] = timePart.split(':');
+
+            const date = new Date(
+                parseInt(year),
+                parseInt(month) - 1,
+                parseInt(day),
+                parseInt(hour),
+                parseInt(minute),
+                parseInt(second)
+            );
+
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch {
+            return dateString;
+        }
+    };
+
     useEffect(() => {
         fetchCourses();
     }, [search, categoryFilter, statusFilter, levelFilter]);
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
             {/* Header */}
             <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -258,15 +187,15 @@ export default function CoursesPage() {
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
-                        <Link
-                            href="/admin/courses/new"
-                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                        <button
+                            onClick={() => setIsCreateModalOpen(true)}
+                            className="inline-flex items-center px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200"
                         >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
                             Tạo khóa học mới
-                        </Link>
+                        </button>
                         <button
                             onClick={fetchCourses}
                             disabled={isLoading}
@@ -343,10 +272,10 @@ export default function CoursesPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600 mb-1">Học viên</p>
-                            <p className="text-2xl font-bold text-blue-600">{stats.totalStudents.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-orange-600">{stats.totalStudents.toLocaleString()}</p>
                         </div>
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-2 bg-orange-50 rounded-lg">
+                            <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                             </svg>
                         </div>
@@ -427,6 +356,18 @@ export default function CoursesPage() {
                 </div>
             </div>
 
+            {/* Error State */}
+            {error && !isLoading && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div className="flex items-center">
+                        <svg className="w-5 h-5 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm text-red-700 font-medium">{error}</span>
+                    </div>
+                </div>
+            )}
+
             {/* Loading */}
             {isLoading && (
                 <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-4">
@@ -446,64 +387,47 @@ export default function CoursesPage() {
                     <div key={course.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
                         {/* Thumbnail */}
                         <div className="relative h-48 bg-gray-200 overflow-hidden">
+                            {course.courseCover ? (
+                                <Image
+                                    src={course.courseCover}
+                                    alt={course.title}
+                                    width={400}
+                                    height={192}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                                    <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </div>
+                            )}
                             <div className="absolute inset-0 bg-black/20"></div>
                             <div className="absolute top-4 left-4 flex gap-2">
-                                <StatusBadge status={course.status} />
-                                <LevelBadge level={course.level} />
-                            </div>
-                            <div className="absolute top-4 right-4">
-                                {course.originalPrice && (
-                                    <div className="bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-bold">
-                                        -{Math.round((1 - course.price / course.originalPrice) * 100)}%
-                                    </div>
-                                )}
+                                <LevelBadge level={course.level || CourseLevel.BEGINNER} />
                             </div>
                             <div className="absolute bottom-4 left-4 right-4">
                                 <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">
                                     {course.title}
                                 </h3>
-                                <p className="text-gray-200 text-sm">
-                                    {course.instructor}
-                                </p>
                             </div>
                         </div>
 
                         {/* Content */}
                         <div className="p-6">
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-md">
-                                    {course.category}
-                                </span>
-                                <div className="flex items-center text-yellow-500">
-                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <span className="text-sm font-medium text-gray-700">
-                                        {course.rating > 0 ? course.rating : 'N/A'}
-                                    </span>
-                                    <span className="text-xs text-gray-500 ml-1">
-                                        ({course.reviews})
-                                    </span>
-                                </div>
-                            </div>
-
                             <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                                 {course.description}
                             </p>
 
                             {/* Stats */}
-                            <div className="grid grid-cols-3 gap-4 mb-4 text-center">
+                            <div className="grid grid-cols-2 gap-4 mb-4 text-center">
                                 <div className="bg-gray-50 rounded-lg p-2">
                                     <div className="text-gray-600 text-xs font-medium">Thời lượng</div>
-                                    <div className="text-gray-900 font-bold text-sm">{course.duration}</div>
+                                    <div className="text-gray-900 font-bold text-sm">{course.duration || 0} giờ</div>
                                 </div>
                                 <div className="bg-gray-50 rounded-lg p-2">
-                                    <div className="text-gray-600 text-xs font-medium">Bài học</div>
-                                    <div className="text-gray-900 font-bold text-sm">{course.lessons}</div>
-                                </div>
-                                <div className="bg-gray-50 rounded-lg p-2">
-                                    <div className="text-gray-600 text-xs font-medium">Học viên</div>
-                                    <div className="text-gray-900 font-bold text-sm">{course.students.toLocaleString()}</div>
+                                    <div className="text-gray-600 text-xs font-medium">Ngày tạo</div>
+                                    <div className="text-gray-900 font-bold text-sm">{formatDate(course.createdAt)}</div>
                                 </div>
                             </div>
 
@@ -513,11 +437,6 @@ export default function CoursesPage() {
                                     <span className="text-2xl font-bold text-gray-900">
                                         {formatPrice(course.price)}
                                     </span>
-                                    {course.originalPrice && (
-                                        <span className="text-sm text-gray-500 line-through">
-                                            {formatPrice(course.originalPrice)}
-                                        </span>
-                                    )}
                                 </div>
                             </div>
 
@@ -525,7 +444,7 @@ export default function CoursesPage() {
                             <div className="flex gap-2">
                                 <Link
                                     href={`/admin/courses/${course.id}/edit`}
-                                    className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                                    className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200"
                                 >
                                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -564,14 +483,24 @@ export default function CoursesPage() {
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có khóa học nào</h3>
                     <p className="text-gray-500 mb-6">Bắt đầu tạo khóa học đầu tiên của bạn</p>
-                    <Link
-                        href="/admin/courses/new"
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                    <button
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200"
                     >
                         Tạo khóa học mới
-                    </Link>
+                    </button>
                 </div>
             )}
+
+            {/* Create Course Modal */}
+            <CreateCourseModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSuccess={() => {
+                    // Refresh courses list after successful creation
+                    fetchCourses();
+                }}
+            />
         </div>
     );
 }

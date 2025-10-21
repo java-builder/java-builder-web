@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
   images: {
     remotePatterns: [
       {
@@ -25,6 +24,18 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '**.facebook.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'f-learning.s3.ap-southeast-1.amazonaws.com',
         port: '',
         pathname: '/**',
       }

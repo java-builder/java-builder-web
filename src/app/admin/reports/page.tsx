@@ -234,7 +234,7 @@ export default function ReportsPage() {
                         <select
                             value={timeRange}
                             onChange={(e) => setTimeRange(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm bg-white"
                         >
                             <option value="7days">7 ngày qua</option>
                             <option value="30days">30 ngày qua</option>
@@ -249,7 +249,7 @@ export default function ReportsPage() {
                         <button
                             onClick={fetchReports}
                             disabled={isLoading}
-                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50"
+                            className="inline-flex items-center px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50"
                         >
                             <svg className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -262,13 +262,13 @@ export default function ReportsPage() {
 
             {/* Loading */}
             {isLoading && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+                <div className="bg-gradient-to-r from-orange-50 to-orange-50 border border-orange-200 rounded-xl p-4">
                     <div className="flex items-center">
-                        <svg className="animate-spin h-5 w-5 text-blue-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-5 w-5 text-orange-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="text-sm text-blue-700 font-medium">Đang tải báo cáo...</span>
+                        <span className="text-sm text-orange-700 font-medium">Đang tải báo cáo...</span>
                     </div>
                 </div>
             )}
@@ -302,15 +302,15 @@ export default function ReportsPage() {
                             <p className="text-sm font-medium text-gray-600 mb-1">Tổng người dùng</p>
                             <p className="text-2xl font-bold text-gray-900">{stats.totalUsers.toLocaleString()}</p>
                             <div className="flex items-center mt-2">
-                                <svg className="w-4 h-4 text-blue-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 text-orange-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                                 </svg>
-                                <span className="text-sm font-medium text-blue-600">+{stats.userGrowth}%</span>
+                                <span className="text-sm font-medium text-orange-600">+{stats.userGrowth}%</span>
                                 <span className="text-sm text-gray-500 ml-1">so với kỳ trước</span>
                             </div>
                         </div>
-                        <div className="p-3 bg-blue-100 rounded-lg">
-                            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-3 bg-orange-100 rounded-lg">
+                            <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                             </svg>
                         </div>
@@ -369,8 +369,8 @@ export default function ReportsPage() {
                             <h3 className="text-lg font-semibold text-gray-900">Doanh thu theo thời gian</h3>
                             <p className="text-sm text-gray-600">Biểu đồ doanh thu trong {timeRange === '7days' ? '7 ngày' : timeRange === '30days' ? '30 ngày' : timeRange === '3months' ? '3 tháng' : timeRange === '6months' ? '6 tháng' : '1 năm'} qua</p>
                         </div>
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-2 bg-orange-100 rounded-lg">
+                            <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             </svg>
                         </div>
@@ -443,7 +443,7 @@ export default function ReportsPage() {
                         ].map((course, index) => (
                             <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                                 <div className="flex items-center space-x-4">
-                                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-600 rounded-full font-bold text-sm">
+                                    <div className="flex items-center justify-center w-8 h-8 bg-orange-100 text-orange-600 rounded-full font-bold text-sm">
                                         {index + 1}
                                     </div>
                                     <div>
@@ -495,7 +495,7 @@ export default function ReportsPage() {
                             description: 'Thống kê và phân tích người dùng',
                             href: '/admin/reports/users',
                             icon: '👥',
-                            color: 'bg-blue-50 border-blue-200 hover:bg-blue-100'
+                            color: 'bg-orange-50 border-orange-200 hover:bg-orange-100'
                         },
                         {
                             name: 'Báo cáo Khóa học',

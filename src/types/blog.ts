@@ -47,9 +47,6 @@ export interface Blog {
     featuredImage?: string;
     viewCount: number;
     likeCount: number;
-    author: string;
-    status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
-    publishedAt?: string;
+    author?: string;
     createdAt: string;
-    updatedAt: string;
 }

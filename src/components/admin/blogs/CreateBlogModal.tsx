@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { BlogType, BlogTypeDisplayNames, CreateBlogRequest } from '@/types/blog';
 import { blogService } from '@/services/blog.service';
-import TinyMCEEditor from './TinyMCEEditor';
+import MarkdownEditor from './MarkdownEditor';
 
 interface CreateBlogModalProps {
     isOpen: boolean;
@@ -103,10 +103,12 @@ export default function CreateBlogModal({ isOpen, onClose, onSuccess }: CreateBl
             }
 
             // Tạo blog với dữ liệu đã có URL ảnh
-            await blogService.createBlog(finalFormData);
+            const result = await blogService.createBlog(finalFormData);
+            console.log('✅ Create Blog Success:', result);
             onSuccess();
             handleClose();
         } catch (error: unknown) {
+            console.error('Error creating blog:', error);
             setErrors(prev => ({
                 ...prev,
                 submit: (error as Error)?.message || 'Có lỗi xảy ra khi tạo bài viết'
@@ -147,7 +149,7 @@ export default function CreateBlogModal({ isOpen, onClose, onSuccess }: CreateBl
                 />
 
                 {/* Modal */}
-                <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl">
+                <div className="relative w-full max-w-7xl bg-white rounded-2xl shadow-2xl">
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-200">
                         <div>
@@ -166,11 +168,11 @@ export default function CreateBlogModal({ isOpen, onClose, onSuccess }: CreateBl
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="p-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {/* Left Column - Main Content */}
-                            <div className="lg:col-span-2 space-y-6">
+                        <div className="space-y-6">
+                            {/* Top Row - Title and Blog Type */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Title */}
-                                <div>
+                                <div className="lg:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Tiêu đề bài viết <span className="text-red-500">*</span>
                                     </label>
@@ -187,37 +189,6 @@ export default function CreateBlogModal({ isOpen, onClose, onSuccess }: CreateBl
                                     )}
                                 </div>
 
-                                {/* Summary */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Tóm tắt
-                                    </label>
-                                    <textarea
-                                        value={formData.summary}
-                                        onChange={(e) => handleInputChange('summary', e.target.value)}
-                                        placeholder="Viết tóm tắt ngắn gọn về nội dung bài viết..."
-                                        rows={3}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
-                                    />
-                                </div>
-
-                                {/* Content */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Nội dung bài viết <span className="text-red-500">*</span>
-                                    </label>
-                                    <TinyMCEEditor
-                                        value={formData.content}
-                                        onChange={(value) => handleInputChange('content', value)}
-                                        placeholder="Viết nội dung chi tiết của bài viết..."
-                                        error={errors.content}
-                                        height={350}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Right Column - Settings */}
-                            <div className="space-y-6">
                                 {/* Blog Type */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -239,97 +210,125 @@ export default function CreateBlogModal({ isOpen, onClose, onSuccess }: CreateBl
                                         <p className="mt-1 text-sm text-red-600">{errors.blogType}</p>
                                     )}
                                 </div>
+                            </div>
 
-                                {/* Featured Image */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Ảnh đại diện
-                                    </label>
+                            {/* Summary */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Tóm tắt
+                                </label>
+                                <textarea
+                                    value={formData.summary}
+                                    onChange={(e) => handleInputChange('summary', e.target.value)}
+                                    placeholder="Viết tóm tắt ngắn gọn về nội dung bài viết..."
+                                    rows={3}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
+                                />
+                            </div>
 
-                                    {/* Image Preview */}
-                                    {imagePreview && (
-                                        <div className="mb-4 relative w-full h-48">
-                                            <Image
-                                                src={imagePreview}
-                                                alt="Preview"
-                                                fill
-                                                sizes="100vw"
-                                                className="object-cover rounded-lg border border-gray-200"
-                                                unoptimized
-                                            />
-                                        </div>
-                                    )}
+                            {/* Content - Full Width */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Nội dung bài viết <span className="text-red-500">*</span>
+                                </label>
+                                <MarkdownEditor
+                                    value={formData.content}
+                                    onChange={(value) => handleInputChange('content', value)}
+                                    placeholder="Viết nội dung chi tiết của bài viết bằng Markdown..."
+                                    error={errors.content}
+                                    height={500}
+                                />
+                            </div>
 
-                                    {/* Upload Button */}
-                                    <div className="space-y-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => fileInputRef.current?.click()}
-                                            disabled={isUploadingImage || isLoading}
-                                            className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <div className="flex flex-col items-center">
-                                                {isUploadingImage ? (
-                                                    <>
-                                                        <svg className="animate-spin w-8 h-8 text-blue-500 mb-2" fill="none" viewBox="0 0 24 24">
-                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                        </svg>
-                                                        <span className="text-sm text-blue-600">Đang tải ảnh lên...</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <svg className="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                                        </svg>
-                                                        <span className="text-sm text-gray-600">
-                                                            {selectedFile ? 'Thay đổi ảnh' : 'Chọn ảnh đại diện'}
-                                                        </span>
-                                                        <span className="text-xs text-gray-400 mt-1">
-                                                            PNG, JPG, GIF tối đa 5MB
-                                                        </span>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </button>
+                            {/* Featured Image - Full Width */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Ảnh đại diện
+                                </label>
 
-                                        <input
-                                            ref={fileInputRef}
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => {
-                                                const file = e.target.files?.[0];
-                                                if (file) handleImageUpload(file);
-                                            }}
-                                            className="hidden"
+                                {/* Image Preview */}
+                                {imagePreview && (
+                                    <div className="mb-4 relative w-full max-w-md h-64">
+                                        <Image
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            fill
+                                            sizes="100vw"
+                                            className="object-cover rounded-lg border border-gray-200"
+                                            unoptimized
                                         />
                                     </div>
+                                )}
 
-                                    {errors.featuredImage && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.featuredImage}</p>
-                                    )}
+                                {/* Upload Button */}
+                                <div className="max-w-md">
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={isUploadingImage || isLoading}
+                                        className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <div className="flex flex-col items-center">
+                                            {isUploadingImage ? (
+                                                <>
+                                                    <svg className="animate-spin w-8 h-8 text-blue-500 mb-2" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    <span className="text-sm text-blue-600">Đang tải ảnh lên...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <svg className="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                    </svg>
+                                                    <span className="text-sm text-gray-600">
+                                                        {selectedFile ? 'Thay đổi ảnh' : 'Chọn ảnh đại diện'}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400 mt-1">
+                                                        PNG, JPG, GIF tối đa 5MB
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </button>
+
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) handleImageUpload(file);
+                                        }}
+                                        className="hidden"
+                                    />
                                 </div>
 
-                                {/* Blog Type Info */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <div className="flex items-start">
-                                        <svg className="w-5 h-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <div>
-                                            <h4 className="text-sm font-medium text-blue-900 mb-1">
-                                                {BlogTypeDisplayNames[formData.blogType]}
-                                            </h4>
-                                            <p className="text-xs text-blue-700">
-                                                {formData.blogType === BlogType.EXPERIENCE && 'Chia sẻ những trải nghiệm thực tế trong công việc và học tập'}
-                                                {formData.blogType === BlogType.TUTORIAL && 'Hướng dẫn chi tiết từng bước thực hiện'}
-                                                {formData.blogType === BlogType.QUESTION && 'Đặt câu hỏi để nhận được sự hỗ trợ từ cộng đồng'}
-                                                {formData.blogType === BlogType.DISCUSSION && 'Thảo luận về các chủ đề công nghệ và xu hướng'}
-                                                {formData.blogType === BlogType.TIPS && 'Chia sẻ các mẹo và thủ thuật hữu ích'}
-                                                {formData.blogType === BlogType.REVIEW && 'Đánh giá sản phẩm, công cụ, khóa học'}
-                                                {formData.blogType === BlogType.NEWS && 'Cập nhật tin tức mới nhất trong ngành'}
-                                            </p>
-                                        </div>
+                                {errors.featuredImage && (
+                                    <p className="mt-1 text-sm text-red-600">{errors.featuredImage}</p>
+                                )}
+                            </div>
+
+                            {/* Blog Type Info */}
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div className="flex items-start">
+                                    <svg className="w-5 h-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div>
+                                        <h4 className="text-sm font-medium text-blue-900 mb-1">
+                                            {BlogTypeDisplayNames[formData.blogType]}
+                                        </h4>
+                                        <p className="text-xs text-blue-700">
+                                            {formData.blogType === BlogType.EXPERIENCE && 'Chia sẻ những trải nghiệm thực tế trong công việc và học tập'}
+                                            {formData.blogType === BlogType.TUTORIAL && 'Hướng dẫn chi tiết từng bước thực hiện'}
+                                            {formData.blogType === BlogType.QUESTION && 'Đặt câu hỏi để nhận được sự hỗ trợ từ cộng đồng'}
+                                            {formData.blogType === BlogType.DISCUSSION && 'Thảo luận về các chủ đề công nghệ và xu hướng'}
+                                            {formData.blogType === BlogType.TIPS && 'Chia sẻ các mẹo và thủ thuật hữu ích'}
+                                            {formData.blogType === BlogType.REVIEW && 'Đánh giá sản phẩm, công cụ, khóa học'}
+                                            {formData.blogType === BlogType.NEWS && 'Cập nhật tin tức mới nhất trong ngành'}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

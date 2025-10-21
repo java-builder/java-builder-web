@@ -47,7 +47,7 @@ export default function MotionWrapper({
 
   const motionProps =
     mode === 'inView'
-      ? { whileInView: animationConfig.animate, viewport: { once: true, margin: '-50px' } }
+      ? { whileInView: animationConfig.animate, viewport: { once: true, margin: '-30px' } }
       : { animate: animationConfig.animate };
 
   return (

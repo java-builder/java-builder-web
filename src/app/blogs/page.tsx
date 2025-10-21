@@ -8,68 +8,12 @@ import Header from '@/components/Header';
 import MotionWrapper from '@/components/MotionWrapper';
 import Link from 'next/link';
 
-const USE_MOCK = true;
-
-const MOCK_BLOGS: Blog[] = [
-  {
-    id: 'mock-1',
-    title: '10 mẹo học lập trình hiệu quả cho người mới bắt đầu',
-    content: 'Nội dung chi tiết 1',
-    summary:
-      'Tổng hợp 10 mẹo học lập trình hiệu quả: đặt mục tiêu, chia nhỏ vấn đề, luyện tập qua dự án nhỏ, và cách duy trì động lực lâu dài.',
-    blogType: BlogType.TIPS,
-    featuredImage:
-      'https://images.unsplash.com/photo-1526378722484-bd91ca387e72?q=80&w=1200&auto=format&fit=crop',
-    viewCount: 1240,
-    likeCount: 86,
-    author: 'F Learning Team',
-    status: 'PUBLISHED',
-    publishedAt: '2024-05-10T08:00:00.000Z',
-    createdAt: '2024-05-09T08:00:00.000Z',
-    updatedAt: '2024-05-10T08:00:00.000Z',
-  },
-  {
-    id: 'mock-2',
-    title: 'Hướng dẫn dựng dự án Next.js 15 + TailwindCSS từ A đến Z',
-    content: 'Nội dung chi tiết 2',
-    summary:
-      'Bài viết chi tiết cách khởi tạo dự án Next.js 15, cấu hình TailwindCSS 4, tối ưu cấu trúc folder và tổ chức component theo best practices.',
-    blogType: BlogType.TUTORIAL,
-    featuredImage:
-      'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop',
-    viewCount: 980,
-    likeCount: 64,
-    author: 'Lê Khánh Đức',
-    status: 'PUBLISHED',
-    publishedAt: '2024-06-20T09:30:00.000Z',
-    createdAt: '2024-06-19T09:30:00.000Z',
-    updatedAt: '2024-06-20T09:30:00.000Z',
-  },
-  {
-    id: 'mock-3',
-    title: 'Chia sẻ kinh nghiệm tự học Data Structures & Algorithms',
-    content: 'Nội dung chi tiết 3',
-    summary:
-      'Kinh nghiệm thực tế khi tự học DSA: chọn giáo trình, lộ trình luyện LeetCode, và cách cân bằng giữa lý thuyết và thực hành.',
-    blogType: BlogType.EXPERIENCE,
-    featuredImage:
-      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop',
-    viewCount: 1560,
-    likeCount: 112,
-    author: 'F Learning Team',
-    status: 'PUBLISHED',
-    publishedAt: '2024-07-05T10:00:00.000Z',
-    createdAt: '2024-07-04T10:00:00.000Z',
-    updatedAt: '2024-07-05T10:00:00.000Z',
-  },
-];
 
 export default function BlogsPage() {
-  const [blogs, setBlogs] = useState<Blog[]>(USE_MOCK ? MOCK_BLOGS.slice(0, 9) : []);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(9);
-  const [totalPages, setTotalPages] = useState(USE_MOCK ? Math.max(1, Math.ceil(MOCK_BLOGS.length / 9)) : 0);
-  const [totalElements, setTotalElements] = useState(USE_MOCK ? MOCK_BLOGS.length : 0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [blogType, setBlogType] = useState<BlogType | 'ALL'>('ALL');
@@ -83,43 +27,15 @@ export default function BlogsPage() {
 
   const params = useMemo(() => {
     return {
-      page: Math.max(0, page - 1),
-      size,
+      page,
       search: debouncedSearch || undefined,
       blogType: blogType !== 'ALL' ? blogType : undefined,
       status: 'PUBLISHED',
     };
-  }, [page, size, debouncedSearch, blogType]);
+  }, [page, debouncedSearch, blogType]);
 
   useEffect(() => {
     let mounted = true;
-
-    if (USE_MOCK) {
-      setIsLoading(true);
-      const timer = setTimeout(() => {
-        if (!mounted) return;
-        const keyword = (debouncedSearch || '').toLowerCase();
-        const filtered = MOCK_BLOGS.filter((b) => {
-          const matchType = blogType === 'ALL' ? true : b.blogType === blogType;
-          const base = `${b.title} ${b.summary ?? ''} ${b.content}`.toLowerCase();
-          const matchText = keyword ? base.includes(keyword) : true;
-          return matchType && matchText;
-        });
-
-        const tp = Math.max(1, Math.ceil(filtered.length / (size || 1)));
-        const start = Math.max(0, (page - 1) * size);
-        const paged = filtered.slice(start, start + size);
-
-        setBlogs(paged);
-        setTotalElements(filtered.length);
-        setTotalPages(tp);
-        setIsLoading(false);
-      }, 250);
-      return () => {
-        mounted = false;
-        clearTimeout(timer);
-      };
-    }
 
     async function fetchData() {
       setIsLoading(true);
@@ -128,18 +44,17 @@ export default function BlogsPage() {
         const data = await blogService.getBlogs(params);
         if (!mounted) return;
 
-        const content: Blog[] = Array.isArray(data?.content)
-          ? data.content
+        const content: Blog[] = Array.isArray(data?.result)
+          ? data.result
           : [];
 
         setBlogs(content);
 
-        const tp = Number.isFinite(data?.totalPages) ? data.totalPages : Math.max(1, Math.ceil((content?.length || 0) / (params.size || size || 1)));
+        const tp = Number.isFinite(data?.totalPages) ? data.totalPages : 1;
         const te = Number.isFinite(data?.totalElements) ? data.totalElements : (content?.length || 0);
 
         setTotalPages(tp);
         setTotalElements(te);
-        setSize(Number.isFinite(data?.size) && data.size > 0 ? data.size : size);
       } catch (e: unknown) {
         if (!mounted) return;
         setError((e as Error)?.message || 'Không thể tải danh sách bài viết');
@@ -154,7 +69,7 @@ export default function BlogsPage() {
     return () => {
       mounted = false;
     };
-  }, [params, blogType, debouncedSearch, page, size]);
+  }, [params, blogType, debouncedSearch, page]);
 
   const blogTypeOptions: Array<{ value: BlogType | 'ALL'; label: string }> = [
     { value: 'ALL', label: 'Tất cả loại bài viết' },
@@ -170,21 +85,34 @@ export default function BlogsPage() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <section className="relative min-h-[80vh]">
-        {/* Background Image like Home */}
+      <section className="relative min-h-[70vh] bg-gray-900">
+        {/* Background with code snippets */}
         <div className="absolute inset-0 z-0">
-          <div className="w-full h-full relative overflow-hidden">
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: 'url(/hero-background.jpg)', filter: 'brightness(0.4) contrast(1.1)' }}
-            ></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+          <div className="w-full h-full relative overflow-hidden bg-gray-900">
+            {/* Code snippets overlay */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-20 left-10 text-orange-400 font-mono text-xs">
+                <div>const blog = {`{`}</div>
+                <div>&nbsp;&nbsp;title: &quot;Learning&quot;,</div>
+                <div>&nbsp;&nbsp;content: &quot;Knowledge&quot;</div>
+                <div>{`}`};</div>
+              </div>
+              <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs">
+                <div>function share() {`{`}</div>
+                <div>&nbsp;&nbsp;return &quot;wisdom&quot;;</div>
+                <div>{`}`}</div>
+              </div>
+              <div className="absolute bottom-40 left-20 text-purple-400 font-mono text-xs">
+                <div>if (learning) {`{`}</div>
+                <div>&nbsp;&nbsp;grow();</div>
+                <div>{`}`}</div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex items-center min-h-[60vh]">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex items-center min-h-[70vh]">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
             <div className="text-white">
               {/* Badge */}
@@ -194,7 +122,7 @@ export default function BlogsPage() {
 
               {/* Heading */}
               <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                Chia sẻ <span className="text-emerald-400">kiến thức</span> eLearning
+                Chia sẻ <span className="text-orange-400">kiến thức</span> eLearning
               </h1>
 
               {/* Sub text */}
@@ -203,10 +131,10 @@ export default function BlogsPage() {
               </p>
 
               {/* CTA */}
-              <div className="pt-6">
+              <div className="pt-5">
                 <Link
                   href="#list"
-                  className="inline-flex items-center px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white text-lg font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Khám phá bài viết
                   <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +157,7 @@ export default function BlogsPage() {
       </section>
       <div id="list" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="relative mb-8">
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-cyan-500/15 blur-xl" />
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/15 via-orange-500/15 to-orange-500/15 blur-xl" />
 
           <div className="relative bg-white/90 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
             <div className="flex flex-col gap-4">
@@ -246,7 +174,7 @@ export default function BlogsPage() {
                       id="blog-search"
                       type="text"
                       placeholder="Tìm theo tiêu đề, nội dung..."
-                      className="w-full h-12 rounded-full border border-gray-300 pl-11 pr-12 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm focus:shadow-md transition"
+                      className="w-full h-12 rounded-full border border-gray-300 pl-11 pr-12 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-sm focus:shadow-md transition"
                       value={searchText}
                       onChange={(e) => {
                         setSearchText(e.target.value);
@@ -276,7 +204,7 @@ export default function BlogsPage() {
                     <label className="sr-only" htmlFor="blog-type">Loại bài viết</label>
                     <select
                       id="blog-type"
-                      className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       value={blogType}
                       onChange={(e) => {
                         setBlogType(e.target.value as BlogType | 'ALL');
@@ -285,23 +213,6 @@ export default function BlogsPage() {
                     >
                       {blogTypeOptions.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="sr-only" htmlFor="page-size">Số bài/trang</label>
-                    <select
-                      id="page-size"
-                      className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                      value={size}
-                      onChange={(e) => {
-                        setSize(Number(e.target.value));
-                        setPage(1);
-                      }}
-                    >
-                      {[6, 9, 12, 18].map((s) => (
-                        <option key={s} value={s}>{s} / trang</option>
                       ))}
                     </select>
                   </div>
@@ -318,7 +229,7 @@ export default function BlogsPage() {
                         key={t}
                         type="button"
                         onClick={() => { setBlogType(t); setPage(1); }}
-                        className={`px-3 py-1.5 rounded-full border text-sm transition ${active ? 'bg-emerald-600 text-white border-emerald-600 shadow' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                        className={`px-3 py-1.5 rounded-full border text-sm transition ${active ? 'bg-orange-500 text-white border-orange-500 shadow' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
                       >
                         {label}
                       </button>
@@ -335,7 +246,7 @@ export default function BlogsPage() {
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: size }).map((_, i) => (
+            {Array.from({ length: 9 }).map((_, i) => (
               <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate-pulse">
                 <div className="aspect-video bg-gray-200" />
                 <div className="p-6 space-y-3">
@@ -381,7 +292,7 @@ export default function BlogsPage() {
                   key={p}
                   onClick={() => goToPage(p)}
                   className={`px-3 py-2 rounded-lg border ${p === page
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    ? 'border-orange-500 bg-orange-50 text-orange-700'
                     : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                     }`}
                   disabled={isLoading}

@@ -4,13 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Blog, BlogTypeDisplayNames } from '@/types/blog';
 import BlogTypeIcon from './BlogTypeIcon';
-import dynamic from 'next/dynamic';
-
-// Import MDEditor.Markdown dynamically để tránh SSR issues
-const MarkdownPreview = dynamic(
-    () => import('@uiw/react-md-editor').then((mod) => mod.default.Markdown),
-    { ssr: false }
-);
+import MarkdownRenderer from './MarkdownRenderer';
+import { formatApiDate } from '@/utils/dateUtils';
 
 interface BlogPreviewModalProps {
     isOpen: boolean;
@@ -27,15 +22,6 @@ export default function BlogPreviewModal({ isOpen, onClose, blog }: BlogPreviewM
 
     if (!isOpen || !blog) return null;
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('vi-VN', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
 
     return (
         <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -57,7 +43,7 @@ export default function BlogPreviewModal({ isOpen, onClose, blog }: BlogPreviewM
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900">Preview Bài viết</h2>
                                 <p className="text-sm text-gray-600">
-                                    {BlogTypeDisplayNames[blog.blogType]} • {formatDate(blog.createdAt)}
+                                    {BlogTypeDisplayNames[blog.blogType]} • {formatApiDate(blog.createdAt)}
                                 </p>
                             </div>
                         </div>
@@ -94,9 +80,13 @@ export default function BlogPreviewModal({ isOpen, onClose, blog }: BlogPreviewM
 
                             {/* Meta */}
                             <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 pb-4 border-b border-gray-200">
-                                <span>Tác giả: {blog.author}</span>
-                                <span>•</span>
-                                <span>{formatDate(blog.createdAt)}</span>
+                                {blog.author && (
+                                    <>
+                                        <span>Tác giả: {blog.author}</span>
+                                        <span>•</span>
+                                    </>
+                                )}
+                                <span>{formatApiDate(blog.createdAt)}</span>
                                 <span>•</span>
                                 <div className="flex items-center space-x-3">
                                     <span className="flex items-center">
@@ -120,12 +110,7 @@ export default function BlogPreviewModal({ isOpen, onClose, blog }: BlogPreviewM
                                 <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
                                     <h3 className="font-medium text-blue-900 mb-2">Tóm tắt</h3>
                                     {mounted ? (
-                                        <div className="prose prose-sm max-w-none text-blue-800">
-                                            <MarkdownPreview
-                                                source={blog.summary}
-                                                style={{ backgroundColor: 'transparent' }}
-                                            />
-                                        </div>
+                                        <MarkdownRenderer content={blog.summary} className="text-blue-800" />
                                     ) : (
                                         <p className="text-blue-800">{blog.summary}</p>
                                     )}
@@ -133,21 +118,16 @@ export default function BlogPreviewModal({ isOpen, onClose, blog }: BlogPreviewM
                             )}
 
                             {/* Content */}
-                            <div className="prose prose-lg max-w-none">
-                                {mounted ? (
-                                    <MarkdownPreview
-                                        source={blog.content}
-                                        style={{ backgroundColor: 'transparent' }}
-                                    />
-                                ) : (
-                                    <div className="animate-pulse space-y-4">
-                                        <div className="h-4 bg-gray-200 rounded w-full"></div>
-                                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                                        <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-                                        <div className="h-32 bg-gray-200 rounded"></div>
-                                    </div>
-                                )}
-                            </div>
+                            {mounted ? (
+                                <MarkdownRenderer content={blog.content} />
+                            ) : (
+                                <div className="animate-pulse space-y-4">
+                                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                                    <div className="h-32 bg-gray-200 rounded"></div>
+                                </div>
+                            )}
                         </article>
                     </div>
 

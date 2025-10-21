@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { authApi } from "@/services/auth.service";
 import { LoginRequest } from "@/types/auth";
 
@@ -15,6 +15,7 @@ export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
+    const [successMessage, setSuccessMessage] = useState<string>("");
 
     const {
         register,
@@ -28,6 +29,15 @@ export default function LoginPage() {
         }
     });
 
+    // Check for success message from registration
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        if (message === 'registration-success') {
+            setSuccessMessage('Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.');
+        }
+    }, []);
+
     const onSubmit = async (data: LoginFormData) => {
         try {
             setIsLoading(true);
@@ -40,36 +50,26 @@ export default function LoginPage() {
 
             if (result.code === 200) {
                 router.push("/");
-            } else {
-                setError(result.message || "Đăng nhập thất bại. Vui lòng thử lại.");
             }
         } catch (err: unknown) {
             console.error("Login error:", err);
-            const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra. Vui lòng thử lại sau.";
-            setError(errorMessage);
+            // Error handling đã được xử lý trong auth service với toast
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center justify-center px-4">
-            {/* Background decorations */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-20 right-20 w-32 h-32 bg-emerald-100 rounded-full blur-xl opacity-40"></div>
-                <div className="absolute bottom-20 left-20 w-24 h-24 bg-blue-100 rounded-full blur-lg opacity-40"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-full blur-3xl opacity-30"></div>
-            </div>
-
-            <div className="w-full max-w-md relative z-10">
-                {/* Compact Card */}
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+            <div className="w-full max-w-md">
+                {/* Login Card */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
                         <div className="flex justify-between items-center mb-6">
                             <Link
                                 href="/"
-                                className="flex items-center space-x-1 text-gray-500 hover:text-emerald-600 transition-colors text-sm"
+                                className="flex items-center space-x-1 text-gray-500 hover:text-orange-500 transition-colors text-sm"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -78,7 +78,7 @@ export default function LoginPage() {
                             </Link>
 
                             <Link href="/" className="inline-flex items-center space-x-2">
-                                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                                     <span className="text-white font-bold text-sm">FL</span>
                                 </div>
                                 <span className="text-lg font-bold text-gray-900">F Learning</span>
@@ -94,6 +94,18 @@ export default function LoginPage() {
                             Đăng nhập để tiếp tục học tập
                         </p>
                     </div>
+
+                    {/* Success Message */}
+                    {successMessage && (
+                        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center">
+                                <svg className="w-4 h-4 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                <p className="text-sm text-green-600">{successMessage}</p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Error Message */}
                     {error && (
@@ -116,7 +128,7 @@ export default function LoginPage() {
                                 autoComplete="email"
                                 disabled={isLoading}
                                 placeholder="Email"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
                                 {...register("email", {
                                     required: "Email là bắt buộc",
                                     pattern: {
@@ -137,7 +149,7 @@ export default function LoginPage() {
                                 autoComplete="current-password"
                                 disabled={isLoading}
                                 placeholder="Mật khẩu"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
                                 {...register("password", {
                                     required: "Mật khẩu là bắt buộc",
                                     minLength: {
@@ -156,7 +168,7 @@ export default function LoginPage() {
                                 <input
                                     type="checkbox"
                                     disabled={isLoading}
-                                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                                    className="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded"
                                     {...register("rememberMe")}
                                 />
                                 <span className="ml-2 text-gray-600">Ghi nhớ</span>
@@ -164,7 +176,7 @@ export default function LoginPage() {
 
                             <Link
                                 href="/forgot-password"
-                                className="text-emerald-600 hover:text-emerald-500 font-medium"
+                                className="text-orange-500 hover:text-orange-400 font-medium"
                             >
                                 Quên mật khẩu?
                             </Link>
@@ -173,7 +185,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={!isValid || isLoading}
-                            className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            className="w-full py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
                         >
                             {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                         </button>
@@ -211,7 +223,7 @@ export default function LoginPage() {
                             Chưa có tài khoản?{" "}
                             <Link
                                 href="/register"
-                                className="font-semibold text-emerald-600 hover:text-emerald-500"
+                                className="font-semibold text-orange-500 hover:text-orange-400"
                             >
                                 Đăng ký ngay
                             </Link>

@@ -12,16 +12,15 @@ export const blogService = {
     // Lấy danh sách blogs
     async getBlogs(params?: {
         page?: number;
-        size?: number;
         search?: string;
         blogType?: string;
         status?: string;
     }): Promise<{
-        content: Blog[];
+        result: Blog[];
         totalElements: number;
         totalPages: number;
-        size: number;
-        number: number;
+        pageSizes: number;
+        currentPages: number;
     }> {
         const response = await apiClient.get('/api/v1/blogs', { params });
         return response.data.result;
@@ -34,8 +33,8 @@ export const blogService = {
     },
 
     // Cập nhật blog
-    async updateBlog(id: string, data: Partial<CreateBlogRequest>): Promise<Blog> {
-        const response = await apiClient.put(`/api/v1/blogs/${id}`, data);
+    async updateBlog(data: { id: string } & Partial<CreateBlogRequest>): Promise<Blog> {
+        const response = await apiClient.put('/api/v1/blogs', data);
         return response.data.result;
     },
 

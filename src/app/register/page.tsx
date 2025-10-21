@@ -3,17 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { userApi } from "@/services/user.service";
+import { CreateUserRequest } from "@/types/user";
 
-interface RegisterFormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
+interface RegisterFormData extends CreateUserRequest {
     confirmPassword: string;
     agreeToTerms: boolean;
 }
 
 export default function RegisterPage() {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
 
@@ -41,39 +41,36 @@ export default function RegisterPage() {
             setIsLoading(true);
             setError("");
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const result = await userApi.create({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                password: data.password
+            });
 
-            console.log("Register data:", data);
-            // Handle registration logic here
-
+            if (result.code === 201) {
+                // Redirect to login page after successful registration
+                router.push("/login?message=registration-success");
+            }
         } catch (err: unknown) {
             console.error("Register error:", err);
-            const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra. Vui lòng thử lại sau.";
-            setError(errorMessage);
+            // Error handling đã được xử lý trong user service với toast
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center justify-center px-4">
-            {/* Background decorations */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-20 right-20 w-32 h-32 bg-emerald-100 rounded-full blur-xl opacity-40"></div>
-                <div className="absolute bottom-20 left-20 w-24 h-24 bg-blue-100 rounded-full blur-lg opacity-40"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-full blur-3xl opacity-30"></div>
-            </div>
-
-            <div className="w-full max-w-md relative z-10">
-                {/* Compact Card */}
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+            <div className="w-full max-w-md">
+                {/* Register Card */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
                     {/* Header */}
                     <div className="text-center mb-6">
                         <div className="flex justify-between items-center mb-4">
                             <Link
                                 href="/"
-                                className="flex items-center space-x-1 text-gray-500 hover:text-emerald-600 transition-colors text-sm"
+                                className="flex items-center space-x-1 text-gray-500 hover:text-orange-500 transition-colors text-sm"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -82,7 +79,7 @@ export default function RegisterPage() {
                             </Link>
 
                             <Link href="/" className="inline-flex items-center space-x-2">
-                                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                                     <span className="text-white font-bold text-sm">FL</span>
                                 </div>
                                 <span className="text-lg font-bold text-gray-900">F Learning</span>
@@ -120,7 +117,7 @@ export default function RegisterPage() {
                                     type="text"
                                     disabled={isLoading}
                                     placeholder="Họ"
-                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                     {...register("firstName", {
                                         required: "Họ là bắt buộc",
                                         minLength: {
@@ -139,7 +136,7 @@ export default function RegisterPage() {
                                     type="text"
                                     disabled={isLoading}
                                     placeholder="Tên"
-                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                     {...register("lastName", {
                                         required: "Tên là bắt buộc",
                                         minLength: {
@@ -161,7 +158,7 @@ export default function RegisterPage() {
                                 autoComplete="email"
                                 disabled={isLoading}
                                 placeholder="Email"
-                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                 {...register("email", {
                                     required: "Email là bắt buộc",
                                     pattern: {
@@ -182,7 +179,7 @@ export default function RegisterPage() {
                                 autoComplete="new-password"
                                 disabled={isLoading}
                                 placeholder="Mật khẩu"
-                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                 {...register("password", {
                                     required: "Mật khẩu là bắt buộc",
                                     minLength: {
@@ -203,7 +200,7 @@ export default function RegisterPage() {
                                 autoComplete="new-password"
                                 disabled={isLoading}
                                 placeholder="Xác nhận mật khẩu"
-                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                 {...register("confirmPassword", {
                                     required: "Vui lòng xác nhận mật khẩu",
                                     validate: value => value === password || "Mật khẩu không khớp"
@@ -219,14 +216,14 @@ export default function RegisterPage() {
                                 id="agreeToTerms"
                                 type="checkbox"
                                 disabled={isLoading}
-                                className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded mt-0.5"
+                                className="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded mt-0.5"
                                 {...register("agreeToTerms", {
                                     required: "Bạn phải đồng ý với điều khoản sử dụng"
                                 })}
                             />
                             <label htmlFor="agreeToTerms" className="ml-2 text-xs text-gray-600 leading-tight">
                                 Tôi đồng ý với{" "}
-                                <Link href="/terms" className="text-emerald-600 hover:text-emerald-500 font-medium">
+                                <Link href="/terms" className="text-orange-500 hover:text-orange-400 font-medium">
                                     Điều khoản sử dụng
                                 </Link>
                             </label>
@@ -238,7 +235,7 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={!isValid || isLoading}
-                            className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
+                            className="w-full py-2.5 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
                         >
                             {isLoading ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
                         </button>
@@ -276,7 +273,7 @@ export default function RegisterPage() {
                             Đã có tài khoản?{" "}
                             <Link
                                 href="/login"
-                                className="font-semibold text-emerald-600 hover:text-emerald-500"
+                                className="font-semibold text-orange-500 hover:text-orange-400"
                             >
                                 Đăng nhập ngay
                             </Link>
