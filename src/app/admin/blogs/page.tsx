@@ -115,13 +115,10 @@ export default function BlogsPage() {
                 setIsDeleting(id);
                 try {
                     await blogService.deleteBlog(id);
-                    console.log('✅ Delete Blog Success');
 
-                    // Refresh the blog list
                     await fetchBlogs();
                 } catch (error) {
                     console.error('Error deleting blog:', error);
-                    // You might want to show an error toast here
                 } finally {
                     setIsDeleting('');
                 }
