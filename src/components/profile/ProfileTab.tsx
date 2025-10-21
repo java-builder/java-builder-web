@@ -52,7 +52,6 @@ export default function ProfileTab({ user, isSaving }: ProfileTabProps) {
                 </div>
             </div>
 
-            {/* Content */}
             <div className="px-8 py-8">
                 <div className="max-w-2xl">
                     <form onSubmit={handleSubmit} className="space-y-6">
