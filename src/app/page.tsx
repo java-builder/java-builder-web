@@ -40,7 +40,7 @@ export default function Home() {
     try {
       setIsLoadingBlogs(true);
       setBlogError('');
-      const result = await blogService.getBlogs({ page: 1, status: 'PUBLISHED' });
+      const result = await blogService.getBlogs({ page: 1, size: 3 });
       setBlogs(result.result.slice(0, 3));
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra khi tải blogs';

@@ -52,7 +52,7 @@ export default function BlogsPage() {
         try {
             const response = await blogService.getBlogs({
                 page: pagination.page,
-                search: search || undefined
+                titleOrSummary: search || undefined
             });
 
             setBlogs(response.result);

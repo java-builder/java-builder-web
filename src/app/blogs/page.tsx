@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { blogService } from '@/services/blog.service';
 import { Blog, BlogType, BlogTypeDisplayNames } from '@/types/blog';
 import PublicBlogCard from '@/components/blogs/PublicBlogCard';
@@ -16,66 +16,69 @@ export default function BlogsPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [searchText, setSearchText] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [currentSearch, setCurrentSearch] = useState('');
   const [blogType, setBlogType] = useState<BlogType | 'ALL'>('ALL');
   const [isLoading, setIsLoading] = useState(false);
   const [, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(searchText.trim()), 400);
-    return () => clearTimeout(t);
-  }, [searchText]);
+  const handleSearch = () => {
+    const trimmed = searchText.trim();
+    setCurrentSearch(trimmed);
+    setPage(1);
+  };
 
   const params = useMemo(() => {
-    return {
+    const paramObj: {
+      page: number;
+      size: number;
+      titleOrSummary?: string;
+      blogType?: string;
+    } = {
       page,
-      search: debouncedSearch || undefined,
-      blogType: blogType !== 'ALL' ? blogType : undefined,
-      status: 'PUBLISHED',
+      size: 20,
     };
-  }, [page, debouncedSearch, blogType]);
+
+    if (currentSearch && currentSearch.trim().length > 0) {
+      paramObj.titleOrSummary = currentSearch.trim();
+    }
+
+    if (blogType !== 'ALL') {
+      paramObj.blogType = blogType;
+    }
+
+    return paramObj;
+  }, [page, currentSearch, blogType]);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await blogService.getBlogs(params);
+
+      const content: Blog[] = Array.isArray(data?.result)
+        ? data.result
+        : [];
+
+      setBlogs(content);
+
+      const tp = Number.isFinite(data?.totalPages) ? data.totalPages : 1;
+      const te = Number.isFinite(data?.totalElements) ? data.totalElements : (content?.length || 0);
+
+      setTotalPages(tp);
+      setTotalElements(te);
+    } catch (e: unknown) {
+      setError((e as Error)?.message || 'Không thể tải danh sách bài viết');
+      setBlogs([]);
+      setTotalPages(0);
+      setTotalElements(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [params]);
 
   useEffect(() => {
-    let mounted = true;
-
-    async function fetchData() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const data = await blogService.getBlogs(params);
-        if (!mounted) return;
-
-        const content: Blog[] = Array.isArray(data?.result)
-          ? data.result
-          : [];
-
-        setBlogs(content);
-
-        const tp = Number.isFinite(data?.totalPages) ? data.totalPages : 1;
-        const te = Number.isFinite(data?.totalElements) ? data.totalElements : (content?.length || 0);
-
-        setTotalPages(tp);
-        setTotalElements(te);
-      } catch (e: unknown) {
-        if (!mounted) return;
-        setError((e as Error)?.message || 'Không thể tải danh sách bài viết');
-        setBlogs([]);
-        setTotalPages(0);
-        setTotalElements(0);
-      } finally {
-        if (mounted) setIsLoading(false);
-      }
-    }
     fetchData();
-    return () => {
-      mounted = false;
-    };
-  }, [params, blogType, debouncedSearch, page]);
-
-  const blogTypeOptions: Array<{ value: BlogType | 'ALL'; label: string }> = [
-    { value: 'ALL', label: 'Tất cả loại bài viết' },
-    ...Object.values(BlogType).map((bt) => ({ value: bt, label: BlogTypeDisplayNames[bt] })),
-  ];
+  }, [fetchData]);
 
   const goToPage = (p: number) => {
     const clamped = Math.max(1, Math.min(totalPages || 1, p));
@@ -163,60 +166,38 @@ export default function BlogsPage() {
           <div className="relative bg-white/90 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                <div className="flex-1">
-                  <label className="sr-only" htmlFor="blog-search">Tìm kiếm</label>
-                  <div className="relative">
+                <div className="flex-1 flex gap-2">
+                  <div className="flex-1 relative">
+                    <label className="sr-only" htmlFor="blog-search">Tìm kiếm</label>
+                    <input
+                      id="blog-search"
+                      type="text"
+                      placeholder="Tìm theo tiêu đề, nội dung..."
+                      className="w-full h-12 rounded-lg border border-gray-300 pl-11 pr-4 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-sm focus:shadow-md transition"
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSearch();
+                        }
+                      }}
+                    />
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
                     </span>
-                    <input
-                      id="blog-search"
-                      type="text"
-                      placeholder="Tìm theo tiêu đề, nội dung..."
-                      className="w-full h-12 rounded-full border border-gray-300 pl-11 pr-12 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-sm focus:shadow-md transition"
-                      value={searchText}
-                      onChange={(e) => {
-                        setSearchText(e.target.value);
-                        setPage(1);
-                      }}
-                    />
-                    {searchText && (
-                      <button
-                        type="button"
-                        aria-label="Xóa từ khóa"
-                        onClick={() => {
-                          setSearchText('');
-                          setPage(1);
-                        }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    )}
                   </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div>
-                    <label className="sr-only" htmlFor="blog-type">Loại bài viết</label>
-                    <select
-                      id="blog-type"
-                      className="h-12 rounded-full border border-gray-300 px-4 text-[15px] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      value={blogType}
-                      onChange={(e) => {
-                        setBlogType(e.target.value as BlogType | 'ALL');
-                        setPage(1);
-                      }}
-                    >
-                      {blogTypeOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSearch}
+                    className="h-12 px-6 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Tìm kiếm
+                  </button>
                 </div>
               </div>
 

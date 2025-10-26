@@ -12,9 +12,9 @@ export const blogService = {
     // Lấy danh sách blogs
     async getBlogs(params?: {
         page?: number;
-        search?: string;
+        size?: number;
+        titleOrSummary?: string;
         blogType?: string;
-        status?: string;
     }): Promise<{
         result: Blog[];
         totalElements: number;

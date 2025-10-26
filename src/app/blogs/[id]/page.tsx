@@ -38,8 +38,7 @@ export default function BlogDetailPage() {
 
                 const relatedData = await blogService.getBlogs({
                     page: 1,
-                    blogType: blogData.blogType,
-                    status: 'PUBLISHED'
+                    blogType: blogData.blogType
                 });
 
                 const filtered = relatedData.result
