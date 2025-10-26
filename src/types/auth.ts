@@ -14,3 +14,12 @@ export interface LogoutResponse {
     message: string;
     timestamp: string;
 }
+
+export interface IntrospectRequest {
+    token: string;
+}
+
+export interface IntrospectResponse {
+    valid: boolean;
+    scopes: string[];
+}

@@ -3,6 +3,8 @@ import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -65,6 +67,15 @@ const navigation = [
             </svg>
         )
     },
+    {
+        name: 'Test Auth',
+        href: '/admin/test-auth',
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        )
+    },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
@@ -72,8 +83,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <>
-            <style jsx global>{`
+        <AuthProvider>
+            <ProtectedRoute requireAdmin={true}>
+                <>
+                    <style jsx global>{`
                 @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
                 
                 .swal-compact {
@@ -151,172 +164,174 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     transform: translateY(0) scale(0.98) !important;
                 }
             `}</style>
-            <Toaster
-                position="top-right"
-                gutter={8}
-                toastOptions={{
-                    duration: 3000,
-                    style: {
-                        background: '#363636',
-                        color: '#fff',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        padding: '8px 12px',
-                        minHeight: '40px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                    },
-                }}
-            />
-            <div className="h-screen flex bg-gray-50 overflow-hidden">
-                {/* Mobile sidebar overlay */}
-                {sidebarOpen && (
-                    <div className="fixed inset-0 z-40 lg:hidden">
-                        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-                    </div>
-                )}
-
-                {/* Sidebar - Fixed */}
-                <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}>
-                    <div className="flex flex-col h-full">
-                        {/* Logo */}
-                        <div className="relative flex items-center justify-between h-16 px-6 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 flex-shrink-0 overflow-hidden">
-                            {/* Animated background particles */}
-                            <div className="absolute inset-0 opacity-20">
-                                <div className="absolute top-2 left-8 w-1 h-1 bg-white rounded-full animate-pulse"></div>
-                                <div className="absolute top-6 right-12 w-1 h-1 bg-white rounded-full animate-pulse delay-300"></div>
-                                <div className="absolute bottom-4 left-16 w-1 h-1 bg-white rounded-full animate-pulse delay-700"></div>
-                                <div className="absolute bottom-2 right-8 w-1 h-1 bg-white rounded-full animate-pulse delay-500"></div>
+                    <Toaster
+                        position="top-right"
+                        gutter={8}
+                        toastOptions={{
+                            duration: 3000,
+                            style: {
+                                background: '#363636',
+                                color: '#fff',
+                                borderRadius: '8px',
+                                fontSize: '13px',
+                                padding: '8px 12px',
+                                minHeight: '40px',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                            },
+                        }}
+                    />
+                    <div className="h-screen flex bg-gray-50 overflow-hidden">
+                        {/* Mobile sidebar overlay */}
+                        {sidebarOpen && (
+                            <div className="fixed inset-0 z-40 lg:hidden">
+                                <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
                             </div>
+                        )}
 
-                            <Link href="/admin" className="group flex items-center space-x-3 relative z-10 transition-all duration-300 hover:scale-105">
-                                {/* Logo container with enhanced effects */}
-                                <div className="relative">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-white to-orange-50 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:rotate-12 group-hover:shadow-xl">
-                                        <span className="text-orange-600 font-bold text-xl bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
-                                            F
-                                        </span>
+                        {/* Sidebar - Fixed */}
+                        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}>
+                            <div className="flex flex-col h-full">
+                                {/* Logo */}
+                                <div className="relative flex items-center justify-between h-16 px-6 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 flex-shrink-0 overflow-hidden">
+                                    {/* Animated background particles */}
+                                    <div className="absolute inset-0 opacity-20">
+                                        <div className="absolute top-2 left-8 w-1 h-1 bg-white rounded-full animate-pulse"></div>
+                                        <div className="absolute top-6 right-12 w-1 h-1 bg-white rounded-full animate-pulse delay-300"></div>
+                                        <div className="absolute bottom-4 left-16 w-1 h-1 bg-white rounded-full animate-pulse delay-700"></div>
+                                        <div className="absolute bottom-2 right-8 w-1 h-1 bg-white rounded-full animate-pulse delay-500"></div>
                                     </div>
-                                    {/* Glow effect */}
-                                    <div className="absolute inset-0 w-10 h-10 bg-white rounded-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 blur-sm"></div>
-                                </div>
 
-                                {/* Text with gradient and animation */}
-                                <div className="flex flex-col">
-                                    <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-orange-100">
-                                        F-Learning
-                                    </span>
-                                    <div className="h-0.5 bg-gradient-to-r from-white to-transparent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                </div>
-                            </Link>
-
-                            <button
-                                onClick={() => setSidebarOpen(false)}
-                                className="lg:hidden relative z-10 p-2 text-white hover:text-orange-200 hover:bg-white/10 rounded-lg transition-all duration-200 transform hover:scale-110"
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-
-                            {/* Animated gradient overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                        </div>
-
-                        {/* Navigation - Scrollable */}
-                        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                            {navigation.map((item) => {
-                                const isActive = pathname === item.href;
-                                return (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
-                                            ? 'bg-orange-50 text-orange-700 border-r-2 border-orange-700'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                            }`}
-                                    >
-                                        <span className={`mr-3 ${isActive ? 'text-orange-700' : 'text-gray-400'}`}>
-                                            {item.icon}
-                                        </span>
-                                        {item.name}
-                                    </Link>
-                                );
-                            })}
-                        </nav>
-
-                        {/* User profile - Fixed at bottom */}
-                        <div className="p-4 border-t border-gray-200 flex-shrink-0">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                                    <span className="text-white font-medium">A</span>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
-                                    <p className="text-xs text-gray-500 truncate">admin@flearning.com</p>
-                                </div>
-                                <button className="text-gray-400 hover:text-gray-600">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Main content area */}
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    {/* Top header - Fixed */}
-                    <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
-                        <div className="flex items-center justify-between h-16 px-6">
-                            <div className="flex items-center">
-                                <button
-                                    onClick={() => setSidebarOpen(true)}
-                                    className="lg:hidden text-gray-500 hover:text-gray-700"
-                                >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                    </svg>
-                                </button>
-                                <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900">
-                                    {navigation.find(item => item.href === pathname)?.name || 'Dashboard'}
-                                </h1>
-                            </div>
-
-                            <div className="flex items-center space-x-4">
-                                {/* Search */}
-                                <div className="hidden md:block">
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            placeholder="Tìm kiếm..."
-                                            className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                        />
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                            </svg>
+                                    <Link href="/admin" className="group flex items-center space-x-3 relative z-10 transition-all duration-300 hover:scale-105">
+                                        {/* Logo container with enhanced effects */}
+                                        <div className="relative">
+                                            <div className="w-10 h-10 bg-gradient-to-br from-white to-orange-50 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:rotate-12 group-hover:shadow-xl">
+                                                <span className="text-orange-600 font-bold text-xl bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
+                                                    F
+                                                </span>
+                                            </div>
+                                            {/* Glow effect */}
+                                            <div className="absolute inset-0 w-10 h-10 bg-white rounded-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 blur-sm"></div>
                                         </div>
-                                    </div>
+
+                                        {/* Text with gradient and animation */}
+                                        <div className="flex flex-col">
+                                            <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-orange-100">
+                                                F-Learning
+                                            </span>
+                                            <div className="h-0.5 bg-gradient-to-r from-white to-transparent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                        </div>
+                                    </Link>
+
+                                    <button
+                                        onClick={() => setSidebarOpen(false)}
+                                        className="lg:hidden relative z-10 p-2 text-white hover:text-orange-200 hover:bg-white/10 rounded-lg transition-all duration-200 transform hover:scale-110"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+
+                                    {/* Animated gradient overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                                 </div>
 
-                                {/* Notifications */}
-                                <button className="relative p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-lg">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                    </svg>
-                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                                </button>
+                                {/* Navigation - Scrollable */}
+                                <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                                    {navigation.map((item) => {
+                                        const isActive = pathname === item.href;
+                                        return (
+                                            <Link
+                                                key={item.name}
+                                                href={item.href}
+                                                className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
+                                                    ? 'bg-orange-50 text-orange-700 border-r-2 border-orange-700'
+                                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                                    }`}
+                                            >
+                                                <span className={`mr-3 ${isActive ? 'text-orange-700' : 'text-gray-400'}`}>
+                                                    {item.icon}
+                                                </span>
+                                                {item.name}
+                                            </Link>
+                                        );
+                                    })}
+                                </nav>
+
+                                {/* User profile - Fixed at bottom */}
+                                <div className="p-4 border-t border-gray-200 flex-shrink-0">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+                                            <span className="text-white font-medium">A</span>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
+                                            <p className="text-xs text-gray-500 truncate">admin@flearning.com</p>
+                                        </div>
+                                        <button className="text-gray-400 hover:text-gray-600">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </header>
 
-                    {/* Page content - Scrollable */}
-                    <main className="flex-1 overflow-y-auto bg-gray-50">
-                        {children}
-                    </main>
-                </div>
-            </div>
-        </>
+                        {/* Main content area */}
+                        <div className="flex-1 flex flex-col overflow-hidden">
+                            {/* Top header - Fixed */}
+                            <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
+                                <div className="flex items-center justify-between h-16 px-6">
+                                    <div className="flex items-center">
+                                        <button
+                                            onClick={() => setSidebarOpen(true)}
+                                            className="lg:hidden text-gray-500 hover:text-gray-700"
+                                        >
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                            </svg>
+                                        </button>
+                                        <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900">
+                                            {navigation.find(item => item.href === pathname)?.name || 'Dashboard'}
+                                        </h1>
+                                    </div>
+
+                                    <div className="flex items-center space-x-4">
+                                        {/* Search */}
+                                        <div className="hidden md:block">
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Tìm kiếm..."
+                                                    className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                />
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Notifications */}
+                                        <button className="relative p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-lg">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                            </svg>
+                                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </header>
+
+                            {/* Page content - Scrollable */}
+                            <main className="flex-1 overflow-y-auto bg-gray-50">
+                                {children}
+                            </main>
+                        </div>
+                    </div>
+                </>
+            </ProtectedRoute>
+        </AuthProvider>
     );
 }

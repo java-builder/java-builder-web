@@ -122,7 +122,7 @@ export default function BlogsPage() {
 
               {/* Heading */}
               <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                Chia sẻ <span className="text-orange-400">kiến thức</span> eLearning
+                Chia sẻ <span className="text-orange-400">kiến thức</span>
               </h1>
 
               {/* Sub text */}
