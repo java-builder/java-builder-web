@@ -8,17 +8,16 @@ import { useState } from 'react';
 import React from 'react';
 import 'highlight.js/styles/github.css';
 
-interface MarkdownRendererProps {
+interface PublicMarkdownRendererProps {
     content: string;
     className?: string;
 }
 
-export default function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
+export default function PublicMarkdownRenderer({ content, className = '' }: PublicMarkdownRendererProps) {
     const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
     const copyToClipboard = async (children: React.ReactNode, codeId: string) => {
         try {
-            // Extract text content from React children
             const extractText = (node: React.ReactNode): string => {
                 if (typeof node === 'string') return node;
                 if (typeof node === 'number') return String(node);
@@ -41,7 +40,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     };
 
     return (
-        <div className={`prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none ${className}`}
+        <div className={`markdown-content ${className}`}
             style={{
                 lineHeight: '1.7',
                 color: '#374151'
@@ -76,6 +75,20 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
                             <h4 className="text-lg font-semibold text-gray-700 mt-4 mb-2">
                                 {children}
                             </h4>
+                        );
+                    },
+                    h5({ children }) {
+                        return (
+                            <h5 className="text-base font-semibold text-gray-700 mt-3 mb-2">
+                                {children}
+                            </h5>
+                        );
+                    },
+                    h6({ children }) {
+                        return (
+                            <h6 className="text-sm font-semibold text-gray-700 mt-3 mb-2">
+                                {children}
+                            </h6>
                         );
                     },
                     strong({ children }) {
@@ -118,6 +131,13 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
                             <hr className="my-8 border-gray-300" />
                         );
                     },
+                    blockquote({ children }) {
+                        return (
+                            <blockquote className="border-l-4 border-orange-500 bg-orange-50 pl-4 py-2 my-4 italic text-gray-700">
+                                {children}
+                            </blockquote>
+                        );
+                    },
                     code({ className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
                         const language = match ? match[1] : '';
@@ -125,7 +145,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
 
                         if (language) {
                             return (
-                                <div className="relative group my-6 shadow-xl rounded-xl overflow-hidden border border-gray-300/30 dark:border-gray-600/30">
+                                <div className="relative group my-6 shadow-xl rounded-xl overflow-hidden border border-gray-300/30">
                                     {/* Header */}
                                     <div className="flex items-center justify-between bg-gradient-to-r from-gray-800 to-gray-900 text-gray-300 px-4 py-3 border-b border-gray-600/50">
                                         <div className="flex items-center space-x-2">
@@ -160,9 +180,6 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
                                                 {children}
                                             </code>
                                         </pre>
-
-                                        {/* Subtle gradient overlay */}
-                                        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-transparent to-gray-900/20"></div>
                                     </div>
                                 </div>
                             );
@@ -176,13 +193,6 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
                     },
                     pre({ children }) {
                         return <>{children}</>;
-                    },
-                    blockquote({ children }) {
-                        return (
-                            <blockquote className="border-l-4 border-orange-500 bg-orange-50 pl-4 py-2 my-4 italic text-gray-700">
-                                {children}
-                            </blockquote>
-                        );
                     },
                     table({ children }) {
                         return (

@@ -9,7 +9,7 @@ import { Comment } from '@/types/comment';
 import { blogService } from '@/services/blog.service';
 import { formatApiDate, formatApiDateOnly } from '@/utils/dateUtils';
 import BlogTypeIcon from '@/components/admin/blogs/BlogTypeIcon';
-import MarkdownRenderer from '@/components/admin/blogs/MarkdownRenderer';
+import PublicMarkdownRenderer from '@/components/blogs/PublicMarkdownRenderer';
 import Header from '@/components/Header';
 import MotionWrapper from '@/components/MotionWrapper';
 import CommentList from '@/components/blogs/CommentList';
@@ -318,13 +318,13 @@ export default function BlogDetailPage() {
                                     {blog.summary && (
                                         <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
                                             <h3 className="font-medium text-blue-900 mb-2 text-sm">Tóm tắt</h3>
-                                            <MarkdownRenderer content={blog.summary} className="text-blue-800 text-sm" />
+                                            <PublicMarkdownRenderer content={blog.summary} className="text-blue-800 text-sm" />
                                         </div>
                                     )}
 
                                     {/* Content */}
-                                    <div className="prose prose-sm max-w-none">
-                                        <MarkdownRenderer content={blog.content} />
+                                    <div className="max-w-none">
+                                        <PublicMarkdownRenderer content={blog.content} />
                                     </div>
 
                                     {/* Tags & Actions */}
