@@ -3,7 +3,8 @@ import { ApiResponse, PageResponse } from '@/types/api';
 import {
     CreateCourseRequest,
     CreateCourseResponse,
-    CourseDetailResponse
+    CourseDetailResponse,
+    CourseLevel
 } from '@/types/course';
 import { FileMetaDataResponse } from '@/types/course';
 import toast from 'react-hot-toast';
@@ -22,9 +23,19 @@ export const courseApi = {
     },
 
     // Lấy danh sách khóa học
-    getCourses: async (page: number = 1, size: number = 10) => {
+    getCourses: async (page: number = 1, size: number = 10, title?: string, level?: CourseLevel) => {
         try {
-            const response = await apiClient.get<ApiResponse<PageResponse<CourseDetailResponse>>>(`/api/v1/courses?page=${page}&size=${size}`);
+            const params: Record<string, string | number> = { page, size };
+
+            if (title) {
+                params.title = title;
+            }
+
+            if (level) {
+                params.level = level;
+            }
+
+            const response = await apiClient.get<ApiResponse<PageResponse<CourseDetailResponse>>>('/api/v1/courses', { params });
             return response.data;
         } catch (error) {
             toast.error('Lấy danh sách khóa học thất bại.');
