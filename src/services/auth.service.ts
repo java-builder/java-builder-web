@@ -75,4 +75,42 @@ export const authApi = {
             return null;
         }
     },
+
+    loginWithGoogle: async (code: string) => {
+        try {
+            const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login-google', null, {
+                params: { code }
+            });
+
+            if (response.data.code === 200 && response.data.result) {
+                localStorage.setItem('access_token', response.data.result.accessToken);
+                localStorage.setItem('user_id', response.data.result.userId);
+                toast.success('Đăng nhập Google thành công!');
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error('Đăng nhập Google thất bại. Vui lòng thử lại.');
+            throw error;
+        }
+    },
+
+    loginWithGithub: async (code: string) => {
+        try {
+            const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login-github', null, {
+                params: { code }
+            });
+
+            if (response.data.code === 200 && response.data.result) {
+                localStorage.setItem('access_token', response.data.result.accessToken);
+                localStorage.setItem('user_id', response.data.result.userId);
+                toast.success('Đăng nhập GitHub thành công!');
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error('Đăng nhập GitHub thất bại. Vui lòng thử lại.');
+            throw error;
+        }
+    },
 };
