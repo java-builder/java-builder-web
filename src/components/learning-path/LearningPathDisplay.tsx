@@ -18,10 +18,6 @@ export default function LearningPathDisplay({ learningPath, answer, onCreateNew,
     const [saveError, setSaveError] = useState<string | null>(null);
     const [saveSuccess, setSaveSuccess] = useState(false);
 
-    // Local progress states (UI only)
-    type ItemStatus = 'todo' | 'progress' | 'done';
-
-
     const getTimeUnitText = (timeUnit: string) => {
         switch (timeUnit) {
             case 'DAY': return 'ngày';
@@ -38,7 +34,6 @@ export default function LearningPathDisplay({ learningPath, answer, onCreateNew,
             setSaveError(null);
             setSaveSuccess(false);
 
-            // Call the save API
             const response = await LearningPathService.saveLearningPath({
                 learningPathPlan: learningPath
             });
@@ -46,15 +41,12 @@ export default function LearningPathDisplay({ learningPath, answer, onCreateNew,
             if (response.code === 200) {
                 setSaveSuccess(true);
 
-                // Call the optional callback if provided
                 if (onStartLearning) {
                     onStartLearning();
                 }
 
-                // Show success message briefly then redirect
                 setTimeout(() => {
                     setSaveSuccess(false);
-                    // Redirect to my learning paths page
                     router.push('/my-learning-path');
                 }, 2000);
             } else {
