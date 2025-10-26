@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { LearningPathService } from '@/services/learning-path.service';
 import {
     LearningPathDetailResponse,
@@ -979,6 +980,9 @@ export default function MyLearningPathPage() {
                     </div>
                 )}
             </div>
+
+            {/* Footer */}
+            <Footer />
         </div>
     );
 }

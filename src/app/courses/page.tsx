@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import CourseCard from '@/components/courses/CourseCard';
 import MotionWrapper from '@/components/MotionWrapper';
 import Link from 'next/link';
@@ -362,6 +363,8 @@ export default function CoursesPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

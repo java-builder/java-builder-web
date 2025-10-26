@@ -5,6 +5,7 @@ import { blogService } from '@/services/blog.service';
 import { Blog, BlogType, BlogTypeDisplayNames } from '@/types/blog';
 import PublicBlogCard from '@/components/blogs/PublicBlogCard';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import MotionWrapper from '@/components/MotionWrapper';
 import Link from 'next/link';
 
@@ -311,6 +312,8 @@ export default function BlogsPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

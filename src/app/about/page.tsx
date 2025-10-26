@@ -21,6 +21,7 @@ import {
 } from 'react-icons/fa';
 import MotionWrapper from '@/components/MotionWrapper';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState('about');
@@ -392,6 +393,8 @@ export default function AboutPage() {
           </MotionWrapper>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

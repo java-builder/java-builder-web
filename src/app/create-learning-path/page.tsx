@@ -7,6 +7,7 @@ import LearningPathDisplay from '@/components/learning-path/LearningPathDisplay'
 import { LearningPathService } from '@/services/learning-path.service';
 import { ChatbotResponse, LearningPreferences } from '@/types/learning-path';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function CreateLearningPathPage() {
     const [step, setStep] = useState(1);
@@ -173,12 +174,9 @@ export default function CreateLearningPathPage() {
                         <p className="text-red-700 mb-4">
                             Dữ liệu trả về từ server không đúng định dạng. Vui lòng thử lại.
                         </p>
-                        <div className="bg-white p-4 rounded-lg border border-red-200 mb-4">
-                            <p className="text-sm text-gray-600 mb-2">Debug info:</p>
-                            <pre className="text-xs text-left overflow-auto">
-                                {JSON.stringify(learningPathResponse, null, 2)}
-                            </pre>
-                        </div>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Vui lòng kiểm tra lại thông tin và thử lại.
+                        </p>
                         <button
                             onClick={() => {
                                 setLearningPathResponse(null);
@@ -198,20 +196,6 @@ export default function CreateLearningPathPage() {
     return (
         <div className="min-h-screen bg-white">
             <Header />
-
-            {/* Debug Panel - Remove this after fixing */}
-            {process.env.NODE_ENV === 'development' && (
-                <div className="bg-yellow-50 border border-yellow-200 p-4 m-4 rounded-lg">
-                    <h3 className="font-bold text-yellow-800 mb-2">Debug Info:</h3>
-                    <div className="text-sm text-yellow-700">
-                        <p>learningPathResponse: {JSON.stringify(learningPathResponse, null, 2)}</p>
-                        <p>Has learningPathPlan: {learningPathResponse?.learningPathPlan ? 'Yes' : 'No'}</p>
-                        <p>Current step: {step}</p>
-                        <p>Is loading: {isLoading ? 'Yes' : 'No'}</p>
-                        <p>Error: {error || 'None'}</p>
-                    </div>
-                </div>
-            )}
 
             {/* Main Content */}
             <main className="max-w-3xl mx-auto px-6 py-8">
@@ -603,6 +587,8 @@ export default function CreateLearningPathPage() {
                     </div>
                 </div>
             </main>
+
+            <Footer />
         </div>
     );
 }

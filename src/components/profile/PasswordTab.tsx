@@ -169,7 +169,7 @@ export default function PasswordTab() {
                             <button
                                 type="submit"
                                 disabled={isLoading || formData.newPassword !== formData.confirmPassword}
-                                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white rounded-xl font-semibold transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl"
                             >
                                 {isLoading ? (
                                     <>

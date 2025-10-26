@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import MotionWrapper from '@/components/MotionWrapper';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
@@ -198,6 +199,9 @@ export default function ContactPage() {
                     </div>
                 </MotionWrapper>
             </div>
+
+            {/* Footer */}
+            <Footer />
         </div>
     );
 }
