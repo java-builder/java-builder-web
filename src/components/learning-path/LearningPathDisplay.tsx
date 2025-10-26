@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LearningPathPlan } from '@/types/learning-path';
 import { LearningPathService } from '@/services/learning-path.service';
@@ -20,9 +20,6 @@ export default function LearningPathDisplay({ learningPath, answer, onCreateNew,
 
     // Local progress states (UI only)
     type ItemStatus = 'todo' | 'progress' | 'done';
-    const [lessonStatus, setLessonStatus] = useState<Record<string, ItemStatus>>({});
-    const [exerciseStatus, setExerciseStatus] = useState<Record<string, ItemStatus>>({});
-    const [quizStatus, setQuizStatus] = useState<Record<string, ItemStatus>>({});
 
 
     const getTimeUnitText = (timeUnit: string) => {
