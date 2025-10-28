@@ -10,6 +10,7 @@ interface CommentListProps {
     onAddComment: (content: string) => void;
     onReplyComment: (commentId: string, content: string) => void;
     onDeleteComment: (commentId: string) => void;
+    onLoadReplies?: (commentId: string) => void;
     onLoadMore?: () => void;
     isLoading?: boolean;
     isSubmitting?: boolean;
@@ -21,6 +22,7 @@ export default function CommentList({
     onAddComment,
     onReplyComment,
     onDeleteComment,
+    onLoadReplies,
     onLoadMore,
     isLoading = false,
     isSubmitting = false,
@@ -85,12 +87,10 @@ export default function CommentList({
             </div>
 
             {/* Comment Form */}
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <CommentForm
-                    onSubmit={onAddComment}
-                    isSubmitting={isSubmitting}
-                />
-            </div>
+            <CommentForm
+                onSubmit={onAddComment}
+                isSubmitting={isSubmitting}
+            />
 
             {/* Comments List */}
             {comments.length === 0 ? (
@@ -111,6 +111,8 @@ export default function CommentList({
                             comment={comment}
                             onReply={onReplyComment}
                             onDelete={onDeleteComment}
+                            onLoadReplies={onLoadReplies}
+                            repliesCount={comment.repliesCount || 0}
                         />
                     ))}
                 </div>

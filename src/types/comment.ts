@@ -19,4 +19,5 @@ export interface CommentDetailResponse {
     avatar?: string;
     createdAt: string;
     replies?: CommentDetailResponse[];
+    repliesCount?: number;
 }

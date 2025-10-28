@@ -28,7 +28,8 @@ export default function BlogDetailPage() {
         isLoading: isLoadingComments,
         isSubmitting: isSubmittingComment,
         hasMore: hasMoreComments,
-        loadComments,
+        loadRootComments,
+        loadReplies,
         addComment,
         replyToComment,
         deleteComment,
@@ -54,7 +55,7 @@ export default function BlogDetailPage() {
                     .slice(0, 3);
                 setRelatedBlogs(filtered);
 
-                await loadComments(1, false);
+                await loadRootComments(1, false);
 
             } catch (err) {
                 console.error('Error fetching blog:', err);
@@ -68,7 +69,7 @@ export default function BlogDetailPage() {
         if (blogId) {
             fetchBlogDetail();
         }
-    }, [blogId, loadComments]);
+    }, [blogId, loadRootComments]);
 
     const handleAddComment = async (content: string) => {
         try {
@@ -87,8 +88,10 @@ export default function BlogDetailPage() {
     };
 
     const handleDeleteComment = async (commentId: string) => {
+        console.log('Attempting to delete comment:', commentId);
         try {
             await deleteComment(commentId);
+            console.log('Comment deleted successfully:', commentId);
         } catch (err) {
             console.error('Error deleting comment:', err);
         }
@@ -295,6 +298,7 @@ export default function BlogDetailPage() {
                                     onAddComment={handleAddComment}
                                     onReplyComment={handleReplyComment}
                                     onDeleteComment={handleDeleteComment}
+                                    onLoadReplies={loadReplies}
                                     onLoadMore={handleLoadMoreComments}
                                     isLoading={isLoadingComments}
                                     isSubmitting={isSubmittingComment}
