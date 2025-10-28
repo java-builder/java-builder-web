@@ -39,16 +39,10 @@ export const useUser = (userId?: string) => {
         if (!user) return;
 
         try {
-            setLoading(true);
-            const response = await userApi.update(user.id, data);
-            if (response.result) {
-                setUser(response.result);
-            }
+            setUser(prevUser => prevUser ? { ...prevUser, ...data } : null);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi cập nhật thông tin');
             throw err;
-        } finally {
-            setLoading(false);
         }
     };
 

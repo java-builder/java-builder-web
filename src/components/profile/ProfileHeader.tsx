@@ -80,15 +80,15 @@ export default function ProfileHeader({ user, isEditable = false, onEdit }: Prof
                                 <h1 className="text-4xl font-bold text-gray-900 mb-3">
                                     {user.username || 'Người dùng'}
                                 </h1>
-                                <p className="text-xl text-gray-600 mb-4">
+                                <p className="text-xl font-medium text-gray-800 mb-4">
                                     {user.email || 'Chưa có email'}
                                 </p>
                                 {user.university && (
-                                    <div className="flex items-center gap-3 text-gray-600 mb-4">
+                                    <div className="flex items-center gap-3 text-gray-700 mb-4">
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                         </svg>
-                                        <span className="text-lg font-medium">{user.university}</span>
+                                        <span className="text-lg font-semibold text-gray-800">{user.university}</span>
                                     </div>
                                 )}
                                 <div className="flex items-center gap-2">

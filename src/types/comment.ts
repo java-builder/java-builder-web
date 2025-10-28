@@ -1,26 +1,22 @@
-export interface Comment {
-    id: string;
-    content: string;
-    author: string;
-    createdAt: string;
-    likeCount: number;
-    isLiked?: boolean;
-    replies?: Comment[];
-}
-
 export interface CreateCommentRequest {
-    content: string;
     blogId: string;
     parentId?: string;
+    content: string;
 }
 
 export interface CreateCommentResponse {
     id: string;
     content: string;
-    author: string;
-    authorId: string;
-    blogId: string;
-    parentId?: string;
+    username: string;
+    avatar?: string;
     createdAt: string;
-    likeCount: number;
+}
+
+export interface CommentDetailResponse {
+    id: string;
+    content: string;
+    username: string;
+    avatar?: string;
+    createdAt: string;
+    replies?: CommentDetailResponse[];
 }

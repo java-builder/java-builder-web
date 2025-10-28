@@ -3,26 +3,28 @@
 import { useState } from 'react';
 import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
-import { Comment } from '@/types/comment';
+import { CommentDetailResponse } from '@/types/comment';
 
 interface CommentListProps {
-    comments: Comment[];
+    comments: CommentDetailResponse[];
     onAddComment: (content: string) => void;
-    onLikeComment: (commentId: string) => void;
     onReplyComment: (commentId: string, content: string) => void;
     onDeleteComment: (commentId: string) => void;
+    onLoadMore?: () => void;
     isLoading?: boolean;
     isSubmitting?: boolean;
+    hasMore?: boolean;
 }
 
 export default function CommentList({
     comments,
     onAddComment,
-    onLikeComment,
     onReplyComment,
     onDeleteComment,
+    onLoadMore,
     isLoading = false,
-    isSubmitting = false
+    isSubmitting = false,
+    hasMore = false
 }: CommentListProps) {
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'popular'>('newest');
 
@@ -33,7 +35,7 @@ export default function CommentList({
             case 'oldest':
                 return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
             case 'popular':
-                return b.likeCount - a.likeCount;
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
             default:
                 return 0;
         }
@@ -107,7 +109,6 @@ export default function CommentList({
                         <CommentItem
                             key={comment.id}
                             comment={comment}
-                            onLike={onLikeComment}
                             onReply={onReplyComment}
                             onDelete={onDeleteComment}
                         />
@@ -116,10 +117,14 @@ export default function CommentList({
             )}
 
             {/* Load More Button */}
-            {comments.length > 0 && (
+            {comments.length > 0 && hasMore && onLoadMore && (
                 <div className="text-center">
-                    <button className="px-6 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors duration-200">
-                        Xem thêm bình luận
+                    <button
+                        onClick={onLoadMore}
+                        disabled={isLoading}
+                        className="px-6 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                        {isLoading ? 'Đang tải...' : 'Xem thêm bình luận'}
                     </button>
                 </div>
             )}

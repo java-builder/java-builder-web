@@ -52,7 +52,7 @@ export default function ProfileInfo({ user, isEditing = false, onSave, onCancel 
                                     type="text"
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-gray-900"
                                     required
                                 />
                             </div>
@@ -65,7 +65,7 @@ export default function ProfileInfo({ user, isEditing = false, onSave, onCancel 
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-gray-900"
                                     required
                                 />
                             </div>
@@ -78,7 +78,7 @@ export default function ProfileInfo({ user, isEditing = false, onSave, onCancel 
                                     type="text"
                                     value={formData.university}
                                     onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-gray-900"
                                     placeholder="Nhập tên trường đại học"
                                 />
                             </div>
@@ -91,7 +91,7 @@ export default function ProfileInfo({ user, isEditing = false, onSave, onCancel 
                                     type="url"
                                     value={formData.avatar}
                                     onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-gray-900"
                                     placeholder="https://example.com/avatar.jpg"
                                 />
                             </div>
@@ -117,24 +117,24 @@ export default function ProfileInfo({ user, isEditing = false, onSave, onCancel 
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-500 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Tên người dùng
                                 </label>
-                                <p className="text-lg text-gray-900">{user.username || 'Chưa có tên người dùng'}</p>
+                                <p className="text-lg font-medium text-gray-900">{user.username || 'Chưa có tên người dùng'}</p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-500 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Email
                                 </label>
-                                <p className="text-lg text-gray-900">{user.email || 'Chưa có email'}</p>
+                                <p className="text-lg font-medium text-gray-900">{user.email || 'Chưa có email'}</p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-500 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Trường đại học
                                 </label>
-                                <p className="text-lg text-gray-900">
+                                <p className="text-lg font-medium text-gray-900">
                                     {user.university || 'Chưa cập nhật'}
                                 </p>
                             </div>

@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Blog, BlogTypeDisplayNames } from '@/types/blog';
-import { Comment } from '@/types/comment';
 import { blogService } from '@/services/blog.service';
+import { useComments } from '@/hooks/useComments';
 import { formatApiDate, formatApiDateOnly } from '@/utils/dateUtils';
 import BlogTypeIcon from '@/components/admin/blogs/BlogTypeIcon';
 import PublicMarkdownRenderer from '@/components/blogs/PublicMarkdownRenderer';
@@ -23,9 +23,17 @@ export default function BlogDetailPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [comments, setComments] = useState<Comment[]>([]);
-    const [isLoadingComments, setIsLoadingComments] = useState(false);
-    const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const {
+        comments,
+        isLoading: isLoadingComments,
+        isSubmitting: isSubmittingComment,
+        hasMore: hasMoreComments,
+        loadComments,
+        addComment,
+        replyToComment,
+        deleteComment,
+        loadMoreComments
+    } = useComments(blogId);
 
     useEffect(() => {
         const fetchBlogDetail = async () => {
@@ -46,8 +54,7 @@ export default function BlogDetailPage() {
                     .slice(0, 3);
                 setRelatedBlogs(filtered);
 
-                // Load comments
-                await loadComments();
+                await loadComments(1, false);
 
             } catch (err) {
                 console.error('Error fetching blog:', err);
@@ -57,103 +64,23 @@ export default function BlogDetailPage() {
             }
         };
 
-        const loadComments = async () => {
-            try {
-                setIsLoadingComments(true);
-                const mockComments = [
-                    {
-                        id: '1',
-                        content: 'Bài viết rất hay và hữu ích! Cảm ơn tác giả đã chia sẻ.',
-                        author: 'Nguyễn Văn A',
-                        createdAt: new Date().toISOString(),
-                        likeCount: 5,
-                        isLiked: false,
-                        replies: [
-                            {
-                                id: '1-1',
-                                content: 'Mình cũng nghĩ vậy!',
-                                author: 'Trần Thị B',
-                                createdAt: new Date().toISOString(),
-                                likeCount: 2
-                            }
-                        ]
-                    },
-                    {
-                        id: '2',
-                        content: 'Có thể chia sẻ thêm về phần này không ạ?',
-                        author: 'Lê Văn C',
-                        createdAt: new Date().toISOString(),
-                        likeCount: 3,
-                        isLiked: true,
-                        replies: []
-                    }
-                ];
-                setComments(mockComments);
-            } catch (err) {
-                console.error('Error loading comments:', err);
-            } finally {
-                setIsLoadingComments(false);
-            }
-        };
 
         if (blogId) {
             fetchBlogDetail();
         }
-    }, [blogId]);
+    }, [blogId, loadComments]);
 
-    // Comment handlers
     const handleAddComment = async (content: string) => {
         try {
-            setIsSubmittingComment(true);
-            // Mock API call - replace with actual implementation
-            const newComment = {
-                id: Date.now().toString(),
-                content,
-                author: 'Khách', // Public comment without authentication
-                createdAt: new Date().toISOString(),
-                likeCount: 0,
-                isLiked: false,
-                replies: []
-            };
-            setComments(prev => [newComment, ...prev]);
+            await addComment(content);
         } catch (err) {
             console.error('Error adding comment:', err);
-        } finally {
-            setIsSubmittingComment(false);
-        }
-    };
-
-    const handleLikeComment = async (commentId: string) => {
-        try {
-            setComments(prev => prev.map(comment =>
-                comment.id === commentId
-                    ? {
-                        ...comment,
-                        likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
-                        isLiked: !comment.isLiked
-                    }
-                    : comment
-            ));
-        } catch (err) {
-            console.error('Error liking comment:', err);
         }
     };
 
     const handleReplyComment = async (commentId: string, content: string) => {
         try {
-            const newReply = {
-                id: `${commentId}-${Date.now()}`,
-                content,
-                author: 'Khách',
-                createdAt: new Date().toISOString(),
-                likeCount: 0
-            };
-
-            setComments(prev => prev.map(comment =>
-                comment.id === commentId
-                    ? { ...comment, replies: [...(comment.replies || []), newReply] }
-                    : comment
-            ));
+            await replyToComment(commentId, content);
         } catch (err) {
             console.error('Error replying to comment:', err);
         }
@@ -161,9 +88,17 @@ export default function BlogDetailPage() {
 
     const handleDeleteComment = async (commentId: string) => {
         try {
-            setComments(prev => prev.filter(comment => comment.id !== commentId));
+            await deleteComment(commentId);
         } catch (err) {
             console.error('Error deleting comment:', err);
+        }
+    };
+
+    const handleLoadMoreComments = async () => {
+        try {
+            await loadMoreComments();
+        } catch (err) {
+            console.error('Error loading more comments:', err);
         }
     };
 
@@ -353,17 +288,17 @@ export default function BlogDetailPage() {
                             </article>
                         </MotionWrapper>
 
-                        {/* Comments Section */}
                         <MotionWrapper animation="fadeInUp" duration={0.6} delay={0.3} mode="mount">
                             <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                                 <CommentList
                                     comments={comments}
                                     onAddComment={handleAddComment}
-                                    onLikeComment={handleLikeComment}
                                     onReplyComment={handleReplyComment}
                                     onDeleteComment={handleDeleteComment}
+                                    onLoadMore={handleLoadMoreComments}
                                     isLoading={isLoadingComments}
                                     isSubmitting={isSubmittingComment}
+                                    hasMore={hasMoreComments}
                                 />
                             </div>
                         </MotionWrapper>

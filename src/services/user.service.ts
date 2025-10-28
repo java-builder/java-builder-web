@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/axios';
 import { ApiResponse, PageResponse } from '@/types/api';
-import { UserDetailResponse, CreateUserRequest, CreateUserResponse } from '@/types/user';
+import { UserDetailResponse, CreateUserRequest, CreateUserResponse, UpdateProfileRequest, UpdateProfileResponse } from '@/types/user';
 import toast from 'react-hot-toast';
 
 export interface UserSearchParams {
@@ -66,6 +66,35 @@ export const userApi = {
             return response.data;
         } catch (error) {
             toast.error('Xóa tài khoản thất bại. Vui lòng thử lại.');
+            throw error;
+        }
+    },
+
+    updateProfile: async (data: UpdateProfileRequest) => {
+        try {
+            const response = await apiClient.put<ApiResponse<UpdateProfileResponse>>('/api/v1/profiles', data);
+            toast.success('Cập nhật thông tin cá nhân thành công!');
+            return response.data;
+        } catch (error) {
+            toast.error('Cập nhật thông tin cá nhân thất bại. Vui lòng thử lại.');
+            throw error;
+        }
+    },
+
+    updateAvatar: async (avatar: File) => {
+        try {
+            const formData = new FormData();
+            formData.append('avatar', avatar);
+
+            const response = await apiClient.put<ApiResponse<string>>('/api/v1/profiles/update-avatar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            toast.success('Cập nhật ảnh đại diện thành công!');
+            return response.data;
+        } catch (error) {
+            toast.error('Cập nhật ảnh đại diện thất bại. Vui lòng thử lại.');
             throw error;
         }
     },

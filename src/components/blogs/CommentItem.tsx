@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { formatApiDateOnly } from '@/utils/dateUtils';
-import { Comment } from '@/types/comment';
+import { CommentDetailResponse } from '@/types/comment';
 
 interface CommentItemProps {
-    comment: Comment;
-    onLike?: (commentId: string) => void;
+    comment: CommentDetailResponse;
     onReply?: (commentId: string, content: string) => void;
     onDelete?: (commentId: string) => void;
     isOwner?: boolean;
@@ -14,7 +14,6 @@ interface CommentItemProps {
 
 export default function CommentItem({
     comment,
-    onLike,
     onReply,
     onDelete,
     isOwner = false
@@ -41,7 +40,17 @@ export default function CommentItem({
             <div className="flex items-start space-x-3">
                 {/* Avatar */}
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                    {comment.author.charAt(0).toUpperCase()}
+                    {comment.avatar ? (
+                        <Image
+                            src={comment.avatar}
+                            alt={comment.username}
+                            width={32}
+                            height={32}
+                            className="w-full h-full rounded-full object-cover"
+                        />
+                    ) : (
+                        comment.username.charAt(0).toUpperCase()
+                    )}
                 </div>
 
                 {/* Comment Content */}
@@ -49,7 +58,7 @@ export default function CommentItem({
                     <div className="bg-gray-50 rounded-lg p-3">
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
-                                <span className="font-semibold text-gray-900 text-sm">{comment.author}</span>
+                                <span className="font-semibold text-gray-900 text-sm">{comment.username}</span>
                                 <span className="text-xs text-gray-500">•</span>
                                 <time className="text-xs text-gray-500" dateTime={comment.createdAt}>
                                     {formatApiDateOnly(comment.createdAt)}
@@ -74,19 +83,6 @@ export default function CommentItem({
 
                     {/* Actions */}
                     <div className="flex items-center space-x-4 mt-2 ml-3">
-                        <button
-                            onClick={() => onLike?.(comment.id)}
-                            className={`flex items-center space-x-1 text-xs transition-colors ${comment.isLiked
-                                ? 'text-red-500 hover:text-red-600'
-                                : 'text-gray-500 hover:text-red-500'
-                                }`}
-                        >
-                            <svg className="w-4 h-4" fill={comment.isLiked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                            <span>{comment.likeCount}</span>
-                        </button>
-
                         <button
                             onClick={() => setShowReplyForm(!showReplyForm)}
                             className="flex items-center space-x-1 text-xs text-gray-500 hover:text-orange-500 transition-colors"
@@ -139,12 +135,22 @@ export default function CommentItem({
                             {comment.replies.map((reply) => (
                                 <div key={reply.id} className="flex items-start space-x-2">
                                     <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
-                                        {reply.author.charAt(0).toUpperCase()}
+                                        {reply.avatar ? (
+                                            <Image
+                                                src={reply.avatar}
+                                                alt={reply.username}
+                                                width={24}
+                                                height={24}
+                                                className="w-full h-full rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            reply.username.charAt(0).toUpperCase()
+                                        )}
                                     </div>
                                     <div className="flex-1">
                                         <div className="bg-gray-50 rounded-lg p-2">
                                             <div className="flex items-center space-x-2 mb-1">
-                                                <span className="font-semibold text-gray-900 text-xs">{reply.author}</span>
+                                                <span className="font-semibold text-gray-900 text-xs">{reply.username}</span>
                                                 <span className="text-xs text-gray-500">•</span>
                                                 <time className="text-xs text-gray-500" dateTime={reply.createdAt}>
                                                     {formatApiDateOnly(reply.createdAt)}
@@ -155,12 +161,7 @@ export default function CommentItem({
                                             </p>
                                         </div>
                                         <div className="flex items-center space-x-3 mt-1 ml-2">
-                                            <button className="flex items-center space-x-1 text-xs text-gray-500 hover:text-red-500 transition-colors">
-                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                </svg>
-                                                <span>{reply.likeCount || 0}</span>
-                                            </button>
+                                            {/* Like functionality removed for replies */}
                                         </div>
                                     </div>
                                 </div>

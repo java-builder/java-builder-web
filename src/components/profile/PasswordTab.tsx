@@ -62,7 +62,7 @@ export default function PasswordTab() {
                                     type={showPasswords.current ? 'text' : 'password'}
                                     value={formData.currentPassword}
                                     onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors text-gray-900"
                                     placeholder="Nhập mật khẩu hiện tại"
                                     required
                                 />
@@ -95,7 +95,7 @@ export default function PasswordTab() {
                                     type={showPasswords.new ? 'text' : 'password'}
                                     value={formData.newPassword}
                                     onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors text-gray-900"
                                     placeholder="Nhập mật khẩu mới"
                                     minLength={6}
                                     required
@@ -130,7 +130,7 @@ export default function PasswordTab() {
                                     type={showPasswords.confirm ? 'text' : 'password'}
                                     value={formData.confirmPassword}
                                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors text-gray-900"
                                     placeholder="Nhập lại mật khẩu mới"
                                     required
                                 />
@@ -169,7 +169,7 @@ export default function PasswordTab() {
                             <button
                                 type="submit"
                                 disabled={isLoading || formData.newPassword !== formData.confirmPassword}
-                                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white rounded-xl font-semibold transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl"
+                                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                             >
                                 {isLoading ? (
                                     <>

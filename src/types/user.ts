@@ -11,6 +11,16 @@ export interface CreateUserResponse {
     email: string;
 }
 
+export interface UpdateProfileRequest {
+    username: string;
+    university: string;
+}
+
+export interface UpdateProfileResponse {
+    username: string;
+    university: string;
+}
+
 export interface UserDetailResponse {
     id: string;
     username: string;
