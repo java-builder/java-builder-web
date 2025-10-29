@@ -25,8 +25,7 @@ export default function RegisterPage() {
     } = useForm<RegisterFormData>({
         mode: "onChange",
         defaultValues: {
-            firstName: "",
-            lastName: "",
+            username: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -42,8 +41,7 @@ export default function RegisterPage() {
             setError("");
 
             const result = await userApi.create({
-                firstName: data.firstName,
-                lastName: data.lastName,
+                username: data.username,
                 email: data.email,
                 password: data.password
             });
@@ -54,7 +52,6 @@ export default function RegisterPage() {
             }
         } catch (err: unknown) {
             console.error("Register error:", err);
-            // Error handling đã được xử lý trong user service với toast
         } finally {
             setIsLoading(false);
         }
@@ -110,45 +107,28 @@ export default function RegisterPage() {
 
                     {/* Form */}
                     <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div>
-                                <input
-                                    id="firstName"
-                                    type="text"
-                                    disabled={isLoading}
-                                    placeholder="Họ"
-                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
-                                    {...register("firstName", {
-                                        required: "Họ là bắt buộc",
-                                        minLength: {
-                                            value: 2,
-                                            message: "Họ phải có ít nhất 2 ký tự"
-                                        }
-                                    })}
-                                />
-                                {errors.firstName && (
-                                    <p className="mt-1 text-xs text-red-600">{errors.firstName.message}</p>
-                                )}
-                            </div>
-                            <div>
-                                <input
-                                    id="lastName"
-                                    type="text"
-                                    disabled={isLoading}
-                                    placeholder="Tên"
-                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
-                                    {...register("lastName", {
-                                        required: "Tên là bắt buộc",
-                                        minLength: {
-                                            value: 2,
-                                            message: "Tên phải có ít nhất 2 ký tự"
-                                        }
-                                    })}
-                                />
-                                {errors.lastName && (
-                                    <p className="mt-1 text-xs text-red-600">{errors.lastName.message}</p>
-                                )}
-                            </div>
+                        <div>
+                            <input
+                                id="username"
+                                type="text"
+                                disabled={isLoading}
+                                placeholder="Tên đăng nhập"
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                                {...register("username", {
+                                    required: "Tên đăng nhập là bắt buộc",
+                                    minLength: {
+                                        value: 3,
+                                        message: "Tên đăng nhập phải có ít nhất 3 ký tự"
+                                    },
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9_]+$/,
+                                        message: "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới"
+                                    }
+                                })}
+                            />
+                            {errors.username && (
+                                <p className="mt-1 text-xs text-red-600">{errors.username.message}</p>
+                            )}
                         </div>
 
                         <div>

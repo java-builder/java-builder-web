@@ -1,13 +1,11 @@
 export interface CreateUserRequest {
-    firstName: string;
-    lastName: string;
+    username: string;
     email: string;
     password: string;
 }
 
 export interface CreateUserResponse {
-    firstName: string;
-    lastName: string;
+    username: string;
     email: string;
 }
 
