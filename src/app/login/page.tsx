@@ -60,7 +60,6 @@ export default function LoginPage() {
                 }
             }
         } catch {
-            // Error handling đã được xử lý trong auth service
         } finally {
             setIsLoading(false);
         }
