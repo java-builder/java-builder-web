@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { authApi } from "@/services/auth.service";
 import { LoginRequest } from "@/types/auth";
 import { generateGoogleAuthUrl, generateGithubAuthUrl } from "@/utils/oauthUtils";
+import TwoFactorModal from "@/components/auth/TwoFactorModal";
 
 interface LoginFormData extends LoginRequest {
     rememberMe: boolean;
@@ -17,6 +18,8 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const [successMessage, setSuccessMessage] = useState<string>("");
+    const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
+    const [userEmail, setUserEmail] = useState<string>("");
 
     const {
         register,
@@ -30,7 +33,6 @@ export default function LoginPage() {
         }
     });
 
-    // Check for success message from registration
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');
@@ -50,14 +52,22 @@ export default function LoginPage() {
             });
 
             if (result.code === 200) {
-                router.push("/");
+                if (result.result?.mftEnable) {
+                    setUserEmail(data.email);
+                    setShowTwoFactorModal(true);
+                } else if (result.result?.accessToken) {
+                    router.push("/");
+                }
             }
-        } catch (err: unknown) {
-            console.error("Login error:", err);
-            // Error handling đã được xử lý trong auth service với toast
+        } catch {
+            // Error handling đã được xử lý trong auth service
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleTwoFactorSuccess = () => {
+        router.push("/");
     };
 
     const handleGoogleLogin = () => {
@@ -242,6 +252,14 @@ export default function LoginPage() {
                     </form>
                 </div>
             </div>
+
+            {/* Two-Factor Authentication Modal */}
+            <TwoFactorModal
+                isOpen={showTwoFactorModal}
+                onClose={() => setShowTwoFactorModal(false)}
+                email={userEmail}
+                onSuccess={handleTwoFactorSuccess}
+            />
         </div>
     );
 }

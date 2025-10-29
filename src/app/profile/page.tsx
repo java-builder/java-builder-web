@@ -31,7 +31,7 @@ export default function ProfilePage() {
             case 'profile':
                 return <ProfileTab user={user!} onSave={handleSave} isSaving={isSaving} />;
             case 'security':
-                return <SecurityTab />;
+                return <SecurityTab user={user!} onUserUpdate={updateUser} />;
             case 'password':
                 return <PasswordTab />;
             default:

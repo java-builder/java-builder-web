@@ -28,6 +28,8 @@ export interface UserDetailResponse {
     avatar?: string;
     university?: string;
     userStatus: UserStatus;
+    mftEnable: boolean;
+    createdAt: string;
 }
 
 export enum UserStatus {

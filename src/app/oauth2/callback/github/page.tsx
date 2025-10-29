@@ -28,11 +28,14 @@ const GitHubCallbackContent = () => {
 
                 const response = await authApi.loginWithGithub(code);
 
-                if (response.code === 200 && response.result) {
+                if (response.code === 200 && response.result?.accessToken && response.result?.userId) {
                     localStorage.setItem("access_token", response.result.accessToken);
                     localStorage.setItem("user_id", response.result.userId);
 
                     router.push("/");
+                } else {
+                    setError('Không nhận được thông tin đăng nhập từ GitHub');
+                    setIsProcessing(false);
                 }
             } catch (err) {
                 setError(`Đăng nhập GitHub thất bại: ${err instanceof Error ? err.message : 'Vui lòng thử lại.'}`);

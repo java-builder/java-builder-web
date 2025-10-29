@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/axios';
 import { ApiResponse } from '@/types/api';
-import { LoginRequest, LoginResponse, LogoutResponse, IntrospectRequest, IntrospectResponse } from '@/types/auth';
+import { LoginRequest, LoginResponse, LogoutResponse, IntrospectRequest, IntrospectResponse, TwoFactorAuthenticationRequest } from '@/types/auth';
 import toast from 'react-hot-toast';
 
 export const authApi = {
@@ -8,13 +8,15 @@ export const authApi = {
         try {
             const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', data);
 
-            if (response.data.code === 200 && response.data.result) {
-                localStorage.setItem('access_token', response.data.result.accessToken);
-                localStorage.setItem('user_id', response.data.result.userId);
-
-                toast.success('Đăng nhập thành công!');
+            if (response.data.code === 200) {
+                if (response.data.result?.mftEnable) {
+                    return response.data;
+                } else if (response.data.result?.accessToken && response.data.result?.userId) {
+                    localStorage.setItem('access_token', response.data.result.accessToken);
+                    localStorage.setItem('user_id', response.data.result.userId);
+                    toast.success('Đăng nhập thành công!');
+                }
             }
-
             return response.data;
         } catch (error) {
             toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
@@ -82,7 +84,7 @@ export const authApi = {
                 params: { code }
             });
 
-            if (response.data.code === 200 && response.data.result) {
+            if (response.data.code === 200 && response.data.result?.accessToken && response.data.result?.userId) {
                 localStorage.setItem('access_token', response.data.result.accessToken);
                 localStorage.setItem('user_id', response.data.result.userId);
                 toast.success('Đăng nhập Google thành công!');
@@ -101,7 +103,7 @@ export const authApi = {
                 params: { code }
             });
 
-            if (response.data.code === 200 && response.data.result) {
+            if (response.data.code === 200 && response.data.result?.accessToken && response.data.result?.userId) {
                 localStorage.setItem('access_token', response.data.result.accessToken);
                 localStorage.setItem('user_id', response.data.result.userId);
                 toast.success('Đăng nhập GitHub thành công!');
@@ -110,6 +112,23 @@ export const authApi = {
             return response.data;
         } catch (error) {
             toast.error('Đăng nhập GitHub thất bại. Vui lòng thử lại.');
+            throw error;
+        }
+    },
+
+    loginTwoFactor: async (data: TwoFactorAuthenticationRequest) => {
+        try {
+            const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login-two-factor', data);
+
+            if (response.data.code === 200 && response.data.result?.accessToken && response.data.result?.userId) {
+                localStorage.setItem('access_token', response.data.result.accessToken);
+                localStorage.setItem('user_id', response.data.result.userId);
+                toast.success('Xác thực 2 bước thành công!');
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error('Xác thực 2 bước thất bại. Vui lòng kiểm tra lại mã OTP.');
             throw error;
         }
     },

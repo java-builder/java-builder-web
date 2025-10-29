@@ -4,10 +4,11 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-    userId: string;
-    accessToken: string;
-    refreshToken: string;
-    authorities: string[];
+    userId?: string;
+    accessToken?: string;
+    refreshToken?: string;
+    mftEnable?: boolean;
+    authorities?: string[];
 }
 
 export interface LogoutResponse {
@@ -22,4 +23,9 @@ export interface IntrospectRequest {
 export interface IntrospectResponse {
     valid: boolean;
     scopes: string[];
+}
+
+export interface TwoFactorAuthenticationRequest {
+    email: string;
+    code: string;
 }

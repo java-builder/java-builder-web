@@ -10,6 +10,7 @@ const isPublicEndpoint = (url: string | undefined): boolean => {
 
     const publicEndpoints = [
         '/api/v1/auth/login',
+        '/api/v1/auth/login-two-factor',
         '/api/v1/auth/register',
         '/api/v1/auth/forgot-password',
         '/api/v1/auth/reset-password',
