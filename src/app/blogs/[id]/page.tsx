@@ -115,15 +115,40 @@ export default function BlogDetailPage() {
                 return;
             }
 
+            // Try loading replies for current roots to reveal a target reply
+            const tryLoadRepliesForTarget = async () => {
+                for (const root of comments) {
+                    if (isCancelled) return false;
+                    if (document.getElementById(targetId)) return true;
+                    const needLoad = (root.repliesCount || 0) > 0 && (!root.replies || root.replies.length === 0);
+                    if (needLoad) {
+                        await loadReplies(root.id).catch(() => { });
+                        await new Promise(resolve => setTimeout(resolve, 0));
+                        if (document.getElementById(targetId)) return true;
+                    }
+                }
+                return !!document.getElementById(targetId);
+            };
+
+            if (await tryLoadRepliesForTarget()) {
+                const found = document.getElementById(targetId);
+                if (found) {
+                    scrollToEl(found as HTMLElement);
+                    return;
+                }
+            }
+
             isLoadingSequence = true;
             const MAX_TRIES = 10;
             for (let i = 0; i < MAX_TRIES && !isCancelled; i++) {
                 await loadMoreComments().catch(() => { });
                 await new Promise(resolve => setTimeout(resolve, 0));
-                el = document.getElementById(targetId);
-                if (el) {
-                    scrollToEl(el as HTMLElement);
-                    break;
+                if (await tryLoadRepliesForTarget()) {
+                    el = document.getElementById(targetId);
+                    if (el) {
+                        scrollToEl(el as HTMLElement);
+                        break;
+                    }
                 }
             }
             isLoadingSequence = false;
@@ -135,7 +160,7 @@ export default function BlogDetailPage() {
             isCancelled = true;
             window.removeEventListener('hashchange', tryScrollToHash);
         };
-    }, [comments, loadMoreComments]);
+    }, [comments, loadMoreComments, loadReplies]);
 
     useEffect(() => {
         if (!blogId) return;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
 import { CommentDetailResponse } from '@/types/comment';
@@ -29,6 +29,23 @@ export default function CommentList({
     hasMore = false
 }: CommentListProps) {
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'popular'>('newest');
+    const [hashReplyId, setHashReplyId] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const parseHash = () => {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#comment-')) {
+                const id = hash.replace('#comment-', '').trim();
+                setHashReplyId(id || undefined);
+            } else {
+                setHashReplyId(undefined);
+            }
+        };
+        parseHash();
+        window.addEventListener('hashchange', parseHash);
+        return () => window.removeEventListener('hashchange', parseHash);
+    }, []);
 
     const sortedComments = [...comments].sort((a, b) => {
         switch (sortBy) {
@@ -113,6 +130,7 @@ export default function CommentList({
                             onDelete={onDeleteComment}
                             onLoadReplies={onLoadReplies}
                             repliesCount={comment.repliesCount || 0}
+                            expandReplyId={hashReplyId}
                         />
                     ))}
                 </div>

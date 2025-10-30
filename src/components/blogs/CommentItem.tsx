@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { formatApiDateOnly } from '@/utils/dateUtils';
 import { CommentDetailResponse } from '@/types/comment';
@@ -11,6 +11,7 @@ interface CommentItemProps {
     onDelete?: (commentId: string) => void;
     onLoadReplies?: (commentId: string) => void;
     repliesCount?: number;
+    expandReplyId?: string;
 }
 
 export default function CommentItem({
@@ -18,14 +19,15 @@ export default function CommentItem({
     onReply,
     onDelete,
     onLoadReplies,
-    repliesCount = 0
+    repliesCount = 0,
+    expandReplyId
 }: CommentItemProps) {
     console.log('CommentItem rendered for comment:', comment.id, 'onDelete exists:', !!onDelete);
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [replyContent, setReplyContent] = useState('');
     const [isSubmittingReply, setIsSubmittingReply] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
-    const [showReplies, setShowReplies] = useState(false);
+    const [showReplies, setShowReplies] = useState(!!expandReplyId);
     const [isLoadingReplies, setIsLoadingReplies] = useState(false);
     const [showReplyMenu, setShowReplyMenu] = useState<{ [key: string]: boolean }>({});
 
@@ -91,6 +93,13 @@ export default function CommentItem({
             [replyId]: !prev[replyId]
         }));
     };
+
+    // If deep-linking to a reply, ensure replies are expanded when data arrives
+    useEffect(() => {
+        if (expandReplyId) {
+            setShowReplies(true);
+        }
+    }, [expandReplyId]);
 
     return (
         <div id={`comment-${comment.id}`} className="border-b border-gray-100 pb-6 last:border-b-0 scroll-mt-24">
@@ -201,7 +210,7 @@ export default function CommentItem({
                     {showReplies && comment.replies && comment.replies.length > 0 && (
                         <div className="mt-3 ml-6 space-y-3">
                             {comment.replies.map((reply) => (
-                                <div key={reply.id} className="flex items-start space-x-2">
+                                <div key={reply.id} id={`comment-${reply.id}`} className="flex items-start space-x-2 scroll-mt-24">
                                     <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
                                         {reply.avatar ? (
                                             <Image
