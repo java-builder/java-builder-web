@@ -78,37 +78,37 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-3 sm:px-4">
             <div className="w-full max-w-md">
                 {/* Login Card */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 md:p-8">
                     {/* Header */}
-                    <div className="text-center mb-8">
-                        <div className="flex justify-between items-center mb-6">
+                    <div className="text-center mb-6 sm:mb-8">
+                        <div className="flex justify-between items-center mb-4 sm:mb-6">
                             <Link
                                 href="/"
-                                className="flex items-center space-x-1 text-gray-500 hover:text-orange-500 transition-colors text-sm"
+                                className="flex items-center space-x-1 text-gray-500 hover:text-orange-500 transition-colors text-xs sm:text-sm"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
-                                <span>Trang chủ</span>
+                                <span className="hidden sm:inline">Trang chủ</span>
                             </Link>
 
-                            <Link href="/" className="inline-flex items-center space-x-2">
-                                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-                                    <span className="text-white font-bold text-sm">FL</span>
+                            <Link href="/" className="inline-flex items-center space-x-1.5 sm:space-x-2">
+                                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                                    <span className="text-white font-bold text-xs sm:text-sm">FL</span>
                                 </div>
-                                <span className="text-lg font-bold text-gray-900">F Learning</span>
+                                <span className="text-base sm:text-lg font-bold text-gray-900 hidden sm:inline">F Learning</span>
                             </Link>
 
-                            <div className="w-16"></div> {/* Spacer for balance */}
+                            <div className="w-10 sm:w-16"></div> {/* Spacer for balance */}
                         </div>
 
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                             Chào mừng trở lại!
                         </h2>
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-gray-600 text-xs sm:text-sm">
                             Đăng nhập để tiếp tục học tập
                         </p>
                     </div>
@@ -138,7 +138,7 @@ export default function LoginPage() {
                     )}
 
                     {/* Form */}
-                    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                    <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <input
                                 id="email"
@@ -146,7 +146,7 @@ export default function LoginPage() {
                                 autoComplete="email"
                                 disabled={isLoading}
                                 placeholder="Email"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                 {...register("email", {
                                     required: "Email là bắt buộc",
                                     pattern: {
@@ -167,7 +167,7 @@ export default function LoginPage() {
                                 autoComplete="current-password"
                                 disabled={isLoading}
                                 placeholder="Mật khẩu"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                                 {...register("password", {
                                     required: "Mật khẩu là bắt buộc",
                                     minLength: {
@@ -203,7 +203,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={!isValid || isLoading}
-                            className="w-full py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            className="w-full py-2.5 sm:py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
                         >
                             {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                         </button>
@@ -239,7 +239,7 @@ export default function LoginPage() {
                             </button>
                         </div>
 
-                        <p className="text-center text-sm text-gray-600 mt-6">
+                        <p className="text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-6">
                             Chưa có tài khoản?{" "}
                             <Link
                                 href="/register"

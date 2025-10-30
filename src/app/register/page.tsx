@@ -9,7 +9,6 @@ import { CreateUserRequest } from "@/types/user";
 
 interface RegisterFormData extends CreateUserRequest {
     confirmPassword: string;
-    agreeToTerms: boolean;
 }
 
 export default function RegisterPage() {
@@ -28,8 +27,7 @@ export default function RegisterPage() {
             username: "",
             email: "",
             password: "",
-            confirmPassword: "",
-            agreeToTerms: false
+            confirmPassword: ""
         }
     });
 
@@ -58,37 +56,37 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-3 sm:px-4 py-4">
             <div className="w-full max-w-md">
                 {/* Register Card */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 md:p-8">
                     {/* Header */}
-                    <div className="text-center mb-6">
-                        <div className="flex justify-between items-center mb-4">
+                    <div className="text-center mb-4 sm:mb-6">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
                             <Link
                                 href="/"
-                                className="flex items-center space-x-1 text-gray-500 hover:text-orange-500 transition-colors text-sm"
+                                className="flex items-center space-x-1 text-gray-500 hover:text-orange-500 transition-colors text-xs sm:text-sm"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
-                                <span>Trang chủ</span>
+                                <span className="hidden sm:inline">Trang chủ</span>
                             </Link>
 
-                            <Link href="/" className="inline-flex items-center space-x-2">
-                                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-                                    <span className="text-white font-bold text-sm">FL</span>
+                            <Link href="/" className="inline-flex items-center space-x-1.5 sm:space-x-2">
+                                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                                    <span className="text-white font-bold text-xs sm:text-sm">FL</span>
                                 </div>
-                                <span className="text-lg font-bold text-gray-900">F Learning</span>
+                                <span className="text-base sm:text-lg font-bold text-gray-900 hidden sm:inline">F Learning</span>
                             </Link>
 
-                            <div className="w-16"></div> {/* Spacer for balance */}
+                            <div className="w-10 sm:w-16"></div> {/* Spacer for balance */}
                         </div>
 
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                             Tạo tài khoản
                         </h2>
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-gray-600 text-xs sm:text-sm">
                             Bắt đầu hành trình học tập của bạn
                         </p>
                     </div>
@@ -191,27 +189,6 @@ export default function RegisterPage() {
                             )}
                         </div>
 
-                        <div className="flex items-start pt-2">
-                            <input
-                                id="agreeToTerms"
-                                type="checkbox"
-                                disabled={isLoading}
-                                className="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded mt-0.5"
-                                {...register("agreeToTerms", {
-                                    required: "Bạn phải đồng ý với điều khoản sử dụng"
-                                })}
-                            />
-                            <label htmlFor="agreeToTerms" className="ml-2 text-xs text-gray-600 leading-tight">
-                                Tôi đồng ý với{" "}
-                                <Link href="/terms" className="text-orange-500 hover:text-orange-400 font-medium">
-                                    Điều khoản sử dụng
-                                </Link>
-                            </label>
-                        </div>
-                        {errors.agreeToTerms && (
-                            <p className="text-xs text-red-600">{errors.agreeToTerms.message}</p>
-                        )}
-
                         <button
                             type="submit"
                             disabled={!isValid || isLoading}
@@ -249,7 +226,7 @@ export default function RegisterPage() {
                             </button>
                         </div>
 
-                        <p className="text-center text-xs text-gray-600 mt-4">
+                        <p className="text-center text-xs sm:text-sm text-gray-600 mt-3 sm:mt-4">
                             Đã có tài khoản?{" "}
                             <Link
                                 href="/login"

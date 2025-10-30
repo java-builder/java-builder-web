@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +11,8 @@ import { formatApiDate, formatApiDateOnly } from '@/utils/dateUtils';
 import BlogTypeIcon from '@/components/admin/blogs/BlogTypeIcon';
 import PublicMarkdownRenderer from '@/components/blogs/PublicMarkdownRenderer';
 import Header from '@/components/Header';
+import { authApi } from '@/services/auth.service';
+import toast from 'react-hot-toast';
 import MotionWrapper from '@/components/MotionWrapper';
 import CommentList from '@/components/blogs/CommentList';
 
@@ -22,6 +24,9 @@ export default function BlogDetailPage() {
     const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
+    const hasIncrementedViewRef = useRef(false);
 
     const {
         comments,
@@ -71,9 +76,35 @@ export default function BlogDetailPage() {
         }
     }, [blogId, loadRootComments]);
 
+    // Increment view once when page loads
+    useEffect(() => {
+        const incrementView = async () => {
+            if (!blogId || hasIncrementedViewRef.current) return;
+            try {
+                hasIncrementedViewRef.current = true;
+                const newCount = await blogService.incrementView(blogId);
+                setBlog(prev => prev ? { ...prev, viewCount: typeof newCount === 'number' ? newCount : prev.viewCount + 1 } : prev);
+            } catch {
+                // fail silently; do not block UX
+            }
+        };
+        incrementView();
+    }, [blogId]);
+
+    // Load initial liked state from localStorage
+    useEffect(() => {
+        if (!blogId) return;
+        try {
+            const liked = localStorage.getItem(`liked_blog_${blogId}`);
+            setIsLiked(liked === '1');
+        } catch {}
+    }, [blogId]);
+
     const handleAddComment = async (content: string) => {
         try {
             await addComment(content);
+            // Optimistically update local comment count on successful add
+            setBlog(prev => prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev);
         } catch (err) {
             console.error('Error adding comment:', err);
         }
@@ -82,6 +113,8 @@ export default function BlogDetailPage() {
     const handleReplyComment = async (commentId: string, content: string) => {
         try {
             await replyToComment(commentId, content);
+            // Optimistically update local comment count on successful reply
+            setBlog(prev => prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev);
         } catch (err) {
             console.error('Error replying to comment:', err);
         }
@@ -92,6 +125,12 @@ export default function BlogDetailPage() {
         try {
             await deleteComment(commentId);
             console.log('Comment deleted successfully:', commentId);
+            // Optimistically decrease local comment count after deletion
+            setBlog(prev => {
+                if (!prev) return prev;
+                const nextCount = prev.commentCount > 0 ? prev.commentCount - 1 : 0;
+                return { ...prev, commentCount: nextCount };
+            });
         } catch (err) {
             console.error('Error deleting comment:', err);
         }
@@ -102,6 +141,26 @@ export default function BlogDetailPage() {
             await loadMoreComments();
         } catch (err) {
             console.error('Error loading more comments:', err);
+        }
+    };
+
+    const shareTo = (network: 'facebook' | 'linkedin') => {
+        try {
+            const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+            const encodedUrl = encodeURIComponent(currentUrl);
+            let shareUrl = '';
+
+            if (network === 'facebook') {
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+            } else if (network === 'linkedin') {
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+            }
+
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'noopener,noreferrer');
+            }
+        } catch (e) {
+            console.error('Share failed', e);
         }
     };
 
@@ -215,39 +274,42 @@ export default function BlogDetailPage() {
                                         </h1>
 
                                         {/* Meta Info */}
-                                        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 mb-4">
+                                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 mb-4">
                                             {blog.author && (
-                                                <div className="flex items-center space-x-2">
+                                                <div className="flex items-center space-x-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md">
                                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
                                                     <span>Tác giả: {blog.author}</span>
                                                 </div>
                                             )}
-                                            <div className="flex items-center space-x-2">
+                                            <div className="flex items-center space-x-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <time dateTime={blog.createdAt}>{formatApiDate(blog.createdAt)}</time>
                                             </div>
-                                            <div className="flex items-center space-x-2">
+                                            <div className="flex items-center space-x-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
-                                                <span>{blog.viewCount} lượt xem</span>
+                                                <span className="font-semibold text-gray-900">{blog.viewCount}</span>
+                                                <span>lượt xem</span>
                                             </div>
-                                            <div className="flex items-center space-x-2">
+                                            <div className="flex items-center space-x-1 bg-red-50 text-red-700 px-2 py-1 rounded-md">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                                 </svg>
-                                                <span>{blog.likeCount} lượt thích</span>
+                                                <span className="font-semibold">{blog.likeCount}</span>
+                                                <span>lượt thích</span>
                                             </div>
-                                            <div className="flex items-center space-x-2">
+                                            <div className="flex items-center space-x-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                                 </svg>
-                                                <span>{comments.length} bình luận</span>
+                                                <span className="font-semibold">{blog.commentCount}</span>
+                                                <span>bình luận</span>
                                             </div>
                                         </div>
                                     </div>
@@ -269,18 +331,58 @@ export default function BlogDetailPage() {
                                     <div className="mt-8 pt-6 border-t border-gray-200">
                                         <div className="flex flex-wrap items-center justify-between gap-3">
                                             <div className="flex items-center space-x-3">
-                                                <button className="flex items-center space-x-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-sm">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <button
+                                                    onClick={async () => {
+                                                        const isAuthed = authApi.isAuthenticated();
+                                                        if (!isAuthed) {
+                                                            setShowLoginModal(true);
+                                                            return;
+                                                        }
+                                                        if (isLiked) {
+                                                            toast('Bạn đã thích bài viết này', { icon: '❤️' });
+                                                            return;
+                                                        }
+                                                        try {
+                                                            const newCount = await blogService.incrementLike(blogId);
+                                                            setBlog(prev => prev ? { ...prev, likeCount: typeof newCount === 'number' ? newCount : prev.likeCount + 1 } : prev);
+                                                            setIsLiked(true);
+                                                            try { localStorage.setItem(`liked_blog_${blogId}`, '1'); } catch {}
+                                                        } catch (err) {
+                                                            console.error('Error incrementing like:', err);
+                                                        }
+                                                    }}
+                                                    className={`relative flex items-center space-x-1.5 px-3 py-1.5 rounded-md transition-all text-sm ${isLiked ? 'bg-red-600 text-white hover:bg-red-700 shadow-sm' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}
+                                                >
+                                                    {isLiked && (
+                                                        <span className="absolute -left-1 -top-1 inline-flex h-3 w-3 rounded-full bg-red-300 opacity-75 animate-ping"></span>
+                                                    )}
+                                                    <svg className="w-4 h-4" fill={isLiked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                                     </svg>
-                                                    <span>Thích ({blog.likeCount})</span>
+                                                    <span>{isLiked ? 'Bỏ thích' : 'Thích'} ({blog.likeCount})</span>
                                                 </button>
-                                                <button className="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors text-sm">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                                                    </svg>
-                                                    <span>Chia sẻ</span>
-                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => shareTo('facebook')}
+                                                        className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#1877F2]/10 text-[#1877F2] rounded-md hover:bg-[#1877F2]/20 transition-colors text-sm"
+                                                        aria-label="Chia sẻ Facebook"
+                                                    >
+                                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                            <path d="M22.675 0h-21.35C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796 1.764v2.314h3.59l-.467 3.622h-3.123V24h6.127C23.407 24 24 23.407 24 22.676V1.325C24 .593 23.407 0 22.675 0z" />
+                                                        </svg>
+                                                        <span>Facebook</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => shareTo('linkedin')}
+                                                        className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#0A66C2]/10 text-[#0A66C2] rounded-md hover:bg-[#0A66C2]/20 transition-colors text-sm"
+                                                        aria-label="Chia sẻ LinkedIn"
+                                                    >
+                                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                            <path d="M20.451 20.451h-3.554v-5.569c0-1.328-.025-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.942v5.664H9.355V9h3.414v1.561h.047c.476-.9 1.637-1.852 3.37-1.852 3.604 0 4.269 2.372 4.269 5.455v6.287zM5.337 7.433a2.063 2.063 0 11.001-4.126 2.063 2.063 0 01-.001 4.126zM7.114 20.451H3.56V9h3.554v11.451zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.555C0 23.228.792 24 1.771 24h20.451C23.2 24 24 23.228 24 22.277V1.723C24 .771 23.2 0 22.222 0z" />
+                                                        </svg>
+                                                        <span>LinkedIn</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <div className="text-xs text-gray-500">
                                                 Cập nhật: {formatApiDateOnly(blog.createdAt)}
@@ -410,6 +512,19 @@ export default function BlogDetailPage() {
                     </div>
                 </div>
             </div>
+            {showLoginModal && (
+                <div className="fixed inset-0 z-50">
+                    <div className="absolute inset-0 bg-black/30" onClick={() => setShowLoginModal(false)}></div>
+                    <div className="relative mx-auto mt-40 w-full max-w-sm rounded-2xl bg-white shadow-xl border border-gray-100 p-5">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Cần đăng nhập</h3>
+                        <p className="text-sm text-gray-600 mb-4">Vui lòng đăng nhập để thích bài viết này.</p>
+                        <div className="flex justify-end gap-2">
+                            <button onClick={() => setShowLoginModal(false)} className="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200">Để sau</button>
+                            <Link href="/login" className="px-3 py-1.5 text-sm rounded-md bg-orange-500 text-white hover:bg-orange-600">Đăng nhập</Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -47,6 +47,7 @@ export interface Blog {
     featuredImage?: string;
     viewCount: number;
     likeCount: number;
+    commentCount: number;
     author?: string;
     createdAt: string;
 }

@@ -32,6 +32,18 @@ export const blogService = {
         return response.data.result;
     },
 
+    // Tăng lượt xem
+    async incrementView(id: string): Promise<number> {
+        const response = await apiClient.patch(`/api/v1/blogs/${id}/increment-view`);
+        return response.data.result as number;
+    },
+
+    // Tăng lượt thích
+    async incrementLike(id: string): Promise<number> {
+        const response = await apiClient.patch(`/api/v1/blogs/${id}/increment-like`);
+        return response.data.result as number;
+    },
+
     // Cập nhật blog
     async updateBlog(data: { id: string } & Partial<CreateBlogRequest>): Promise<Blog> {
         const response = await apiClient.put('/api/v1/blogs', data);
