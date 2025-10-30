@@ -91,19 +91,63 @@ export default function BlogDetailPage() {
         incrementView();
     }, [blogId]);
 
-    // Load initial liked state from localStorage
+    useEffect(() => {
+        let isCancelled = false;
+        let isLoadingSequence = false;
+
+        const tryScrollToHash = async () => {
+            if (typeof window === 'undefined' || isCancelled || isLoadingSequence) return;
+            const hash = window.location.hash;
+            if (!hash) return;
+            const targetId = hash.slice(1);
+
+            const scrollToEl = (el: HTMLElement) => {
+                setTimeout(() => {
+                    if (!isCancelled) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 0);
+            };
+
+            let el = document.getElementById(targetId);
+            if (el) {
+                scrollToEl(el);
+                return;
+            }
+
+            isLoadingSequence = true;
+            const MAX_TRIES = 10;
+            for (let i = 0; i < MAX_TRIES && !isCancelled; i++) {
+                await loadMoreComments().catch(() => { });
+                await new Promise(resolve => setTimeout(resolve, 0));
+                el = document.getElementById(targetId);
+                if (el) {
+                    scrollToEl(el as HTMLElement);
+                    break;
+                }
+            }
+            isLoadingSequence = false;
+        };
+
+        tryScrollToHash();
+        window.addEventListener('hashchange', tryScrollToHash);
+        return () => {
+            isCancelled = true;
+            window.removeEventListener('hashchange', tryScrollToHash);
+        };
+    }, [comments, loadMoreComments]);
+
     useEffect(() => {
         if (!blogId) return;
         try {
             const liked = localStorage.getItem(`liked_blog_${blogId}`);
             setIsLiked(liked === '1');
-        } catch {}
+        } catch { }
     }, [blogId]);
 
     const handleAddComment = async (content: string) => {
         try {
             await addComment(content);
-            // Optimistically update local comment count on successful add
             setBlog(prev => prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev);
         } catch (err) {
             console.error('Error adding comment:', err);
@@ -346,7 +390,7 @@ export default function BlogDetailPage() {
                                                             const newCount = await blogService.incrementLike(blogId);
                                                             setBlog(prev => prev ? { ...prev, likeCount: typeof newCount === 'number' ? newCount : prev.likeCount + 1 } : prev);
                                                             setIsLiked(true);
-                                                            try { localStorage.setItem(`liked_blog_${blogId}`, '1'); } catch {}
+                                                            try { localStorage.setItem(`liked_blog_${blogId}`, '1'); } catch { }
                                                         } catch (err) {
                                                             console.error('Error incrementing like:', err);
                                                         }

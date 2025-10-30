@@ -4,13 +4,14 @@ import { blogService } from '@/services/blog.service';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     try {
-        const blog = await blogService.getBlogById(params.id);
+        const { id } = await params;
+        const blog = await blogService.getBlogById(id);
 
         const title = blog.title || 'Bài viết';
         const description = (blog.summary || '').replace(/\s+/g, ' ').slice(0, 180) || 'Chia sẻ từ F-Learning';
-        const url = `${SITE_URL}/blogs/${params.id}`;
+        const url = `${SITE_URL}/blogs/${id}`;
         const imgUrl = blog.featuredImage && /^https?:\/\//i.test(blog.featuredImage)
             ? blog.featuredImage
             : (blog.featuredImage ? `${SITE_URL}${blog.featuredImage.startsWith('/') ? '' : '/'}${blog.featuredImage}` : undefined);
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 export default async function BlogDetailLayout({ children, params }: { children: ReactNode; params: Promise<{ id: string }> }) {
     // Await to satisfy Next 15 layout typing for dynamic params
     await params;
-    return <>{children}</>; 
+    return <>{children}</>;
 }
 
 

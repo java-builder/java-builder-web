@@ -93,7 +93,7 @@ export default function CommentItem({
     };
 
     return (
-        <div className="border-b border-gray-100 pb-6 last:border-b-0">
+        <div id={`comment-${comment.id}`} className="border-b border-gray-100 pb-6 last:border-b-0 scroll-mt-24">
             <div className="flex items-start space-x-4">
                 {/* Avatar */}
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg ring-2 ring-blue-100">

@@ -4,19 +4,39 @@ import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/services/auth.service';
+import { notificationApi, NotificationDetailResponse } from '@/services/notification.service';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationDetailResponse[]>([]);
+  const [hasUnread, setHasUnread] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const router = useRouter();
 
-  // Check if user is logged in
   useEffect(() => {
     setIsLoggedIn(authApi.isAuthenticated());
   }, []);
 
-  // Handle logout
+  useEffect(() => {
+    const loadNotifs = async () => {
+      if (!isNotifOpen || !isLoggedIn) return;
+      try {
+        const res = await notificationApi.getMyNotifications();
+        const list = res.result?.result || [];
+        setNotifications(list);
+        const count = list.filter(n => !n.read).length;
+        setHasUnread(count > 0);
+        setUnreadCount(count);
+      } catch (e) {
+        console.error('Failed to load notifications', e);
+      }
+    };
+    loadNotifs();
+  }, [isNotifOpen, isLoggedIn]);
+
   const handleLogout = async () => {
     try {
       await authApi.logout();
@@ -86,6 +106,73 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+          {isLoggedIn && (
+            <div className="relative">
+              <button
+                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                className="p-2 rounded-full hover:bg-gray-100 text-gray-700 relative"
+                aria-label="Thông báo"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {hasUnread && (
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] leading-[18px] rounded-full text-center font-semibold">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {isNotifOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="px-3 py-1.5 text-xs font-medium text-gray-500">Thông báo</div>
+                  <div className="max-h-80 overflow-auto">
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-6 text-center">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                          </svg>
+                        </div>
+                        <div className="text-sm font-medium text-gray-700">Chưa có thông báo</div>
+                        <div className="text-xs text-gray-500 mt-1">Khi có hoạt động mới, chúng tôi sẽ hiển thị tại đây.</div>
+                      </div>
+                    ) : (
+                      notifications.map((n) => (
+                        <Link
+                          key={n.id}
+                          href={n.content || '#'}
+                          className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-orange-100 ${!n.read ? 'bg-orange-50' : ''}`}
+                          onClick={() => setIsNotifOpen(false)}
+                        >
+                          <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                            {n.avatar ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={n.avatar} alt={n.senderName} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-xs text-gray-600">{(n.senderName || 'U')[0]?.toUpperCase()}</span>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm text-gray-900 line-clamp-2">
+                              <span className="font-medium">{n.title || 'Thông báo'}</span>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">{n.senderName}</div>
+                            <div className="text-[11px] text-gray-400 mt-0.5">{n.createdAt}</div>
+                          </div>
+                          {n.link && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={n.link} alt="attachment" className="w-10 h-10 rounded object-contain bg-white border border-gray-200" />
+                          )}
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {isLoggedIn ? (
             <div className="relative">
               <button
