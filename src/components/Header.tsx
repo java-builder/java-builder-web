@@ -22,7 +22,7 @@ export default function Header() {
 
   useEffect(() => {
     const loadNotifs = async () => {
-      if (!isNotifOpen || !isLoggedIn) return;
+      if (!isLoggedIn) return;
       try {
         const res = await notificationApi.getMyNotifications();
         const list = res.result?.result || [];
@@ -35,7 +35,7 @@ export default function Header() {
       }
     };
     loadNotifs();
-  }, [isNotifOpen, isLoggedIn]);
+  }, [isLoggedIn]);
 
   const handleLogout = async () => {
     try {
