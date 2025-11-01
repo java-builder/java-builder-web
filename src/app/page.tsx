@@ -102,7 +102,7 @@ export default function Home() {
                 {/* Main Heading */}
                 <div className="space-y-6">
                   <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                    Khám phá vùng đất <span className="text-orange-400">lập trình</span>
+                    Khởi đầu hành trình <span className="text-orange-400">lập trình</span>
                   </h1>
 
                   <div className="space-y-2 md:space-y-3 text-base md:text-lg lg:text-xl text-gray-100 max-w-4xl mx-auto px-4">
