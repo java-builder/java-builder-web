@@ -13,8 +13,31 @@ export interface NotificationDetailResponse {
 }
 
 export const notificationApi = {
-    getMyNotifications: async () => {
-        const response = await apiClient.get<ApiResponse<PageResponse<NotificationDetailResponse>>>('/api/v1/notifications');
+    getMyNotifications: async (page: number = 1, size?: number) => {
+        const params: { page: number; size?: number } = { page };
+        if (size) {
+            params.size = size;
+        }
+        const response = await apiClient.get<ApiResponse<PageResponse<NotificationDetailResponse>>>('/api/v1/notifications', {
+            params
+        });
+        return response.data;
+    },
+    
+    getUnreadNotifications: async (page: number = 1, size?: number) => {
+        const params: { page: number; size?: number } = { page };
+        if (size) {
+            params.size = size;
+        }
+        const response = await apiClient.get<ApiResponse<PageResponse<NotificationDetailResponse>>>('/api/v1/notifications/unread', {
+            params
+        });
+        return response.data;
+    },
+    
+    markAsRead: async (ids: string[]) => {
+        if (ids.length === 0) return;
+        const response = await apiClient.post<ApiResponse<number>>('/api/v1/notifications/mark-read', { ids });
         return response.data;
     },
 };
