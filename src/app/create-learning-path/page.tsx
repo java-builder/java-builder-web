@@ -26,8 +26,6 @@ export default function CreateLearningPathPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [learningPathResponse, setLearningPathResponse] = useState<ChatbotResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
-    // const [viewMode] = useState<'roadmap' | 'list'>('roadmap');
-
     const totalSteps = 6;
 
     const goals = [
@@ -220,7 +218,6 @@ export default function CreateLearningPathPage() {
                     ></div>
                 </div>
                 <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg border border-white/50 overflow-hidden">
-
                     {step === 1 && (
                         <MotionWrapper animation="fadeInUp" duration={0.6}>
                             <div className="p-8 text-center">

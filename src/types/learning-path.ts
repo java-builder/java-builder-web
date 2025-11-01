@@ -1,72 +1,67 @@
-export interface ApiResponse<T> {
-    code: number;
-    result: T;
-}
-
 export interface ChatbotRequest {
-    message: string;
+  message: string;
 }
 
 export interface ChatbotResponse {
-    answer: string;
-    learningPathPlan?: LearningPathPlan;
+  answer: string;
+  learningPathPlan?: LearningPathPlan;
 }
 
 export interface LearningPathPlan {
-    title: string;
-    duration: number;
-    timeUnit: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
-    periods: PeriodPlan[];
+  title: string;
+  duration: number;
+  timeUnit: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+  periods: PeriodPlan[];
 }
 
 export interface PeriodPlan {
-    periodNumber: number;
-    title: string;
-    topics: TopicOutline[];
+  periodNumber: number;
+  title: string;
+  topics: TopicOutline[];
 }
 
 export interface TopicOutline {
-    title: string;
-    explanation?: string | null;
-    lessons: LessonDetail[];
-    exercises: ExerciseDetail[];
-    quizzes: QuizItem[];
+  title: string;
+  explanation?: string | null;
+  lessons: LessonDetail[];
+  exercises: ExerciseDetail[];
+  quizzes: QuizItem[];
 }
 
 export interface LessonDetail {
-    name: string;
-    explanation: string;
-    keywords: KeyConcept[];
+  name: string;
+  explanation: string;
+  keywords: KeyConcept[];
 }
 
 export interface ExerciseDetail {
-    title: string;
-    instructions: GuideStep[];
-    type: string;
+  title: string;
+  instructions: GuideStep[];
+  type: string;
 }
 
 export interface QuizItem {
-    question: string;
-    options: QuizOptionItem[];
-    correctAnswer: string;
-    explanation: string;
+  question: string;
+  options: QuizOptionItem[];
+  correctAnswer: string;
+  explanation: string;
 }
 
 export interface KeyConcept {
-    term: string;
-    explanation: string;
+  term: string;
+  explanation: string;
 }
 
 export interface GuideStep {
-    stepNumber: number;
-    description: string;
-    command?: string | null;
-    codeBlock?: string | null;
+  stepNumber: number;
+  description: string;
+  command?: string | null;
+  codeBlock?: string | null;
 }
 
 export interface QuizOptionItem {
-    label: 'A' | 'B' | 'C' | 'D';
-    option: string;
+  label: 'A' | 'B' | 'C' | 'D';
+  option: string;
 }
 
 export interface LearningPreferences {

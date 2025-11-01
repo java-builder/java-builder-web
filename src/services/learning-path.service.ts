@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/axios';
 import { isAxiosError } from 'axios';
-import { ApiResponse, ChatbotRequest, ChatbotResponse, CreateLearningPathRequest, LearningPathDetailResponse, LearningPreferences } from '@/types/learning-path';
+import { ChatbotRequest, ChatbotResponse, CreateLearningPathRequest, LearningPathDetailResponse, LearningPreferences } from '@/types/learning-path';
+import { ApiResponse } from '@/types/api';
 
 export class LearningPathService {
 

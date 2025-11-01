@@ -15,7 +15,6 @@ interface ProfessionalRoadmapProps {
 export default function ProfessionalRoadmap({ learningPath, answer, onCreateNew }: ProfessionalRoadmapProps) {
     const router = useRouter();
     const [expandedPeriods, setExpandedPeriods] = useState<Set<number>>(new Set());
-    // const [selectedTopic] = useState<string | null>(null);
     const [modalContent, setModalContent] = useState<{ type: 'lessons' | 'exercises' | 'quizzes', data: unknown[], title: string } | null>(null);
     const [quizAnswers, setQuizAnswers] = useState<{ [key: string]: string }>({});
     const [showResults, setShowResults] = useState<{ [key: string]: boolean }>({});

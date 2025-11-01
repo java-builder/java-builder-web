@@ -3,12 +3,6 @@ export interface EnableTwoFactorRequest {
 }
 
 export interface TwoFactorSetupResponse {
-    qrCodeData: string; // Base64 data URL từ backend
+    qrCodeData: string;
 }
 
-
-export interface ApiResponse<T> {
-    code: number;
-    message: string;
-    result?: T;
-}

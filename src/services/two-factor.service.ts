@@ -1,8 +1,8 @@
 import { apiClient } from '@/lib/axios';
+import { ApiResponse } from '@/types/api';
 import {
     EnableTwoFactorRequest,
     TwoFactorSetupResponse,
-    ApiResponse
 } from '@/types/two-factor';
 
 export const twoFactorApi = {

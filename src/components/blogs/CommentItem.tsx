@@ -102,10 +102,10 @@ export default function CommentItem({
     }, [expandReplyId]);
 
     return (
-        <div id={`comment-${comment.id}`} className="border-b border-gray-100 pb-6 last:border-b-0 scroll-mt-24">
-            <div className="flex items-start space-x-4">
+        <div id={`comment-${comment.id}`} className="pb-6 last:pb-0 scroll-mt-24">
+            <div className="flex items-start space-x-3 sm:space-x-4">
                 {/* Avatar */}
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg ring-2 ring-blue-100">
+                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium text-sm flex-shrink-0">
                     {comment.avatar ? (
                         <Image
                             src={comment.avatar}
@@ -121,12 +121,12 @@ export default function CommentItem({
 
                 {/* Comment Content */}
                 <div className="flex-1 min-w-0">
-                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div className="bg-white rounded-lg p-4 border border-gray-200">
                         <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center space-x-3">
-                                <span className="font-bold text-gray-900 text-sm">{comment.username}</span>
+                            <div className="flex items-center space-x-2 sm:space-x-3 flex-wrap">
+                                <span className="font-bold text-gray-900 text-sm sm:text-base">{comment.username}</span>
                                 <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                <time className="text-xs text-gray-500 font-medium" dateTime={comment.createdAt}>
+                                <time className="text-xs text-gray-500 font-medium whitespace-nowrap" dateTime={comment.createdAt}>
                                     {formatApiDateOnly(comment.createdAt)}
                                 </time>
                             </div>
@@ -160,18 +160,22 @@ export default function CommentItem({
                             )}
                         </div>
 
-                        <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
+                        <p className="text-gray-800 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words">
                             {comment.content}
                         </p>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center space-x-6 mt-3 ml-2">
+                    <div className="flex items-center space-x-3 mt-3">
                         <button
                             onClick={() => setShowReplyForm(!showReplyForm)}
-                            className="flex items-center space-x-2 text-xs text-gray-500 hover:text-orange-500 transition-colors duration-200 font-medium"
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-md border transition-all duration-200 ${
+                                showReplyForm 
+                                    ? 'bg-orange-50 text-orange-600 border-orange-300' 
+                                    : 'text-gray-600 bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                            }`}
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>
                             <span>Trả lời</span>
@@ -181,11 +185,11 @@ export default function CommentItem({
                             <button
                                 onClick={handleLoadReplies}
                                 disabled={isLoadingReplies}
-                                className="flex items-center space-x-1 text-xs text-gray-500 hover:text-orange-500 transition-colors disabled:opacity-50"
+                                className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-orange-50 hover:text-orange-600 border border-gray-300 hover:border-orange-300 rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoadingReplies ? (
                                     <>
-                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
@@ -193,11 +197,25 @@ export default function CommentItem({
                                     </>
                                 ) : (
                                     <>
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                         </svg>
                                         <span>
-                                            {showReplies ? 'Ẩn phản hồi' : `Xem tất cả ${repliesCount} phản hồi`}
+                                            {showReplies ? (
+                                                <>
+                                                    Ẩn phản hồi
+                                                    <svg className="w-3 h-3 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                                    </svg>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Xem {repliesCount} phản hồi
+                                                    <svg className="w-3 h-3 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </>
+                                            )}
                                         </span>
                                     </>
                                 )}
@@ -208,29 +226,29 @@ export default function CommentItem({
 
                     {/* Replies */}
                     {showReplies && comment.replies && comment.replies.length > 0 && (
-                        <div className="mt-3 ml-6 space-y-3">
+                        <div className="mt-3 ml-4 space-y-3 border-l border-gray-200 pl-4">
                             {comment.replies.map((reply) => (
                                 <div key={reply.id} id={`comment-${reply.id}`} className="flex items-start space-x-2 scroll-mt-24">
-                                    <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
+                                    <div className="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center text-white font-medium text-xs flex-shrink-0">
                                         {reply.avatar ? (
                                             <Image
                                                 src={reply.avatar}
                                                 alt={reply.username}
-                                                width={24}
-                                                height={24}
+                                                width={28}
+                                                height={28}
                                                 className="w-full h-full rounded-full object-cover"
                                             />
                                         ) : (
                                             reply.username.charAt(0).toUpperCase()
                                         )}
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="bg-gray-50 rounded-lg p-2">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <div className="flex items-center space-x-2">
-                                                    <span className="font-semibold text-gray-900 text-xs">{reply.username}</span>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center space-x-2 flex-wrap">
+                                                    <span className="font-semibold text-gray-900 text-xs sm:text-sm">{reply.username}</span>
                                                     <span className="text-xs text-gray-500">•</span>
-                                                    <time className="text-xs text-gray-500" dateTime={reply.createdAt}>
+                                                    <time className="text-xs text-gray-500 whitespace-nowrap" dateTime={reply.createdAt}>
                                                         {formatApiDateOnly(reply.createdAt)}
                                                     </time>
                                                 </div>
@@ -263,7 +281,7 @@ export default function CommentItem({
                                                     </div>
                                                 )}
                                             </div>
-                                            <p className="text-gray-800 text-xs leading-relaxed whitespace-pre-wrap">
+                                            <p className="text-gray-800 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">
                                                 {reply.content}
                                             </p>
                                         </div>
@@ -275,9 +293,9 @@ export default function CommentItem({
 
                     {/* Reply Form - Hiển thị ở dưới cùng */}
                     {showReplyForm && (
-                        <div className="mt-4">
+                        <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
                             <div className="flex items-start space-x-2">
-                                <div className="w-6 h-6 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                                <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0">
                                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                     </svg>
@@ -289,11 +307,11 @@ export default function CommentItem({
                                             value={replyContent}
                                             onChange={(e) => setReplyContent(e.target.value)}
                                             placeholder="Viết trả lời..."
-                                            className={`w-full p-2 border rounded resize-none focus:ring-1 focus:ring-orange-200 focus:border-orange-300 transition-all duration-200 text-sm ${replyContent.length >= 250
+                                            className={`w-full p-2 border rounded-lg resize-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 text-sm placeholder-gray-400 ${replyContent.length >= 250
                                                 ? 'border-red-300 bg-red-50'
                                                 : replyContent.length > 200
                                                     ? 'border-yellow-300 bg-yellow-50'
-                                                    : 'border-gray-200 bg-white hover:border-gray-300'
+                                                    : 'border-gray-300 bg-white'
                                                 }`}
                                             rows={2}
                                             maxLength={250}
@@ -301,7 +319,7 @@ export default function CommentItem({
                                         />
 
                                         {/* Character Counter */}
-                                        <div className={`absolute bottom-1 right-1 text-xs px-1 py-0.5 rounded ${replyContent.length >= 250
+                                        <div className={`absolute bottom-2 right-2 text-xs px-1.5 py-0.5 rounded ${replyContent.length >= 250
                                             ? 'bg-red-100 text-red-600'
                                             : replyContent.length > 200
                                                 ? 'bg-yellow-100 text-yellow-600'
@@ -312,13 +330,13 @@ export default function CommentItem({
                                     </div>
 
                                     {/* Action Buttons */}
-                                    <div className="flex items-center justify-end space-x-1 mt-1">
+                                    <div className="flex items-center justify-end space-x-2 mt-2">
                                         <button
                                             onClick={() => {
                                                 setShowReplyForm(false);
                                                 setReplyContent('');
                                             }}
-                                            className="px-2 py-1 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors duration-200"
+                                            className="px-3 py-1 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
                                         >
                                             Hủy
                                         </button>
@@ -326,26 +344,21 @@ export default function CommentItem({
                                         <button
                                             onClick={handleReply}
                                             disabled={!replyContent.trim() || isSubmittingReply || replyContent.length >= 250}
-                                            className={`px-3 py-1 rounded text-xs transition-all duration-200 flex items-center space-x-1 ${!replyContent.trim() || isSubmittingReply || replyContent.length >= 250
+                                            className={`px-3 py-1 rounded text-xs transition-colors ${!replyContent.trim() || isSubmittingReply || replyContent.length >= 250
                                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                                 : 'bg-orange-500 text-white hover:bg-orange-600'
                                                 }`}
                                         >
                                             {isSubmittingReply ? (
-                                                <>
+                                                <span className="flex items-center space-x-1">
                                                     <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
                                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                     </svg>
-                                                    <span>Gửi...</span>
-                                                </>
+                                                    <span>Đang gửi...</span>
+                                                </span>
                                             ) : (
-                                                <>
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5-5 5M6 12h12" />
-                                                    </svg>
-                                                    <span>Gửi</span>
-                                                </>
+                                                'Gửi'
                                             )}
                                         </button>
                                     </div>

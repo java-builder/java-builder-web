@@ -82,18 +82,18 @@ export default function CommentList({
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">
                     Bình luận ({comments.length})
                 </h3>
 
                 {comments.length > 0 && (
                     <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-500">Sắp xếp:</span>
+                        <span className="text-sm text-gray-600">Sắp xếp:</span>
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'popular')}
-                            className="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
                         >
                             <option value="newest">Mới nhất</option>
                             <option value="oldest">Cũ nhất</option>
@@ -118,7 +118,7 @@ export default function CommentList({
                         </svg>
                     </div>
                     <h4 className="text-lg font-medium text-gray-900 mb-2">Chưa có bình luận nào</h4>
-                    <p className="text-gray-500">Hãy là người đầu tiên chia sẻ suy nghĩ của bạn!</p>
+                    <p className="text-gray-500 text-sm">Hãy là người đầu tiên chia sẻ suy nghĩ của bạn!</p>
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -138,11 +138,11 @@ export default function CommentList({
 
             {/* Load More Button */}
             {comments.length > 0 && hasMore && onLoadMore && (
-                <div className="text-center">
+                <div className="text-center pt-2">
                     <button
                         onClick={onLoadMore}
                         disabled={isLoading}
-                        className="px-6 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                        className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
                     >
                         {isLoading ? 'Đang tải...' : 'Xem thêm bình luận'}
                     </button>

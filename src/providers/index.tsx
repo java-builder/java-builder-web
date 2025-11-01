@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 import ToastProvider from '@/components/providers/ToastProvider';
+import Chatbot from '@/components/Chatbot';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -18,6 +19,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         <QueryClientProvider client={queryClient}>
             {children}
             <ToastProvider />
+            <Chatbot />
         </QueryClientProvider>
     );
 }
