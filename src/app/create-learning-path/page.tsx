@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import MotionWrapper from '@/components/MotionWrapper';
 import LearningPathDisplay from '@/components/learning-path/LearningPathDisplay';
@@ -8,8 +9,12 @@ import { LearningPathService } from '@/services/learning-path.service';
 import { ChatbotResponse, LearningPreferences } from '@/types/learning-path';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { authApi } from '@/services/auth.service';
 
 export default function CreateLearningPathPage() {
+    const router = useRouter();
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [step, setStep] = useState(1);
     const [preferences, setPreferences] = useState<LearningPreferences>({
         goals: [],
@@ -27,6 +32,18 @@ export default function CreateLearningPathPage() {
     const [learningPathResponse, setLearningPathResponse] = useState<ChatbotResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
     const totalSteps = 6;
+
+    // Check authentication on mount
+    useEffect(() => {
+        const checkAuth = () => {
+            const isAuthenticated = authApi.isAuthenticated();
+            setIsCheckingAuth(false);
+            if (!isAuthenticated) {
+                setShowLoginModal(true);
+            }
+        };
+        checkAuth();
+    }, []);
 
     const goals = [
         { id: 'career', label: 'Phát triển sự nghiệp', desc: 'Thăng tiến trong công việc hiện tại', icon: '🚀' },
@@ -118,6 +135,18 @@ export default function CreateLearningPathPage() {
             default: return false;
         }
     };
+
+    // Show loading while checking auth
+    if (isCheckingAuth) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600">Đang kiểm tra...</p>
+                </div>
+            </div>
+        );
+    }
 
     // If learning path is created, show the result
     console.log('Current learningPathResponse:', learningPathResponse);
@@ -586,6 +615,40 @@ export default function CreateLearningPathPage() {
             </main>
 
             <Footer />
+
+            {/* Login Modal */}
+            {showLoginModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 bg-black/20" onClick={() => router.push('/')}></div>
+                    <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border border-gray-200">
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Cần đăng nhập</h3>
+                            <p className="text-gray-600 mb-6">
+                                Bạn cần đăng nhập để tạo lộ trình học tập. Vui lòng đăng nhập để tiếp tục.
+                            </p>
+                            <div className="flex gap-3 justify-center">
+                                <button
+                                    onClick={() => router.push('/')}
+                                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium"
+                                >
+                                    Về trang chủ
+                                </button>
+                                <Link
+                                    href="/login"
+                                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-medium"
+                                >
+                                    Đăng nhập
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

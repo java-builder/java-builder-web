@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { chatbotApi } from '@/services/chatbot.service';
 import { SuggestedBlogInfo } from '@/types/chatbot';
@@ -8,6 +9,7 @@ import { BlogTypeDisplayNames, BlogType } from '@/types/blog';
 import BlogTypeIcon from '@/components/admin/blogs/BlogTypeIcon';
 
 export default function Chatbot() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Array<{ type: 'user' | 'ai'; content: string }>>([]);
   const [input, setInput] = useState('');
@@ -25,6 +27,11 @@ export default function Chatbot() {
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  // Close modal when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     scrollToBottom();
