@@ -8,13 +8,18 @@ import { SuggestedBlogInfo } from '@/types/chatbot';
 import { BlogTypeDisplayNames, BlogType } from '@/types/blog';
 import BlogTypeIcon from '@/components/admin/blogs/BlogTypeIcon';
 
+interface Message {
+  type: 'user' | 'ai';
+  content: string;
+  suggestedBlogs?: SuggestedBlogInfo[];
+}
+
 export default function Chatbot() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Array<{ type: 'user' | 'ai'; content: string }>>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [suggestedBlogs, setSuggestedBlogs] = useState<SuggestedBlogInfo[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +40,7 @@ export default function Chatbot() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, suggestedBlogs]);
+  }, [messages]);
 
   // Focus input when chat is open and not loading
   useEffect(() => {
@@ -56,7 +61,6 @@ export default function Chatbot() {
 
     const userMessage = input.trim();
     setInput('');
-    setSuggestedBlogs([]);
 
     // Add user message
     const newMessages = [...messages, { type: 'user' as const, content: userMessage }];
@@ -70,8 +74,12 @@ export default function Chatbot() {
         const aiMessage = response.result.answer;
         const blogs = response.result.suggestedBlogs || [];
 
-        setMessages([...newMessages, { type: 'ai' as const, content: aiMessage }]);
-        setSuggestedBlogs(blogs);
+        // Add AI message with suggested blogs
+        setMessages([...newMessages, { 
+          type: 'ai' as const, 
+          content: aiMessage,
+          suggestedBlogs: blogs
+        }]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -200,18 +208,70 @@ export default function Chatbot() {
             ) : (
               <>
                 {messages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-                  >
+                  <div key={idx} className="space-y-4 animate-fade-in">
                     <div
-                      className={`max-w-[85%] rounded-2xl p-4 shadow-md ${msg.type === 'user'
-                        ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-orange-200'
-                        : 'bg-white border border-gray-100 text-gray-800'
-                        }`}
+                      className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                      <div
+                        className={`max-w-[85%] rounded-2xl p-4 shadow-md ${msg.type === 'user'
+                          ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-orange-200'
+                          : 'bg-white border border-gray-100 text-gray-800'
+                          }`}
+                      >
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                      </div>
                     </div>
+
+                    {/* Suggested blogs for AI messages */}
+                    {msg.type === 'ai' && msg.suggestedBlogs && msg.suggestedBlogs.length > 0 && (
+                      <div className="space-y-3 animate-fade-in">
+                        <div className="text-sm font-bold text-gray-700 px-2 flex items-center space-x-2">
+                          <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          </svg>
+                          <span>Bài viết được gợi ý</span>
+                        </div>
+                        {msg.suggestedBlogs.map((blog) => (
+                          <Link
+                            key={blog.id}
+                            href={`/blogs/${blog.id}`}
+                            className="block bg-white border-2 border-gray-100 rounded-xl p-4 hover:shadow-lg hover:border-orange-300 hover:scale-[1.02] transition-all group animate-fade-in cursor-pointer"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <div className="flex items-start space-x-3">
+                              {blog.featuredImage && (
+                                <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200 group-hover:border-orange-300 transition-colors">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={blog.featuredImage}
+                                    alt={blog.title}
+                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <BlogTypeIcon blogType={blog.blogType as BlogType} className="w-4 h-4 text-blue-600" />
+                                  <span className="text-xs font-semibold text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 px-2.5 py-1 rounded-full border border-blue-200">
+                                    {getBlogTypeDisplayName(blog.blogType)}
+                                  </span>
+                                </div>
+                                <h4 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors mb-2">
+                                  {blog.title}
+                                </h4>
+                                {blog.summary && (
+                                  <p className="text-xs text-gray-600 line-clamp-2 mb-2 leading-relaxed">{blog.summary}</p>
+                                )}
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-gray-500 font-medium">👤 {blog.author}</span>
+                                  <span className="text-orange-500 font-bold group-hover:text-orange-600">Đọc thêm →</span>
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -224,57 +284,6 @@ export default function Chatbot() {
                         <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
                     </div>
-                  </div>
-                )}
-
-                {/* Suggested blogs */}
-                {suggestedBlogs.length > 0 && (
-                  <div className="space-y-3 mt-4 animate-fade-in">
-                    <div className="text-sm font-bold text-gray-700 px-2 flex items-center space-x-2">
-                      <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                      </svg>
-                      <span>Bài viết được gợi ý</span>
-                    </div>
-                    {suggestedBlogs.map((blog) => (
-                      <Link
-                        key={blog.id}
-                        href={`/blogs/${blog.id}`}
-                        className="block bg-white border-2 border-gray-100 rounded-xl p-4 hover:shadow-lg hover:border-orange-300 hover:scale-[1.02] transition-all group animate-fade-in cursor-pointer"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <div className="flex items-start space-x-3">
-                          {blog.featuredImage && (
-                            <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200 group-hover:border-orange-300 transition-colors">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={blog.featuredImage}
-                                alt={blog.title}
-                                className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                              />
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <BlogTypeIcon blogType={blog.blogType as BlogType} className="w-4 h-4 text-blue-600" />
-                              <span className="text-xs font-semibold text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 px-2.5 py-1 rounded-full border border-blue-200">
-                                {getBlogTypeDisplayName(blog.blogType)}
-                              </span>
-                            </div>
-                            <h4 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors mb-2">
-                              {blog.title}
-                            </h4>
-                            {blog.summary && (
-                              <p className="text-xs text-gray-600 line-clamp-2 mb-2 leading-relaxed">{blog.summary}</p>
-                            )}
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500 font-medium">👤 {blog.author}</span>
-                              <span className="text-orange-500 font-bold group-hover:text-orange-600">Đọc thêm →</span>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
                   </div>
                 )}
 
