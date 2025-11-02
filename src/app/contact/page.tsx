@@ -6,7 +6,6 @@ import Footer from '@/components/Footer';
 import MotionWrapper from '@/components/MotionWrapper';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
-import ContactMap from '@/components/contact/ContactMap';
 
 export default function ContactPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -140,9 +139,6 @@ export default function ContactPage() {
                         <div className="space-y-8">
                             {/* Contact Information */}
                             <ContactInfo />
-
-                            {/* Map */}
-                            <ContactMap />
                         </div>
                     </MotionWrapper>
                 </div>

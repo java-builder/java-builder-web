@@ -131,7 +131,7 @@ export default function BlogsPage() {
 
               {/* Sub text */}
               <p className="mt-4 text-base md:text-lg text-gray-100 max-w-3xl">
-                Nơi tổng hợp bài viết chất lượng từ cộng đồng học tập, cập nhật xu hướng và kinh nghiệm thực tế.
+                Nơi mình (<span className="text-orange-400 font-semibold">Lê Khánh Đức</span>) chia sẻ kiến thức, cập nhật xu hướng và kinh nghiệm thực tế.
               </p>
 
               {/* CTA */}

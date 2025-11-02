@@ -27,24 +27,12 @@ export default function ContactInfo() {
         {
             icon: (
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            ),
-            title: 'Địa chỉ',
-            details: ['123 Đường ABC, Quận XYZ', 'TP. Hồ Chí Minh, Việt Nam'],
-            description: 'Đến thăm văn phòng của chúng tôi',
-            color: 'bg-purple-100 text-purple-600'
-        },
-        {
-            icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             ),
             title: 'Giờ làm việc',
             details: ['Thứ 2 - Thứ 6: 8:00 - 17:00', 'Thứ 7: 8:00 - 12:00'],
-            description: 'Chủ nhật nghỉ',
+            description: '',
             color: 'bg-orange-100 text-orange-600'
         }
     ];
