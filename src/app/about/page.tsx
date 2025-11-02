@@ -24,16 +24,6 @@ import Footer from '@/components/Footer';
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState('about');
 
-  const skills = [
-    { name: 'Java', icon: FaCode, description: 'Ngôn ngữ lập trình chính, phát triển các ứng dụng web và backend' },
-    { name: 'Spring Boot', icon: FaServer, description: 'Framework mạnh mẽ để xây dựng các ứng dụng Java' },
-    { name: 'Microservice', icon: FaLaptopCode, description: 'Kiến trúc phân tán, mỗi service độc lập và dễ mở rộng' },
-    { name: 'AWS', icon: FaCloud, description: 'Dịch vụ điện toán đám mây, deploy và quản lý ứng dụng' },
-    { name: 'Docker', icon: FaDocker, description: 'Công nghệ container hóa, đảm bảo ứng dụng chạy ổn định' },
-    { name: 'CI/CD', icon: FaServer, description: 'Tự động hóa quá trình build, test và deploy code' },
-  ];
-
-
   // Tech stack - các công nghệ chính tôi sử dụng
   const techStack = [
     { icon: FaCode, name: 'Java', description: 'Ngôn ngữ lập trình chính' },
@@ -46,7 +36,6 @@ export default function AboutPage() {
 
   const tabButtons = [
     { id: 'about', label: 'Giới thiệu', icon: FaHeart },
-    { id: 'skills', label: 'Kỹ năng', icon: FaCode },
     { id: 'contact', label: 'Liên hệ', icon: FaEnvelope },
   ];
 
@@ -85,11 +74,6 @@ export default function AboutPage() {
               </div>
               <h1 className="text-5xl font-bold mb-4">Lê Khánh Đức</h1>
               <p className="text-xl text-orange-300 mb-6">Java Developer & Founder of F Learning</p>
-              <div className="flex flex-wrap justify-center gap-4 text-sm">
-                <span className="bg-orange-500/20 backdrop-blur-sm px-4 py-2 rounded-full">Java Expert</span>
-                <span className="bg-orange-500/20 backdrop-blur-sm px-4 py-2 rounded-full">Spring Boot</span>
-                <span className="bg-orange-500/20 backdrop-blur-sm px-4 py-2 rounded-full">Educational Content Creator</span>
-              </div>
             </div>
           </MotionWrapper>
 
@@ -209,38 +193,6 @@ export default function AboutPage() {
                     đều là một bước tiến về phía trước.&quot;
                   </blockquote>
                 </div>
-              </div>
-            </div>
-          </MotionWrapper>
-        )}
-
-
-        {activeTab === 'skills' && (
-          <MotionWrapper animation="fadeInUp" duration={0.6}>
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Kỹ năng chuyên môn</h2>
-              <div className="grid md:grid-cols-2 gap-8">
-                {skills.map((skill, index) => (
-                  <div key={index} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 group">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors duration-300">
-                        <skill.icon className="text-2xl text-orange-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{skill.name}</h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">{skill.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-xl p-8 text-white text-center">
-                <h3 className="text-2xl font-bold mb-4">Cam kết của tôi</h3>
-                <p className="text-lg leading-relaxed">
-                  Tôi luôn cập nhật và học hỏi các công nghệ mới để mang đến cho học viên
-                  những kiến thức thực tế và hữu ích nhất trong thị trường lập trình hiện tại.
-                </p>
               </div>
             </div>
           </MotionWrapper>
