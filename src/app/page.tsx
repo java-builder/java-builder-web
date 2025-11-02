@@ -24,7 +24,7 @@ export default function Home() {
     try {
       setIsLoading(true);
       setError('');
-      const result = await courseApi.getCourses(1, 3); // Lấy 3 khóa học đầu tiên
+      const result = await courseApi.getCourses(1, 3);
       if (result.code === 200 && result.result) {
         setCourses(result.result.result || []);
       }
@@ -40,7 +40,7 @@ export default function Home() {
     try {
       setIsLoadingBlogs(true);
       setBlogError('');
-      const result = await blogService.getBlogs({ page: 1, size: 3 });
+      const result = await blogService.getBlogs({ page: 1, size: 6 });
       setBlogs(result.result.slice(0, 3));
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra khi tải blogs';
