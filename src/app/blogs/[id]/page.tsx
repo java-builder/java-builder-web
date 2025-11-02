@@ -16,6 +16,7 @@ import { authApi } from '@/services/auth.service';
 import toast from 'react-hot-toast';
 import MotionWrapper from '@/components/MotionWrapper';
 import CommentList from '@/components/blogs/CommentList';
+import BlogAISummary from '@/components/blogs/BlogAISummary';
 
 export default function BlogDetailPage() {
     const params = useParams();
@@ -405,6 +406,14 @@ export default function BlogDetailPage() {
                                             <PublicMarkdownRenderer content={blog.summary} className="text-blue-800 text-xs sm:text-sm" />
                                         </div>
                                     )}
+
+                                    {/* AI Summary */}
+                                    <div className="mb-6 sm:mb-8">
+                                        <BlogAISummary
+                                            blogTitle={blog.title}
+                                            blogContent={blog.content}
+                                        />
+                                    </div>
 
                                     {/* Content */}
                                     <div className="max-w-none -mx-4 sm:mx-0 px-4 sm:px-0">
