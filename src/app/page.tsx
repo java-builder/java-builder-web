@@ -110,19 +110,6 @@ export default function Home() {
                     <p className="leading-relaxed">Từ zero đến hero, cùng <span className="text-orange-400 font-semibold">Lê Khánh Đức</span> phát triển kỹ năng coding thực sự.</p>
                   </div>
                 </div>
-
-                {/* CTA Button */}
-                <div className="pt-5">
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                  >
-                    Bắt đầu ngay
-                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </Link>
-                </div>
               </div>
             </MotionWrapper>
           </div>
