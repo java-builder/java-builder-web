@@ -12,8 +12,6 @@ import {
   FaCode,
   FaCoffee,
   FaHeart,
-  FaUsers,
-  FaAward,
   FaLaptopCode,
   FaServer,
   FaCloud,
@@ -36,11 +34,14 @@ export default function AboutPage() {
   ];
 
 
-  const achievements = [
-    { icon: FaUsers, number: '500+', text: 'Học viên đã đào tạo' },
-    { icon: FaGraduationCap, number: '50+', text: 'Khóa học đã tạo' },
-    { icon: FaAward, number: '5+', text: 'Năm kinh nghiệm' },
-    { icon: FaLaptopCode, number: '100+', text: 'Dự án đã hoàn thành' },
+  // Tech stack - các công nghệ chính tôi sử dụng
+  const techStack = [
+    { icon: FaCode, name: 'Java', description: 'Ngôn ngữ lập trình chính' },
+    { icon: FaServer, name: 'Spring Boot', description: 'Framework phát triển ứng dụng' },
+    { icon: FaLaptopCode, name: 'Microservice', description: 'Kiến trúc phân tán' },
+    { icon: FaCloud, name: 'AWS', description: 'Dịch vụ điện toán đám mây' },
+    { icon: FaDocker, name: 'Docker', description: 'Container hóa ứng dụng' },
+    { icon: FaServer, name: 'CI/CD', description: 'Tự động hóa triển khai' },
   ];
 
   const tabButtons = [
@@ -92,18 +93,21 @@ export default function AboutPage() {
             </div>
           </MotionWrapper>
 
-          {/* Stats */}
+          {/* Tech Stack */}
           <MotionWrapper animation="fadeInUp" duration={1.0} delay={0.2} mode="mount">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
-              {achievements.map((achievement, index) => (
-                <div key={index} className="text-center">
-                  <div className="bg-orange-500/20 backdrop-blur-sm rounded-lg p-6 hover:bg-orange-500/30 transition-all duration-300">
-                    <achievement.icon className="text-3xl mx-auto mb-3 text-orange-300" />
-                    <div className="text-2xl font-bold mb-1">{achievement.number}</div>
-                    <div className="text-sm text-orange-200">{achievement.text}</div>
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold text-center mb-6 text-orange-300">Tech Stack</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                {techStack.map((tech, index) => (
+                  <div key={index} className="text-center">
+                    <div className="bg-orange-500/20 backdrop-blur-sm rounded-lg p-4 md:p-6 hover:bg-orange-500/30 transition-all duration-300 cursor-pointer group">
+                      <tech.icon className="text-2xl md:text-3xl mx-auto mb-2 md:mb-3 text-orange-300 group-hover:scale-110 transition-transform duration-300" />
+                      <div className="text-lg md:text-xl font-bold mb-1 text-white">{tech.name}</div>
+                      <div className="text-xs md:text-sm text-orange-200">{tech.description}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </MotionWrapper>
         </div>
