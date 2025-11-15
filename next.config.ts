@@ -5,40 +5,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'png.pngtree.com',
-        port: '',
-        pathname: '/**',
+        hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: '**.cloudinary.com',
-        port: '',
-        pathname: '/**',
+        protocol: 'http',
+        hostname: '**',
       },
-      {
-        protocol: 'https',
-        hostname: '**.googleapis.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.facebook.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'f-learning.s3.ap-southeast-1.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      }
     ],
   },
 };
