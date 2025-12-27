@@ -155,3 +155,17 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Brand accent utilities (ensure new classes exist after automated replacement) */
+.bg-accent { background-color: #fb7a1a !important; }
+.bg-accent-600 { background-color: #ea580c !important; }
+.text-accent { color: #fb7a1a !important; }
+.text-brand { color: #1a56db !important; }
+.from-accent { --tw-gradient-from: #fb7a1a !important; --tw-gradient-stops: #fb7a1a, var(--tw-gradient-to, rgba(234,88,12,0)) !important; }
+.to-accent-600 { --tw-gradient-to: #ea580c !important; }
+.hover\:text-accent:hover { color: #fb7a1a !important; }
+.hover\:bg-accent:hover { background-color: #fb7a1a !important; }
+.hover\:bg-accent-600:hover { background-color: #ea580c !important; }
+.border-accent { border-color: #fb7a1a !important; }
+.focus\:ring-accent:focus { --tw-ring-color: rgba(251,122,26,0.5) !important; }
+.focus\:border-accent:focus { border-color: #fb7a1a !important; }

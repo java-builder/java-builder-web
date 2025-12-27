@@ -40,6 +40,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
+      <head>
+        {/* Inline data URL favicon (academic cap) to override cached icons immediately */}
+        <link
+          rel="icon"
+          href={"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%231a56db'/><polygon points='10,28 32,18 54,28 32,36' fill='%23ffffff' /><rect x='22' y='34' width='20' height='8' rx='2' fill='%23ffffff' /><circle cx='44' cy='26' r='2' fill='%23f59e0b'/><path d='M44 28 L40 34' stroke='%23f59e0b' stroke-width='1.6' stroke-linecap='round' /></svg>"}
+        />
+        <link rel="icon" href="/favicon-academic.svg" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="apple-touch-icon" href="/favicon-academic.svg" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

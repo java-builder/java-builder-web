@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="F Learning favicon">
+  <rect width="64" height="64" rx="12" fill="#1a56db"/>
+  <!-- Mortarboard cap -->
+  <g transform="translate(0,0)" fill="#ffffff">
+    <polygon points="10,28 32,18 54,28 32,36" />
+    <rect x="22" y="34" width="20" height="8" rx="2" />
+    <!-- Tassel -->
+    <circle cx="44" cy="26" r="2" fill="#f59e0b"/>
+    <path d="M44 28 L40 34" stroke="#f59e0b" stroke-width="1.6" stroke-linecap="round" />
+  </g>
+</svg>
+
+

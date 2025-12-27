@@ -19,7 +19,6 @@ export default function Header() {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
-  // Store page for each tab
   const [tabPages, setTabPages] = useState<{ all: number; unread: number }>({ all: 1, unread: 1 });
   const [itemsPerPage, setItemsPerPage] = useState<{ all: number; unread: number }>({ all: 0, unread: 0 });
   const router = useRouter();
@@ -99,12 +98,10 @@ export default function Header() {
     }
   }, [isLoggedIn, activeTab, loadUnreadCount, itemsPerPage]);
 
-  // Track if we've loaded for the current tab to prevent infinite loop
   const loadedTabsRef = useRef<Set<'all' | 'unread'>>(new Set());
   const prevActiveTabRef = useRef<'all' | 'unread'>(activeTab);
 
   useEffect(() => {
-    // Only load if tab changed or not loaded yet
     if (isLoggedIn && (prevActiveTabRef.current !== activeTab || !loadedTabsRef.current.has(activeTab))) {
       const savedPage = tabPages[activeTab] || 1;
       loadNotifications(savedPage, false);
@@ -134,7 +131,6 @@ export default function Header() {
   const handleTabChange = (tab: 'all' | 'unread') => {
     setActiveTab(tab);
     setNotifications([]);
-    // Remove from loaded tabs to allow reload when switching back
     loadedTabsRef.current.delete(tab);
   };
 
@@ -182,33 +178,51 @@ export default function Header() {
             )}
           </button>
 
-          {/* Logo - desktop only */}
           <div className="hidden lg:flex items-center space-x-3">
-            <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">FL</span>
-            </div>
-            <span className="text-xl font-bold text-gray-800">F Learning</span>
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Nền tảng học tập trực tuyến</span>
+            <Link href="/" className="flex items-center space-x-3">
+                <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shadow-lg">
+                  <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5 12.083 12.083 0 015.84 10.578L12 14z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <svg
+                  viewBox="0 0 24 24"
+                  className="absolute -inset-1 w-12 h-12 text-accent opacity-30 pointer-events-none animate-spin"
+                  style={{ animationDuration: '6s' }}
+                >
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none" strokeDasharray="31.4 31.4" strokeLinecap="round" />
+                </svg>
+              </div>
+
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Nền tảng học tập trực tuyến</span>
+              </div>
+            </Link>
           </div>
         </div>
 
         <div className="hidden lg:flex items-center space-x-8">
-          <Link href="/" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          <Link href="/" className="text-gray-700 hover:text-accent font-medium transition-colors">
             Trang chủ
           </Link>
-          <Link href="/courses" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          <Link href="/courses" className="text-gray-700 hover:text-accent font-medium transition-colors">
             Khóa học
           </Link>
-          <Link href="/create-learning-path" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          {/* <Link href="/create-learning-path" className="text-gray-700 hover:text-accent font-medium transition-colors">
             Lộ trình học tập
-          </Link>
-          <Link href="/blogs" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          </Link> */}
+          <Link href="/blogs" className="text-gray-700 hover:text-accent font-medium transition-colors">
             Bài viết
           </Link>
-          <Link href="/about" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          <Link href="/about" className="text-gray-700 hover:text-accent font-medium transition-colors">
             Giới thiệu
           </Link>
-          <Link href="/contact" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          <Link href="/contact" className="text-gray-700 hover:text-accent font-medium transition-colors">
             Liên hệ
           </Link>
         </div>
@@ -358,9 +372,9 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="hidden sm:flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-orange-500 transition-colors rounded-lg hover:bg-gray-50"
+                className="hidden sm:flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-accent transition-colors rounded-lg hover:bg-gray-50"
               >
-                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
@@ -374,7 +388,7 @@ export default function Header() {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="sm:hidden p-1.5 text-gray-600 hover:text-gray-800 transition-colors"
               >
-                <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center">
+                <div className="w-7 h-7 bg-accent rounded-full flex items-center justify-center">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
