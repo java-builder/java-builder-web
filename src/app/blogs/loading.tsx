@@ -21,7 +21,10 @@ export default function Loading() {
         {/* Cards skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+            <div
+              key={i}
+              className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm"
+            >
               <div className="aspect-video bg-gray-100 animate-pulse" />
               <div className="p-5 space-y-3">
                 <div className="h-3 w-24 bg-gray-100 rounded animate-pulse" />

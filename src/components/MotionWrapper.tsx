@@ -1,15 +1,20 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
 
 interface MotionWrapperProps {
   children: ReactNode;
-  animation?: 'fadeInUp' | 'fadeInLeft' | 'fadeInRight' | 'scaleIn' | 'slideInUp';
+  animation?:
+    | "fadeInUp"
+    | "fadeInLeft"
+    | "fadeInRight"
+    | "scaleIn"
+    | "slideInUp";
   delay?: number;
   duration?: number;
   className?: string;
-  mode?: 'inView' | 'mount'; // inView: trigger when in viewport, mount: trigger on mount
+  mode?: "inView" | "mount"; // inView: trigger when in viewport, mount: trigger on mount
 }
 
 const animations = {
@@ -37,17 +42,20 @@ const animations = {
 
 export default function MotionWrapper({
   children,
-  animation = 'fadeInUp',
+  animation = "fadeInUp",
   delay = 0,
   duration = 0.6,
-  className = '',
-  mode = 'inView',
+  className = "",
+  mode = "inView",
 }: MotionWrapperProps) {
   const animationConfig = animations[animation];
 
   const motionProps =
-    mode === 'inView'
-      ? { whileInView: animationConfig.animate, viewport: { once: true, margin: '-30px' } }
+    mode === "inView"
+      ? {
+          whileInView: animationConfig.animate,
+          viewport: { once: true, margin: "-30px" },
+        }
       : { animate: animationConfig.animate };
 
   return (

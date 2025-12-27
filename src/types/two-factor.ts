@@ -1,8 +1,7 @@
 export interface EnableTwoFactorRequest {
-    code: string;
+  code: string;
 }
 
 export interface TwoFactorSetupResponse {
-    qrCodeData: string;
+  qrCodeData: string;
 }
-

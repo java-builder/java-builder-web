@@ -1,37 +1,37 @@
 export interface CreateUserRequest {
-    username: string;
-    email: string;
-    password: string;
+  username: string;
+  email: string;
+  password: string;
 }
 
 export interface CreateUserResponse {
-    username: string;
-    email: string;
+  username: string;
+  email: string;
 }
 
 export interface UpdateProfileRequest {
-    username: string;
-    university: string;
+  username: string;
+  university: string;
 }
 
 export interface UpdateProfileResponse {
-    username: string;
-    university: string;
+  username: string;
+  university: string;
 }
 
 export interface UserDetailResponse {
-    id: string;
-    username: string;
-    email: string;
-    avatar?: string;
-    university?: string;
-    userStatus: UserStatus;
-    mftEnable: boolean;
-    createdAt: string;
+  id: string;
+  username: string;
+  email: string;
+  avatar?: string;
+  university?: string;
+  userStatus: UserStatus;
+  mftEnable: boolean;
+  createdAt: string;
 }
 
 export enum UserStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE',
-    BANNED = 'BANNED'
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  BANNED = "BANNED",
 }

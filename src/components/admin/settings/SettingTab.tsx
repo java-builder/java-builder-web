@@ -1,54 +1,59 @@
-'use client';
+"use client";
 
-import { SettingTab as SettingTabType, SettingsData } from '@/types/settings';
-import SettingSection from './SettingSection';
+import { SettingTab as SettingTabType, SettingsData } from "@/types/settings";
+import SettingSection from "./SettingSection";
 
 interface SettingTabProps {
-    tab: SettingTabType;
-    settings: SettingsData;
-    onSettingChange: (tabId: string, sectionId: string, fieldId: string, value: string | number | boolean) => void;
-    onSave: () => void;
-    isSaving: boolean;
+  tab: SettingTabType;
+  settings: SettingsData;
+  onSettingChange: (
+    tabId: string,
+    sectionId: string,
+    fieldId: string,
+    value: string | number | boolean,
+  ) => void;
+  onSave: () => void;
+  isSaving: boolean;
 }
 
 export default function SettingTab({
-    tab,
-    settings,
-    onSettingChange,
-    onSave,
-    isSaving
+  tab,
+  settings,
+  onSettingChange,
+  onSave,
+  isSaving,
 }: SettingTabProps) {
-    return (
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
         <div>
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                        {tab.icon} {tab.name}
-                    </h2>
-                    <p className="text-sm text-gray-600 mt-1">
-                        Quản lý cài đặt {tab.name.toLowerCase()}
-                    </p>
-                </div>
-                <button
-                    onClick={onSave}
-                    disabled={isSaving}
-                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
-                </button>
-            </div>
-
-            <div className="space-y-6">
-                {tab.sections.map((section) => (
-                    <SettingSection
-                        key={section.id}
-                        section={section}
-                        tabId={tab.id}
-                        settings={settings}
-                        onSettingChange={onSettingChange}
-                    />
-                ))}
-            </div>
+          <h2 className="text-xl font-semibold text-gray-900">
+            {tab.icon} {tab.name}
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Quản lý cài đặt {tab.name.toLowerCase()}
+          </p>
         </div>
-    );
+        <button
+          onClick={onSave}
+          disabled={isSaving}
+          className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
+        </button>
+      </div>
+
+      <div className="space-y-6">
+        {tab.sections.map((section) => (
+          <SettingSection
+            key={section.id}
+            section={section}
+            tabId={tab.id}
+            settings={settings}
+            onSettingChange={onSettingChange}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }

@@ -10,7 +10,7 @@ export interface ChatbotResponse {
 export interface LearningPathPlan {
   title: string;
   duration: number;
-  timeUnit: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+  timeUnit: "DAY" | "WEEK" | "MONTH" | "YEAR";
   periods: PeriodPlan[];
 }
 
@@ -60,7 +60,7 @@ export interface GuideStep {
 }
 
 export interface QuizOptionItem {
-  label: 'A' | 'B' | 'C' | 'D';
+  label: "A" | "B" | "C" | "D";
   option: string;
 }
 
@@ -86,7 +86,7 @@ export interface LearningPathDetailResponse {
   id: string;
   title: string;
   duration: number;
-  timeUnit: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+  timeUnit: "DAY" | "WEEK" | "MONTH" | "YEAR";
   periods: PeriodPlanDetailResponse[];
   createdAt?: string;
   updatedAt?: string;

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
-import { authApi } from '@/services/auth.service';
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { authApi } from "@/services/auth.service";
 
 const GoogleCallbackContent = () => {
   const router = useRouter();
@@ -18,27 +18,33 @@ const GoogleCallbackContent = () => {
       try {
         setHasProcessed(true);
 
-        const code = searchParams.get('code');
+        const code = searchParams.get("code");
 
         if (!code) {
-          setError('Không nhận được mã xác thực từ Google');
+          setError("Không nhận được mã xác thực từ Google");
           setIsProcessing(false);
           return;
         }
 
         const response = await authApi.loginWithGoogle(code);
 
-        if (response.code === 200 && response.result?.accessToken && response.result?.userId) {
+        if (
+          response.code === 200 &&
+          response.result?.accessToken &&
+          response.result?.userId
+        ) {
           localStorage.setItem("access_token", response.result.accessToken);
           localStorage.setItem("user_id", response.result.userId);
 
           router.push("/");
         } else {
-          setError('Không nhận được thông tin đăng nhập từ Google');
+          setError("Không nhận được thông tin đăng nhập từ Google");
           setIsProcessing(false);
         }
       } catch (err) {
-        setError(`Đăng nhập Google thất bại: ${err instanceof Error ? err.message : 'Vui lòng thử lại.'}`);
+        setError(
+          `Đăng nhập Google thất bại: ${err instanceof Error ? err.message : "Vui lòng thử lại."}`,
+        );
         setIsProcessing(false);
       } finally {
         setIsProcessing(false);

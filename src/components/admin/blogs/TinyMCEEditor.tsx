@@ -1,46 +1,66 @@
-'use client';
+"use client";
 
-import { Editor } from '@tinymce/tinymce-react';
-import { useRef } from 'react';
+import { Editor } from "@tinymce/tinymce-react";
+import { useRef } from "react";
 
 interface TinyMCEEditorProps {
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-    error?: string;
-    height?: number;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  error?: string;
+  height?: number;
 }
 
 export default function TinyMCEEditor({
-    value,
-    onChange,
-    placeholder = "Viết nội dung chi tiết của bài viết...",
-    error,
-    height = 400
+  value,
+  onChange,
+  placeholder = "Viết nội dung chi tiết của bài viết...",
+  error,
+  height = 400,
 }: TinyMCEEditorProps) {
-    const editorRef = useRef<Editor | null>(null);
+  const editorRef = useRef<Editor | null>(null);
 
-    return (
-        <div className="space-y-2">
-            <div className={`rounded-lg overflow-hidden ${error ? 'border border-red-300' : ''}`}>
-                <Editor
-                    apiKey="no-api-key" // Sử dụng free version
-                    onInit={(_, editor) => { editorRef.current = editor; }}
-                    value={value}
-                    onEditorChange={(content) => onChange(content)}
-                    init={{
-                        height: height,
-                        menubar: false,
-                        plugins: [
-                            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'codesample'
-                        ],
-                        toolbar: 'undo redo | blocks | ' +
-                            'bold italic forecolor | alignleft aligncenter ' +
-                            'alignright alignjustify | bullist numlist outdent indent | ' +
-                            'removeformat | link image | codesample | help',
-                        content_style: `
+  return (
+    <div className="space-y-2">
+      <div
+        className={`rounded-lg overflow-hidden ${error ? "border border-red-300" : ""}`}
+      >
+        <Editor
+          apiKey="no-api-key" // Sử dụng free version
+          onInit={(_, editor) => {
+            editorRef.current = editor;
+          }}
+          value={value}
+          onEditorChange={(content) => onChange(content)}
+          init={{
+            height: height,
+            menubar: false,
+            plugins: [
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "charmap",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "fullscreen",
+              "insertdatetime",
+              "media",
+              "table",
+              "help",
+              "wordcount",
+              "codesample",
+            ],
+            toolbar:
+              "undo redo | blocks | " +
+              "bold italic forecolor | alignleft aligncenter " +
+              "alignright alignjustify | bullist numlist outdent indent | " +
+              "removeformat | link image | codesample | help",
+            content_style: `
               body { 
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
                 font-size: 14px;
@@ -95,58 +115,70 @@ export default function TinyMCEEditor({
                 font-weight: 600; 
               }
             `,
-                        placeholder: placeholder,
-                        branding: false,
-                        promotion: false,
-                        resize: false,
-                        statusbar: false,
-                        codesample_languages: [
-                            { text: 'HTML/XML', value: 'markup' },
-                            { text: 'JavaScript', value: 'javascript' },
-                            { text: 'TypeScript', value: 'typescript' },
-                            { text: 'CSS', value: 'css' },
-                            { text: 'PHP', value: 'php' },
-                            { text: 'Ruby', value: 'ruby' },
-                            { text: 'Python', value: 'python' },
-                            { text: 'Java', value: 'java' },
-                            { text: 'C', value: 'c' },
-                            { text: 'C#', value: 'csharp' },
-                            { text: 'C++', value: 'cpp' },
-                            { text: 'SQL', value: 'sql' },
-                            { text: 'JSON', value: 'json' },
-                            { text: 'Bash', value: 'bash' }
-                        ],
-                        setup: (editor: { on: (event: string, callback: () => void) => void; getContainer: () => HTMLElement | null }) => {
-                            editor.on('init', () => {
-                                const container = editor.getContainer();
-                                if (container) {
-                                    container.style.border = error ? '1px solid #ef4444' : '1px solid #d1d5db';
-                                    container.style.borderRadius = '8px';
-                                    container.style.overflow = 'hidden';
-                                }
-                            });
-                        }
-                    }}
-                />
-            </div>
+            placeholder: placeholder,
+            branding: false,
+            promotion: false,
+            resize: false,
+            statusbar: false,
+            codesample_languages: [
+              { text: "HTML/XML", value: "markup" },
+              { text: "JavaScript", value: "javascript" },
+              { text: "TypeScript", value: "typescript" },
+              { text: "CSS", value: "css" },
+              { text: "PHP", value: "php" },
+              { text: "Ruby", value: "ruby" },
+              { text: "Python", value: "python" },
+              { text: "Java", value: "java" },
+              { text: "C", value: "c" },
+              { text: "C#", value: "csharp" },
+              { text: "C++", value: "cpp" },
+              { text: "SQL", value: "sql" },
+              { text: "JSON", value: "json" },
+              { text: "Bash", value: "bash" },
+            ],
+            setup: (editor: {
+              on: (event: string, callback: () => void) => void;
+              getContainer: () => HTMLElement | null;
+            }) => {
+              editor.on("init", () => {
+                const container = editor.getContainer();
+                if (container) {
+                  container.style.border = error
+                    ? "1px solid #ef4444"
+                    : "1px solid #d1d5db";
+                  container.style.borderRadius = "8px";
+                  container.style.overflow = "hidden";
+                }
+              });
+            },
+          }}
+        />
+      </div>
 
-            {error && (
-                <p className="text-sm text-red-600">{error}</p>
-            )}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
-            {/* Quick Guide */}
-            <div className="text-xs text-gray-500 bg-gray-50 rounded-lg p-3">
-                <div className="font-medium mb-2">💡 Hướng dẫn nhanh:</div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+B</kbd> Bold</div>
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+I</kbd> Italic</div>
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+K</kbd> Link</div>
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+Z</kbd> Undo</div>
-                </div>
-                <div className="mt-2 text-xs">
-                    <strong>Code:</strong> Sử dụng nút <code>&lt;/&gt;</code> trên toolbar để chèn code block với syntax highlighting
-                </div>
-            </div>
+      {/* Quick Guide */}
+      <div className="text-xs text-gray-500 bg-gray-50 rounded-lg p-3">
+        <div className="font-medium mb-2">💡 Hướng dẫn nhanh:</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div>
+            <kbd className="bg-white px-1 rounded">Ctrl+B</kbd> Bold
+          </div>
+          <div>
+            <kbd className="bg-white px-1 rounded">Ctrl+I</kbd> Italic
+          </div>
+          <div>
+            <kbd className="bg-white px-1 rounded">Ctrl+K</kbd> Link
+          </div>
+          <div>
+            <kbd className="bg-white px-1 rounded">Ctrl+Z</kbd> Undo
+          </div>
         </div>
-    );
+        <div className="mt-2 text-xs">
+          <strong>Code:</strong> Sử dụng nút <code>&lt;/&gt;</code> trên toolbar
+          để chèn code block với syntax highlighting
+        </div>
+      </div>
+    </div>
+  );
 }

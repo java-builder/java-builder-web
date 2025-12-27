@@ -3,9 +3,6 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -22,10 +19,15 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -43,16 +45,14 @@ body {
   background: #94a3b8;
 }
 
-/* Smooth transitions */
 * {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-/* Custom animations */
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px) rotate(0deg);
@@ -64,7 +64,6 @@ body {
 }
 
 @keyframes gradient {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -76,14 +75,15 @@ body {
 }
 
 @keyframes pulse-glow {
-
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(0, 86, 210, 0.5);
   }
 
   50% {
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(147, 51, 234, 0.3);
+    box-shadow:
+      0 0 40px rgba(0, 86, 210, 0.8),
+      0 0 60px rgba(0, 68, 170, 0.3);
   }
 }
 
@@ -116,7 +116,6 @@ body {
   animation: slide-up 0.6s ease-out forwards;
 }
 
-/* Gradient text effects */
 .gradient-text {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-clip: text;
@@ -124,31 +123,26 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* Glass morphism effect */
 .glass {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Hover glow effect */
 .hover-glow:hover {
-  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 86, 210, 0.3);
 }
 
-/* Custom shadow effects */
 .shadow-3xl {
   box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Animated background */
 .animated-bg {
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #0056d2, #0044aa, #1e40af, #3b82f6);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
 }
 
-/* Line clamp utilities */
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -156,16 +150,41 @@ body {
   overflow: hidden;
 }
 
-/* Brand accent utilities (ensure new classes exist after automated replacement) */
-.bg-accent { background-color: #fb7a1a !important; }
-.bg-accent-600 { background-color: #ea580c !important; }
-.text-accent { color: #fb7a1a !important; }
-.text-brand { color: #1a56db !important; }
-.from-accent { --tw-gradient-from: #fb7a1a !important; --tw-gradient-stops: #fb7a1a, var(--tw-gradient-to, rgba(234,88,12,0)) !important; }
-.to-accent-600 { --tw-gradient-to: #ea580c !important; }
-.hover\:text-accent:hover { color: #fb7a1a !important; }
-.hover\:bg-accent:hover { background-color: #fb7a1a !important; }
-.hover\:bg-accent-600:hover { background-color: #ea580c !important; }
-.border-accent { border-color: #fb7a1a !important; }
-.focus\:ring-accent:focus { --tw-ring-color: rgba(251,122,26,0.5) !important; }
-.focus\:border-accent:focus { border-color: #fb7a1a !important; }
+.bg-accent {
+  background-color: #0056d2 !important;
+}
+.bg-accent-600 {
+  background-color: #0044aa !important;
+}
+.text-accent {
+  color: #0056d2 !important;
+}
+.text-brand {
+  color: #0056d2 !important;
+}
+.from-accent {
+  --tw-gradient-from: #0056d2 !important;
+  --tw-gradient-stops:
+    #0056d2, var(--tw-gradient-to, rgba(0, 68, 170, 0)) !important;
+}
+.to-accent-600 {
+  --tw-gradient-to: #0044aa !important;
+}
+.hover\:text-accent:hover {
+  color: #0056d2 !important;
+}
+.hover\:bg-accent:hover {
+  background-color: #0056d2 !important;
+}
+.hover\:bg-accent-600:hover {
+  background-color: #0044aa !important;
+}
+.border-accent {
+  border-color: #0056d2 !important;
+}
+.focus\:ring-accent:focus {
+  --tw-ring-color: rgba(0, 86, 210, 0.5) !important;
+}
+.focus\:border-accent:focus {
+  border-color: #0056d2 !important;
+}
