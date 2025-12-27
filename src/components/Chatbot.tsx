@@ -186,7 +186,7 @@ export default function Chatbot() {
 
       {/* Chat window */}
       {isOpen && (
-        <div className="chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[520px] max-h-[820px] sm:max-h-[520px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden animate-slide-up-mobile sm:animate-slide-up">
+        <div className="chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[560px] max-h-[820px] sm:max-h-[560px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden animate-slide-up-mobile sm:animate-slide-up">
           {/* Header */}
           <div className="bg-gradient-to-br from-accent to-accent-600 text-white p-4 sm:p-5 flex items-center justify-between shadow-md relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iNSIgY3k9IjUiIHI9IjMiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>

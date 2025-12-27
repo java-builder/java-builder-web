@@ -407,7 +407,7 @@ export default function Header() {
                 )}
 
                 {isMessagesOpen && selectedConversation && (
-                  <div className="header-chat-modal chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[520px] max-h-[820px] sm:max-h-[520px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden">
+                  <div className="header-chat-modal chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[560px] max-h-[820px] sm:max-h-[560px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                       <div className="flex items-center gap-3">
                         <HiOutlineChatAlt2 className="w-5 h-5 text-gray-600" />
