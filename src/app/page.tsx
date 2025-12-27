@@ -94,7 +94,7 @@ export default function Home() {
               <div className="text-center space-y-6 md:space-y-8">
                 {/* Course & Training badge */}
                 <div className="inline-block">
-                  <span className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <span className="bg-brand text-white px-4 py-2 rounded-full text-sm font-medium">
                     Course & Training
                   </span>
                 </div>
@@ -102,12 +102,12 @@ export default function Home() {
                 {/* Main Heading */}
                 <div className="space-y-6">
                   <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                    Khởi đầu hành trình <span className="text-orange-400">lập trình</span>
+                    Khởi đầu hành trình <span className="text-brand">lập trình</span>
                   </h1>
 
                   <div className="space-y-2 md:space-y-3 text-base md:text-lg lg:text-xl text-gray-100 max-w-4xl mx-auto px-4">
                     <p className="leading-relaxed">Hành trình chinh phục công nghệ cùng đội ngũ mentor chuyên nghiệp.</p>
-                    <p className="leading-relaxed">Từ zero đến hero, cùng <span className="text-orange-400 font-semibold">Lê Khánh Đức</span> phát triển kỹ năng coding thực sự.</p>
+                    <p className="leading-relaxed">Từ zero đến hero, cùng <span className="text-brand font-semibold">Lê Khánh Đức</span> phát triển kỹ năng coding thực sự.</p>
                   </div>
                 </div>
               </div>
@@ -132,8 +132,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Loading State */}
             {isLoadingBlogs && (
-              <div className="col-span-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+                <div className="col-span-full flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
               </div>
             )}
 
@@ -202,8 +202,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Loading State */}
             {isLoading && (
-              <div className="col-span-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+                <div className="col-span-full flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
               </div>
             )}
 
