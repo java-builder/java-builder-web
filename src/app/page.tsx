@@ -61,10 +61,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="relative min-h-[70vh] bg-gradient-to-r from-white to-blue-50">
+      <main className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100">
         <div className="absolute inset-0 z-0">
           <div className="w-full h-full relative overflow-hidden bg-transparent">
-            <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 opacity-20">
               <div className="absolute top-20 left-10 text-green-400 font-mono text-xs">
                 <div>&lt;div className=&quot;hero&quot;&gt;</div>
                 <div>&nbsp;&nbsp;&lt;h1&gt;Welcome&lt;/h1&gt;</div>
@@ -91,7 +91,7 @@ export default function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-12 md:py-16 min-h-[70vh]">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12 min-h-[60vh]">
           <MotionWrapper animation="fadeInUp" duration={0.9}>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Left: Text / CTA */}
@@ -130,10 +130,10 @@ export default function Home() {
                       Khám phá khóa học
                     </Link>
                     <Link
-                      href="/create-learning-path"
-                      className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                    >
-                      Bắt đầu lộ trình
+                    href="/blogs"
+                    className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    Khám phá bài viết
                     </Link>
                   </div>
 
@@ -161,7 +161,7 @@ export default function Home() {
         </div>
       </main>
       {/* Featured Blogs Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="text-center mb-16">
@@ -268,7 +268,7 @@ export default function Home() {
       </section>
 
       {/* Course Cards Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="text-center mb-16">

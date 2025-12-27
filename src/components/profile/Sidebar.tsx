@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { UserDetailResponse } from "@/types/user";
 
 interface SidebarProps {
@@ -78,10 +79,20 @@ export default function Sidebar({
       {/* User Info */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold text-sm">
-              {user.username?.charAt(0)?.toUpperCase() || "U"}
-            </span>
+          <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center overflow-hidden">
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={user.username || "User avatar"}
+                width={40}
+                height={40}
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white font-semibold text-sm">
+                {user.username?.charAt(0)?.toUpperCase() || "U"}
+              </span>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-sm font-semibold text-gray-900 truncate">

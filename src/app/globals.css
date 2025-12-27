@@ -188,3 +188,75 @@ body {
 .focus\:border-accent:focus {
   border-color: #0056d2 !important;
 }
+
+.header-chat-modal {
+  right: 6rem !important; 
+}
+
+@media (max-width: 640px) {
+  .header-chat-modal {
+    right: 1rem !important;
+  }
+}
+
+/* When both header chat and chatbot are open, the one opened last stays on the right.
+   Require both 'chatbot-open' and 'header-chat-open' and the ordering class to apply swaps. */
+body.chatbot-open.header-chat-open.last-open-header .header-chat-modal {
+  right: 1rem !important;
+  z-index: 70;
+}
+body.chatbot-open.header-chat-open.last-open-header .chatbot-window {
+  right: calc(1rem + 384px + 24px) !important;
+  z-index: 60;
+}
+
+body.chatbot-open.header-chat-open.last-open-chatbot .chatbot-window {
+  right: 1rem !important;
+  z-index: 70;
+}
+body.chatbot-open.header-chat-open.last-open-chatbot .header-chat-modal {
+  right: calc(1rem + 384px + 24px) !important;
+  z-index: 60;
+}
+
+/* keep chatbot floating button fixed at bottom-right */
+.chatbot-floating-button {
+  right: 1rem !important;
+  bottom: 1rem !important;
+  transition: none !important;
+}
+
+.spin-accent-strong {
+  opacity: 0.65;
+  animation: spin-strong 3s linear infinite;
+  filter: drop-shadow(0 8px 18px rgba(0, 86, 210, 0.18));
+  transform-origin: 50% 50%;
+}
+
+.spin-accent-strong circle {
+  stroke-width: 2 !important;
+  stroke-opacity: 0.9;
+  stroke-linecap: round;
+  stroke-dasharray: 31.4 31.4;
+}
+
+@keyframes spin-strong {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+button:not([disabled]),
+[role="button"]:not([aria-disabled="true"]),
+input[type="submit"]:not([disabled]),
+input[type="button"]:not([disabled]) {
+  cursor: pointer;
+}
+
+button[disabled],
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}

@@ -90,10 +90,10 @@ export default function BlogsPage() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <section className="relative min-h-[70vh] bg-gradient-to-r from-white to-blue-50">
+      <section className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100">
         <div className="absolute inset-0 z-0">
           <div className="w-full h-full relative overflow-hidden bg-transparent">
-            <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 opacity-20">
               <div className="absolute top-20 left-10 text-blue-400 font-mono text-xs">
                 <div>const blog = {`{`}</div>
                 <div>&nbsp;&nbsp;title: "Learning",</div>
@@ -115,7 +115,7 @@ export default function BlogsPage() {
         </div>
 
         {/* Hero Content: two-column */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-12 md:py-16">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 text-gray-900">

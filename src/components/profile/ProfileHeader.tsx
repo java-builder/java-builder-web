@@ -53,16 +53,16 @@ export default function ProfileHeader({
 
       <div className="relative z-10">
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-          {/* Avatar */}
+          {/* Avatar (standardized to circular) */}
           <div className="relative">
-            <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-2xl border-4 border-white">
+            <div className="w-40 h-40 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-2xl border-4 border-white overflow-hidden">
               {user.avatar ? (
                 <Image
                   src={user.avatar}
                   alt={user.username || "User avatar"}
                   width={160}
                   height={160}
-                  className="w-full h-full rounded-3xl object-cover"
+                  className="w-full h-full rounded-full object-cover"
                 />
               ) : (
                 <div className="text-white text-5xl font-bold">

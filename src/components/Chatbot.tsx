@@ -125,12 +125,42 @@ export default function Chatbot() {
     };
   }, [isOpen]);
 
+  // sync body classes so header modal and chatbot can arrange when both open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (isOpen) {
+      document.body.classList.add("chatbot-open");
+      document.body.classList.add("last-open-chatbot");
+      document.body.classList.remove("last-open-header");
+      if (document.body.classList.contains("header-chat-open")) {
+        document.body.classList.add("chatbot-on-right");
+        document.body.classList.add("header-shift-left");
+      } else {
+        document.body.classList.remove("chatbot-on-right");
+        document.body.classList.remove("header-shift-left");
+      }
+    } else {
+      document.body.classList.remove("chatbot-open");
+      document.body.classList.remove("chatbot-on-right");
+      document.body.classList.remove("header-shift-left");
+      document.body.classList.remove("last-open-chatbot");
+    }
+    return () => {
+      document.body.classList.remove("chatbot-open");
+      document.body.classList.remove("chatbot-on-right");
+      document.body.classList.remove("header-shift-left");
+      document.body.classList.remove("last-open-chatbot");
+    };
+  }, [isOpen]);
+
+ 
+
   return (
     <>
       {/* Floating button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-16 h-16 sm:w-14 sm:h-14 bg-gradient-to-br from-accent to-accent-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 z-50 cursor-pointer ${isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"}`}
+        className={`chatbot-floating-button fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-16 h-16 sm:w-14 sm:h-14 bg-gradient-to-br from-accent to-accent-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 z-50 cursor-pointer ${isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"}`}
         aria-label="Mở chatbot AI"
       >
         <span className="inline-flex items-center justify-center w-full h-full">
@@ -156,7 +186,7 @@ export default function Chatbot() {
 
       {/* Chat window */}
       {isOpen && (
-        <div className="fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-[420px] h-[85vh] sm:h-[600px] max-h-[700px] sm:max-h-[600px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden animate-slide-up-mobile sm:animate-slide-up">
+        <div className="chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[520px] max-h-[820px] sm:max-h-[520px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden animate-slide-up-mobile sm:animate-slide-up">
           {/* Header */}
           <div className="bg-gradient-to-br from-accent to-accent-600 text-white p-4 sm:p-5 flex items-center justify-between shadow-md relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iNSIgY3k9IjUiIHI9IjMiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>

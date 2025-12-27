@@ -40,8 +40,7 @@ export default function Footer() {
 
                   <svg
                     viewBox="0 0 24 24"
-                    className="absolute -inset-1 w-12 h-12 text-accent opacity-30 pointer-events-none animate-spin"
-                    style={{ animationDuration: "6s" }}
+                    className="absolute -inset-1 w-12 h-12 text-accent pointer-events-none spin-accent-strong"
                   >
                     <circle
                       cx="12"
