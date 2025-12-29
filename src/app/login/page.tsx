@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [userAuthorities, setUserAuthorities] = useState<string[]>([]);
 
   const {
     register,
@@ -57,9 +58,11 @@ export default function LoginPage() {
       if (result.code === 200) {
         if (result.result?.mftEnable) {
           setUserEmail(data.email);
+          setUserAuthorities(result.result.authorities || []);
           setShowTwoFactorModal(true);
         } else if (result.result?.accessToken) {
-          router.push("/");
+          const isAdmin = result.result.authorities?.includes("ADMIN");
+          router.push(isAdmin ? "/admin" : "/");
         }
       }
     } catch {
@@ -69,7 +72,8 @@ export default function LoginPage() {
   };
 
   const handleTwoFactorSuccess = () => {
-    router.push("/");
+    const isAdmin = userAuthorities.includes("ADMIN");
+    router.push(isAdmin ? "/admin" : "/");
   };
 
   const handleGoogleLogin = () => {

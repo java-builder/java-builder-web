@@ -88,7 +88,7 @@ const navigation = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M8 10h8M8 14h5m-7 6V7a2 2 0 012-2h8a2 2 0 012 2v11l-4-2-4 2"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
         />
       </svg>
     ),

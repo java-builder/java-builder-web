@@ -36,7 +36,9 @@ const GoogleCallbackContent = () => {
           localStorage.setItem("access_token", response.result.accessToken);
           localStorage.setItem("user_id", response.result.userId);
 
-          router.push("/");
+          // Check if user has ADMIN authority
+          const isAdmin = response.result.authorities?.includes("ADMIN");
+          router.push(isAdmin ? "/admin" : "/");
         } else {
           setError("Không nhận được thông tin đăng nhập từ Google");
           setIsProcessing(false);
