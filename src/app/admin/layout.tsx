@@ -50,7 +50,7 @@ const navigation = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+          d="M17 11a4 4 0 11-8 0 4 4 0 018 0zM7 11a3 3 0 100-6 3 3 0 000 6zM2 20v-1c0-2.761 3.134-5 7-5h6c3.866 0 7 2.239 7 5v1"
         />
       </svg>
     ),
@@ -108,6 +108,25 @@ const navigation = [
           strokeLinejoin="round"
           strokeWidth={2}
           d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1"
+        />
+      </svg>
+    ),
+  },
+  {
+    name: "Quản lý đăng nhập",
+    href: "/admin/sessions",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"
         />
       </svg>
     ),

@@ -22,19 +22,31 @@ export default function BlogCard({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden">
       {/* Featured Image */}
-      {blog.featuredImage && (
-        <div className="aspect-video w-full overflow-hidden relative">
+      {blog.featuredImage ? (
+        <div className="w-full h-28 sm:h-32 md:h-32 lg:h-36 overflow-hidden relative bg-gray-50 flex items-center justify-center">
           <Image
             src={blog.featuredImage}
             alt={blog.title}
             fill
+            loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover hover:scale-105 transition-transform duration-300"
+            className="object-contain w-full h-full transition-transform duration-300"
           />
+        </div>
+      ) : (
+        <div className="w-full h-28 sm:h-32 md:h-32 lg:h-36 overflow-hidden bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto w-16 h-16 rounded-md bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-3">
+              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M7 7l5 5 5-5" />
+              </svg>
+            </div>
+            <div className="text-sm text-gray-500">No image</div>
+          </div>
         </div>
       )}
 
-      <div className="p-6">
+      <div className="p-4">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-2">
@@ -53,7 +65,7 @@ export default function BlogCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors duration-200">
+        <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-accent-600 transition-colors duration-200">
           {blog.title}
         </h3>
 
@@ -62,16 +74,16 @@ export default function BlogCard({
           <div className="mb-4">
             <MarkdownRenderer
               content={blog.summary}
-              className="text-sm text-gray-600"
+            className="text-sm text-gray-600 line-clamp-2"
             />
           </div>
         )}
 
         {/* Stats */}
-        <div className="flex items-center space-x-4 mb-4 text-sm text-gray-500">
+        <div className="flex items-center space-x-3 mb-3 text-sm text-gray-500">
           <span className="flex items-center">
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-4 h-4 mr-1 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -93,7 +105,7 @@ export default function BlogCard({
           </span>
           <span className="flex items-center">
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-5 h-5 mr-1 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -109,7 +121,7 @@ export default function BlogCard({
           </span>
           <span className="flex items-center">
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-5 h-5 mr-1 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -135,10 +147,10 @@ export default function BlogCard({
           {onPreview && (
             <button
               onClick={() => onPreview(blog)}
-              className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors duration-200"
+              className="inline-flex items-center px-3 py-2 text-sm font-medium text-accent-700 bg-accent-100 hover:bg-accent-200 rounded-md transition-colors duration-200"
             >
               <svg
-                className="w-3 h-3 mr-1"
+                className="w-4 h-4 mr-2"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -161,10 +173,10 @@ export default function BlogCard({
           )}
           <button
             onClick={() => onEdit(blog)}
-            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+            className="inline-flex items-center px-2 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
           >
             <svg
-              className="w-3 h-3 mr-1"
+              className="w-4 h-4 mr-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -181,12 +193,12 @@ export default function BlogCard({
           <button
             onClick={() => onDelete(blog.id, blog.title)}
             disabled={isDeleting}
-            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-2 py-1.5 text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isDeleting ? (
               <>
                 <svg
-                  className="animate-spin w-3 h-3 mr-1"
+                  className="animate-spin w-4 h-4 mr-2"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -209,7 +221,7 @@ export default function BlogCard({
             ) : (
               <>
                 <svg
-                  className="w-3 h-3 mr-1"
+                  className="w-4 h-4 mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

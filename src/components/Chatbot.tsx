@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { chatbotApi } from "@/services/chatbot.service";
 import { SuggestedBlogInfo } from "@/types/chatbot";
 import { BlogTypeDisplayNames, BlogType } from "@/types/blog";
@@ -318,10 +319,11 @@ export default function Chatbot() {
                               <div className="flex items-start space-x-3">
                                 {blog.featuredImage && (
                                   <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200 group-hover:border-accent-300 transition-colors">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
+                                    <Image
                                       src={blog.featuredImage}
                                       alt={blog.title}
+                                      width={80}
+                                      height={80}
                                       className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                                     />
                                   </div>

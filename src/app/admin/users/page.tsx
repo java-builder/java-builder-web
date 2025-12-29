@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { userApi } from "@/services/user.service";
-import Link from "next/link";
 import { useConfirm } from "@/hooks/useConfirm";
 import { UserDetailResponse, UserStatus } from "@/types/user";
 import { ApiResponse, PageResponse } from "@/types/api";
+import EditUserModal from "@/components/admin/users/EditUserModal";
+import CreateUserModal from "@/components/admin/users/CreateUserModal";
 
 const StatusBadge = ({ status }: { status: UserStatus | string }) => {
   const getStatusConfig = (status: UserStatus | string) => {
@@ -44,6 +45,9 @@ export default function UsersPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<string>("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserDetailResponse | null>(null);
   const { confirm } = useConfirm();
 
   const fetchUsers = useCallback(async () => {
@@ -107,6 +111,31 @@ export default function UsersPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleEditUser = (user: UserDetailResponse) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    fetchUsers(); // Refresh data after successful edit
+  };
+
+  const formatCreatedDate = (createdAt: string): string => {
+    try {
+      const date = new Date(createdAt);
+      return date.toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      console.error("Error formatting date:", createdAt, error);
+      return "Ngày không hợp lệ";
+    }
   };
 
   useEffect(() => {
@@ -226,8 +255,8 @@ export default function UsersPage() {
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <Link
-              href="/admin/users/new"
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-accent to-accent-600 hover:from-accent-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-all duration-200"
             >
               <svg
@@ -244,7 +273,7 @@ export default function UsersPage() {
                 />
               </svg>
               Thêm người dùng
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -264,7 +293,13 @@ export default function UsersPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+                  d="M17 11a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M2 20v-1c0-2.761 3.134-5 7-5h6c3.866 0 7 2.239 7 5v1"
                 />
               </svg>
             </div>
@@ -291,7 +326,13 @@ export default function UsersPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M9 12l2 2 4-4"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
             </div>
@@ -320,7 +361,13 @@ export default function UsersPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  d="M10.29 3.86l-6.36 11.64A2 2 0 004 18h16a2 2 0 001.77-2.5L17.71 3.86a2 2 0 00-3.42 0L10.29 3.86z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v4"
                 />
               </svg>
             </div>
@@ -345,12 +392,8 @@ export default function UsersPage() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"
-                />
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+                <path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <div className="ml-4">
@@ -516,13 +559,12 @@ export default function UsersPage() {
                       <StatusBadge status={user.userStatus} />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {/* Add created date if available in API response */}
-                      N/A
+                      {user.createdAt ? formatCreatedDate(user.createdAt) : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
-                        <Link
-                          href={`/admin/users/${user.id}/edit`}
+                        <button
+                          onClick={() => handleEditUser(user)}
                           className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors duration-200"
                         >
                           <svg
@@ -539,7 +581,7 @@ export default function UsersPage() {
                             />
                           </svg>
                           Sửa
-                        </Link>
+                        </button>
                         <button
                           onClick={() => handleDelete(user.id, user.username)}
                           disabled={isDeleting === user.id}
@@ -769,6 +811,24 @@ export default function UsersPage() {
           </div>
         </div>
       )}
+
+      {/* Edit User Modal */}
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSuccess={handleEditSuccess}
+        user={selectedUser}
+      />
+
+  {/* Create User Modal */}
+  <CreateUserModal
+    isOpen={isCreateModalOpen}
+    onClose={() => setIsCreateModalOpen(false)}
+    onSuccess={() => {
+      setIsCreateModalOpen(false);
+      fetchUsers();
+    }}
+  />
     </div>
   );
 }
