@@ -832,28 +832,28 @@ export default function BlogDetailPage() {
         </div>
       </div>
       {showLoginModal && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/30"
             onClick={() => setShowLoginModal(false)}
           ></div>
-          <div className="relative mx-auto mt-40 w-full max-w-sm rounded-2xl bg-white shadow-xl border border-gray-100 p-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+          <div className="relative w-full max-w-sm rounded-xl sm:rounded-2xl bg-white shadow-xl border border-gray-100 p-4 sm:p-5">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
               Cần đăng nhập
             </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">
               Vui lòng đăng nhập để thích bài viết này.
             </p>
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-col sm:flex-row justify-end gap-2">
               <button
                 onClick={() => setShowLoginModal(false)}
-                className="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
               >
                 Để sau
               </button>
               <Link
                 href="/login"
-                className="px-3 py-1.5 text-sm rounded-md bg-accent text-white hover:bg-accent-600"
+                className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg bg-accent text-white hover:bg-accent-600 transition-colors text-center"
               >
                 Đăng nhập
               </Link>
