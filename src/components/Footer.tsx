@@ -55,7 +55,7 @@ export default function Footer() {
                   </svg>
                 </div>
 
-                <span className="text-xl font-bold text-white">F Learning</span>
+                <span className="text-xl font-bold text-white">Marino</span>
               </Link>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed max-w-md mb-6">
@@ -223,7 +223,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © {currentYear} F Learning. Tất cả quyền được bảo lưu.
+            © {currentYear} Marino. Tất cả quyền được bảo lưu.
           </p>
           <div className="flex items-center space-x-6 mt-4 md:mt-0">
             <span className="text-gray-400 text-sm">Được phát triển với</span>

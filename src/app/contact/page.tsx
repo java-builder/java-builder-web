@@ -52,7 +52,7 @@ export default function ContactPage() {
               <div className="absolute top-20 left-10 text-accent-400 font-mono text-xs">
                                 <div>const contact = {`{`}</div>
                 <div>
-                  &nbsp;&nbsp;email: &quot;support@f-learning.com&quot;,
+                  &nbsp;&nbsp;email: &quot;support@marino.com&quot;,
                 </div>
                                 <div>&nbsp;&nbsp;phone: &quot;+84 123 456 789&quot;</div>
                                 <div>{`}`};</div>

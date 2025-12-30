@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const SITE_NAME = 'F Learning';
+const SITE_NAME = 'Marino';
 const SITE_DESCRIPTION = 'Nền tảng học tập trực tuyến hiện đại với khóa học chất lượng cao, blog công nghệ và lộ trình học tập cá nhân hóa';
 
 export interface SEOProps {
@@ -36,8 +36,8 @@ export function generateSEO({
     title: fullTitle,
     description,
     keywords: tags?.join(', '),
-    authors: author ? [{ name: author }] : [{ name: 'Lê Khánh Đức' }],
-    creator: 'Lê Khánh Đức',
+    authors: author ? [{ name: author }] : [{ name: 'Marino' }],
+    creator: 'Marino',
     publisher: SITE_NAME,
     robots: noIndex
       ? {
@@ -76,7 +76,7 @@ export function generateSEO({
       ...(type === 'article' && {
         publishedTime,
         modifiedTime,
-        authors: author ? [author] : ['Lê Khánh Đức'],
+        authors: author ? [author] : ['Marino'],
         tags,
       }),
     },
@@ -85,8 +85,8 @@ export function generateSEO({
       title: fullTitle,
       description,
       images: [image],
-      creator: '@flearning',
-      site: '@flearning',
+      creator: '@marino',
+      site: '@marino',
     },
   };
 }
@@ -108,7 +108,7 @@ export function generateBlogStructuredData(blog: {
     image: blog.featuredImage || `${SITE_URL}/hero-background.jpg`,
     author: {
       '@type': 'Person',
-      name: blog.author || 'Lê Khánh Đức',
+      name: blog.author || 'Marino',
       url: `${SITE_URL}/about`,
     },
     publisher: {
@@ -116,7 +116,7 @@ export function generateBlogStructuredData(blog: {
       name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/f-learning-logo.svg`,
+        url: `${SITE_URL}/marino-logo.svg`,
       },
     },
     datePublished: blog.createdAt,
@@ -171,20 +171,20 @@ export function generateOrganizationStructuredData() {
     '@type': 'Organization',
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/f-learning-logo.svg`,
+    logo: `${SITE_URL}/marino-logo.svg`,
     description: SITE_DESCRIPTION,
     founder: {
       '@type': 'Person',
-      name: 'Lê Khánh Đức',
+      name: 'Marino',
     },
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'Customer Service',
-      email: 'contact@flearning.vn',
+      email: 'contact@marino.vn',
     },
     sameAs: [
-      'https://facebook.com/flearning',
-      'https://github.com/flearning',
+      'https://facebook.com/marino',
+      'https://github.com/marino',
     ],
   };
 }

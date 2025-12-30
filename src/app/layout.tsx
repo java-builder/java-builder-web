@@ -18,8 +18,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   ...generateSEO({
-    title: "F Learning - Nền tảng học tập trực tuyến",
-    description: "Nền tảng học tập trực tuyến hiện đại với khóa học chất lượng cao, blog công nghệ và lộ trình học tập cá nhân hóa. Học lập trình Java, Spring Boot, React, Next.js cùng Lê Khánh Đức",
+    title: "Marino - Nền tảng học tập trực tuyến",
+    description: "Nền tảng học tập trực tuyến hiện đại với khóa học chất lượng cao, blog công nghệ và lộ trình học tập cá nhân hóa. Học lập trình Java, Spring Boot, React, Next.js cùng Marino",
     url: "/",
     tags: ["học lập trình", "khóa học online", "Java", "Spring Boot", "React", "Next.js", "lập trình web", "backend", "frontend"],
   }),

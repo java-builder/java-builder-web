@@ -299,7 +299,7 @@ export default function ReportsDashboard() {
               📈 Dashboard Báo cáo Tương tác
             </h1>
             <p className="text-gray-600">
-              Phân tích toàn diện và theo dõi hiệu suất hệ thống F-Learning
+              Phân tích toàn diện và theo dõi hiệu suất hệ thống Marino
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">

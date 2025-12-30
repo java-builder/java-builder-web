@@ -208,86 +208,83 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <style jsx global>{`
             @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
 
-            .swal-compact {
+            /* Modern SweetAlert2 Styles */
+            .swal-modern-popup {
               border-radius: 16px !important;
-              box-shadow:
-                0 20px 25px -5px rgba(0, 0, 0, 0.1),
-                0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-              border: 1px solid rgba(255, 255, 255, 0.1) !important;
-              backdrop-filter: blur(10px) !important;
+              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+              border: none !important;
+              padding: 0 !important;
             }
-            .swal-title {
-              font-size: 17px !important;
-              font-weight: 700 !important;
-              color: #1f2937 !important;
-              margin-bottom: 12px !important;
-              text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+            .swal-modern-icon {
+              margin: 2rem auto 1rem !important;
+              border-width: 3px !important;
+              width: 60px !important;
+              height: 60px !important;
             }
-            .swal-text {
-              font-size: 13px !important;
-              color: #4b5563 !important;
-              margin-bottom: 20px !important;
+            .swal-modern-icon.swal2-error {
+              border-color: #fee2e2 !important;
+              color: #ef4444 !important;
+            }
+            .swal-modern-icon.swal2-error [class^='swal2-x-mark-line'] {
+              background-color: #ef4444 !important;
+            }
+            .swal-modern-icon.swal2-warning {
+              border-color: #fef3c7 !important;
+              color: #f59e0b !important;
+            }
+            .swal-modern-title {
+              font-size: 18px !important;
+              font-weight: 600 !important;
+              color: #111827 !important;
+              padding: 0 1.5rem !important;
+              margin-bottom: 0.5rem !important;
+            }
+            .swal-modern-text {
+              font-size: 14px !important;
+              color: #6b7280 !important;
+              padding: 0 1.5rem !important;
+              margin: 0 !important;
               line-height: 1.5 !important;
             }
-            .swal-actions {
-              gap: 10px !important;
-              margin-top: 20px !important;
+            .swal-modern-actions {
+              padding: 1.5rem !important;
+              gap: 12px !important;
+              margin-top: 0.5rem !important;
             }
-            .swal-button {
-              border-radius: 8px !important;
-              padding: 10px 20px !important;
-              font-size: 13px !important;
-              font-weight: 600 !important;
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-              border: none !important;
-              cursor: pointer !important;
-              position: relative !important;
-              overflow: hidden !important;
-            }
-            .swal-button:before {
-              content: "" !important;
-              position: absolute !important;
-              top: 0 !important;
-              left: -100% !important;
-              width: 100% !important;
-              height: 100% !important;
-              background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-              ) !important;
-              transition: left 0.5s !important;
-            }
-            .swal-button:hover:before {
-              left: 100% !important;
-            }
-            .swal-confirm {
-              background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+            .swal-modern-confirm {
+              background: #ef4444 !important;
               color: white !important;
-              box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3) !important;
+              border: none !important;
+              border-radius: 10px !important;
+              padding: 10px 20px !important;
+              font-size: 14px !important;
+              font-weight: 500 !important;
+              cursor: pointer !important;
+              transition: all 0.2s !important;
             }
-            .swal-confirm:hover {
-              background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
-              transform: translateY(-2px) scale(1.02) !important;
-              box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4) !important;
+            .swal-modern-confirm:hover {
+              background: #dc2626 !important;
+              transform: translateY(-1px) !important;
             }
-            .swal-confirm:active {
-              transform: translateY(0) scale(0.98) !important;
+            .swal-modern-confirm:focus {
+              box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
             }
-            .swal-cancel {
-              background: linear-gradient(135deg, #f9fafb, #f3f4f6) !important;
+            .swal-modern-cancel {
+              background: #f3f4f6 !important;
               color: #374151 !important;
-              border: 1px solid #d1d5db !important;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+              border: none !important;
+              border-radius: 10px !important;
+              padding: 10px 20px !important;
+              font-size: 14px !important;
+              font-weight: 500 !important;
+              cursor: pointer !important;
+              transition: all 0.2s !important;
             }
-            .swal-cancel:hover {
-              background: linear-gradient(135deg, #f3f4f6, #e5e7eb) !important;
-              transform: translateY(-1px) scale(1.02) !important;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            .swal-modern-cancel:hover {
+              background: #e5e7eb !important;
             }
-            .swal-cancel:active {
-              transform: translateY(0) scale(0.98) !important;
+            .swal-modern-cancel:focus {
+              box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2) !important;
             }
           `}</style>
           <Toaster
@@ -380,7 +377,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
                     <div className="flex flex-col">
                       <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-blue-100">
-                        F-Learning
+                        Marino
                       </span>
                     </div>
                   </Link>
@@ -444,7 +441,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         Admin User
                       </p>
                       <p className="text-xs text-gray-500 truncate">
-                        admin@flearning.com
+                        admin@marino.com
                       </p>
                     </div>
                     <button className="text-gray-400 hover:text-gray-600">

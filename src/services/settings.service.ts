@@ -2,7 +2,7 @@ import { SettingsData, SettingValue } from "@/types/settings";
 import { settingsConfig } from "@/lib/settings-config";
 
 class SettingsService {
-  private storageKey = "f-learning-settings";
+  private storageKey = "marino-settings";
 
   // Load settings from localStorage (in real app, this would be from API)
   async loadSettings(): Promise<SettingsData> {

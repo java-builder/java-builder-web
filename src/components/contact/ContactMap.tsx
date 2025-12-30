@@ -39,7 +39,7 @@ export default function ContactMap() {
               </svg>
             </div>
             <h4 className="text-lg font-semibold text-gray-800 mb-2">
-              F-Learning Office
+              Marino Office
             </h4>
             <p className="text-gray-600 text-sm">
               123 Đường ABC, Quận XYZ

@@ -5,6 +5,8 @@ import {
   CreateCourseResponse,
   CourseDetailResponse,
   CourseLevel,
+  CreateChapterRequest,
+  CreateChapterResponse,
 } from "@/types/course";
 import { FileMetaDataResponse } from "@/types/course";
 import toast from "react-hot-toast";
@@ -62,6 +64,35 @@ export const courseApi = {
       return response.data;
     } catch (error) {
       toast.error("Lấy thông tin khóa học thất bại.");
+      throw error;
+    }
+  },
+};
+
+export const chapterApi = {
+  // Tạo chapter mới
+  create: async (data: CreateChapterRequest) => {
+    try {
+      const response = await apiClient.post<ApiResponse<CreateChapterResponse>>(
+        "/api/v1/chapters",
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Tạo chương thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Xóa chapter
+  delete: async (id: string) => {
+    try {
+      const response = await apiClient.delete<ApiResponse<void>>(
+        `/api/v1/chapters/${id}`,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Xóa chương thất bại. Vui lòng thử lại.");
       throw error;
     }
   },

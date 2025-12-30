@@ -116,7 +116,7 @@ export default function Home() {
                     <p className="leading-relaxed">
                       Từ zero đến hero, cùng{" "}
                       <span className="text-accent font-semibold">
-                        Lê Khánh Đức
+                        Marino
                       </span>{" "}
                       phát triển kỹ năng coding thực sự.
                     </p>

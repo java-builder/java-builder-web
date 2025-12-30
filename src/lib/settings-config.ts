@@ -15,7 +15,7 @@ export const settingsConfig: SettingsConfig = {
               id: "app-name",
               type: "text",
               label: "Tên ứng dụng",
-              defaultValue: "F-Learning",
+              defaultValue: "Marino",
               required: true,
             },
             {
@@ -30,7 +30,7 @@ export const settingsConfig: SettingsConfig = {
               type: "textarea",
               label: "Mô tả hệ thống",
               defaultValue:
-                "Nền tảng học trực tuyến F-Learning - Giải pháp đào tạo toàn diện",
+                "Nền tảng học trực tuyến Marino - Giải pháp đào tạo toàn diện",
             },
           ],
         },
@@ -81,7 +81,7 @@ export const settingsConfig: SettingsConfig = {
               id: "support-email",
               type: "email",
               label: "Email hỗ trợ",
-              defaultValue: "support@flearning.com",
+              defaultValue: "support@marino.com",
               required: true,
             },
             {
@@ -178,20 +178,20 @@ export const settingsConfig: SettingsConfig = {
               id: "welcome-subject",
               type: "text",
               label: "Tiêu đề email chào mừng",
-              defaultValue: "Chào mừng bạn đến với F-Learning!",
+              defaultValue: "Chào mừng bạn đến với Marino!",
             },
             {
               id: "welcome-template",
               type: "textarea",
               label: "Nội dung email chào mừng",
               defaultValue:
-                "Xin chào {{name}},\n\nChào mừng bạn đến với F-Learning...",
+                "Xin chào {{name}},\n\nChào mừng bạn đến với Marino...",
             },
             {
               id: "reset-password-subject",
               type: "text",
               label: "Tiêu đề email đặt lại mật khẩu",
-              defaultValue: "Đặt lại mật khẩu F-Learning",
+              defaultValue: "Đặt lại mật khẩu Marino",
             },
           ],
         },

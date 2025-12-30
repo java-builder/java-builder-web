@@ -126,9 +126,15 @@ export default function CreateCourseModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop - chỉ blur, không che màu */}
+      <div 
+        className="fixed inset-0 backdrop-blur-sm bg-black/5 transition-opacity"
+        onClick={handleClose}
+      ></div>
+      
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal */}
-        <div className="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+        <div className="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col z-10">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-accent-50 to-accent-100 rounded-t-xl">
             <h2 className="text-xl font-semibold text-gray-900 flex items-center">
@@ -287,13 +293,13 @@ export default function CreateCourseModal({
 
                 {imagePreview ? (
                   <div className="space-y-3">
-                    <div className="relative">
+                    <div className="relative w-full">
                       <Image
                         src={imagePreview}
                         alt="Preview"
-                        width={400}
-                        height={192}
-                        className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                        width={600}
+                        height={300}
+                        className="w-full h-auto object-contain rounded-lg border border-gray-300"
                       />
                       <button
                         type="button"
@@ -356,12 +362,12 @@ export default function CreateCourseModal({
           </div>
 
           {/* Fixed Actions */}
-          <div className="flex justify-end space-x-3 p-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 rounded-b-xl">
+          <div className="flex justify-end space-x-3 p-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 rounded-b-xl">
             <button
               type="button"
               onClick={handleClose}
               disabled={isLoading}
-              className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-white hover:border-gray-400 transition-all duration-200 disabled:opacity-50 font-medium"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-white hover:border-gray-400 transition-all duration-200 disabled:opacity-50 font-medium text-sm"
             >
               Hủy
             </button>
@@ -369,7 +375,7 @@ export default function CreateCourseModal({
               type="submit"
               onClick={handleSubmit(onSubmit)}
               disabled={isLoading}
-              className="px-6 py-3 bg-gradient-to-r from-accent to-accent-600 text-white rounded-lg hover:from-accent-600 hover:to-accent-700 transition-all duration-200 disabled:opacity-50 flex items-center gap-2 font-medium shadow-lg hover:shadow-xl"
+              className="px-4 py-2 bg-gradient-to-r from-accent to-accent-600 text-white rounded-lg hover:from-accent-600 hover:to-accent-700 transition-all duration-200 disabled:opacity-50 flex items-center gap-2 font-medium text-sm shadow-lg hover:shadow-xl"
             >
               {isLoading ? (
                 <>

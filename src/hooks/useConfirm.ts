@@ -18,54 +18,51 @@ export const useConfirm = () => {
       title = "Xác nhận",
       message = "Bạn có chắc chắn muốn thực hiện hành động này?",
       confirmText = "Xác nhận",
-      cancelText = "Hủy bỏ",
+      cancelText = "Hủy",
       type = "warning",
     } = options;
 
     try {
       const result = await Swal.fire({
         title,
-        html: message, // Use html instead of text to support formatting
+        html: message,
         icon: type,
         showCancelButton: true,
-        confirmButtonColor: type === "error" ? "#dc2626" : "#3b82f6",
-        cancelButtonColor: "#6b7280",
         confirmButtonText: confirmText,
         cancelButtonText: cancelText,
         reverseButtons: true,
         focusCancel: true,
-        width: "420px",
-        padding: "1.5rem",
-        backdrop: "rgba(0,0,0,0.5)",
+        width: "400px",
+        padding: "2rem",
+        backdrop: "rgba(0,0,0,0.4)",
         showClass: {
-          popup: "animate__animated animate__fadeInDown animate__faster",
+          popup: "animate__animated animate__fadeIn animate__faster",
         },
         hideClass: {
-          popup: "animate__animated animate__fadeOutUp animate__faster",
+          popup: "animate__animated animate__fadeOut animate__faster",
         },
         customClass: {
-          popup: "swal-compact",
-          title: "swal-title",
-          htmlContainer: "swal-text",
-          confirmButton: "swal-button swal-confirm",
-          cancelButton: "swal-button swal-cancel",
-          actions: "swal-actions",
+          popup: "swal-modern-popup",
+          title: "swal-modern-title",
+          htmlContainer: "swal-modern-text",
+          confirmButton: "swal-modern-confirm",
+          cancelButton: "swal-modern-cancel",
+          actions: "swal-modern-actions",
+          icon: "swal-modern-icon",
         },
         buttonsStyling: false,
-        allowOutsideClick: false,
+        allowOutsideClick: true,
         allowEscapeKey: true,
       });
 
       if (result.isConfirmed) {
-        // Show loading toast
         const loadingToast = toast.loading("Đang xử lý...", {
           style: {
-            borderRadius: "8px",
-            background: "#3b82f6",
+            borderRadius: "10px",
+            background: "#1f2937",
             color: "#fff",
-            fontSize: "13px",
-            padding: "8px 12px",
-            minHeight: "40px",
+            fontSize: "14px",
+            padding: "12px 16px",
           },
         });
 
@@ -75,12 +72,11 @@ export const useConfirm = () => {
           toast.success("Thành công!", {
             duration: 2500,
             style: {
-              borderRadius: "8px",
+              borderRadius: "10px",
               background: "#10b981",
               color: "#fff",
-              fontSize: "13px",
-              padding: "8px 12px",
-              minHeight: "40px",
+              fontSize: "14px",
+              padding: "12px 16px",
             },
           });
         } catch (error) {
@@ -88,19 +84,17 @@ export const useConfirm = () => {
           toast.error("Có lỗi xảy ra!", {
             duration: 3000,
             style: {
-              borderRadius: "8px",
+              borderRadius: "10px",
               background: "#ef4444",
               color: "#fff",
-              fontSize: "13px",
-              padding: "8px 12px",
-              minHeight: "40px",
+              fontSize: "14px",
+              padding: "12px 16px",
             },
           });
           throw error;
         }
       }
     } catch (error) {
-      // Handle any SweetAlert2 errors
       console.error("Confirm dialog error:", error);
     }
   };

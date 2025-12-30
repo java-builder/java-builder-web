@@ -214,14 +214,13 @@ export default function CourseDetailPage() {
             <MotionWrapper animation="fadeInUp" duration={0.6}>
               <div className="bg-white rounded-xl overflow-hidden">
                 {/* Course Cover */}
-                <div className="relative h-64 md:h-80 overflow-hidden">
+                <div className="relative aspect-video overflow-hidden">
                   {course.courseCover ? (
                     <Image
                       src={course.courseCover}
                       alt={course.title}
-                      width={800}
-                      height={320}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-contain bg-gray-100"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">
@@ -331,67 +330,42 @@ export default function CourseDetailPage() {
                     )}
 
                     {activeTab === "curriculum" && (
-                      <div className="space-y-4">
-                        <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                          <div className="w-8 h-8 bg-accent-100 rounded-full flex items-center justify-center">
-                            <span className="text-accent-600 font-semibold text-sm">
-                              1
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="font-medium text-gray-900">
-                              Giới thiệu và cài đặt môi trường
+                      <div className="space-y-0">
+                        {course.chapters && course.chapters.length > 0 ? (
+                          course.chapters.map((chapter, index) => (
+                            <div key={chapter.id} className="flex items-center gap-4 py-4 border-b border-gray-100 last:border-b-0">
+                              <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                              <span className="text-sm text-gray-500 flex-shrink-0">Chương {index + 1}</span>
+                              <span className="font-medium text-gray-900">{chapter.chapterName}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-12">
+                            <div className="text-gray-400 mb-4">
+                              <svg
+                                className="w-12 h-12 mx-auto"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                />
+                              </svg>
+                            </div>
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                              Chưa có nội dung
                             </h3>
-                            <p className="text-sm text-gray-600">
-                              Tìm hiểu về Spring Boot và cách cài đặt
+                            <p className="text-gray-600">
+                              Nội dung khóa học đang được cập nhật
                             </p>
                           </div>
-                        </div>
-                        <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                          <div className="w-8 h-8 bg-accent-100 rounded-full flex items-center justify-center">
-                            <span className="text-accent-600 font-semibold text-sm">
-                              2
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="font-medium text-gray-900">
-                              Xây dựng API cơ bản
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              Tạo RESTful API với Spring Boot
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                          <div className="w-8 h-8 bg-accent-100 rounded-full flex items-center justify-center">
-                            <span className="text-accent-600 font-semibold text-sm">
-                              3
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="font-medium text-gray-900">
-                              Kết nối cơ sở dữ liệu
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              Sử dụng JPA và Hibernate
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                          <div className="w-8 h-8 bg-accent-100 rounded-full flex items-center justify-center">
-                            <span className="text-accent-600 font-semibold text-sm">
-                              4
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="font-medium text-gray-900">
-                              Triển khai ứng dụng
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              Deploy ứng dụng lên server
-                            </p>
-                          </div>
-                        </div>
+                        )}
                       </div>
                     )}
 
@@ -406,7 +380,7 @@ export default function CourseDetailPage() {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-bold text-gray-900 mb-1">
-                              Lê Khánh Đức
+                              Marino
                             </h3>
                             <p className="text-accent-600 font-medium mb-2">
                               Backend Developer

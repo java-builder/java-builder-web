@@ -18,6 +18,25 @@ export interface CreateCourseResponse {
   level?: CourseLevel;
 }
 
+// Chapter types
+export interface ChapterDetailResponse {
+  id: string;
+  chapterName: string;
+  description: string;
+}
+
+export interface CreateChapterRequest {
+  courseId: string;
+  chapterName: string;
+  description?: string;
+}
+
+export interface CreateChapterResponse {
+  id: string;
+  chapterName: string;
+  description: string;
+}
+
 export interface CourseDetailResponse {
   id: string;
   title: string;
@@ -26,8 +45,9 @@ export interface CourseDetailResponse {
   duration?: number;
   courseCover?: string;
   level?: CourseLevel;
+  chapters?: ChapterDetailResponse[];
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export enum CourseLevel {

@@ -90,7 +90,7 @@ export default function SettingsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `f-learning-settings-${new Date().toISOString().split("T")[0]}.json`;
+      a.download = `marino-settings-${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -178,7 +178,7 @@ export default function SettingsPage() {
               ⚙️ Cài đặt Hệ thống
             </h1>
             <p className="text-gray-600">
-              Quản lý và cấu hình các thiết lập cho hệ thống F-Learning
+              Quản lý và cấu hình các thiết lập cho hệ thống Marino
             </p>
           </div>
           <div className="flex gap-3 mt-4 lg:mt-0">

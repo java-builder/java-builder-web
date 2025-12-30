@@ -68,7 +68,7 @@ export default function BlogAISummary({
               </svg>
             </div>
             <span className="text-sm font-medium text-white">
-              F-Learning AI
+              Marino AI
             </span>
           </div>
           <button

@@ -67,7 +67,7 @@ export function useSettings() {
 
   const resetSettings = async () => {
     try {
-      localStorage.removeItem("f-learning-settings");
+      localStorage.removeItem("marino-settings");
       await loadSettings();
       return true;
     } catch {

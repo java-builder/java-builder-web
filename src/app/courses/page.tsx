@@ -114,18 +114,12 @@ export default function CoursesPage() {
                   xu hướng.
                 </p>
 
-                <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+                <div className="mt-6">
                   <Link
                     href="#list"
                     className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-lg transform hover:scale-[1.02]"
                   >
                     Khám phá khóa học
-                  </Link>
-                  <Link
-                    href="/create-learning-path"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    Bắt đầu lộ trình
                   </Link>
                 </div>
               </div>

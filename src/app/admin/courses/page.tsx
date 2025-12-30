@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useConfirm } from "@/hooks/useConfirm";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
 import { courseApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
@@ -16,8 +16,6 @@ interface CourseStats {
   totalStudents: number;
   totalRevenue: number;
 }
-
-// Using CourseDetailResponse from types
 
 const LevelBadge = ({ level }: { level: CourseLevel }) => {
   const getLevelConfig = (level: CourseLevel) => {
@@ -65,7 +63,11 @@ export default function CoursesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
   const [error, setError] = useState<string>("");
-  const { confirm } = useConfirm();
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; title: string }>({
+    isOpen: false,
+    id: "",
+    title: "",
+  });
 
   // Mock stats - có thể thay thế bằng API call thực tế sau
   const [stats, setStats] = useState<CourseStats>({
@@ -106,33 +108,19 @@ export default function CoursesPage() {
   };
 
   const handleDelete = async (id: string, title: string) => {
-    await confirm(
-      async () => {
-        setIsDeleting(id);
-        try {
-          setCourses(courses.filter((course) => course.id !== id));
-        } finally {
-          setIsDeleting("");
-        }
-      },
-      {
-        title: "🎓 Xác nhận xóa khóa học",
-        message: `
-                    <div style="text-align: center; line-height: 1.5;">
-                        <p style="margin-bottom: 8px;">Bạn có chắc chắn muốn xóa khóa học</p>
-                        <p style="font-weight: 700; color: #dc2626; font-size: 14px; margin: 8px 0; padding: 6px 12px; background: #fef2f2; border-radius: 6px; display: inline-block; max-width: 280px; word-wrap: break-word;">
-                            "${title}"
-                        </p>
-                        <p style="margin-top: 8px; font-size: 12px; color: #6b7280;">
-                            ⚠️ Hành động này sẽ ảnh hưởng đến tất cả học viên đã đăng ký
-                        </p>
-                    </div>
-                `,
-        confirmText: "🗑️ Xóa khóa học",
-        cancelText: "❌ Hủy bỏ",
-        type: "error",
-      },
-    );
+    setDeleteModal({ isOpen: true, id, title });
+  };
+
+  const confirmDelete = async () => {
+    const { id } = deleteModal;
+    setIsDeleting(id);
+    try {
+      // Call API to delete course here
+      setCourses(courses.filter((course) => course.id !== id));
+      setDeleteModal({ isOpen: false, id: "", title: "" });
+    } finally {
+      setIsDeleting("");
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -151,6 +139,7 @@ export default function CoursesPage() {
     return formatPrice(revenue);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatDate = (dateString: string) => {
     try {
       const [datePart, timePart] = dateString.split(" ");
@@ -192,7 +181,7 @@ export default function CoursesPage() {
               Quản lý Khóa học
             </h1>
             <p className="text-gray-600">
-              Quản lý và theo dõi tất cả khóa học trong hệ thống F-Learning
+              Quản lý và theo dõi tất cả khóa học trong hệ thống Marino
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -527,26 +516,26 @@ export default function CoursesPage() {
       )}
 
       {/* Courses Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         {courses.map((course) => (
           <div
             key={course.id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group"
           >
             {/* Thumbnail */}
-            <div className="relative h-48 bg-gray-200 overflow-hidden">
+            <div className="relative aspect-video bg-gray-100 overflow-hidden">
               {course.courseCover ? (
                 <Image
                   src={course.courseCover}
                   alt={course.title}
-                  width={400}
-                  height={192}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
                   <svg
-                    className="w-16 h-16 text-gray-400"
+                    className="w-12 h-12 text-accent-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -560,57 +549,39 @@ export default function CoursesPage() {
                   </svg>
                 </div>
               )}
-              <div className="absolute inset-0 bg-black/20"></div>
-              <div className="absolute top-4 left-4 flex gap-2">
-                <LevelBadge level={course.level || CourseLevel.BEGINNER} />
-              </div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">
-                  {course.title}
-                </h3>
-              </div>
             </div>
 
             {/* Content */}
-            <div className="p-6">
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            <div className="p-5">
+              {/* Title */}
+              <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-accent transition-colors">
+                {course.title}
+              </h3>
+              
+              {/* Description */}
+              <p className="text-gray-500 text-sm mb-4 line-clamp-3 leading-relaxed">
                 {course.description}
               </p>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4 mb-4 text-center">
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <div className="text-gray-600 text-xs font-medium">
-                    Thời lượng
-                  </div>
-                  <div className="text-gray-900 font-bold text-sm">
-                    {course.duration || 0} giờ
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <div className="text-gray-600 text-xs font-medium">
-                    Ngày tạo
-                  </div>
-                  <div className="text-gray-900 font-bold text-sm">
-                    {formatDate(course.createdAt)}
-                  </div>
-                </div>
+              {/* Level & Duration */}
+              <div className="flex items-center gap-3 mb-4">
+                <LevelBadge level={course.level || CourseLevel.BEGINNER} />
+                <span className="text-gray-400">|</span>
+                <span className="text-gray-500 text-sm">{course.duration || 0} giờ</span>
               </div>
 
               {/* Price */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl font-bold text-gray-900">
-                    {formatPrice(course.price)}
-                  </span>
-                </div>
+              <div className="mb-4">
+                <span className="text-2xl font-bold text-accent">
+                  {formatPrice(course.price)}
+                </span>
               </div>
 
-              {/* Actions */}
-              <div className="flex gap-2">
+              {/* Admin Actions */}
+              <div className="flex gap-2 pt-4 border-t border-gray-100">
                 <Link
                   href={`/admin/courses/${course.id}/edit`}
-                  className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors duration-200"
+                  className="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-accent text-white text-sm font-medium rounded-xl hover:bg-accent-600 transition-all duration-200"
                 >
                   <svg
                     className="w-4 h-4 mr-2"
@@ -630,7 +601,7 @@ export default function CoursesPage() {
                 <button
                   onClick={() => handleDelete(course.id, course.title)}
                   disabled={isDeleting === course.id}
-                  className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                  className="px-4 py-2.5 border border-gray-200 text-gray-500 rounded-xl hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isDeleting === course.id ? (
                     <svg
@@ -715,6 +686,19 @@ export default function CoursesPage() {
           // Refresh courses list after successful creation
           fetchCourses();
         }}
+      />
+
+      {/* Delete Confirm Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, id: "", title: "" })}
+        onConfirm={confirmDelete}
+        title="Xóa khóa học"
+        message={`Bạn có chắc chắn muốn xóa khóa học <strong>${deleteModal.title}</strong>? Hành động này không thể hoàn tác.`}
+        confirmText="Xóa"
+        cancelText="Hủy"
+        isLoading={isDeleting === deleteModal.id}
+        type="danger"
       />
     </div>
   );

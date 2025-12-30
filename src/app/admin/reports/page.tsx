@@ -235,7 +235,7 @@ export default function ReportsPage() {
               📊 Báo cáo & Thống kê
             </h1>
             <p className="text-gray-600">
-              Theo dõi hiệu suất và phân tích dữ liệu hệ thống F-Learning
+              Theo dõi hiệu suất và phân tích dữ liệu hệ thống Marino
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">

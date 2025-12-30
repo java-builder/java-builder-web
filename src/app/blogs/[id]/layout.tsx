@@ -32,7 +32,7 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: blog.createdAt,
       modifiedTime: blog.createdAt,
-      author: blog.author || 'Lê Khánh Đức',
+      author: blog.author || 'Marino',
       tags: [blog.blogType, 'blog', 'lập trình'],
     });
   } catch {
