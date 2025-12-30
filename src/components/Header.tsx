@@ -380,95 +380,171 @@ export default function Header() {
                 </button>
 
                 {isMessagesOpen && !selectedConversation && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                    <div className="px-3 py-2 text-sm font-medium text-gray-500">Tin nhắn</div>
-                    <div className="max-h-60 overflow-auto">
+                  <div className="fixed inset-0 sm:absolute sm:inset-auto sm:right-0 sm:mt-2 w-full sm:w-96 h-full sm:h-auto bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-100 z-50 overflow-hidden flex flex-col">
+                    {/* Header */}
+                    <div className="px-4 py-3 bg-gradient-to-r from-accent to-blue-600 flex-shrink-0">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-base font-semibold text-white">Tin nhắn</h3>
+                        <button 
+                          onClick={() => setIsMessagesOpen(false)}
+                          className="text-white/80 hover:text-white transition-colors sm:hidden"
+                        >
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                        <button className="text-white/80 hover:text-white transition-colors hidden sm:block">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Conversations List - Fixed height with scroll */}
+                    <div className="flex-1 sm:h-[420px] overflow-y-auto">
                       {Array.from(new Map(hardcodedMessages.map((m) => [m.sender, m]))).map(([, m]) => (
                         <button
                           key={m.sender}
                           onClick={() => setSelectedConversation(m.sender)}
-                          className="w-full text-left px-4 py-3 transition-colors hover:bg-blue-50 flex items-start gap-3"
+                          className="w-full text-left px-4 py-3 transition-all hover:bg-gray-50 active:bg-gray-100 border-b border-gray-50 last:border-0 group"
                         >
-                          <div className="flex-shrink-0 w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white text-sm">
-                            {m.sender?.charAt(0)}
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-sm text-gray-900 line-clamp-2 mb-1">
-                              <span className="font-medium">{m.sender}</span> — <span className="text-gray-700">{m.text}</span>
+                          <div className="flex items-center gap-3">
+                            {/* Avatar */}
+                            <div className="relative flex-shrink-0">
+                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-white font-semibold text-base shadow-sm">
+                                {m.sender?.charAt(0)}
+                              </div>
+                              <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"></div>
                             </div>
-                            <div className="text-xs text-gray-400">{m.time}</div>
+
+                            {/* Content */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-baseline justify-between mb-1">
+                                <h4 className="font-semibold text-gray-900 text-sm truncate">{m.sender}</h4>
+                                <span className="text-xs text-gray-500 ml-2 flex-shrink-0">{m.time}</span>
+                              </div>
+                              <p className="text-sm text-gray-600 line-clamp-1 group-hover:text-gray-900 transition-colors">
+                                {m.text}
+                              </p>
+                            </div>
+
+                            {/* Unread badge (optional) */}
+                            {m.sender !== "Bạn" && (
+                              <div className="flex-shrink-0">
+                                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                              </div>
+                            )}
                           </div>
                         </button>
                       ))}
                     </div>
-                    <div className="px-3 py-2 border-t text-center">
-                      <a href="/messages" className="text-sm text-accent hover:underline">Xem tất cả tin nhắn</a>
+
+                    {/* Footer */}
+                    <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex-shrink-0">
+                      <button className="w-full text-center text-sm font-medium text-accent hover:text-blue-700 transition-colors">
+                        Xem tất cả tin nhắn
+                      </button>
                     </div>
                   </div>
                 )}
 
                 {isMessagesOpen && selectedConversation && (
-                  <div className="header-chat-modal chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[560px] max-h-[820px] sm:max-h-[560px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border-0 overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                  <div className="header-chat-modal chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[560px] max-h-[820px] sm:max-h-[560px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden">
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-accent to-blue-600 text-white">
                       <div className="flex items-center gap-3">
-                        <HiOutlineChatAlt2 className="w-5 h-5 text-gray-600" />
-                        <div className="text-sm font-medium text-gray-900">{selectedConversation}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-semibold">
+                            {selectedConversation?.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold">{selectedConversation}</div>
+                            <div className="text-xs text-white/80">Đang hoạt động</div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setSelectedConversation(null)}
-                          className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                          aria-label="Back to conversations"
-                        >
-                          ←
-                        </button>
-                        <button
-                          onClick={() => {
-                            setIsMessagesOpen(false);
-                            setSelectedConversation(null);
-                          }}
-                          className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                          aria-label="Đóng tin nhắn"
-                        >
-                          ✕
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => {
+                          setIsMessagesOpen(false);
+                          setSelectedConversation(null);
+                        }}
+                        className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                        aria-label="Đóng"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
                     </div>
 
-                    <div className="flex-1 overflow-auto p-3 space-y-3">
+                    {/* Messages */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
                       {messagesList
                         .filter((mm) => mm.sender === selectedConversation || mm.sender === "Bạn")
                         .map((m) => {
                           const isAdmin = m.sender === "Bạn" || m.sender === "Admin";
                           return (
                             <div key={m.id} className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}>
-                              <div className={`${isAdmin ? "bg-accent text-white" : "bg-gray-100 text-gray-900"} max-w-[78%] p-3 rounded-lg shadow-sm`}>
-                                <div className="text-sm">{m.text}</div>
-                                <div className={`mt-1 text-xs ${isAdmin ? "text-blue-100" : "text-gray-400"}`}>{m.time}</div>
+                              <div className={`max-w-[75%] ${isAdmin ? "" : "flex items-start gap-2"}`}>
+                                {!isAdmin && (
+                                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                    {m.sender?.charAt(0)}
+                                  </div>
+                                )}
+                                <div>
+                                  <div className={`${
+                                    isAdmin 
+                                      ? "bg-gradient-to-r from-accent to-blue-600 text-white" 
+                                      : "bg-white text-gray-900 border border-gray-100"
+                                  } px-4 py-2.5 rounded-2xl ${isAdmin ? "rounded-br-sm" : "rounded-bl-sm"} shadow-sm`}>
+                                    <div className="text-sm leading-relaxed">{m.text}</div>
+                                  </div>
+                                  <div className={`mt-1 text-xs text-gray-500 ${isAdmin ? "text-right" : "text-left"} px-1`}>
+                                    {m.time}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           );
                         })}
                     </div>
 
-                    <div className="px-3 py-2 border-t border-gray-100">
+                    {/* Input */}
+                    <div className="px-4 py-3 bg-white border-t border-gray-100">
                       <div className="flex items-center gap-2">
+                        <button className="p-2 text-gray-400 hover:text-accent transition-colors">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
                         <input
                           value={messageInput}
                           onChange={(e) => setMessageInput(e.target.value)}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") handleSendMessage();
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              handleSendMessage();
+                            }
                           }}
-                          className="flex-1 h-10 px-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent"
-                          placeholder="Viết tin nhắn..."
-                          aria-label="Viết tin nhắn"
+                          className="flex-1 px-4 py-2.5 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent bg-gray-50 text-sm"
+                          placeholder="Nhập tin nhắn..."
+                          aria-label="Nhập tin nhắn"
                         />
                         <button
                           onClick={handleSendMessage}
-                          className="px-3 py-2 bg-accent text-white rounded-lg"
-                          aria-label="Gửi tin nhắn"
+                          disabled={!messageInput.trim()}
+                          className="bg-transparent p-0 text-accent hover:text-accent-600 flex items-center justify-center flex-shrink-0 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          aria-label="Gửi"
                         >
-                          Gửi
+                          <svg
+                            className="w-6 h-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+                          </svg>
                         </button>
                       </div>
                     </div>
@@ -497,23 +573,26 @@ export default function Header() {
                       <div className="px-3 py-2 text-xs font-medium text-gray-500">
                         Thông báo
                       </div>
-                      <div className="flex border-t border-gray-100">
+                      <div className="flex">
                         <button
                           onClick={() => handleTabChange("all")}
-                          className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                          className={`flex-1 px-4 py-2.5 text-sm font-medium transition-all relative ${
                             activeTab === "all"
-                              ? "text-accent border-b-2 border-accent"
-                              : "text-gray-600 hover:text-gray-800"
+                              ? "text-accent bg-blue-50/50"
+                              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
                           }`}
                         >
                           Tất cả
+                          {activeTab === "all" && (
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-t-full" />
+                          )}
                         </button>
                         <button
                           onClick={() => handleTabChange("unread")}
-                          className={`flex-1 px-4 py-2 text-sm font-medium transition-colors relative ${
+                          className={`flex-1 px-4 py-2.5 text-sm font-medium transition-all relative ${
                             activeTab === "unread"
-                              ? "text-accent border-b-2 border-accent"
-                              : "text-gray-600 hover:text-gray-800"
+                              ? "text-accent bg-blue-50/50"
+                              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
                           }`}
                         >
                           Chưa đọc
@@ -521,6 +600,9 @@ export default function Header() {
                             <span className="absolute top-1.5 right-2 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] leading-[18px] rounded-full text-center font-semibold">
                               {unreadCount > 9 ? "9+" : unreadCount}
                             </span>
+                          )}
+                          {activeTab === "unread" && (
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-t-full" />
                           )}
                         </button>
                       </div>

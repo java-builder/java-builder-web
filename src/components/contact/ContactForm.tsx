@@ -135,9 +135,9 @@ export default function ContactForm({
                 </div>
             )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                 {/* Name and Email Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
             <label
               htmlFor="name"
@@ -188,7 +188,7 @@ export default function ContactForm({
                 </div>
 
                 {/* Phone and Subject Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
             <label
               htmlFor="phone"
@@ -276,13 +276,13 @@ export default function ContactForm({
                 </div>
 
                 {/* Submit Button */}
-        <div className="flex items-center justify-end pt-3">
+        <div className="flex items-center justify-end pt-2 sm:pt-3">
                     <button
                         type="submit"
                         disabled={isSubmitting}
-            className="px-5 py-2 bg-gradient-to-r from-accent to-accent-600 text-white font-medium rounded-md hover:from-accent-600 hover:to-accent-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 text-sm"
+            className="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-gradient-to-r from-accent to-accent-600 text-white font-medium rounded-md hover:from-accent-600 hover:to-accent-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 text-sm"
                     >
-            {isSubmitting ? "Đang gửi..." : "Gửi"}
+            {isSubmitting ? "Đang gửi..." : "Gửi tin nhắn"}
                     </button>
                 </div>
             </form>

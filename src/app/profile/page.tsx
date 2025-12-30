@@ -145,10 +145,10 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-100">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex gap-6 h-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 h-full">
           {/* Sidebar */}
-          <div className="w-80 flex-shrink-0">
+          <div className="w-full lg:w-80 flex-shrink-0">
             <Sidebar
               user={user}
               activeTab={activeTab}
@@ -157,7 +157,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">{renderTabContent()}</div>
+          <div className="flex-1 min-w-0">{renderTabContent()}</div>
         </div>
       </div>
 

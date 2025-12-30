@@ -75,51 +75,51 @@ export default function Sidebar({
   ];
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 h-full">
+    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 lg:h-full">
       {/* User Info */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
             {user.avatar ? (
               <Image
                 src={user.avatar}
                 alt={user.username || "User avatar"}
-                width={40}
-                height={40}
+                width={48}
+                height={48}
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (
-              <span className="text-white font-semibold text-sm">
+              <span className="text-white font-semibold text-sm sm:text-base">
                 {user.username?.charAt(0)?.toUpperCase() || "U"}
               </span>
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-sm font-semibold text-gray-900 truncate">
+            <h2 className="text-sm sm:text-base font-semibold text-gray-900 truncate">
               {user.username || "Người dùng"}
             </h2>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-xs sm:text-sm text-gray-500 truncate">
               {user.email || "Chưa có email"}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation - Horizontal on mobile, vertical on desktop */}
       <nav className="p-2">
-        <ul className="space-y-1">
+        <ul className="flex lg:flex-col lg:space-y-1 overflow-x-auto lg:overflow-x-visible gap-1 lg:gap-0">
           {tabs.map((tab) => (
-            <li key={tab.id}>
+            <li key={tab.id} className="flex-shrink-0 lg:flex-shrink">
               <button
                 onClick={() => onTabChange(tab.id)}
-                className={`w-full text-left px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center group ${
+                className={`w-full text-left px-3 py-2.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 flex items-center whitespace-nowrap group ${
                   activeTab === tab.id
-                    ? "bg-accent-50 text-accent-700 border-r-2 border-accent"
+                    ? "bg-accent-50 text-accent-700 lg:border-r-2 border-accent"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`}
               >
                 <span
-                  className={`mr-3 transition-colors ${
+                  className={`mr-2 lg:mr-3 transition-colors ${
                     activeTab === tab.id
                       ? "text-accent-600"
                       : "text-gray-400 group-hover:text-gray-600"
@@ -127,7 +127,7 @@ export default function Sidebar({
                 >
                   {tab.icon}
                 </span>
-                {tab.label}
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             </li>
           ))}

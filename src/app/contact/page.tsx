@@ -143,8 +143,8 @@ export default function ContactPage() {
             </section>
 
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
                     {/* Contact Form */}
           <MotionWrapper
             animation="fadeInLeft"
@@ -154,13 +154,13 @@ export default function ContactPage() {
           >
             <div
               id="contact-form"
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8"
+              className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 lg:p-8"
             >
-                            <div className="mb-6">
-                                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                            <div className="mb-4 sm:mb-6">
+                                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                                     Gửi tin nhắn cho chúng tôi
                                 </h2>
-                                <p className="text-gray-600">
+                                <p className="text-sm sm:text-base text-gray-600">
                   Điền thông tin vào form bên dưới và chúng tôi sẽ phản hồi
                   trong thời gian sớm nhất.
                                 </p>
@@ -181,7 +181,7 @@ export default function ContactPage() {
             delay={0.4}
             mode="mount"
           >
-                        <div className="space-y-8">
+                        <div className="space-y-6 sm:space-y-8">
                             {/* Contact Information */}
                             <ContactInfo />
                         </div>
@@ -195,22 +195,22 @@ export default function ContactPage() {
           delay={0.6}
           mode="mount"
         >
-                    <div className="mt-16 bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-                        <div className="text-center mb-8">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    <div className="mt-8 sm:mt-12 lg:mt-16 bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+                        <div className="text-center mb-6 sm:mb-8">
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
                                 Tại sao chọn chúng tôi?
                             </h3>
-                            <p className="text-gray-600 max-w-3xl mx-auto">
+                            <p className="text-sm sm:text-base text-gray-600 max-w-3xl mx-auto">
                 Chúng tôi cam kết mang đến dịch vụ tốt nhất và hỗ trợ khách hàng
                 24/7
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
                             <div className="text-center">
-                <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <svg
-                    className="w-8 h-8 text-accent-500"
+                    className="w-7 h-7 sm:w-8 sm:h-8 text-accent-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -223,18 +223,18 @@ export default function ContactPage() {
                     />
                                     </svg>
                                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                   Hỗ trợ 24/7
                 </h4>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-sm text-gray-600">
                                     Đội ngũ hỗ trợ luôn sẵn sàng giúp đỡ bạn mọi lúc, mọi nơi
                                 </p>
                             </div>
 
                             <div className="text-center">
-                <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <svg
-                    className="w-8 h-8 text-accent-500"
+                    className="w-7 h-7 sm:w-8 sm:h-8 text-accent-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -247,18 +247,18 @@ export default function ContactPage() {
                     />
                                     </svg>
                                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                   Phản hồi nhanh
                 </h4>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-sm text-gray-600">
                                     Chúng tôi cam kết phản hồi trong vòng 24 giờ làm việc
                                 </p>
                             </div>
 
-                            <div className="text-center">
-                <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="text-center sm:col-span-2 md:col-span-1">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <svg
-                    className="w-8 h-8 text-accent-500"
+                    className="w-7 h-7 sm:w-8 sm:h-8 text-accent-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -271,10 +271,10 @@ export default function ContactPage() {
                     />
                                     </svg>
                                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                   Chất lượng đảm bảo
                 </h4>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-sm text-gray-600">
                                     Dịch vụ chất lượng cao với đội ngũ chuyên nghiệp
                                 </p>
                             </div>

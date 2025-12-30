@@ -56,7 +56,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white">
       <Header />
       {/* Header Section */}
-      <div className="relative bg-gradient-to-r from-white to-blue-50 text-gray-900 py-20 overflow-hidden">
+      <div className="relative bg-gradient-to-r from-white to-blue-50 text-gray-900 py-12 sm:py-16 lg:py-20 overflow-hidden">
         <div className="absolute inset-0">
           {/* Code snippets overlay */}
           <div className="absolute inset-0 opacity-5">
@@ -79,30 +79,30 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
               <div className="lg:col-span-7 text-gray-900">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4">
                   Lê Khánh Đức
                 </h1>
-                <p className="text-lg text-gray-700 mb-4">
+                <p className="text-base sm:text-lg text-gray-700 mb-3 sm:mb-4">
                   Java Developer & Founder of F Learning
                 </p>
-                <p className="text-base text-gray-700 max-w-2xl">
+                <p className="text-sm sm:text-base text-gray-700 max-w-2xl">
                   Tôi là một Java Developer đam mê chia sẻ kiến thức, xây dựng
                   khóa học thực tế và giúp cộng đồng phát triển.
                 </p>
-                <div className="mt-6 flex gap-4">
+                <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <a
                     href="#tech"
-                    className="inline-flex items-center px-5 py-3 bg-accent hover:bg-accent-600 text-white rounded-md font-medium shadow"
+                    className="inline-flex items-center justify-center px-5 py-3 bg-accent hover:bg-accent-600 text-white rounded-md font-medium shadow text-sm sm:text-base"
                   >
                     Xem Tech Stack
                   </a>
                   <a
                     href="#contact"
-                    className="inline-flex items-center px-5 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                    className="inline-flex items-center justify-center px-5 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
                   >
                     Liên hệ
                   </a>
@@ -110,8 +110,8 @@ export default function AboutPage() {
               </div>
 
               <div className="lg:col-span-5 flex justify-center">
-                <div className="w-56 h-56 rounded-full border-4 border-accent/20 bg-accent/10 flex items-center justify-center backdrop-blur-sm shadow-lg">
-                  <FaGraduationCap className="text-6xl text-accent" />
+                <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full border-4 border-accent/20 bg-accent/10 flex items-center justify-center backdrop-blur-sm shadow-lg">
+                  <FaGraduationCap className="text-5xl sm:text-6xl text-accent" />
                 </div>
               </div>
             </div>
@@ -124,19 +124,19 @@ export default function AboutPage() {
             delay={0.2}
             mode="mount"
           >
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">
+            <div className="mt-8 sm:mt-12">
+              <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6 text-gray-900">
                 Tech Stack
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
                 {techStack.map((tech, index) => (
                   <div key={index} className="text-center">
-                    <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200 hover:shadow-md transition-all duration-300 cursor-pointer group">
-                      <tech.icon className="text-2xl md:text-3xl mx-auto mb-2 md:mb-3 text-accent group-hover:scale-110 transition-transform duration-300" />
-                      <div className="text-lg md:text-xl font-bold mb-1 text-gray-900">
+                    <div className="bg-white rounded-lg p-3 sm:p-4 md:p-6 border border-gray-200 hover:shadow-md transition-all duration-300 cursor-pointer group">
+                      <tech.icon className="text-xl sm:text-2xl md:text-3xl mx-auto mb-2 md:mb-3 text-accent group-hover:scale-110 transition-transform duration-300" />
+                      <div className="text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-1 text-gray-900">
                         {tech.name}
                       </div>
-                      <div className="text-xs md:text-sm text-gray-600">
+                      <div className="text-xs md:text-sm text-gray-600 hidden sm:block">
                         {tech.description}
                       </div>
                     </div>
@@ -150,20 +150,20 @@ export default function AboutPage() {
 
       {/* Navigation Tabs */}
       <div className="bg-white shadow-lg sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex overflow-x-auto">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex overflow-x-auto scrollbar-hide">
             {tabButtons.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 font-medium transition-all duration-300 border-b-2 whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium transition-all duration-300 border-b-2 whitespace-nowrap text-sm sm:text-base ${
                   activeTab === tab.id
                     ? "text-accent border-accent bg-blue-50"
                     : "text-gray-600 border-transparent hover:text-accent hover:bg-gray-50"
                 }`}
               >
-                <tab.icon className="text-lg" />
-                {tab.label}
+                <tab.icon className="text-base sm:text-lg" />
+                <span className="hidden xs:inline">{tab.label}</span>
               </button>
             ))}
           </div>
@@ -171,16 +171,16 @@ export default function AboutPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* About Tab */}
         {activeTab === "about" && (
           <MotionWrapper animation="fadeInUp" duration={0.6}>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
                   Câu chuyện của tôi
                 </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed">
+                <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 leading-relaxed">
                   <p>
                     Xin chào! Tôi là <strong>Lê Khánh Đức</strong>, một Java
                     Developer đam mê với việc học hỏi và chia sẻ kiến thức công
@@ -230,7 +230,7 @@ export default function AboutPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
                       <FaMapMarkerAlt className="text-accent text-lg" />
-                      <span className="text-gray-600">Hà Nội, Việt Nam</span>
+                      <span className="text-gray-600">Đà Nẵng, Việt Nam</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <FaBriefcase className="text-accent text-lg" />
@@ -270,11 +270,11 @@ export default function AboutPage() {
         {activeTab === "contact" && (
           <MotionWrapper animation="fadeInUp" duration={0.6}>
             <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">
                 Liên hệ với tôi
               </h2>
 
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
                 {/* Left: Contact info (reuse component) */}
                 <div>
                   <ContactInfo />
@@ -282,8 +282,8 @@ export default function AboutPage() {
 
                 {/* Right: Contact form (reuse component) */}
                 <div>
-                  <div className="bg-white rounded-2xl shadow-xl p-6">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">
                       Gửi tin nhắn cho tôi
                     </h3>
                     <ContactForm
@@ -293,12 +293,12 @@ export default function AboutPage() {
                     />
                   </div>
 
-                  <div className="mt-6 bg-gradient-to-r from-accent to-blue-600 rounded-2xl shadow-xl p-6 text-white text-center">
-                    <FaHeart className="text-2xl mx-auto mb-3" />
-                    <h3 className="text-lg font-semibold mb-1">
+                  <div className="mt-4 sm:mt-6 bg-gradient-to-r from-accent to-blue-600 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 text-white text-center">
+                    <FaHeart className="text-xl sm:text-2xl mx-auto mb-2 sm:mb-3" />
+                    <h3 className="text-base sm:text-lg font-semibold mb-1">
                       Hỗ trợ học viên 24/7
                     </h3>
-                    <p className="text-blue-100 text-sm">
+                    <p className="text-blue-100 text-xs sm:text-sm">
                       Tôi luôn sẵn sàng hỗ trợ và giải đáp thắc mắc của các bạn
                       học viên.
                     </p>
