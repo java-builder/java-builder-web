@@ -1,0 +1,76 @@
+import { ReactNode } from "react";
+import type { Metadata } from "next";
+import { courseApi } from "@/services/course.service";
+import { generateSEO, generateCourseStructuredData } from "@/lib/seo";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  try {
+    const { id } = await params;
+    const result = await courseApi.getById(id);
+    
+    if (result.code !== 200 || !result.result) {
+      return { title: "Khóa học" };
+    }
+
+    const course = result.result;
+    const description = course.description.substring(0, 160);
+    
+    const imgUrl =
+      course.courseCover && /^https?:\/\//i.test(course.courseCover)
+        ? course.courseCover
+        : course.courseCover
+          ? `${SITE_URL}${course.courseCover.startsWith("/") ? "" : "/"}${course.courseCover}`
+          : `${SITE_URL}/hero-background.jpg`;
+
+    return generateSEO({
+      title: course.title,
+      description,
+      image: imgUrl,
+      url: `/courses/${id}`,
+      type: 'website',
+      tags: [course.level || 'khóa học', 'lập trình', 'online course'],
+    });
+  } catch {
+    return {
+      title: "Khóa học",
+    };
+  }
+}
+
+export default async function CourseDetailLayout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  
+  let structuredData = null;
+  try {
+    const result = await courseApi.getById(id);
+    if (result.code === 200 && result.result) {
+      structuredData = generateCourseStructuredData(result.result);
+    }
+  } catch {
+    // Fail silently
+  }
+
+  return (
+    <>
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      )}
+      {children}
+    </>
+  );
+}

@@ -112,9 +112,14 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div 
+      onClick={handleClick}
+      className={`bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full ${
+        document.url ? 'cursor-pointer' : 'cursor-default'
+      }`}
+    >
       {/* Header */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         {document.coverImage && !imageError ? (
           <Image
             src={document.coverImage}
@@ -155,7 +160,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
       </div>
 
       {/* Body */}
-      <div className="p-6">
+      <div className="p-6 flex flex-col flex-grow">
         <h4 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
           {document.title}
         </h4>
@@ -199,11 +204,11 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
           </div>
         )}
 
-        {/* Action Button */}
+        {/* Action Button - pushed to bottom */}
         <button
           onClick={handleClick}
           disabled={!document.url}
-          className={`w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+          className={`w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 mt-auto ${
             document.url
               ? "bg-accent hover:bg-accent-600 text-white hover:shadow-md"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"

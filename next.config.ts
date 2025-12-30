@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Enable compression for better performance
+  compress: true,
+  // Generate ETags for better caching
+  generateEtags: true,
+  // Optimize production builds
+  poweredByHeader: false,
+  // Trailing slash for better SEO
+  trailingSlash: false,
 };
 
 export default nextConfig;

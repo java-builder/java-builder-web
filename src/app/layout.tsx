@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
+import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,21 +17,15 @@ const geistMono = Geist_Mono({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "F Learning - Nền tảng học tập trực tuyến",
-  description:
-    "Nền tảng học tập trực tuyến hiện đại, giúp bạn tiếp cận kiến thức mọi lúc, mọi nơi",
+  ...generateSEO({
+    title: "F Learning - Nền tảng học tập trực tuyến",
+    description: "Nền tảng học tập trực tuyến hiện đại với khóa học chất lượng cao, blog công nghệ và lộ trình học tập cá nhân hóa. Học lập trình Java, Spring Boot, React, Next.js cùng Lê Khánh Đức",
+    url: "/",
+    tags: ["học lập trình", "khóa học online", "Java", "Spring Boot", "React", "Next.js", "lập trình web", "backend", "frontend"],
+  }),
   metadataBase: new URL(SITE_URL),
-  openGraph: {
-    siteName: "F Learning",
-    type: "website",
-    url: SITE_URL,
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-  robots: {
-    index: true,
-    follow: true,
+  verification: {
+    google: "your-google-verification-code",
   },
 };
 
@@ -39,6 +34,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationSchema = generateOrganizationStructuredData();
+  const websiteSchema = generateWebsiteStructuredData();
+
   return (
     <html lang="vi">
       <head>
@@ -52,6 +50,16 @@ export default function RootLayout({
         <link rel="icon" href="/favicon-academic.svg" />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="apple-touch-icon" href="/favicon-academic.svg" />
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
