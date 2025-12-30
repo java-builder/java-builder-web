@@ -27,6 +27,7 @@
     "@tiptap/extension-text-style": "^3.7.2",
     "@tiptap/react": "^3.7.2",
     "@tiptap/starter-kit": "^3.7.2",
+    "@types/video.js": "^7.3.58",
     "@uiw/react-md-editor": "^4.0.8",
     "axios": "^1.11.0",
     "chart.js": "^4.5.0",
@@ -44,7 +45,8 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "sweetalert2": "^11.23.0"
+    "sweetalert2": "^11.23.0",
+    "video.js": "^8.23.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

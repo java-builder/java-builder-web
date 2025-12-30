@@ -7,8 +7,9 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
-import { courseApi } from "@/services/course.service";
-import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import VideoPlayer from "@/components/VideoPlayer";
+import { courseApi, lessonApi } from "@/services/course.service";
+import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -19,7 +20,21 @@ export default function CourseDetailPage() {
   const [error, setError] = useState<string>("");
   const [activeTab, setActiveTab] = useState<
     "description" | "comments" | "curriculum" | "instructor"
-  >("description");
+  >("curriculum");
+
+  // Curriculum state
+  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
+  const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
+  const [loadingLessons, setLoadingLessons] = useState<Set<string>>(new Set());
+
+  // Video preview modal
+  const [previewModal, setPreviewModal] = useState<{
+    isOpen: boolean;
+    lesson: LessonDetailResponse | null;
+  }>({
+    isOpen: false,
+    lesson: null,
+  });
 
   const fetchCourseDetail = useCallback(async () => {
     if (!courseId) return;
@@ -43,6 +58,47 @@ export default function CourseDetailPage() {
   useEffect(() => {
     fetchCourseDetail();
   }, [courseId, fetchCourseDetail]);
+
+  // Toggle chapter expand and load lessons
+  const toggleChapter = async (chapterId: string) => {
+    const newExpanded = new Set(expandedChapters);
+    if (newExpanded.has(chapterId)) {
+      newExpanded.delete(chapterId);
+    } else {
+      newExpanded.add(chapterId);
+      // Load lessons if not loaded yet
+      if (!chapterLessons[chapterId]) {
+        await fetchLessons(chapterId);
+      }
+    }
+    setExpandedChapters(newExpanded);
+  };
+
+  // Fetch lessons for a chapter
+  const fetchLessons = async (chapterId: string) => {
+    setLoadingLessons(prev => new Set(prev).add(chapterId));
+    try {
+      const response = await lessonApi.getByChapterId(chapterId);
+      if (response.result) {
+        setChapterLessons(prev => ({ ...prev, [chapterId]: response.result || [] }));
+      }
+    } catch (error) {
+      console.error("Error fetching lessons:", error);
+    } finally {
+      setLoadingLessons(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(chapterId);
+        return newSet;
+      });
+    }
+  };
+
+  // Handle lesson click
+  const handleLessonClick = (lesson: LessonDetailResponse) => {
+    if (lesson.isFreePreview) {
+      setPreviewModal({ isOpen: true, lesson });
+    }
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -277,19 +333,19 @@ export default function CourseDetailPage() {
                   <div className="border-b border-gray-200 mb-6">
                     <nav className="-mb-px flex space-x-8">
                       <button
-                        onClick={() => setActiveTab("description")}
+                        onClick={() => setActiveTab("curriculum")}
                         className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                          activeTab === "description"
+                          activeTab === "curriculum"
                             ? "border-accent text-accent-600"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        Mô tả khóa học
+                        Nội dung khóa học
                       </button>
                       <button
-                        onClick={() => setActiveTab("curriculum")}
+                        onClick={() => setActiveTab("description")}
                         className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                          activeTab === "curriculum"
+                          activeTab === "description"
                             ? "border-accent text-accent-600"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
@@ -330,15 +386,111 @@ export default function CourseDetailPage() {
                     )}
 
                     {activeTab === "curriculum" && (
-                      <div className="space-y-0">
+                      <div className="space-y-3">
                         {course.chapters && course.chapters.length > 0 ? (
                           course.chapters.map((chapter, index) => (
-                            <div key={chapter.id} className="flex items-center gap-4 py-4 border-b border-gray-100 last:border-b-0">
-                              <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                              <span className="text-sm text-gray-500 flex-shrink-0">Chương {index + 1}</span>
-                              <span className="font-medium text-gray-900">{chapter.chapterName}</span>
+                            <div key={chapter.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                              {/* Chapter Header */}
+                              <div
+                                className="flex items-center justify-between px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                                onClick={() => toggleChapter(chapter.id)}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <svg
+                                    className={`w-4 h-4 text-gray-500 transition-transform ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
+                                  <span className="text-sm font-medium text-gray-500">Chương {index + 1}</span>
+                                  <span className="font-medium text-gray-900">{chapter.chapterName}</span>
+                                </div>
+                                <span className="text-xs text-gray-400">
+                                  {chapterLessons[chapter.id] ? `${chapterLessons[chapter.id].length} bài học` : ""}
+                                </span>
+                              </div>
+
+                              {/* Lessons List */}
+                              {expandedChapters.has(chapter.id) && (
+                                <div className="border-t border-gray-200">
+                                  {chapter.description && (
+                                    <p className="text-sm text-gray-600 px-4 py-2 bg-gray-50/50 border-b border-gray-100">
+                                      {chapter.description}
+                                    </p>
+                                  )}
+                                  <div className="divide-y divide-gray-100">
+                                    {loadingLessons.has(chapter.id) ? (
+                                      <div className="px-4 py-6 text-center text-gray-400 text-sm flex items-center justify-center gap-2">
+                                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        Đang tải...
+                                      </div>
+                                    ) : chapterLessons[chapter.id] && chapterLessons[chapter.id].length > 0 ? (
+                                      chapterLessons[chapter.id].map((lesson, lessonIndex) => (
+                                        <div
+                                          key={lesson.id}
+                                          className={`flex items-center justify-between px-4 py-3 transition-colors ${
+                                            lesson.isFreePreview 
+                                              ? "hover:bg-accent-50 cursor-pointer group" 
+                                              : "bg-gray-50/30"
+                                          }`}
+                                          onClick={() => handleLessonClick(lesson)}
+                                        >
+                                          <div className="flex items-center gap-3">
+                                            <span className={`w-6 h-6 flex items-center justify-center rounded text-xs ${
+                                              lesson.isFreePreview 
+                                                ? "bg-accent-100 text-accent-600 group-hover:bg-accent group-hover:text-white" 
+                                                : "bg-gray-100 text-gray-400"
+                                            } transition-colors`}>
+                                              {lessonIndex + 1}
+                                            </span>
+                                            <div>
+                                              <div className="flex items-center gap-2">
+                                                <span className={`text-sm ${
+                                                  lesson.isFreePreview 
+                                                    ? "text-gray-900 group-hover:text-accent" 
+                                                    : "text-gray-500"
+                                                } transition-colors`}>
+                                                  {lesson.lessonName}
+                                                </span>
+                                                {lesson.isFreePreview && (
+                                                  <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-700 rounded">
+                                                    Miễn phí
+                                                  </span>
+                                                )}
+                                              </div>
+                                              {lesson.videoUrl && (
+                                                <span className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  Video
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                          {lesson.isFreePreview ? (
+                                            <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
+                                              <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                          ) : (
+                                            <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                          )}
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="px-4 py-6 text-center text-gray-400 text-sm">
+                                        Chưa có bài học nào
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           ))
                         ) : (
@@ -546,6 +698,72 @@ export default function CourseDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Video Preview Modal */}
+      {previewModal.isOpen && previewModal.lesson && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setPreviewModal({ isOpen: false, lesson: null })} />
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{previewModal.lesson.lessonName}</h3>
+                <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                  Xem miễn phí
+                </span>
+              </div>
+              <button
+                onClick={() => setPreviewModal({ isOpen: false, lesson: null })}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Video Player */}
+            <div className="bg-black">
+              {previewModal.lesson.videoUrl ? (
+                <VideoPlayer
+                  src={previewModal.lesson.videoUrl}
+                  autoPlay
+                  className="w-full"
+                />
+              ) : (
+                <div className="w-full aspect-video flex items-center justify-center bg-gray-900">
+                  <div className="text-center text-gray-400">
+                    <svg className="w-16 h-16 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <p>Chưa có video cho bài học này</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            {previewModal.lesson.description && (
+              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Mô tả bài học</h4>
+                <p className="text-sm text-gray-600 whitespace-pre-wrap">{previewModal.lesson.description}</p>
+              </div>
+            )}
+
+            {/* CTA */}
+            <div className="px-6 py-4 border-t border-gray-200 bg-accent-50">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  Đăng ký khóa học để xem tất cả bài học
+                </p>
+                <button className="px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors">
+                  Đăng ký ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <Footer />

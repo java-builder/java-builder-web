@@ -23,6 +23,7 @@ export interface ChapterDetailResponse {
   id: string;
   chapterName: string;
   description: string;
+  lessons?: LessonDetailResponse[];
 }
 
 export interface CreateChapterRequest {
@@ -35,6 +36,45 @@ export interface CreateChapterResponse {
   id: string;
   chapterName: string;
   description: string;
+}
+
+export interface UpdateChapterRequest {
+  id: string;
+  chapterName: string;
+  description?: string;
+}
+
+export interface UpdateChapterResponse {
+  id: string;
+  chapterName: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Lesson types
+export interface LessonDetailResponse {
+  id: string;
+  lessonName: string;
+  description: string;
+  videoUrl: string;
+  isFreePreview: boolean;
+}
+
+export interface CreateLessonRequest {
+  chapterId: string;
+  lessonName: string;
+  description?: string;
+  videoUrl?: string;
+  isFreePreview?: boolean;
+}
+
+export interface CreateLessonResponse {
+  id: string;
+  lessonName: string;
+  description: string;
+  videoUrl: string;
+  isFreePreview: boolean;
 }
 
 export interface CourseDetailResponse {

@@ -7,6 +7,11 @@ import {
   CourseLevel,
   CreateChapterRequest,
   CreateChapterResponse,
+  UpdateChapterRequest,
+  UpdateChapterResponse,
+  CreateLessonRequest,
+  CreateLessonResponse,
+  LessonDetailResponse,
 } from "@/types/course";
 import { FileMetaDataResponse } from "@/types/course";
 import toast from "react-hot-toast";
@@ -84,6 +89,20 @@ export const chapterApi = {
     }
   },
 
+  // Cập nhật chapter
+  update: async (data: UpdateChapterRequest) => {
+    try {
+      const response = await apiClient.put<ApiResponse<UpdateChapterResponse>>(
+        "/api/v1/chapters",
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Cập nhật chương thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
   // Xóa chapter
   delete: async (id: string) => {
     try {
@@ -93,6 +112,48 @@ export const chapterApi = {
       return response.data;
     } catch (error) {
       toast.error("Xóa chương thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+};
+
+export const lessonApi = {
+  // Tạo lesson mới
+  create: async (data: CreateLessonRequest) => {
+    try {
+      const response = await apiClient.post<ApiResponse<CreateLessonResponse>>(
+        "/api/v1/lessons",
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Tạo bài học thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Lấy danh sách lessons theo chapterId
+  getByChapterId: async (chapterId: string) => {
+    try {
+      const response = await apiClient.get<ApiResponse<LessonDetailResponse[]>>(
+        `/api/v1/lessons/chapter/${chapterId}`,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Lấy danh sách bài học thất bại.");
+      throw error;
+    }
+  },
+
+  // Xóa lesson
+  delete: async (id: string) => {
+    try {
+      const response = await apiClient.delete<ApiResponse<void>>(
+        `/api/v1/lessons/${id}`,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Xóa bài học thất bại. Vui lòng thử lại.");
       throw error;
     }
   },
@@ -115,10 +176,38 @@ export const fileApi = {
         },
       );
 
-      toast.success("Upload ảnh thành công!");
       return response.data;
     } catch (error) {
-      toast.error("Upload ảnh thất bại. Vui lòng thử lại.");
+      toast.error("Upload file thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Upload video
+  uploadVideo: async (file: File, onProgress?: (percent: number) => void) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await apiClient.post<ApiResponse<FileMetaDataResponse>>(
+        "/api/v1/files/upload-single-media",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            if (onProgress && progressEvent.total) {
+              const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              onProgress(percent);
+            }
+          },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      toast.error("Upload video thất bại. Vui lòng thử lại.");
       throw error;
     }
   },
