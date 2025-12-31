@@ -2,9 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
-import { usePathname } from "next/navigation";
 import ToastProvider from "@/components/providers/ToastProvider";
-import Chatbot from "@/components/Chatbot";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,14 +15,12 @@ const queryClient = new QueryClient({
 });
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const showChatbot = !pathname?.startsWith("/admin");
-
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      <ToastProvider />
-      {showChatbot && <Chatbot />}
+      <ThemeProvider>
+        {children}
+        <ToastProvider />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

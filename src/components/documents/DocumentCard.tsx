@@ -114,7 +114,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
   return (
     <div 
       onClick={handleClick}
-      className={`bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full ${
+      className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-transparent dark:border-slate-700 ${
         document.url ? 'cursor-pointer' : 'cursor-default'
       }`}
     >
@@ -161,11 +161,11 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
 
       {/* Body */}
       <div className="p-6 flex flex-col flex-grow">
-        <h4 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2">
           {document.title}
         </h4>
 
-        <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3">
+        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed line-clamp-3">
           {document.description}
         </p>
 
@@ -173,7 +173,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             {document.author && (
-              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium max-w-[120px] truncate">
+              <span className="px-2 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-md text-xs font-medium max-w-[120px] truncate">
                 {document.author}
               </span>
             )}
@@ -191,13 +191,13 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
             {document.tags.slice(0, 3).map((tag, tagIndex) => (
               <span
                 key={tagIndex}
-                className="px-2 py-1 bg-gray-50 text-gray-500 rounded text-xs"
+                className="px-2 py-1 bg-gray-50 dark:bg-slate-700 text-gray-500 dark:text-gray-400 rounded text-xs border border-gray-200 dark:border-slate-600"
               >
                 #{tag}
               </span>
             ))}
             {document.tags.length > 3 && (
-              <span className="px-2 py-1 bg-gray-50 text-gray-500 rounded text-xs">
+              <span className="px-2 py-1 bg-gray-50 dark:bg-slate-700 text-gray-500 dark:text-gray-400 rounded text-xs border border-gray-200 dark:border-slate-600">
                 +{document.tags.length - 3}
               </span>
             )}

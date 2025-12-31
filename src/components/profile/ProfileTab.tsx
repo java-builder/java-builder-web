@@ -87,6 +87,10 @@ export default function ProfileTab({
 
       if (response.result) {
         setCurrentAvatar(response.result);
+        // Cập nhật user state để Sidebar cũng nhận được avatar mới
+        if (onSave) {
+          await onSave({ avatar: response.result });
+        }
       }
     } catch (error) {
       console.error("Error updating avatar:", error);

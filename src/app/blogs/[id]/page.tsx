@@ -16,7 +16,6 @@ import { authApi } from "@/services/auth.service";
 import toast from "react-hot-toast";
 import MotionWrapper from "@/components/MotionWrapper";
 import CommentList from "@/components/blogs/CommentList";
-import BlogAISummary from "@/components/blogs/BlogAISummary";
 
 export default function BlogDetailPage() {
   const params = useParams();
@@ -540,14 +539,6 @@ export default function BlogDetailPage() {
                       />
                     </div>
                   )}
-
-                  {/* AI Summary */}
-                  <div className="mb-4 sm:mb-6 md:mb-8">
-                    <BlogAISummary
-                      blogTitle={blog.title}
-                      blogContent={blog.content}
-                    />
-                  </div>
 
                   {/* Content */}
                   <div className="max-w-none prose prose-sm sm:prose lg:prose-lg">

@@ -51,6 +51,16 @@ export default function CourseDetailPage() {
       if (result.code === 200 && result.result) {
         setCourse(result.result);
       }
+      
+      // Check favorite status
+      try {
+        const favoriteResult = await favoriteApi.check(courseId);
+        if (favoriteResult.result !== undefined) {
+          setIsFavorite(favoriteResult.result);
+        }
+      } catch {
+        // Silent fail for favorite check
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
@@ -62,23 +72,7 @@ export default function CourseDetailPage() {
 
   useEffect(() => {
     fetchCourseDetail();
-  }, [courseId, fetchCourseDetail]);
-
-  // Check favorite status on load
-  useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      if (!courseId) return;
-      try {
-        const result = await favoriteApi.check(courseId);
-        if (result.result !== undefined) {
-          setIsFavorite(result.result);
-        }
-      } catch {
-        // Silent fail
-      }
-    };
-    checkFavoriteStatus();
-  }, [courseId]);
+  }, [fetchCourseDetail]);
 
   // Toggle favorite handler
   const handleToggleFavorite = async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
@@ -11,15 +11,22 @@ import toast from "react-hot-toast";
 interface CourseCardProps {
   course: CourseDetailResponse;
   index?: number;
+  initialFavorite?: boolean;
 }
 
-export default function CourseCard({ course, index = 0 }: CourseCardProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+export default function CourseCard({ course, index = 0, initialFavorite }: CourseCardProps) {
+  const [isFavorite, setIsFavorite] = useState(initialFavorite ?? false);
   const [isLoading, setIsLoading] = useState(false);
+  const hasCheckedFavorite = useRef(false);
 
   useEffect(() => {
+    // Skip if initialFavorite is provided or already checked
+    if (initialFavorite !== undefined || hasCheckedFavorite.current) return;
+    if (!authApi.isAuthenticated()) return;
+    
+    hasCheckedFavorite.current = true;
+    
     const checkFavorite = async () => {
-      if (!authApi.isAuthenticated()) return;
       try {
         const result = await favoriteApi.check(course.id);
         if (result.result !== undefined) {
@@ -30,7 +37,7 @@ export default function CourseCard({ course, index = 0 }: CourseCardProps) {
       }
     };
     checkFavorite();
-  }, [course.id]);
+  }, [course.id, initialFavorite]);
 
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -196,8 +203,8 @@ export default function CourseCard({ course, index = 0 }: CourseCardProps) {
             disabled={isLoading}
             className={`px-3 py-2 text-sm font-medium rounded-md border transition-all duration-200 disabled:opacity-50 ${
               isFavorite 
-                ? "bg-red-50 hover:bg-red-100 text-red-500 border-red-200 hover:border-red-300" 
-                : "bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300"
+                ? "bg-red-50 hover:bg-red-100 text-red-500 border-red-200 hover:border-red-300 dark:bg-red-900/30 dark:border-red-800 dark:hover:bg-red-900/50 dark:hover:border-red-700" 
+                : "bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300 dark:bg-slate-700 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-600 dark:hover:border-slate-500"
             }`}
           >
             {isLoading ? (

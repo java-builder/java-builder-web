@@ -190,7 +190,7 @@ export default function BlogsPage() {
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
 
-          <div className="relative bg-white/90 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
+          <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                 <div className="flex-1 flex gap-2">
@@ -202,7 +202,7 @@ export default function BlogsPage() {
                       id="blog-search"
                       type="text"
                       placeholder="Tìm theo tiêu đề, nội dung..."
-                      className="w-full h-12 rounded-lg border border-gray-300 pl-11 pr-4 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent shadow-sm focus:shadow-md transition"
+                      className="w-full h-12 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 pl-11 pr-4 text-[15px] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent shadow-sm focus:shadow-md transition"
                       value={searchText}
                       onChange={(e) => setSearchText(e.target.value)}
                       onKeyDown={(e) => {
@@ -211,7 +211,7 @@ export default function BlogsPage() {
                         }
                       }}
                     />
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -274,14 +274,14 @@ export default function BlogsPage() {
                           setBlogType(t);
                           setPage(1);
                         }}
-                        className={`px-3 py-1.5 rounded-full border text-sm transition ${active ? "bg-accent text-white border-accent shadow" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
+                        className={`px-3 py-1.5 rounded-full border text-sm transition ${active ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
                       >
                         {label}
                       </button>
                     );
                   })}
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
                   {isLoading
                     ? "Đang tải..."
                     : `Tìm thấy ${totalElements} bài viết`}

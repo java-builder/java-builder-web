@@ -124,12 +124,12 @@ export default function DocumentsPage() {
         {/* Search */}
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
-          <div className="relative bg-white/90 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
+          <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
             <div className="flex gap-3">
               {/* Search input */}
               <div className="flex-1">
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -147,7 +147,7 @@ export default function DocumentsPage() {
                   <input
                     type="text"
                     placeholder="Tìm sách, tài liệu, tác giả..."
-                    className="w-full h-12 rounded-lg border border-gray-300 pl-11 pr-4 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="w-full h-12 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 pl-11 pr-4 text-[15px] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     onKeyDown={(e) => {
@@ -188,7 +188,7 @@ export default function DocumentsPage() {
         <div className="mb-6 space-y-4">
           {/* Category Filter */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Danh mục</h3>
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Danh mục</h3>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
@@ -196,7 +196,7 @@ export default function DocumentsPage() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   selectedCategory === ""
                     ? "bg-accent text-white shadow-md"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
                 }`}
               >
                 Tất cả

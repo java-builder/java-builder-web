@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { HiOutlineBell, HiOutlineChatAlt2 } from "react-icons/hi";
+import { HiOutlineBell, HiOutlineChatAlt2, HiOutlineSun, HiOutlineMoon } from "react-icons/hi";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { authApi } from "@/services/auth.service";
+import { userApi } from "@/services/user.service";
+import { UserDetailResponse } from "@/types/user";
+import { useTheme } from "@/contexts/ThemeContext";
 import {
   notificationApi,
   NotificationDetailResponse,
@@ -16,6 +19,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserDetailResponse | null>(null);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
@@ -38,10 +42,22 @@ export default function Header() {
   }>({ all: 0, unread: 0 });
   const router = useRouter();
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    setIsLoggedIn(authApi.isAuthenticated());
+    const authenticated = authApi.isAuthenticated();
+    setIsLoggedIn(authenticated);
+    
+    // Fetch user info when logged in
+    if (authenticated) {
+      userApi.getCurrentUser().then((res) => {
+        if (res.result) {
+          setCurrentUser(res.result);
+        }
+      }).catch(console.error);
+    }
   }, []);
+
 
   const loadUnreadCount = useCallback(async () => {
     if (!isLoggedIn) return;
@@ -55,10 +71,6 @@ export default function Header() {
       console.error("Failed to load unread count", e);
     }
   }, [isLoggedIn]);
-
-  useEffect(() => {
-    loadUnreadCount();
-  }, [isLoggedIn, loadUnreadCount]);
 
   const loadNotifications = useCallback(
     async (
@@ -103,6 +115,11 @@ export default function Header() {
         } else {
           setNotifications(list);
         }
+
+        // Update unread count from loaded notifications
+        const unreadInList = list.filter((n) => !n.read).length;
+        setHasUnread(unreadInList > 0);
+        setUnreadCount(unreadInList);
 
         if (markAsReadOnLoad && list.length > 0) {
           const unreadIds = list.filter((n) => !n.read).map((n) => n.id);
@@ -206,7 +223,7 @@ export default function Header() {
     }
   };
 
-  // synchronize body class so other components (Chatbot) can arrange when a conversation is opened
+  // synchronize body class when a conversation is opened
   useEffect(() => {
     if (typeof document === "undefined") return;
     if (selectedConversation) {
@@ -251,7 +268,7 @@ export default function Header() {
   };
 
   return (
-    <nav className="w-full px-3 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-200 relative z-50">
+    <nav className="w-full px-3 sm:px-6 py-3 sm:py-4 bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 relative z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
           <button
@@ -358,7 +375,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-medium transition-colors ${isActive ? "text-accent border-b-2 border-accent pb-2" : "text-gray-700 hover:text-accent"}`}
+                className={`font-medium transition-colors ${isActive ? "text-accent border-b-2 border-accent pb-2" : "text-gray-700 dark:text-gray-300 hover:text-accent"}`}
               >
                 {item.label}
               </Link>
@@ -367,13 +384,26 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
+            aria-label={theme === "dark" ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"}
+          >
+            {theme === "dark" ? (
+              <HiOutlineSun className="w-6 h-6" />
+            ) : (
+              <HiOutlineMoon className="w-6 h-6" />
+            )}
+          </button>
+
           {isLoggedIn && (
             <div className="relative flex items-center space-x-2">
               {/* Messages button */}
               <div className="relative">
                 <button
                   onClick={handleOpenMessages}
-                  className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 relative"
+                  className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 relative"
                   aria-label="Tin nhắn"
                 >
                   <HiOutlineChatAlt2 className="w-6 h-6" aria-hidden="true" />
@@ -451,7 +481,7 @@ export default function Header() {
                 )}
 
                 {isMessagesOpen && selectedConversation && (
-                  <div className="header-chat-modal chatbot-window fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[560px] max-h-[820px] sm:max-h-[560px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden">
+                  <div className="header-chat-modal fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-96 h-[85vh] sm:h-[560px] max-h-[820px] sm:max-h-[560px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-accent to-blue-600 text-white">
                       <div className="flex items-center gap-3">
@@ -568,10 +598,10 @@ export default function Header() {
                 </button>
 
                 {isNotifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-50">
                     {/* Header with tabs */}
-                    <div className="border-b border-gray-200">
-                      <div className="px-3 py-2 text-xs font-medium text-gray-500">
+                    <div className="border-b border-gray-200 dark:border-slate-700">
+                      <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         Thông báo
                       </div>
                       <div className="flex">
@@ -579,8 +609,8 @@ export default function Header() {
                           onClick={() => handleTabChange("all")}
                           className={`flex-1 px-4 py-2.5 text-sm font-medium transition-all relative ${
                             activeTab === "all"
-                              ? "text-accent bg-blue-50/50"
-                              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                              ? "text-accent bg-blue-50/50 dark:bg-blue-900/30"
+                              : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700"
                           }`}
                         >
                           Tất cả
@@ -592,8 +622,8 @@ export default function Header() {
                           onClick={() => handleTabChange("unread")}
                           className={`flex-1 px-4 py-2.5 text-sm font-medium transition-all relative ${
                             activeTab === "unread"
-                              ? "text-accent bg-blue-50/50"
-                              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                              ? "text-accent bg-blue-50/50 dark:bg-blue-900/30"
+                              : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700"
                           }`}
                         >
                           Chưa đọc
@@ -611,9 +641,9 @@ export default function Header() {
                     <div className="max-h-80 overflow-auto">
                       {filteredNotifications.length === 0 ? (
                         <div className="px-4 py-6 text-center">
-                          <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                          <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center mb-3">
                             <svg
-                              className="w-6 h-6 text-gray-400"
+                              className="w-6 h-6 text-gray-400 dark:text-gray-500"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -626,12 +656,12 @@ export default function Header() {
                               />
                             </svg>
                           </div>
-                          <div className="text-sm font-medium text-gray-700">
+                          <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
                             {activeTab === "unread"
                               ? "Không có thông báo chưa đọc"
                               : "Chưa có thông báo"}
                           </div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {activeTab === "unread"
                               ? "Tất cả thông báo của bạn đã được đọc."
                               : "Khi có hoạt động mới, chúng tôi sẽ hiển thị tại đây."}
@@ -642,10 +672,10 @@ export default function Header() {
                           <Link
                             key={n.id}
                             href={n.content || "#"}
-                            className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-blue-50 ${!n.read ? "bg-blue-50/50" : "hover:bg-gray-50"}`}
+                            className={`flex items-start gap-3 px-4 py-3 transition-colors ${!n.read ? "bg-blue-50/50 dark:bg-blue-900/20 hover:bg-blue-100/50 dark:hover:bg-blue-900/30" : "hover:bg-gray-50 dark:hover:bg-slate-700"}`}
                             onClick={() => setIsNotifOpen(false)}
                           >
-                            <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
                               {n.avatar ? (
                                 <Image
                                   src={n.avatar}
@@ -656,18 +686,18 @@ export default function Header() {
                                   unoptimized
                                 />
                               ) : (
-                                <span className="text-xs text-gray-600">
+                                <span className="text-xs text-gray-600 dark:text-gray-300">
                                   {(n.senderName || "U")[0]?.toUpperCase()}
                                 </span>
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className="text-sm text-gray-900 line-clamp-2 mb-1">
+                              <div className="text-sm text-gray-900 dark:text-gray-100 line-clamp-2 mb-1">
                                 <span className="font-medium">
                                   {n.title || "Thông báo"}
                                 </span>
                               </div>
-                              <div className="text-xs text-gray-400">
+                              <div className="text-xs text-gray-400 dark:text-gray-500">
                                 {n.createdAt}
                               </div>
                             </div>
@@ -677,7 +707,7 @@ export default function Header() {
                                 alt="attachment"
                                 width={40}
                                 height={40}
-                                className="w-10 h-10 rounded object-contain bg-white border border-gray-200"
+                                className="w-10 h-10 rounded object-contain bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600"
                                 unoptimized
                               />
                             )}
@@ -750,20 +780,21 @@ export default function Header() {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="hidden sm:flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-accent transition-colors rounded-lg hover:bg-gray-50"
               >
-                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                <div className="w-9 h-9 bg-accent rounded-full flex items-center justify-center overflow-hidden">
+                  {currentUser?.avatar ? (
+                    <Image
+                      src={currentUser.avatar}
+                      alt={currentUser.username || "Avatar"}
+                      width={36}
+                      height={36}
+                      className="w-full h-full object-cover"
+                      unoptimized
                     />
-                  </svg>
+                  ) : (
+                    <span className="text-white font-semibold text-sm">
+                      {currentUser?.username?.charAt(0)?.toUpperCase() || "U"}
+                    </span>
+                  )}
                 </div>
                 <svg
                   className={`w-4 h-4 transition-transform ${isUserMenuOpen ? "rotate-180" : ""}`}
@@ -784,28 +815,29 @@ export default function Header() {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="sm:hidden p-1.5 text-gray-600 hover:text-gray-800 transition-colors"
               >
-                <div className="w-7 h-7 bg-accent rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-3.5 h-3.5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center overflow-hidden">
+                  {currentUser?.avatar ? (
+                    <Image
+                      src={currentUser.avatar}
+                      alt={currentUser.username || "Avatar"}
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover"
+                      unoptimized
                     />
-                  </svg>
+                  ) : (
+                    <span className="text-white font-semibold text-xs">
+                      {currentUser?.username?.charAt(0)?.toUpperCase() || "U"}
+                    </span>
+                  )}
                 </div>
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 py-2 z-50">
                   <Link
                     href="/profile"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-accent transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-accent transition-colors"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <div className="flex items-center space-x-2">
@@ -827,7 +859,7 @@ export default function Header() {
                   </Link>
                   <Link
                     href="/favorites"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-accent transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-accent transition-colors"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <div className="flex items-center space-x-2">
@@ -847,10 +879,10 @@ export default function Header() {
                       <span>Khóa học yêu thích</span>
                     </div>
                   </Link>
-                  <div className="border-t border-gray-200 my-1"></div>
+                  <div className="border-t border-gray-200 dark:border-slate-700 my-1"></div>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                   >
                     <div className="flex items-center space-x-2">
                       <svg

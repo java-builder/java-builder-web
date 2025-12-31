@@ -28,9 +28,7 @@ export default function CommentList({
   isSubmitting = false,
   hasMore = false,
 }: CommentListProps) {
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "popular">(
-    "newest",
-  );
+  const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   const [hashReplyId, setHashReplyId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -50,39 +48,29 @@ export default function CommentList({
   }, []);
 
   const sortedComments = [...comments].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      case "oldest":
-        return (
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-      case "popular":
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      default:
-        return 0;
+    if (sortBy === "newest") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   });
 
-  if (isLoading) {
+  if (isLoading && comments.length === 0) {
     return (
-      <div className="space-y-4">
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="flex items-start space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-              <div className="flex-1">
-                <div className="h-3 bg-gray-200 rounded w-1/4 mb-2"></div>
-                <div className="h-16 bg-gray-200 rounded"></div>
-              </div>
-            </div>
-          ))}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="h-6 bg-gray-200 rounded-lg w-32 animate-pulse" />
+          <div className="h-8 bg-gray-200 rounded-lg w-24 animate-pulse" />
         </div>
+        <div className="h-24 bg-gray-100 rounded-xl animate-pulse" />
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="flex gap-4 animate-pulse">
+            <div className="w-11 h-11 bg-gray-200 rounded-full flex-shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/4" />
+              <div className="h-16 bg-gray-100 rounded-xl" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -90,25 +78,41 @@ export default function CommentList({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Bình luận ({comments.length})
-        </h3>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
+            <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">Bình luận</h3>
+            <p className="text-sm text-gray-500">{comments.length} bình luận</p>
+          </div>
+        </div>
 
-        {comments.length > 0 && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Sắp xếp:</span>
-            <select
-              value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value as "newest" | "oldest" | "popular")
-              }
-              className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-accent focus:border-accent bg-white"
+        {comments.length > 1 && (
+          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setSortBy("newest")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                sortBy === "newest"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
             >
-              <option value="newest">Mới nhất</option>
-              <option value="oldest">Cũ nhất</option>
-              <option value="popular">Phổ biến</option>
-            </select>
+              Mới nhất
+            </button>
+            <button
+              onClick={() => setSortBy("oldest")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                sortBy === "oldest"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Cũ nhất
+            </button>
           </div>
         )}
       </div>
@@ -116,33 +120,35 @@ export default function CommentList({
       {/* Comment Form */}
       <CommentForm onSubmit={onAddComment} isSubmitting={isSubmitting} />
 
+      {/* Divider */}
+      {comments.length > 0 && (
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-white px-4 text-sm text-gray-500">
+              {comments.length} bình luận
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Comments List */}
       {comments.length === 0 ? (
-        <div className="text-center py-8">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              />
+        <div className="text-center py-12">
+          <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+            <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
-          <h4 className="text-lg font-medium text-gray-900 mb-2">
-            Chưa có bình luận nào
-          </h4>
-          <p className="text-gray-500 text-sm">
-            Hãy là người đầu tiên chia sẻ suy nghĩ của bạn!
+          <h4 className="text-lg font-semibold text-gray-900 mb-2">Chưa có bình luận</h4>
+          <p className="text-gray-500 text-sm max-w-xs mx-auto">
+            Hãy là người đầu tiên chia sẻ suy nghĩ của bạn về bài viết này!
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {sortedComments.map((comment) => (
             <CommentItem
               key={comment.id}
@@ -157,15 +163,30 @@ export default function CommentList({
         </div>
       )}
 
-      {/* Load More Button */}
+      {/* Load More */}
       {comments.length > 0 && hasMore && onLoadMore && (
-        <div className="text-center pt-2">
+        <div className="flex justify-center pt-4">
           <button
             onClick={onLoadMore}
             disabled={isLoading}
-            className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            className="group flex items-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Đang tải..." : "Xem thêm bình luận"}
+            {isLoading ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>Đang tải...</span>
+              </>
+            ) : (
+              <>
+                <span>Xem thêm bình luận</span>
+                <svg className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </>
+            )}
           </button>
         </div>
       )}
