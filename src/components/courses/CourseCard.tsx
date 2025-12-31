@@ -1,6 +1,12 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import { favoriteApi } from "@/services/course.service";
+import { authApi } from "@/services/auth.service";
+import toast from "react-hot-toast";
 
 interface CourseCardProps {
   course: CourseDetailResponse;
@@ -8,6 +14,47 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course, index = 0 }: CourseCardProps) {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const checkFavorite = async () => {
+      if (!authApi.isAuthenticated()) return;
+      try {
+        const result = await favoriteApi.check(course.id);
+        if (result.result !== undefined) {
+          setIsFavorite(result.result);
+        }
+      } catch {
+        // Silent fail
+      }
+    };
+    checkFavorite();
+  }, [course.id]);
+
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!authApi.isAuthenticated()) {
+      toast.error("Vui lòng đăng nhập để thêm vào yêu thích");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await favoriteApi.toggle(course.id);
+      if (result.code === 200) {
+        setIsFavorite(result.result ?? false);
+        toast.success(result.result ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
+      }
+    } catch {
+      toast.error("Có lỗi xảy ra");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getCourseCategory = (index: number) => {
     const categories = [
       {
@@ -144,20 +191,35 @@ export default function CourseCard({ course, index = 0 }: CourseCardProps) {
           >
             Xem chi tiết
           </Link>
-          <button className="px-3 py-2 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-800 text-sm font-medium rounded-md border border-gray-200 hover:border-gray-300 transition-all duration-200">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
+          <button 
+            onClick={handleToggleFavorite}
+            disabled={isLoading}
+            className={`px-3 py-2 text-sm font-medium rounded-md border transition-all duration-200 disabled:opacity-50 ${
+              isFavorite 
+                ? "bg-red-50 hover:bg-red-100 text-red-500 border-red-200 hover:border-red-300" 
+                : "bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            {isLoading ? (
+              <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : (
+              <svg
+                className="w-4 h-4"
+                fill={isFavorite ? "currentColor" : "none"}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+            )}
           </button>
         </div>
       </div>

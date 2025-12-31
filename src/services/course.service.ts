@@ -12,6 +12,7 @@ import {
   CreateLessonRequest,
   CreateLessonResponse,
   LessonDetailResponse,
+  FavoriteResponse,
 } from "@/types/course";
 import { FileMetaDataResponse } from "@/types/course";
 import toast from "react-hot-toast";
@@ -154,6 +155,48 @@ export const lessonApi = {
       return response.data;
     } catch (error) {
       toast.error("Xóa bài học thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+};
+
+export const favoriteApi = {
+  // Toggle favorite (add/remove)
+  toggle: async (courseId: string) => {
+    try {
+      const response = await apiClient.post<ApiResponse<boolean>>(
+        `/api/v1/favorites/toggle/${courseId}`,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Thao tác thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Check if course is favorited
+  check: async (courseId: string) => {
+    try {
+      const response = await apiClient.get<ApiResponse<boolean>>(
+        `/api/v1/favorites/check/${courseId}`,
+      );
+      return response.data;
+    } catch {
+      // Silent fail - user might not be logged in
+      return { code: 200, result: false };
+    }
+  },
+
+  // Get user's favorites
+  getMyFavorites: async (page: number = 1, size: number = 10) => {
+    try {
+      const response = await apiClient.get<ApiResponse<PageResponse<FavoriteResponse>>>(
+        "/api/v1/favorites/my",
+        { params: { page, size } },
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Lấy danh sách yêu thích thất bại.");
       throw error;
     }
   },

@@ -109,3 +109,16 @@ export interface FileMetaDataResponse {
 export interface FileResponse {
   files: FileMetaDataResponse[];
 }
+
+// Favorite types
+export interface FavoriteResponse {
+  id: string;
+  courseId: string;
+  courseTitle: string;
+  courseDescription: string;
+  coursePrice: number;
+  courseCover: string;
+  courseLevel: CourseLevel;
+  courseDuration: number;
+  addedAt: string;
+}

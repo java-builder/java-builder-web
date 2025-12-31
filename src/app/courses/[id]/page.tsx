@@ -8,8 +8,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import VideoPlayer from "@/components/VideoPlayer";
-import { courseApi, lessonApi } from "@/services/course.service";
+import { courseApi, lessonApi, favoriteApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
+import toast from "react-hot-toast";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -36,6 +37,10 @@ export default function CourseDetailPage() {
     lesson: null,
   });
 
+  // Favorite state
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+
   const fetchCourseDetail = useCallback(async () => {
     if (!courseId) return;
 
@@ -58,6 +63,39 @@ export default function CourseDetailPage() {
   useEffect(() => {
     fetchCourseDetail();
   }, [courseId, fetchCourseDetail]);
+
+  // Check favorite status on load
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!courseId) return;
+      try {
+        const result = await favoriteApi.check(courseId);
+        if (result.result !== undefined) {
+          setIsFavorite(result.result);
+        }
+      } catch {
+        // Silent fail
+      }
+    };
+    checkFavoriteStatus();
+  }, [courseId]);
+
+  // Toggle favorite handler
+  const handleToggleFavorite = async () => {
+    if (!courseId) return;
+    setFavoriteLoading(true);
+    try {
+      const result = await favoriteApi.toggle(courseId);
+      if (result.code === 200) {
+        setIsFavorite(result.result ?? false);
+        toast.success(result.result ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
+      }
+    } catch {
+      toast.error("Vui lòng đăng nhập để thêm vào yêu thích");
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
 
   // Toggle chapter expand and load lessons
   const toggleChapter = async (chapterId: string) => {
@@ -525,10 +563,14 @@ export default function CourseDetailPage() {
                       <div className="space-y-6">
                         {/* Instructor Profile */}
                         <div className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg">
-                          <div className="w-16 h-16 bg-gradient-to-br from-accent-400 to-accent-600 rounded-full flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">
-                              LĐ
-                            </span>
+                          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                            <Image
+                              src="/favicon-academic.svg"
+                              alt="Marino"
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-bold text-gray-900 mb-1">
@@ -557,7 +599,6 @@ export default function CourseDetailPage() {
                               "Spring Boot",
                               "Docker",
                               "PostgreSQL",
-                              "Elasticsearch",
                               "MongoDB",
                               "AWS",
                               "Kubernetes",
@@ -638,21 +679,36 @@ export default function CourseDetailPage() {
                   <button className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer">
                     Đăng ký ngay
                   </button>
-                  <button className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-md border border-gray-200 hover:border-gray-300 transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                    <span>Thêm vào yêu thích</span>
+                  <button 
+                    onClick={handleToggleFavorite}
+                    disabled={favoriteLoading}
+                    className={`w-full font-medium py-2.5 px-4 rounded-md border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${
+                      isFavorite 
+                        ? "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300" 
+                        : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    {favoriteLoading ? (
+                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="w-4 h-4"
+                        fill={isFavorite ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    )}
+                    <span>{isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}</span>
                   </button>
                 </div>
 
