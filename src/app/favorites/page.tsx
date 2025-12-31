@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
@@ -14,8 +14,9 @@ export default function FavoritesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const hasFetched = useRef(false);
 
-  const fetchFavorites = useCallback(async (page: number = 1) => {
+  const fetchFavorites = async (page: number = 1) => {
     try {
       setIsLoading(true);
       const result = await favoriteApi.getMyFavorites(page, 12);
@@ -29,11 +30,13 @@ export default function FavoritesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
     fetchFavorites();
-  }, [fetchFavorites]);
+  }, []);
 
   const handleRemoveFavorite = async (courseId: string) => {
     try {

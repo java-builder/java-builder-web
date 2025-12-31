@@ -9,8 +9,10 @@ import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import VideoPlayer from "@/components/VideoPlayer";
 import { courseApi, lessonApi, favoriteApi } from "@/services/course.service";
+import { paymentApi, CreatePaymentResponse } from "@/services/payment.service";
 import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
 import toast from "react-hot-toast";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -40,6 +42,17 @@ export default function CourseDetailPage() {
   // Favorite state
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  // Payment modal state
+  const [paymentModal, setPaymentModal] = useState<{
+    isOpen: boolean;
+    isLoading: boolean;
+    data: CreatePaymentResponse | null;
+  }>({
+    isOpen: false,
+    isLoading: false,
+    data: null,
+  });
 
   const fetchCourseDetail = useCallback(async () => {
     if (!courseId) return;
@@ -129,6 +142,25 @@ export default function CourseDetailPage() {
   const handleLessonClick = (lesson: LessonDetailResponse) => {
     if (lesson.isFreePreview) {
       setPreviewModal({ isOpen: true, lesson });
+    }
+  };
+
+  // Handle payment
+  const handlePayment = async () => {
+    if (!courseId) return;
+    
+    setPaymentModal({ isOpen: true, isLoading: true, data: null });
+    try {
+      const result = await paymentApi.createPaymentLink(courseId);
+      if (result.code === 201 && result.result) {
+        setPaymentModal({ isOpen: true, isLoading: false, data: result.result });
+      } else {
+        toast.error("Không thể tạo link thanh toán");
+        setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      }
+    } catch {
+      toast.error("Vui lòng đăng nhập để đăng ký khóa học");
+      setPaymentModal({ isOpen: false, isLoading: false, data: null });
     }
   };
 
@@ -670,7 +702,10 @@ export default function CourseDetailPage() {
 
                 {/* CTA Buttons */}
                 <div className="space-y-2 mb-6">
-                  <button className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer">
+                  <button 
+                    onClick={handlePayment}
+                    className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer"
+                  >
                     Đăng ký ngay
                   </button>
                   <button 
@@ -806,10 +841,125 @@ export default function CourseDetailPage() {
                 <p className="text-sm text-gray-600">
                   Đăng ký khóa học để xem tất cả bài học
                 </p>
-                <button className="px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors">
+                <button 
+                  onClick={() => {
+                    setPreviewModal({ isOpen: false, lesson: null });
+                    handlePayment();
+                  }}
+                  className="px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors"
+                >
                   Đăng ký ngay
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {paymentModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+            onClick={() => !paymentModal.isLoading && setPaymentModal({ isOpen: false, isLoading: false, data: null })} 
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="relative bg-gradient-to-r from-accent to-accent-600 px-6 py-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">Thanh toán khóa học</h3>
+                    <p className="text-white/70 text-sm">Quét mã QR hoặc chuyển khoản</p>
+                  </div>
+                </div>
+                {!paymentModal.isLoading && (
+                  <button
+                    onClick={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
+                    className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {paymentModal.isLoading ? (
+                <div className="text-center py-12">
+                  <div className="relative w-16 h-16 mx-auto mb-4">
+                    <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin"></div>
+                  </div>
+                  <p className="text-gray-600 font-medium">Đang tạo mã thanh toán...</p>
+                  <p className="text-gray-400 text-sm mt-1">Vui lòng chờ trong giây lát</p>
+                </div>
+              ) : paymentModal.data ? (
+                <div>
+                  {/* Course Info */}
+                  <div className="text-center mb-5">
+                    <h4 className="font-medium text-gray-900 line-clamp-2">{course?.title}</h4>
+                    <div className="flex items-center justify-center gap-2 mt-1">
+                      <span className="text-xl font-bold text-accent">
+                        {new Intl.NumberFormat("vi-VN").format(paymentModal.data.totalPrice)}đ
+                      </span>
+                      <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">
+                        Chờ thanh toán
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* QR Code Section */}
+                  {paymentModal.data.qrCode && (
+                    <div className="flex justify-center mb-6">
+                      <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                        <QRCodeSVG
+                          value={paymentModal.data.qrCode}
+                          size={200}
+                          level="M"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Order Info */}
+                  <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg mb-4">
+                    <span className="text-sm text-gray-500">Mã đơn hàng</span>
+                    <span className="font-mono font-semibold text-gray-900">{paymentModal.data.orderCode}</span>
+                  </div>
+
+                  {/* Checkout Button */}
+                  {paymentModal.data.checkoutUrl && (
+                    <a
+                      href={paymentModal.data.checkoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Thanh toán qua PayOS
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
+
+                  {/* Footer Note */}
+                  <div className="mt-4 flex items-start gap-2 text-xs text-gray-400">
+                    <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>Thanh toán được bảo mật bởi PayOS. Khóa học sẽ được kích hoạt tự động sau khi thanh toán thành công.</span>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -820,3 +970,4 @@ export default function CourseDetailPage() {
     </div>
   );
 }
+

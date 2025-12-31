@@ -1,91 +1,58 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "@/services/user.service";
 import { UserDetailResponse } from "@/types/user";
+import { authApi } from "@/services/auth.service";
+import { useState, useEffect } from "react";
 
 export const useUser = (userId?: string) => {
-  const [user, setUser] = useState<UserDetailResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Check auth sau khi mount (client-side)
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    setIsAuthenticated(authApi.isAuthenticated());
+    setIsAuthChecked(true);
+  }, []);
 
-        let response;
-        if (userId) {
-          response = await userApi.getById(userId);
-        } else {
-          response = await userApi.getCurrentUser();
-        }
-
-        if (response.result) {
-          setUser(response.result);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Có lỗi xảy ra khi tải thông tin người dùng",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [userId]);
+  const { data: user, isLoading, isFetching, error: queryError } = useQuery({
+    queryKey: userId ? ["user", userId] : ["currentUser"],
+    queryFn: async () => {
+      const response = userId 
+        ? await userApi.getById(userId)
+        : await userApi.getCurrentUser();
+      return response.result;
+    },
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
 
   const updateUser = async (data: Partial<UserDetailResponse>) => {
     if (!user) return;
-
-    try {
-      setUser((prevUser) => (prevUser ? { ...prevUser, ...data } : null));
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Có lỗi xảy ra khi cập nhật thông tin",
-      );
-      throw err;
-    }
+    
+    const queryKey = userId ? ["user", userId] : ["currentUser"];
+    queryClient.setQueryData(queryKey, (old: UserDetailResponse | undefined) => 
+      old ? { ...old, ...data } : old
+    );
   };
 
+  const refetch = () => {
+    const queryKey = userId ? ["user", userId] : ["currentUser"];
+    queryClient.invalidateQueries({ queryKey });
+  };
+
+  // Loading khi: chưa check auth xong HOẶC đang fetch
+  const loading = !isAuthChecked || isLoading || (isFetching && !user);
+
   return {
-    user,
+    user: user || null,
     loading,
-    error,
+    error: queryError ? (queryError as Error).message : null,
     updateUser,
-    refetch: () => {
-      const fetchUser = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-
-          let response;
-          if (userId) {
-            response = await userApi.getById(userId);
-          } else {
-            response = await userApi.getCurrentUser();
-          }
-
-          if (response.result) {
-            setUser(response.result);
-          }
-        } catch (err) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Có lỗi xảy ra khi tải thông tin người dùng",
-          );
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchUser();
-    },
+    refetch,
+    isAuthenticated,
   };
 };
