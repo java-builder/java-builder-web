@@ -2,61 +2,21 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import MotionWrapper from "@/components/MotionWrapper";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
-import { courseApi } from "@/services/course.service";
-import { blogService } from "@/services/blog.service";
-import { CourseDetailResponse } from "@/types/course";
-import { Blog } from "@/types/blog";
+import RoadmapSection from "@/components/roadmap/RoadmapSection";
+import { useFeaturedCourses } from "@/hooks/useCourses";
+import { useFeaturedBlogs } from "@/hooks/useBlogs";
 
 export default function Home() {
-  const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingBlogs, setIsLoadingBlogs] = useState(true);
-  const [error, setError] = useState<string>("");
-  const [blogError, setBlogError] = useState<string>("");
+  const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useFeaturedCourses();
+  const { data: blogsData, isLoading: isLoadingBlogs, error: blogsError } = useFeaturedBlogs();
 
-  const fetchFeaturedCourses = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      const result = await courseApi.getCourses(1, 3);
-      if (result.code === 200 && result.result) {
-        setCourses(result.result.result || []);
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchFeaturedBlogs = async () => {
-    try {
-      setIsLoadingBlogs(true);
-      setBlogError("");
-      const result = await blogService.getBlogs({ page: 1, size: 6 });
-      setBlogs(result.result.slice(0, 3));
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Có lỗi xảy ra khi tải blogs";
-      setBlogError(errorMessage);
-    } finally {
-      setIsLoadingBlogs(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFeaturedCourses();
-    fetchFeaturedBlogs();
-  }, []);
+  const courses = coursesData?.result || [];
+  const blogs = (blogsData || []).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-white">
@@ -160,6 +120,10 @@ export default function Home() {
           </MotionWrapper>
         </div>
       </main>
+
+      {/* Roadmap Section */}
+      <RoadmapSection />
+
       {/* Featured Blogs Section */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
@@ -183,7 +147,7 @@ export default function Home() {
             )}
 
             {/* Error State */}
-            {blogError && !isLoadingBlogs && (
+            {blogsError && !isLoadingBlogs && (
               <div className="col-span-full text-center py-12">
                 <div className="text-red-600 mb-4">
                   <svg
@@ -200,13 +164,13 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600">{blogError}</p>
+                <p className="text-gray-600">Có lỗi xảy ra khi tải blogs</p>
               </div>
             )}
 
             {/* Blog Cards from API */}
             {!isLoadingBlogs &&
-              !blogError &&
+              !blogsError &&
               blogs.map((blog, index) => (
                 <MotionWrapper
                   key={blog.id}
@@ -219,7 +183,7 @@ export default function Home() {
               ))}
 
             {/* Empty State */}
-            {!isLoadingBlogs && !blogError && blogs.length === 0 && (
+            {!isLoadingBlogs && !blogsError && blogs.length === 0 && (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-400 mb-4">
                   <svg
@@ -241,7 +205,7 @@ export default function Home() {
             )}
           </div>
 
-          {!isLoadingBlogs && !blogError && blogs.length > 0 && (
+          {!isLoadingBlogs && !blogsError && blogs.length > 0 && (
             <div className="text-center mt-12">
               <Link
                 href="/blogs"
@@ -283,14 +247,14 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Loading State */}
-            {isLoading && (
+            {isLoadingCourses && (
               <div className="col-span-full flex justify-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
               </div>
             )}
 
             {/* Error State */}
-            {error && !isLoading && (
+            {coursesError && !isLoadingCourses && (
               <div className="col-span-full text-center py-12">
                 <div className="text-red-600 mb-4">
                   <svg
@@ -307,13 +271,13 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600">{error}</p>
+                <p className="text-gray-600">Có lỗi xảy ra khi tải khóa học</p>
               </div>
             )}
 
             {/* Course Cards from API */}
-            {!isLoading &&
-              !error &&
+            {!isLoadingCourses &&
+              !coursesError &&
               courses.map((course, index) => (
                 <MotionWrapper
                   key={course.id}
@@ -326,7 +290,7 @@ export default function Home() {
               ))}
 
             {/* Empty State */}
-            {!isLoading && !error && courses.length === 0 && (
+            {!isLoadingCourses && !coursesError && courses.length === 0 && (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-400 mb-4">
                   <svg

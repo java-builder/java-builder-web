@@ -93,7 +93,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
   const category = getCourseCategory(index);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Header */}
       <div className="relative h-48 overflow-hidden">
         {course.courseCover ? (
@@ -136,8 +136,8 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
       {/* Body */}
       <div className="p-6">
-        <h4 className="text-xl font-bold text-gray-900 mb-3">{course.title}</h4>
-        <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3">
+        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{course.title}</h4>
+        <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3">
           {course.description}
         </p>
 
@@ -148,10 +148,10 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
               <span
                 className={`px-2 py-1 rounded-md text-xs font-medium ${
                   course.level === CourseLevel.BEGINNER
-                    ? "bg-blue-100 text-blue-800"
+                    ? "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300"
                     : course.level === CourseLevel.INTERMEDIATE
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-purple-100 text-purple-800"
+                      ? "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300"
+                      : "bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"
                 }`}
               >
                 {course.level === CourseLevel.BEGINNER
@@ -162,7 +162,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
               </span>
             )}
             {course.duration && (
-              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">
+              <span className="px-2 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-md text-xs font-medium">
                 {course.duration} giờ
               </span>
             )}
@@ -179,7 +179,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
                 </svg>
               ))}
             </div>
-            <span className="text-sm text-gray-500 ml-2">(0 đánh giá)</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">(0 đánh giá)</span>
           </div>
         </div>
 

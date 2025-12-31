@@ -52,8 +52,8 @@ export default function CommentForm({
 
   return (
     <form onSubmit={handleSubmit} className="relative">
-      <div className={`bg-white rounded-xl border-2 transition-all duration-200 ${
-        isFocused ? "border-accent shadow-lg shadow-accent/10" : "border-gray-200 hover:border-gray-300"
+      <div className={`bg-white dark:bg-slate-800 rounded-xl border-2 transition-all duration-200 ${
+        isFocused ? "border-accent shadow-lg shadow-accent/10" : "border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600"
       }`}>
         {/* Input Area */}
         <div className="p-4">
@@ -64,7 +64,7 @@ export default function CommentForm({
             onFocus={() => setIsFocused(true)}
             onBlur={() => !content && setIsFocused(false)}
             placeholder={isLoggedIn ? placeholder : "Đăng nhập để bình luận..."}
-            className="w-full resize-none focus:outline-none text-gray-800 placeholder-gray-400 text-sm sm:text-base leading-relaxed min-h-[60px]"
+            className="w-full resize-none focus:outline-none text-gray-800 dark:text-gray-200 bg-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base leading-relaxed min-h-[60px]"
             style={{ height: "60px" }}
             maxLength={maxLength}
             disabled={isSubmitting || !isLoggedIn}
@@ -73,21 +73,21 @@ export default function CommentForm({
 
         {/* Footer */}
         {showActions && (
-          <div className="px-4 pb-4 flex items-center justify-between border-t border-gray-100 pt-3">
+          <div className="px-4 pb-4 flex items-center justify-between border-t border-gray-100 dark:border-slate-700 pt-3">
             {/* Character Counter */}
             <div className="flex items-center gap-3">
               <div className={`text-xs font-medium px-2 py-1 rounded-full transition-colors ${
                 isAtLimit
-                  ? "bg-red-100 text-red-600"
+                  ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
                   : isNearLimit
-                    ? "bg-amber-100 text-amber-600"
-                    : "bg-gray-100 text-gray-500"
+                    ? "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400"
               }`}>
                 {content.length}/{maxLength}
               </div>
               
               {/* Progress bar */}
-              <div className="hidden sm:block w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div className="hidden sm:block w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                 <div 
                   className={`h-full transition-all duration-200 rounded-full ${
                     isAtLimit ? "bg-red-500" : isNearLimit ? "bg-amber-500" : "bg-accent"
@@ -109,7 +109,7 @@ export default function CommentForm({
                     }
                   }}
                   disabled={isSubmitting}
-                  className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   Hủy
                 </button>
@@ -120,7 +120,7 @@ export default function CommentForm({
                 disabled={!content.trim() || isSubmitting || isAtLimit || !isLoggedIn}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                   !content.trim() || isSubmitting || isAtLimit || !isLoggedIn
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    ? "bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                     : "bg-accent text-white hover:bg-accent-600 shadow-sm hover:shadow-md"
                 }`}
               >

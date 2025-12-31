@@ -58,16 +58,16 @@ export default function CommentList({
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div className="h-6 bg-gray-200 rounded-lg w-32 animate-pulse" />
-          <div className="h-8 bg-gray-200 rounded-lg w-24 animate-pulse" />
+          <div className="h-6 bg-gray-200 dark:bg-slate-700 rounded-lg w-32 animate-pulse" />
+          <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded-lg w-24 animate-pulse" />
         </div>
-        <div className="h-24 bg-gray-100 rounded-xl animate-pulse" />
+        <div className="h-24 bg-gray-100 dark:bg-slate-700 rounded-xl animate-pulse" />
         {[...Array(3)].map((_, i) => (
           <div key={i} className="flex gap-4 animate-pulse">
-            <div className="w-11 h-11 bg-gray-200 rounded-full flex-shrink-0" />
+            <div className="w-11 h-11 bg-gray-200 dark:bg-slate-700 rounded-full flex-shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-1/4" />
-              <div className="h-16 bg-gray-100 rounded-xl" />
+              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4" />
+              <div className="h-16 bg-gray-100 dark:bg-slate-700 rounded-xl" />
             </div>
           </div>
         ))}
@@ -80,25 +80,25 @@ export default function CommentList({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-accent/10 dark:bg-accent/20 rounded-xl flex items-center justify-center">
             <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900">Bình luận</h3>
-            <p className="text-sm text-gray-500">{comments.length} bình luận</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Bình luận</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{comments.length} bình luận</p>
           </div>
         </div>
 
         {comments.length > 1 && (
-          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
             <button
               onClick={() => setSortBy("newest")}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
                 sortBy === "newest"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >
               Mới nhất
@@ -107,8 +107,8 @@ export default function CommentList({
               onClick={() => setSortBy("oldest")}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
                 sortBy === "oldest"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >
               Cũ nhất
@@ -124,10 +124,10 @@ export default function CommentList({
       {comments.length > 0 && (
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200" />
+            <div className="w-full border-t border-gray-200 dark:border-slate-700" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-4 text-sm text-gray-500">
+            <span className="bg-white dark:bg-slate-800 px-4 text-sm text-gray-500 dark:text-gray-400">
               {comments.length} bình luận
             </span>
           </div>
@@ -137,13 +137,13 @@ export default function CommentList({
       {/* Comments List */}
       {comments.length === 0 ? (
         <div className="text-center py-12">
-          <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
-            <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+            <svg className="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
-          <h4 className="text-lg font-semibold text-gray-900 mb-2">Chưa có bình luận</h4>
-          <p className="text-gray-500 text-sm max-w-xs mx-auto">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Chưa có bình luận</h4>
+          <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto">
             Hãy là người đầu tiên chia sẻ suy nghĩ của bạn về bài viết này!
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function CommentList({
           <button
             onClick={onLoadMore}
             disabled={isLoading}
-            className="group flex items-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group flex items-center gap-2 px-6 py-2.5 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>

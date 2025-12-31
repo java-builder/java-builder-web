@@ -6,7 +6,8 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import { useState } from "react";
 import React from "react";
-import "highlight.js/styles/github.css";
+import Image from "next/image";
+import "highlight.js/styles/github-dark.css";
 
 interface PublicMarkdownRendererProps {
   content: string;
@@ -45,98 +46,104 @@ export default function PublicMarkdownRenderer({
   };
 
   return (
-    <div
-      className={`markdown-content ${className}`}
-      style={{
-        lineHeight: "1.7",
-        color: "#374151",
-      }}
-    >
+    <div className={`markdown-content ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, rehypeRaw]}
         components={{
           h1({ children }) {
             return (
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-6 sm:mt-8 mb-3 sm:mb-4 pb-2 border-b-2 border-gray-200">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-6 sm:mt-8 mb-3 sm:mb-4 pb-2 border-b-2 border-gray-200 dark:border-slate-700">
                 {children}
               </h1>
             );
           },
           h2({ children }) {
             return (
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mt-5 sm:mt-6 mb-2 sm:mb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mt-5 sm:mt-6 mb-2 sm:mb-3">
                 {children}
               </h2>
             );
           },
           h3({ children }) {
             return (
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mt-4 sm:mt-5 mb-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mt-4 sm:mt-5 mb-2">
                 {children}
               </h3>
             );
           },
           h4({ children }) {
             return (
-              <h4 className="text-base sm:text-lg font-semibold text-gray-700 mt-3 sm:mt-4 mb-2">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200 mt-3 sm:mt-4 mb-2">
                 {children}
               </h4>
             );
           },
           h5({ children }) {
             return (
-              <h5 className="text-sm sm:text-base font-semibold text-gray-700 mt-3 mb-2">
+              <h5 className="text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-200 mt-3 mb-2">
                 {children}
               </h5>
             );
           },
           h6({ children }) {
             return (
-              <h6 className="text-xs sm:text-sm font-semibold text-gray-700 mt-3 mb-2">
+              <h6 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mt-3 mb-2">
                 {children}
               </h6>
             );
           },
           strong({ children }) {
             return (
-              <strong className="font-bold text-gray-900">{children}</strong>
+              <strong className="font-bold text-gray-900 dark:text-white">{children}</strong>
             );
           },
           p({ children }) {
             return (
-              <p className="mb-3 sm:mb-4 leading-relaxed text-gray-700 text-sm sm:text-base">
+              <p className="mb-3 sm:mb-4 leading-relaxed text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                 {children}
               </p>
             );
           },
           ul({ children }) {
             return (
-              <ul className="mb-3 sm:mb-4 pl-4 sm:pl-6 space-y-1">
+              <ul className="mb-3 sm:mb-4 pl-4 sm:pl-6 space-y-1 list-disc marker:text-gray-400 dark:marker:text-gray-500">
                 {children}
               </ul>
             );
           },
           ol({ children }) {
             return (
-              <ol className="mb-3 sm:mb-4 pl-4 sm:pl-6 space-y-1">
+              <ol className="mb-3 sm:mb-4 pl-4 sm:pl-6 space-y-1 list-decimal marker:text-gray-500 dark:marker:text-gray-400">
                 {children}
               </ol>
             );
           },
           li({ children }) {
             return (
-              <li className="leading-relaxed text-gray-700">{children}</li>
+              <li className="leading-relaxed text-gray-700 dark:text-gray-300">{children}</li>
             );
           },
           hr() {
-            return <hr className="my-8 border-gray-300" />;
+            return <hr className="my-8 border-gray-300 dark:border-slate-600" />;
           },
           blockquote({ children }) {
             return (
-              <blockquote className="border-l-4 border-accent bg-accent-50 pl-4 py-2 my-4 italic text-gray-700">
+              <blockquote className="border-l-4 border-accent dark:border-accent-400 bg-accent-50 dark:bg-accent-900/20 pl-4 py-2 my-4 italic text-gray-700 dark:text-gray-300">
                 {children}
               </blockquote>
+            );
+          },
+          a({ href, children }) {
+            return (
+              <a
+                href={href}
+                className="text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 underline underline-offset-2"
+                target={href?.startsWith("http") ? "_blank" : undefined}
+                rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+              >
+                {children}
+              </a>
             );
           },
           code({ className, children, ...props }) {
@@ -146,7 +153,7 @@ export default function PublicMarkdownRenderer({
 
             if (language) {
               return (
-                <div className="relative group my-4 sm:my-6 shadow-xl rounded-lg sm:rounded-xl overflow-hidden border border-gray-300/30">
+                <div className="relative group my-4 sm:my-6 shadow-xl rounded-lg sm:rounded-xl overflow-hidden border border-gray-300/30 dark:border-slate-600/50">
                   {/* Header */}
                   <div className="flex items-center justify-between bg-gradient-to-r from-gray-800 to-gray-900 text-gray-300 px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-600/50">
                     <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0">
@@ -216,7 +223,7 @@ export default function PublicMarkdownRenderer({
 
             return (
               <code
-                className="bg-gray-100 text-red-600 px-2 py-1 rounded text-sm font-mono"
+                className="bg-gray-100 dark:bg-slate-700 text-red-600 dark:text-red-400 px-2 py-1 rounded text-sm font-mono"
                 {...props}
               >
                 {children}
@@ -228,23 +235,61 @@ export default function PublicMarkdownRenderer({
           },
           table({ children }) {
             return (
-              <div className="overflow-x-auto my-4">
-                <table className="min-w-full border-collapse border border-gray-300">
+              <div className="overflow-x-auto my-4 rounded-lg border border-gray-200 dark:border-slate-700">
+                <table className="min-w-full border-collapse">
                   {children}
                 </table>
               </div>
             );
           },
+          thead({ children }) {
+            return (
+              <thead className="bg-gray-50 dark:bg-slate-800">
+                {children}
+              </thead>
+            );
+          },
+          tbody({ children }) {
+            return (
+              <tbody className="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-900">
+                {children}
+              </tbody>
+            );
+          },
+          tr({ children }) {
+            return (
+              <tr className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                {children}
+              </tr>
+            );
+          },
           th({ children }) {
             return (
-              <th className="border border-gray-300 bg-gray-50 px-4 py-2 text-left font-semibold">
+              <th className="border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white text-sm">
                 {children}
               </th>
             );
           },
           td({ children }) {
             return (
-              <td className="border border-gray-300 px-4 py-2">{children}</td>
+              <td className="border-b border-gray-200 dark:border-slate-700 px-4 py-3 text-gray-700 dark:text-gray-300 text-sm">
+                {children}
+              </td>
+            );
+          },
+          img({ src, alt }) {
+            if (!src || typeof src !== 'string') return null;
+            return (
+              <span className="block my-4">
+                <Image
+                  src={src}
+                  alt={alt || ""}
+                  width={800}
+                  height={450}
+                  className="max-w-full h-auto rounded-lg shadow-md"
+                  unoptimized
+                />
+              </span>
             );
           },
         }}

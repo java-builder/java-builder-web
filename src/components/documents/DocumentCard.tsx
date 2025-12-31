@@ -14,42 +14,42 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
     const typeMap = {
       [DocumentType.BOOK]: {
         name: "Sách",
-        color: "bg-blue-100 text-blue-800",
+        color: "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300",
         icon: "📚"
       },
       [DocumentType.ARTICLE]: {
         name: "Bài viết",
-        color: "bg-green-100 text-green-800",
+        color: "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300",
         icon: "📝"
       },
       [DocumentType.VIDEO]: {
         name: "Video",
-        color: "bg-red-100 text-red-800",
+        color: "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300",
         icon: "🎥"
       },
       [DocumentType.COURSE_MATERIAL]: {
         name: "Tài liệu khóa học",
-        color: "bg-purple-100 text-purple-800",
+        color: "bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300",
         icon: "📖"
       },
       [DocumentType.TUTORIAL]: {
         name: "Hướng dẫn",
-        color: "bg-yellow-100 text-yellow-800",
+        color: "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300",
         icon: "🎓"
       },
       [DocumentType.LINK]: {
         name: "Liên kết",
-        color: "bg-indigo-100 text-indigo-800",
+        color: "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300",
         icon: "🔗"
       },
       [DocumentType.PDF]: {
         name: "PDF",
-        color: "bg-orange-100 text-orange-800",
+        color: "bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300",
         icon: "📄"
       },
       [DocumentType.OTHER]: {
         name: "Khác",
-        color: "bg-gray-100 text-gray-800",
+        color: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300",
         icon: "📋"
       }
     };

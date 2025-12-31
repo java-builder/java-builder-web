@@ -250,17 +250,17 @@ export default function BlogDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
-            <div className="aspect-video bg-gray-200 rounded-lg mb-8"></div>
+            <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-1/3 mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4 mb-8"></div>
+            <div className="aspect-video bg-gray-200 dark:bg-slate-700 rounded-lg mb-8"></div>
             <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4/6"></div>
             </div>
           </div>
         </div>
@@ -270,13 +270,13 @@ export default function BlogDetailPage() {
 
   if (error || !blog) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
-            <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
               <svg
-                className="w-12 h-12 text-red-500"
+                className="w-12 h-12 text-red-500 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -289,10 +289,10 @@ export default function BlogDetailPage() {
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Không tìm thấy bài viết
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               {error || "Bài viết này không tồn tại hoặc đã bị xóa."}
             </p>
             <Link
@@ -321,11 +321,11 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <Header />
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 sm:static">
+      <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 sticky top-0 z-10 sm:static">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <style jsx>{`
             .breadcrumb-nav::-webkit-scrollbar {
@@ -339,12 +339,12 @@ export default function BlogDetailPage() {
           <nav className="breadcrumb-nav flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <Link
               href="/"
-              className="text-gray-500 hover:text-accent-500 transition-colors whitespace-nowrap flex-shrink-0"
+              className="text-gray-500 dark:text-gray-400 hover:text-accent-500 dark:hover:text-accent-400 transition-colors whitespace-nowrap flex-shrink-0"
             >
               Trang chủ
             </Link>
             <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0"
+              className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -358,12 +358,12 @@ export default function BlogDetailPage() {
             </svg>
             <Link
               href="/blogs"
-              className="text-gray-500 hover:text-accent-500 transition-colors whitespace-nowrap flex-shrink-0"
+              className="text-gray-500 dark:text-gray-400 hover:text-accent-500 dark:hover:text-accent-400 transition-colors whitespace-nowrap flex-shrink-0"
             >
               Blog
             </Link>
             <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0"
+              className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -375,7 +375,7 @@ export default function BlogDetailPage() {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-            <span className="text-gray-900 font-medium whitespace-nowrap flex-shrink-0 min-w-0">
+            <span className="text-gray-900 dark:text-white font-medium whitespace-nowrap flex-shrink-0 min-w-0">
               <span className="block truncate max-w-[200px] sm:max-w-none">
                 {blog.title}
               </span>
@@ -389,7 +389,7 @@ export default function BlogDetailPage() {
           {/* Main Content */}
           <div className="lg:col-span-3 order-1">
             <MotionWrapper animation="fadeInUp" duration={0.6} mode="mount">
-              <article className="bg-white rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <article className="bg-white dark:bg-slate-800 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 {/* Featured Image */}
                 {blog.featuredImage && (
                   <div className="aspect-[16/10] sm:aspect-[4/2] w-full overflow-hidden relative bg-gray-100">
@@ -408,25 +408,25 @@ export default function BlogDetailPage() {
                   {/* Header */}
                   <div className="mb-3 sm:mb-4 md:mb-5">
                     <div className="flex items-center space-x-2 mb-2 sm:mb-3">
-                      <div className="p-1 sm:p-1.5 bg-blue-100 rounded-md">
+                      <div className="p-1 sm:p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
                         <BlogTypeIcon
                           blogType={blog.blogType}
-                          className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600"
+                          className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400"
                         />
                       </div>
-                      <span className="text-xs sm:text-sm font-medium text-blue-700">
+                      <span className="text-xs sm:text-sm font-medium text-blue-700 dark:text-blue-400">
                         {BlogTypeDisplayNames[blog.blogType]}
                       </span>
                     </div>
 
-                    <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">
+                    <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3 leading-tight">
                       {blog.title}
                     </h1>
 
                     {/* Meta Info */}
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-gray-600 mb-3 sm:mb-4">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                       {blog.author && (
-                        <div className="flex items-center space-x-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-xs">
+                        <div className="flex items-center space-x-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md text-xs">
                           <svg
                             className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                             fill="none"
@@ -445,7 +445,7 @@ export default function BlogDetailPage() {
                           </span>
                         </div>
                       )}
-                      <div className="flex items-center space-x-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-xs">
+                      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                           fill="none"
@@ -466,7 +466,7 @@ export default function BlogDetailPage() {
                           {formatApiDate(blog.createdAt)}
                         </time>
                       </div>
-                      <div className="flex items-center space-x-1 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md border border-emerald-100 text-xs">
+                      <div className="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-md border border-emerald-100 dark:border-emerald-800 text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                           fill="none"
@@ -486,11 +486,11 @@ export default function BlogDetailPage() {
                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                           />
                         </svg>
-                        <span className="font-semibold text-emerald-900">
+                        <span className="font-semibold text-emerald-900 dark:text-emerald-300">
                           {blog.viewCount}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-1 bg-red-50 text-red-700 px-2 py-1 rounded-md text-xs">
+                      <div className="flex items-center space-x-1 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded-md text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                           fill="none"
@@ -506,7 +506,7 @@ export default function BlogDetailPage() {
                         </svg>
                         <span className="font-semibold">{blog.likeCount}</span>
                       </div>
-                      <div className="flex items-center space-x-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100 text-xs">
+                      <div className="flex items-center space-x-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800 text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                           fill="none"
@@ -529,24 +529,24 @@ export default function BlogDetailPage() {
 
                   {/* Summary */}
                   {blog.summary && (
-                    <div className="mb-4 sm:mb-5 md:mb-6 p-3 sm:p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-                      <h3 className="font-medium text-blue-900 mb-2 text-xs sm:text-sm">
+                    <div className="mb-4 sm:mb-5 md:mb-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-500 rounded-r-lg">
+                      <h3 className="font-medium text-blue-900 dark:text-blue-300 mb-2 text-xs sm:text-sm">
                         Tóm tắt
                       </h3>
                       <PublicMarkdownRenderer
                         content={blog.summary}
-                        className="text-blue-800 text-xs sm:text-sm leading-relaxed"
+                        className="text-blue-800 dark:text-blue-200 text-xs sm:text-sm leading-relaxed"
                       />
                     </div>
                   )}
 
                   {/* Content */}
-                  <div className="max-w-none prose prose-sm sm:prose lg:prose-lg">
+                  <div className="max-w-none prose prose-sm sm:prose lg:prose-lg dark:prose-invert">
                     <PublicMarkdownRenderer content={blog.content} />
                   </div>
 
                   {/* Tags & Actions */}
-                  <div className="mt-4 sm:mt-6 md:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
+                  <div className="mt-4 sm:mt-6 md:mt-8 pt-4 sm:pt-6 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex flex-col gap-3 sm:gap-4">
                       {/* Action Buttons */}
                       <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
@@ -588,7 +588,7 @@ export default function BlogDetailPage() {
                               console.error("Error incrementing like:", err);
                             }
                           }}
-                          className={`relative flex items-center justify-center space-x-1.5 px-4 py-2 sm:py-2.5 rounded-lg transition-all text-sm font-medium ${isLiked ? "bg-red-600 text-white hover:bg-red-700 shadow-sm" : "bg-red-50 text-red-600 hover:bg-red-100"}`}
+                          className={`relative flex items-center justify-center space-x-1.5 px-4 py-2 sm:py-2.5 rounded-lg transition-all text-sm font-medium ${isLiked ? "bg-red-600 text-white hover:bg-red-700 shadow-sm" : "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50"}`}
                         >
                           {isLiked && (
                             <span className="absolute -left-1 -top-1 inline-flex h-3 w-3 rounded-full bg-red-300 opacity-75 animate-ping"></span>
@@ -647,7 +647,7 @@ export default function BlogDetailPage() {
                       </div>
                       
                       {/* Update Date */}
-                      <div className="text-xs sm:text-sm text-gray-500 pt-2 border-t border-gray-100">
+                      <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-slate-700">
                         Cập nhật: {formatApiDateOnly(blog.createdAt)}
                       </div>
                     </div>
@@ -662,7 +662,7 @@ export default function BlogDetailPage() {
               delay={0.3}
               mode="mount"
             >
-              <div className="mt-4 sm:mt-6 lg:mt-8 bg-white rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-5 md:p-6">
+              <div className="mt-4 sm:mt-6 lg:mt-8 bg-white dark:bg-slate-800 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-3 sm:p-5 md:p-6">
                 <CommentList
                   comments={comments}
                   onAddComment={handleAddComment}
@@ -689,8 +689,8 @@ export default function BlogDetailPage() {
               <div className="space-y-3 sm:space-y-4">
                 {/* Author Info */}
                 {blog.author && (
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
-                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
+                  <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-3 sm:p-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">
                       Về tác giả
                     </h3>
                     <div className="flex items-center space-x-2">
@@ -698,10 +698,10 @@ export default function BlogDetailPage() {
                         {blog.author.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="text-xs sm:text-sm font-medium text-gray-900">
+                        <h4 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                           {blog.author}
                         </h4>
-                        <p className="text-[10px] sm:text-xs text-gray-500">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                           Tác giả bài viết
                         </p>
                       </div>
@@ -711,8 +711,8 @@ export default function BlogDetailPage() {
 
                 {/* Related Blogs */}
                 {relatedBlogs.length > 0 && (
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
-                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
+                  <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-3 sm:p-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">
                       Bài viết liên quan
                     </h3>
                     <div className="space-y-2 sm:space-y-3">
@@ -735,10 +735,10 @@ export default function BlogDetailPage() {
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-xs sm:text-sm font-medium text-gray-900 group-hover:text-accent-500 transition-colors line-clamp-2 leading-tight">
+                              <h4 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white group-hover:text-accent-500 dark:group-hover:text-accent-400 transition-colors line-clamp-2 leading-tight">
                                 {relatedBlog.title}
                               </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 sm:mt-1">
+                              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">
                                 {formatApiDateOnly(relatedBlog.createdAt)}
                               </p>
                             </div>
@@ -746,10 +746,10 @@ export default function BlogDetailPage() {
                         </Link>
                       ))}
                     </div>
-                    <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-200">
+                    <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-200 dark:border-slate-700">
                       <Link
                         href="/blogs"
-                        className="text-xs sm:text-sm text-accent-500 hover:text-accent-600 font-medium"
+                        className="text-xs sm:text-sm text-accent-500 hover:text-accent-600 dark:text-accent-400 dark:hover:text-accent-300 font-medium"
                       >
                         Xem tất cả →
                       </Link>
@@ -758,17 +758,17 @@ export default function BlogDetailPage() {
                 )}
 
                 {/* Quick Actions */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
-                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-3 sm:p-4">
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">
                     Hành động nhanh
                   </h3>
                   <div className="space-y-1 sm:space-y-2">
                     <Link
                       href="/blogs"
-                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors"
+                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                     >
                       <svg
-                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0"
+                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -780,28 +780,28 @@ export default function BlogDetailPage() {
                           d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
                         />
                       </svg>
-                      <span className="text-xs sm:text-sm text-gray-700">
+                      <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                         Tất cả bài viết
                       </span>
                     </Link>
                     <Link
                       href={`/blogs?blogType=${blog.blogType}`}
-                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors"
+                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                     >
                       <BlogTypeIcon
                         blogType={blog.blogType}
-                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0"
+                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
                       />
-                      <span className="text-xs sm:text-sm text-gray-700">
+                      <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                         {BlogTypeDisplayNames[blog.blogType]}
                       </span>
                     </Link>
                     <Link
                       href="/courses"
-                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors"
+                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                     >
                       <svg
-                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0"
+                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -813,7 +813,7 @@ export default function BlogDetailPage() {
                           d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                         />
                       </svg>
-                      <span className="text-xs sm:text-sm text-gray-700">Khóa học</span>
+                      <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Khóa học</span>
                     </Link>
                   </div>
                 </div>
@@ -825,20 +825,20 @@ export default function BlogDetailPage() {
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/30"
+            className="absolute inset-0 bg-black/30 dark:bg-black/50"
             onClick={() => setShowLoginModal(false)}
           ></div>
-          <div className="relative w-full max-w-sm rounded-xl sm:rounded-2xl bg-white shadow-xl border border-gray-100 p-4 sm:p-5">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
+          <div className="relative w-full max-w-sm rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1">
               Cần đăng nhập
             </h3>
-            <p className="text-xs sm:text-sm text-gray-600 mb-4">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
               Vui lòng đăng nhập để thích bài viết này.
             </p>
             <div className="flex flex-col sm:flex-row justify-end gap-2">
               <button
                 onClick={() => setShowLoginModal(false)}
-                className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
               >
                 Để sau
               </button>

@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DocumentCard from "@/components/documents/DocumentCard";
 import MotionWrapper from "@/components/MotionWrapper";
+import SearchBar from "@/components/ui/SearchBar";
 import Image from "next/image";
 import { sampleDocuments, documentCategories } from "@/data/documents";
 
@@ -125,62 +126,13 @@ export default function DocumentsPage() {
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
           <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
-            <div className="flex gap-3">
-              {/* Search input */}
-              <div className="flex-1">
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Tìm sách, tài liệu, tác giả..."
-                    className="w-full h-12 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 pl-11 pr-4 text-[15px] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleSearch();
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Search button */}
-              <button
-                type="button"
-                onClick={handleSearch}
-                className="px-6 h-12 bg-accent hover:bg-accent-600 text-white rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                Tìm sách
-              </button>
-            </div>
+            <SearchBar
+              placeholder="Tìm sách, tài liệu, tác giả..."
+              value={searchText}
+              onChange={setSearchText}
+              onSearch={handleSearch}
+              buttonText="Tìm sách"
+            />
           </div>
         </div>
 

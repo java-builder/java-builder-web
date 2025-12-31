@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/courses/CourseCard";
 import MotionWrapper from "@/components/MotionWrapper";
+import SearchBar from "@/components/ui/SearchBar";
 import Image from "next/image";
 import Link from "next/link";
 import { courseApi } from "@/services/course.service";
@@ -66,11 +67,11 @@ export default function CoursesPage() {
   const goTo = (p: number) => setPage(Math.max(1, Math.min(totalPages, p)));
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <Header />
 
       {/* Hero */}
-      <section className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100">
+      <section className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100 dark:from-slate-900 dark:to-slate-800">
         <div className="absolute inset-0 z-0">
           <div className="w-full h-full relative overflow-hidden bg-transparent">
             <div className="absolute inset-0 opacity-20">
@@ -98,18 +99,18 @@ export default function CoursesPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-6 xl:col-span-7 text-gray-900">
+              <div className="lg:col-span-6 xl:col-span-7 text-gray-900 dark:text-white">
                 <div className="inline-block">
                   <span className="bg-accent text-white px-4 py-2 rounded-full text-sm font-medium">
                     Course & Training
                   </span>
                 </div>
 
-                <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-gray-900">
+                <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-gray-900 dark:text-white">
                   Khóa học <span className="text-accent">chất lượng</span>
                 </h1>
 
-                <p className="mt-4 text-base md:text-lg text-gray-700 max-w-3xl">
+                <p className="mt-4 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-3xl">
                   Lộ trình thực tiễn, mentor giàu kinh nghiệm, nội dung cập nhật
                   xu hướng.
                 </p>
@@ -145,63 +146,13 @@ export default function CoursesPage() {
         {/* Search */}
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
-          <div className="relative bg-white/90 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
-            <div className="flex gap-3">
-              {/* Search input */}
-              <div className="flex-1">
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Tìm khóa học..."
-                    className="w-full h-12 rounded-lg border border-gray-300 pl-11 pr-4 text-[15px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleSearch();
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Search button */}
-              <button
-                type="button"
-                onClick={handleSearch}
-                className="px-6 h-12 bg-accent hover:bg-accent-600 text-white rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                Tìm kiếm
-              </button>
-            </div>
+          <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
+            <SearchBar
+              placeholder="Tìm khóa học..."
+              value={searchText}
+              onChange={setSearchText}
+              onSearch={handleSearch}
+            />
           </div>
         </div>
 
@@ -217,7 +168,7 @@ export default function CoursesPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 courseLevel === ""
                   ? "bg-accent text-white shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               Tất cả
@@ -231,7 +182,7 @@ export default function CoursesPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 courseLevel === CourseLevel.BEGINNER
                   ? "bg-accent text-white shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               Beginner
@@ -245,7 +196,7 @@ export default function CoursesPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 courseLevel === CourseLevel.INTERMEDIATE
                   ? "bg-accent text-white shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               Intermediate
@@ -259,7 +210,7 @@ export default function CoursesPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 courseLevel === CourseLevel.ADVANCED
                   ? "bg-accent text-white shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               Advanced
@@ -273,7 +224,7 @@ export default function CoursesPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 courseLevel === CourseLevel.EXPERT
                   ? "bg-accent text-white shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               Expert
@@ -285,13 +236,13 @@ export default function CoursesPage() {
         {isLoading ? (
           <div className="text-center py-16">
             <div className="mx-auto w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-600">Đang tải khóa học...</p>
+            <p className="text-gray-600 dark:text-gray-400">Đang tải khóa học...</p>
           </div>
         ) : error ? (
           <div className="text-center py-16">
-            <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
               <svg
-                className="w-12 h-12 text-red-500"
+                className="w-12 h-12 text-red-500 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -304,10 +255,10 @@ export default function CoursesPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               Có lỗi xảy ra
             </h3>
-            <p className="text-gray-500 mb-4">{error}</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">{error}</p>
             <button
               onClick={fetchCourses}
               className="px-4 py-2 bg-accent hover:bg-accent-600 text-white rounded-md transition-colors"
@@ -318,7 +269,7 @@ export default function CoursesPage() {
         ) : filteredCourses.length === 0 ? (
           <div className="text-center py-16">
             <svg
-              className="w-20 h-20 mx-auto text-gray-300 mb-4"
+              className="w-20 h-20 mx-auto text-gray-300 dark:text-gray-600 mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -330,10 +281,10 @@ export default function CoursesPage() {
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
               />
             </svg>
-            <p className="text-gray-700 font-medium mb-1">
+            <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
               Chưa có khóa học phù hợp
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
             </p>
           </div>
@@ -349,7 +300,7 @@ export default function CoursesPage() {
         {totalPages > 1 && (
           <div className="mt-10 flex items-center justify-center gap-2 flex-wrap">
             <button
-              className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50"
               onClick={() => goTo(page - 1)}
               disabled={page <= 1}
             >
@@ -361,13 +312,13 @@ export default function CoursesPage() {
                 <button
                   key={i}
                   onClick={() => goTo(i + 1)}
-                  className={`px-3 py-2 rounded-lg border ${page === i + 1 ? "border-accent bg-blue-50 text-accent" : "border-gray-300 text-gray-700 hover:bg-gray-50"}`}
+                  className={`px-3 py-2 rounded-lg border ${page === i + 1 ? "border-accent bg-blue-50 dark:bg-accent/20 text-accent" : "border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700"}`}
                 >
                   {i + 1}
                 </button>
               ))}
             <button
-              className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50"
               onClick={() => goTo(page + 1)}
               disabled={page >= totalPages}
             >

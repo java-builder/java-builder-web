@@ -8,6 +8,7 @@ import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
+import SearchBar from "@/components/ui/SearchBar";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -192,63 +193,12 @@ export default function BlogsPage() {
 
           <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                <div className="flex-1 flex gap-2">
-                  <div className="flex-1 relative">
-                    <label className="sr-only" htmlFor="blog-search">
-                      Tìm kiếm
-                    </label>
-                    <input
-                      id="blog-search"
-                      type="text"
-                      placeholder="Tìm theo tiêu đề, nội dung..."
-                      className="w-full h-12 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 pl-11 pr-4 text-[15px] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent shadow-sm focus:shadow-md transition"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleSearch();
-                        }
-                      }}
-                    />
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleSearch}
-                    className="h-12 px-6 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                    Tìm kiếm
-                  </button>
-                </div>
-              </div>
+              <SearchBar
+                placeholder="Tìm theo tiêu đề, nội dung..."
+                value={searchText}
+                onChange={setSearchText}
+                onSearch={handleSearch}
+              />
 
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap gap-2">

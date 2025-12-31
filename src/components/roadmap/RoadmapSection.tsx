@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import { FaCheckCircle, FaClock } from "react-icons/fa";
 
@@ -61,7 +59,6 @@ const roadmapData: RoadmapStep[] = [
     logo: "/logos/logo-hibernate.png",
     bgColor: "bg-amber-600",
   },
-  // Row 2: Spring Boot, JPA, Security, Cache
   {
     id: "spring-boot",
     title: "Spring Boot",
@@ -103,7 +100,6 @@ const roadmapData: RoadmapStep[] = [
     logo: "/logos/logo-cache.png",
     bgColor: "bg-red-600",
   },
-  // Row 3: Microservices, Cloud, DevOps
   {
     id: "microservices",
     title: "Microservices",
@@ -133,207 +129,111 @@ const roadmapData: RoadmapStep[] = [
     topics: ["Docker & Compose", "Kubernetes", "CI/CD Pipeline", "AWS Services", "Monitoring"],
     logo: "/logos/logo-docker.png",
     bgColor: "bg-sky-600",
-    logoSize: "w-14 h-14 sm:w-16 sm:h-16",
+    logoSize: "w-16 h-16 sm:w-20 sm:h-20",
   },
 ];
 
-export default function RoadmapPage() {
+export default function RoadmapSection() {
   const [hoveredStep, setHoveredStep] = useState<RoadmapStep | null>(null);
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-
-      {/* Hero Banner */}
-      <section className="relative min-h-[40vh] md:min-h-[50vh] bg-gradient-to-r from-white to-blue-100">
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full relative overflow-hidden bg-transparent">
-            <div className="absolute inset-0 opacity-20 hidden md:block">
-              <div className="absolute top-20 left-10 text-accent-400 font-mono text-xs">
-                <div>@SpringBootApplication</div>
-                <div>public class Backend &#123;</div>
-                <div>&nbsp;&nbsp;public static void main() &#123;&#125;</div>
-                <div>&#125;</div>
-              </div>
-              <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs">
-                <div>@RestController</div>
-                <div>public class API &#123;</div>
-                <div>&nbsp;&nbsp;@GetMapping(&quot;/success&quot;)</div>
-                <div>&#125;</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-6 md:py-12">
-          <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-center text-gray-900">
-              <div className="lg:col-span-7">
-                <div className="inline-block">
-                  <span className="bg-accent text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium">
-                    Learning Path
-                  </span>
-                </div>
-
-                <h1 className="mt-4 md:mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight text-gray-900">
-                  Lộ trình <span className="text-accent">Java Backend</span>
-                </h1>
-
-                <p className="mt-3 md:mt-4 text-sm md:text-base lg:text-lg text-gray-700 max-w-3xl">
-                  Từ Java Core đến Microservices - Lộ trình học tập toàn diện để trở thành Backend Developer chuyên nghiệp trong 2 năm.
-                </p>
-                <div className="mt-4 md:mt-6 flex flex-wrap gap-2">
-                  {["11 giai đoạn", "2 năm", "Cập nhật 2024", "Thực chiến"].map((t) => (
-                    <span key={t} className="text-xs font-medium px-2 py-1 md:px-3 md:py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-700">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:col-span-5 hidden lg:block">
-                <div className="w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10">
-                  <Image src="/hero-background.jpg" alt="Roadmap hero" width={1200} height={420} className="w-full h-64 sm:h-80 md:h-96 lg:h-[420px] object-cover" priority />
-                </div>
-              </div>
-            </div>
-          </MotionWrapper>
-        </div>
-      </section>
-
-      {/* Flowchart Roadmap */}
-      <section id="roadmap" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 lg:py-16">
+    <section className="py-12 bg-gray-100 dark:bg-slate-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <MotionWrapper animation="fadeInUp" duration={0.6}>
           <div className="text-center mb-6 md:mb-10">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 md:mb-3">Sơ đồ lộ trình học tập</h2>
-            <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto">Di chuột vào từng bước để xem chi tiết nội dung cần học</p>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 md:mb-3">
+              Sơ đồ lộ trình học tập
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
+              Di chuột vào từng bước để xem chi tiết nội dung cần học
+            </p>
           </div>
         </MotionWrapper>
 
         <MotionWrapper animation="fadeInUp" delay={0.2}>
-          {/* Desktop View (xl and above) */}
-          <div className="hidden xl:block relative bg-gray-50 rounded-2xl p-6 xl:p-10 border border-gray-200">
+          {/* Desktop View */}
+          <div className="hidden xl:block relative bg-white dark:bg-slate-800 rounded-2xl p-6 xl:p-10 border border-gray-200 dark:border-slate-700">
             <div className="flex flex-col items-center gap-6">
-              {/* Row 1: Java Core, SQL, JDBC, Hibernate */}
+              {/* Row 1 */}
               <div className="relative flex items-center justify-center gap-3">
                 {roadmapData.slice(0, 4).map((step, index) => (
-                  <RoadmapCard 
-                    key={step.id} 
-                    step={step} 
-                    index={index + 1} 
-                    isHovered={hoveredStep?.id === step.id}
-                    onHover={setHoveredStep}
-                    showArrow={index < 3}
-                  />
+                  <RoadmapCard key={step.id} step={step} index={index + 1} isHovered={hoveredStep?.id === step.id} onHover={setHoveredStep} showArrow={index < 3} />
                 ))}
               </div>
 
-              {/* Arrow Down */}
               <svg className="w-5 h-10 text-accent" viewBox="0 0 20 40" fill="none">
                 <path d="M10 0V36M10 36L3 28M10 36L17 28" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
 
-              {/* Row 2: Spring Boot, JPA, Security, Cache */}
+              {/* Row 2 */}
               <div className="relative flex items-center justify-center gap-3">
                 {roadmapData.slice(4, 8).map((step, index) => (
-                  <RoadmapCard 
-                    key={step.id} 
-                    step={step} 
-                    index={index + 5} 
-                    isHovered={hoveredStep?.id === step.id}
-                    onHover={setHoveredStep}
-                    showArrow={index < 3}
-                  />
+                  <RoadmapCard key={step.id} step={step} index={index + 5} isHovered={hoveredStep?.id === step.id} onHover={setHoveredStep} showArrow={index < 3} />
                 ))}
               </div>
 
-              {/* Arrow Down */}
               <svg className="w-5 h-10 text-accent" viewBox="0 0 20 40" fill="none">
                 <path d="M10 0V36M10 36L3 28M10 36L17 28" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
 
-              {/* Row 3: Microservices, Cloud, DevOps */}
+              {/* Row 3 */}
               <div className="relative flex items-center justify-center gap-3">
                 {roadmapData.slice(8, 11).map((step, index) => (
-                  <RoadmapCard 
-                    key={step.id} 
-                    step={step} 
-                    index={index + 9} 
-                    isHovered={hoveredStep?.id === step.id}
-                    onHover={setHoveredStep}
-                    showArrow={index < 2}
-                  />
+                  <RoadmapCard key={step.id} step={step} index={index + 9} isHovered={hoveredStep?.id === step.id} onHover={setHoveredStep} showArrow={index < 2} />
                 ))}
               </div>
 
               {/* Labels */}
               <div className="flex justify-center gap-4 mt-6">
-                <span className="text-xs font-medium text-gray-600 bg-orange-100 px-4 py-1.5 rounded-full">Nền tảng</span>
-                <span className="text-xs font-medium text-gray-600 bg-green-100 px-4 py-1.5 rounded-full">Spring Ecosystem</span>
-                <span className="text-xs font-medium text-gray-600 bg-purple-100 px-4 py-1.5 rounded-full">Nâng cao & DevOps</span>
+                <span className="text-xs font-medium text-orange-800 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/40 px-4 py-1.5 rounded-full">Nền tảng</span>
+                <span className="text-xs font-medium text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-4 py-1.5 rounded-full">Spring Ecosystem</span>
+                <span className="text-xs font-medium text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-4 py-1.5 rounded-full">Nâng cao & DevOps</span>
               </div>
             </div>
           </div>
 
-          {/* Tablet View (md to xl) - Grid 2 columns */}
+          {/* Tablet View */}
           <div className="hidden md:block xl:hidden">
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700">
               <div className="grid grid-cols-2 gap-4">
                 {roadmapData.map((step, index) => (
                   <TabletRoadmapCard key={step.id} step={step} index={index + 1} />
                 ))}
               </div>
-              
-              {/* Labels */}
               <div className="flex flex-wrap justify-center gap-2 mt-6">
-                <span className="text-xs font-medium text-gray-600 bg-orange-100 px-3 py-1 rounded-full">Nền tảng</span>
-                <span className="text-xs font-medium text-gray-600 bg-green-100 px-3 py-1 rounded-full">Spring Ecosystem</span>
-                <span className="text-xs font-medium text-gray-600 bg-purple-100 px-3 py-1 rounded-full">Nâng cao & DevOps</span>
+                <span className="text-xs font-medium text-orange-800 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/40 px-3 py-1 rounded-full">Nền tảng</span>
+                <span className="text-xs font-medium text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-3 py-1 rounded-full">Spring Ecosystem</span>
+                <span className="text-xs font-medium text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-3 py-1 rounded-full">Nâng cao & DevOps</span>
               </div>
             </div>
           </div>
 
-          {/* Mobile View - Vertical Timeline */}
+          {/* Mobile View */}
           <div className="md:hidden">
             <div className="relative">
-              {/* Timeline line */}
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-accent/30" />
-              
               <div className="space-y-4">
                 {roadmapData.map((step, index) => (
                   <MobileRoadmapCard key={step.id} step={step} index={index + 1} />
                 ))}
               </div>
             </div>
-
-            {/* Labels */}
             <div className="flex flex-wrap justify-center gap-2 mt-8">
-              <span className="text-xs font-medium text-gray-600 bg-orange-100 px-3 py-1 rounded-full">Nền tảng</span>
-              <span className="text-xs font-medium text-gray-600 bg-green-100 px-3 py-1 rounded-full">Spring Ecosystem</span>
-              <span className="text-xs font-medium text-gray-600 bg-purple-100 px-3 py-1 rounded-full">Nâng cao & DevOps</span>
+              <span className="text-xs font-medium text-orange-800 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/40 px-3 py-1 rounded-full">Nền tảng</span>
+              <span className="text-xs font-medium text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-3 py-1 rounded-full">Spring Ecosystem</span>
+              <span className="text-xs font-medium text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-3 py-1 rounded-full">Nâng cao & DevOps</span>
             </div>
           </div>
         </MotionWrapper>
-      </section>
-
-      <Footer />
-    </div>
+      </div>
+    </section>
   );
 }
 
-// Desktop Roadmap Card Component
-function RoadmapCard({ 
-  step, 
-  index, 
-  isHovered, 
-  onHover, 
-  showArrow 
-}: { 
-  step: RoadmapStep; 
-  index: number; 
-  isHovered: boolean;
-  onHover: (step: RoadmapStep | null) => void;
-  showArrow: boolean;
+
+// Desktop Roadmap Card
+function RoadmapCard({ step, index, isHovered, onHover, showArrow }: { 
+  step: RoadmapStep; index: number; isHovered: boolean; onHover: (step: RoadmapStep | null) => void; showArrow: boolean;
 }) {
   const logoSizeClass = step.logoSize || "w-12 h-12 sm:w-14 sm:h-14";
   
@@ -343,45 +243,36 @@ function RoadmapCard({
         <div
           onMouseEnter={() => onHover(step)}
           onMouseLeave={() => onHover(null)}
-          className={`relative flex flex-col items-center justify-center w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-2 transition-all duration-300 bg-white cursor-pointer ${
-            isHovered ? "border-accent shadow-xl scale-105 ring-4 ring-accent/20" : "border-gray-200 hover:border-accent/50 hover:shadow-lg"
+          className={`relative flex flex-col items-center justify-center w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-2 transition-all duration-300 bg-gray-50 dark:bg-slate-700 cursor-pointer ${
+            isHovered ? "border-accent shadow-xl scale-105 ring-4 ring-accent/20" : "border-gray-200 dark:border-slate-600 hover:border-accent/50 hover:shadow-lg"
           }`}
         >
           <div className={`${logoSizeClass} rounded-lg overflow-hidden mb-2`}>
             <Image src={step.logo} alt={step.title} width={72} height={72} className="w-full h-full object-contain" />
           </div>
-          <span className="text-xs sm:text-sm font-semibold text-gray-800 text-center leading-tight">{step.shortTitle}</span>
+          <span className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-white text-center leading-tight">{step.shortTitle}</span>
           <span className="absolute -top-2 -left-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-accent text-white text-xs flex items-center justify-center font-bold shadow">
             {index}
           </span>
         </div>
 
-        {/* Hover Popup */}
         {isHovered && (
           <div className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-3 pointer-events-none">
-            <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-100 w-80 animate-fadeIn">
-              {/* Arrow pointing down */}
-              <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 bg-white border-r border-b border-gray-100 rotate-45" />
-              
+            <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 w-80 animate-fadeIn">
+              <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 bg-white dark:bg-slate-800 border-r border-b border-gray-200 dark:border-slate-700 rotate-45" />
               <div className="relative p-5">
                 <div className="text-center mb-4">
-                  <span className="inline-block text-accent text-xs font-bold tracking-wider uppercase mb-1">
-                    Giai đoạn {index}
-                  </span>
-                  <h3 className="text-lg font-bold text-gray-900">{step.title}</h3>
-                  <div className="flex items-center justify-center gap-1 text-gray-500 text-sm mt-1">
+                  <span className="inline-block text-accent text-xs font-bold tracking-wider uppercase mb-1">Giai đoạn {index}</span>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{step.title}</h3>
+                  <div className="flex items-center justify-center gap-1 text-gray-500 dark:text-gray-400 text-sm mt-1">
                     <FaClock className="w-3 h-3" />
                     <span>{step.duration}</span>
                   </div>
                 </div>
-
-                <p className="text-gray-600 text-sm text-center italic mb-4">
-                  &ldquo;{step.description}&rdquo;
-                </p>
-
+                <p className="text-gray-600 dark:text-gray-400 text-sm text-center italic mb-4">&ldquo;{step.description}&rdquo;</p>
                 <div className="space-y-2">
                   {step.topics.map((topic, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                    <div key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                       <FaCheckCircle className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" />
                       <span>{topic}</span>
                     </div>
@@ -402,21 +293,18 @@ function RoadmapCard({
   );
 }
 
-// Mobile Roadmap Card Component
+// Mobile Roadmap Card
 function MobileRoadmapCard({ step, index }: { step: RoadmapStep; index: number }) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   return (
     <div className="relative pl-14">
-      {/* Timeline dot */}
       <div className="absolute left-4 top-4 w-5 h-5 rounded-full bg-accent text-white text-xs flex items-center justify-center font-bold shadow z-10">
         {index}
       </div>
       
       <div 
-        className={`bg-white rounded-xl border-2 transition-all duration-300 ${
-          isExpanded ? "border-accent shadow-lg" : "border-gray-200"
-        }`}
+        className={`bg-white dark:bg-slate-800 rounded-xl border-2 transition-all duration-300 ${isExpanded ? "border-accent shadow-lg" : "border-gray-200 dark:border-slate-700"}`}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="p-4 flex items-center gap-3 cursor-pointer">
@@ -424,30 +312,23 @@ function MobileRoadmapCard({ step, index }: { step: RoadmapStep; index: number }
             <Image src={step.logo} alt={step.title} width={48} height={48} className="w-full h-full object-contain" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 text-sm">{step.title}</h3>
-            <div className="flex items-center gap-1 text-gray-500 text-xs mt-0.5">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{step.title}</h3>
+            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mt-0.5">
               <FaClock className="w-3 h-3" />
               <span>{step.duration}</span>
             </div>
           </div>
-          <svg 
-            className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
+          <svg className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
         
         {isExpanded && (
-          <div className="px-4 pb-4 border-t border-gray-100 pt-3">
-            <p className="text-gray-600 text-sm italic mb-3">
-              &ldquo;{step.description}&rdquo;
-            </p>
+          <div className="px-4 pb-4 border-t border-gray-200 dark:border-slate-700 pt-3">
+            <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-3">&ldquo;{step.description}&rdquo;</p>
             <div className="space-y-2">
               {step.topics.map((topic, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                <div key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <FaCheckCircle className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" />
                   <span>{topic}</span>
                 </div>
@@ -460,18 +341,17 @@ function MobileRoadmapCard({ step, index }: { step: RoadmapStep; index: number }
   );
 }
 
-// Tablet Roadmap Card Component
+// Tablet Roadmap Card
 function TabletRoadmapCard({ step, index }: { step: RoadmapStep; index: number }) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   return (
     <div 
-      className={`relative bg-white rounded-xl border-2 transition-all duration-300 cursor-pointer ${
-        isExpanded ? "border-accent shadow-lg" : "border-gray-200 hover:border-accent/50 hover:shadow-md"
+      className={`relative bg-white dark:bg-slate-800 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
+        isExpanded ? "border-accent shadow-lg" : "border-gray-200 dark:border-slate-700 hover:border-accent/50 hover:shadow-md"
       }`}
       onClick={() => setIsExpanded(!isExpanded)}
     >
-      {/* Step number */}
       <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-accent text-white text-xs flex items-center justify-center font-bold shadow z-10">
         {index}
       </span>
@@ -482,30 +362,23 @@ function TabletRoadmapCard({ step, index }: { step: RoadmapStep; index: number }
             <Image src={step.logo} alt={step.title} width={48} height={48} className="w-full h-full object-contain" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 text-sm">{step.title}</h3>
-            <div className="flex items-center gap-1 text-gray-500 text-xs mt-0.5">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{step.title}</h3>
+            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mt-0.5">
               <FaClock className="w-3 h-3" />
               <span>{step.duration}</span>
             </div>
           </div>
-          <svg 
-            className={`w-5 h-5 text-gray-400 transition-transform flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`} 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
+          <svg className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
         
         {isExpanded && (
-          <div className="border-t border-gray-100 pt-3 mt-2">
-            <p className="text-gray-600 text-sm italic mb-3">
-              &ldquo;{step.description}&rdquo;
-            </p>
+          <div className="border-t border-gray-200 dark:border-slate-700 pt-3 mt-2">
+            <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-3">&ldquo;{step.description}&rdquo;</p>
             <div className="space-y-2">
               {step.topics.map((topic, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                <div key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <FaCheckCircle className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" />
                   <span>{topic}</span>
                 </div>
