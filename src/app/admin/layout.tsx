@@ -1,11 +1,14 @@
 "use client";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Toaster } from "react-hot-toast";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AdminNotificationDropdown from "@/components/admin/AdminNotificationDropdown";
+import { userApi } from "@/services/user.service";
+import { authApi } from "@/services/auth.service";
+import { UserDetailResponse } from "@/types/user";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -199,7 +202,33 @@ const navigation = [
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserDetailResponse | null>(null);
+  const hasFetchedUser = useRef(false);
+
+  useEffect(() => {
+    // Prevent duplicate API calls
+    if (hasFetchedUser.current) return;
+    hasFetchedUser.current = true;
+    
+    userApi.getCurrentUser().then((res) => {
+      if (res.result) {
+        setCurrentUser(res.result);
+      }
+    }).catch(console.error);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      authApi.clearAuthData();
+      router.push("/login");
+    }
+  };
 
   return (
     <AuthProvider>
@@ -287,22 +316,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2) !important;
             }
           `}</style>
-          <Toaster
-            position="top-right"
-            gutter={8}
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-                borderRadius: "8px",
-                fontSize: "13px",
-                padding: "8px 12px",
-                minHeight: "40px",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-              },
-            }}
-          />
           <div className="h-screen flex bg-gray-50 overflow-hidden">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (
@@ -433,18 +446,35 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 {/* User profile - Fixed at bottom */}
                 <div className="p-4 border-t border-gray-200 flex-shrink-0">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-accent to-blue-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-medium">A</span>
+                    <div className="w-10 h-10 bg-gradient-to-r from-accent to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
+                      {currentUser?.avatar ? (
+                        <Image
+                          src={currentUser.avatar}
+                          alt={currentUser.username || "Avatar"}
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="text-white font-medium">
+                          {currentUser?.username?.charAt(0)?.toUpperCase() || "A"}
+                        </span>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
-                        Admin User
+                        {currentUser?.username || "Admin User"}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
-                        admin@marino.com
+                        {currentUser?.email || "admin@marino.com"}
                       </p>
                     </div>
-                    <button className="text-gray-400 hover:text-gray-600">
+                    <button 
+                      onClick={handleLogout}
+                      className="text-gray-400 hover:text-red-600 transition-colors"
+                      title="Đăng xuất"
+                    >
                       <svg
                         className="w-5 h-5"
                         fill="none"

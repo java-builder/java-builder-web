@@ -4,28 +4,32 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { authApi } from "@/services/auth.service";
 
+// Module-level variable để track việc đã xử lý - persist qua re-renders của Strict Mode
+let isCallbackProcessed = false;
+
 const GoogleCallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasProcessed, setHasProcessed] = useState(false);
 
   useEffect(() => {
-    if (hasProcessed) return;
+    // Nếu đã xử lý rồi thì không làm gì
+    if (isCallbackProcessed) return;
 
     const handleGoogleCallback = async () => {
+      const code = searchParams.get("code");
+
+      if (!code) {
+        setError("Không nhận được mã xác thực từ Google");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Đánh dấu đã xử lý TRƯỚC khi gọi API
+      isCallbackProcessed = true;
+
       try {
-        setHasProcessed(true);
-
-        const code = searchParams.get("code");
-
-        if (!code) {
-          setError("Không nhận được mã xác thực từ Google");
-          setIsProcessing(false);
-          return;
-        }
-
         const response = await authApi.loginWithGoogle(code);
 
         if (
@@ -33,9 +37,6 @@ const GoogleCallbackContent = () => {
           response.result?.accessToken &&
           response.result?.userId
         ) {
-          localStorage.setItem("access_token", response.result.accessToken);
-          localStorage.setItem("user_id", response.result.userId);
-
           // Check if user has ADMIN authority
           const isAdmin = response.result.authorities?.includes("ADMIN");
           router.push(isAdmin ? "/admin" : "/");
@@ -54,7 +55,15 @@ const GoogleCallbackContent = () => {
     };
 
     handleGoogleCallback();
-  }, [searchParams, hasProcessed, router]);
+
+    // Reset flag khi component unmount (để có thể login lại nếu cần)
+    return () => {
+      // Delay reset để tránh Strict Mode double-mount
+      setTimeout(() => {
+        isCallbackProcessed = false;
+      }, 1000);
+    };
+  }, [searchParams, router]);
 
   if (error) {
     return (

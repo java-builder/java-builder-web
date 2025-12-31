@@ -25,23 +25,11 @@ export default function AdminNotificationDropdown() {
     all: number;
     unread: number;
   }>({ all: 0, unread: 0 });
-
-  const loadUnreadCount = useCallback(async () => {
-    if (!isAuthenticated) return;
-    try {
-      const res = await notificationApi.getMyNotifications(1);
-      const list = res.result?.result || [];
-      const count = list.filter((n) => !n.read).length;
-      setHasUnread(count > 0);
-      setUnreadCount(count);
-    } catch (e) {
-      console.error("Failed to load unread count", e);
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    loadUnreadCount();
-  }, [isAuthenticated, loadUnreadCount]);
+  
+  // Refs to prevent duplicate API calls
+  const hasInitiallyLoaded = useRef(false);
+  const loadedTabsRef = useRef<Set<"all" | "unread">>(new Set());
+  const prevActiveTabRef = useRef<"all" | "unread">(activeTab);
 
   const loadNotifications = useCallback(
     async (
@@ -86,6 +74,11 @@ export default function AdminNotificationDropdown() {
         } else {
           setNotifications(list);
         }
+        
+        // Update unread count from loaded notifications
+        const unreadInList = list.filter((n) => !n.read).length;
+        setHasUnread(unreadInList > 0);
+        setUnreadCount(unreadInList);
 
         if (markAsReadOnLoad && list.length > 0) {
           const unreadIds = list.filter((n) => !n.read).map((n) => n.id);
@@ -97,7 +90,8 @@ export default function AdminNotificationDropdown() {
                   unreadIds.includes(n.id) ? { ...n, read: true } : n,
                 ),
               );
-              await loadUnreadCount();
+              setHasUnread(false);
+              setUnreadCount(0);
             } catch (e) {
               console.error("Failed to mark notifications as read", e);
             }
@@ -107,18 +101,26 @@ export default function AdminNotificationDropdown() {
         console.error("Failed to load notifications", e);
       }
     },
-    [isAuthenticated, activeTab, loadUnreadCount, itemsPerPage],
+    [isAuthenticated, activeTab, itemsPerPage],
   );
 
-  const loadedTabsRef = useRef<Set<"all" | "unread">>(new Set());
-  const prevActiveTabRef = useRef<"all" | "unread">(activeTab);
-
+  // Single useEffect for initial load - prevents duplicate calls
   useEffect(() => {
-    if (
-      isAuthenticated &&
-      (prevActiveTabRef.current !== activeTab ||
-        !loadedTabsRef.current.has(activeTab))
-    ) {
+    if (!isAuthenticated || hasInitiallyLoaded.current) return;
+    
+    hasInitiallyLoaded.current = true;
+    loadedTabsRef.current.add(activeTab);
+    prevActiveTabRef.current = activeTab;
+    
+    const savedPage = tabPages[activeTab] || 1;
+    loadNotifications(savedPage, false);
+  }, [isAuthenticated, activeTab, loadNotifications, tabPages]);
+
+  // Handle tab changes only (not initial load)
+  useEffect(() => {
+    if (!isAuthenticated || !hasInitiallyLoaded.current) return;
+    
+    if (prevActiveTabRef.current !== activeTab && !loadedTabsRef.current.has(activeTab)) {
       const savedPage = tabPages[activeTab] || 1;
       loadNotifications(savedPage, false);
       loadedTabsRef.current.add(activeTab);
@@ -138,7 +140,8 @@ export default function AdminNotificationDropdown() {
               unreadIds.includes(n.id) ? { ...n, read: true } : n,
             ),
           );
-          await loadUnreadCount();
+          setHasUnread(false);
+          setUnreadCount(0);
         } catch (e) {
           console.error("Failed to mark notifications as read", e);
         }

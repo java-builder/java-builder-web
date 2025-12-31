@@ -26,7 +26,7 @@ export default function ToastProvider() {
         },
         // Default options for specific types
         success: {
-          duration: 3000,
+          duration: 2000,
           style: {
             background: "#10b981",
           },

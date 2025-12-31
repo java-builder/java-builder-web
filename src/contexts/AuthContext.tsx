@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   ReactNode,
 } from "react";
 import { authApi } from "@/services/auth.service";
@@ -45,6 +46,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     userScopes: [],
     error: null,
   });
+  
+  // Ref to prevent duplicate API calls
+  const hasCheckedAuth = useRef(false);
 
   const checkAuth = useCallback(async () => {
     setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
@@ -103,6 +107,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } catch {
       // Silent fail for logout
     } finally {
+      hasCheckedAuth.current = false; // Reset to allow re-auth after logout
       setAuthState({
         isAuthenticated: false,
         isLoading: false,
@@ -113,8 +118,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
-  // Chỉ gọi 1 lần khi provider mount
   useEffect(() => {
+    // Prevent duplicate API calls
+    if (hasCheckedAuth.current) return;
+    hasCheckedAuth.current = true;
+    
     checkAuth();
   }, [checkAuth]);
 

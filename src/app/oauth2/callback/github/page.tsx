@@ -4,28 +4,32 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { authApi } from "@/services/auth.service";
 
+// Module-level variable để track việc đã xử lý - persist qua re-renders của Strict Mode
+let isCallbackProcessed = false;
+
 const GitHubCallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasProcessed, setHasProcessed] = useState(false);
 
   useEffect(() => {
-    if (hasProcessed) return;
+    // Nếu đã xử lý rồi thì không làm gì
+    if (isCallbackProcessed) return;
 
     const handleGitHubCallback = async () => {
+      const code = searchParams.get("code");
+
+      if (!code) {
+        setError("Không nhận được mã xác thực từ GitHub");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Đánh dấu đã xử lý TRƯỚC khi gọi API
+      isCallbackProcessed = true;
+
       try {
-        setHasProcessed(true);
-
-        const code = searchParams.get("code");
-
-        if (!code) {
-          setError("Không nhận được mã xác thực từ GitHub");
-          setIsProcessing(false);
-          return;
-        }
-
         const response = await authApi.loginWithGithub(code);
 
         if (
@@ -54,7 +58,14 @@ const GitHubCallbackContent = () => {
     };
 
     handleGitHubCallback();
-  }, [searchParams, hasProcessed, router]);
+
+    // Reset flag khi component unmount (để có thể login lại nếu cần)
+    return () => {
+      setTimeout(() => {
+        isCallbackProcessed = false;
+      }, 1000);
+    };
+  }, [searchParams, router]);
 
   if (error) {
     return (

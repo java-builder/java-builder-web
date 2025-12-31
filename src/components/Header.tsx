@@ -23,9 +23,7 @@ export default function Header() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [notifications, setNotifications] = useState<
-    NotificationDetailResponse[]
-  >([]);
+  const [notifications, setNotifications] = useState<NotificationDetailResponse[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,13 +41,21 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  
+  // Refs to prevent duplicate API calls
+  const hasInitiallyLoaded = useRef(false);
+  const loadedTabsRef = useRef<Set<"all" | "unread">>(new Set());
+  const prevActiveTabRef = useRef<"all" | "unread">(activeTab);
 
   useEffect(() => {
+    // Prevent duplicate API calls
+    if (hasInitiallyLoaded.current) return;
+    
     const authenticated = authApi.isAuthenticated();
     setIsLoggedIn(authenticated);
     
-    // Fetch user info when logged in
     if (authenticated) {
+      hasInitiallyLoaded.current = true;
       userApi.getCurrentUser().then((res) => {
         if (res.result) {
           setCurrentUser(res.result);
@@ -58,19 +64,6 @@ export default function Header() {
     }
   }, []);
 
-
-  const loadUnreadCount = useCallback(async () => {
-    if (!isLoggedIn) return;
-    try {
-      const res = await notificationApi.getMyNotifications(1);
-      const list = res.result?.result || [];
-      const count = list.filter((n) => !n.read).length;
-      setHasUnread(count > 0);
-      setUnreadCount(count);
-    } catch (e) {
-      console.error("Failed to load unread count", e);
-    }
-  }, [isLoggedIn]);
 
   const loadNotifications = useCallback(
     async (
@@ -131,7 +124,8 @@ export default function Header() {
                   unreadIds.includes(n.id) ? { ...n, read: true } : n,
                 ),
               );
-              await loadUnreadCount();
+              setHasUnread(false);
+              setUnreadCount(0);
             } catch (e) {
               console.error("Failed to mark notifications as read", e);
             }
@@ -141,29 +135,23 @@ export default function Header() {
         console.error("Failed to load notifications", e);
       }
     },
-    [isLoggedIn, activeTab, loadUnreadCount, itemsPerPage],
+    [isLoggedIn, activeTab, itemsPerPage],
   );
 
-  const loadedTabsRef = useRef<Set<"all" | "unread">>(new Set());
-  const prevActiveTabRef = useRef<"all" | "unread">(activeTab);
-
+  // Single useEffect for initial notifications load
   useEffect(() => {
-    if (
-      isLoggedIn &&
-      (prevActiveTabRef.current !== activeTab ||
-        !loadedTabsRef.current.has(activeTab))
-    ) {
-      const savedPage = tabPages[activeTab] || 1;
-      loadNotifications(savedPage, false);
-      loadedTabsRef.current.add(activeTab);
-      prevActiveTabRef.current = activeTab;
-    }
+    if (!isLoggedIn || loadedTabsRef.current.has(activeTab)) return;
+    
+    loadedTabsRef.current.add(activeTab);
+    prevActiveTabRef.current = activeTab;
+    
+    const savedPage = tabPages[activeTab] || 1;
+    loadNotifications(savedPage, false);
   }, [isLoggedIn, activeTab, loadNotifications, tabPages]);
 
   const handleOpenNotifications = async () => {
     setIsNotifOpen(!isNotifOpen);
     if (!isNotifOpen) {
-      // close messages if opening notifications
       setIsMessagesOpen(false);
       const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
       if (unreadIds.length > 0) {
@@ -174,7 +162,8 @@ export default function Header() {
               unreadIds.includes(n.id) ? { ...n, read: true } : n,
             ),
           );
-          await loadUnreadCount();
+          setHasUnread(false);
+          setUnreadCount(0);
         } catch (e) {
           console.error("Failed to mark notifications as read", e);
         }
@@ -215,7 +204,6 @@ export default function Header() {
     const opening = !isMessagesOpen;
     setIsMessagesOpen(opening);
     if (opening) {
-      // show conversation list first
       setSelectedConversation(null);
       setIsNotifOpen(false);
     } else {
@@ -223,7 +211,6 @@ export default function Header() {
     }
   };
 
-  // synchronize body class when a conversation is opened
   useEffect(() => {
     if (typeof document === "undefined") return;
     if (selectedConversation) {

@@ -15,7 +15,6 @@ export default function UnauthorizedModal() {
 
   const handleClose = () => {
     setIsVisible(false);
-    // Redirect về trang chủ sau khi đóng modal
     setTimeout(() => {
       router.push("/");
     }, 300);

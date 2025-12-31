@@ -89,7 +89,7 @@ const roadmapData: RoadmapStep[] = [
     description: "Bảo mật ứng dụng với Authentication & Authorization",
     duration: "2-3 tuần",
     topics: ["Security Filter Chain", "JWT Token", "OAuth2, OpenID Connect", "Method Security", "RBAC"],
-    logo: "/logos/logo-security.jpg",
+    logo: "/logos/logo-security-black.webp",
     bgColor: "bg-green-700",
     logoSize: "w-14 h-14 sm:w-16 sm:h-16",
   },
