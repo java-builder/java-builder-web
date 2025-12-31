@@ -182,7 +182,6 @@ export const favoriteApi = {
       );
       return response.data;
     } catch {
-      // Silent fail - user might not be logged in
       return { code: 200, result: false };
     }
   },

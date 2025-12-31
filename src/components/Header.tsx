@@ -346,6 +346,7 @@ export default function Header() {
           {[
             { href: "/", label: "Trang chủ" },
             { href: "/courses", label: "Khóa học" },
+            { href: "/roadmap", label: "Lộ trình" },
             { href: "/documents", label: "Tài liệu" },
             { href: "/blogs", label: "Bài viết" },
             { href: "/about", label: "Giới thiệu" },
@@ -896,6 +897,7 @@ export default function Header() {
             {[
               { href: "/", label: "Trang chủ" },
               { href: "/courses", label: "Khóa học" },
+              { href: "/roadmap", label: "Lộ trình" },
               { href: "/documents", label: "Tài liệu" },
               { href: "/blogs", label: "Bài viết" },
               { href: "/about", label: "Giới thiệu" },
