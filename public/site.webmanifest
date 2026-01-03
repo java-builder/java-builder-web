@@ -8,14 +8,9 @@
   "theme_color": "#0056d2",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "64x64",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "/favicon-academic.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/logos/java-coffee-logo-icon-vector.jpg",
+      "sizes": "64x64 128x128 256x256",
+      "type": "image/jpeg"
     }
   ]
 }

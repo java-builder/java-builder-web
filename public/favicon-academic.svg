@@ -1,28 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0056d2"/>
-      <stop offset="100%" stop-color="#003d99"/>
+    <linearGradient id="cupGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0066ff"/>
+      <stop offset="100%" stop-color="#0044cc"/>
+    </linearGradient>
+    <linearGradient id="coffeeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B4513"/>
+      <stop offset="100%" stop-color="#5D2E0C"/>
     </linearGradient>
   </defs>
   
-  <!-- Background -->
-  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Cup Body -->
+  <path d="M14 22 L14 48 Q14 54 22 54 L38 54 Q46 54 46 48 L46 22 Z" fill="url(#cupGrad)"/>
   
-  <!-- Java Coffee Cup -->
-  <g transform="translate(12, 10)">
-    <!-- Steam -->
-    <path d="M12 8 Q14 4 12 0" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
-    <path d="M20 10 Q22 5 20 1" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
-    <path d="M28 8 Q30 4 28 0" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
-    
-    <!-- Cup -->
-    <path d="M4 14 H36 V38 Q36 46 28 46 H12 Q4 46 4 38 Z" fill="#fff"/>
-    
-    <!-- Handle -->
-    <path d="M36 20 H40 Q46 20 46 28 Q46 36 40 36 H36" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
-    
-    <!-- J letter -->
-    <text x="14" y="36" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#0056d2">J</text>
-  </g>
+  <!-- Cup Rim -->
+  <rect x="12" y="18" width="36" height="6" rx="2" fill="url(#cupGrad)"/>
+  
+  <!-- Coffee Surface -->
+  <ellipse cx="30" cy="26" rx="14" ry="3" fill="url(#coffeeGrad)"/>
+  
+  <!-- Handle -->
+  <path d="M46 26 Q56 26 56 36 Q56 46 46 46" stroke="url(#cupGrad)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Steam Lines -->
+  <path d="M22 14 Q24 10 22 6" stroke="#0056d2" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6">
+    <animate attributeName="d" values="M22 14 Q24 10 22 6;M22 14 Q20 10 22 6;M22 14 Q24 10 22 6" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M30 12 Q32 7 30 2" stroke="#0056d2" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7">
+    <animate attributeName="d" values="M30 12 Q32 7 30 2;M30 12 Q28 7 30 2;M30 12 Q32 7 30 2" dur="2.5s" repeatCount="indefinite"/>
+  </path>
+  <path d="M38 14 Q40 10 38 6" stroke="#0056d2" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6">
+    <animate attributeName="d" values="M38 14 Q40 10 38 6;M38 14 Q36 10 38 6;M38 14 Q40 10 38 6" dur="1.8s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Java J Letter -->
+  <text x="30" y="45" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">J</text>
 </svg>

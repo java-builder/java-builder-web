@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import VideoPlayer from "@/components/VideoPlayer";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
-import { courseApi, lessonApi, favoriteApi, enrollmentApi } from "@/services/course.service";
+import { courseApi, lessonApi, favoriteApi } from "@/services/course.service";
 import { paymentApi, CreatePaymentResponse } from "@/services/payment.service";
 import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -27,8 +27,14 @@ export default function CourseDetailPage() {
     "description" | "comments" | "curriculum" | "instructor"
   >("curriculum");
 
+  // Prevent duplicate API calls
+  const hasFetched = useRef(false);
+
   // Enrollment state
   const [isEnrolled, setIsEnrolled] = useState(false);
+  
+  // Premium user state
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
 
   // Curriculum state
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
@@ -70,48 +76,39 @@ export default function CourseDetailPage() {
     data: null,
   });
 
-  const fetchCourseDetail = useCallback(async () => {
-    if (!courseId) return;
-
-    try {
-      setIsLoading(true);
-      setError("");
-      const result = await courseApi.getById(courseId);
-      if (result.code === 200 && result.result) {
-        setCourse(result.result);
-      }
-      
-      // Check favorite status
-      try {
-        const favoriteResult = await favoriteApi.check(courseId);
-        if (favoriteResult.result !== undefined) {
-          setIsFavorite(favoriteResult.result);
-        }
-      } catch {
-        // Silent fail for favorite check
-      }
-
-      // Check enrollment status
-      try {
-        const enrollmentResult = await enrollmentApi.checkEnrollment(courseId);
-        if (enrollmentResult.result !== undefined) {
-          setIsEnrolled(enrollmentResult.result);
-        }
-      } catch {
-        // Silent fail for enrollment check
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [courseId]);
+  // Comment form state
+  const [commentRating, setCommentRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-    fetchCourseDetail();
-  }, [fetchCourseDetail]);
+    if (!courseId || hasFetched.current) return;
+    hasFetched.current = true;
+
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+        
+        // Fetch course detail (includes isFavorite, isEnrolled, isPremiumUser)
+        const result = await courseApi.getById(courseId);
+        if (result.code === 200 && result.result) {
+          setCourse(result.result);
+          // Set user-specific states from response
+          setIsFavorite(result.result.isFavorite ?? false);
+          setIsEnrolled(result.result.isEnrolled ?? false);
+          setIsPremiumUser(result.result.isPremiumUser ?? false);
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [courseId]);
 
   // Toggle favorite handler
   const handleToggleFavorite = async () => {
@@ -175,9 +172,9 @@ export default function CourseDetailPage() {
     }
   };
 
-  // Handle lesson click - cho phép xem nếu đã enrolled hoặc là free preview
+  // Handle lesson click - cho phép xem nếu đã enrolled, premium user hoặc là free preview
   const handleLessonClick = (lesson: LessonDetailResponse) => {
-    if (isEnrolled || lesson.isFreePreview) {
+    if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
       setPreviewModal({ isOpen: true, lesson });
     } else {
       toast.error("Vui lòng đăng ký khóa học để xem bài học này");
@@ -389,6 +386,7 @@ export default function CourseDetailPage() {
                       src={course.courseCover}
                       alt={course.title}
                       fill
+                      priority
                       className="object-contain bg-gray-100"
                     />
                   ) : (
@@ -443,41 +441,41 @@ export default function CourseDetailPage() {
                   </div>
 
                   {/* Tabs */}
-                  <div className="border-b border-gray-200 mb-6">
-                    <nav className="-mb-px flex space-x-8">
+                  <div className="border-b border-gray-200 mb-6 overflow-x-auto">
+                    <nav className="-mb-px flex space-x-4 sm:space-x-8 min-w-max">
                       <button
                         onClick={() => setActiveTab("curriculum")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                           activeTab === "curriculum"
                             ? "border-accent text-accent-600"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        Nội dung khóa học
+                        Nội dung
                       </button>
                       <button
                         onClick={() => setActiveTab("description")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                           activeTab === "description"
                             ? "border-accent text-accent-600"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        Nội dung khóa học
+                        Mô tả
                       </button>
                       <button
                         onClick={() => setActiveTab("instructor")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                           activeTab === "instructor"
                             ? "border-accent text-accent-600"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        Thông tin tác giả
+                        Tác giả
                       </button>
                       <button
                         onClick={() => setActiveTab("comments")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                           activeTab === "comments"
                             ? "border-accent text-accent-600"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -505,21 +503,23 @@ export default function CourseDetailPage() {
                             <div key={chapter.id} className="border border-gray-200 rounded-lg overflow-hidden">
                               {/* Chapter Header */}
                               <div
-                                className="flex items-center justify-between px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                                className="flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors gap-2"
                                 onClick={() => toggleChapter(chapter.id)}
                               >
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
                                   <svg
-                                    className={`w-4 h-4 text-gray-500 transition-transform ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
+                                    className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 mt-0.5 sm:mt-0 ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                   >
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                   </svg>
-                                  <span className="text-sm font-medium text-gray-500">Chương {index + 1}</span>
-                                  <span className="font-medium text-gray-900">{chapter.chapterName}</span>
+                                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
+                                    <span className="text-xs sm:text-sm font-medium text-gray-500 flex-shrink-0">Chương {index + 1}</span>
+                                    <span className="font-medium text-gray-900 text-sm sm:text-base truncate">{chapter.chapterName}</span>
+                                  </div>
                                 </div>
-                                <span className="text-xs text-gray-400">
-                                  {chapterLessons[chapter.id] ? `${chapterLessons[chapter.id].length} bài học` : ""}
+                                <span className="text-xs text-gray-400 flex-shrink-0">
+                                  {chapterLessons[chapter.id] ? `${chapterLessons[chapter.id].length} bài` : ""}
                                 </span>
                               </div>
 
@@ -527,13 +527,13 @@ export default function CourseDetailPage() {
                               {expandedChapters.has(chapter.id) && (
                                 <div className="border-t border-gray-200">
                                   {chapter.description && (
-                                    <p className="text-sm text-gray-600 px-4 py-2 bg-gray-50/50 border-b border-gray-100">
+                                    <p className="text-sm text-gray-600 px-3 sm:px-4 py-2 bg-gray-50/50 border-b border-gray-100">
                                       {chapter.description}
                                     </p>
                                   )}
                                   <div className="divide-y divide-gray-100">
                                     {loadingLessons.has(chapter.id) ? (
-                                      <div className="px-4 py-6 text-center text-gray-400 text-sm flex items-center justify-center gap-2">
+                                      <div className="px-3 sm:px-4 py-6 text-center text-gray-400 text-sm flex items-center justify-center gap-2">
                                         <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -542,36 +542,36 @@ export default function CourseDetailPage() {
                                       </div>
                                     ) : chapterLessons[chapter.id] && chapterLessons[chapter.id].length > 0 ? (
                                       chapterLessons[chapter.id].map((lesson, lessonIndex) => {
-                                        const canWatch = isEnrolled || lesson.isFreePreview;
+                                        const canWatch = isEnrolled || isPremiumUser || lesson.isFreePreview;
                                         return (
                                         <div
                                           key={lesson.id}
-                                          className={`flex items-center justify-between px-4 py-3 transition-colors ${
+                                          className={`flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 transition-colors gap-2 ${
                                             canWatch 
                                               ? "hover:bg-accent-50 cursor-pointer group" 
                                               : "bg-gray-50/30"
                                           }`}
                                           onClick={() => handleLessonClick(lesson)}
                                         >
-                                          <div className="flex items-center gap-3">
-                                            <span className={`w-6 h-6 flex items-center justify-center rounded text-xs ${
+                                          <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                                            <span className={`w-6 h-6 flex items-center justify-center rounded text-xs flex-shrink-0 ${
                                               canWatch 
                                                 ? "bg-accent-100 text-accent-600 group-hover:bg-accent group-hover:text-white" 
                                                 : "bg-gray-100 text-gray-400"
                                             } transition-colors`}>
                                               {lessonIndex + 1}
                                             </span>
-                                            <div>
-                                              <div className="flex items-center gap-2">
+                                            <div className="min-w-0 flex-1">
+                                              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
                                                 <span className={`text-sm ${
                                                   canWatch 
                                                     ? "text-gray-900 group-hover:text-accent" 
                                                     : "text-gray-500"
-                                                } transition-colors`}>
+                                                } transition-colors break-words`}>
                                                   {lesson.lessonName}
                                                 </span>
-                                                {lesson.isFreePreview && !isEnrolled && (
-                                                  <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-700 rounded">
+                                                {lesson.isFreePreview && !isEnrolled && !isPremiumUser && (
+                                                  <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-700 rounded flex-shrink-0">
                                                     Miễn phí
                                                   </span>
                                                 )}
@@ -587,19 +587,21 @@ export default function CourseDetailPage() {
                                               )}
                                             </div>
                                           </div>
-                                          {canWatch ? (
-                                            <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
-                                              <path d="M8 5v14l11-7z" />
-                                            </svg>
-                                          ) : (
-                                            <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                          )}
+                                          <div className="flex-shrink-0">
+                                            {canWatch ? (
+                                              <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z" />
+                                              </svg>
+                                            ) : (
+                                              <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                              </svg>
+                                            )}
+                                          </div>
                                         </div>
                                       );})
                                     ) : (
-                                      <div className="px-4 py-6 text-center text-gray-400 text-sm">
+                                      <div className="px-3 sm:px-4 py-6 text-center text-gray-400 text-sm">
                                         Chưa có bài học nào
                                       </div>
                                     )}
@@ -642,7 +644,7 @@ export default function CourseDetailPage() {
                         <div className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg">
                           <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
                             <Image
-                              src="/favicon-academic.svg"
+                              src="/logos/java-coffee-logo-icon-vector.jpg"
                               alt="JavaBuilder"
                               width={64}
                               height={64}
@@ -707,28 +709,118 @@ export default function CourseDetailPage() {
                     )}
 
                     {activeTab === "comments" && (
-                      <div className="text-center py-12">
-                        <div className="text-gray-400 mb-4">
-                          <svg
-                            className="w-12 h-12 mx-auto"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                            />
-                          </svg>
+                      <div className="space-y-6">
+                        {/* Comment Form - Only for enrolled or premium users */}
+                        {(isEnrolled || isPremiumUser) ? (
+                          <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                              {/* Avatar */}
+                              <div className="flex items-center gap-3 sm:block">
+                                {currentUser?.avatar ? (
+                                  <Image
+                                    src={currentUser.avatar}
+                                    alt={currentUser.username || "User"}
+                                    width={40}
+                                    height={40}
+                                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-accent-600 font-medium text-sm">
+                                      {currentUser?.username?.charAt(0)?.toUpperCase() || "U"}
+                                    </span>
+                                  </div>
+                                )}
+                                <span className="text-sm font-medium text-gray-700 sm:hidden">
+                                  {currentUser?.username}
+                                </span>
+                              </div>
+                              
+                              {/* Form */}
+                              <div className="flex-1 w-full">
+                                <textarea
+                                  value={commentText}
+                                  onChange={(e) => setCommentText(e.target.value)}
+                                  placeholder="Chia sẻ cảm nhận của bạn về khóa học..."
+                                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
+                                  rows={3}
+                                />
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
+                                  {/* Star Rating */}
+                                  <div className="flex items-center gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => setCommentRating(star)}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                        className="transition-colors p-0.5"
+                                      >
+                                        <svg 
+                                          className={`w-6 h-6 sm:w-5 sm:h-5 ${
+                                            star <= (hoverRating || commentRating)
+                                              ? "text-yellow-400" 
+                                              : "text-gray-300"
+                                          }`} 
+                                          fill="currentColor" 
+                                          viewBox="0 0 20 20"
+                                        >
+                                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                      </button>
+                                    ))}
+                                    <span className="text-xs text-gray-500 ml-1">
+                                      {commentRating > 0 ? `${commentRating}/5` : "Đánh giá"}
+                                    </span>
+                                  </div>
+                                  
+                                  {/* Submit Button */}
+                                  <button 
+                                    disabled={!commentText.trim() || commentRating === 0}
+                                    className="w-full sm:w-auto px-4 py-2 bg-accent hover:bg-accent-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                                  >
+                                    Gửi bình luận
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
+                            <svg className="w-8 h-8 text-amber-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <p className="text-sm text-amber-700">
+                              Đăng ký khóa học hoặc nâng cấp Premium để bình luận
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Comments List */}
+                        <div className="text-center py-8">
+                          <div className="text-gray-400 mb-3">
+                            <svg
+                              className="w-10 h-10 mx-auto"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                              />
+                            </svg>
+                          </div>
+                          <h3 className="text-base font-medium text-gray-900 mb-1">
+                            Chưa có bình luận nào
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Hãy là người đầu tiên đánh giá khóa học này!
+                          </p>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
-                          Chưa có bình luận nào
-                        </h3>
-                        <p className="text-gray-600">
-                          Hãy là người đầu tiên đánh giá khóa học này!
-                        </p>
                       </div>
                     )}
                   </div>
@@ -743,16 +835,24 @@ export default function CourseDetailPage() {
               <div className="bg-white rounded-xl p-5 sticky top-8">
                 {/* Price / Enrolled Status */}
                 <div className="text-center mb-5">
-                  {isEnrolled ? (
+                  {isEnrolled || isPremiumUser ? (
                     <>
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full mb-3">
+                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 ${
+                        isPremiumUser && !isEnrolled 
+                          ? "bg-amber-100 text-amber-700" 
+                          : "bg-green-100 text-green-700"
+                      }`}>
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
-                        <span className="font-medium">Đã đăng ký</span>
+                        <span className="font-medium">
+                          {isPremiumUser && !isEnrolled ? "Premium Member" : "Đã đăng ký"}
+                        </span>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Bạn có quyền truy cập đầy đủ khóa học này
+                        {isPremiumUser && !isEnrolled 
+                          ? "Bạn có quyền truy cập với tư cách Premium" 
+                          : "Bạn có quyền truy cập đầy đủ khóa học này"}
                       </p>
                     </>
                   ) : (
@@ -769,7 +869,7 @@ export default function CourseDetailPage() {
 
                 {/* CTA Buttons */}
                 <div className="space-y-2 mb-6">
-                  {isEnrolled ? (
+                  {isEnrolled || isPremiumUser ? (
                     <Link 
                       href={`/learn/${courseId}`}
                       className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
@@ -872,9 +972,19 @@ export default function CourseDetailPage() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{previewModal.lesson.lessonName}</h3>
-                <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
-                  Xem miễn phí
-                </span>
+                {isPremiumUser && !isEnrolled ? (
+                  <span className="px-2 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full">
+                    Premium Member
+                  </span>
+                ) : isEnrolled ? (
+                  <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                    Đã đăng ký
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                    Xem miễn phí
+                  </span>
+                )}
               </div>
               <button
                 onClick={() => setPreviewModal({ isOpen: false, lesson: null })}
@@ -914,23 +1024,25 @@ export default function CourseDetailPage() {
               </div>
             )}
 
-            {/* CTA */}
-            <div className="px-6 py-4 border-t border-gray-200 bg-accent-50">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-600">
-                  Đăng ký khóa học để xem tất cả bài học
-                </p>
-                <button 
-                  onClick={() => {
-                    setPreviewModal({ isOpen: false, lesson: null });
-                    handlePayment();
-                  }}
-                  className="px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors"
-                >
-                  Đăng ký ngay
-                </button>
+            {/* CTA - Only show if not enrolled and not premium */}
+            {!isEnrolled && !isPremiumUser && (
+              <div className="px-6 py-4 border-t border-gray-200 bg-accent-50">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">
+                    Đăng ký khóa học để xem tất cả bài học
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setPreviewModal({ isOpen: false, lesson: null });
+                      handlePayment();
+                    }}
+                    className="px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    Đăng ký ngay
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}

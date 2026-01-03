@@ -8,6 +8,7 @@ const NAV_ITEMS: { href: string; label: string; isPremium?: boolean }[] = [
   { href: "/courses", label: "Khóa học" },
   { href: "/documents", label: "Tài liệu" },
   { href: "/blogs", label: "Bài viết" },
+  { href: "/about", label: "Giới thiệu" },
   { href: "/pricing", label: "Nâng cấp", isPremium: true },
 ];
 

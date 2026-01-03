@@ -98,6 +98,10 @@ export interface CourseDetailResponse {
   chapters?: ChapterDetailResponse[];
   createdAt: string;
   updatedAt?: string;
+  // User-specific fields (populated when user is authenticated)
+  isFavorite?: boolean;
+  isEnrolled?: boolean;
+  isPremiumUser?: boolean;
 }
 
 export enum CourseLevel {
