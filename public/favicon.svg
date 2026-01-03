@@ -1,26 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="cupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0056d2"/>
-      <stop offset="100%" style="stop-color:#0044aa"/>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0056d2"/>
+      <stop offset="100%" stop-color="#003d99"/>
     </linearGradient>
   </defs>
   
-  <!-- Coffee cup (Java symbol) - centered for favicon -->
-  <g transform="translate(6, 5)">
-    <!-- Steam lines -->
-    <path d="M16 12C16 12 18 6 16 0" stroke="url(#cupGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
-    <path d="M26 14C26 14 28 8 26 2" stroke="url(#cupGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
-    <path d="M36 12C36 12 38 6 36 0" stroke="url(#cupGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <!-- Background -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  
+  <!-- Java Coffee Cup -->
+  <g transform="translate(12, 10)">
+    <!-- Steam -->
+    <path d="M12 8 Q14 4 12 0" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M20 10 Q22 5 20 1" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M28 8 Q30 4 28 0" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
     
-    <!-- Cup body -->
-    <path d="M6 18H42V44C42 51.18 36.18 57 29 57H19C11.82 57 6 51.18 6 44V18Z" fill="url(#cupGrad)"/>
+    <!-- Cup -->
+    <path d="M4 14 H36 V38 Q36 46 28 46 H12 Q4 46 4 38 Z" fill="#fff"/>
     
-    <!-- Cup handle -->
-    <path d="M42 24H48C51.314 24 54 26.686 54 30V36C54 39.314 51.314 42 48 42H42" stroke="url(#cupGrad)" stroke-width="4" fill="none"/>
+    <!-- Handle -->
+    <path d="M36 20 H40 Q46 20 46 28 Q46 36 40 36 H36" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
     
-    <!-- Code brackets inside cup -->
-    <text x="14" y="42" font-family="monospace" font-size="18" font-weight="bold" fill="white">&lt;/&gt;</text>
+    <!-- J letter -->
+    <text x="14" y="36" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#0056d2">J</text>
   </g>
 </svg>

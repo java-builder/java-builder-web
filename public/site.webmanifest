@@ -1,22 +1,21 @@
 {
-  "name": "Marino",
-  "short_name": "Marino",
+  "name": "JavaBuilder - Làm chủ Backend Java",
+  "short_name": "JavaBuilder",
+  "description": "Nền tảng học lập trình Java Backend chuyên sâu",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1a56db",
+  "theme_color": "#0056d2",
   "icons": [
     {
-      "src": "/favicon-academic.svg",
+      "src": "/favicon.svg",
       "sizes": "64x64",
       "type": "image/svg+xml"
     },
     {
-      "src": "/favicon.ico",
+      "src": "/favicon-academic.svg",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/svg+xml"
     }
   ]
 }
-
-
