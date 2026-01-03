@@ -6,7 +6,7 @@ const BASE_URL =
 
 let refreshPromise: Promise<string> | null = null;
 
-const isPublicEndpoint = (url: string | undefined): boolean => {
+const isPublicEndpoint = (url: string | undefined, method?: string): boolean => {
   if (!url) return false;
 
   const publicEndpoints = [
@@ -20,6 +20,7 @@ const isPublicEndpoint = (url: string | undefined): boolean => {
     "/api/v1/users/send-link-reset-password",
   ];
 
+  // Các endpoint GET public (không cần token)
   const publicGetPatterns = [
     "/api/v1/courses",
     "/api/v1/blogs",
@@ -29,11 +30,18 @@ const isPublicEndpoint = (url: string | undefined): boolean => {
     "/api/v1/subscriptions/check-premium",
   ];
 
+  // Các endpoint luôn public (mọi method)
   if (publicEndpoints.some((endpoint) => url.includes(endpoint))) {
     return true;
   }
 
-  return publicGetPatterns.some((pattern) => url.includes(pattern));
+  // Chỉ public cho GET requests
+  const isGetMethod = !method || method.toUpperCase() === "GET";
+  if (isGetMethod && publicGetPatterns.some((pattern) => url.includes(pattern))) {
+    return true;
+  }
+
+  return false;
 };
 
 export const apiClient = axios.create({
@@ -46,7 +54,7 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    if (isPublicEndpoint(config.url)) {
+    if (isPublicEndpoint(config.url, config.method)) {
       return config;
     }
 
