@@ -119,14 +119,14 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
       }`}
     >
       {/* Header */}
-      <div className="relative h-48 overflow-hidden flex-shrink-0">
+      <div className="relative h-56 overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-slate-700">
         {document.coverImage && !imageError ? (
           <Image
             src={document.coverImage}
             alt={document.title}
             width={400}
-            height={192}
-            className="w-full h-full object-cover"
+            height={224}
+            className="w-full h-full object-contain"
             unoptimized
             onError={() => setImageError(true)}
           />
@@ -206,7 +206,10 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
 
         {/* Action Button - pushed to bottom */}
         <button
-          onClick={handleClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick();
+          }}
           disabled={!document.url}
           className={`w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 mt-auto ${
             document.url
