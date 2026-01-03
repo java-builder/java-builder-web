@@ -25,8 +25,9 @@ export default function EditCoursePage() {
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState(0);
   const [level, setLevel] = useState<CourseLevel>(CourseLevel.BEGINNER);
-  const [, setCourseCover] = useState("");
+  const [courseCover, setCourseCover] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Chapters state (from API)
@@ -109,7 +110,7 @@ export default function EditCoursePage() {
   }, [courseId]);
 
 
-  // Handle image upload
+  // Handle image upload - chỉ preview, chưa upload
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -123,18 +124,11 @@ export default function EditCoursePage() {
       return;
     }
 
+    // Chỉ preview, lưu file để upload khi save
     const reader = new FileReader();
     reader.onload = (e) => setImagePreview(e.target?.result as string);
     reader.readAsDataURL(file);
-
-    try {
-      const result = await fileApi.uploadSingleMedia(file);
-      if (result.result) {
-        setCourseCover(result.result.url);
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-    }
+    setPendingImageFile(file);
   };
 
   // Save course info
@@ -145,8 +139,33 @@ export default function EditCoursePage() {
     }
     setIsSaving(true);
     try {
-      // TODO: Call API to update course
-      toast.success("Cập nhật khóa học thành công!");
+      let finalCourseCover = courseCover;
+
+      // Upload ảnh mới nếu có
+      if (pendingImageFile) {
+        const uploadResult = await fileApi.uploadSingleMedia(pendingImageFile);
+        if (uploadResult.result) {
+          finalCourseCover = uploadResult.result.url;
+        }
+      }
+
+      const response = await courseApi.update({
+        id: courseId,
+        title: title.trim(),
+        description: description.trim(),
+        price,
+        duration,
+        level,
+        courseCover: finalCourseCover || undefined,
+      });
+      if (response.code === 200) {
+        toast.success("Cập nhật khóa học thành công!");
+        setPendingImageFile(null);
+        setCourseCover(finalCourseCover);
+        if (response.result) {
+          setCourse(response.result);
+        }
+      }
     } catch (error) {
       console.error("Save error:", error);
       toast.error("Cập nhật thất bại");

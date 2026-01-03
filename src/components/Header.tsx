@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/services/auth.service";
@@ -20,9 +20,19 @@ export default function Header() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { data: currentUser } = useCurrentUser();
+  const [hasToken, setHasToken] = useState<boolean | null>(null);
+  const { data: currentUser, isLoading } = useCurrentUser();
   
+  // Check token ngay khi mount (client-side only)
+  useEffect(() => {
+    setHasToken(authApi.isAuthenticated());
+  }, []);
+
+  // Nếu có token và đang loading → chưa render auth section
+  // Nếu không có token → render AuthButtons
+  // Nếu có currentUser → render UserMenu
   const isLoggedIn = !!currentUser;
+  const showAuthLoading = hasToken === true && isLoading;
 
   const handleLogout = async () => {
     try {
@@ -30,7 +40,7 @@ export default function Header() {
     } catch {
       authApi.clearAuthData();
     }
-    // Clear React Query cache để UI cập nhật ngay
+    setHasToken(false);
     queryClient.setQueryData(["currentUser"], null);
     setIsMobileMenuOpen(false);
     router.push("/");
@@ -54,14 +64,19 @@ export default function Header() {
         <div className="flex items-center justify-end space-x-2 sm:space-x-3 flex-1">
           <ThemeToggle />
 
-          {isLoggedIn && (
+          {/* Auth Section - không render gì khi đang loading để tránh flash */}
+          {showAuthLoading ? (
+            // Placeholder để giữ layout ổn định
+            <div className="w-9 h-9 rounded-full bg-gray-200 animate-pulse" />
+          ) : isLoggedIn ? (
             <>
               <MessagesDropdown />
               <NotificationDropdown />
+              <UserMenu onLogout={handleLogout} />
             </>
-          )}
-
-          {isLoggedIn ? <UserMenu onLogout={handleLogout} /> : <AuthButtons />}
+          ) : hasToken === false ? (
+            <AuthButtons />
+          ) : null}
         </div>
       </div>
 

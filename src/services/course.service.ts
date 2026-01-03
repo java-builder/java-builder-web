@@ -3,6 +3,7 @@ import { ApiResponse, PageResponse } from "@/types/api";
 import {
   CreateCourseRequest,
   CreateCourseResponse,
+  UpdateCourseRequest,
   CourseDetailResponse,
   CourseLevel,
   CreateChapterRequest,
@@ -70,6 +71,20 @@ export const courseApi = {
       return response.data;
     } catch (error) {
       toast.error("Lấy thông tin khóa học thất bại.");
+      throw error;
+    }
+  },
+
+  // Cập nhật khóa học
+  update: async (data: UpdateCourseRequest) => {
+    try {
+      const response = await apiClient.put<ApiResponse<CourseDetailResponse>>(
+        "/api/v1/courses",
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Cập nhật khóa học thất bại. Vui lòng thử lại.");
       throw error;
     }
   },
@@ -197,6 +212,34 @@ export const favoriteApi = {
     } catch (error) {
       toast.error("Lấy danh sách yêu thích thất bại.");
       throw error;
+    }
+  },
+};
+
+export const enrollmentApi = {
+  // Lấy danh sách khóa học đã đăng ký
+  getMyCourses: async (page: number = 1, size: number = 10) => {
+    try {
+      const response = await apiClient.get<ApiResponse<PageResponse<CourseDetailResponse>>>(
+        "/api/v1/enrollments/my-courses",
+        { params: { page, size } },
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Lấy danh sách khóa học thất bại.");
+      throw error;
+    }
+  },
+
+  // Check xem user đã đăng ký khóa học chưa
+  checkEnrollment: async (courseId: string) => {
+    try {
+      const response = await apiClient.get<ApiResponse<boolean>>(
+        `/api/v1/enrollments/check/${courseId}`,
+      );
+      return response.data;
+    } catch {
+      return { code: 200, result: false };
     }
   },
 };

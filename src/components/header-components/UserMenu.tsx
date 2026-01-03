@@ -46,6 +46,13 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             Thông tin cá nhân
           </Link>
           <Link 
+            href="/my-courses" 
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" 
+            onClick={() => setIsOpen(false)}
+          >
+            Khóa học của tôi
+          </Link>
+          <Link 
             href="/favorites" 
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" 
             onClick={() => setIsOpen(false)}

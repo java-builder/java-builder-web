@@ -107,50 +107,62 @@ export default function FavoritesPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {favorites.map((item) => (
-                <div key={item.id} className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+                <div key={item.id} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-gray-200 dark:border-slate-700">
                   <Link href={`/courses/${item.courseId}`}>
                     <div className="relative aspect-video">
                       {item.courseCover ? (
-                        <Image src={item.courseCover} alt={item.courseTitle} fill className="object-cover" />
+                        <Image src={item.courseCover} alt={item.courseTitle} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">
-                          <svg className="w-10 h-10 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                           </svg>
                         </div>
                       )}
+                      {/* Favorite Badge */}
+                      <div className="absolute top-4 right-4">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleRemoveFavorite(item.courseId);
+                          }}
+                          className="p-2 bg-white/90 hover:bg-red-50 text-red-500 rounded-full shadow-lg transition-colors"
+                          title="Xóa khỏi yêu thích"
+                        >
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </Link>
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
+                  <div className="p-5">
+                    <div className="flex items-center gap-3 mb-3">
                       {item.courseLevel && (
-                        <span className="px-2 py-0.5 text-xs font-medium bg-accent-100 dark:bg-accent/20 text-accent-700 dark:text-accent-400 rounded">
+                        <span className="px-3 py-1 text-sm font-medium bg-accent-100 dark:bg-accent/20 text-accent-700 dark:text-accent-400 rounded-lg">
                           {getLevelText(item.courseLevel)}
                         </span>
                       )}
                       {item.courseDuration && (
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{item.courseDuration} giờ</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{item.courseDuration} giờ</span>
                       )}
                     </div>
                     <Link href={`/courses/${item.courseId}`}>
-                      <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-accent transition-colors">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-accent transition-colors">
                         {item.courseTitle}
                       </h3>
                     </Link>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{item.courseDescription}</p>
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-slate-700">
-                      <span className="font-bold text-accent">{formatPrice(item.coursePrice)}</span>
-                      <button
-                        onClick={() => handleRemoveFavorite(item.courseId)}
-                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                        title="Xóa khỏi yêu thích"
+                    <p className="text-gray-500 dark:text-gray-400 line-clamp-2 mt-2 mb-4">{item.courseDescription}</p>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
+                      <span className="text-xl font-bold text-accent">{formatPrice(item.coursePrice)}</span>
+                      <Link
+                        href={`/courses/${item.courseId}`}
+                        className="px-4 py-2 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                      </button>
+                        Xem chi tiết
+                      </Link>
                     </div>
                   </div>
                 </div>

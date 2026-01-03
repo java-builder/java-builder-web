@@ -8,6 +8,16 @@ export interface CreateCourseRequest {
   level?: CourseLevel;
 }
 
+export interface UpdateCourseRequest {
+  id: string;
+  title?: string;
+  description?: string;
+  price?: number;
+  duration?: number;
+  courseCover?: string;
+  level?: CourseLevel;
+}
+
 export interface CreateCourseResponse {
   id: string;
   title: string;

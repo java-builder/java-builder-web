@@ -18,10 +18,10 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   ...generateSEO({
-    title: "JavaBuilder.online - Học lập trình Java, Spring Boot Online",
+    title: "JavaBuilder - Học lập trình Java, Spring Boot Online",
     description: "JavaBuilder.online (javabuilder) - Nền tảng học lập trình Java, Spring Boot, React online số 1 Việt Nam. Khóa học chất lượng cao với mentor chuyên nghiệp. Học Java từ zero đến hero.",
     url: "/",
-    tags: ["javabuilder.online", "học java online", "khóa học java spring boot", "học lập trình java việt nam", "backend developer"],
+    tags: ["javabuilder.online", "học java online", "khóa học java spring boot", "học lập trình java việt nam", "backend developer", "java builder"],
   }),
   metadataBase: new URL(SITE_URL),
   verification: {

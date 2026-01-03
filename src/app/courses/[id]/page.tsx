@@ -8,22 +8,27 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import VideoPlayer from "@/components/VideoPlayer";
-import { courseApi, lessonApi, favoriteApi } from "@/services/course.service";
+import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import { courseApi, lessonApi, favoriteApi, enrollmentApi } from "@/services/course.service";
 import { paymentApi, CreatePaymentResponse } from "@/services/payment.service";
 import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
 
 export default function CourseDetailPage() {
   const params = useParams();
   const courseId = params?.id as string;
-
+  const { data: currentUser } = useCurrentUser();
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [activeTab, setActiveTab] = useState<
     "description" | "comments" | "curriculum" | "instructor"
   >("curriculum");
+
+  // Enrollment state
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   // Curriculum state
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
@@ -42,6 +47,17 @@ export default function CourseDetailPage() {
   // Favorite state
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  // Auth required modal
+  const [authModal, setAuthModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
 
   // Payment modal state
   const [paymentModal, setPaymentModal] = useState<{
@@ -74,6 +90,16 @@ export default function CourseDetailPage() {
       } catch {
         // Silent fail for favorite check
       }
+
+      // Check enrollment status
+      try {
+        const enrollmentResult = await enrollmentApi.checkEnrollment(courseId);
+        if (enrollmentResult.result !== undefined) {
+          setIsEnrolled(enrollmentResult.result);
+        }
+      } catch {
+        // Silent fail for enrollment check
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
@@ -90,6 +116,17 @@ export default function CourseDetailPage() {
   // Toggle favorite handler
   const handleToggleFavorite = async () => {
     if (!courseId) return;
+    
+    // Check if user is logged in
+    if (!currentUser) {
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để yêu thích",
+        message: "Bạn cần đăng nhập để thêm khóa học vào danh sách yêu thích.",
+      });
+      return;
+    }
+
     setFavoriteLoading(true);
     try {
       const result = await favoriteApi.toggle(courseId);
@@ -98,7 +135,7 @@ export default function CourseDetailPage() {
         toast.success(result.result ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
       }
     } catch {
-      toast.error("Vui lòng đăng nhập để thêm vào yêu thích");
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setFavoriteLoading(false);
     }
@@ -138,16 +175,28 @@ export default function CourseDetailPage() {
     }
   };
 
-  // Handle lesson click
+  // Handle lesson click - cho phép xem nếu đã enrolled hoặc là free preview
   const handleLessonClick = (lesson: LessonDetailResponse) => {
-    if (lesson.isFreePreview) {
+    if (isEnrolled || lesson.isFreePreview) {
       setPreviewModal({ isOpen: true, lesson });
+    } else {
+      toast.error("Vui lòng đăng ký khóa học để xem bài học này");
     }
   };
 
   // Handle payment
   const handlePayment = async () => {
     if (!courseId) return;
+    
+    // Check if user is logged in
+    if (!currentUser) {
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để đăng ký",
+        message: "Bạn cần đăng nhập để đăng ký khóa học này.",
+      });
+      return;
+    }
     
     setPaymentModal({ isOpen: true, isLoading: true, data: null });
     try {
@@ -159,7 +208,7 @@ export default function CourseDetailPage() {
         setPaymentModal({ isOpen: false, isLoading: false, data: null });
       }
     } catch {
-      toast.error("Vui lòng đăng nhập để đăng ký khóa học");
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
     }
   };
@@ -492,11 +541,13 @@ export default function CourseDetailPage() {
                                         Đang tải...
                                       </div>
                                     ) : chapterLessons[chapter.id] && chapterLessons[chapter.id].length > 0 ? (
-                                      chapterLessons[chapter.id].map((lesson, lessonIndex) => (
+                                      chapterLessons[chapter.id].map((lesson, lessonIndex) => {
+                                        const canWatch = isEnrolled || lesson.isFreePreview;
+                                        return (
                                         <div
                                           key={lesson.id}
                                           className={`flex items-center justify-between px-4 py-3 transition-colors ${
-                                            lesson.isFreePreview 
+                                            canWatch 
                                               ? "hover:bg-accent-50 cursor-pointer group" 
                                               : "bg-gray-50/30"
                                           }`}
@@ -504,7 +555,7 @@ export default function CourseDetailPage() {
                                         >
                                           <div className="flex items-center gap-3">
                                             <span className={`w-6 h-6 flex items-center justify-center rounded text-xs ${
-                                              lesson.isFreePreview 
+                                              canWatch 
                                                 ? "bg-accent-100 text-accent-600 group-hover:bg-accent group-hover:text-white" 
                                                 : "bg-gray-100 text-gray-400"
                                             } transition-colors`}>
@@ -513,13 +564,13 @@ export default function CourseDetailPage() {
                                             <div>
                                               <div className="flex items-center gap-2">
                                                 <span className={`text-sm ${
-                                                  lesson.isFreePreview 
+                                                  canWatch 
                                                     ? "text-gray-900 group-hover:text-accent" 
                                                     : "text-gray-500"
                                                 } transition-colors`}>
                                                   {lesson.lessonName}
                                                 </span>
-                                                {lesson.isFreePreview && (
+                                                {lesson.isFreePreview && !isEnrolled && (
                                                   <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-700 rounded">
                                                     Miễn phí
                                                   </span>
@@ -536,7 +587,7 @@ export default function CourseDetailPage() {
                                               )}
                                             </div>
                                           </div>
-                                          {lesson.isFreePreview ? (
+                                          {canWatch ? (
                                             <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
                                               <path d="M8 5v14l11-7z" />
                                             </svg>
@@ -546,7 +597,7 @@ export default function CourseDetailPage() {
                                             </svg>
                                           )}
                                         </div>
-                                      ))
+                                      );})
                                     ) : (
                                       <div className="px-4 py-6 text-center text-gray-400 text-sm">
                                         Chưa có bài học nào
@@ -690,24 +741,52 @@ export default function CourseDetailPage() {
           <div className="lg:col-span-1">
             <MotionWrapper animation="fadeInUp" delay={0.2} duration={0.6}>
               <div className="bg-white rounded-xl p-5 sticky top-8">
-                {/* Price */}
+                {/* Price / Enrolled Status */}
                 <div className="text-center mb-5">
-                  <div className="text-3xl font-bold text-accent mb-2">
-                    {formatPrice(course.price)}
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Một lần thanh toán, học mãi mãi
-                  </p>
+                  {isEnrolled ? (
+                    <>
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full mb-3">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="font-medium">Đã đăng ký</span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Bạn có quyền truy cập đầy đủ khóa học này
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-3xl font-bold text-accent mb-2">
+                        {formatPrice(course.price)}
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Một lần thanh toán, học mãi mãi
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {/* CTA Buttons */}
                 <div className="space-y-2 mb-6">
-                  <button 
-                    onClick={handlePayment}
-                    className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer"
-                  >
-                    Đăng ký ngay
-                  </button>
+                  {isEnrolled ? (
+                    <Link 
+                      href={`/learn/${courseId}`}
+                      className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      </svg>
+                      Học ngay
+                    </Link>
+                  ) : (
+                    <button 
+                      onClick={handlePayment}
+                      className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer"
+                    >
+                      Đăng ký ngay
+                    </button>
+                  )}
                   <button 
                     onClick={handleToggleFavorite}
                     disabled={favoriteLoading}
@@ -964,6 +1043,14 @@ export default function CourseDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Auth Required Modal */}
+      <AuthRequiredModal
+        isOpen={authModal.isOpen}
+        onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+        title={authModal.title}
+        message={authModal.message}
+      />
 
       {/* Footer */}
       <Footer />
