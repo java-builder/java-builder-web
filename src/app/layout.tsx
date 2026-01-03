@@ -42,7 +42,6 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
-        {/* Inline data URL favicon - Java Coffee Cup */}
         <link
           rel="icon"
           href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230056d2'/><g transform='translate(12,10)'><path d='M12 8 Q14 4 12 0' stroke='%23fff' stroke-width='2' fill='none' opacity='0.7'/><path d='M20 10 Q22 5 20 1' stroke='%23fff' stroke-width='2' fill='none' opacity='0.7'/><path d='M28 8 Q30 4 28 0' stroke='%23fff' stroke-width='2' fill='none' opacity='0.7'/><path d='M4 14 H36 V38 Q36 46 28 46 H12 Q4 46 4 38 Z' fill='%23fff'/><path d='M36 20 H40 Q46 20 46 28 Q46 36 40 36 H36' stroke='%23fff' stroke-width='4' fill='none'/><text x='14' y='36' font-family='Arial' font-size='22' font-weight='bold' fill='%230056d2'>J</text></g></svg>"
