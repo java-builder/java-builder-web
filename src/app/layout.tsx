@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
-import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
+import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData, generateEducationalOrganizationStructuredData, generateFAQStructuredData } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,10 +18,10 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   ...generateSEO({
-    title: "JavaBuilder - Học lập trình Java, Spring Boot Online",
-    description: "JavaBuilder (Java Builder) - Nền tảng học lập trình Java, Spring Boot, React, Next.js online. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng javabuilder.online",
+    title: "JavaBuilder.online - Học lập trình Java, Spring Boot Online",
+    description: "JavaBuilder.online (javabuilder) - Nền tảng học lập trình Java, Spring Boot, React online số 1 Việt Nam. Khóa học chất lượng cao với mentor chuyên nghiệp. Học Java từ zero đến hero.",
     url: "/",
-    tags: ["học lập trình", "khóa học online", "Java", "Spring Boot", "React", "Next.js", "lập trình web", "backend", "frontend", "marino"],
+    tags: ["javabuilder.online", "học java online", "khóa học java spring boot", "học lập trình java việt nam", "backend developer"],
   }),
   metadataBase: new URL(SITE_URL),
   verification: {
@@ -36,6 +36,8 @@ export default function RootLayout({
 }>) {
   const organizationSchema = generateOrganizationStructuredData();
   const websiteSchema = generateWebsiteStructuredData();
+  const educationalSchema = generateEducationalOrganizationStructuredData();
+  const faqSchema = generateFAQStructuredData();
 
   return (
     <html lang="vi">
@@ -59,6 +61,14 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(educationalSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       </head>
       <body

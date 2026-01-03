@@ -1,26 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
-export default function UserMenu() {
-  const router = useRouter();
+interface UserMenuProps {
+  onLogout: () => void;
+}
+
+export default function UserMenu({ onLogout }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { data: currentUser } = useCurrentUser();
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch {
-      authApi.clearAuthData();
-    }
+  const handleLogout = () => {
     setIsOpen(false);
-    router.push("/");
-    router.refresh();
+    onLogout();
   };
 
   return (

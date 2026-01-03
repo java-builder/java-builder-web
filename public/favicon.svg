@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <rect width="64" height="64" rx="12" fill="#1a56db"/>
-    <path d="M38.5 21h-13a4.5 4.5 0 00-4.5 4.5v13a4.5 4.5 0 004.5 4.5h13a4.5 4.5 0 004.5-4.5v-13a4.5 4.5 0 00-4.5-4.5zm-6.5 19c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5zm7.5-13.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="#ffffff"/>
-    <path d="M32 27c-3.038 0-5.5 2.462-5.5 5.5s2.462 5.5 5.5 5.5 5.5-2.462 5.5-5.5-2.462-5.5-5.5-5.5z" fill="#ffffff"/>
+  <defs>
+    <linearGradient id="cupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0056d2"/>
+      <stop offset="100%" style="stop-color:#0044aa"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Coffee cup (Java symbol) - centered for favicon -->
+  <g transform="translate(6, 5)">
+    <!-- Steam lines -->
+    <path d="M16 12C16 12 18 6 16 0" stroke="url(#cupGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M26 14C26 14 28 8 26 2" stroke="url(#cupGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M36 12C36 12 38 6 36 0" stroke="url(#cupGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+    
+    <!-- Cup body -->
+    <path d="M6 18H42V44C42 51.18 36.18 57 29 57H19C11.82 57 6 51.18 6 44V18Z" fill="url(#cupGrad)"/>
+    
+    <!-- Cup handle -->
+    <path d="M42 24H48C51.314 24 54 26.686 54 30V36C54 39.314 51.314 42 48 42H42" stroke="url(#cupGrad)" stroke-width="4" fill="none"/>
+    
+    <!-- Code brackets inside cup -->
+    <text x="14" y="42" font-family="monospace" font-size="18" font-weight="bold" fill="white">&lt;/&gt;</text>
+  </g>
 </svg>
-
-

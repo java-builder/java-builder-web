@@ -2,11 +2,24 @@ import { Metadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 const SITE_NAME = 'JavaBuilder';
-const SITE_DESCRIPTION = 'JavaBuilder - Nền tảng học lập trình Java, Spring Boot, React online. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng Java Builder.';
+const SITE_DESCRIPTION = 'JavaBuilder.online - Nền tảng học lập trình Java, Spring Boot, React online số 1 Việt Nam. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng JavaBuilder.';
 const SITE_KEYWORDS = [
+  // Brand keywords - ưu tiên cao
   'javabuilder',
-  'java builder', 
   'javabuilder.online',
+  'java builder online',
+  'javabuilder học java',
+  'javabuilder khóa học',
+  // Long-tail keywords - dễ rank hơn
+  'học java online việt nam',
+  'khóa học java spring boot',
+  'học lập trình java từ cơ bản đến nâng cao',
+  'học spring boot online',
+  'khóa học backend java',
+  'học java miễn phí',
+  'lộ trình học java',
+  'java developer việt nam',
+  // General keywords
   'học java',
   'học lập trình java',
   'khóa học java',
@@ -15,9 +28,6 @@ const SITE_KEYWORDS = [
   'lập trình java online',
   'học lập trình online',
   'khóa học lập trình',
-  'java tutorial vietnam',
-  'học java từ cơ bản',
-  'java developer',
   'backend developer',
   'fullstack developer',
 ];

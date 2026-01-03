@@ -15,6 +15,8 @@ export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -84,16 +86,24 @@ export default function RegisterPage() {
               </Link>
               <Link
                 href="/"
-                className="inline-flex items-center space-x-1.5 sm:space-x-2"
+                className="inline-flex items-center"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-accent rounded-lg flex items-center justify-center">
-                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5 12.083 12.083 0 015.84 10.578L12 14z" />
-                    </svg>
-                  </div>
-                </div>
+                <svg width="36" height="36" viewBox="0 0 64 58" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="registerCupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{stopColor: '#0056d2'}}/>
+                      <stop offset="100%" style={{stopColor: '#0044aa'}}/>
+                    </linearGradient>
+                  </defs>
+                  <g transform="translate(4, 0)">
+                    <path d="M16 12C16 12 18 6 16 0" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6"/>
+                    <path d="M24 14C24 14 26 8 24 2" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6"/>
+                    <path d="M32 12C32 12 34 6 32 0" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6"/>
+                    <path d="M8 18H40V42C40 48.627 34.627 54 28 54H20C13.373 54 8 48.627 8 42V18Z" fill="url(#registerCupGrad)"/>
+                    <path d="M40 24H46C49.314 24 52 26.686 52 30V34C52 37.314 49.314 40 46 40H40" stroke="url(#registerCupGrad)" strokeWidth="4" fill="none"/>
+                    <text x="14" y="40" fontFamily="monospace" fontSize="18" fontWeight="bold" fill="white">&lt;/&gt;</text>
+                  </g>
+                </svg>
               </Link>
               <div className="w-10 sm:w-16"></div> {/* Spacer for balance */}
             </div>
@@ -178,14 +188,14 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <div>
+            <div className="relative">
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 disabled={isLoading}
                 placeholder="Mật khẩu"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                className="w-full px-3 py-2.5 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("password", {
                   required: "Mật khẩu là bắt buộc",
                   minLength: {
@@ -194,33 +204,65 @@ export default function RegisterPage() {
                   },
                 })}
               />
-              {errors.password && (
-                <p className="mt-1 text-xs text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 flex items-center justify-center"
+              >
+                {showPassword ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
             </div>
+            {errors.password && (
+              <p className="mt-1 text-xs text-red-600">
+                {errors.password.message}
+              </p>
+            )}
 
-            <div>
+            <div className="relative">
               <input
                 id="confirmPassword"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 autoComplete="new-password"
                 disabled={isLoading}
                 placeholder="Xác nhận mật khẩu"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                className="w-full px-3 py-2.5 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("confirmPassword", {
                   required: "Vui lòng xác nhận mật khẩu",
                   validate: (value) =>
                     value === password || "Mật khẩu không khớp",
                 })}
               />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-xs text-red-600">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 flex items-center justify-center"
+              >
+                {showConfirmPassword ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
             </div>
+            {errors.confirmPassword && (
+              <p className="mt-1 text-xs text-red-600">
+                {errors.confirmPassword.message}
+              </p>
+            )}
 
             <button
               type="submit"

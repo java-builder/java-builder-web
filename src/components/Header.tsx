@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/services/auth.service";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import {
   Logo,
   NavLinks,
@@ -16,12 +18,11 @@ import {
 
 export default function Header() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsLoggedIn(authApi.isAuthenticated());
-  }, []);
+  const { data: currentUser } = useCurrentUser();
+  
+  const isLoggedIn = !!currentUser;
 
   const handleLogout = async () => {
     try {
@@ -29,15 +30,15 @@ export default function Header() {
     } catch {
       authApi.clearAuthData();
     }
+    // Clear React Query cache để UI cập nhật ngay
+    queryClient.setQueryData(["currentUser"], null);
     setIsMobileMenuOpen(false);
     router.push("/");
-    router.refresh();
   };
 
   return (
     <nav className="w-full bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-        {/* Left: Mobile Menu + Logo */}
         <div className="flex items-center space-x-2 sm:space-x-3 flex-1">
           <MobileMenuButton 
             isOpen={isMobileMenuOpen} 
@@ -60,7 +61,7 @@ export default function Header() {
             </>
           )}
 
-          {isLoggedIn ? <UserMenu /> : <AuthButtons />}
+          {isLoggedIn ? <UserMenu onLogout={handleLogout} /> : <AuthButtons />}
         </div>
       </div>
 
