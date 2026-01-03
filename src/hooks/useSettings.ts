@@ -67,7 +67,7 @@ export function useSettings() {
 
   const resetSettings = async () => {
     try {
-      localStorage.removeItem("marino-settings");
+      localStorage.removeItem("JavaBuilder-settings");
       await loadSettings();
       return true;
     } catch {

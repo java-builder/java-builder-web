@@ -133,7 +133,7 @@ export default function BlogsPage() {
                 <p className="mt-4 text-base md:text-lg text-gray-700 max-w-3xl">
                   Nơi tôi (
                   <span className="text-accent font-semibold">
-                    Marino
+                    JavaBuilder
                   </span>
                   ) chia sẻ kiến thức, cập nhật xu hướng và kinh nghiệm thực tế.
                 </p>

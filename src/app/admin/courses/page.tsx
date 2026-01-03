@@ -181,7 +181,7 @@ export default function CoursesPage() {
               Quản lý Khóa học
             </h1>
             <p className="text-gray-600">
-              Quản lý và theo dõi tất cả khóa học trong hệ thống Marino
+              Quản lý và theo dõi tất cả khóa học trong hệ thống JavaBuilder
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">

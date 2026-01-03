@@ -15,7 +15,7 @@ export const settingsConfig: SettingsConfig = {
               id: "app-name",
               type: "text",
               label: "Tên ứng dụng",
-              defaultValue: "Marino",
+              defaultValue: "JavaBuilder",
               required: true,
             },
             {
@@ -30,7 +30,7 @@ export const settingsConfig: SettingsConfig = {
               type: "textarea",
               label: "Mô tả hệ thống",
               defaultValue:
-                "Nền tảng học trực tuyến Marino - Giải pháp đào tạo toàn diện",
+                "Nền tảng học trực tuyến JavaBuilder - Giải pháp đào tạo toàn diện",
             },
           ],
         },
@@ -81,7 +81,7 @@ export const settingsConfig: SettingsConfig = {
               id: "support-email",
               type: "email",
               label: "Email hỗ trợ",
-              defaultValue: "support@marino.com",
+              defaultValue: "support@JavaBuilder.com",
               required: true,
             },
             {
@@ -178,20 +178,20 @@ export const settingsConfig: SettingsConfig = {
               id: "welcome-subject",
               type: "text",
               label: "Tiêu đề email chào mừng",
-              defaultValue: "Chào mừng bạn đến với Marino!",
+              defaultValue: "Chào mừng bạn đến với JavaBuilder!",
             },
             {
               id: "welcome-template",
               type: "textarea",
               label: "Nội dung email chào mừng",
               defaultValue:
-                "Xin chào {{name}},\n\nChào mừng bạn đến với Marino...",
+                "Xin chào {{name}},\n\nChào mừng bạn đến với JavaBuilder...",
             },
             {
               id: "reset-password-subject",
               type: "text",
               label: "Tiêu đề email đặt lại mật khẩu",
-              defaultValue: "Đặt lại mật khẩu Marino",
+              defaultValue: "Đặt lại mật khẩu JavaBuilder",
             },
           ],
         },

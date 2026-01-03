@@ -15,7 +15,7 @@ export default function Logo() {
           </div>
         </div>
       </div>
-      <span className="text-xl font-bold text-gray-900 dark:text-white">Marino</span>
+      <span className="text-xl font-bold text-gray-900 dark:text-white">JavaBuilder</span>
     </Link>
   );
 }

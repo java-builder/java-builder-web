@@ -32,7 +32,7 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: blog.createdAt,
       modifiedTime: blog.createdAt,
-      author: blog.author || 'Marino',
+      author: blog.author || 'JavaBuilder',
       tags: [blog.blogType, 'blog', 'lập trình'],
     });
   } catch {

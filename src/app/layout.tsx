@@ -18,14 +18,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   ...generateSEO({
-    title: "Marino - Nền tảng học tập trực tuyến",
-    description: "Nền tảng học tập trực tuyến hiện đại với khóa học chất lượng cao, blog công nghệ và lộ trình học tập cá nhân hóa. Học lập trình Java, Spring Boot, React, Next.js cùng Marino",
+    title: "JavaBuilder - Học lập trình Java, Spring Boot Online",
+    description: "JavaBuilder (Java Builder) - Nền tảng học lập trình Java, Spring Boot, React, Next.js online. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng javabuilder.online",
     url: "/",
-    tags: ["học lập trình", "khóa học online", "Java", "Spring Boot", "React", "Next.js", "lập trình web", "backend", "frontend"],
+    tags: ["học lập trình", "khóa học online", "Java", "Spring Boot", "React", "Next.js", "lập trình web", "backend", "frontend", "marino"],
   }),
   metadataBase: new URL(SITE_URL),
   verification: {
-    google: "your-google-verification-code",
+    google: "GHY1F4vuVRXuOvOHSC3nupGE7OOsvnwI3Ff2z1x7_m4",
   },
 };
 

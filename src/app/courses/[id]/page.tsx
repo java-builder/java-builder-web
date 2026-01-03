@@ -592,7 +592,7 @@ export default function CourseDetailPage() {
                           <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
                             <Image
                               src="/favicon-academic.svg"
-                              alt="Marino"
+                              alt="JavaBuilder"
                               width={64}
                               height={64}
                               className="w-full h-full object-cover"
@@ -600,7 +600,7 @@ export default function CourseDetailPage() {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-bold text-gray-900 mb-1">
-                              Marino
+                              JavaBuilder
                             </h3>
                             <p className="text-accent-600 font-medium mb-2">
                               Backend Developer

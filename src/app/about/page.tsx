@@ -62,7 +62,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 opacity-5">
             <div className="absolute top-20 left-10 text-blue-400 font-mono text-xs">
               <div>const about = {`{`}</div>
-              <div>&nbsp;&nbsp;name: &quot;Marino&quot;,</div>
+              <div>&nbsp;&nbsp;name: &quot;JavaBuilder&quot;,</div>
               <div>&nbsp;&nbsp;role: &quot;Java Developer&quot;</div>
               <div>{`}`};</div>
             </div>
@@ -84,10 +84,10 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
               <div className="lg:col-span-7 text-gray-900">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4">
-                  Marino
+                  JavaBuilder
                 </h1>
                 <p className="text-base sm:text-lg text-gray-700 mb-3 sm:mb-4">
-                  Java Developer & Founder of Marino
+                  Java Developer & Founder of JavaBuilder
                 </p>
                 <p className="text-sm sm:text-base text-gray-700 max-w-2xl">
                   Tôi là một Java Developer đam mê chia sẻ kiến thức, xây dựng
@@ -182,14 +182,14 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 leading-relaxed">
                   <p>
-                    Xin chào! Tôi là <strong>Marino</strong>, một Java
+                    Xin chào! Tôi là <strong>JavaBuilder</strong>, một Java
                     Developer đam mê với việc học hỏi và chia sẻ kiến thức công
                     nghệ.
                   </p>
                   <p>
                     Xuất phát từ niềm yêu thích lập trình và mong muốn giúp đỡ
                     cộng đồng, tôi đã tạo ra
-                    <strong> Marino</strong> - một nền tảng học tập trực
+                    <strong> JavaBuilder</strong> - một nền tảng học tập trực
                     tuyến để chia sẻ những kiến thức và kinh nghiệm mà tôi đã
                     tích lũy được trong quá trình học tập và làm việc.
                   </p>
@@ -203,7 +203,7 @@ export default function AboutPage() {
 
                 <div className="mt-8">
                   <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                    Tại sao chọn Marino?
+                    Tại sao chọn JavaBuilder?
                   </h3>
                   <ul className="space-y-3">
                     {[
@@ -245,7 +245,7 @@ export default function AboutPage() {
                     <div className="flex items-center gap-4">
                       <FaGraduationCap className="text-accent text-lg" />
                       <span className="text-gray-600">
-                        Founder of Marino Platform
+                        Founder of JavaBuilder Platform
                       </span>
                     </div>
                   </div>

@@ -96,10 +96,6 @@ export default function Home() {
                     Khám phá bài viết
                     </Link>
                   </div>
-
-                  <div className="mt-6">
-                    {/* Search removed from hero per design */}
-                  </div>
                 </div>
               </div>
 
@@ -108,7 +104,7 @@ export default function Home() {
                 <div className="w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10">
                   <Image
                     src="/hero-background.jpg"
-                    alt="Hero illustration"
+                    alt="JavaBuilder - Học lập trình Java online"
                     width={1200}
                     height={800}
                     className="w-full h-64 sm:h-80 md:h-96 lg:h-[420px] object-cover"
@@ -139,65 +135,34 @@ export default function Home() {
           </MotionWrapper>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Loading State */}
             {isLoadingBlogs && (
               <div className="col-span-full flex justify-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
               </div>
             )}
 
-            {/* Error State */}
             {blogsError && !isLoadingBlogs && (
               <div className="col-span-full text-center py-12">
                 <div className="text-red-600 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <p className="text-gray-600">Có lỗi xảy ra khi tải blogs</p>
               </div>
             )}
 
-            {/* Blog Cards from API */}
-            {!isLoadingBlogs &&
-              !blogsError &&
-              blogs.map((blog, index) => (
-                <MotionWrapper
-                  key={blog.id}
-                  animation="fadeInUp"
-                  delay={0.2 * (index + 1)}
-                  duration={0.6}
-                >
-                  <PublicBlogCard blog={blog} />
-                </MotionWrapper>
-              ))}
+            {!isLoadingBlogs && !blogsError && blogs.map((blog, index) => (
+              <MotionWrapper key={blog.id} animation="fadeInUp" delay={0.2 * (index + 1)} duration={0.6}>
+                <PublicBlogCard blog={blog} />
+              </MotionWrapper>
+            ))}
 
-            {/* Empty State */}
             {!isLoadingBlogs && !blogsError && blogs.length === 0 && (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-400 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
+                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
                 <p className="text-gray-600">Chưa có bài viết nào</p>
@@ -207,23 +172,10 @@ export default function Home() {
 
           {!isLoadingBlogs && !blogsError && blogs.length > 0 && (
             <div className="text-center mt-12">
-              <Link
-                href="/blogs"
-                className="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
-              >
+              <Link href="/blogs" className="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
                 Xem tất cả bài viết
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
             </div>
@@ -246,65 +198,34 @@ export default function Home() {
           </MotionWrapper>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Loading State */}
             {isLoadingCourses && (
               <div className="col-span-full flex justify-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
               </div>
             )}
 
-            {/* Error State */}
             {coursesError && !isLoadingCourses && (
               <div className="col-span-full text-center py-12">
                 <div className="text-red-600 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <p className="text-gray-600">Có lỗi xảy ra khi tải khóa học</p>
               </div>
             )}
 
-            {/* Course Cards from API */}
-            {!isLoadingCourses &&
-              !coursesError &&
-              courses.map((course, index) => (
-                <MotionWrapper
-                  key={course.id}
-                  animation="fadeInUp"
-                  delay={0.2 * (index + 1)}
-                  duration={0.6}
-                >
-                  <CourseCard course={course} index={index} />
-                </MotionWrapper>
-              ))}
+            {!isLoadingCourses && !coursesError && courses.map((course, index) => (
+              <MotionWrapper key={course.id} animation="fadeInUp" delay={0.2 * (index + 1)} duration={0.6}>
+                <CourseCard course={course} index={index} />
+              </MotionWrapper>
+            ))}
 
-            {/* Empty State */}
             {!isLoadingCourses && !coursesError && courses.length === 0 && (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-400 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
+                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
                 <p className="text-gray-600">Chưa có khóa học nào</p>

@@ -67,7 +67,7 @@ export default function AuthLayout({
                 </svg>
               </div>
               <h2 className="text-3xl font-bold mb-4">
-                Chào mừng đến với Marino
+                Chào mừng đến với JavaBuilder
               </h2>
               <p className="text-lg text-white/90 leading-relaxed">
                 Nền tảng học tập hiện đại với hàng ngàn khóa học chất lượng cao

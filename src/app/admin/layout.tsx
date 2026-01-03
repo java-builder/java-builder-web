@@ -390,7 +390,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
                     <div className="flex flex-col">
                       <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-blue-100">
-                        Marino
+                        JavaBuilder
                       </span>
                     </div>
                   </Link>
@@ -467,7 +467,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         {currentUser?.username || "Admin User"}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
-                        {currentUser?.email || "admin@marino.com"}
+                        {currentUser?.email || "admin@JavaBuilder.com"}
                       </p>
                     </div>
                     <button 

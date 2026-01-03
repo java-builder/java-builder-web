@@ -1,8 +1,26 @@
 import { Metadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const SITE_NAME = 'Marino';
-const SITE_DESCRIPTION = 'Nền tảng học tập trực tuyến hiện đại với khóa học chất lượng cao, blog công nghệ và lộ trình học tập cá nhân hóa';
+const SITE_NAME = 'JavaBuilder';
+const SITE_DESCRIPTION = 'JavaBuilder - Nền tảng học lập trình Java, Spring Boot, React online. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng Java Builder.';
+const SITE_KEYWORDS = [
+  'javabuilder',
+  'java builder', 
+  'javabuilder.online',
+  'học java',
+  'học lập trình java',
+  'khóa học java',
+  'java spring boot',
+  'học spring boot',
+  'lập trình java online',
+  'học lập trình online',
+  'khóa học lập trình',
+  'java tutorial vietnam',
+  'học java từ cơ bản',
+  'java developer',
+  'backend developer',
+  'fullstack developer',
+];
 
 export interface SEOProps {
   title: string;
@@ -31,13 +49,14 @@ export function generateSEO({
 }: SEOProps): Metadata {
   const fullTitle = `${title} | ${SITE_NAME}`;
   const canonicalUrl = url ? `${SITE_URL}${url}` : SITE_URL;
+  const allKeywords = [...SITE_KEYWORDS, ...(tags || [])];
 
   return {
     title: fullTitle,
     description,
-    keywords: tags?.join(', '),
-    authors: author ? [{ name: author }] : [{ name: 'Marino' }],
-    creator: 'Marino',
+    keywords: allKeywords.join(', '),
+    authors: author ? [{ name: author }] : [{ name: 'JavaBuilder' }],
+    creator: 'JavaBuilder',
     publisher: SITE_NAME,
     robots: noIndex
       ? {
@@ -76,8 +95,8 @@ export function generateSEO({
       ...(type === 'article' && {
         publishedTime,
         modifiedTime,
-        authors: author ? [author] : ['Marino'],
-        tags,
+        authors: author ? [author] : ['JavaBuilder'],
+        tags: allKeywords,
       }),
     },
     twitter: {
@@ -85,8 +104,8 @@ export function generateSEO({
       title: fullTitle,
       description,
       images: [image],
-      creator: '@marino',
-      site: '@marino',
+      creator: '@JavaBuilder',
+      site: '@JavaBuilder',
     },
   };
 }
@@ -108,7 +127,7 @@ export function generateBlogStructuredData(blog: {
     image: blog.featuredImage || `${SITE_URL}/hero-background.jpg`,
     author: {
       '@type': 'Person',
-      name: blog.author || 'Marino',
+      name: blog.author || 'JavaBuilder',
       url: `${SITE_URL}/about`,
     },
     publisher: {
@@ -116,7 +135,7 @@ export function generateBlogStructuredData(blog: {
       name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/marino-logo.svg`,
+        url: `${SITE_URL}/favicon.svg`,
       },
     },
     datePublished: blog.createdAt,
@@ -170,21 +189,22 @@ export function generateOrganizationStructuredData() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
+    alternateName: ['Java Builder', 'javabuilder', 'JavaBuilder.online'],
     url: SITE_URL,
-    logo: `${SITE_URL}/marino-logo.svg`,
+    logo: `${SITE_URL}/favicon.svg`,
     description: SITE_DESCRIPTION,
     founder: {
       '@type': 'Person',
-      name: 'Marino',
+      name: 'JavaBuilder',
     },
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'Customer Service',
-      email: 'contact@marino.vn',
+      email: 'contact@javabuilder.online',
     },
     sameAs: [
-      'https://facebook.com/marino',
-      'https://github.com/marino',
+      'https://facebook.com/JavaBuilder',
+      'https://github.com/JavaBuilder',
     ],
   };
 }
@@ -203,6 +223,121 @@ export function generateWebsiteStructuredData() {
         urlTemplate: `${SITE_URL}/courses?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
+    },
+  };
+}
+
+
+// Educational Organization Schema - giúp Google hiểu đây là nền tảng giáo dục
+export function generateEducationalOrganizationStructuredData() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
+    name: SITE_NAME,
+    alternateName: ['Java Builder', 'javabuilder', 'JavaBuilder.online', 'javabuilder online'],
+    url: SITE_URL,
+    logo: `${SITE_URL}/favicon.svg`,
+    description: SITE_DESCRIPTION,
+    areaServed: {
+      '@type': 'Country',
+      name: 'Vietnam',
+    },
+    availableLanguage: ['vi', 'en'],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Khóa học lập trình',
+      itemListElement: [
+        {
+          '@type': 'Course',
+          name: 'Khóa học Java cơ bản đến nâng cao',
+          description: 'Học Java từ zero đến hero với JavaBuilder',
+          provider: {
+            '@type': 'Organization',
+            name: SITE_NAME,
+          },
+        },
+        {
+          '@type': 'Course',
+          name: 'Khóa học Spring Boot',
+          description: 'Xây dựng ứng dụng web với Spring Boot',
+          provider: {
+            '@type': 'Organization',
+            name: SITE_NAME,
+          },
+        },
+      ],
+    },
+  };
+}
+
+// FAQ Schema - giúp hiển thị FAQ trên Google Search
+export function generateFAQStructuredData() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'JavaBuilder là gì?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'JavaBuilder (javabuilder.online) là nền tảng học lập trình Java, Spring Boot, React online hàng đầu Việt Nam. Cung cấp khóa học chất lượng cao với mentor chuyên nghiệp, giúp bạn từ zero đến hero trong lập trình.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Học Java ở đâu tốt nhất?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'JavaBuilder.online là lựa chọn tốt nhất để học Java tại Việt Nam. Với lộ trình học tập cá nhân hóa, mentor hỗ trợ 1-1, và cộng đồng học viên năng động.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'JavaBuilder có những khóa học gì?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'JavaBuilder cung cấp các khóa học: Java cơ bản đến nâng cao, Spring Boot, React, Next.js, và nhiều công nghệ backend/frontend khác. Phù hợp cho cả người mới bắt đầu và developer muốn nâng cao kỹ năng.',
+        },
+      },
+    ],
+  };
+}
+
+// BreadcrumbList Schema - giúp hiển thị breadcrumb trên Google
+export function generateBreadcrumbStructuredData(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.url}`,
+    })),
+  };
+}
+
+// LocalBusiness Schema - giúp hiển thị thông tin doanh nghiệp
+export function generateLocalBusinessStructuredData() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: SITE_NAME,
+    alternateName: ['Java Builder', 'javabuilder', 'JavaBuilder.online'],
+    image: `${SITE_URL}/hero-background.jpg`,
+    url: SITE_URL,
+    description: SITE_DESCRIPTION,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'VN',
+    },
+    priceRange: '$$',
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '23:59',
     },
   };
 }

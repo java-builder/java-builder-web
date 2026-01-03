@@ -13,7 +13,7 @@ interface SEOHeadProps {
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const SITE_NAME = 'Marino';
+const SITE_NAME = 'JavaBuilder';
 
 export default function SEOHead({
   title,
@@ -63,8 +63,8 @@ export default function SEOHead({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
-      <meta name="twitter:site" content="@marino" />
-      <meta name="twitter:creator" content="@marino" />
+      <meta name="twitter:site" content="@JavaBuilder" />
+      <meta name="twitter:creator" content="@JavaBuilder" />
       
       {/* Additional SEO tags */}
       <meta name="robots" content="index, follow" />

@@ -251,7 +251,7 @@ export default function UsersPage() {
               Quản lý người dùng
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-              Danh sách tất cả người dùng trong hệ thống Marino
+              Danh sách tất cả người dùng trong hệ thống JavaBuilder
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
