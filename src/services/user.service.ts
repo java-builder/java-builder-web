@@ -123,4 +123,13 @@ export const userApi = {
       throw error;
     }
   },
+
+  getAllUsers: async (page: number = 1, size: number = 50) => {
+    const response = await apiClient.post<
+      ApiResponse<PageResponse<UserDetailResponse>>
+    >("/api/v1/users/search", null, {
+      params: { page, size },
+    });
+    return response.data;
+  },
 };

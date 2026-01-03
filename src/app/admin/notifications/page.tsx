@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { notificationApi, NotificationDetailResponse } from "@/services/notification.service";
 import { authApi } from "@/services/auth.service";
 
@@ -85,40 +86,52 @@ export default function AdminNotificationsPage() {
           </div>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="relative flex-1 md:flex-none">
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Tìm kiếm tiêu đề hoặc nội dung..."
-                className="w-full md:w-80 px-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent"
-              />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                {filtered.length} kết quả
-              </div>
-            </div>
-
-            <div className="inline-flex items-center rounded-md overflow-hidden bg-white border border-gray-200">
-              <button
-                onClick={() => setFilter("all")}
-                className={`px-3 py-2 text-sm ${filter === "all" ? "bg-accent-50 text-accent-700" : "text-gray-600 hover:bg-gray-50"}`}
-              >
-                Tất cả
-              </button>
-              <button
-                onClick={() => setFilter("unread")}
-                className={`px-3 py-2 text-sm ${filter === "unread" ? "bg-accent-50 text-accent-700" : "text-gray-600 hover:bg-gray-50"}`}
-              >
-                Chưa đọc
-              </button>
-            </div>
-
-            <button
-              onClick={markAllRead}
-              className="px-3 py-2 text-sm bg-accent-600 text-white rounded-md hover:bg-accent-700"
+            <Link
+              href="/admin/notifications/send"
+              className="px-4 py-2 bg-accent-600 text-white rounded-md hover:bg-accent-700 flex items-center gap-2 text-sm font-medium"
             >
-              Đánh dấu tất cả
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              Gửi thông báo
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4">
+          <div className="relative flex-1 md:flex-none">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Tìm kiếm tiêu đề hoặc nội dung..."
+              className="w-full md:w-80 px-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+              {filtered.length} kết quả
+            </div>
+          </div>
+
+          <div className="inline-flex items-center rounded-md overflow-hidden bg-white border border-gray-200">
+            <button
+              onClick={() => setFilter("all")}
+              className={`px-3 py-2 text-sm ${filter === "all" ? "bg-accent-50 text-accent-700" : "text-gray-600 hover:bg-gray-50"}`}
+            >
+              Tất cả
+            </button>
+            <button
+              onClick={() => setFilter("unread")}
+              className={`px-3 py-2 text-sm ${filter === "unread" ? "bg-accent-50 text-accent-700" : "text-gray-600 hover:bg-gray-50"}`}
+            >
+              Chưa đọc
             </button>
           </div>
+
+          <button
+            onClick={markAllRead}
+            className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+          >
+            Đánh dấu tất cả đã đọc
+          </button>
         </div>
       </div>
 

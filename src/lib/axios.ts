@@ -17,9 +17,23 @@ const isPublicEndpoint = (url: string | undefined): boolean => {
     "/api/v1/auth/reset-password",
     "/api/v1/auth/verify-email",
     "/api/v1/auth/refresh",
+    "/api/v1/users/send-link-reset-password",
   ];
 
-  return publicEndpoints.some((endpoint) => url.includes(endpoint));
+  const publicGetPatterns = [
+    "/api/v1/courses",
+    "/api/v1/blogs",
+    "/api/v1/comments",
+    "/api/v1/lessons/chapter",
+    "/api/v1/subscriptions/plans",
+    "/api/v1/subscriptions/check-premium",
+  ];
+
+  if (publicEndpoints.some((endpoint) => url.includes(endpoint))) {
+    return true;
+  }
+
+  return publicGetPatterns.some((pattern) => url.includes(pattern));
 };
 
 export const apiClient = axios.create({
@@ -32,6 +46,10 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    if (isPublicEndpoint(config.url)) {
+      return config;
+    }
+
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("access_token");
       if (token) {
