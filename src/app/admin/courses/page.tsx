@@ -7,15 +7,7 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
 import { courseApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
-
-interface CourseStats {
-  total: number;
-  published: number;
-  draft: number;
-  archived: number;
-  totalStudents: number;
-  totalRevenue: number;
-}
+import { CourseStats, DeleteModalState } from "@/types/admin";
 
 const LevelBadge = ({ level }: { level: CourseLevel }) => {
   const getLevelConfig = (level: CourseLevel) => {
@@ -63,7 +55,7 @@ export default function CoursesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
   const [error, setError] = useState<string>("");
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; title: string }>({
+  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
     isOpen: false,
     id: "",
     title: "",
@@ -141,7 +133,6 @@ export default function CoursesPage() {
     return formatPrice(revenue);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatDate = (dateString: string) => {
     try {
       const [datePart, timePart] = dateString.split(" ");
@@ -517,168 +508,154 @@ export default function CoursesPage() {
         </div>
       )}
 
-      {/* Courses Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-        {courses.map((course) => (
-          <div
-            key={course.id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group"
-          >
-            {/* Thumbnail */}
-            <div className="relative aspect-video bg-gray-100 overflow-hidden">
-              {course.courseCover ? (
-                <Image
-                  src={course.courseCover}
-                  alt={course.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
-                  <svg
-                    className="w-12 h-12 text-accent-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
+      {/* Courses Table */}
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Khóa học
+                </th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Cấp độ
+                </th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Thời lượng
+                </th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Giá
+                </th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Ngày tạo
+                </th>
+                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Thao tác
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {courses.map((course) => (
+                <tr key={course.id} className="hover:bg-gray-50 transition-colors">
+                  {/* Course Info */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-20 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                        {course.courseCover ? (
+                          <Image
+                            src={course.courseCover}
+                            alt={course.title}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
+                            <svg className="w-6 h-6 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-gray-900 truncate max-w-xs">
+                          {course.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 truncate max-w-xs">
+                          {course.description}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
 
-            {/* Content */}
-            <div className="p-5">
-              {/* Title */}
-              <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-accent transition-colors">
-                {course.title}
-              </h3>
-              
-              {/* Description */}
-              <p className="text-gray-500 text-sm mb-4 line-clamp-3 leading-relaxed">
-                {course.description}
-              </p>
+                  {/* Level */}
+                  <td className="px-6 py-4">
+                    <LevelBadge level={course.level || CourseLevel.BEGINNER} />
+                  </td>
 
-              {/* Level & Duration */}
-              <div className="flex items-center gap-3 mb-4">
-                <LevelBadge level={course.level || CourseLevel.BEGINNER} />
-                <span className="text-gray-400">|</span>
-                <span className="text-gray-500 text-sm">{course.duration || 0} giờ</span>
-              </div>
+                  {/* Duration */}
+                  <td className="px-6 py-4">
+                    <span className="text-sm text-gray-600">{course.duration || 0} giờ</span>
+                  </td>
 
-              {/* Price */}
-              <div className="mb-4">
-                <span className="text-2xl font-bold text-accent">
-                  {formatPrice(course.price)}
-                </span>
-              </div>
+                  {/* Price */}
+                  <td className="px-6 py-4">
+                    <span className="font-semibold text-gray-900">{formatPrice(course.price)}</span>
+                  </td>
 
-              {/* Admin Actions */}
-              <div className="flex gap-2 pt-4 border-t border-gray-100">
-                <Link
-                  href={`/admin/courses/${course.id}/edit`}
-                  className="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-accent text-white text-sm font-medium rounded-xl hover:bg-accent-600 transition-all duration-200"
-                >
-                  <svg
-                    className="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Chỉnh sửa
-                </Link>
-                <button
-                  onClick={() => handleDelete(course.id, course.title)}
-                  disabled={isDeleting === course.id}
-                  className="px-4 py-2.5 border border-gray-200 text-gray-500 rounded-xl hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isDeleting === course.id ? (
-                    <svg
-                      className="animate-spin w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+                  {/* Created Date */}
+                  <td className="px-6 py-4">
+                    <span className="text-sm text-gray-500">
+                      {course.createdAt ? formatDate(course.createdAt) : "-"}
+                    </span>
+                  </td>
 
-      {/* Empty State */}
-      {courses.length === 0 && !isLoading && (
-        <div className="text-center py-12">
-          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-12 h-12 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Chưa có khóa học nào
-          </h3>
-          <p className="text-gray-500 mb-6">
-            Bắt đầu tạo khóa học đầu tiên của bạn
-          </p>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-accent hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-all duration-200"
-          >
-            Tạo khóa học mới
-          </button>
+                  {/* Actions */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/courses/${course.id}`}
+                        target="_blank"
+                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="Xem trước"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </Link>
+                      <Link
+                        href={`/admin/courses/${course.id}/edit`}
+                        className="p-2 text-gray-400 hover:text-accent hover:bg-accent-50 rounded-lg transition-colors"
+                        title="Chỉnh sửa"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(course.id, course.title)}
+                        disabled={isDeleting === course.id}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                        title="Xóa"
+                      >
+                        {isDeleting === course.id ? (
+                          <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+
+        {/* Empty State */}
+        {courses.length === 0 && !isLoading && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 className="text-base font-medium text-gray-900 mb-1">Chưa có khóa học nào</h3>
+            <p className="text-sm text-gray-500 mb-4">Bắt đầu tạo khóa học đầu tiên</p>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="inline-flex items-center px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-600 transition-colors"
+            >
+              Tạo khóa học mới
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Create Course Modal */}
       <CreateCourseModal

@@ -447,8 +447,8 @@ export default function EditCoursePage() {
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    rows={4}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors resize-none"
+                    rows={8}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors resize-y min-h-[200px]"
                     placeholder="Nhập mô tả khóa học"
                   />
                 </div>

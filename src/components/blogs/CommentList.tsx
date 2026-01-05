@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
-import { CommentDetailResponse } from "@/types/comment";
+import { CommentResponse } from "@/types/comment";
 
 interface CommentListProps {
-  comments: CommentDetailResponse[];
+  comments: CommentResponse[];
   onAddComment: (content: string) => void;
   onReplyComment: (commentId: string, content: string) => void;
   onDeleteComment: (commentId: string) => void;

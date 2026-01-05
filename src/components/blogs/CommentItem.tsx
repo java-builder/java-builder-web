@@ -3,10 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { formatApiDateOnly } from "@/utils/dateUtils";
-import { CommentDetailResponse } from "@/types/comment";
+import { CommentResponse } from "@/types/comment";
 
 interface CommentItemProps {
-  comment: CommentDetailResponse;
+  comment: CommentResponse;
   onReply?: (commentId: string, content: string) => void;
   onDelete?: (commentId: string) => void;
   onLoadReplies?: (commentId: string) => void;

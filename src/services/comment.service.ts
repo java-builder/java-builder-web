@@ -3,7 +3,7 @@ import { ApiResponse, PageResponse } from "@/types/api";
 import {
   CreateCommentRequest,
   CreateCommentResponse,
-  CommentDetailResponse,
+  CommentResponse,
 } from "@/types/comment";
 import toast from "react-hot-toast";
 
@@ -30,7 +30,7 @@ export const commentApi = {
   getRootByBlogId: async (blogId: string, params: CommentSearchParams = {}) => {
     try {
       const response = await apiClient.get<
-        ApiResponse<PageResponse<CommentDetailResponse>>
+        ApiResponse<PageResponse<CommentResponse>>
       >("/api/v1/comments/root", {
         params: {
           blogId,
@@ -53,7 +53,7 @@ export const commentApi = {
   ) => {
     try {
       const response = await apiClient.get<
-        ApiResponse<PageResponse<CommentDetailResponse>>
+        ApiResponse<PageResponse<CommentResponse>>
       >("/api/v1/comments/replies", {
         params: {
           parentId,

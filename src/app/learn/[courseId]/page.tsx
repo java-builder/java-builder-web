@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import VideoPlayer from "@/components/VideoPlayer";
 import { courseApi, lessonApi, enrollmentApi } from "@/services/course.service";
 import { CourseDetailResponse, LessonDetailResponse, ChapterDetailResponse } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { LearnSidebar, LearnHeader, LessonContent } from "@/components/learn";
 
 export default function LearnCoursePage() {
   const params = useParams();
@@ -16,50 +16,30 @@ export default function LearnCoursePage() {
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Current lesson state
   const [currentLesson, setCurrentLesson] = useState<LessonDetailResponse | null>(null);
   const [currentChapter, setCurrentChapter] = useState<ChapterDetailResponse | null>(null);
-
-  // Lessons by chapter
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [loadingChapters, setLoadingChapters] = useState<Set<string>>(new Set());
 
-  // Progress tracking
   const [initialTime, setInitialTime] = useState<number>(0);
   const currentTimeRef = useRef<number>(0);
-  const durationRef = useRef<number>(0);
   const lastSavedTimeRef = useRef<number>(0);
   const isCompletedRef = useRef<boolean>(false);
   const saveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load lessons for a chapter
   const loadChapterLessons = useCallback(async (chapterId: string, selectFirst = false) => {
     setLoadingChapters(prev => new Set(prev).add(chapterId));
     try {
       const response = await lessonApi.getByChapterId(chapterId);
       if (response.result) {
-        setChapterLessons(prev => {
-          // Check if already loaded
-          if (prev[chapterId]) {
-            return prev;
-          }
-          return { ...prev, [chapterId]: response.result || [] };
-        });
+        setChapterLessons(prev => prev[chapterId] ? prev : { ...prev, [chapterId]: response.result || [] });
         
-        // Nếu selectFirst và có lessons, gọi API getById để lấy videoUrl
-        if (selectFirst && response.result && response.result.length > 0) {
-          const firstLesson = response.result[0];
-          try {
-            const lessonDetail = await lessonApi.getById(firstLesson.id);
-            if (lessonDetail.result) {
-              setCurrentLesson(lessonDetail.result);
-            }
-          } catch {
-            setCurrentLesson(firstLesson);
-          }
+        if (selectFirst && response.result?.length) {
+          const lessonDetail = await lessonApi.getById(response.result[0].id);
+          setCurrentLesson(lessonDetail.result || response.result[0]);
         }
       }
     } finally {
@@ -71,33 +51,19 @@ export default function LearnCoursePage() {
     }
   }, []);
 
-  // Check enrollment and load course
   const initializeCourse = useCallback(async () => {
     if (!courseId || userLoading) return;
-
-    // Redirect if not logged in
-    if (!currentUser) {
-      router.push(`/courses/${courseId}`);
-      return;
-    }
+    if (!currentUser) { router.push(`/courses/${courseId}`); return; }
 
     try {
       setIsLoading(true);
-
-      // Check enrollment
       const enrollmentResult = await enrollmentApi.checkEnrollment(courseId);
-      if (!enrollmentResult.result) {
-        router.push(`/courses/${courseId}`);
-        return;
-      }
+      if (!enrollmentResult.result) { router.push(`/courses/${courseId}`); return; }
 
-      // Load course
       const courseResult = await courseApi.getById(courseId);
       if (courseResult.code === 200 && courseResult.result) {
         setCourse(courseResult.result);
-
-        // Auto expand first chapter and load its lessons
-        if (courseResult.result.chapters && courseResult.result.chapters.length > 0) {
+        if (courseResult.result.chapters?.length) {
           const firstChapter = courseResult.result.chapters[0];
           setExpandedChapters(new Set([firstChapter.id]));
           setCurrentChapter(firstChapter);
@@ -111,77 +77,49 @@ export default function LearnCoursePage() {
     }
   }, [courseId, currentUser, userLoading, router, loadChapterLessons]);
 
-  useEffect(() => {
-    initializeCourse();
-  }, [initializeCourse]);
+  useEffect(() => { initializeCourse(); }, [initializeCourse]);
 
-  // Save progress function
   const saveProgress = useCallback(async () => {
     if (!currentLesson || currentTimeRef.current === lastSavedTimeRef.current) return;
-    
     try {
-      await lessonApi.updateProgress({
-        lessonId: currentLesson.id,
-        watchedSeconds: currentTimeRef.current,
-      });
+      await lessonApi.updateProgress({ lessonId: currentLesson.id, watchedSeconds: currentTimeRef.current });
       lastSavedTimeRef.current = currentTimeRef.current;
-    } catch {
-      // Silent fail - không cần báo lỗi
-    }
+    } catch { /* Silent */ }
   }, [currentLesson]);
 
-  // Setup interval to save progress every 60s
   useEffect(() => {
     if (currentLesson?.videoUrl) {
       saveIntervalRef.current = setInterval(saveProgress, 60000);
     }
-
     return () => {
-      if (saveIntervalRef.current) {
-        clearInterval(saveIntervalRef.current);
-      }
-      // Save progress when leaving
+      if (saveIntervalRef.current) clearInterval(saveIntervalRef.current);
       saveProgress();
     };
   }, [currentLesson, saveProgress]);
 
-  // Save progress when page unloads
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (currentLesson && currentTimeRef.current > 0) {
-        // Use sendBeacon for reliable save on page close
-        const data = JSON.stringify({
+        navigator.sendBeacon("/api/v1/lessons/progress", JSON.stringify({
           lessonId: currentLesson.id,
           watchedSeconds: currentTimeRef.current,
-        });
-        navigator.sendBeacon("/api/v1/lessons/progress", data);
+        }));
       }
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [currentLesson]);
 
-  // Handle video time update
   const handleTimeUpdate = useCallback((time: number, duration: number) => {
     currentTimeRef.current = time;
-    durationRef.current = duration;
-
-    // Mark as completed when >= 90% watched
     if (!isCompletedRef.current && duration > 0 && time >= duration * 0.9) {
       isCompletedRef.current = true;
-      // Save completed status immediately
       if (currentLesson) {
-        lessonApi.updateProgress({
-          lessonId: currentLesson.id,
-          watchedSeconds: time,
-          completed: true,
-        }).catch(() => {});
+        lessonApi.updateProgress({ lessonId: currentLesson.id, watchedSeconds: time, completed: true }).catch(() => {});
       }
     }
   }, [currentLesson]);
 
-  // Toggle chapter
   const toggleChapter = async (chapter: ChapterDetailResponse) => {
     const newExpanded = new Set(expandedChapters);
     if (newExpanded.has(chapter.id)) {
@@ -193,99 +131,72 @@ export default function LearnCoursePage() {
     setExpandedChapters(newExpanded);
   };
 
-  // Select lesson - gọi API để lấy videoUrl
   const selectLesson = async (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => {
-    // Save progress of current lesson before switching
     await saveProgress();
-    
     try {
       const response = await lessonApi.getById(lesson.id);
-      if (response.result) {
-        setCurrentLesson(response.result);
-        setCurrentChapter(chapter);
-        // Reset progress tracking for new lesson
-        setInitialTime(0);
-        currentTimeRef.current = 0;
-        durationRef.current = 0;
-        lastSavedTimeRef.current = 0;
-        isCompletedRef.current = false;
-      }
+      setCurrentLesson(response.result || lesson);
     } catch {
-      // Nếu lỗi, vẫn set lesson nhưng không có video
       setCurrentLesson(lesson);
-      setCurrentChapter(chapter);
     }
+    setCurrentChapter(chapter);
+    resetProgressTracking();
+    setSidebarOpen(false);
   };
 
-  // Navigate to next/prev lesson
-  const navigateLesson = async (direction: "next" | "prev") => {
-    if (!course?.chapters || !currentLesson || !currentChapter) return;
+  const resetProgressTracking = () => {
+    setInitialTime(0);
+    currentTimeRef.current = 0;
+    lastSavedTimeRef.current = 0;
+    isCompletedRef.current = false;
+  };
 
-    // Save progress before navigating
+  const getAllLessons = useCallback(() => {
+    if (!course?.chapters) return [];
+    const all: { lesson: LessonDetailResponse; chapter: ChapterDetailResponse }[] = [];
+    course.chapters.forEach(chapter => {
+      (chapterLessons[chapter.id] || []).forEach(lesson => all.push({ lesson, chapter }));
+    });
+    return all;
+  }, [course, chapterLessons]);
+
+  const navigateLesson = async (direction: "next" | "prev") => {
+    if (!currentLesson) return;
     await saveProgress();
 
-    const allLessons: { lesson: LessonDetailResponse; chapter: ChapterDetailResponse }[] = [];
-    course.chapters.forEach(chapter => {
-      const lessons = chapterLessons[chapter.id] || [];
-      lessons.forEach(lesson => allLessons.push({ lesson, chapter }));
-    });
-
+    const allLessons = getAllLessons();
     const currentIndex = allLessons.findIndex(item => item.lesson.id === currentLesson.id);
-    if (currentIndex === -1) return;
-
     const newIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
+
     if (newIndex >= 0 && newIndex < allLessons.length) {
       const { lesson, chapter } = allLessons[newIndex];
-      
-      // Gọi API để lấy videoUrl
       try {
         const response = await lessonApi.getById(lesson.id);
-        if (response.result) {
-          setCurrentLesson(response.result);
-        } else {
-          setCurrentLesson(lesson);
-        }
+        setCurrentLesson(response.result || lesson);
       } catch {
         setCurrentLesson(lesson);
       }
-      
       setCurrentChapter(chapter);
-      
-      // Reset progress tracking
-      setInitialTime(0);
-      currentTimeRef.current = 0;
-      durationRef.current = 0;
-      lastSavedTimeRef.current = 0;
-      isCompletedRef.current = false;
-      
-      // Expand chapter if not expanded
+      resetProgressTracking();
       if (!expandedChapters.has(chapter.id)) {
         setExpandedChapters(prev => new Set(prev).add(chapter.id));
       }
     }
   };
 
-  // Check if can navigate
   const canNavigate = (direction: "next" | "prev") => {
-    if (!course?.chapters || !currentLesson) return false;
-
-    const allLessons: LessonDetailResponse[] = [];
-    course.chapters.forEach(chapter => {
-      const lessons = chapterLessons[chapter.id] || [];
-      allLessons.push(...lessons);
-    });
-
-    const currentIndex = allLessons.findIndex(l => l.id === currentLesson.id);
-    if (direction === "next") return currentIndex < allLessons.length - 1;
-    return currentIndex > 0;
+    if (!currentLesson) return false;
+    const allLessons = getAllLessons();
+    const currentIndex = allLessons.findIndex(item => item.lesson.id === currentLesson.id);
+    return direction === "next" ? currentIndex < allLessons.length - 1 : currentIndex > 0;
   };
 
   if (isLoading || userLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
-          <p className="text-gray-400">Đang tải khóa học...</p>
+          <p className="text-gray-500 dark:text-gray-400">Đang tải khóa học...</p>
         </div>
       </div>
     );
@@ -293,226 +204,49 @@ export default function LearnCoursePage() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-400 mb-4">Không tìm thấy khóa học</p>
-          <Link href="/my-courses" className="text-accent hover:underline">
-            Quay lại khóa học của tôi
-          </Link>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">Không tìm thấy khóa học</p>
+          <Link href="/my-courses" className="text-accent hover:underline">Quay lại khóa học của tôi</Link>
         </div>
       </div>
     );
   }
 
-
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      {/* Sidebar */}
-      <aside className={`${sidebarOpen ? "w-80" : "w-0"} bg-gray-800 border-r border-gray-700 flex flex-col transition-all duration-300 overflow-hidden`}>
-        {/* Header */}
-        <div className="p-4 border-b border-gray-700 flex-shrink-0">
-          <Link href="/my-courses" className="flex items-center gap-2 text-gray-400 hover:text-white text-sm mb-3 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Quay lại
-          </Link>
-          <h2 className="font-semibold text-white line-clamp-2">{course.title}</h2>
-        </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col lg:flex-row">
+      <LearnSidebar
+        courseTitle={course.title}
+        chapters={course.chapters || []}
+        chapterLessons={chapterLessons}
+        expandedChapters={expandedChapters}
+        loadingChapters={loadingChapters}
+        currentLessonId={currentLesson?.id}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onToggleChapter={toggleChapter}
+        onSelectLesson={selectLesson}
+      />
 
-        {/* Chapters List */}
-        <div className="flex-1 overflow-y-auto">
-          {course.chapters?.map((chapter, chapterIndex) => (
-            <div key={chapter.id} className="border-b border-gray-700/50">
-              {/* Chapter Header */}
-              <button
-                onClick={() => toggleChapter(chapter)}
-                className="w-full px-4 py-3 hover:bg-gray-700/50 transition-colors text-left"
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
-                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                    <span className="text-xs text-gray-500 font-medium">Chương {chapterIndex + 1}</span>
-                  </div>
-                  <span className="text-xs text-gray-500 flex-shrink-0">
-                    {chapterLessons[chapter.id]?.length || 0} bài
-                  </span>
-                </div>
-                <p className="text-sm text-gray-300 pl-6">{chapter.chapterName}</p>
-              </button>
-
-              {/* Lessons */}
-              {expandedChapters.has(chapter.id) && (
-                <div className="pb-2">
-                  {loadingChapters.has(chapter.id) ? (
-                    <div className="px-4 py-3 text-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent mx-auto"></div>
-                    </div>
-                  ) : chapterLessons[chapter.id]?.length > 0 ? (
-                    chapterLessons[chapter.id].map((lesson, lessonIndex) => (
-                      <button
-                        key={lesson.id}
-                        onClick={() => selectLesson(lesson, chapter)}
-                        className={`w-full px-4 py-2.5 flex items-center gap-3 text-left transition-colors ${
-                          currentLesson?.id === lesson.id
-                            ? "bg-accent/20 border-l-2 border-accent"
-                            : "hover:bg-gray-700/30"
-                        }`}
-                      >
-                        <span className={`w-6 h-6 flex items-center justify-center rounded text-xs ${
-                          currentLesson?.id === lesson.id
-                            ? "bg-accent text-white"
-                            : "bg-gray-700 text-gray-400"
-                        }`}>
-                          {lessonIndex + 1}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm truncate ${
-                            currentLesson?.id === lesson.id ? "text-white" : "text-gray-300"
-                          }`}>
-                            {lesson.lessonName}
-                          </p>
-                          {lesson.videoUrl && (
-                            <span className="text-xs text-gray-500 flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                              </svg>
-                              Video
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    ))
-                  ) : (
-                    <p className="px-4 py-3 text-sm text-gray-500 text-center">Chưa có bài học</p>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </aside>
-
-      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <header className="h-14 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-4 flex-shrink-0">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+        <LearnHeader
+          chapterName={currentChapter?.chapterName}
+          lessonName={currentLesson?.lessonName}
+          canPrev={canNavigate("prev")}
+          canNext={canNavigate("next")}
+          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          onPrev={() => navigateLesson("prev")}
+          onNext={() => navigateLesson("next")}
+        />
 
-          {currentLesson && currentChapter && (
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-gray-500">{currentChapter.chapterName}</p>
-              <p className="text-sm text-white truncate">{currentLesson.lessonName}</p>
-            </div>
-          )}
-
-          {/* Navigation */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigateLesson("prev")}
-              disabled={!canNavigate("prev")}
-              className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              onClick={() => navigateLesson("next")}
-              disabled={!canNavigate("next")}
-              className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </header>
-
-        {/* Video Area */}
-        <div className="flex-1 flex flex-col">
-          {currentLesson ? (
-            <>
-              {/* Video Player */}
-              <div className="bg-black flex-shrink-0">
-                {currentLesson.videoUrl ? (
-                  <div className="max-w-5xl mx-auto">
-                    <VideoPlayer
-                      key={currentLesson.id}
-                      src={currentLesson.videoUrl}
-                      autoPlay
-                      initialTime={initialTime}
-                      onTimeUpdate={handleTimeUpdate}
-                    />
-                  </div>
-                ) : (
-                  <div className="aspect-video max-w-5xl mx-auto flex items-center justify-center bg-gray-800">
-                    <div className="text-center text-gray-400">
-                      <svg className="w-16 h-16 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                      <p>Chưa có video cho bài học này</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Lesson Info */}
-              <div className="flex-1 overflow-y-auto bg-gray-900 p-6">
-                <div className="max-w-3xl mx-auto">
-                  <h1 className="text-xl font-semibold text-white mb-4">{currentLesson.lessonName}</h1>
-                  {currentLesson.description && (
-                    <div className="prose prose-invert max-w-none">
-                      <p className="text-gray-300 whitespace-pre-wrap">{currentLesson.description}</p>
-                    </div>
-                  )}
-
-                  {/* Next Lesson CTA */}
-                  {canNavigate("next") && (
-                    <div className="mt-8 p-4 bg-gray-800 rounded-lg flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-400">Bài tiếp theo</p>
-                        <p className="text-white font-medium">Tiếp tục học</p>
-                      </div>
-                      <button
-                        onClick={() => navigateLesson("next")}
-                        className="px-4 py-2 bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors flex items-center gap-2"
-                      >
-                        Bài tiếp theo
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center bg-gray-900">
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <p className="text-gray-400">Chọn một bài học để bắt đầu</p>
-              </div>
-            </div>
-          )}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <LessonContent
+            lesson={currentLesson}
+            initialTime={initialTime}
+            canNext={canNavigate("next")}
+            onTimeUpdate={handleTimeUpdate}
+            onNext={() => navigateLesson("next")}
+          />
         </div>
       </main>
     </div>

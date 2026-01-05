@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
-import { CommentDetailResponse } from "@/types/comment";
+import { CommentResponse } from "@/types/comment";
 import { commentApi } from "@/services/comment.service";
 
 export const useComments = (blogId: string) => {
-  const [comments, setComments] = useState<CommentDetailResponse[]>([]);
+  const [comments, setComments] = useState<CommentResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +32,7 @@ export const useComments = (blogId: string) => {
           return;
         }
 
-        const commentsData: CommentDetailResponse[] =
+        const commentsData: CommentResponse[] =
           response.result.result.map((comment) => ({
             id: comment.id,
             content: comment.content,
@@ -71,7 +71,7 @@ export const useComments = (blogId: string) => {
         size: 10,
       });
 
-      const replies: CommentDetailResponse[] = (
+      const replies: CommentResponse[] = (
         response.result?.result || []
       ).map((reply) => ({
         id: reply.id,
@@ -106,7 +106,7 @@ export const useComments = (blogId: string) => {
           content: content.trim(),
         });
 
-        const newComment: CommentDetailResponse = {
+        const newComment: CommentResponse = {
           id: response.result!.id,
           content: response.result!.content,
           username: response.result!.username,
@@ -140,7 +140,7 @@ export const useComments = (blogId: string) => {
           content: content.trim(),
         });
 
-        const newReply: CommentDetailResponse = {
+        const newReply: CommentResponse = {
           id: response.result!.id,
           content: response.result!.content,
           username: response.result!.username,
