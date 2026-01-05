@@ -27,20 +27,10 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
         color: "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300",
         icon: "🎥"
       },
-      [DocumentType.COURSE_MATERIAL]: {
-        name: "Tài liệu khóa học",
-        color: "bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300",
-        icon: "📖"
-      },
       [DocumentType.TUTORIAL]: {
         name: "Hướng dẫn",
         color: "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300",
         icon: "🎓"
-      },
-      [DocumentType.LINK]: {
-        name: "Liên kết",
-        color: "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300",
-        icon: "🔗"
       },
       [DocumentType.PDF]: {
         name: "PDF",
@@ -56,54 +46,22 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
     return typeMap[type] || typeMap[DocumentType.OTHER];
   };
 
-  const getDocumentCategory = (index: number) => {
-    const categories = [
-      {
-        name: "Frontend",
-        gradient: "from-purple-500 to-blue-500",
-        icon: "💻"
-      },
-      {
-        name: "Backend",
-        gradient: "from-green-400 to-green-600",
-        icon: "⚙️"
-      },
-      {
-        name: "Data Science",
-        gradient: "from-pink-500 to-purple-500",
-        icon: "📊"
-      },
-      {
-        name: "DevOps",
-        gradient: "from-orange-400 to-red-500",
-        icon: "🚀"
-      },
-      {
-        name: "Programming",
-        gradient: "from-cyan-500 to-blue-500",
-        icon: "💾"
-      },
-      {
-        name: "Database",
-        gradient: "from-emerald-500 to-teal-500",
-        icon: "🗄️"
-      },
-      {
-        name: "Cloud",
-        gradient: "from-sky-500 to-indigo-500",
-        icon: "☁️"
-      },
-      {
-        name: "Version Control",
-        gradient: "from-amber-500 to-orange-500",
-        icon: "📝"
-      }
+  const getGradient = (index: number) => {
+    const gradients = [
+      "from-purple-500 to-blue-500",
+      "from-green-400 to-green-600",
+      "from-pink-500 to-purple-500",
+      "from-orange-400 to-red-500",
+      "from-cyan-500 to-blue-500",
+      "from-emerald-500 to-teal-500",
+      "from-sky-500 to-indigo-500",
+      "from-amber-500 to-orange-500"
     ];
-    return categories[index % categories.length];
+    return gradients[index % gradients.length];
   };
 
   const typeInfo = getDocumentTypeInfo(document.type);
-  const category = getDocumentCategory(index);
+  const gradient = getGradient(index);
 
   const handleClick = () => {
     if (document.url) {
@@ -131,19 +89,14 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
             onError={() => setImageError(true)}
           />
         ) : (
-          <div
-            className={`h-full bg-gradient-to-r ${category.gradient} flex items-center justify-center p-4`}
-          >
+          <div className={`h-full bg-gradient-to-r ${gradient} flex items-center justify-center p-4`}>
             <div className="text-center">
               <div className="w-16 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-lg">
-                <span className="text-3xl">📚</span>
+                <span className="text-3xl">{typeInfo.icon}</span>
               </div>
               <h3 className="text-white font-bold text-sm leading-tight line-clamp-2 px-2">
                 {document.title}
               </h3>
-              <p className="text-white/80 text-xs mt-1">
-                {document.category || category.name}
-              </p>
             </div>
           </div>
         )}
@@ -155,7 +108,6 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
           </span>
         </div>
 
-        {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/10"></div>
       </div>
 
@@ -165,46 +117,13 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
           {document.title}
         </h4>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed line-clamp-3">
-          {document.description}
-        </p>
-
-        {/* Document Info */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            {document.author && (
-              <span className="px-2 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-md text-xs font-medium max-w-[120px] truncate">
-                {document.author}
-              </span>
-            )}
-            {document.category && (
-              <span className="px-2 py-1 bg-accent/10 text-accent rounded-md text-xs font-medium">
-                {document.category}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Tags */}
-        {document.tags && document.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {document.tags.slice(0, 3).map((tag, tagIndex) => (
-              <span
-                key={tagIndex}
-                className="px-2 py-1 bg-gray-50 dark:bg-slate-700 text-gray-500 dark:text-gray-400 rounded text-xs border border-gray-200 dark:border-slate-600"
-              >
-                #{tag}
-              </span>
-            ))}
-            {document.tags.length > 3 && (
-              <span className="px-2 py-1 bg-gray-50 dark:bg-slate-700 text-gray-500 dark:text-gray-400 rounded text-xs border border-gray-200 dark:border-slate-600">
-                +{document.tags.length - 3}
-              </span>
-            )}
-          </div>
+        {document.description && (
+          <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed line-clamp-3">
+            {document.description}
+          </p>
         )}
 
-        {/* Action Button - pushed to bottom */}
+        {/* Action Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -219,37 +138,17 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
         >
           {document.url ? (
             <>
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
               Truy cập tài liệu
             </>
           ) : (
             <>
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Tài liệu nội bộ
+              Chưa có link
             </>
           )}
         </button>

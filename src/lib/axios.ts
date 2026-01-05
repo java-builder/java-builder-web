@@ -28,6 +28,7 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/lessons/chapter",
     "/api/v1/subscriptions/plans",
     "/api/v1/subscriptions/check-premium",
+    "/api/v1/documents",
   ];
 
   // Các endpoint luôn public (mọi method)
