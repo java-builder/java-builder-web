@@ -11,11 +11,13 @@ import {
   generateGithubAuthUrl,
 } from "@/utils/oauthUtils";
 import TwoFactorModal from "@/components/auth/TwoFactorModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 type LoginFormData = LoginRequest;
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
@@ -60,7 +62,9 @@ export default function LoginPage() {
           setUserAuthorities(result.result.authorities || []);
           setShowTwoFactorModal(true);
         } else if (result.result?.accessToken) {
-          const isAdmin = result.result.authorities?.includes("ADMIN");
+          const authorities = result.result.authorities || [];
+          setAuthenticated(authorities);
+          const isAdmin = authorities.includes("ADMIN");
           router.push(isAdmin ? "/admin" : "/");
         }
       }
@@ -71,6 +75,7 @@ export default function LoginPage() {
   };
 
   const handleTwoFactorSuccess = () => {
+    setAuthenticated(userAuthorities);
     const isAdmin = userAuthorities.includes("ADMIN");
     router.push(isAdmin ? "/admin" : "/");
   };
