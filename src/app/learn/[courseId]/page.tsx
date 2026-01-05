@@ -17,7 +17,7 @@ export default function LearnCoursePage() {
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
 
   const [currentLesson, setCurrentLesson] = useState<LessonDetailResponse | null>(null);
@@ -322,7 +322,7 @@ export default function LearnCoursePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col lg:flex-row">
+    <div className="h-screen bg-gray-50 dark:bg-gray-900 flex flex-col lg:flex-row overflow-hidden">
       <LearnSidebar
         courseTitle={course.title}
         chapters={course.chapters || []}
@@ -336,7 +336,7 @@ export default function LearnCoursePage() {
         onSelectLesson={selectLesson}
       />
 
-      <main className="flex-1 flex flex-col min-w-0">
+      <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <LearnHeader
           chapterName={currentChapter?.chapterName}
           lessonName={currentLesson?.lessonName}
@@ -347,7 +347,7 @@ export default function LearnCoursePage() {
           onNext={() => navigateLesson("next")}
         />
 
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto">
           <LessonContent
             lesson={currentLesson}
             initialTime={initialTime}

@@ -61,7 +61,6 @@ export const courseApi = {
       >("/api/v1/courses", { params });
       return response.data;
     } catch (error) {
-      toast.error("Lấy danh sách khóa học thất bại.");
       throw error;
     }
   },
@@ -284,7 +283,6 @@ export const enrollmentApi = {
       );
       return response.data;
     } catch (error) {
-      toast.error("Lấy danh sách khóa học thất bại.");
       throw error;
     }
   },

@@ -38,14 +38,55 @@ export default function LearnSidebar({
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar Wrapper - controls width transition */}
+      <div 
+        className="hidden lg:block flex-shrink-0 overflow-hidden"
+        style={{
+          width: isOpen ? 320 : 0,
+          transition: "width 300ms ease-in-out"
+        }}
+      >
+        <aside className="w-80 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+          {/* Header */}
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex items-center justify-between mb-3">
+              <Link href="/my-courses" className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Quay lại
+              </Link>
+            </div>
+            <h2 className="font-semibold text-gray-900 dark:text-white line-clamp-2 text-sm lg:text-base">{courseTitle}</h2>
+          </div>
+
+          {/* Chapters List */}
+          <div className="flex-1 overflow-y-auto">
+            {chapters.map((chapter, chapterIndex) => (
+              <ChapterItem
+                key={chapter.id}
+                chapter={chapter}
+                chapterIndex={chapterIndex}
+                lessons={chapterLessons[chapter.id] || []}
+                isExpanded={expandedChapters.has(chapter.id)}
+                isLoading={loadingChapters.has(chapter.id)}
+                currentLessonId={currentLessonId}
+                onToggle={() => onToggleChapter(chapter)}
+                onSelectLesson={(lesson) => onSelectLesson(lesson, chapter)}
+              />
+            ))}
+          </div>
+        </aside>
+      </div>
+
+      {/* Mobile Sidebar */}
       <aside className={`
-        fixed lg:relative inset-y-0 left-0 z-50
-        w-[85%] max-w-[320px] lg:w-80
+        fixed lg:hidden inset-y-0 left-0 z-50
+        w-[85%] max-w-[320px]
         bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
-        flex flex-col
+        flex flex-col h-screen
         transform transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         {/* Header */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
@@ -176,43 +217,34 @@ function LessonItem({ lesson, lessonIndex, isActive, onSelect }: LessonItemProps
   return (
     <button
       onClick={onSelect}
-      className={`w-full px-4 py-2.5 flex items-center gap-3 text-left transition-colors ${
-        isActive ? "bg-accent/20 border-l-2 border-accent" : "hover:bg-gray-100 dark:hover:bg-gray-700/30"
+      className={`w-full px-4 py-2.5 flex items-start gap-3 text-left transition-colors ${
+        isActive ? "bg-accent/10 border-l-2 border-accent" : "hover:bg-gray-100 dark:hover:bg-gray-700/30"
       }`}
     >
-      <span className={`w-6 h-6 flex items-center justify-center rounded text-xs flex-shrink-0 ${
-        isCompleted 
-          ? "bg-green-500 text-white" 
-          : isActive 
-            ? "bg-accent text-white" 
-            : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+      <span className={`text-sm flex-shrink-0 mt-0.5 ${
+        isActive 
+          ? "text-accent font-bold" 
+          : isCompleted 
+            ? "text-green-600 dark:text-green-400" 
+            : "text-gray-500"
       }`}>
-        {isCompleted ? (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        ) : (
-          lessonIndex + 1
-        )}
+        {lessonIndex + 1}.
       </span>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm line-clamp-2 ${
-          isCompleted 
-            ? "text-green-600 dark:text-green-400" 
-            : isActive 
-              ? "text-accent dark:text-white font-medium" 
+        <p className={`text-sm ${
+          isActive 
+            ? "text-accent dark:text-accent font-bold" 
+            : isCompleted 
+              ? "text-green-600 dark:text-green-400" 
               : "text-gray-700 dark:text-gray-300"
         }`}>
           {lesson.lessonName}
+          {isCompleted && (
+            <span className={`ml-2 text-xs text-green-600 dark:text-green-400 ${isActive ? "font-normal" : ""}`}>
+              (Đã hoàn thành)
+            </span>
+          )}
         </p>
-        {lesson.videoUrl && (
-          <span className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-            </svg>
-            Video
-          </span>
-        )}
       </div>
     </button>
   );
