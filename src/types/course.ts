@@ -46,6 +46,21 @@ export interface CourseDetailResponse {
   isPremiumUser?: boolean;
 }
 
+export interface MyEnrolledCourseResponse {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  duration?: number;
+  courseCover?: string;
+  level?: CourseLevel;
+  progress: number;
+  completed: boolean;
+  enrolledAt: string;
+  totalLessons: number;
+  completedLessons: number;
+}
+
 export enum CourseLevel {
   BEGINNER = "BEGINNER",
   INTERMEDIATE = "INTERMEDIATE",

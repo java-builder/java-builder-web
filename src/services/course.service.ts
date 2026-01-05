@@ -18,6 +18,7 @@ import {
   PreSignedResponse,
   CourseLearningResponse,
   UpdateLessonProgressRequest,
+  MyEnrolledCourseResponse,
 } from "@/types/course";
 import toast from "react-hot-toast";
 
@@ -277,7 +278,7 @@ export const enrollmentApi = {
   // Lấy danh sách khóa học đã đăng ký
   getMyCourses: async (page: number = 1, size: number = 10) => {
     try {
-      const response = await apiClient.get<ApiResponse<PageResponse<CourseDetailResponse>>>(
+      const response = await apiClient.get<ApiResponse<PageResponse<MyEnrolledCourseResponse>>>(
         "/api/v1/enrollments/my-courses",
         { params: { page, size } },
       );

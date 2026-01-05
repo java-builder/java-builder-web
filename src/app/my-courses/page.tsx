@@ -6,14 +6,15 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { enrollmentApi } from "@/services/course.service";
-import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import { MyEnrolledCourseResponse, CourseLevel } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
+import { formatShortDate } from "@/utils/dateUtils";
 
 export default function MyCoursesPage() {
   const router = useRouter();
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
-  const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
+  const [courses, setCourses] = useState<MyEnrolledCourseResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -65,6 +66,12 @@ export default function MyCoursesPage() {
     }
   };
 
+  const getProgressColor = (progress: number) => {
+    if (progress === 100) return "bg-green-500";
+    if (progress >= 50) return "bg-accent";
+    return "bg-amber-500";
+  };
+
   if (userLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -114,7 +121,7 @@ export default function MyCoursesPage() {
         ) : (
           <>
             {/* Course Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses.map((course) => (
                 <Link
                   key={course.id}
@@ -137,40 +144,70 @@ export default function MyCoursesPage() {
                         </svg>
                       </div>
                     )}
-                    {/* Enrolled Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-full flex items-center gap-1.5 shadow-lg">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        Đã đăng ký
-                      </span>
+                    {/* Status Badge */}
+                    <div className="absolute top-3 left-3">
+                      {course.completed ? (
+                        <span className="px-3 py-1.5 bg-green-500 text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Hoàn thành
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1.5 bg-accent text-white text-xs font-medium rounded-full shadow-lg">
+                          Đang học
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   {/* Course Info */}
                   <div className="p-5">
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-2 mb-3">
                       {course.level && (
-                        <span className={`px-3 py-1 text-sm font-medium rounded-lg ${getLevelColor(course.level)}`}>
+                        <span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${getLevelColor(course.level)}`}>
                           {getLevelText(course.level)}
                         </span>
                       )}
-                      {course.duration && (
-                        <span className="text-sm text-gray-500">{course.duration} giờ</span>
-                      )}
+                      <span className="text-xs text-gray-400">
+                        Đăng ký: {formatShortDate(course.enrolledAt)}
+                      </span>
                     </div>
+                    
                     <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
                       {course.title}
                     </h3>
-                    <p className="text-gray-500 line-clamp-2 mb-5">{course.description}</p>
+                    
+                    <p className="text-gray-500 text-sm line-clamp-2 mb-4">{course.description}</p>
+                    
+                    {/* Progress Section */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between text-sm mb-1.5">
+                        <span className="text-gray-600">Tiến độ</span>
+                        <span className="font-semibold text-gray-900">{course.progress}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full ${getProgressColor(course.progress)} transition-all duration-500`}
+                          style={{ width: `${course.progress}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between mt-1.5">
+                        <span className="text-xs text-gray-400">
+                          {course.completedLessons}/{course.totalLessons} bài học
+                        </span>
+                        {course.duration && (
+                          <span className="text-xs text-gray-400">{course.duration} giờ</span>
+                        )}
+                      </div>
+                    </div>
                     
                     {/* Action Button */}
                     <button className="w-full py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors flex items-center justify-center gap-2">
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                       </svg>
-                      Tiếp tục học
+                      {course.progress === 0 ? "Bắt đầu học" : course.completed ? "Xem lại" : "Tiếp tục học"}
                     </button>
                   </div>
                 </Link>
