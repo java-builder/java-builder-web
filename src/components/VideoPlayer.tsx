@@ -10,9 +10,11 @@ interface VideoPlayerProps {
   poster?: string;
   autoPlay?: boolean;
   className?: string;
+  initialTime?: number;
+  onTimeUpdate?: (currentTime: number, duration: number) => void;
 }
 
-export default function VideoPlayer({ src, poster, autoPlay = false, className = "" }: VideoPlayerProps) {
+export default function VideoPlayer({ src, poster, autoPlay = false, className = "", initialTime, onTimeUpdate }: VideoPlayerProps) {
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
 
@@ -71,6 +73,24 @@ export default function VideoPlayer({ src, poster, autoPlay = false, className =
       e.preventDefault();
     });
 
+    // Seek to initial time when ready
+    if (initialTime && initialTime > 0) {
+      player.on("loadedmetadata", () => {
+        player.currentTime(initialTime);
+      });
+    }
+
+    // Time update callback
+    if (onTimeUpdate) {
+      player.on("timeupdate", () => {
+        const currentTime = player.currentTime();
+        const duration = player.duration();
+        if (typeof currentTime === "number" && typeof duration === "number") {
+          onTimeUpdate(Math.floor(currentTime), Math.floor(duration));
+        }
+      });
+    }
+
     // Cleanup
     return () => {
       if (playerRef.current && !playerRef.current.isDisposed()) {
@@ -78,7 +98,7 @@ export default function VideoPlayer({ src, poster, autoPlay = false, className =
         playerRef.current = null;
       }
     };
-  }, [src, poster, autoPlay]);
+  }, [src, poster, autoPlay, initialTime, onTimeUpdate]);
 
   return (
     <div className={className}>

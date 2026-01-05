@@ -14,8 +14,11 @@ import {
   CreateLessonResponse,
   LessonDetailResponse,
   FavoriteResponse,
+  FileMetaDataResponse,
+  PreSignedResponse,
+  CourseLearningResponse,
+  UpdateLessonProgressRequest,
 } from "@/types/course";
-import { FileMetaDataResponse } from "@/types/course";
 import toast from "react-hot-toast";
 
 export const courseApi = {
@@ -88,6 +91,19 @@ export const courseApi = {
       throw error;
     }
   },
+
+  // Lấy thông tin học tiếp (last lesson, video url, watched seconds)
+  getLearningDetail: async (courseId: string) => {
+    try {
+      const response = await apiClient.get<ApiResponse<CourseLearningResponse>>(
+        `/api/v1/courses/${courseId}/learning`,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Lấy thông tin học tập thất bại.");
+      throw error;
+    }
+  },
 };
 
 export const chapterApi = {
@@ -148,7 +164,20 @@ export const lessonApi = {
     }
   },
 
-  // Lấy danh sách lessons theo chapterId
+  // Lấy chi tiết lesson theo ID (bao gồm videoUrl)
+  getById: async (lessonId: string) => {
+    try {
+      const response = await apiClient.get<ApiResponse<LessonDetailResponse>>(
+        `/api/v1/lessons/${lessonId}`,
+      );
+      return response.data;
+    } catch (error) {
+      toast.error("Lấy thông tin bài học thất bại.");
+      throw error;
+    }
+  },
+
+  // Lấy danh sách lessons theo chapterId (không có videoUrl)
   getByChapterId: async (chapterId: string) => {
     try {
       const response = await apiClient.get<ApiResponse<LessonDetailResponse[]>>(
@@ -170,6 +199,20 @@ export const lessonApi = {
       return response.data;
     } catch (error) {
       toast.error("Xóa bài học thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Cập nhật tiến độ học
+  updateProgress: async (data: UpdateLessonProgressRequest) => {
+    try {
+      const response = await apiClient.put<ApiResponse<void>>(
+        "/api/v1/lessons/progress",
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      // Không show toast vì gọi liên tục khi xem video
       throw error;
     }
   },
@@ -268,7 +311,78 @@ export const fileApi = {
     }
   },
 
-  // Upload video
+  // Lấy presigned URL để upload trực tiếp lên S3
+  getPresignedUrl: async (filename: string, folder?: string) => {
+    try {
+      const params: Record<string, string> = { filename };
+      if (folder) {
+        params.folder = folder;
+      }
+
+      const response = await apiClient.post<ApiResponse<PreSignedResponse>>(
+        "/api/v1/files/pre-signed-url",
+        null,
+        { params },
+      );
+
+      return response.data;
+    } catch (error) {
+      toast.error("Lấy URL upload thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Upload video trực tiếp lên S3 qua presigned URL
+  uploadVideoWithPresigned: async (
+    file: File,
+    onProgress?: (percent: number) => void,
+    folder?: string,
+  ): Promise<{ key: string }> => {
+    try {
+      // 1. Lấy presigned URL từ BE
+      const presignedResponse = await fileApi.getPresignedUrl(file.name, folder);
+      if (!presignedResponse.result) {
+        throw new Error("Không thể lấy URL upload");
+      }
+
+      const { url, key } = presignedResponse.result;
+
+      // 2. Upload trực tiếp lên S3 bằng PUT request
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener("progress", (event) => {
+          if (event.lengthComputable && onProgress) {
+            const percent = Math.round((event.loaded * 100) / event.total);
+            onProgress(percent);
+          }
+        });
+
+        xhr.addEventListener("load", () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve();
+          } else {
+            reject(new Error(`Upload failed with status ${xhr.status}`));
+          }
+        });
+
+        xhr.addEventListener("error", () => {
+          reject(new Error("Upload failed"));
+        });
+
+        xhr.open("PUT", url);
+        xhr.setRequestHeader("Content-Type", file.type);
+        xhr.send(file);
+      });
+
+      return { key };
+    } catch (error) {
+      toast.error("Upload video thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
+
+  // Upload video (deprecated - dùng uploadVideoWithPresigned thay thế)
   uploadVideo: async (file: File, onProgress?: (percent: number) => void) => {
     try {
       const formData = new FormData();

@@ -1,14 +1,12 @@
 "use client";
-import { ReactNode, useState, useEffect, useRef } from "react";
+import { ReactNode, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { AuthProvider } from "@/contexts/AuthContext";
 import AdminNotificationDropdown from "@/components/admin/AdminNotificationDropdown";
-import { userApi } from "@/services/user.service";
 import { authApi } from "@/services/auth.service";
-import { UserDetailResponse } from "@/types/user";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -261,20 +259,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserDetailResponse | null>(null);
-  const hasFetchedUser = useRef(false);
-
-  useEffect(() => {
-    // Prevent duplicate API calls
-    if (hasFetchedUser.current) return;
-    hasFetchedUser.current = true;
-    
-    userApi.getCurrentUser().then((res) => {
-      if (res.result) {
-        setCurrentUser(res.result);
-      }
-    }).catch(console.error);
-  }, []);
+  const { data: currentUser } = useCurrentUser();
 
   const handleLogout = async () => {
     try {
@@ -288,10 +273,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <AuthProvider>
-      <ProtectedRoute requireAdmin={true}>
-        <>
-          <style jsx global>{`
+    <ProtectedRoute requireAdmin={true}>
+      <>
+        <style jsx global>{`
             @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
 
             /* Modern SweetAlert2 Styles */
@@ -561,6 +545,5 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </>
       </ProtectedRoute>
-    </AuthProvider>
   );
 }

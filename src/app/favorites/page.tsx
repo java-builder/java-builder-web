@@ -55,8 +55,8 @@ export default function FavoritesPage() {
     }).format(price);
   };
 
-  const getLevelText = (level: CourseLevel) => {
-    switch (level) {
+  const getLevelText = (level: string) => {
+    switch (level as CourseLevel) {
       case CourseLevel.BEGINNER: return "Cơ bản";
       case CourseLevel.INTERMEDIATE: return "Trung cấp";
       case CourseLevel.ADVANCED: return "Nâng cao";

@@ -1,26 +1,16 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { authApi } from "@/services/auth.service";
 
 interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   hasAdminAccess: boolean;
-  userScopes: string[];
   error: string | null;
 }
 
 interface AuthContextType extends AuthState {
-  checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -28,109 +18,56 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [authState, setAuthState] = useState<AuthState>({
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [state, setState] = useState<AuthState>({
     isAuthenticated: false,
     isLoading: true,
     hasAdminAccess: false,
-    userScopes: [],
     error: null,
   });
-  
-  // Ref to prevent duplicate API calls
-  const hasCheckedAuth = useRef(false);
 
-  const checkAuth = useCallback(async () => {
-    setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-    try {
+  useEffect(() => {
+    const checkAuth = async () => {
       const token = authApi.getAccessToken();
       if (!token) {
-        setAuthState({
-          isAuthenticated: false,
+        setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
+        return;
+      }
+
+      try {
+        const result = await authApi.introspect();
+        setState({
+          isAuthenticated: result?.valid || false,
           isLoading: false,
-          hasAdminAccess: false,
-          userScopes: [],
+          hasAdminAccess: result?.scopes?.includes("ADMIN") || false,
           error: null,
         });
-        return;
+      } catch {
+        setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: "Lỗi xác thực" });
       }
+    };
 
-      const introspectResult = await authApi.introspect();
-
-      if (!introspectResult) {
-        setAuthState({
-          isAuthenticated: false,
-          isLoading: false,
-          hasAdminAccess: false,
-          userScopes: [],
-          error: "Không thể xác thực token",
-        });
-        return;
-      }
-
-      const isValid = introspectResult.valid;
-      const hasAdminAccess =
-        isValid && introspectResult.scopes?.includes("ADMIN");
-
-      setAuthState({
-        isAuthenticated: isValid,
-        isLoading: false,
-        hasAdminAccess,
-        userScopes: introspectResult.scopes || [],
-        error: null,
-      });
-    } catch {
-      setAuthState({
-        isAuthenticated: false,
-        isLoading: false,
-        hasAdminAccess: false,
-        userScopes: [],
-        error: "Lỗi xác thực",
-      });
-    }
+    checkAuth();
   }, []);
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     try {
       await authApi.logout();
     } catch {
-      // Silent fail for logout
-    } finally {
-      hasCheckedAuth.current = false; // Reset to allow re-auth after logout
-      setAuthState({
-        isAuthenticated: false,
-        isLoading: false,
-        hasAdminAccess: false,
-        userScopes: [],
-        error: null,
-      });
+      authApi.clearAuthData();
     }
-  }, []);
-
-  useEffect(() => {
-    // Prevent duplicate API calls
-    if (hasCheckedAuth.current) return;
-    hasCheckedAuth.current = true;
-    
-    checkAuth();
-  }, [checkAuth]);
-
-  const value = {
-    ...authState,
-    checkAuth,
-    logout,
+    setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ ...state, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

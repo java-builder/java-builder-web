@@ -173,9 +173,18 @@ export default function CourseDetailPage() {
   };
 
   // Handle lesson click - cho phép xem nếu đã enrolled, premium user hoặc là free preview
-  const handleLessonClick = (lesson: LessonDetailResponse) => {
+  const handleLessonClick = async (lesson: LessonDetailResponse) => {
     if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
-      setPreviewModal({ isOpen: true, lesson });
+      try {
+        // Gọi API để lấy chi tiết lesson (bao gồm videoUrl)
+        const response = await lessonApi.getById(lesson.id);
+        if (response.result) {
+          setPreviewModal({ isOpen: true, lesson: response.result });
+        }
+      } catch {
+        // Nếu lỗi (ví dụ: ACCESS_DENIED), hiển thị thông báo
+        toast.error("Không thể xem bài học này");
+      }
     } else {
       toast.error("Vui lòng đăng ký khóa học để xem bài học này");
     }

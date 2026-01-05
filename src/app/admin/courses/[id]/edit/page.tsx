@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 export default function EditCoursePage() {
   const params = useParams();
   const courseId = params.id as string;
+  const hasFetched = useRef(false);
 
   // Course info state
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
@@ -79,9 +80,13 @@ export default function EditCoursePage() {
   const [activeTab, setActiveTab] = useState<"info" | "content">("info");
 
   // Fetch course data
-  const fetchCourse = async () => {
+  const fetchCourse = useCallback(async (force = false) => {
+    if (!courseId) return;
+    if (!force && hasFetched.current) return;
+    
     try {
       setIsLoading(true);
+      hasFetched.current = true;
       const response = await courseApi.getById(courseId);
       if (response.result) {
         const data = response.result;
@@ -93,7 +98,6 @@ export default function EditCoursePage() {
         setLevel(data.level || CourseLevel.BEGINNER);
         setCourseCover(data.courseCover || "");
         setImagePreview(data.courseCover || null);
-        // Set chapters from API response
         setChapters(data.chapters || []);
       }
     } catch (error) {
@@ -102,12 +106,11 @@ export default function EditCoursePage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [courseId]);
 
   useEffect(() => {
     fetchCourse();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
+  }, [fetchCourse]);
 
 
   // Handle image upload - chỉ preview, chưa upload
@@ -228,7 +231,7 @@ export default function EditCoursePage() {
 
         if (response.code === 200 && response.result) {
           toast.success("Cập nhật chương thành công!");
-          await fetchCourse();
+          await fetchCourse(true);
         }
       } else {
         // Create new chapter
@@ -241,7 +244,7 @@ export default function EditCoursePage() {
         if (response.code === 201 && response.result) {
           toast.success("Thêm chương thành công!");
           // Refresh course data to get updated chapters
-          await fetchCourse();
+          await fetchCourse(true);
         }
       }
       setChapterModal({ isOpen: false, editId: "", chapterName: "", description: "", isSubmitting: false });
@@ -258,7 +261,7 @@ export default function EditCoursePage() {
       if (deleteModal.type === "chapter") {
         await chapterApi.delete(deleteModal.id);
         toast.success("Xóa chương thành công!");
-        await fetchCourse();
+        await fetchCourse(true);
       } else if (deleteModal.type === "lesson") {
         await lessonApi.delete(deleteModal.id);
         toast.success("Xóa bài học thành công!");
@@ -284,16 +287,18 @@ export default function EditCoursePage() {
     setLessonModal(prev => ({ ...prev, isSubmitting: true }));
 
     try {
-      // Upload video first if selected
-      let videoUrl = lessonModal.videoUrl;
+      // Upload video trực tiếp lên S3 qua presigned URL
+      let videoKey: string | undefined;
       if (lessonModal.videoFile) {
         setLessonModal(prev => ({ ...prev, isUploading: true }));
-        const uploadResult = await fileApi.uploadVideo(lessonModal.videoFile, (percent) => {
-          setLessonModal(prev => ({ ...prev, uploadProgress: percent }));
-        });
-        if (uploadResult.result) {
-          videoUrl = uploadResult.result.url;
-        }
+        const uploadResult = await fileApi.uploadVideoWithPresigned(
+          lessonModal.videoFile, 
+          (percent) => {
+            setLessonModal(prev => ({ ...prev, uploadProgress: percent }));
+          },
+          "private" // folder cho video lessons
+        );
+        videoKey = uploadResult.key;
         setLessonModal(prev => ({ ...prev, isUploading: false }));
       }
 
@@ -301,7 +306,7 @@ export default function EditCoursePage() {
         chapterId: lessonModal.chapterId,
         lessonName: lessonModal.lessonName,
         description: lessonModal.description || undefined,
-        videoUrl: videoUrl || undefined,
+        videoKey: videoKey,
         isFreePreview: lessonModal.isFreePreview,
       });
 
@@ -315,6 +320,19 @@ export default function EditCoursePage() {
       console.error("Save lesson error:", error);
     } finally {
       setLessonModal(prev => ({ ...prev, isSubmitting: false, isUploading: false }));
+    }
+  };
+
+  // Handle preview lesson - gọi API để lấy videoUrl
+  const handlePreviewLesson = async (lesson: LessonDetailResponse) => {
+    try {
+      const response = await lessonApi.getById(lesson.id);
+      if (response.result) {
+        setPreviewModal({ isOpen: true, lesson: response.result });
+      }
+    } catch (error) {
+      console.error("Error fetching lesson:", error);
+      toast.error("Không thể tải thông tin bài học");
     }
   };
 
@@ -599,7 +617,7 @@ export default function EditCoursePage() {
                                 <div 
                                   key={lesson.id} 
                                   className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer group"
-                                  onClick={() => setPreviewModal({ isOpen: true, lesson })}
+                                  onClick={() => handlePreviewLesson(lesson)}
                                 >
                                   <div className="flex items-center gap-3">
                                     <span className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded text-xs text-gray-500 group-hover:bg-accent group-hover:text-white transition-colors">

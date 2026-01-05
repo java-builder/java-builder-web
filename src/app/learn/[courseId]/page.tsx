@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -27,6 +27,14 @@ export default function LearnCoursePage() {
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [loadingChapters, setLoadingChapters] = useState<Set<string>>(new Set());
 
+  // Progress tracking
+  const [initialTime, setInitialTime] = useState<number>(0);
+  const currentTimeRef = useRef<number>(0);
+  const durationRef = useRef<number>(0);
+  const lastSavedTimeRef = useRef<number>(0);
+  const isCompletedRef = useRef<boolean>(false);
+  const saveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Load lessons for a chapter
   const loadChapterLessons = useCallback(async (chapterId: string, selectFirst = false) => {
     setLoadingChapters(prev => new Set(prev).add(chapterId));
@@ -36,16 +44,23 @@ export default function LearnCoursePage() {
         setChapterLessons(prev => {
           // Check if already loaded
           if (prev[chapterId]) {
-            if (selectFirst && prev[chapterId].length > 0) {
-              setCurrentLesson(prev[chapterId][0]);
-            }
             return prev;
-          }
-          if (selectFirst && response.result && response.result.length > 0) {
-            setCurrentLesson(response.result[0]);
           }
           return { ...prev, [chapterId]: response.result || [] };
         });
+        
+        // Nếu selectFirst và có lessons, gọi API getById để lấy videoUrl
+        if (selectFirst && response.result && response.result.length > 0) {
+          const firstLesson = response.result[0];
+          try {
+            const lessonDetail = await lessonApi.getById(firstLesson.id);
+            if (lessonDetail.result) {
+              setCurrentLesson(lessonDetail.result);
+            }
+          } catch {
+            setCurrentLesson(firstLesson);
+          }
+        }
       }
     } finally {
       setLoadingChapters(prev => {
@@ -100,6 +115,72 @@ export default function LearnCoursePage() {
     initializeCourse();
   }, [initializeCourse]);
 
+  // Save progress function
+  const saveProgress = useCallback(async () => {
+    if (!currentLesson || currentTimeRef.current === lastSavedTimeRef.current) return;
+    
+    try {
+      await lessonApi.updateProgress({
+        lessonId: currentLesson.id,
+        watchedSeconds: currentTimeRef.current,
+      });
+      lastSavedTimeRef.current = currentTimeRef.current;
+    } catch {
+      // Silent fail - không cần báo lỗi
+    }
+  }, [currentLesson]);
+
+  // Setup interval to save progress every 60s
+  useEffect(() => {
+    if (currentLesson?.videoUrl) {
+      saveIntervalRef.current = setInterval(saveProgress, 60000);
+    }
+
+    return () => {
+      if (saveIntervalRef.current) {
+        clearInterval(saveIntervalRef.current);
+      }
+      // Save progress when leaving
+      saveProgress();
+    };
+  }, [currentLesson, saveProgress]);
+
+  // Save progress when page unloads
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (currentLesson && currentTimeRef.current > 0) {
+        // Use sendBeacon for reliable save on page close
+        const data = JSON.stringify({
+          lessonId: currentLesson.id,
+          watchedSeconds: currentTimeRef.current,
+        });
+        navigator.sendBeacon("/api/v1/lessons/progress", data);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [currentLesson]);
+
+  // Handle video time update
+  const handleTimeUpdate = useCallback((time: number, duration: number) => {
+    currentTimeRef.current = time;
+    durationRef.current = duration;
+
+    // Mark as completed when >= 90% watched
+    if (!isCompletedRef.current && duration > 0 && time >= duration * 0.9) {
+      isCompletedRef.current = true;
+      // Save completed status immediately
+      if (currentLesson) {
+        lessonApi.updateProgress({
+          lessonId: currentLesson.id,
+          watchedSeconds: time,
+          completed: true,
+        }).catch(() => {});
+      }
+    }
+  }, [currentLesson]);
+
   // Toggle chapter
   const toggleChapter = async (chapter: ChapterDetailResponse) => {
     const newExpanded = new Set(expandedChapters);
@@ -112,15 +193,36 @@ export default function LearnCoursePage() {
     setExpandedChapters(newExpanded);
   };
 
-  // Select lesson
-  const selectLesson = (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => {
-    setCurrentLesson(lesson);
-    setCurrentChapter(chapter);
+  // Select lesson - gọi API để lấy videoUrl
+  const selectLesson = async (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => {
+    // Save progress of current lesson before switching
+    await saveProgress();
+    
+    try {
+      const response = await lessonApi.getById(lesson.id);
+      if (response.result) {
+        setCurrentLesson(response.result);
+        setCurrentChapter(chapter);
+        // Reset progress tracking for new lesson
+        setInitialTime(0);
+        currentTimeRef.current = 0;
+        durationRef.current = 0;
+        lastSavedTimeRef.current = 0;
+        isCompletedRef.current = false;
+      }
+    } catch {
+      // Nếu lỗi, vẫn set lesson nhưng không có video
+      setCurrentLesson(lesson);
+      setCurrentChapter(chapter);
+    }
   };
 
   // Navigate to next/prev lesson
-  const navigateLesson = (direction: "next" | "prev") => {
+  const navigateLesson = async (direction: "next" | "prev") => {
     if (!course?.chapters || !currentLesson || !currentChapter) return;
+
+    // Save progress before navigating
+    await saveProgress();
 
     const allLessons: { lesson: LessonDetailResponse; chapter: ChapterDetailResponse }[] = [];
     course.chapters.forEach(chapter => {
@@ -134,8 +236,27 @@ export default function LearnCoursePage() {
     const newIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
     if (newIndex >= 0 && newIndex < allLessons.length) {
       const { lesson, chapter } = allLessons[newIndex];
-      setCurrentLesson(lesson);
+      
+      // Gọi API để lấy videoUrl
+      try {
+        const response = await lessonApi.getById(lesson.id);
+        if (response.result) {
+          setCurrentLesson(response.result);
+        } else {
+          setCurrentLesson(lesson);
+        }
+      } catch {
+        setCurrentLesson(lesson);
+      }
+      
       setCurrentChapter(chapter);
+      
+      // Reset progress tracking
+      setInitialTime(0);
+      currentTimeRef.current = 0;
+      durationRef.current = 0;
+      lastSavedTimeRef.current = 0;
+      isCompletedRef.current = false;
       
       // Expand chapter if not expanded
       if (!expandedChapters.has(chapter.id)) {
@@ -332,6 +453,8 @@ export default function LearnCoursePage() {
                       key={currentLesson.id}
                       src={currentLesson.videoUrl}
                       autoPlay
+                      initialTime={initialTime}
+                      onTimeUpdate={handleTimeUpdate}
                     />
                   </div>
                 ) : (
