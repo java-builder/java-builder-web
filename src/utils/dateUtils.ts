@@ -48,3 +48,14 @@ export const formatApiDateOnly = (dateString: string): string => {
     return "Ngày không hợp lệ";
   }
 };
+
+// Format: dd/mm/yyyy
+export const formatShortDate = (dateString: string): string => {
+  try {
+    const [datePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("-");
+    return `${day}/${month}/${year}`;
+  } catch {
+    return dateString;
+  }
+};
