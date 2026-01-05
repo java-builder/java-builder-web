@@ -55,10 +55,6 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    if (isPublicEndpoint(config.url, config.method)) {
-      return config;
-    }
-
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("access_token");
       if (token) {

@@ -1,8 +1,10 @@
 "use client";
 
-import VideoPlayer from "@/components/VideoPlayer";
+import VideoPlayer, { VideoPlayerRef } from "@/components/VideoPlayer";
 import { LessonDetailResponse } from "@/types/course";
 import LessonComments from "./LessonComments";
+import LessonNotes from "./LessonNotes";
+import { useState, useRef, useCallback } from "react";
 
 interface LessonContentProps {
   lesson: LessonDetailResponse | null;
@@ -19,6 +21,21 @@ export default function LessonContent({
   onTimeUpdate,
   onNext,
 }: LessonContentProps) {
+  const [currentTime, setCurrentTime] = useState(0);
+  const videoRef = useRef<VideoPlayerRef>(null);
+
+  const handleTimeUpdate = useCallback(
+    (time: number, duration: number) => {
+      setCurrentTime(time);
+      onTimeUpdate(time, duration);
+    },
+    [onTimeUpdate]
+  );
+
+  const handleSeekTo = useCallback((timestamp: number) => {
+    videoRef.current?.seekTo(timestamp);
+  }, []);
+
   if (!lesson) {
     return (
       <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
@@ -42,11 +59,12 @@ export default function LessonContent({
         {lesson.videoUrl ? (
           <div className="w-full max-w-5xl mx-auto">
             <VideoPlayer
+              ref={videoRef}
               key={lesson.id}
               src={lesson.videoUrl}
               autoPlay
               initialTime={initialTime}
-              onTimeUpdate={onTimeUpdate}
+              onTimeUpdate={handleTimeUpdate}
             />
           </div>
         ) : (
@@ -90,6 +108,13 @@ export default function LessonContent({
               </button>
             </div>
           )}
+
+          {/* Notes Section */}
+          <LessonNotes
+            lessonId={lesson.id}
+            currentTime={currentTime}
+            onSeekTo={handleSeekTo}
+          />
 
           {/* Comments Section */}
           <LessonComments lessonId={lesson.id} />

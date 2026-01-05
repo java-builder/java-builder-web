@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import type Player from "video.js/dist/types/player";
@@ -14,141 +14,173 @@ interface VideoPlayerProps {
   onTimeUpdate?: (currentTime: number, duration: number) => void;
 }
 
-export default function VideoPlayer({ src, poster, autoPlay = false, className = "", initialTime, onTimeUpdate }: VideoPlayerProps) {
-  const videoRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<Player | null>(null);
-
-  useEffect(() => {
-    if (!videoRef.current) return;
-
-    // Determine if HLS
-    const isHLS = src.includes(".m3u8");
-
-    // Create video element
-    const videoElement = document.createElement("video-js");
-    videoElement.classList.add("vjs-big-play-centered", "vjs-fluid");
-    videoRef.current.appendChild(videoElement);
-
-    // Initialize player
-    const player = videojs(videoElement, {
-      autoplay: autoPlay,
-      controls: true,
-      responsive: true,
-      fluid: true,
-      poster: poster,
-      playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 2],
-      controlBar: {
-        children: [
-          "playToggle",
-          "volumePanel",
-          "currentTimeDisplay",
-          "timeDivider",
-          "durationDisplay",
-          "progressControl",
-          "playbackRateMenuButton",
-          "qualitySelector",
-          "fullscreenToggle",
-        ],
-      },
-      html5: {
-        vhs: {
-          overrideNative: true,
-        },
-        nativeVideoTracks: false,
-        nativeAudioTracks: false,
-        nativeTextTracks: false,
-      },
-      sources: [
-        {
-          src: src,
-          type: isHLS ? "application/x-mpegURL" : "video/mp4",
-        },
-      ],
-    });
-
-    playerRef.current = player;
-
-    // Disable right-click on video
-    player.on("contextmenu", (e: Event) => {
-      e.preventDefault();
-    });
-
-    // Seek to initial time when ready
-    if (initialTime && initialTime > 0) {
-      player.on("loadedmetadata", () => {
-        player.currentTime(initialTime);
-      });
-    }
-
-    // Time update callback
-    if (onTimeUpdate) {
-      player.on("timeupdate", () => {
-        const currentTime = player.currentTime();
-        const duration = player.duration();
-        if (typeof currentTime === "number" && typeof duration === "number") {
-          onTimeUpdate(Math.floor(currentTime), Math.floor(duration));
-        }
-      });
-    }
-
-    // Cleanup
-    return () => {
-      if (playerRef.current && !playerRef.current.isDisposed()) {
-        playerRef.current.dispose();
-        playerRef.current = null;
-      }
-    };
-  }, [src, poster, autoPlay, initialTime, onTimeUpdate]);
-
-  return (
-    <div className={className}>
-      <div 
-        ref={videoRef} 
-        data-vjs-player
-        onContextMenu={(e) => e.preventDefault()}
-      />
-      <style jsx global>{`
-        .video-js {
-          font-family: inherit;
-        }
-        .video-js .vjs-big-play-button {
-          background-color: rgba(0, 0, 0, 0.6);
-          border: none;
-          border-radius: 50%;
-          width: 70px;
-          height: 70px;
-          line-height: 70px;
-          margin-left: -35px;
-          margin-top: -35px;
-        }
-        .video-js .vjs-big-play-button:hover {
-          background-color: rgba(59, 130, 246, 0.8);
-        }
-        .video-js .vjs-control-bar {
-          background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-          height: 40px;
-        }
-        .video-js .vjs-play-progress,
-        .video-js .vjs-volume-level {
-          background-color: #3b82f6;
-        }
-        .video-js .vjs-slider:focus {
-          box-shadow: none;
-        }
-        /* Hide download button if browser adds one */
-        video::-webkit-media-controls-enclosure {
-          overflow: hidden;
-        }
-        video::-webkit-media-controls-panel {
-          width: calc(100% + 30px);
-        }
-        video::-internal-media-controls-download-button {
-          display: none !important;
-        }
-        video::-webkit-media-controls-download-button {
-          display: none !important;
-        }
-      `}</style>
-    </div>
-  );
+export interface VideoPlayerRef {
+  seekTo: (time: number) => void;
+  getCurrentTime: () => number;
+  getDuration: () => number;
 }
+
+const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
+  ({ src, poster, autoPlay = false, className = "", initialTime, onTimeUpdate }, ref) => {
+    const videoRef = useRef<HTMLDivElement>(null);
+    const playerRef = useRef<Player | null>(null);
+
+    useImperativeHandle(ref, () => ({
+      seekTo: (time: number) => {
+        if (playerRef.current && !playerRef.current.isDisposed()) {
+          playerRef.current.currentTime(time);
+        }
+      },
+      getCurrentTime: () => {
+        if (playerRef.current && !playerRef.current.isDisposed()) {
+          return playerRef.current.currentTime() as number || 0;
+        }
+        return 0;
+      },
+      getDuration: () => {
+        if (playerRef.current && !playerRef.current.isDisposed()) {
+          return playerRef.current.duration() as number || 0;
+        }
+        return 0;
+      },
+    }));
+
+    useEffect(() => {
+      if (!videoRef.current) return;
+
+      // Determine if HLS
+      const isHLS = src.includes(".m3u8");
+
+      // Create video element
+      const videoElement = document.createElement("video-js");
+      videoElement.classList.add("vjs-big-play-centered", "vjs-fluid");
+      videoRef.current.appendChild(videoElement);
+
+      // Initialize player
+      const player = videojs(videoElement, {
+        autoplay: autoPlay,
+        controls: true,
+        responsive: true,
+        fluid: true,
+        poster: poster,
+        playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 2],
+        controlBar: {
+          children: [
+            "playToggle",
+            "volumePanel",
+            "currentTimeDisplay",
+            "timeDivider",
+            "durationDisplay",
+            "progressControl",
+            "playbackRateMenuButton",
+            "qualitySelector",
+            "fullscreenToggle",
+          ],
+        },
+        html5: {
+          vhs: {
+            overrideNative: true,
+          },
+          nativeVideoTracks: false,
+          nativeAudioTracks: false,
+          nativeTextTracks: false,
+        },
+        sources: [
+          {
+            src: src,
+            type: isHLS ? "application/x-mpegURL" : "video/mp4",
+          },
+        ],
+      });
+
+      playerRef.current = player;
+
+      // Disable right-click on video
+      player.on("contextmenu", (e: Event) => {
+        e.preventDefault();
+      });
+
+      // Seek to initial time when ready
+      if (initialTime && initialTime > 0) {
+        player.on("loadedmetadata", () => {
+          player.currentTime(initialTime);
+        });
+      }
+
+      // Time update callback
+      if (onTimeUpdate) {
+        player.on("timeupdate", () => {
+          const currentTime = player.currentTime();
+          const duration = player.duration();
+          if (typeof currentTime === "number" && typeof duration === "number") {
+            onTimeUpdate(Math.floor(currentTime), Math.floor(duration));
+          }
+        });
+      }
+
+      // Cleanup
+      return () => {
+        if (playerRef.current && !playerRef.current.isDisposed()) {
+          playerRef.current.dispose();
+          playerRef.current = null;
+        }
+      };
+    }, [src, poster, autoPlay, initialTime, onTimeUpdate]);
+
+    return (
+      <div className={className}>
+        <div 
+          ref={videoRef} 
+          data-vjs-player
+          onContextMenu={(e) => e.preventDefault()}
+        />
+        <style jsx global>{`
+          .video-js {
+            font-family: inherit;
+          }
+          .video-js .vjs-big-play-button {
+            background-color: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            margin-left: -35px;
+            margin-top: -35px;
+          }
+          .video-js .vjs-big-play-button:hover {
+            background-color: rgba(59, 130, 246, 0.8);
+          }
+          .video-js .vjs-control-bar {
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            height: 40px;
+          }
+          .video-js .vjs-play-progress,
+          .video-js .vjs-volume-level {
+            background-color: #3b82f6;
+          }
+          .video-js .vjs-slider:focus {
+            box-shadow: none;
+          }
+          /* Hide download button if browser adds one */
+          video::-webkit-media-controls-enclosure {
+            overflow: hidden;
+          }
+          video::-webkit-media-controls-panel {
+            width: calc(100% + 30px);
+          }
+          video::-internal-media-controls-download-button {
+            display: none !important;
+          }
+          video::-webkit-media-controls-download-button {
+            display: none !important;
+          }
+        `}</style>
+      </div>
+    );
+  }
+);
+
+VideoPlayer.displayName = "VideoPlayer";
+
+export default VideoPlayer;

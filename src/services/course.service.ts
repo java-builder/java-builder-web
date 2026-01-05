@@ -222,7 +222,7 @@ export const lessonApi = {
   updateProgress: async (data: UpdateLessonProgressRequest) => {
     try {
       const response = await apiClient.put<ApiResponse<void>>(
-        "/api/v1/lessons/progress",
+        "/api/v1/lesson-progress",
         data,
       );
       return response.data;

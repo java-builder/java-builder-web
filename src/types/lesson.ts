@@ -6,6 +6,7 @@ export interface LessonDetailResponse {
   isFreePreview: boolean;
   videoKey?: string;
   videoUrl?: string;
+  completed?: boolean;
 }
 
 export interface CreateLessonRequest {

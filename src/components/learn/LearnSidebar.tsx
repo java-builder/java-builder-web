@@ -110,6 +110,8 @@ function ChapterItem({
   onToggle,
   onSelectLesson,
 }: ChapterItemProps) {
+  const completedCount = lessons.filter(l => l.completed).length;
+  
   return (
     <div className="border-b border-gray-200/50 dark:border-gray-700/50">
       <button
@@ -126,7 +128,12 @@ function ChapterItem({
             </svg>
             <span className="text-xs text-gray-500 font-medium">Chương {chapterIndex + 1}</span>
           </div>
-          <span className="text-xs text-gray-500 flex-shrink-0">{lessons.length} bài</span>
+          <span className="text-xs text-gray-500 flex-shrink-0">
+            {completedCount > 0 && (
+              <span className="text-green-600 dark:text-green-400 mr-1">{completedCount}/</span>
+            )}
+            {lessons.length} bài
+          </span>
         </div>
         <p className="text-sm text-gray-700 dark:text-gray-300 pl-6 line-clamp-2">{chapter.chapterName}</p>
       </button>
@@ -164,6 +171,8 @@ interface LessonItemProps {
 }
 
 function LessonItem({ lesson, lessonIndex, isActive, onSelect }: LessonItemProps) {
+  const isCompleted = lesson.completed;
+  
   return (
     <button
       onClick={onSelect}
@@ -172,12 +181,28 @@ function LessonItem({ lesson, lessonIndex, isActive, onSelect }: LessonItemProps
       }`}
     >
       <span className={`w-6 h-6 flex items-center justify-center rounded text-xs flex-shrink-0 ${
-        isActive ? "bg-accent text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+        isCompleted 
+          ? "bg-green-500 text-white" 
+          : isActive 
+            ? "bg-accent text-white" 
+            : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
       }`}>
-        {lessonIndex + 1}
+        {isCompleted ? (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          lessonIndex + 1
+        )}
       </span>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm line-clamp-2 ${isActive ? "text-accent dark:text-white font-medium" : "text-gray-700 dark:text-gray-300"}`}>
+        <p className={`text-sm line-clamp-2 ${
+          isCompleted 
+            ? "text-green-600 dark:text-green-400" 
+            : isActive 
+              ? "text-accent dark:text-white font-medium" 
+              : "text-gray-700 dark:text-gray-300"
+        }`}>
           {lesson.lessonName}
         </p>
         {lesson.videoUrl && (
