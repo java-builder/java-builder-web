@@ -104,6 +104,20 @@ export const courseApi = {
       throw error;
     }
   },
+
+  // Xóa khóa học
+  delete: async (id: string) => {
+    try {
+      const response = await apiClient.delete<ApiResponse<void>>(
+        `/api/v1/courses/${id}`,
+      );
+      toast.success("Xóa khóa học thành công!");
+      return response.data;
+    } catch (error) {
+      toast.error("Xóa khóa học thất bại. Vui lòng thử lại.");
+      throw error;
+    }
+  },
 };
 
 export const chapterApi = {

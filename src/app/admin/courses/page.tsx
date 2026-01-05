@@ -115,9 +115,11 @@ export default function CoursesPage() {
     const { id } = deleteModal;
     setIsDeleting(id);
     try {
-      // Call API to delete course here
+      await courseApi.delete(id);
       setCourses(courses.filter((course) => course.id !== id));
       setDeleteModal({ isOpen: false, id: "", title: "" });
+    } catch {
+      // Error already handled by courseApi.delete with toast
     } finally {
       setIsDeleting("");
     }
