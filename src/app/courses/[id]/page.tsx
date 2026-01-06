@@ -718,7 +718,6 @@ export default function CourseDetailPage() {
                         courseId={courseId} 
                         isEnrolled={isEnrolled} 
                         isPremiumUser={isPremiumUser}
-                        isActive={activeTab === "comments"}
                       />
                     )}
                   </div>
@@ -863,30 +862,30 @@ export default function CourseDetailPage() {
 
       {/* Video Preview Modal */}
       {previewModal.isOpen && previewModal.lesson && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70" onClick={() => setPreviewModal({ isOpen: false, lesson: null })} />
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">{previewModal.lesson.lessonName}</h3>
+            <div className="flex items-start sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2">{previewModal.lesson.lessonName}</h3>
                 {isPremiumUser && !isEnrolled ? (
-                  <span className="px-2 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full">
                     Premium Member
                   </span>
                 ) : isEnrolled ? (
-                  <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
                     Đã đăng ký
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
                     Xem miễn phí
                   </span>
                 )}
               </div>
               <button
                 onClick={() => setPreviewModal({ isOpen: false, lesson: null })}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -916,7 +915,7 @@ export default function CourseDetailPage() {
 
             {/* Description */}
             {previewModal.lesson.description && (
-              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">Mô tả bài học</h4>
                 <p className="text-sm text-gray-600 whitespace-pre-wrap">{previewModal.lesson.description}</p>
               </div>
@@ -924,9 +923,9 @@ export default function CourseDetailPage() {
 
             {/* CTA - Only show if not enrolled and not premium */}
             {!isEnrolled && !isPremiumUser && (
-              <div className="px-6 py-4 border-t border-gray-200 bg-accent-50">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">
+              <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-accent-50">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <p className="text-sm text-gray-600 text-center sm:text-left">
                     Đăng ký khóa học để xem tất cả bài học
                   </p>
                   <button 
@@ -934,7 +933,7 @@ export default function CourseDetailPage() {
                       setPreviewModal({ isOpen: false, lesson: null });
                       handlePayment();
                     }}
-                    className="px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors"
+                    className="w-full sm:w-auto px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors"
                   >
                     Đăng ký ngay
                   </button>
