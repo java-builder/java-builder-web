@@ -32,10 +32,6 @@ export default function ReportsPage() {
     totalUsers: 0,
     totalCourses: 0,
     totalEnrollments: 0,
-    revenueGrowth: 0,
-    userGrowth: 0,
-    courseGrowth: 0,
-    enrollmentGrowth: 0,
     revenueChart: [],
     userChart: [],
     courseRevenues: [],
@@ -227,12 +223,7 @@ export default function ReportsPage() {
             <div>
               <p className="text-sm font-medium text-green-700 mb-1">Tổng doanh thu</p>
               <p className="text-2xl font-bold text-green-900">{formatPrice(stats.totalRevenue)}</p>
-              <div className="flex items-center mt-2">
-                <span className={`text-sm font-semibold ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {stats.revenueGrowth >= 0 ? '↑' : '↓'} {Math.abs(stats.revenueGrowth).toFixed(1)}%
-                </span>
-                <span className="text-xs text-green-600 ml-1">so với kỳ trước</span>
-              </div>
+              <p className="text-xs text-green-600 mt-2">Trong khoảng thời gian đã chọn</p>
             </div>
             <div className="p-3 bg-green-500 rounded-xl">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,12 +239,7 @@ export default function ReportsPage() {
             <div>
               <p className="text-sm font-medium text-blue-700 mb-1">Tổng người dùng</p>
               <p className="text-2xl font-bold text-blue-900">{stats.totalUsers.toLocaleString()}</p>
-              <div className="flex items-center mt-2">
-                <span className={`text-sm font-semibold ${stats.userGrowth >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                  {stats.userGrowth >= 0 ? '↑' : '↓'} {Math.abs(stats.userGrowth).toFixed(1)}%
-                </span>
-                <span className="text-xs text-blue-600 ml-1">so với kỳ trước</span>
-              </div>
+              <p className="text-xs text-blue-600 mt-2">Tổng số tài khoản</p>
             </div>
             <div className="p-3 bg-blue-500 rounded-xl">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -269,12 +255,7 @@ export default function ReportsPage() {
             <div>
               <p className="text-sm font-medium text-purple-700 mb-1">Tổng khóa học</p>
               <p className="text-2xl font-bold text-purple-900">{stats.totalCourses}</p>
-              <div className="flex items-center mt-2">
-                <span className={`text-sm font-semibold ${stats.courseGrowth >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
-                  {stats.courseGrowth >= 0 ? '↑' : '↓'} {Math.abs(stats.courseGrowth).toFixed(1)}%
-                </span>
-                <span className="text-xs text-purple-600 ml-1">so với kỳ trước</span>
-              </div>
+              <p className="text-xs text-purple-600 mt-2">Tổng số khóa học</p>
             </div>
             <div className="p-3 bg-purple-500 rounded-xl">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,12 +271,7 @@ export default function ReportsPage() {
             <div>
               <p className="text-sm font-medium text-orange-700 mb-1">Tổng đăng ký</p>
               <p className="text-2xl font-bold text-orange-900">{stats.totalEnrollments.toLocaleString()}</p>
-              <div className="flex items-center mt-2">
-                <span className={`text-sm font-semibold ${stats.enrollmentGrowth >= 0 ? 'text-orange-600' : 'text-red-600'}`}>
-                  {stats.enrollmentGrowth >= 0 ? '↑' : '↓'} {Math.abs(stats.enrollmentGrowth).toFixed(1)}%
-                </span>
-                <span className="text-xs text-orange-600 ml-1">so với kỳ trước</span>
-              </div>
+              <p className="text-xs text-orange-600 mt-2">Tổng lượt đăng ký khóa học</p>
             </div>
             <div className="p-3 bg-orange-500 rounded-xl">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
