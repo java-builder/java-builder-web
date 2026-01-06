@@ -345,8 +345,8 @@ export default function EditCoursePage() {
       toast.error("Vui lòng chọn file video");
       return;
     }
-    if (file.size > 500 * 1024 * 1024) {
-      toast.error("Kích thước video không được vượt quá 500MB");
+    if (file.size > 1000 * 1024 * 1024) {
+      toast.error("Kích thước video không được vượt quá 1000MB");
       return;
     }
 
