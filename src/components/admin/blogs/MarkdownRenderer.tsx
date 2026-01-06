@@ -109,12 +109,17 @@ export default function MarkdownRenderer({
           hr() {
             return <hr className="my-8 border-gray-300" />;
           },
-          code({ className, children, ...props }) {
+          code({ className, children, node, ...props }) {
             const match = /language-(\w+)/.exec(className || "");
             const language = match ? match[1] : "";
             const codeId = `code-${Math.random().toString(36).substring(2, 11)}`;
+            
+            // Check if this is a code block (inside pre) or inline code
+            const isCodeBlock = node?.position && 
+              typeof children === 'string' && 
+              (children.includes('\n') || language);
 
-            if (language) {
+            if (language || isCodeBlock) {
               return (
                 <div className="relative group my-6 shadow-xl rounded-xl overflow-hidden border border-gray-300/30 dark:border-gray-600/30">
                   {/* Header */}
@@ -126,7 +131,7 @@ export default function MarkdownRenderer({
                         <div className="w-3 h-3 rounded-full bg-green-500"></div>
                       </div>
                       <span className="text-sm font-semibold text-gray-400">
-                        {language}
+                        {language || "text"}
                       </span>
                     </div>
                     <button
@@ -168,7 +173,7 @@ export default function MarkdownRenderer({
 
                   {/* Code Content */}
                   <div className="relative">
-                    <pre className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed">
+                    <pre className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre">
                       <code className={className} {...props}>
                         {children}
                       </code>
@@ -190,8 +195,17 @@ export default function MarkdownRenderer({
               </code>
             );
           },
-          pre({ children }) {
-            return <>{children}</>;
+          pre({ children, node }) {
+            // Check if children is already processed code block
+            if (React.isValidElement(children) && children.type === 'div') {
+              return <>{children}</>;
+            }
+            // For unprocessed pre blocks (plain text code blocks)
+            return (
+              <pre className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre rounded-xl my-6">
+                {children}
+              </pre>
+            );
           },
           blockquote({ children }) {
             return (

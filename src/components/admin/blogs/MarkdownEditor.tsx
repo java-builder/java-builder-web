@@ -205,24 +205,40 @@ export default function MarkdownEditor({
         )}
 
         {viewMode === "split" && (
-          <div style={{ height: `${height}px` }}>
-            <MDEditor
-              value={value}
-              onChange={(val) => onChange(val || "")}
-              height={height}
-              data-color-mode="light"
-              preview="live"
-              hideToolbar={false}
-              textareaProps={{
-                placeholder,
-                style: {
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                  fontFamily:
-                    'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-                },
-              }}
-            />
+          <div
+            className="grid grid-cols-2 gap-0 border border-gray-300 rounded-lg overflow-hidden"
+            style={{ height: `${height}px` }}
+          >
+            {/* Editor bên trái */}
+            <div className="border-r border-gray-300 overflow-hidden">
+              <MDEditor
+                value={value}
+                onChange={(val) => onChange(val || "")}
+                height={height}
+                data-color-mode="light"
+                preview="edit"
+                hideToolbar={false}
+                textareaProps={{
+                  placeholder,
+                  style: {
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                    fontFamily:
+                      'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+                  },
+                }}
+              />
+            </div>
+            {/* Preview bên phải */}
+            <div className="bg-white overflow-y-auto p-4">
+              {value ? (
+                <MarkdownRenderer content={value} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <p className="text-sm">Preview sẽ hiển thị ở đây...</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
