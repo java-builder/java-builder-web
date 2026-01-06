@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { enrollmentApi } from "@/services/course.service";
+import { enrollmentApi } from "@/services/enrollment.service";
 import { MyEnrolledCourseResponse, CourseLevel } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
@@ -18,35 +18,38 @@ export default function MyCoursesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [mounted, setMounted] = useState(false);
   const pageSize = 8;
 
   useEffect(() => {
-    if (!userLoading && !currentUser) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !userLoading && !currentUser) {
       router.push("/login");
     }
-  }, [currentUser, userLoading, router]);
+  }, [currentUser, userLoading, router, mounted]);
 
   useEffect(() => {
     if (currentUser) {
+      const fetchMyCourses = async () => {
+        setIsLoading(true);
+        try {
+          const response = await enrollmentApi.getMyCourses(currentPage, pageSize);
+          if (response.result) {
+            setCourses(response.result.result || []);
+            setTotalPages(response.result.totalPages || 1);
+          }
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
       fetchMyCourses();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, currentUser]);
-
-  const fetchMyCourses = async () => {
-    setIsLoading(true);
-    try {
-      const response = await enrollmentApi.getMyCourses(currentPage, pageSize);
-      if (response.result) {
-        setCourses(response.result.result || []);
-        setTotalPages(response.result.totalPages || 1);
-      }
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const getLevelText = (level?: CourseLevel) => {
     switch (level) {
@@ -72,11 +75,11 @@ export default function MyCoursesPage() {
     return "bg-amber-500";
   };
 
-  if (userLoading) {
+  if (!mounted || userLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex-1 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
+import EnrollUserModal from "@/components/admin/courses/EnrollUserModal";
 import { courseApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
 import { CourseStats, DeleteModalState } from "@/types/admin";
@@ -59,6 +60,11 @@ export default function CoursesPage() {
     isOpen: false,
     id: "",
     title: "",
+  });
+  const [enrollModal, setEnrollModal] = useState<{ isOpen: boolean; courseId: string; courseTitle: string }>({
+    isOpen: false,
+    courseId: "",
+    courseTitle: "",
   });
 
   // Mock stats - có thể thay thế bằng API call thực tế sau
@@ -592,6 +598,15 @@ export default function CoursesPage() {
                   {/* Actions */}
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setEnrollModal({ isOpen: true, courseId: course.id, courseTitle: course.title })}
+                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        title="Thêm học viên"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                      </button>
                       <Link
                         href={`/courses/${course.id}`}
                         target="_blank"
@@ -678,6 +693,15 @@ export default function CoursesPage() {
         cancelText="Hủy"
         isLoading={isDeleting === deleteModal.id}
         type="danger"
+      />
+
+      {/* Enroll User Modal */}
+      <EnrollUserModal
+        isOpen={enrollModal.isOpen}
+        onClose={() => setEnrollModal({ isOpen: false, courseId: "", courseTitle: "" })}
+        onSuccess={() => fetchCourses()}
+        courseId={enrollModal.courseId}
+        courseTitle={enrollModal.courseTitle}
       />
     </div>
   );
