@@ -12,7 +12,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
-  setAuthenticated: (authorities: string[]) => void;
+  checkAuth: () => Promise<string[]>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,38 +33,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     error: null,
   });
 
-  const checkAuth = useCallback(async () => {
+  const checkAuth = useCallback(async (): Promise<string[]> => {
     const token = authApi.getAccessToken();
+    
     if (!token) {
       setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
-      return;
+      return [];
     }
 
     try {
       const result = await authApi.introspect();
+      const authorities = result?.authorities || [];
       setState({
         isAuthenticated: result?.valid || false,
         isLoading: false,
-        hasAdminAccess: result?.scopes?.includes("ADMIN") || false,
+        hasAdminAccess: authorities.includes("ADMIN"),
         error: null,
       });
+      return authorities;
     } catch {
       setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: "Lỗi xác thực" });
+      return [];
     }
   }, []);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-
-  const setAuthenticated = useCallback((authorities: string[]) => {
-    setState({
-      isAuthenticated: true,
-      isLoading: false,
-      hasAdminAccess: authorities.includes("ADMIN"),
-      error: null,
-    });
-  }, []);
 
   const logout = async () => {
     try {
@@ -76,7 +71,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, logout, setAuthenticated }}>
+    <AuthContext.Provider value={{ ...state, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );

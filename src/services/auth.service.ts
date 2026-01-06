@@ -25,10 +25,7 @@ export const authApi = {
           response.data.result?.accessToken &&
           response.data.result?.userId
         ) {
-          localStorage.setItem(
-            "access_token",
-            response.data.result.accessToken,
-          );
+          localStorage.setItem("access_token", response.data.result.accessToken);
           localStorage.setItem("user_id", response.data.result.userId);
           toast.success("Đăng nhập thành công!");
         }
@@ -104,9 +101,7 @@ export const authApi = {
       const response = await apiClient.post<ApiResponse<LoginResponse>>(
         "/api/v1/auth/login-google",
         null,
-        {
-          params: { code },
-        },
+        { params: { code } },
       );
 
       if (
@@ -131,9 +126,7 @@ export const authApi = {
       const response = await apiClient.post<ApiResponse<LoginResponse>>(
         "/api/v1/auth/login-github",
         null,
-        {
-          params: { code },
-        },
+        { params: { code } },
       );
 
       if (

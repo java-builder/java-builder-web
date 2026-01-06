@@ -17,13 +17,12 @@ type LoginFormData = LoginRequest;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuthenticated } = useAuth();
+  const { checkAuth } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
-  const [userAuthorities, setUserAuthorities] = useState<string[]>([]);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -59,11 +58,9 @@ export default function LoginPage() {
       if (result.code === 200) {
         if (result.result?.mftEnable) {
           setUserEmail(data.email);
-          setUserAuthorities(result.result.authorities || []);
           setShowTwoFactorModal(true);
         } else if (result.result?.accessToken) {
-          const authorities = result.result.authorities || [];
-          setAuthenticated(authorities);
+          const authorities = await checkAuth();
           const isAdmin = authorities.includes("ADMIN");
           router.push(isAdmin ? "/admin" : "/");
         }
@@ -74,9 +71,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleTwoFactorSuccess = () => {
-    setAuthenticated(userAuthorities);
-    const isAdmin = userAuthorities.includes("ADMIN");
+  const handleTwoFactorSuccess = async () => {
+    const authorities = await checkAuth();
+    const isAdmin = authorities.includes("ADMIN");
     router.push(isAdmin ? "/admin" : "/");
   };
 

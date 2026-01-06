@@ -22,7 +22,7 @@ export interface IntrospectRequest {
 
 export interface IntrospectResponse {
   valid: boolean;
-  scopes: string[];
+  authorities: string[];
 }
 
 export interface TwoFactorAuthenticationRequest {
