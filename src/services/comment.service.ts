@@ -47,6 +47,26 @@ export const commentApi = {
     }
   },
 
+  getRootByLessonId: async (lessonId: string, params: CommentSearchParams = {}) => {
+    try {
+      const response = await apiClient.get<
+        ApiResponse<PageResponse<CommentResponse>>
+      >("/api/v1/comments/lesson/root", {
+        params: {
+          lessonId,
+          page: params.page || 1,
+          size: params.size || 10,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error loading lesson comments:", error.message);
+      }
+      throw error;
+    }
+  },
+
   getRepliesByParentId: async (
     parentId: string,
     params: CommentSearchParams = {},

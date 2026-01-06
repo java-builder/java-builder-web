@@ -1,93 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { CommentResponse } from "@/types/comment";
-
-// Mock data
-const mockComments: CommentResponse[] = [
-  {
-    id: "1",
-    content: "Thầy ơi cho em hỏi, khi nào nên dùng @Query với native query và khi nào dùng JPQL ạ? Em thấy cả 2 đều cho kết quả giống nhau.",
-    username: "Nguyễn Văn A",
-    avatar: "",
-    createdAt: "2 giờ trước",
-    repliesCount: 2,
-    replies: [
-      {
-        id: "1-1",
-        content: "JPQL là chuẩn JPA, portable giữa các database. Native query dùng khi cần tối ưu performance hoặc dùng function đặc thù của database như MySQL's MATCH AGAINST. Khuyến khích dùng JPQL trước, chỉ chuyển native khi thực sự cần.",
-        username: "Giảng viên",
-        createdAt: "1 giờ trước",
-        repliesCount: 0,
-      },
-      {
-        id: "1-2",
-        content: "Cảm ơn thầy, em hiểu rồi ạ!",
-        username: "Nguyễn Văn A",
-        avatar: "",
-        createdAt: "30 phút trước",
-        repliesCount: 0,
-      },
-    ],
-  },
-  {
-    id: "2",
-    content: "Ở phút 8:20, tại sao lại dùng FetchType.LAZY thay vì EAGER ạ? Em thấy dùng EAGER tiện hơn vì không cần gọi thêm query.",
-    username: "Trần Thị B",
-    createdAt: "5 giờ trước",
-    repliesCount: 1,
-    replies: [
-      {
-        id: "2-1",
-        content: "EAGER sẽ load tất cả data liên quan ngay cả khi không cần, gây ra N+1 problem và tốn memory. LAZY chỉ load khi thực sự access, performance tốt hơn nhiều. Luôn dùng LAZY và fetch khi cần bằng JOIN FETCH hoặc EntityGraph nhé.",
-        username: "Giảng viên",
-        avatar: "",
-        createdAt: "4 giờ trước",
-        repliesCount: 0,
-      },
-    ],
-  },
-];
+import { useLessonComments } from "@/hooks/useLessonComments";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { formatRelativeTime } from "@/utils/dateUtils";
 
 interface LessonCommentsProps {
   lessonId: string;
 }
 
 export default function LessonComments({ lessonId }: LessonCommentsProps) {
-  const [comments] = useState<CommentResponse[]>(mockComments);
+  const { data: currentUser } = useCurrentUser();
+  const {
+    comments,
+    isLoading,
+    isSubmitting,
+    hasMore,
+    loadRootComments,
+    loadReplies,
+    addComment,
+    replyToComment,
+    deleteComment,
+    loadMoreComments,
+  } = useLessonComments(lessonId);
+
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
 
-  console.log("LessonComments for lesson:", lessonId);
+  useEffect(() => {
+    loadRootComments(1, false);
+  }, [lessonId, loadRootComments]);
 
-  const toggleReplies = (commentId: string) => {
-    setExpandedReplies(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
+  const toggleReplies = async (commentId: string) => {
+    const newSet = new Set(expandedReplies);
+    if (newSet.has(commentId)) {
+      newSet.delete(commentId);
+    } else {
+      newSet.add(commentId);
+      const comment = comments.find((c) => c.id === commentId);
+      if (comment && (!comment.replies || comment.replies.length === 0) && (comment.repliesCount || 0) > 0) {
+        await loadReplies(commentId);
       }
-      return newSet;
-    });
+    }
+    setExpandedReplies(newSet);
   };
 
-  const handleSubmitComment = () => {
-    if (!newComment.trim()) return;
-    // TODO: Call API
-    console.log("Submit comment:", newComment);
-    setNewComment("");
+  const handleSubmitComment = async () => {
+    if (!newComment.trim() || !currentUser) return;
+    try {
+      await addComment(newComment);
+      setNewComment("");
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
   };
 
-  const handleSubmitReply = (parentId: string) => {
-    if (!replyContent.trim()) return;
-    // TODO: Call API
-    console.log("Submit reply to:", parentId, replyContent);
-    setReplyContent("");
-    setReplyingTo(null);
+  const handleSubmitReply = async (parentId: string) => {
+    if (!replyContent.trim() || !currentUser) return;
+    try {
+      await replyToComment(parentId, replyContent);
+      setReplyContent("");
+      setReplyingTo(null);
+      if (!expandedReplies.has(parentId)) {
+        setExpandedReplies((prev) => new Set(prev).add(parentId));
+      }
+    } catch (error) {
+      console.error("Error submitting reply:", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await deleteComment(commentId);
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
   };
 
   return (
@@ -100,31 +91,58 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
       </h3>
 
       {/* New Comment Input */}
-      <div className="mb-6">
-        <div className="flex gap-3">
-          <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-sm font-medium">U</span>
-          </div>
-          <div className="flex-1">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Viết câu hỏi hoặc bình luận của bạn..."
-              className="w-full px-3 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500"
-              rows={3}
-            />
-            <div className="flex justify-end mt-2">
-              <button
-                onClick={handleSubmitComment}
-                disabled={!newComment.trim()}
-                className="px-4 py-2 bg-accent hover:bg-accent-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
-              >
-                Gửi bình luận
-              </button>
+      {currentUser ? (
+        <div className="mb-6">
+          <div className="flex gap-3">
+            {currentUser.avatar ? (
+              <Image
+                src={currentUser.avatar}
+                alt={currentUser.username}
+                width={36}
+                height={36}
+                className="w-9 h-9 rounded-full object-cover flex-shrink-0"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-sm font-medium">
+                  {currentUser.username?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+            )}
+            <div className="flex-1">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Viết câu hỏi hoặc bình luận của bạn..."
+                className="w-full px-3 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500"
+                rows={3}
+              />
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={handleSubmitComment}
+                  disabled={!newComment.trim() || isSubmitting}
+                  className="px-4 py-2 bg-accent hover:bg-accent-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  {isSubmitting ? "Đang gửi..." : "Gửi bình luận"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Vui lòng <a href="/login" className="text-accent hover:underline">đăng nhập</a> để bình luận
+          </p>
+        </div>
+      )}
+
+      {/* Loading */}
+      {isLoading && comments.length === 0 && (
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+        </div>
+      )}
 
       {/* Comments List */}
       <div className="space-y-5">
@@ -132,6 +150,7 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
           <CommentItem
             key={comment.id}
             comment={comment}
+            currentUser={currentUser}
             isExpanded={expandedReplies.has(comment.id)}
             isReplying={replyingTo === comment.id}
             replyContent={replyContent}
@@ -140,15 +159,39 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
             onCancelReply={() => { setReplyingTo(null); setReplyContent(""); }}
             onReplyContentChange={setReplyContent}
             onSubmitReply={() => handleSubmitReply(comment.id)}
+            onDelete={() => handleDeleteComment(comment.id)}
           />
         ))}
       </div>
+
+      {/* Load More */}
+      {hasMore && (
+        <div className="mt-4 text-center">
+          <button
+            onClick={loadMoreComments}
+            disabled={isLoading}
+            className="px-4 py-2 text-sm text-accent hover:text-accent-600 disabled:opacity-50"
+          >
+            {isLoading ? "Đang tải..." : "Xem thêm bình luận"}
+          </button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && comments.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Chưa có bình luận nào. Hãy là người đầu tiên bình luận!
+          </p>
+        </div>
+      )}
     </div>
   );
 }
 
 interface CommentItemProps {
   comment: CommentResponse;
+  currentUser: { id: string; username: string; avatar?: string } | null | undefined;
   isExpanded: boolean;
   isReplying: boolean;
   replyContent: string;
@@ -157,11 +200,13 @@ interface CommentItemProps {
   onCancelReply: () => void;
   onReplyContentChange: (value: string) => void;
   onSubmitReply: () => void;
+  onDelete: () => void;
   isReply?: boolean;
 }
 
 function CommentItem({
   comment,
+  currentUser,
   isExpanded,
   isReplying,
   replyContent,
@@ -170,12 +215,14 @@ function CommentItem({
   onCancelReply,
   onReplyContentChange,
   onSubmitReply,
+  onDelete,
   isReply = false,
 }: CommentItemProps) {
+  const isOwner = currentUser?.username === comment.username;
+
   return (
     <div className={isReply ? "ml-12" : ""}>
       <div className="flex gap-3">
-        {/* Avatar */}
         {comment.avatar ? (
           <Image
             src={comment.avatar}
@@ -185,11 +232,7 @@ function CommentItem({
             className="w-9 h-9 rounded-full object-cover flex-shrink-0"
           />
         ) : (
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-            comment.username === "Giảng viên" 
-              ? "bg-green-500" 
-              : "bg-gradient-to-br from-accent to-accent-600"
-          }`}>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-accent to-accent-600">
             <span className="text-white text-sm font-medium">
               {comment.username.charAt(0).toUpperCase()}
             </span>
@@ -197,31 +240,19 @@ function CommentItem({
         )}
 
         <div className="flex-1 min-w-0">
-          {/* Header */}
           <div className="flex items-center gap-2 mb-1">
-            <span className={`font-medium text-sm ${
-              comment.username === "Giảng viên" 
-                ? "text-green-600 dark:text-green-400" 
-                : "text-gray-900 dark:text-white"
-            }`}>
+            <span className="font-medium text-sm text-gray-900 dark:text-white">
               {comment.username}
             </span>
-            {comment.username === "Giảng viên" && (
-              <span className="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs rounded">
-                Giảng viên
-              </span>
-            )}
-            <span className="text-xs text-gray-500">{comment.createdAt}</span>
+            <span className="text-xs text-gray-500">{formatRelativeTime(comment.createdAt)}</span>
           </div>
 
-          {/* Content */}
           <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap mb-2">
             {comment.content}
           </p>
 
-          {/* Actions */}
           <div className="flex items-center gap-4">
-            {!isReply && (
+            {!isReply && currentUser && (
               <button
                 onClick={onStartReply}
                 className="text-xs text-gray-500 hover:text-accent transition-colors flex items-center gap-1"
@@ -243,13 +274,22 @@ function CommentItem({
                 {isExpanded ? "Ẩn" : "Xem"} {comment.repliesCount} phản hồi
               </button>
             )}
+            {isOwner && (
+              <button
+                onClick={onDelete}
+                className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+              >
+                Xóa
+              </button>
+            )}
           </div>
 
-          {/* Reply Input */}
           {isReplying && (
             <div className="mt-3 flex gap-3">
               <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-medium">U</span>
+                <span className="text-white text-xs font-medium">
+                  {currentUser?.username?.charAt(0).toUpperCase() || "U"}
+                </span>
               </div>
               <div className="flex-1">
                 <textarea
@@ -279,13 +319,13 @@ function CommentItem({
             </div>
           )}
 
-          {/* Replies */}
           {isExpanded && comment.replies && comment.replies.length > 0 && (
             <div className="mt-4 space-y-4">
               {comment.replies.map((reply) => (
                 <CommentItem
                   key={reply.id}
                   comment={reply}
+                  currentUser={currentUser}
                   isExpanded={false}
                   isReplying={false}
                   replyContent=""
@@ -294,6 +334,7 @@ function CommentItem({
                   onCancelReply={() => {}}
                   onReplyContentChange={() => {}}
                   onSubmitReply={() => {}}
+                  onDelete={() => {}}
                   isReply
                 />
               ))}
