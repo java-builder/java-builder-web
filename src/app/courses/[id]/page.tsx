@@ -559,9 +559,9 @@ export default function CourseDetailPage() {
                                           onClick={() => handleLessonClick(lesson)}
                                         >
                                           <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                                            <span className={`w-6 h-6 flex items-center justify-center rounded text-xs flex-shrink-0 ${
+                                            <span className={`w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold flex-shrink-0 ${
                                               canWatch 
-                                                ? "bg-accent-100 text-accent-600 group-hover:bg-accent group-hover:text-white" 
+                                                ? "bg-accent/10 text-accent" 
                                                 : "bg-gray-100 text-gray-400"
                                             } transition-colors`}>
                                               {lessonIndex + 1}
