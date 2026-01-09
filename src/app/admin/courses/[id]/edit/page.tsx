@@ -616,11 +616,11 @@ export default function EditCoursePage() {
                               chapterLessons[chapter.id].map((lesson, lessonIndex) => (
                                 <div 
                                   key={lesson.id} 
-                                  className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer group"
+                                  className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-all duration-200 cursor-pointer group"
                                   onClick={() => handlePreviewLesson(lesson)}
                                 >
                                   <div className="flex items-center gap-3">
-                                    <span className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded text-xs text-gray-500 group-hover:bg-accent group-hover:text-white transition-colors">
+                                    <span className="w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold bg-accent/10 text-accent transition-all duration-200">
                                       {lessonIndex + 1}
                                     </span>
                                     <div>
