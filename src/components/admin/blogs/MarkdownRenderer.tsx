@@ -195,7 +195,7 @@ export default function MarkdownRenderer({
               </code>
             );
           },
-          pre({ children, node }) {
+          pre({ children }) {
             // Check if children is already processed code block
             if (React.isValidElement(children) && children.type === 'div') {
               return <>{children}</>;

@@ -152,35 +152,74 @@ function ChapterItem({
   onSelectLesson,
 }: ChapterItemProps) {
   const completedCount = lessons.filter(l => l.completed).length;
+  const totalLessons = lessons.length;
+  const isAllCompleted = totalLessons > 0 && completedCount === totalLessons;
   
   return (
     <div className="border-b border-gray-200/50 dark:border-gray-700/50">
       <button
         onClick={onToggle}
-        className="w-full px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors text-left"
+        className={`w-full px-4 py-3.5 transition-colors text-left ${
+          isExpanded 
+            ? "bg-accent/5 dark:bg-accent/10" 
+            : "hover:bg-gray-50 dark:hover:bg-gray-700/30"
+        }`}
       >
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <svg
-              className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 ${isExpanded ? "rotate-90" : ""}`}
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-            <span className="text-xs text-gray-500 font-medium">Chương {chapterIndex + 1}</span>
-          </div>
-          <span className="text-xs text-gray-500 flex-shrink-0">
-            {completedCount > 0 && (
-              <span className="text-green-600 dark:text-green-400 mr-1">{completedCount}/</span>
+        {/* Chapter Header */}
+        <div className="flex items-start gap-3">
+          {/* Chapter Number Badge */}
+          <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+            isAllCompleted
+              ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+              : isExpanded
+                ? "bg-accent/10 text-accent"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+          }`}>
+            {isAllCompleted ? (
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              chapterIndex + 1
             )}
-            {lessons.length} bài
-          </span>
+          </div>
+
+          {/* Chapter Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-1">
+              <span className={`text-xs font-medium uppercase tracking-wide ${
+                isExpanded ? "text-accent" : "text-gray-500 dark:text-gray-400"
+              }`}>
+                Chương {chapterIndex + 1}
+              </span>
+              <div className="flex items-center gap-2">
+                {totalLessons > 0 && (
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {completedCount}/{totalLessons} bài
+                  </span>
+                )}
+                <svg
+                  className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+            <p className={`text-sm font-semibold line-clamp-2 ${
+              isExpanded 
+                ? "text-gray-900 dark:text-white" 
+                : "text-gray-800 dark:text-gray-200"
+            }`}>
+              {chapter.chapterName}
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-gray-700 dark:text-gray-300 pl-6 line-clamp-2">{chapter.chapterName}</p>
       </button>
 
+      {/* Lessons List */}
       {isExpanded && (
-        <div className="pb-2">
+        <div className="pb-2 bg-gray-50/50 dark:bg-gray-800/50">
           {isLoading ? (
             <div className="px-4 py-3 text-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent mx-auto"></div>

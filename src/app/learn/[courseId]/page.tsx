@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,6 +25,7 @@ export default function LearnCoursePage() {
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [loadingChapters, setLoadingChapters] = useState<Set<string>>(new Set());
+  const [isLoadingLesson, setIsLoadingLesson] = useState(false);
 
   const [initialTime, setInitialTime] = useState<number>(0);
   const currentTimeRef = useRef<number>(0);
@@ -34,15 +35,29 @@ export default function LearnCoursePage() {
   const fetchedCourseIdRef = useRef<string | null>(null);
 
   const loadChapterLessons = useCallback(async (chapterId: string, selectFirst = false) => {
+    // Đã có data thì không fetch lại
+    if (chapterLessons[chapterId]) {
+      if (selectFirst && chapterLessons[chapterId].length > 0) {
+        const firstLesson = chapterLessons[chapterId][0];
+        const lessonDetail = await lessonApi.getById(firstLesson.id);
+        if (lessonDetail.result) {
+          setCurrentLesson(lessonDetail.result);
+        }
+      }
+      return;
+    }
+
     setLoadingChapters(prev => new Set(prev).add(chapterId));
     try {
       const response = await lessonApi.getByChapterId(chapterId);
       if (response.result) {
-        setChapterLessons(prev => prev[chapterId] ? prev : { ...prev, [chapterId]: response.result || [] });
+        setChapterLessons(prev => ({ ...prev, [chapterId]: response.result || [] }));
         
         if (selectFirst && response.result?.length) {
           const lessonDetail = await lessonApi.getById(response.result[0].id);
-          setCurrentLesson(lessonDetail.result || response.result[0]);
+          if (lessonDetail.result) {
+            setCurrentLesson(lessonDetail.result);
+          }
         }
       }
     } finally {
@@ -52,7 +67,7 @@ export default function LearnCoursePage() {
         return newSet;
       });
     }
-  }, []);
+  }, [chapterLessons]);
 
   const initializeCourse = useCallback(async () => {
     if (!courseId || userLoading) return;
@@ -147,76 +162,111 @@ export default function LearnCoursePage() {
     }
   }, [currentLesson]);
 
-  const toggleChapter = async (chapter: ChapterDetailResponse) => {
-    const newExpanded = new Set(expandedChapters);
-    if (newExpanded.has(chapter.id)) {
-      newExpanded.delete(chapter.id);
-    } else {
-      newExpanded.add(chapter.id);
-      await loadChapterLessons(chapter.id);
-    }
-    setExpandedChapters(newExpanded);
-  };
+  const toggleChapter = useCallback(async (chapter: ChapterDetailResponse) => {
+    setExpandedChapters(prev => {
+      const newExpanded = new Set(prev);
+      if (newExpanded.has(chapter.id)) {
+        newExpanded.delete(chapter.id);
+      } else {
+        newExpanded.add(chapter.id);
+        // Load lessons nếu chưa có
+        if (!chapterLessons[chapter.id]) {
+          loadChapterLessons(chapter.id);
+        }
+      }
+      return newExpanded;
+    });
+  }, [chapterLessons, loadChapterLessons]);
 
-  const selectLesson = async (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => {
-    await saveProgress();
-    try {
-      const response = await lessonApi.getById(lesson.id);
-      setCurrentLesson(response.result || lesson);
-    } catch {
-      setCurrentLesson(lesson);
-    }
-    setCurrentChapter(chapter);
-    resetProgressTracking();
-    setSidebarOpen(false);
-  };
-
-  const resetProgressTracking = () => {
+  const resetProgressTracking = useCallback(() => {
     setInitialTime(0);
     currentTimeRef.current = 0;
     lastSavedTimeRef.current = 0;
     isCompletedRef.current = false;
-  };
+  }, []);
 
-  const getAllLessons = useCallback(() => {
+  const selectLesson = useCallback(async (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => {
+    // Không fetch lại nếu đang chọn lesson hiện tại
+    if (currentLesson?.id === lesson.id) return;
+    
+    await saveProgress();
+    setIsLoadingLesson(true);
+    
+    try {
+      const response = await lessonApi.getById(lesson.id);
+      if (response.result) {
+        setCurrentLesson(response.result);
+      }
+    } catch {
+      setCurrentLesson(lesson);
+    } finally {
+      setIsLoadingLesson(false);
+    }
+    
+    setCurrentChapter(chapter);
+    resetProgressTracking();
+    
+    // Chỉ đóng sidebar trên mobile
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  }, [currentLesson?.id, saveProgress, resetProgressTracking]);
+
+  // Memoize allLessons để tránh tính toán lại mỗi render
+  const allLessons = useMemo(() => {
     if (!course?.chapters) return [];
     const all: { lesson: LessonDetailResponse; chapter: ChapterDetailResponse }[] = [];
     course.chapters.forEach(chapter => {
       (chapterLessons[chapter.id] || []).forEach(lesson => all.push({ lesson, chapter }));
     });
     return all;
-  }, [course, chapterLessons]);
+  }, [course?.chapters, chapterLessons]);
 
-  const navigateLesson = async (direction: "next" | "prev") => {
-    if (!currentLesson) return;
+  const currentLessonIndex = useMemo(() => {
+    if (!currentLesson) return -1;
+    return allLessons.findIndex(item => item.lesson.id === currentLesson.id);
+  }, [allLessons, currentLesson]);
+
+  const navigateLesson = useCallback(async (direction: "next" | "prev") => {
+    if (currentLessonIndex === -1) return;
     await saveProgress();
+    setIsLoadingLesson(true);
 
-    const allLessons = getAllLessons();
-    const currentIndex = allLessons.findIndex(item => item.lesson.id === currentLesson.id);
-    const newIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
+    const newIndex = direction === "next" ? currentLessonIndex + 1 : currentLessonIndex - 1;
 
     if (newIndex >= 0 && newIndex < allLessons.length) {
       const { lesson, chapter } = allLessons[newIndex];
+      
       try {
         const response = await lessonApi.getById(lesson.id);
-        setCurrentLesson(response.result || lesson);
+        if (response.result) {
+          setCurrentLesson(response.result);
+        }
       } catch {
         setCurrentLesson(lesson);
+      } finally {
+        setIsLoadingLesson(false);
       }
+      
       setCurrentChapter(chapter);
       resetProgressTracking();
+      
       if (!expandedChapters.has(chapter.id)) {
         setExpandedChapters(prev => new Set(prev).add(chapter.id));
       }
+    } else {
+      setIsLoadingLesson(false);
     }
-  };
+  }, [currentLessonIndex, allLessons, saveProgress, resetProgressTracking, expandedChapters]);
 
-  const canNavigate = (direction: "next" | "prev") => {
-    if (!currentLesson) return false;
-    const allLessons = getAllLessons();
-    const currentIndex = allLessons.findIndex(item => item.lesson.id === currentLesson.id);
-    return direction === "next" ? currentIndex < allLessons.length - 1 : currentIndex > 0;
-  };
+  const canPrev = currentLessonIndex > 0;
+  const canNext = currentLessonIndex >= 0 && currentLessonIndex < allLessons.length - 1;
+
+  // Memoize callbacks cho sidebar
+  const handleCloseSidebar = useCallback(() => setSidebarOpen(false), []);
+  const handleToggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), []);
+  const handlePrev = useCallback(() => navigateLesson("prev"), [navigateLesson]);
+  const handleNext = useCallback(() => navigateLesson("next"), [navigateLesson]);
 
   if (isLoading || userLoading) {
     return (
@@ -331,7 +381,7 @@ export default function LearnCoursePage() {
         loadingChapters={loadingChapters}
         currentLessonId={currentLesson?.id}
         isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        onClose={handleCloseSidebar}
         onToggleChapter={toggleChapter}
         onSelectLesson={selectLesson}
       />
@@ -340,20 +390,21 @@ export default function LearnCoursePage() {
         <LearnHeader
           chapterName={currentChapter?.chapterName}
           lessonName={currentLesson?.lessonName}
-          canPrev={canNavigate("prev")}
-          canNext={canNavigate("next")}
-          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          onPrev={() => navigateLesson("prev")}
-          onNext={() => navigateLesson("next")}
+          canPrev={canPrev}
+          canNext={canNext}
+          onToggleSidebar={handleToggleSidebar}
+          onPrev={handlePrev}
+          onNext={handleNext}
         />
 
         <div className="flex-1 overflow-y-auto">
           <LessonContent
             lesson={currentLesson}
             initialTime={initialTime}
-            canNext={canNavigate("next")}
+            canNext={canNext}
+            isLoading={isLoadingLesson}
             onTimeUpdate={handleTimeUpdate}
-            onNext={() => navigateLesson("next")}
+            onNext={handleNext}
           />
         </div>
       </main>

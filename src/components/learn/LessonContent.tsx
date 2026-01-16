@@ -10,18 +10,23 @@ interface LessonContentProps {
   lesson: LessonDetailResponse | null;
   initialTime: number;
   canNext: boolean;
+  isLoading?: boolean;
   onTimeUpdate: (time: number, duration: number) => void;
   onNext: () => void;
 }
+
+type TabType = "overview" | "notes" | "comments";
 
 export default function LessonContent({
   lesson,
   initialTime,
   canNext,
+  isLoading = false,
   onTimeUpdate,
   onNext,
 }: LessonContentProps) {
   const [currentTime, setCurrentTime] = useState(0);
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
   const videoRef = useRef<VideoPlayerRef>(null);
 
   const handleTimeUpdate = useCallback(
@@ -52,8 +57,51 @@ export default function LessonContent({
     );
   }
 
+  // Loading overlay
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex flex-col">
+        {/* Video skeleton */}
+        <div className="bg-black flex-shrink-0">
+          <div className="aspect-video w-full max-w-5xl mx-auto flex items-center justify-center bg-gray-900">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-3"></div>
+              <p className="text-gray-400 text-sm">Đang tải bài học...</p>
+            </div>
+          </div>
+        </div>
+        {/* Content skeleton */}
+        <div className="flex-1 bg-gray-50 dark:bg-gray-900 p-4 sm:p-6">
+          <div className="max-w-3xl mx-auto animate-pulse">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const tabs = [
+    { id: "overview" as TabType, label: "Tổng quan", icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    )},
+    { id: "notes" as TabType, label: "Ghi chú", icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg>
+    )},
+    { id: "comments" as TabType, label: "Bình luận", icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    )},
+  ];
+
   return (
-    <>
+    <div className="animate-fadeIn">
       {/* Video Player */}
       <div className="bg-black flex-shrink-0">
         {lesson.videoUrl ? (
@@ -79,47 +127,83 @@ export default function LessonContent({
         )}
       </div>
 
-      {/* Lesson Info */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 p-4 sm:p-6">
+      {/* Tabs & Content */}
+      <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">{lesson.lessonName}</h1>
-          
-          {lesson.description && (
-            <div className="prose prose-gray dark:prose-invert max-w-none">
-              <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base whitespace-pre-wrap">{lesson.description}</p>
+          {/* Tab Navigation */}
+          <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 sm:flex-none px-4 sm:px-6 py-3 flex items-center justify-center gap-2 text-sm font-medium transition-colors border-b-2 ${
+                    activeTab === tab.id
+                      ? "border-accent text-accent"
+                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  }`}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              ))}
             </div>
-          )}
+          </div>
 
-          {/* Next Lesson CTA */}
-          {canNext && (
-            <div className="mt-6 sm:mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Tab Content */}
+          <div className="p-4 sm:p-6">
+            {/* Overview Tab */}
+            {activeTab === "overview" && (
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Bài tiếp theo</p>
-                <p className="text-gray-900 dark:text-white font-medium">Tiếp tục học</p>
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  {lesson.lessonName}
+                </h1>
+                
+                {lesson.description && (
+                  <div className="prose prose-gray dark:prose-invert max-w-none">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base whitespace-pre-wrap">
+                      {lesson.description}
+                    </p>
+                  </div>
+                )}
+
+                {/* Next Lesson CTA */}
+                {canNext && (
+                  <div className="mt-6 sm:mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Bài tiếp theo</p>
+                      <p className="text-gray-900 dark:text-white font-medium">Tiếp tục học</p>
+                    </div>
+                    <button
+                      onClick={onNext}
+                      className="px-4 py-2 bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+                    >
+                      Bài tiếp theo
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
               </div>
-              <button
-                onClick={onNext}
-                className="px-4 py-2 bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
-              >
-                Bài tiếp theo
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          )}
+            )}
 
-          {/* Notes Section */}
-          <LessonNotes
-            lessonId={lesson.id}
-            currentTime={currentTime}
-            onSeekTo={handleSeekTo}
-          />
+            {/* Notes Tab */}
+            {activeTab === "notes" && (
+              <LessonNotes
+                lessonId={lesson.id}
+                currentTime={currentTime}
+                onSeekTo={handleSeekTo}
+              />
+            )}
 
-          {/* Comments Section */}
-          <LessonComments lessonId={lesson.id} />
+            {/* Comments Tab */}
+            {activeTab === "comments" && (
+              <LessonComments lessonId={lesson.id} />
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
