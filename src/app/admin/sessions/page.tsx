@@ -6,6 +6,47 @@ import { userSessionApi } from "@/services/user-session.service";
 import { PageResponse } from "@/types/api";
 import toast from "react-hot-toast";
 
+
+const getProviderBadge = (provider: string) => {
+  const p = (provider || "").toUpperCase();
+  switch (p) {
+    case 'GOOGLE':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .533 5.333.533 12S5.867 24 12.48 24c3.44 0 6.013-1.133 8.027-3.24 2.053-2.053 2.627-5.027 2.627-7.467 0-.48-.053-.96-.107-1.427h-10.547z" /></svg>
+          Google
+        </span>
+      );
+    case 'GITHUB':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+          GitHub
+        </span>
+      );
+    default:
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+          {provider ? provider : 'Tài khoản hệ thống'}
+        </span>
+      );
+  }
+};
+
+const getStatusBadge = (status: string) => {
+  const isActive = status === 'ACTIVE';
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${isActive
+      ? "bg-emerald-50 text-emerald-700 border-emerald-100 ring-1 ring-emerald-500/10"
+      : "bg-slate-50 text-slate-500 border-slate-200"
+      }`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`}></span>
+      {isActive ? "Đang hoạt động" : "Đã thu hồi"}
+    </span>
+  );
+};
+
 export default function AdminSessionsPage() {
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [pagination, setPagination] = useState<PageResponse<UserSession> | null>(null);
@@ -27,8 +68,13 @@ export default function AdminSessionsPage() {
         size: pageSize,
         filters: filters.trim() || undefined,
       });
-      setSessions(response.result?.result || []);
-      setPagination(response.result || null);
+      if (response && response.result) {
+        setSessions(response.result.result || []);
+        setPagination(response.result);
+      } else {
+        setSessions([]);
+        setPagination(null);
+      }
     } catch {
       toast.error("Không thể tải danh sách phiên đăng nhập");
     } finally {
@@ -49,7 +95,7 @@ export default function AdminSessionsPage() {
     if (!revokeTarget) return;
     setIsRevoking(true);
     try {
-      await new Promise((res) => setTimeout(res, 600));
+      await userSessionApi.revokeSession(revokeTarget.sessionId);
       toast.success("Phiên đăng nhập đã được thu hồi thành công");
       fetchSessions();
     } catch {
@@ -82,35 +128,39 @@ export default function AdminSessionsPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-start justify-between gap-4">
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý phiên đăng nhập</h1>
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+            Quản lý phiên đăng nhập
+          </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Xem và thu hồi các phiên đăng nhập của người dùng (IP, thiết bị, vị trí).
+            Theo dõi và quản lý bảo mật cho các phiên truy cập hệ thống.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full max-w-md">
-            <div className="relative flex-1">
-              <input
-                value={query}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Tìm theo trình duyệt, IP hoặc thiết bị..."
-                className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent"
-                aria-label="Tìm kiếm phiên"
-              />
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-                </svg>
-              </div>
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:max-w-md">
+          <div className="relative flex-1 group">
+            <input
+              value={query}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Tìm kiếm..."
+              className="w-full pl-10 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-500 transition-all"
+              aria-label="Tìm kiếm phiên"
+            />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-accent-500 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
             </div>
+          </div>
           <button
             onClick={async () => {
               setIsExporting(true);
               const rows = filtered.map((s) => ({
                 sessionId: s.sessionId,
+                status: s.status === 'ACTIVE' ? "Hoạt động" : "Đã thu hồi",
+                provider: s.provider || "Tài khoản hệ thống",
                 userId: s.userId,
                 browser: s.browser,
                 browserVersion: s.browserVersion,
@@ -131,14 +181,20 @@ export default function AdminSessionsPage() {
               URL.revokeObjectURL(url);
               setIsExporting(false);
             }}
-            className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-50"
-            title="Export CSV"
+            className="inline-flex justify-center items-center gap-2 px-4 py-2 bg-gradient-to-b from-white to-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:from-gray-50 hover:to-gray-100 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-all shadow-sm"
             disabled={isExporting}
           >
-            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
-            </svg>
-            {isExporting ? "Exporting..." : "Export CSV"}
+            {isExporting ? (
+              <svg className="w-4 h-4 animate-spin text-accent-600" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+            )}
+            <span>Xuất Excel</span>
           </button>
         </div>
       </div>
@@ -147,8 +203,9 @@ export default function AdminSessionsPage() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-left text-xs text-gray-500 bg-gray-50">
-                <th className="px-4 py-3">Session ID</th>
+              <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200">
+                <th className="px-6 py-3">Nguồn đăng nhập</th>
+                <th className="px-4 py-3">Trạng thái</th>
                 <th className="px-4 py-3">Trình duyệt</th>
                 <th className="px-4 py-3">Thiết bị</th>
                 <th className="px-4 py-3">IP</th>
@@ -178,33 +235,41 @@ export default function AdminSessionsPage() {
               ) : (
                 filtered.map((s) => (
                   <tr key={s.sessionId} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm text-gray-700 break-all">{s.sessionId}</td>
+                    <td className="px-4 py-3">{getProviderBadge(s.provider)}</td>
+                    <td className="px-4 py-3">{getStatusBadge(s.status)}</td>
                     <td className="px-4 py-3 text-gray-700">{s.browser} {s.browserVersion}</td>
                     <td className="px-4 py-3 text-gray-700">{s.device} · {s.os}</td>
                     <td className="px-4 py-3 text-gray-700">{s.ipAddress}</td>
                     <td className="px-4 py-3 text-gray-600">{new Date(s.createdAt).toLocaleString("vi-VN")}</td>
                     <td className="px-4 py-3 text-right">
-                      <div className="inline-flex items-center space-x-2">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setViewSession(s)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-sm rounded-md hover:bg-gray-50 shadow-sm"
+                          className="p-2 text-blue-600 bg-blue-100/50 hover:bg-blue-100 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200"
                           title="Xem chi tiết"
                         >
-                          <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
-                          Xem
                         </button>
-                        <button
-                          onClick={() => revokeSession(s.sessionId)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-red-200 text-sm rounded-md hover:bg-red-50"
-                          title="Thu hồi phiên"
-                        >
-                          <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" />
-                          </svg>
-                          <span className="text-red-600">Thu hồi</span>
-                        </button>
+                        {s.status === 'ACTIVE' ? (
+                          <button
+                            onClick={() => revokeSession(s.sessionId)}
+                            className="p-2 text-red-600 bg-red-100/50 hover:bg-red-100 rounded-lg transition-all duration-200 border border-transparent hover:border-red-200"
+                            title="Thu hồi phiên"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        ) : (
+                          <div className="p-2 text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed border border-transparent" title="Đã thu hồi">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                            </svg>
+                          </div>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -222,13 +287,13 @@ export default function AdminSessionsPage() {
           <div className="text-sm text-gray-700">
             Hiển thị {(currentPage - 1) * pageSize + 1} đến {Math.min(currentPage * pageSize, pagination.totalElements)} trong tổng số {pagination.totalElements} phiên
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Trước
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </button>
 
             {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -247,11 +312,10 @@ export default function AdminSessionsPage() {
                 <button
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`px-3 py-2 text-sm rounded-md ${
-                    currentPage === pageNum
-                      ? "bg-accent-600 text-white"
-                      : "bg-white border border-gray-200 hover:bg-gray-50"
-                  }`}
+                  className={`min-w-[32px] h-8 px-2 text-sm rounded-lg font-medium transition-colors ${currentPage === pageNum
+                    ? "bg-accent-600 text-white shadow-sm"
+                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-accent-600"
+                    }`}
                 >
                   {pageNum}
                 </button>
@@ -261,9 +325,9 @@ export default function AdminSessionsPage() {
             <button
               onClick={() => setCurrentPage(Math.min(pagination.totalPages, currentPage + 1))}
               disabled={currentPage === pagination.totalPages}
-              className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Tiếp
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </button>
           </div>
         </div>
@@ -276,8 +340,7 @@ export default function AdminSessionsPage() {
           <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl p-6 z-10 ring-1 ring-gray-100">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Phiên {viewSession.sessionId}</h3>
-                <p className="text-sm text-gray-500">Chi tiết phiên đăng nhập</p>
+                <h3 className="text-lg font-semibold text-gray-900">Chi tiết phiên đăng nhập</h3>
               </div>
               <button onClick={() => setViewSession(null)} className="p-2 text-gray-500 hover:text-gray-700 rounded-md bg-gray-50">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -289,6 +352,14 @@ export default function AdminSessionsPage() {
               <div className="flex justify-between">
                 <div className="text-gray-500">Session ID</div>
                 <div className="font-medium text-gray-800 font-mono text-xs">{viewSession.sessionId}</div>
+              </div>
+              <div className="flex justify-between">
+                <div className="text-gray-500">Nguồn</div>
+                <div className="font-medium text-gray-800">{getProviderBadge(viewSession.provider)}</div>
+              </div>
+              <div className="flex justify-between">
+                <div className="text-gray-500">Trạng thái</div>
+                <div className="font-medium">{getStatusBadge(viewSession.status)}</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-gray-500">Trình duyệt</div>
@@ -313,7 +384,9 @@ export default function AdminSessionsPage() {
             </div>
             <div className="mt-6 flex justify-end gap-3">
               <button onClick={() => setViewSession(null)} className="px-4 py-2 bg-white border border-gray-200 rounded-md hover:bg-gray-50">Đóng</button>
-              <button onClick={() => { setRevokeTarget(viewSession); setViewSession(null); }} className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-md shadow hover:from-red-700">Thu hồi</button>
+              {viewSession.status === 'ACTIVE' && (
+                <button onClick={() => { setRevokeTarget(viewSession); setViewSession(null); }} className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-md shadow hover:from-red-700">Thu hồi</button>
+              )}
             </div>
           </div>
         </div>

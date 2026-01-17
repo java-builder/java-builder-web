@@ -6,5 +6,7 @@ export interface UserSession {
   os: string;
   device: string;
   ipAddress: string;
+  provider: string;
+  status: 'ACTIVE' | 'REVOKED';
   createdAt: string;
 }

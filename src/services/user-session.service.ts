@@ -19,19 +19,19 @@ export const userSessionApi = {
       queryParams.filters = params.filters;
     }
 
-    console.log("Calling API:", "/api/v1/user-sessions", queryParams);
-
     try {
       const response = await apiClient.get<
         ApiResponse<PageResponse<UserSession>>
       >("/api/v1/user-sessions", {
         params: queryParams,
       });
-      console.log("API Response:", response.data);
       return response.data;
     } catch (error) {
       console.error("API Error:", error);
-      throw error;
     }
+  },
+
+  revokeSession: async (sessionId: string) => {
+    return apiClient.delete<ApiResponse<void>>(`/api/v1/tokens/session/${sessionId}`);
   },
 };
