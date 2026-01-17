@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { userApi } from "@/services/user.service";
 import { CreateUserRequest } from "@/types/user";
+import toast from "react-hot-toast";
 
 interface CreateUserModalProps {
   isOpen: boolean;
@@ -39,6 +40,7 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
     setIsLoading(true);
     try {
       await userApi.create(form);
+      toast.success("Tạo người dùng thành công!");
       onSuccess();
       handleClose();
     } catch (err) {
@@ -64,16 +66,14 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Backdrop */}
         <div
-          className={`fixed inset-0 transition-all duration-300 ${
-            isOpen ? 'backdrop-blur-sm bg-black/20' : ''
-          }`}
+          className={`fixed inset-0 transition-all duration-300 ${isOpen ? 'backdrop-blur-sm bg-black/20' : ''
+            }`}
           onClick={handleClose}
         />
 
         {/* Modal */}
-        <div className={`relative w-full max-w-lg bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${
-          isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-        }`}>
+        <div className={`relative w-full max-w-lg bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center space-x-3">
@@ -134,11 +134,10 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                   value={form.username}
                   onChange={(e) => handleChange("username", e.target.value)}
                   placeholder="Nhập tên người dùng..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${
-                    errors.username
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.username
                       ? "border-red-300 bg-red-50"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 />
                 {errors.username && (
                   <p className="mt-1 text-sm text-red-600">{errors.username}</p>
@@ -155,11 +154,10 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                   value={form.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   placeholder="Nhập địa chỉ email..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${
-                    errors.email
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.email
                       ? "border-red-300 bg-red-50"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -176,11 +174,10 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                   value={form.password}
                   onChange={(e) => handleChange("password", e.target.value)}
                   placeholder="Nhập mật khẩu..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${
-                    errors.password
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.password
                       ? "border-red-300 bg-red-50"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 />
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-600">{errors.password}</p>

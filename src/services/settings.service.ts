@@ -4,7 +4,6 @@ import { settingsConfig } from "@/lib/settings-config";
 class SettingsService {
   private storageKey = "JavaBuilder-settings";
 
-  // Load settings from localStorage (in real app, this would be from API)
   async loadSettings(): Promise<SettingsData> {
     try {
       const stored = localStorage.getItem(this.storageKey);
@@ -14,12 +13,9 @@ class SettingsService {
     } catch (error) {
       console.error("Error loading settings:", error);
     }
-
-    // Return default values if no stored settings
     return this.getDefaultSettings();
   }
 
-  // Save settings to localStorage (in real app, this would be to API)
   async saveSettings(settings: SettingsData): Promise<void> {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(settings));
@@ -29,7 +25,6 @@ class SettingsService {
     }
   }
 
-  // Get default settings from config
   private getDefaultSettings(): SettingsData {
     const defaultSettings: SettingsData = {};
 
@@ -48,7 +43,6 @@ class SettingsService {
     return defaultSettings;
   }
 
-  // Get setting value by path
   getSetting<T = unknown>(
     settings: SettingsData,
     tabId: string,
@@ -58,7 +52,6 @@ class SettingsService {
     return settings[tabId]?.[sectionId]?.[fieldId] as T | undefined;
   }
 
-  // Set setting value by path
   setSetting<T = unknown>(
     settings: SettingsData,
     tabId: string,
@@ -79,7 +72,6 @@ class SettingsService {
     return newSettings;
   }
 
-  // Validate settings
   validateSettings(settings: SettingsData): {
     isValid: boolean;
     errors: string[];
@@ -91,7 +83,6 @@ class SettingsService {
         section.fields.forEach((field) => {
           const value = this.getSetting(settings, tab.id, section.id, field.id);
 
-          // Check required fields
           if (
             field.required &&
             (value === undefined || value === null || value === "")
@@ -99,7 +90,6 @@ class SettingsService {
             errors.push(`${field.label} là bắt buộc`);
           }
 
-          // Check validation rules
           if (
             field.validation &&
             value !== undefined &&
@@ -123,7 +113,7 @@ class SettingsService {
               if (!regex.test(value)) {
                 errors.push(
                   field.validation.message ||
-                    `${field.label} không đúng định dạng`,
+                  `${field.label} không đúng định dạng`,
                 );
               }
             }
@@ -138,12 +128,10 @@ class SettingsService {
     };
   }
 
-  // Export settings to JSON
   exportSettings(settings: SettingsData): string {
     return JSON.stringify(settings, null, 2);
   }
 
-  // Import settings from JSON
   importSettings(jsonString: string): SettingsData {
     try {
       const imported = JSON.parse(jsonString);

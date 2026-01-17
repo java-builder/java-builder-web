@@ -6,6 +6,7 @@ import { CommentResponse } from "@/types/comment";
 import { useLessonComments } from "@/hooks/useLessonComments";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { formatRelativeTime } from "@/utils/dateUtils";
+import toast from "react-hot-toast";
 
 interface LessonCommentsProps {
   lessonId: string;
@@ -54,8 +55,10 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
     try {
       await addComment(newComment);
       setNewComment("");
+      toast.success("Bình luận thành công");
     } catch (error) {
       console.error("Error submitting comment:", error);
+      toast.error(error instanceof Error ? error.message : "Gửi bình luận thất bại");
     }
   };
 
@@ -68,16 +71,20 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
       if (!expandedReplies.has(parentId)) {
         setExpandedReplies((prev) => new Set(prev).add(parentId));
       }
+      toast.success("Trả lời thành công");
     } catch (error) {
       console.error("Error submitting reply:", error);
+      toast.error(error instanceof Error ? error.message : "Gửi trả lời thất bại");
     }
   };
 
   const handleDeleteComment = async (commentId: string) => {
     try {
       await deleteComment(commentId);
+      toast.success("Xóa bình luận thành công");
     } catch (error) {
       console.error("Error deleting comment:", error);
+      toast.error(error instanceof Error ? error.message : "Xóa bình luận thất bại");
     }
   };
 
@@ -329,12 +336,12 @@ function CommentItem({
                   isExpanded={false}
                   isReplying={false}
                   replyContent=""
-                  onToggleReplies={() => {}}
-                  onStartReply={() => {}}
-                  onCancelReply={() => {}}
-                  onReplyContentChange={() => {}}
-                  onSubmitReply={() => {}}
-                  onDelete={() => {}}
+                  onToggleReplies={() => { }}
+                  onStartReply={() => { }}
+                  onCancelReply={() => { }}
+                  onReplyContentChange={() => { }}
+                  onSubmitReply={() => { }}
+                  onDelete={() => { }}
                   isReply
                 />
               ))}

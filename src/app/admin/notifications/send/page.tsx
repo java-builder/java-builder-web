@@ -5,10 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import {
-  notificationApi,
-  SendAdminNotificationRequest,
-} from "@/services/notification.service";
+import { notificationApi } from "@/services/notification.service";
+import { SendAdminNotificationRequest } from "@/types/notification";
 import { userApi } from "@/services/user.service";
 import { UserDetailResponse } from "@/types/user";
 
@@ -115,7 +113,7 @@ export default function SendNotificationPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Nội dung thông báo</h2>
-          
+
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -162,7 +160,7 @@ export default function SendNotificationPage() {
 
         <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Người nhận</h2>
-          
+
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="relative flex-1">
@@ -187,8 +185,8 @@ export default function SendNotificationPage() {
                 onClick={handleSelectAll}
                 className="px-4 py-2 text-sm text-accent-600 hover:text-accent-700 border border-accent-200 rounded-lg hover:bg-accent-50"
               >
-                {selectedUsers.length === filteredUsers.length && filteredUsers.length > 0 
-                  ? "Bỏ chọn tất cả" 
+                {selectedUsers.length === filteredUsers.length && filteredUsers.length > 0
+                  ? "Bỏ chọn tất cả"
                   : "Chọn tất cả"}
               </button>
             </div>
@@ -209,17 +207,15 @@ export default function SendNotificationPage() {
                   <div
                     key={user.id}
                     onClick={() => handleUserSelect(user.id)}
-                    className={`flex items-center gap-3 p-3 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors ${
-                      selectedUsers.includes(user.id)
+                    className={`flex items-center gap-3 p-3 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors ${selectedUsers.includes(user.id)
                         ? "bg-accent-50"
                         : "hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
-                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedUsers.includes(user.id)
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${selectedUsers.includes(user.id)
                         ? "bg-accent-600 border-accent-600"
                         : "border-gray-300"
-                    }`}>
+                      }`}>
                       {selectedUsers.includes(user.id) && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />

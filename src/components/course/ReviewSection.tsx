@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useReviews } from "@/hooks/useReviews";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { formatShortDate } from "@/utils/dateUtils";
+import toast from "react-hot-toast";
 
 interface ReviewSectionProps {
   courseId: string;
@@ -17,7 +18,7 @@ type FilterType = "all" | 5 | 4 | 3 | 2 | 1;
 export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: ReviewSectionProps) {
   const { data: currentUser } = useCurrentUser();
   const { reviews, totalReviews, isLoading, hasReviewed, createReview, isSubmitting } = useReviews(courseId);
-  
+
   const [filter, setFilter] = useState<FilterType>("all");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -49,7 +50,16 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
     if (!rating || isSubmitting) return;
     createReview(
       { rating, content: content.trim() || undefined },
-      { onSuccess: () => { setRating(0); setContent(""); } }
+      {
+        onSuccess: () => {
+          setRating(0);
+          setContent("");
+          toast.success("Cảm ơn đánh giá của bạn!");
+        },
+        onError: () => {
+          toast.error("Gửi đánh giá thất bại. Vui lòng thử lại.");
+        }
+      }
     );
   }, [rating, content, isSubmitting, createReview]);
 
@@ -66,11 +76,11 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex flex-col items-center justify-center md:border-r md:border-gray-100 md:pr-6">
               <div className="w-16 h-12 bg-gray-200 rounded mb-2"></div>
-              <div className="flex gap-1">{[1,2,3,4,5].map(i => <div key={i} className="w-4 h-4 bg-gray-200 rounded"></div>)}</div>
+              <div className="flex gap-1">{[1, 2, 3, 4, 5].map(i => <div key={i} className="w-4 h-4 bg-gray-200 rounded"></div>)}</div>
               <div className="w-16 h-4 bg-gray-200 rounded mt-2"></div>
             </div>
             <div className="flex-1 space-y-3">
-              {[5,4,3,2,1].map(i => (
+              {[5, 4, 3, 2, 1].map(i => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-10 h-4 bg-gray-200 rounded"></div>
                   <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
@@ -81,7 +91,7 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
           </div>
         </div>
         <div className="space-y-4">
-          {[1,2,3].map(i => (
+          {[1, 2, 3].map(i => (
             <div key={i} className="bg-white border border-gray-100 rounded-xl p-4 animate-pulse">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
@@ -106,12 +116,12 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
           <div className="flex flex-col items-center justify-center md:border-r md:border-gray-100 md:pr-6">
             <div className="text-5xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
             <div className="flex items-center gap-0.5 mt-2">
-              {[1,2,3,4,5].map(star => <StarIcon key={star} filled={star <= Math.round(averageRating)} size={18} />)}
+              {[1, 2, 3, 4, 5].map(star => <StarIcon key={star} filled={star <= Math.round(averageRating)} size={18} />)}
             </div>
             <div className="text-sm text-gray-500 mt-1">{totalReviews} đánh giá</div>
           </div>
           <div className="flex-1 space-y-2">
-            {[5,4,3,2,1].map(star => {
+            {[5, 4, 3, 2, 1].map(star => {
               const count = ratingStats[star as keyof typeof ratingStats];
               const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
               const isSelected = filter === star;
@@ -158,7 +168,7 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
                 <span className="text-sm font-medium text-gray-700">{currentUser?.username}</span>
                 <span className="text-xs text-gray-400">•</span>
                 <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(star => (
+                  {[1, 2, 3, 4, 5].map(star => (
                     <button key={star} onClick={() => setRating(star)} onMouseEnter={() => setHoverRating(star)} onMouseLeave={() => setHoverRating(0)} className="hover:scale-110 transition-transform">
                       <StarIcon filled={star <= (hoverRating || rating)} size={24} />
                     </button>
@@ -202,7 +212,7 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
                     <span className="font-medium text-gray-900 truncate">{review.username}</span>
                     <span className="text-xs text-gray-400">{formatShortDate(review.createdAt)}</span>
                   </div>
-                  <div className="flex gap-0.5 mb-2">{[1,2,3,4,5].map(star => <StarIcon key={star} filled={star <= review.rating} size={14} />)}</div>
+                  <div className="flex gap-0.5 mb-2">{[1, 2, 3, 4, 5].map(star => <StarIcon key={star} filled={star <= review.rating} size={14} />)}</div>
                   {review.content && <p className="text-gray-600 text-sm leading-relaxed">{review.content}</p>}
                 </div>
               </div>

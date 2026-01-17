@@ -1,23 +1,13 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse } from "@/types/api";
+import { API } from "@/api/api";
 
-export interface CreatePaymentRequest {
-  courserId: string;
-}
-
-export interface CreatePaymentResponse {
-  orderCode: number;
-  checkoutUrl: string;
-  qrCode: string;
-  status: "PENDING" | "PAID" | "CANCELLED";
-  totalPrice: number;
-  paymentGateway: string;
-}
+import { CreatePaymentResponse } from "@/types/payment";
 
 export const paymentApi = {
   createPaymentLink: async (courseId: string) => {
     const response = await apiClient.post<ApiResponse<CreatePaymentResponse>>(
-      "/api/v1/payments/create-link",
+      API.PAYMENT_CREATE_LINK,
       { courserId: courseId }
     );
     return response.data;

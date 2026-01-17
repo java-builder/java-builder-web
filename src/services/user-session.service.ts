@@ -1,6 +1,8 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
 import { UserSession } from "@/types/session";
+import { API } from "@/api/api";
+
 
 export interface UserSessionSearchParams {
   page?: number;
@@ -19,19 +21,16 @@ export const userSessionApi = {
       queryParams.filters = params.filters;
     }
 
-    try {
-      const response = await apiClient.get<
-        ApiResponse<PageResponse<UserSession>>
-      >("/api/v1/user-sessions", {
-        params: queryParams,
-      });
-      return response.data;
-    } catch (error) {
-      console.error("API Error:", error);
-    }
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<UserSession>>
+    >(API.GET_USER_SESSIONS, {
+      params: queryParams,
+    });
+    return response.data;
   },
 
   revokeSession: async (sessionId: string) => {
-    return apiClient.delete<ApiResponse<void>>(`/api/v1/tokens/session/${sessionId}`);
+    const response = await apiClient.delete<ApiResponse<void>>(`${API.REVOKE_SESSION}/${sessionId}`);
+    return response.data;
   },
 };

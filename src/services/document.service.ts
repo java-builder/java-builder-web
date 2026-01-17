@@ -1,11 +1,13 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
+
 import {
   Document,
   DocumentType,
   CreateDocumentRequest,
   UpdateDocumentRequest,
 } from "@/types/document";
+import { API } from "@/api/api";
 
 export interface DocumentSearchParams {
   keyword?: string;
@@ -17,7 +19,7 @@ export interface DocumentSearchParams {
 export const documentApi = {
   getAll: async (params: DocumentSearchParams = {}) => {
     const response = await apiClient.get<ApiResponse<PageResponse<Document>>>(
-      "/api/v1/documents",
+      API.SEARCH_DOCUMENTS,
       {
         params: {
           keyword: params.keyword || undefined,
@@ -32,14 +34,14 @@ export const documentApi = {
 
   getById: async (id: string) => {
     const response = await apiClient.get<ApiResponse<Document>>(
-      `/api/v1/documents/${id}`
+      `${API.GET_DOCUMENT_BY_ID}/${id}`
     );
     return response.data;
   },
 
   create: async (data: CreateDocumentRequest) => {
     const response = await apiClient.post<ApiResponse<Document>>(
-      "/api/v1/documents",
+      API.CREATE_DOCUMENT,
       data
     );
     return response.data;
@@ -47,7 +49,7 @@ export const documentApi = {
 
   update: async (id: string, data: UpdateDocumentRequest) => {
     const response = await apiClient.put<ApiResponse<Document>>(
-      `/api/v1/documents/${id}`,
+      `${API.UPDATE_DOCUMENT}/${id}`,
       data
     );
     return response.data;
@@ -55,7 +57,7 @@ export const documentApi = {
 
   delete: async (id: string) => {
     const response = await apiClient.delete<ApiResponse<void>>(
-      `/api/v1/documents/${id}`
+      `${API.DELETE_DOCUMENT}/${id}`
     );
     return response.data;
   },

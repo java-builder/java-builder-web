@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { SubscriptionPlan } from "@/services/subscription.service";
-import { apiClient } from "@/lib/axios";
+import { SubscriptionPlan } from "@/types/subscription";
+import { apiClient } from "@/api/axios";
 import { ApiResponse } from "@/types/api";
 import toast from "react-hot-toast";
 
@@ -127,13 +127,12 @@ export default function AdminSubscriptionsPage() {
         {allPlans.map((plan, index) => {
           const isFree = plan.id === "free";
           const isPopular = index === 1; // First premium plan
-          
+
           return (
             <div
               key={plan.id}
-              className={`relative bg-white rounded-xl p-5 transition-all ${
-                isPopular ? "ring-2 ring-accent shadow-lg" : "border border-gray-200 hover:shadow-md"
-              }`}
+              className={`relative bg-white rounded-xl p-5 transition-all ${isPopular ? "ring-2 ring-accent shadow-lg" : "border border-gray-200 hover:shadow-md"
+                }`}
             >
               {isPopular && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full">
@@ -174,11 +173,10 @@ export default function AdminSubscriptionsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(plan as SubscriptionPlan)}
-                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      isPopular
+                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${isPopular
                         ? "bg-accent text-white hover:bg-accent/90"
                         : "bg-gray-900 text-white hover:bg-gray-800"
-                    }`}
+                      }`}
                   >
                     Sửa
                   </button>

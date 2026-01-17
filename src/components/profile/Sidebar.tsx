@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { UserDetailResponse } from "@/types/user";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
 
 interface SidebarProps {
   user: UserDetailResponse;
@@ -14,23 +17,47 @@ export default function Sidebar({
   activeTab,
   onTabChange,
 }: SidebarProps) {
+  const router = useRouter();
+  const { logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      setIsLoggingOut(false);
+    }
+  };
   const tabs = [
     {
       id: "profile",
       label: "Thông tin cá nhân",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-          />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
+    {
+      id: "favorite-courses",
+      label: "Khóa học yêu thích",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      ),
+    },
+    {
+      id: "favorite-blogs",
+      label: "Bài viết yêu thích",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       ),
     },
@@ -38,101 +65,100 @@ export default function Sidebar({
       id: "security",
       label: "Bảo mật",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-          />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       ),
     },
     {
       id: "password",
-      label: "Đổi mật khẩu",
+      label: "Mật khẩu",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-          />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
         </svg>
       ),
     },
   ];
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 lg:h-full">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* User Info */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
-            {user.avatar ? (
-              <Image
-                src={user.avatar}
-                alt={user.username || "User avatar"}
-                width={48}
-                height={48}
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-white font-semibold text-sm sm:text-base">
-                {user.username?.charAt(0)?.toUpperCase() || "U"}
-              </span>
+      <div className="p-6 border-b border-gray-200">
+        <button
+          onClick={() => onTabChange("profile")}
+          className="w-full flex items-center gap-4 hover:opacity-80 transition-opacity"
+        >
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-accent to-accent-600 flex items-center justify-center">
+              {user.avatar ? (
+                <Image
+                  src={user.avatar}
+                  alt={user.username || "User"}
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-xl font-semibold text-white">
+                  {user.username?.charAt(0)?.toUpperCase() || "U"}
+                </span>
+              )}
+            </div>
+            {user.mftEnable && (
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
             )}
           </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+          <div className="flex-1 min-w-0 text-left">
+            <h3 className="font-semibold text-gray-900 truncate">
               {user.username || "Người dùng"}
-            </h2>
-            <p className="text-xs sm:text-sm text-gray-500 truncate">
-              {user.email || "Chưa có email"}
-            </p>
+            </h3>
+            <p className="text-sm text-gray-500 truncate">{user.email}</p>
+            {user.university && (
+              <p className="text-xs text-gray-400 truncate mt-1">{user.university}</p>
+            )}
           </div>
-        </div>
+        </button>
       </div>
 
-      {/* Navigation - Horizontal on mobile, vertical on desktop */}
-      <nav className="p-2">
-        <ul className="flex lg:flex-col lg:space-y-1 overflow-x-auto lg:overflow-x-visible gap-1 lg:gap-0">
+      {/* Navigation */}
+      <nav className="p-3">
+        <ul className="space-y-1">
           {tabs.map((tab) => (
-            <li key={tab.id} className="flex-shrink-0 lg:flex-shrink">
+            <li key={tab.id}>
               <button
                 onClick={() => onTabChange(tab.id)}
-                className={`w-full text-left px-3 py-2.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 flex items-center whitespace-nowrap group ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                   activeTab === tab.id
-                    ? "bg-accent-50 text-accent-700 lg:border-r-2 border-accent"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    ? "bg-accent text-white"
+                    : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                <span
-                  className={`mr-2 lg:mr-3 transition-colors ${
-                    activeTab === tab.id
-                      ? "text-accent-600"
-                      : "text-gray-400 group-hover:text-gray-600"
-                  }`}
-                >
-                  {tab.icon}
-                </span>
-                <span className="hidden sm:inline">{tab.label}</span>
+                {tab.icon}
+                <span>{tab.label}</span>
               </button>
             </li>
           ))}
         </ul>
       </nav>
+
+      {/* Logout Button */}
+      <div className="p-3 border-t border-gray-200">
+        <button
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>{isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,28 +1,12 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
+import { API } from "@/api/api";
 
-export interface NotificationDetailResponse {
-  id: string;
-  title: string;
-  content: string;
-  link: string;
-  read: boolean;
-  senderName: string;
-  avatar: string | null;
-  createdAt: string;
-}
-
-export interface SendAdminNotificationRequest {
-  title: string;
-  content: string;
-  link?: string;
-  recipientIds: string[];
-}
-
-export interface SendNotificationResponse {
-  totalRecipients: number;
-  message: string;
-}
+import {
+  NotificationDetailResponse,
+  SendAdminNotificationRequest,
+  SendNotificationResponse,
+} from "@/types/notification";
 
 export const notificationApi = {
   getMyNotifications: async (page: number = 1, size?: number) => {
@@ -32,7 +16,7 @@ export const notificationApi = {
     }
     const response = await apiClient.get<
       ApiResponse<PageResponse<NotificationDetailResponse>>
-    >("/api/v1/notifications", {
+    >(API.GET_NOTIFICATIONS, {
       params,
     });
     return response.data;
@@ -45,7 +29,7 @@ export const notificationApi = {
     }
     const response = await apiClient.get<
       ApiResponse<PageResponse<NotificationDetailResponse>>
-    >("/api/v1/notifications/unread", {
+    >(API.GET_UNREAD_NOTIFICATIONS, {
       params,
     });
     return response.data;
@@ -54,7 +38,7 @@ export const notificationApi = {
   markAsRead: async (ids: string[]) => {
     if (ids.length === 0) return;
     const response = await apiClient.post<ApiResponse<number>>(
-      "/api/v1/notifications/mark-read",
+      API.NOTIFICATIONS_MARK_READ,
       { ids },
     );
     return response.data;
@@ -62,7 +46,7 @@ export const notificationApi = {
 
   sendAdminNotification: async (data: SendAdminNotificationRequest) => {
     const response = await apiClient.post<ApiResponse<SendNotificationResponse>>(
-      "/api/v1/notifications/admin/send",
+      API.NOTIFICATIONS_ADMIN_SEND,
       data,
     );
     return response.data;

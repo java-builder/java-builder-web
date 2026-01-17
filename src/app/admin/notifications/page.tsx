@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { notificationApi, NotificationDetailResponse } from "@/services/notification.service";
+import { notificationApi } from "@/services/notification.service";
+import { NotificationDetailResponse } from "@/types/notification";
 import { authApi } from "@/services/auth.service";
 
 type NotificationItem = {

@@ -1,11 +1,12 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
 import {
   CreateCommentRequest,
   CreateCommentResponse,
   CommentResponse,
 } from "@/types/comment";
-import toast from "react-hot-toast";
+import { API } from "@/api/api";
+
 
 export interface CommentSearchParams {
   page?: number;
@@ -14,92 +15,59 @@ export interface CommentSearchParams {
 
 export const commentApi = {
   create: async (data: CreateCommentRequest) => {
-    try {
-      const response = await apiClient.post<ApiResponse<CreateCommentResponse>>(
-        "/api/v1/comments",
-        data,
-      );
-      toast.success("Bình luận đã được thêm thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Thêm bình luận thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.post<ApiResponse<CreateCommentResponse>>(
+      API.CREATE_COMMENT,
+      data,
+    );
+    return response.data;
   },
 
   getRootByBlogId: async (blogId: string, params: CommentSearchParams = {}) => {
-    try {
-      const response = await apiClient.get<
-        ApiResponse<PageResponse<CommentResponse>>
-      >("/api/v1/comments/root", {
-        params: {
-          blogId,
-          page: params.page || 1,
-          size: params.size || 10,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error loading comments:", error.message);
-      }
-      throw error;
-    }
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<CommentResponse>>
+    >(API.GET_ROOT_COMMENTS, {
+      params: {
+        blogId,
+        page: params.page || 1,
+        size: params.size || 10,
+      },
+    });
+    return response.data;
   },
 
   getRootByLessonId: async (lessonId: string, params: CommentSearchParams = {}) => {
-    try {
-      const response = await apiClient.get<
-        ApiResponse<PageResponse<CommentResponse>>
-      >("/api/v1/comments/lesson/root", {
-        params: {
-          lessonId,
-          page: params.page || 1,
-          size: params.size || 10,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error loading lesson comments:", error.message);
-      }
-      throw error;
-    }
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<CommentResponse>>
+    >(API.GET_LESSON_ROOT_COMMENTS, {
+      params: {
+        lessonId,
+        page: params.page || 1,
+        size: params.size || 10,
+      },
+    });
+    return response.data;
   },
 
   getRepliesByParentId: async (
     parentId: string,
     params: CommentSearchParams = {},
   ) => {
-    try {
-      const response = await apiClient.get<
-        ApiResponse<PageResponse<CommentResponse>>
-      >("/api/v1/comments/replies", {
-        params: {
-          parentId,
-          page: params.page || 1,
-          size: params.size || 10,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error loading replies:", error.message);
-      }
-      throw error;
-    }
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<CommentResponse>>
+    >(API.GET_COMMENT_REPLIES, {
+      params: {
+        parentId,
+        page: params.page || 1,
+        size: params.size || 10,
+      },
+    });
+    return response.data;
   },
 
   delete: async (id: string) => {
-    try {
-      const response = await apiClient.delete<ApiResponse<void>>(
-        `/api/v1/comments/${id}`,
-      );
-      toast.success("Xóa bình luận thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Xóa bình luận thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `${API.DELETE_COMMENT}/${id}`,
+    );
+    return response.data;
   },
 };

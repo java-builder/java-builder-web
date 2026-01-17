@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { UserDetailResponse, UserStatus } from "@/types/user";
 import { userApi } from "@/services/user.service";
+import toast from "react-hot-toast";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -139,6 +140,7 @@ export default function EditUserModal({
 
       // Cập nhật thông tin user
       await userApi.update(user.id, updateData);
+      toast.success("Cập nhật người dùng thành công!");
       onSuccess();
       handleClose();
     } catch (error: unknown) {
@@ -178,16 +180,14 @@ export default function EditUserModal({
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Backdrop */}
         <div
-          className={`fixed inset-0 transition-all duration-300 ${
-            isOpen ? 'backdrop-blur-sm' : ''
-          }`}
+          className={`fixed inset-0 transition-all duration-300 ${isOpen ? 'backdrop-blur-sm' : ''
+            }`}
           onClick={handleClose}
         />
 
         {/* Modal */}
-        <div className={`relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${
-          isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-        }`}>
+        <div className={`relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div>
@@ -311,11 +311,10 @@ export default function EditUserModal({
                     type="text"
                     value={formData.username || ""}
                     onChange={(e) => handleInputChange("username", e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${
-                      errors.username
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.username
                         ? "border-red-300 bg-red-50"
                         : "border-gray-300"
-                    }`}
+                      }`}
                   />
                   {errors.username && (
                     <p className="mt-1 text-sm text-red-600">{errors.username}</p>
@@ -331,11 +330,10 @@ export default function EditUserModal({
                     type="email"
                     value={formData.email || ""}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${
-                      errors.email
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.email
                         ? "border-red-300 bg-red-50"
                         : "border-gray-300"
-                    }`}
+                      }`}
                   />
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-600">{errors.email}</p>

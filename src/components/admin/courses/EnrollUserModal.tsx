@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { enrollmentApi } from "@/services/enrollment.service";
+import toast from "react-hot-toast";
 
 interface EnrollUserModalProps {
   isOpen: boolean;
@@ -43,9 +44,11 @@ export default function EnrollUserModal({
     setIsLoading(true);
     try {
       await enrollmentApi.adminEnrollUser(email, courseId);
+      toast.success("Thêm học viên vào khóa học thành công!");
       onSuccess?.();
       handleClose();
     } catch {
+      toast.error("Thêm học viên thất bại. Vui lòng thử lại.");
       setError("Không thể thêm học viên. Email không tồn tại hoặc đã được đăng ký.");
     } finally {
       setIsLoading(false);
@@ -108,11 +111,10 @@ export default function EnrollUserModal({
                     if (error) setError("");
                   }}
                   placeholder="example@email.com"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                    error
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${error
                       ? "border-red-300 focus:ring-red-500 focus:border-red-500"
                       : "border-gray-300 focus:ring-accent focus:border-accent"
-                  }`}
+                    }`}
                   disabled={isLoading}
                 />
                 {error && (

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { userApi } from "@/services/user.service";
 import { CreateUserRequest } from "@/types/user";
+import toast from "react-hot-toast";
 
 interface RegisterFormData extends CreateUserRequest {
   confirmPassword: string;
@@ -47,11 +48,14 @@ export default function RegisterPage() {
       });
 
       if (result.code === 201) {
+        toast.success("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
         // Redirect to login page after successful registration
         router.push("/login?message=registration-success");
       }
-    } catch (err: unknown) {
-      console.error("Register error:", err);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Đăng ký thất bại. Vui lòng thử lại.";
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -91,16 +95,16 @@ export default function RegisterPage() {
                 <svg width="36" height="36" viewBox="0 0 64 58" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                     <linearGradient id="registerCupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{stopColor: '#0056d2'}}/>
-                      <stop offset="100%" style={{stopColor: '#0044aa'}}/>
+                      <stop offset="0%" style={{ stopColor: '#0056d2' }} />
+                      <stop offset="100%" style={{ stopColor: '#0044aa' }} />
                     </linearGradient>
                   </defs>
                   <g transform="translate(4, 0)">
-                    <path d="M16 12C16 12 18 6 16 0" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6"/>
-                    <path d="M24 14C24 14 26 8 24 2" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6"/>
-                    <path d="M32 12C32 12 34 6 32 0" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6"/>
-                    <path d="M8 18H40V42C40 48.627 34.627 54 28 54H20C13.373 54 8 48.627 8 42V18Z" fill="url(#registerCupGrad)"/>
-                    <path d="M40 24H46C49.314 24 52 26.686 52 30V34C52 37.314 49.314 40 46 40H40" stroke="url(#registerCupGrad)" strokeWidth="4" fill="none"/>
+                    <path d="M16 12C16 12 18 6 16 0" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
+                    <path d="M24 14C24 14 26 8 24 2" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
+                    <path d="M32 12C32 12 34 6 32 0" stroke="url(#registerCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
+                    <path d="M8 18H40V42C40 48.627 34.627 54 28 54H20C13.373 54 8 48.627 8 42V18Z" fill="url(#registerCupGrad)" />
+                    <path d="M40 24H46C49.314 24 52 26.686 52 30V34C52 37.314 49.314 40 46 40H40" stroke="url(#registerCupGrad)" strokeWidth="4" fill="none" />
                     <text x="14" y="40" fontFamily="monospace" fontSize="18" fontWeight="bold" fill="white">&lt;/&gt;</text>
                   </g>
                 </svg>

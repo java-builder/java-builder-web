@@ -10,7 +10,6 @@ import {
   NavLinks,
   ThemeToggle,
   NotificationDropdown,
-  MessagesDropdown,
   UserMenu,
   AuthButtons,
   MobileMenuButton,
@@ -70,7 +69,6 @@ export default function Header() {
             <div className="w-9 h-9 rounded-full bg-gray-200 animate-pulse" />
           ) : isLoggedIn ? (
             <>
-              <MessagesDropdown />
               <NotificationDropdown />
               <UserMenu onLogout={handleLogout} />
             </>

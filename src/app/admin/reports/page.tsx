@@ -14,7 +14,8 @@ import {
 } from "recharts";
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
-import { reportApi, ReportStatsResponse, CourseRevenue } from "@/services/report.service";
+import { reportApi } from "@/services/report.service";
+import { ReportStatsResponse, CourseRevenue } from "@/types/report";
 
 interface ChartDataPoint {
   name: string;
@@ -24,7 +25,7 @@ interface ChartDataPoint {
 }
 
 export default function ReportsPage() {
-  const [timeRange, setTimeRange] = useState("7days");
+  const [timeRange, setTimeRange] = useState("1year");
   const [isLoading, setIsLoading] = useState(false);
 
   const [stats, setStats] = useState<ReportStatsResponse>({
@@ -67,12 +68,12 @@ export default function ReportsPage() {
       if (res.result) {
         setStats(res.result);
         setTopCourses(res.result.courseRevenues || []);
-        
+
         // Transform data for Recharts
         if (res.result.revenueChart && res.result.revenueChart.length > 0) {
           const revenueValues = res.result.revenueChart.map(d => d.value);
           const avgRevenue = revenueValues.reduce((a, b) => a + b, 0) / revenueValues.length;
-          
+
           setRevenueChartData(
             res.result.revenueChart.map(d => ({
               name: d.label,
@@ -309,15 +310,15 @@ export default function ReportsPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={revenueChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
                     tick={{ fill: '#6B7280', fontSize: 12 }}
                   />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
                     tick={{ fill: '#6B7280', fontSize: 12 }}
                     tickFormatter={formatYAxis}
                   />
@@ -378,23 +379,23 @@ export default function ReportsPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={userChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
                     tick={{ fill: '#6B7280', fontSize: 12 }}
                   />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
                     tick={{ fill: '#6B7280', fontSize: 12 }}
                     allowDecimals={false}
                   />
                   <Tooltip content={<UserTooltip />} />
-                  <Bar 
-                    dataKey="value" 
+                  <Bar
+                    dataKey="value"
                     name="Người dùng mới"
-                    fill="#8884d8" 
+                    fill="#8884d8"
                     radius={[4, 4, 0, 0]}
                     maxBarSize={40}
                   />
@@ -435,7 +436,7 @@ export default function ReportsPage() {
             </svg>
           </div>
         </div>
-        
+
         {topCourses.length === 0 ? (
           <div className="text-center text-gray-400 py-12">
             <svg className="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -448,17 +449,16 @@ export default function ReportsPage() {
             {topCourses.map((course, index) => {
               const maxRevenue = Math.max(...topCourses.map(c => c.revenue));
               const percentage = maxRevenue > 0 ? (course.revenue / maxRevenue) * 100 : 0;
-              
+
               return (
                 <div key={course.id} className="group">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
-                        index === 0 ? 'bg-amber-100 text-amber-700' :
-                        index === 1 ? 'bg-gray-100 text-gray-700' :
-                        index === 2 ? 'bg-orange-100 text-orange-700' :
-                        'bg-blue-50 text-blue-600'
-                      }`}>
+                      <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-amber-100 text-amber-700' :
+                          index === 1 ? 'bg-gray-100 text-gray-700' :
+                            index === 2 ? 'bg-orange-100 text-orange-700' :
+                              'bg-blue-50 text-blue-600'
+                        }`}>
                         {index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -475,13 +475,12 @@ export default function ReportsPage() {
                     </div>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        index === 0 ? 'bg-gradient-to-r from-amber-400 to-amber-500' :
-                        index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
-                        index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
-                        'bg-gradient-to-r from-blue-400 to-blue-500'
-                      }`}
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${index === 0 ? 'bg-gradient-to-r from-amber-400 to-amber-500' :
+                          index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
+                            index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
+                              'bg-gradient-to-r from-blue-400 to-blue-500'
+                        }`}
                       style={{ width: `${percentage}%` }}
                     />
                   </div>

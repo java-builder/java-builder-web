@@ -108,7 +108,7 @@ export default function CreateCourseModal({
         onSuccess?.();
       }
     } catch (error) {
-      console.error("Create course error:", error);
+      toast.error(error instanceof Error ? error.message : "Tạo khóa học thất bại. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
@@ -127,11 +127,11 @@ export default function CreateCourseModal({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop - chỉ blur, không che màu */}
-      <div 
+      <div
         className="fixed inset-0 backdrop-blur-sm bg-black/5 transition-opacity"
         onClick={handleClose}
       ></div>
-      
+
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal */}
         <div className="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col z-10">

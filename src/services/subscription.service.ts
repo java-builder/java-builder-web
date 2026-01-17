@@ -1,81 +1,44 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse } from "@/types/api";
-import toast from "react-hot-toast";
+import { API } from "@/api/api";
 
-export interface SubscriptionPlan {
-  id: string;
-  name: string;
-  price: number;
-  durationDays: number;
-  description: string;
-  features: string;
-}
-
-export interface UserSubscription {
-  id: string;
-  planId: string;
-  planName: string;
-  status: "ACTIVE" | "EXPIRED" | "CANCELLED";
-  startDate: string;
-  endDate: string;
-  daysRemaining: number;
-}
-
-export interface SubscribeResponse {
-  orderCode: number;
-  checkoutUrl: string;
-  qrCode: string;
-  status: string;
-  totalPrice: number;
-  paymentGateway: string;
-}
+import {
+  SubscriptionPlan,
+  UserSubscription,
+  SubscribeResponse,
+} from "@/types/subscription";
 
 export const subscriptionApi = {
   // Lấy danh sách gói Premium
   getPlans: async () => {
-    try {
-      const response = await apiClient.get<ApiResponse<SubscriptionPlan[]>>(
-        "/api/v1/subscriptions/plans"
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Failed to get plans:", error);
-      throw error;
-    }
+    const response = await apiClient.get<ApiResponse<SubscriptionPlan[]>>(
+      API.SUBSCRIPTION_PLANS
+    );
+    return response.data;
   },
 
   // Đăng ký Premium
   subscribe: async (planId: string) => {
-    try {
-      const response = await apiClient.post<ApiResponse<SubscribeResponse>>(
-        "/api/v1/subscriptions/subscribe",
-        { planId }
-      );
-      return response.data;
-    } catch (error) {
-      toast.error("Đăng ký thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.post<ApiResponse<SubscribeResponse>>(
+      API.SUBSCRIPTION_SUBSCRIBE,
+      { planId }
+    );
+    return response.data;
   },
 
   // Lấy subscription hiện tại
   getMySubscription: async () => {
-    try {
-      const response = await apiClient.get<ApiResponse<UserSubscription | null>>(
-        "/api/v1/subscriptions/my-subscription"
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Failed to get subscription:", error);
-      throw error;
-    }
+    const response = await apiClient.get<ApiResponse<UserSubscription | null>>(
+      API.SUBSCRIPTION_MY
+    );
+    return response.data;
   },
 
   // Check premium status
   checkPremium: async () => {
     try {
       const response = await apiClient.get<ApiResponse<boolean>>(
-        "/api/v1/subscriptions/check-premium"
+        API.SUBSCRIPTION_CHECK_PREMIUM
       );
       return response.data;
     } catch {
@@ -85,15 +48,9 @@ export const subscriptionApi = {
 
   // Hủy subscription
   cancel: async () => {
-    try {
-      const response = await apiClient.post<ApiResponse<void>>(
-        "/api/v1/subscriptions/cancel"
-      );
-      toast.success("Đã hủy subscription thành công");
-      return response.data;
-    } catch (error) {
-      toast.error("Hủy subscription thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.SUBSCRIPTION_CANCEL
+    );
+    return response.data;
   },
 };

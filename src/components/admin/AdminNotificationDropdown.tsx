@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { HiOutlineBell } from "react-icons/hi";
 import Link from "next/link";
 import Image from "next/image";
-import { notificationApi, NotificationDetailResponse } from "@/services/notification.service";
+import { notificationApi } from "@/services/notification.service";
+import { NotificationDetailResponse } from "@/types/notification";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function AdminNotificationDropdown() {
@@ -25,7 +26,7 @@ export default function AdminNotificationDropdown() {
     all: number;
     unread: number;
   }>({ all: 0, unread: 0 });
-  
+
   // Refs to prevent duplicate API calls
   const hasInitiallyLoaded = useRef(false);
   const loadedTabsRef = useRef<Set<"all" | "unread">>(new Set());
@@ -48,9 +49,9 @@ export default function AdminNotificationDropdown() {
         const res =
           activeTab === "unread"
             ? await notificationApi.getUnreadNotifications(
-                size ? 1 : page,
-                size,
-              )
+              size ? 1 : page,
+              size,
+            )
             : await notificationApi.getMyNotifications(size ? 1 : page, size);
         const list = res.result?.result || [];
         const total = res.result?.totalPages || 1;
@@ -74,7 +75,7 @@ export default function AdminNotificationDropdown() {
         } else {
           setNotifications(list);
         }
-        
+
         // Update unread count from loaded notifications
         const unreadInList = list.filter((n) => !n.read).length;
         setHasUnread(unreadInList > 0);
@@ -107,11 +108,11 @@ export default function AdminNotificationDropdown() {
   // Single useEffect for initial load - prevents duplicate calls
   useEffect(() => {
     if (!isAuthenticated || hasInitiallyLoaded.current) return;
-    
+
     hasInitiallyLoaded.current = true;
     loadedTabsRef.current.add(activeTab);
     prevActiveTabRef.current = activeTab;
-    
+
     const savedPage = tabPages[activeTab] || 1;
     loadNotifications(savedPage, false);
   }, [isAuthenticated, activeTab, loadNotifications, tabPages]);
@@ -119,7 +120,7 @@ export default function AdminNotificationDropdown() {
   // Handle tab changes only (not initial load)
   useEffect(() => {
     if (!isAuthenticated || !hasInitiallyLoaded.current) return;
-    
+
     if (prevActiveTabRef.current !== activeTab && !loadedTabsRef.current.has(activeTab)) {
       const savedPage = tabPages[activeTab] || 1;
       loadNotifications(savedPage, false);
@@ -189,21 +190,19 @@ export default function AdminNotificationDropdown() {
             <div className="flex border-t border-gray-100">
               <button
                 onClick={() => handleTabChange("all")}
-                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === "all"
+                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${activeTab === "all"
                     ? "text-accent border-b-2 border-accent"
                     : "text-gray-600 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 Tất cả
               </button>
               <button
                 onClick={() => handleTabChange("unread")}
-                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors relative ${
-                  activeTab === "unread"
+                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors relative ${activeTab === "unread"
                     ? "text-accent border-b-2 border-accent"
                     : "text-gray-600 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 Chưa đọc
                 {unreadCount > 0 && (

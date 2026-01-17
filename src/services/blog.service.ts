@@ -1,11 +1,12 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { CreateBlogRequest, CreateBlogResponse, Blog } from "@/types/blog";
 import { FileMetaDataResponse } from "@/types/file";
+import { API } from "@/api/api";
 
 export const blogService = {
   // Tạo blog mới
   async createBlog(data: CreateBlogRequest): Promise<CreateBlogResponse> {
-    const response = await apiClient.post("/api/v1/blogs", data);
+    const response = await apiClient.post(API.CREATE_BLOG, data);
     return response.data.result;
   },
 
@@ -22,20 +23,20 @@ export const blogService = {
     pageSizes: number;
     currentPages: number;
   }> {
-    const response = await apiClient.get("/api/v1/blogs", { params });
+    const response = await apiClient.get(API.GET_BLOGS, { params });
     return response.data.result;
   },
 
   // Lấy chi tiết blog
   async getBlogById(id: string): Promise<Blog> {
-    const response = await apiClient.get(`/api/v1/blogs/${id}`);
+    const response = await apiClient.get(`${API.GET_BLOG_BY_ID}/${id}`);
     return response.data.result;
   },
 
   // Tăng lượt xem
   async incrementView(id: string): Promise<number> {
     const response = await apiClient.patch(
-      `/api/v1/blogs/${id}/increment-view`,
+      `${API.INCREMENT_VIEW}/${id}/increment-view`,
     );
     return response.data.result as number;
   },
@@ -43,7 +44,7 @@ export const blogService = {
   // Tăng lượt thích
   async incrementLike(id: string): Promise<number> {
     const response = await apiClient.patch(
-      `/api/v1/blogs/${id}/increment-like`,
+      `${API.INCREMENT_LIKE}/${id}/increment-like`,
     );
     return response.data.result as number;
   },
@@ -52,13 +53,13 @@ export const blogService = {
   async updateBlog(
     data: { id: string } & Partial<CreateBlogRequest>,
   ): Promise<Blog> {
-    const response = await apiClient.put("/api/v1/blogs", data);
+    const response = await apiClient.put(API.UPDATE_BLOG, data);
     return response.data.result;
   },
 
   // Xóa blog
   async deleteBlog(id: string): Promise<void> {
-    await apiClient.delete(`/api/v1/blogs/${id}`);
+    await apiClient.delete(`${API.DELETE_BLOG}/${id}`);
   },
 
   // Upload ảnh featured
@@ -67,7 +68,7 @@ export const blogService = {
     formData.append("file", file);
 
     const response = await apiClient.post(
-      "/api/v1/files/upload-single-media",
+      API.FILES_UPLOAD_SINGLE,
       formData,
       {
         headers: {

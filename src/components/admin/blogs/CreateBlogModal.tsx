@@ -16,6 +16,8 @@ interface CreateBlogModalProps {
   onSuccess: () => void;
 }
 
+import toast from "react-hot-toast";
+
 export default function CreateBlogModal({
   isOpen,
   onClose,
@@ -124,6 +126,7 @@ export default function CreateBlogModal({
       // Tạo blog với dữ liệu đã có URL ảnh
       const result = await blogService.createBlog(finalFormData);
       console.log("✅ Create Blog Success:", result);
+      toast.success("Tạo bài viết thành công!");
       onSuccess();
       handleClose();
     } catch (error: unknown) {
@@ -132,6 +135,7 @@ export default function CreateBlogModal({
         ...prev,
         submit: (error as Error)?.message || "Có lỗi xảy ra khi tạo bài viết",
       }));
+      toast.error("Tạo bài viết thất bại");
     } finally {
       setIsLoading(false);
     }
@@ -214,11 +218,10 @@ export default function CreateBlogModal({
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Nhập tiêu đề hấp dẫn cho bài viết..."
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
-                      errors.title
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${errors.title
                         ? "border-red-300 bg-red-50"
                         : "border-gray-300"
-                    }`}
+                      }`}
                   />
                   {errors.title && (
                     <p className="mt-1 text-sm text-red-600">{errors.title}</p>
@@ -235,11 +238,10 @@ export default function CreateBlogModal({
                     onChange={(e) =>
                       handleInputChange("blogType", e.target.value as BlogType)
                     }
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
-                      errors.blogType
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${errors.blogType
                         ? "border-red-300 bg-red-50"
                         : "border-gray-300"
-                    }`}
+                      }`}
                   >
                     {Object.entries(BlogTypeDisplayNames).map(
                       ([key, displayName]) => (

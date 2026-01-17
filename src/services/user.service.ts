@@ -1,13 +1,16 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
+import { API } from "@/api/api";
 import {
   UserDetailResponse,
   CreateUserRequest,
   CreateUserResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
+  PasswordStatusResponse,
+  CreatePasswordRequest,
 } from "@/types/user";
-import toast from "react-hot-toast";
+
 
 export interface UserSearchParams {
   page?: number;
@@ -16,17 +19,11 @@ export interface UserSearchParams {
 
 export const userApi = {
   create: async (data: CreateUserRequest) => {
-    try {
-      const response = await apiClient.post<ApiResponse<CreateUserResponse>>(
-        "/api/v1/users",
-        data,
-      );
-      toast.success("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
-      return response.data;
-    } catch (error) {
-      toast.error("Đăng ký thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.post<ApiResponse<CreateUserResponse>>(
+      API.CREATE_USER,
+      data,
+    );
+    return response.data;
   },
 
   search: async (params: UserSearchParams) => {
@@ -34,102 +31,87 @@ export const userApi = {
       page: params.page || 1,
     };
 
-    try {
-      const response = await apiClient.post<
-        ApiResponse<PageResponse<UserDetailResponse>>
-      >("/api/v1/users/search", {
-        params: queryParams,
-      });
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-      }
-      throw error;
-    }
+    const response = await apiClient.post<
+      ApiResponse<PageResponse<UserDetailResponse>>
+    >(API.USER_SEARCH, {
+      params: queryParams,
+    });
+    return response.data;
   },
 
   getById: async (id: string) => {
     const response = await apiClient.get<ApiResponse<UserDetailResponse>>(
-      `/api/v1/users/${id}`,
+      `${API.GET_USER_BY_ID}/${id}`,
     );
     return response.data;
   },
 
   getCurrentUser: async () => {
     const response =
-      await apiClient.get<ApiResponse<UserDetailResponse>>("/api/v1/users/me");
+      await apiClient.get<ApiResponse<UserDetailResponse>>(API.USER_PROFILE);
     return response.data;
   },
 
   update: async (id: string, data: Partial<UserDetailResponse>) => {
-    try {
-      const response = await apiClient.put<ApiResponse<UserDetailResponse>>(
-        `/api/v1/users/${id}`,
-        data,
-      );
-      toast.success("Cập nhật thông tin thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.put<ApiResponse<UserDetailResponse>>(
+      `${API.UPDATE_USER}/${id}`,
+      data,
+    );
+    return response.data;
   },
 
   delete: async (id: string) => {
-    try {
-      const response = await apiClient.delete<ApiResponse<void>>(
-        `/api/v1/users/${id}`,
-      );
-      toast.success("Xóa tài khoản thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Xóa tài khoản thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `${API.DELETE_USER}/${id}`,
+    );
+    return response.data;
   },
 
   updateProfile: async (data: UpdateProfileRequest) => {
-    try {
-      const response = await apiClient.put<ApiResponse<UpdateProfileResponse>>(
-        "/api/v1/profiles",
-        data,
-      );
-      toast.success("Cập nhật thông tin cá nhân thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Cập nhật thông tin cá nhân thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.put<ApiResponse<UpdateProfileResponse>>(
+      API.UPDATE_PROFILE,
+      data,
+    );
+    return response.data;
   },
 
   updateAvatar: async (avatar: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("avatar", avatar);
+    const formData = new FormData();
+    formData.append("avatar", avatar);
 
-      const response = await apiClient.put<ApiResponse<string>>(
-        "/api/v1/profiles/update-avatar",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    const response = await apiClient.put<ApiResponse<string>>(
+      API.USER_PROFILE_AVATAR,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      );
-      toast.success("Cập nhật ảnh đại diện thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Cập nhật ảnh đại diện thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+      },
+    );
+    return response.data;
   },
 
   getAllUsers: async (page: number = 1, size: number = 50) => {
     const response = await apiClient.post<
       ApiResponse<PageResponse<UserDetailResponse>>
-    >("/api/v1/users/search", null, {
+    >(API.USER_SEARCH, null, {
       params: { page, size },
     });
+    return response.data;
+  },
+
+  getPasswordStatus: async () => {
+    const response = await apiClient.post<ApiResponse<PasswordStatusResponse>>(
+      API.USER_PASSWORD_STATUS
+    );
+    return response.data;
+  },
+
+  createPassword: async (data: CreatePasswordRequest) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.USER_PASSWORD,
+      data
+    );
     return response.data;
   },
 };

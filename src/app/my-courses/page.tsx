@@ -10,6 +10,7 @@ import { MyEnrolledCourseResponse, CourseLevel } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import { formatShortDate } from "@/utils/dateUtils";
+import toast from "react-hot-toast";
 
 export default function MyCoursesPage() {
   const router = useRouter();
@@ -43,6 +44,7 @@ export default function MyCoursesPage() {
           }
         } catch (error) {
           console.error("Error fetching courses:", error);
+          toast.error("Không thể tải danh sách khóa học. Vui lòng thử lại!");
         } finally {
           setIsLoading(false);
         }

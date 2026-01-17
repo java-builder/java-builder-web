@@ -5,7 +5,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
-import { subscriptionApi, SubscriptionPlan, SubscribeResponse } from "@/services/subscription.service";
+import { subscriptionApi } from "@/services/subscription.service";
+import { SubscriptionPlan, SubscribeResponse } from "@/types/subscription";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -68,7 +69,7 @@ export default function PricingPage() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<PlanDisplay[]>([freePlan]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Payment modal state
   const [paymentModal, setPaymentModal] = useState<{
     isOpen: boolean;
@@ -86,9 +87,9 @@ export default function PricingPage() {
     const convertToPlanDisplay = (plan: SubscriptionPlan): PlanDisplay => {
       const isMonthly = plan.durationDays <= 31;
       const isYearly = plan.durationDays >= 365;
-      
+
       const features = plan.features
-        ? plan.features.split("|").map((f) => ({ text: f.trim(), included: true }))
+        ? plan.features.split("|").map((f: string) => ({ text: f.trim(), included: true }))
         : [];
 
       return {
@@ -143,7 +144,7 @@ export default function PricingPage() {
     try {
       setLoadingPlan(plan.id);
       const response = await subscriptionApi.subscribe(plan.apiPlanId);
-      
+
       if (response.result) {
         setPaymentModal({
           isOpen: true,
@@ -155,7 +156,9 @@ export default function PricingPage() {
         toast.error("Không thể tạo link thanh toán");
         setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
       }
-    } catch {
+      setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Đăng ký thất bại");
       setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
     } finally {
       setLoadingPlan(null);
@@ -202,11 +205,10 @@ export default function PricingPage() {
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative bg-white rounded-2xl p-6 lg:p-8 transition-all duration-300 ${
-                      plan.popular
-                        ? "ring-2 ring-accent shadow-xl scale-[1.02]"
-                        : "border border-gray-200 hover:border-accent/50 hover:shadow-lg"
-                    }`}
+                    className={`relative bg-white rounded-2xl p-6 lg:p-8 transition-all duration-300 ${plan.popular
+                      ? "ring-2 ring-accent shadow-xl scale-[1.02]"
+                      : "border border-gray-200 hover:border-accent/50 hover:shadow-lg"
+                      }`}
                   >
                     {plan.popular && (
                       <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -219,7 +221,7 @@ export default function PricingPage() {
                     <div className="text-center mb-6">
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{plan.name}</h3>
                       <p className="text-sm text-gray-500 mb-4">{plan.description}</p>
-                      
+
                       <div className="flex items-baseline justify-center gap-1">
                         {plan.originalPrice && (
                           <span className="text-lg text-gray-400 line-through mr-2">
@@ -253,13 +255,12 @@ export default function PricingPage() {
                     <button
                       onClick={() => handleSubscribe(plan)}
                       disabled={plan.disabled || loadingPlan === plan.id}
-                      className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
-                        plan.disabled
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : plan.popular
+                      className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 ${plan.disabled
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : plan.popular
                           ? "bg-accent hover:bg-accent-600 text-white shadow-lg shadow-accent/25"
                           : "bg-gray-900 hover:bg-gray-800 text-white"
-                      }`}
+                        }`}
                     >
                       {loadingPlan === plan.id ? (
                         <>
@@ -377,11 +378,11 @@ export default function PricingPage() {
       {paymentModal.isOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
-            <div 
-              className="fixed inset-0 bg-black/50 transition-opacity" 
-              onClick={() => !paymentModal.isLoading && setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })} 
+            <div
+              className="fixed inset-0 bg-black/50 transition-opacity"
+              onClick={() => !paymentModal.isLoading && setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
             />
-            
+
             <div className="relative bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-md sm:w-full">
               {/* Modal Header */}
               <div className="bg-gradient-to-r from-accent to-blue-600 px-6 py-4">
@@ -423,7 +424,7 @@ export default function PricingPage() {
                         </svg>
                       </div>
                     </div>
-                    
+
                     {/* Loading Steps */}
                     <div className="space-y-3 max-w-xs mx-auto">
                       <div className="flex items-center gap-3 text-left">

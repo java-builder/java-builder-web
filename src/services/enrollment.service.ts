@@ -1,27 +1,23 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
 import { MyEnrolledCourseResponse } from "@/types/course";
-import toast from "react-hot-toast";
+import { API } from "@/api/api";
 
 export const enrollmentApi = {
   // Lấy danh sách khóa học đã đăng ký
   getMyCourses: async (page: number = 1, size: number = 10) => {
-    try {
-      const response = await apiClient.get<ApiResponse<PageResponse<MyEnrolledCourseResponse>>>(
-        "/api/v1/enrollments/my-courses",
-        { params: { page, size } },
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiClient.get<ApiResponse<PageResponse<MyEnrolledCourseResponse>>>(
+      API.ENROLLMENTS_MY_COURSES,
+      { params: { page, size } },
+    );
+    return response.data;
   },
 
   // Check xem user đã đăng ký khóa học chưa
   checkEnrollment: async (courseId: string) => {
     try {
       const response = await apiClient.get<ApiResponse<boolean>>(
-        `/api/v1/enrollments/check/${courseId}`,
+        `${API.ENROLLMENTS_CHECK}/${courseId}`,
       );
       return response.data;
     } catch {
@@ -31,16 +27,10 @@ export const enrollmentApi = {
 
   // Admin thêm user vào khóa học
   adminEnrollUser: async (email: string, courseId: string) => {
-    try {
-      const response = await apiClient.post<ApiResponse<void>>(
-        "/api/v1/enrollments/admin/enroll",
-        { email, courseId },
-      );
-      toast.success("Thêm học viên vào khóa học thành công!");
-      return response.data;
-    } catch (error) {
-      toast.error("Thêm học viên thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.ENROLLMENTS_ADMIN,
+      { email, courseId },
+    );
+    return response.data;
   },
 };

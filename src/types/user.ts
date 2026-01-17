@@ -35,3 +35,16 @@ export enum UserStatus {
   INACTIVE = "INACTIVE",
   BANNED = "BANNED",
 }
+
+export enum PasswordStatus {
+  SET = "SET",
+  NOT_SET = "NOT_SET",
+}
+
+export interface PasswordStatusResponse {
+  passwordStatus: PasswordStatus;
+}
+
+export interface CreatePasswordRequest {
+  password: string;
+}

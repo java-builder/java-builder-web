@@ -1,39 +1,17 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse } from "@/types/api";
+import { API } from "@/api/api";
 
-export interface ChartData {
-  label: string;
-  value: number;
-}
 
-export interface CourseRevenue {
-  id: string;
-  name: string;
-  owners: number;
-  revenue: number;
-}
-
-export interface ReportStatsResponse {
-  totalRevenue: number;
-  totalUsers: number;
-  totalCourses: number;
-  totalEnrollments: number;
-  revenueChart: ChartData[];
-  userChart: ChartData[];
-  courseRevenues: CourseRevenue[];
-}
-
-export interface OverviewStatsResponse {
-  totalUsers: number;
-  totalCourses: number;
-  monthlyRevenue: number;
-  newEnrollments: number;
-}
+import {
+  ReportStatsResponse,
+  OverviewStatsResponse,
+} from "@/types/report";
 
 export const reportApi = {
   getStats: async (timeRange: string = "7days") => {
     const response = await apiClient.get<ApiResponse<ReportStatsResponse>>(
-      "/api/v1/reports/stats",
+      API.REPORT_STATS,
       { params: { timeRange } }
     );
     return response.data;
@@ -41,7 +19,7 @@ export const reportApi = {
 
   getOverview: async () => {
     const response = await apiClient.get<ApiResponse<OverviewStatsResponse>>(
-      "/api/v1/reports/overview"
+      API.REPORT_OVERVIEW
     );
     return response.data;
   },

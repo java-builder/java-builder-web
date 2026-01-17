@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { reportApi, OverviewStatsResponse } from "@/services/report.service";
+import { reportApi } from "@/services/report.service";
+import { OverviewStatsResponse } from "@/types/report";
 
 const formatNumber = (num: number) => {
   return new Intl.NumberFormat("vi-VN").format(num);

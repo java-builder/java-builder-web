@@ -1,11 +1,12 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
 import {
   LessonNote,
   CreateLessonNoteRequest,
   UpdateLessonNoteRequest,
 } from "@/types/lesson-note";
-import toast from "react-hot-toast";
+import { API } from "@/api/api";
+
 
 export interface NoteSearchParams {
   page?: number;
@@ -14,82 +15,44 @@ export interface NoteSearchParams {
 
 export const lessonNoteApi = {
   create: async (data: CreateLessonNoteRequest) => {
-    try {
-      const response = await apiClient.post<ApiResponse<LessonNote>>(
-        "/api/v1/lesson-notes",
-        data
-      );
-      if (response.data.code === 201) {
-        toast.success("Ghi chú đã được thêm thành công!");
-      }
-      return response.data;
-    } catch (error) {
-      toast.error("Thêm ghi chú thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.post<ApiResponse<LessonNote>>(
+      API.CREATE_LESSON_NOTE,
+      data
+    );
+    return response.data;
   },
 
   getByLesson: async (lessonId: string) => {
-    try {
-      const response = await apiClient.get<ApiResponse<LessonNote[]>>(
-        `/api/v1/lesson-notes/lesson/${lessonId}`
-      );
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error loading notes:", error.message);
-      }
-      throw error;
-    }
+    const response = await apiClient.get<ApiResponse<LessonNote[]>>(
+      `${API.GET_LESSON_NOTE_BY_LESSON}/${lessonId}`
+    );
+    return response.data;
   },
 
   getByCourse: async (courseId: string, params: NoteSearchParams = {}) => {
-    try {
-      const response = await apiClient.get<
-        ApiResponse<PageResponse<LessonNote>>
-      >(`/api/v1/lesson-notes/course/${courseId}`, {
-        params: {
-          page: params.page || 1,
-          size: params.size || 20,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error loading course notes:", error.message);
-      }
-      throw error;
-    }
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<LessonNote>>
+    >(`${API.GET_LESSON_NOTES_BY_COURSE}/${courseId}`, {
+      params: {
+        page: params.page || 1,
+        size: params.size || 20,
+      },
+    });
+    return response.data;
   },
 
   update: async (noteId: string, data: UpdateLessonNoteRequest) => {
-    try {
-      const response = await apiClient.put<ApiResponse<LessonNote>>(
-        `/api/v1/lesson-notes/${noteId}`,
-        data
-      );
-      if (response.data.code === 200) {
-        toast.success("Cập nhật ghi chú thành công!");
-      }
-      return response.data;
-    } catch (error) {
-      toast.error("Cập nhật ghi chú thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.put<ApiResponse<LessonNote>>(
+      `${API.UPDATE_LESSON_NOTE}/${noteId}`,
+      data
+    );
+    return response.data;
   },
 
   delete: async (noteId: string) => {
-    try {
-      const response = await apiClient.delete<ApiResponse<void>>(
-        `/api/v1/lesson-notes/${noteId}`
-      );
-      if (response.data.code === 200) {
-        toast.success("Xóa ghi chú thành công!");
-      }
-      return response.data;
-    } catch (error) {
-      toast.error("Xóa ghi chú thất bại. Vui lòng thử lại.");
-      throw error;
-    }
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `${API.DELETE_LESSON_NOTE}/${noteId}`
+    );
+    return response.data;
   },
 };

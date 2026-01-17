@@ -64,10 +64,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch {
+      setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
+    } catch (error) {
       authApi.clearAuthData();
+      setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
+      console.error("Logout error:", error);
     }
-    setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
   };
 
   return (

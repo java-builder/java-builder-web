@@ -1,4 +1,5 @@
-import { apiClient } from "@/lib/axios";
+import { API } from "@/api/api";
+import { apiClient } from "@/api/axios";
 import { ApiResponse } from "@/types/api";
 import {
   LoginRequest,
@@ -8,52 +9,36 @@ import {
   IntrospectResponse,
   TwoFactorAuthenticationRequest,
 } from "@/types/auth";
-import toast from "react-hot-toast";
 
 export const authApi = {
   login: async (data: LoginRequest) => {
-    try {
-      const response = await apiClient.post<ApiResponse<LoginResponse>>(
-        "/api/v1/auth/login",
-        data,
-      );
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(
+      API.LOGIN_USERNAME_PASSWORD,
+      data,
+    );
 
-      if (response.data.code === 200) {
-        if (response.data.result?.mftEnable) {
-          return response.data;
-        } else if (
-          response.data.result?.accessToken &&
-          response.data.result?.userId
-        ) {
-          localStorage.setItem("access_token", response.data.result.accessToken);
-          localStorage.setItem("user_id", response.data.result.userId);
-          toast.success("Đăng nhập thành công!");
-        }
+    if (response.data.code === 200) {
+      if (response.data.result?.mftEnable) {
+        return response.data;
+      } else if (
+        response.data.result?.accessToken &&
+        response.data.result?.userId
+      ) {
+        localStorage.setItem("access_token", response.data.result.accessToken);
+        localStorage.setItem("user_id", response.data.result.userId);
       }
-      return response.data;
-    } catch (error) {
-      toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
-      throw error;
     }
+    return response.data;
   },
 
   logout: async () => {
-    try {
-      const response = await apiClient.post<ApiResponse<LogoutResponse>>(
-        "/api/v1/auth/logout",
-      );
+    const response = await apiClient.post<ApiResponse<LogoutResponse>>(
+      API.LOGOUT,
+    );
 
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user_id");
-
-      toast.success("Đăng xuất thành công!");
-      return response.data;
-    } catch (error) {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user_id");
-      toast.success("Đăng xuất thành công!");
-      throw error;
-    }
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_id");
+    return response.data;
   },
 
   isAuthenticated: () => {
@@ -75,7 +60,6 @@ export const authApi = {
     if (typeof window === "undefined") return;
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_id");
-    toast.success("Phiên đăng nhập đã hết hạn");
   },
 
   introspect: async (): Promise<IntrospectResponse | null> => {
@@ -87,7 +71,7 @@ export const authApi = {
 
       const request: IntrospectRequest = { token };
       const response = await apiClient.post<ApiResponse<IntrospectResponse>>(
-        "/api/v1/auth/introspect",
+        API.INTROSPECT,
         request,
       );
       return response.data.result || null;
@@ -97,76 +81,58 @@ export const authApi = {
   },
 
   loginWithGoogle: async (code: string) => {
-    try {
-      const response = await apiClient.post<ApiResponse<LoginResponse>>(
-        "/api/v1/auth/login-google",
-        null,
-        { params: { code } },
-      );
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(
+      API.LOGIN_GOOGLE,
+      null,
+      { params: { code } },
+    );
 
-      if (
-        response.data.code === 200 &&
-        response.data.result?.accessToken &&
-        response.data.result?.userId
-      ) {
-        localStorage.setItem("access_token", response.data.result.accessToken);
-        localStorage.setItem("user_id", response.data.result.userId);
-        toast.success("Đăng nhập Google thành công!");
-      }
-
-      return response.data;
-    } catch (error) {
-      toast.error("Đăng nhập Google thất bại. Vui lòng thử lại.");
-      throw error;
+    if (
+      response.data.code === 200 &&
+      response.data.result?.accessToken &&
+      response.data.result?.userId
+    ) {
+      localStorage.setItem("access_token", response.data.result.accessToken);
+      localStorage.setItem("user_id", response.data.result.userId);
     }
+
+    return response.data;
   },
 
   loginWithGithub: async (code: string) => {
-    try {
-      const response = await apiClient.post<ApiResponse<LoginResponse>>(
-        "/api/v1/auth/login-github",
-        null,
-        { params: { code } },
-      );
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(
+      API.LOGIN_GITHUB,
+      null,
+      { params: { code } },
+    );
 
-      if (
-        response.data.code === 200 &&
-        response.data.result?.accessToken &&
-        response.data.result?.userId
-      ) {
-        localStorage.setItem("access_token", response.data.result.accessToken);
-        localStorage.setItem("user_id", response.data.result.userId);
-        toast.success("Đăng nhập GitHub thành công!");
-      }
-
-      return response.data;
-    } catch (error) {
-      toast.error("Đăng nhập GitHub thất bại. Vui lòng thử lại.");
-      throw error;
+    if (
+      response.data.code === 200 &&
+      response.data.result?.accessToken &&
+      response.data.result?.userId
+    ) {
+      localStorage.setItem("access_token", response.data.result.accessToken);
+      localStorage.setItem("user_id", response.data.result.userId);
     }
+
+    return response.data;
   },
 
   loginTwoFactor: async (data: TwoFactorAuthenticationRequest) => {
-    try {
-      const response = await apiClient.post<ApiResponse<LoginResponse>>(
-        "/api/v1/auth/login-two-factor",
-        data,
-      );
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(
+      API.LOGIN_TWO_FACTOR,
+      data,
+    );
 
-      if (
-        response.data.code === 200 &&
-        response.data.result?.accessToken &&
-        response.data.result?.userId
-      ) {
-        localStorage.setItem("access_token", response.data.result.accessToken);
-        localStorage.setItem("user_id", response.data.result.userId);
-        toast.success("Xác thực 2 bước thành công!");
-      }
-
-      return response.data;
-    } catch (error) {
-      toast.error("Xác thực 2 bước thất bại. Vui lòng kiểm tra lại mã OTP.");
-      throw error;
+    if (
+      response.data.code === 200 &&
+      response.data.result?.accessToken &&
+      response.data.result?.userId
+    ) {
+      localStorage.setItem("access_token", response.data.result.accessToken);
+      localStorage.setItem("user_id", response.data.result.userId);
     }
+
+    return response.data;
   },
 };

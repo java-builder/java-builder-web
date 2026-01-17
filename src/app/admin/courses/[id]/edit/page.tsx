@@ -38,12 +38,12 @@ export default function EditCoursePage() {
   const [loadingLessons, setLoadingLessons] = useState<Set<string>>(new Set());
 
   // Modal states
-  const [chapterModal, setChapterModal] = useState({ 
-    isOpen: false, 
-    editId: "", 
+  const [chapterModal, setChapterModal] = useState({
+    isOpen: false,
+    editId: "",
     chapterName: "",
     description: "",
-    isSubmitting: false 
+    isSubmitting: false
   });
   const [lessonModal, setLessonModal] = useState({
     isOpen: false,
@@ -64,7 +64,7 @@ export default function EditCoursePage() {
     type: "" as "chapter" | "lesson",
     id: "",
     title: "",
-    chapterId: "", 
+    chapterId: "",
   });
 
   // Preview lesson modal
@@ -83,7 +83,7 @@ export default function EditCoursePage() {
   const fetchCourse = useCallback(async (force = false) => {
     if (!courseId) return;
     if (!force && hasFetched.current) return;
-    
+
     try {
       setIsLoading(true);
       hasFetched.current = true;
@@ -184,9 +184,13 @@ export default function EditCoursePage() {
       newExpanded.delete(chapterId);
     } else {
       newExpanded.add(chapterId);
-      // Load lessons if not loaded yet
       if (!chapterLessons[chapterId]) {
-        await fetchLessons(chapterId);
+        try {
+          await fetchLessons(chapterId);
+        } catch (error) {
+          console.error("Error toggling chapter:", error);
+          toast.error("Không thể tải nội dung chương");
+        }
       }
     }
     setExpandedChapters(newExpanded);
@@ -202,6 +206,7 @@ export default function EditCoursePage() {
       }
     } catch (error) {
       console.error("Error fetching lessons:", error);
+      toast.error("Không thể tải danh sách bài học");
     } finally {
       setLoadingLessons(prev => {
         const newSet = new Set(prev);
@@ -222,7 +227,6 @@ export default function EditCoursePage() {
 
     try {
       if (chapterModal.editId) {
-        // Update chapter
         const response = await chapterApi.update({
           id: chapterModal.editId,
           chapterName: chapterModal.chapterName,
@@ -243,13 +247,13 @@ export default function EditCoursePage() {
 
         if (response.code === 201 && response.result) {
           toast.success("Thêm chương thành công!");
-          // Refresh course data to get updated chapters
           await fetchCourse(true);
         }
       }
       setChapterModal({ isOpen: false, editId: "", chapterName: "", description: "", isSubmitting: false });
     } catch (error) {
       console.error("Save chapter error:", error);
+      toast.error(error instanceof Error ? error.message : "Lưu chương thất bại");
     } finally {
       setChapterModal(prev => ({ ...prev, isSubmitting: false }));
     }
@@ -272,12 +276,12 @@ export default function EditCoursePage() {
       }
     } catch (error) {
       console.error("Delete error:", error);
+      toast.error(error instanceof Error ? error.message : "Xóa thất bại");
     } finally {
       setDeleteModal({ isOpen: false, type: "chapter", id: "", title: "", chapterId: "" });
     }
   };
 
-  // Create lesson via API
   const handleSaveLesson = async () => {
     if (!lessonModal.lessonName.trim()) {
       toast.error("Vui lòng nhập tên bài học");
@@ -292,7 +296,7 @@ export default function EditCoursePage() {
       if (lessonModal.videoFile) {
         setLessonModal(prev => ({ ...prev, isUploading: true }));
         const uploadResult = await fileApi.uploadVideoWithPresigned(
-          lessonModal.videoFile, 
+          lessonModal.videoFile,
           (percent) => {
             setLessonModal(prev => ({ ...prev, uploadProgress: percent }));
           },
@@ -318,6 +322,7 @@ export default function EditCoursePage() {
       setLessonModal({ isOpen: false, chapterId: "", lessonName: "", description: "", videoUrl: "", videoFile: null, videoFileName: "", uploadProgress: 0, isUploading: false, isFreePreview: false, isSubmitting: false });
     } catch (error) {
       console.error("Save lesson error:", error);
+      toast.error(error instanceof Error ? error.message : "Lưu bài học thất bại");
     } finally {
       setLessonModal(prev => ({ ...prev, isSubmitting: false, isUploading: false }));
     }
@@ -350,11 +355,11 @@ export default function EditCoursePage() {
       return;
     }
 
-    setLessonModal(prev => ({ 
-      ...prev, 
-      videoFile: file, 
+    setLessonModal(prev => ({
+      ...prev,
+      videoFile: file,
       videoFileName: file.name,
-      videoUrl: "" 
+      videoUrl: ""
     }));
   };
 
@@ -409,17 +414,15 @@ export default function EditCoursePage() {
           <nav className="flex gap-8 px-6">
             <button
               onClick={() => setActiveTab("info")}
-              className={`py-4 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === "info" ? "border-accent text-accent" : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
+              className={`py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === "info" ? "border-accent text-accent" : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
             >
               Thông tin cơ bản
             </button>
             <button
               onClick={() => setActiveTab("content")}
-              className={`py-4 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === "content" ? "border-accent text-accent" : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
+              className={`py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === "content" ? "border-accent text-accent" : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
             >
               Nội dung khóa học
             </button>
@@ -551,9 +554,9 @@ export default function EditCoursePage() {
                         </div>
                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                           <button
-                            onClick={() => setLessonModal({ 
-                              isOpen: true, 
-                              chapterId: chapter.id, 
+                            onClick={() => setLessonModal({
+                              isOpen: true,
+                              chapterId: chapter.id,
                               lessonName: "",
                               description: "",
                               videoUrl: "",
@@ -562,7 +565,7 @@ export default function EditCoursePage() {
                               uploadProgress: 0,
                               isUploading: false,
                               isFreePreview: false,
-                              isSubmitting: false 
+                              isSubmitting: false
                             })}
                             className="p-1.5 text-gray-500 hover:bg-green-50 hover:text-green-600 rounded transition-colors"
                             title="Thêm bài học"
@@ -572,12 +575,12 @@ export default function EditCoursePage() {
                             </svg>
                           </button>
                           <button
-                            onClick={() => setChapterModal({ 
-                              isOpen: true, 
-                              editId: chapter.id, 
+                            onClick={() => setChapterModal({
+                              isOpen: true,
+                              editId: chapter.id,
                               chapterName: chapter.chapterName,
                               description: chapter.description || "",
-                              isSubmitting: false 
+                              isSubmitting: false
                             })}
                             className="p-1.5 text-gray-500 hover:bg-gray-200 rounded transition-colors"
                             title="Sửa chương"
@@ -614,8 +617,8 @@ export default function EditCoursePage() {
                               </div>
                             ) : chapterLessons[chapter.id] && chapterLessons[chapter.id].length > 0 ? (
                               chapterLessons[chapter.id].map((lesson, lessonIndex) => (
-                                <div 
-                                  key={lesson.id} 
+                                <div
+                                  key={lesson.id}
                                   className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-all duration-200 cursor-pointer group"
                                   onClick={() => handlePreviewLesson(lesson)}
                                 >
@@ -794,8 +797,8 @@ export default function EditCoursePage() {
                       {lessonModal.isUploading && (
                         <div className="mt-1">
                           <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-accent transition-all duration-300" 
+                            <div
+                              className="h-full bg-accent transition-all duration-300"
                               style={{ width: `${lessonModal.uploadProgress}%` }}
                             />
                           </div>
@@ -826,12 +829,12 @@ export default function EditCoursePage() {
                     <p className="text-xs text-gray-400 mt-1">Tối đa 500MB</p>
                   </div>
                 )}
-                <input 
-                  ref={videoInputRef} 
-                  type="file" 
-                  accept="video/*" 
-                  onChange={handleVideoChange} 
-                  className="hidden" 
+                <input
+                  ref={videoInputRef}
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                  className="hidden"
                 />
               </div>
               <div className="flex items-center gap-3">

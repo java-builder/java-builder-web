@@ -8,6 +8,8 @@ import Sidebar from "@/components/profile/Sidebar";
 import ProfileTab from "@/components/profile/ProfileTab";
 import SecurityTab from "@/components/profile/SecurityTab";
 import PasswordTab from "@/components/profile/PasswordTab";
+import FavoriteCoursesTab from "@/components/profile/FavoriteCoursesTab";
+import FavoriteBlogsTab from "@/components/profile/FavoriteBlogsTab";
 import { UserDetailResponse } from "@/types/user";
 
 export default function ProfilePage() {
@@ -32,6 +34,10 @@ export default function ProfilePage() {
         return (
           <ProfileTab user={user!} onSave={handleSave} isSaving={isSaving} />
         );
+      case "favorite-courses":
+        return <FavoriteCoursesTab />;
+      case "favorite-blogs":
+        return <FavoriteBlogsTab />;
       case "security":
         return <SecurityTab user={user!} onUserUpdate={updateUser} />;
       case "password":

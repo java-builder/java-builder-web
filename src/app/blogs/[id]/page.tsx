@@ -62,8 +62,7 @@ export default function BlogDetailPage() {
         setRelatedBlogs(filtered);
 
         await loadRootComments(1, false);
-      } catch (err) {
-        console.error("Error fetching blog:", err);
+      } catch {
         setError("Không thể tải bài viết. Vui lòng thử lại sau.");
       } finally {
         setIsLoading(false);
@@ -75,7 +74,6 @@ export default function BlogDetailPage() {
     }
   }, [blogId, loadRootComments]);
 
-  // Increment view once when page loads
   useEffect(() => {
     const incrementView = async () => {
       if (!blogId || hasIncrementedViewRef.current) return;
@@ -85,14 +83,13 @@ export default function BlogDetailPage() {
         setBlog((prev) =>
           prev
             ? {
-                ...prev,
-                viewCount:
-                  typeof newCount === "number" ? newCount : prev.viewCount + 1,
-              }
+              ...prev,
+              viewCount:
+                typeof newCount === "number" ? newCount : prev.viewCount + 1,
+            }
             : prev,
         );
       } catch {
-        // fail silently; do not block UX
       }
     };
     incrementView();
@@ -123,7 +120,6 @@ export default function BlogDetailPage() {
         return;
       }
 
-      // Try loading replies for current roots to reveal a target reply
       const tryLoadRepliesForTarget = async () => {
         for (const root of comments) {
           if (isCancelled) return false;
@@ -132,7 +128,7 @@ export default function BlogDetailPage() {
             (root.repliesCount || 0) > 0 &&
             (!root.replies || root.replies.length === 0);
           if (needLoad) {
-            await loadReplies(root.id).catch(() => {});
+            await loadReplies(root.id).catch(() => { });
             await new Promise((resolve) => setTimeout(resolve, 0));
             if (document.getElementById(targetId)) return true;
           }
@@ -151,7 +147,7 @@ export default function BlogDetailPage() {
       isLoadingSequence = true;
       const MAX_TRIES = 10;
       for (let i = 0; i < MAX_TRIES && !isCancelled; i++) {
-        await loadMoreComments().catch(() => {});
+        await loadMoreComments().catch(() => { });
         await new Promise((resolve) => setTimeout(resolve, 0));
         if (await tryLoadRepliesForTarget()) {
           el = document.getElementById(targetId);
@@ -177,7 +173,7 @@ export default function BlogDetailPage() {
     try {
       const liked = localStorage.getItem(`liked_blog_${blogId}`);
       setIsLiked(liked === "1");
-    } catch {}
+    } catch { }
   }, [blogId]);
 
   const handleAddComment = async (content: string) => {
@@ -186,36 +182,36 @@ export default function BlogDetailPage() {
       setBlog((prev) =>
         prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev,
       );
+      toast.success("Đăng bình luận thành công");
     } catch (err) {
-      console.error("Error adding comment:", err);
+      toast.error((err as Error).message || "Không thể đăng bình luận");
     }
   };
 
   const handleReplyComment = async (commentId: string, content: string) => {
     try {
       await replyToComment(commentId, content);
-      // Optimistically update local comment count on successful reply
       setBlog((prev) =>
         prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev,
       );
+      toast.success("Đăng câu trả lời phần bình luận thành công");
     } catch (err) {
-      console.error("Error replying to comment:", err);
+      toast.error((err as Error).message || "Không thể gửi trả lời");
     }
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    console.log("Attempting to delete comment:", commentId);
     try {
       await deleteComment(commentId);
       console.log("Comment deleted successfully:", commentId);
-      // Optimistically decrease local comment count after deletion
       setBlog((prev) => {
         if (!prev) return prev;
         const nextCount = prev.commentCount > 0 ? prev.commentCount - 1 : 0;
         return { ...prev, commentCount: nextCount };
       });
-    } catch (err) {
-      console.error("Error deleting comment:", err);
+      toast.success("Xóa bình luận thành công");
+    } catch {
+      toast.error("Không thể xóa bình luận");
     }
   };
 
@@ -569,12 +565,12 @@ export default function BlogDetailPage() {
                               setBlog((prev) =>
                                 prev
                                   ? {
-                                      ...prev,
-                                      likeCount:
-                                        typeof newCount === "number"
-                                          ? newCount
-                                          : prev.likeCount + 1,
-                                    }
+                                    ...prev,
+                                    likeCount:
+                                      typeof newCount === "number"
+                                        ? newCount
+                                        : prev.likeCount + 1,
+                                  }
                                   : prev,
                               );
                               setIsLiked(true);
@@ -583,7 +579,7 @@ export default function BlogDetailPage() {
                                   `liked_blog_${blogId}`,
                                   "1",
                                 );
-                              } catch {}
+                              } catch { }
                             } catch (err) {
                               console.error("Error incrementing like:", err);
                             }
@@ -610,7 +606,7 @@ export default function BlogDetailPage() {
                             {isLiked ? "Bỏ thích" : "Thích"} ({blog.likeCount})
                           </span>
                         </button>
-                        
+
                         {/* Share Buttons */}
                         <div className="flex gap-2 sm:gap-3">
                           <button
@@ -645,7 +641,7 @@ export default function BlogDetailPage() {
                           </button>
                         </div>
                       </div>
-                      
+
                       {/* Update Date */}
                       <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-slate-700">
                         Cập nhật: {formatApiDateOnly(blog.createdAt)}

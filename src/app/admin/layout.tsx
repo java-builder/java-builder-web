@@ -7,6 +7,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminNotificationDropdown from "@/components/admin/AdminNotificationDropdown";
 import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import Logo from "@/components/header-components/Logo";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -16,6 +17,7 @@ const navigation = [
   {
     name: "Trang chủ",
     href: "/admin",
+    color: "text-blue-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -41,6 +43,7 @@ const navigation = [
   {
     name: "Về trang người dùng",
     href: "/",
+    color: "text-indigo-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -60,6 +63,7 @@ const navigation = [
   {
     name: "Quản lý người dùng",
     href: "/admin/users",
+    color: "text-teal-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -79,6 +83,7 @@ const navigation = [
   {
     name: "Khóa học",
     href: "/admin/courses",
+    color: "text-orange-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -96,27 +101,9 @@ const navigation = [
     ),
   },
   {
-    name: "Tin nhắn",
-    href: "/admin/messages",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-        />
-      </svg>
-    ),
-  },
-  {
     name: "Thông báo",
     href: "/admin/notifications",
+    color: "text-pink-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -136,6 +123,7 @@ const navigation = [
   {
     name: "Gửi thông báo",
     href: "/admin/notifications/send",
+    color: "text-rose-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -155,6 +143,7 @@ const navigation = [
   {
     name: "Quản lý đăng nhập",
     href: "/admin/sessions",
+    color: "text-emerald-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -174,6 +163,7 @@ const navigation = [
   {
     name: "Quản lý bài viết",
     href: "/admin/blogs",
+    color: "text-violet-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -193,6 +183,7 @@ const navigation = [
   {
     name: "Quản lý tài liệu",
     href: "/admin/documents",
+    color: "text-amber-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -212,6 +203,7 @@ const navigation = [
   {
     name: "Gói Premium",
     href: "/admin/subscriptions",
+    color: "text-yellow-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -231,6 +223,7 @@ const navigation = [
   {
     name: "Báo cáo",
     href: "/admin/reports",
+    color: "text-cyan-600",
     icon: (
       <svg
         className="w-5 h-5"
@@ -250,6 +243,7 @@ const navigation = [
   {
     name: "Cài đặt",
     href: "/admin/settings",
+    color: "text-slate-500",
     icon: (
       <svg
         className="w-5 h-5"
@@ -376,54 +370,102 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2) !important;
             }
           `}</style>
-          <div className="h-screen flex bg-gray-50 overflow-hidden">
-            {/* Mobile sidebar overlay */}
-            {sidebarOpen && (
-              <div className="fixed inset-0 z-40 lg:hidden">
-                <div
-                  className="fixed inset-0 bg-gray-600 bg-opacity-75"
+        <div className="h-screen flex bg-gray-50 overflow-hidden">
+          {/* Mobile sidebar overlay */}
+          {sidebarOpen && (
+            <div className="fixed inset-0 z-40 lg:hidden">
+              <div
+                className="fixed inset-0 bg-gray-600 bg-opacity-75"
+                onClick={() => setSidebarOpen(false)}
+              />
+            </div>
+          )}
+
+          {/* Sidebar - Fixed */}
+          <div
+            className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}
+          >
+            <div className="flex flex-col h-full">
+              {/* Logo */}
+              {/* Logo */}
+              <div className="relative flex items-center justify-between h-16 px-6 bg-white border-b border-gray-100 flex-shrink-0">
+                <Logo />
+
+                <button
                   onClick={() => setSidebarOpen(false)}
-                />
-              </div>
-            )}
-
-            {/* Sidebar - Fixed */}
-            <div
-              className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}
-            >
-              <div className="flex flex-col h-full">
-                {/* Logo */}
-                <div className="relative flex items-center justify-between h-16 px-6 bg-gradient-to-r from-accent via-blue-600 to-blue-700 flex-shrink-0 overflow-hidden">
-                  {/* Animated background particles */}
-                  <div className="absolute inset-0 opacity-20">
-                    <div className="absolute top-2 left-8 w-1 h-1 bg-white rounded-full animate-pulse"></div>
-                    <div className="absolute top-6 right-12 w-1 h-1 bg-white rounded-full animate-pulse delay-300"></div>
-                    <div className="absolute bottom-4 left-16 w-1 h-1 bg-white rounded-full animate-pulse delay-700"></div>
-                    <div className="absolute bottom-2 right-8 w-1 h-1 bg-white rounded-full animate-pulse delay-500"></div>
-                  </div>
-
-                  <Link
-                    href="/admin"
-                    className="group flex items-center space-x-3 relative z-10 transition-all duration-300 hover:scale-105"
+                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <Image
-                      src="/logos/java-coffee-logo-icon-vector.jpg"
-                      alt="JavaBuilder"
-                      width={40}
-                      height={40}
-                      className="rounded-lg"
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
                     />
+                  </svg>
+                </button>
+              </div>
 
-                    <div className="flex flex-col">
-                      <span className="text-white font-bold text-lg tracking-wide transition-all duration-300 group-hover:text-blue-100">
-                        JavaBuilder
+              {/* Navigation - Scrollable */}
+              <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                {navigation.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
+                        ? `bg-blue-50 border-r-2 ${item.color.replace('text-', 'border-').replace('500', '600').replace('600', '600')} ${item.color}`
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        }`}
+                    >
+                      <span
+                        className={`mr-3 ${isActive ? item.color : item.color || "text-gray-400"}`}
+                      >
+                        {item.icon}
                       </span>
-                    </div>
-                  </Link>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </nav>
 
+              {/* User profile - Fixed at bottom */}
+              <div className="p-4 border-t border-gray-200 flex-shrink-0">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
+                    {currentUser?.avatar ? (
+                      <Image
+                        src={currentUser.avatar}
+                        alt={currentUser.username || "Avatar"}
+                        width={40}
+                        height={40}
+                        className="w-full h-full object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="text-white font-medium">
+                        {currentUser?.username?.charAt(0)?.toUpperCase() || "A"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {currentUser?.username || "Admin User"}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {currentUser?.email || "admin@JavaBuilder.com"}
+                    </p>
+                  </div>
                   <button
-                    onClick={() => setSidebarOpen(false)}
-                    className="lg:hidden relative z-10 p-2 text-white hover:text-blue-200 hover:bg-white/10 rounded-lg transition-all duration-200 transform hover:scale-110"
+                    onClick={handleLogout}
+                    className="text-gray-400 hover:text-red-600 transition-colors"
+                    title="Đăng xuất"
                   >
                     <svg
                       className="w-5 h-5"
@@ -435,134 +477,58 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
                     </svg>
                   </button>
-
-                  {/* Animated gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                </div>
-
-                {/* Navigation - Scrollable */}
-                <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                  {navigation.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-accent border-r-2 border-accent"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                        }`}
-                      >
-                        <span
-                          className={`mr-3 ${isActive ? "text-accent" : "text-gray-400"}`}
-                        >
-                          {item.icon}
-                        </span>
-                        {item.name}
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                {/* User profile - Fixed at bottom */}
-                <div className="p-4 border-t border-gray-200 flex-shrink-0">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-accent to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
-                      {currentUser?.avatar ? (
-                        <Image
-                          src={currentUser.avatar}
-                          alt={currentUser.username || "Avatar"}
-                          width={40}
-                          height={40}
-                          className="w-full h-full object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <span className="text-white font-medium">
-                          {currentUser?.username?.charAt(0)?.toUpperCase() || "A"}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {currentUser?.username || "Admin User"}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {currentUser?.email || "admin@JavaBuilder.com"}
-                      </p>
-                    </div>
-                    <button 
-                      onClick={handleLogout}
-                      className="text-gray-400 hover:text-red-600 transition-colors"
-                      title="Đăng xuất"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        />
-                      </svg>
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
-
-            {/* Main content area */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {/* Top header - Fixed */}
-              <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-center justify-between h-16 px-6">
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => setSidebarOpen(true)}
-                      className="lg:hidden text-gray-500 hover:text-gray-700"
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      </svg>
-                    </button>
-                    <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900">
-                      {navigation.find((item) => item.href === pathname)
-                        ?.name || "Dashboard"}
-                    </h1>
-                  </div>
-
-                  <div className="flex items-center space-x-4">
-                    <AdminNotificationDropdown />
-                  </div>
-                </div>
-              </header>
-
-              {/* Page content - Scrollable */}
-              <main className="flex-1 overflow-y-auto bg-gray-50">
-                {children}
-              </main>
-            </div>
           </div>
-        </>
-      </ProtectedRoute>
+
+          {/* Main content area */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Top header - Fixed */}
+            <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
+              <div className="flex items-center justify-between h-16 px-6">
+                <div className="flex items-center">
+                  <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="lg:hidden text-gray-500 hover:text-gray-700"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    </svg>
+                  </button>
+                  <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900">
+                    {navigation.find((item) => item.href === pathname)
+                      ?.name || "Dashboard"}
+                  </h1>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <AdminNotificationDropdown />
+                </div>
+              </div>
+            </header>
+
+            {/* Page content - Scrollable */}
+            <main className="flex-1 overflow-y-auto bg-gray-50">
+              {children}
+            </main>
+          </div>
+        </div>
+      </>
+    </ProtectedRoute>
   );
 }
