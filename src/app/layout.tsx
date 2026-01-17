@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     description: "JavaBuilder - Nền tảng học lập trình Java Backend chuyên sâu. Làm chủ Java Core, Spring Boot, Microservices với lộ trình bài bản và mentor chuyên nghiệp.",
     url: "/",
     tags: ["javabuilder", "học java backend", "spring boot", "microservices", "java developer", "backend developer vietnam"],
+    useTemplate: false, // Trang chủ không dùng template
   }),
   metadataBase: new URL(SITE_URL),
   verification: {

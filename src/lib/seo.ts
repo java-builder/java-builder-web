@@ -43,6 +43,7 @@ export interface SEOProps {
   author?: string;
   tags?: string[];
   noIndex?: boolean;
+  useTemplate?: boolean; // Thêm option để bật/tắt template
 }
 
 export function generateSEO({
@@ -56,8 +57,9 @@ export function generateSEO({
   author,
   tags,
   noIndex = false,
+  useTemplate = true, // Mặc định vẫn dùng template
 }: SEOProps): Metadata {
-  const fullTitle = `${title} | ${SITE_NAME}`;
+  const fullTitle = useTemplate ? `${title} | ${SITE_NAME}` : title;
   const canonicalUrl = url ? `${SITE_URL}${url}` : SITE_URL;
   const allKeywords = [...SITE_KEYWORDS, ...(tags || [])];
 
