@@ -4,7 +4,7 @@ import { Client } from '@stomp/stompjs';
 import { connectWebSocket, subscribeToPaymentSuccess, PaymentSuccessNotification } from '@/lib/websocket';
 import toast from 'react-hot-toast';
 
-export const usePaymentWebSocket = () => {
+export const usePaymentWebSocket = (courseId?: string) => {
   const router = useRouter();
   const clientRef = useRef<Client | null>(null);
 
@@ -27,6 +27,7 @@ export const usePaymentWebSocket = () => {
           
           setTimeout(() => {
             router.push('/profile/subscription');
+            client.deactivate();
           }, 2000);
           
         } else if (notification.transactionType === 'PAYIN') {
@@ -36,7 +37,11 @@ export const usePaymentWebSocket = () => {
           });
           
           setTimeout(() => {
+            if (courseId) {
+              router.push(`/learn/${courseId}`);
+            }
             router.refresh();
+            client.deactivate();
           }, 2000);
         }
       });
@@ -47,7 +52,7 @@ export const usePaymentWebSocket = () => {
         clientRef.current.deactivate();
       }
     };
-  }, [router]);
+  }, [router, courseId]);
 
   return clientRef.current;
 };

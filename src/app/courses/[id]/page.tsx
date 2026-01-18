@@ -24,7 +24,7 @@ export default function CourseDetailPage() {
   const courseId = params?.id as string;
   const { data: currentUser } = useCurrentUser();
   
-  usePaymentWebSocket();
+  usePaymentWebSocket(courseId);
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
