@@ -11,10 +11,7 @@ export interface PaymentSuccessNotification {
 
 export const connectWebSocket = () => {
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/f-learning/ws';
-  
-  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-  
-  console.log('🔑 Token found:', token ? `${token.substring(0, 20)}...` : '❌ NO TOKEN');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
   
   const client = new Client({
     brokerURL: wsUrl,
@@ -30,12 +27,7 @@ export const connectWebSocket = () => {
       console.error('❌ WebSocket error:', frame.headers['message']);
     },
     
-    // Enable debug to see CONNECT frame with token
-    debug: (str) => {
-      if (str.includes('CONNECT') || str.includes('Authorization')) {
-        console.log('📤 STOMP:', str);
-      }
-    },
+    debug: () => {},
   });
 
   client.activate();
@@ -48,20 +40,15 @@ export const subscribeToPaymentSuccess = (
   callback: (notification: PaymentSuccessNotification) => void
 ) => {
   if (!client.connected) {
-    console.warn('⚠️ WebSocket not connected yet');
     return null;
   }
 
-  console.log('📡 Subscribing to /user/queue/payment-success');
-  
   return client.subscribe('/user/queue/payment-success', (message) => {
     try {
-      console.log('📨 Raw message received:', message.body);
       const notification: PaymentSuccessNotification = JSON.parse(message.body);
-      console.log('💰 Parsed notification:', notification);
       callback(notification);
     } catch (error) {
-      console.error('❌ Error parsing payment notification:', error);
+      console.error('Error parsing payment notification:', error);
     }
   });
 };
