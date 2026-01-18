@@ -27,13 +27,24 @@ export const userApi = {
   },
 
   search: async (params: UserSearchParams) => {
-    const queryParams: Record<string, string | number> = {
+    const queryParams: Record<string, string | number | string[]> = {
       page: params.page || 1,
+      size: 20,
     };
+
+    // Nếu có search text, thêm vào users array với pattern search
+    if (params.search && params.search.trim()) {
+      const searchText = params.search.trim();
+      // Tìm kiếm theo username hoặc email với LIKE operation
+      queryParams.users = [
+        `username:${searchText}|`,
+        `email:${searchText}`
+      ];
+    }
 
     const response = await apiClient.post<
       ApiResponse<PageResponse<UserDetailResponse>>
-    >(API.USER_SEARCH, {
+    >(API.USER_SEARCH, null, {
       params: queryParams,
     });
     return response.data;
