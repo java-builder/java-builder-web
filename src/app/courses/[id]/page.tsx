@@ -17,6 +17,7 @@ import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
+import { connectWebSocket } from "@/lib/websocket";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -201,6 +202,7 @@ export default function CourseDetailPage() {
       return;
     }
     
+    const wsClient = connectWebSocket();
     setPaymentModal({ isOpen: true, isLoading: true, data: null });
     try {
       const result = await paymentApi.createPaymentLink(courseId);
@@ -209,10 +211,12 @@ export default function CourseDetailPage() {
       } else {
         toast.error("Không thể tạo link thanh toán");
         setPaymentModal({ isOpen: false, isLoading: false, data: null });
+        wsClient.deactivate();
       }
     } catch {
       toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      wsClient.deactivate();
     }
   };
 
@@ -988,12 +992,25 @@ export default function CourseDetailPage() {
             <div className="p-6">
               {paymentModal.isLoading ? (
                 <div className="text-center py-12">
-                  <div className="relative w-16 h-16 mx-auto mb-4">
-                    <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
-                    <div className="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin"></div>
+                  {/* Professional spinner with multiple rings */}
+                  <div className="relative w-20 h-20 mx-auto mb-6">
+                    {/* Outer ring */}
+                    <div className="absolute inset-0 rounded-full border-4 border-accent/20"></div>
+                    {/* Middle spinning ring */}
+                    <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-accent border-r-accent animate-spin"></div>
+                    {/* Inner pulsing dot */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-3 h-3 bg-accent rounded-full animate-pulse"></div>
+                    </div>
                   </div>
-                  <p className="text-gray-600 font-medium">Đang tạo mã thanh toán...</p>
-                  <p className="text-gray-400 text-sm mt-1">Vui lòng chờ trong giây lát</p>
+                  <p className="text-gray-700 font-semibold text-lg mb-2">Đang tạo mã thanh toán</p>
+                  <p className="text-gray-500 text-sm">Vui lòng chờ trong giây lát...</p>
+                  {/* Progress dots */}
+                  <div className="flex justify-center gap-1.5 mt-4">
+                    <div className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
                 </div>
               ) : paymentModal.data ? (
                 <div>
