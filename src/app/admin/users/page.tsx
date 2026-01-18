@@ -144,8 +144,6 @@ export default function UsersPage() {
     fetchUsers();
   }, [fetchUsers]);
 
-  console.log("🔍 Component State:", { isLoading, error, response });
-
   if (isLoading && !response) {
     return (
       <div className="flex items-center justify-center min-h-screen">
