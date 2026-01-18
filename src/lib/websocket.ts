@@ -14,6 +14,8 @@ export const connectWebSocket = () => {
   
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   
+  console.log('🔑 Token found:', token ? `${token.substring(0, 20)}...` : '❌ NO TOKEN');
+  
   const client = new Client({
     brokerURL: wsUrl,
     connectHeaders: token ? {
@@ -28,7 +30,12 @@ export const connectWebSocket = () => {
       console.error('❌ WebSocket error:', frame.headers['message']);
     },
     
-    debug: () => {},
+    // Enable debug to see CONNECT frame with token
+    debug: (str) => {
+      if (str.includes('CONNECT') || str.includes('Authorization')) {
+        console.log('📤 STOMP:', str);
+      }
+    },
   });
 
   client.activate();
@@ -41,7 +48,7 @@ export const subscribeToPaymentSuccess = (
   callback: (notification: PaymentSuccessNotification) => void
 ) => {
   if (!client.connected) {
-    console.warn('WebSocket not connected yet');
+    console.warn('⚠️ WebSocket not connected yet');
     return null;
   }
 
@@ -54,7 +61,7 @@ export const subscribeToPaymentSuccess = (
       console.log('💰 Parsed notification:', notification);
       callback(notification);
     } catch (error) {
-      console.error('Error parsing payment notification:', error);
+      console.error('❌ Error parsing payment notification:', error);
     }
   });
 };

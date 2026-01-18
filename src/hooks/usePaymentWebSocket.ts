@@ -9,16 +9,23 @@ export const usePaymentWebSocket = () => {
   const clientRef = useRef<Client | null>(null);
 
   useEffect(() => {
+    console.log('🔌 Initializing WebSocket connection...');
     const client = connectWebSocket();
     clientRef.current = client;
+
+    // Override onConnect to subscribe after connection established
     const originalOnConnect = client.onConnect;
     client.onConnect = (frame) => {
-      console.log('✅ WebSocket connected, subscribing to payment notifications...');
+      console.log('✅ WebSocket connected!');
+      console.log('📋 Session:', frame.headers);
       
+      // Call original onConnect if exists
       if (originalOnConnect) {
         originalOnConnect(frame);
       }
-      subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
+      
+      // Subscribe to payment success notifications
+      const subscription = subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
         console.log('💰 Payment notification received:', notification);
         
         if (notification.transactionType === 'SUBSCRIPTION') {
@@ -42,9 +49,18 @@ export const usePaymentWebSocket = () => {
           }, 2000);
         }
       });
+      
+      console.log('✅ Subscription ID:', subscription?.id);
+    };
+    
+    // Log disconnect
+    client.onDisconnect = () => {
+      console.log('🔴 WebSocket disconnected');
     };
 
+    // Cleanup
     return () => {
+      console.log('🧹 Cleaning up WebSocket');
       if (clientRef.current) {
         clientRef.current.deactivate();
       }
