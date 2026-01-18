@@ -1,4 +1,4 @@
-import { Client, IMessage } from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 
 export interface PaymentSuccessNotification {
   orderCode: number;
@@ -12,8 +12,13 @@ export interface PaymentSuccessNotification {
 export const connectWebSocket = () => {
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/f-learning/ws';
   
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  
   const client = new Client({
     brokerURL: wsUrl,
+    connectHeaders: token ? {
+      Authorization: `Bearer ${token}`,
+    } : {},
     
     onConnect: () => {
       console.log('✅ WebSocket connected successfully!');
@@ -40,9 +45,13 @@ export const subscribeToPaymentSuccess = (
     return null;
   }
 
-  return client.subscribe('/user/queue/payment-success', (message: IMessage) => {
+  console.log('📡 Subscribing to /user/queue/payment-success');
+  
+  return client.subscribe('/user/queue/payment-success', (message) => {
     try {
+      console.log('📨 Raw message received:', message.body);
       const notification: PaymentSuccessNotification = JSON.parse(message.body);
+      console.log('💰 Parsed notification:', notification);
       callback(notification);
     } catch (error) {
       console.error('Error parsing payment notification:', error);
