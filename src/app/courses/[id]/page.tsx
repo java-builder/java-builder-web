@@ -15,14 +15,17 @@ import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
 import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
-import { connectWebSocket } from "@/lib/websocket";
 
 export default function CourseDetailPage() {
   const params = useParams();
   const courseId = params?.id as string;
   const { data: currentUser } = useCurrentUser();
+  
+  usePaymentWebSocket();
+
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
@@ -170,17 +173,14 @@ export default function CourseDetailPage() {
     }
   };
 
-  // Handle lesson click - cho phép xem nếu đã enrolled, premium user hoặc là free preview
   const handleLessonClick = async (lesson: LessonDetailResponse) => {
     if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
       try {
-        // Gọi API để lấy chi tiết lesson (bao gồm videoUrl)
         const response = await lessonApi.getById(lesson.id);
         if (response.result) {
           setPreviewModal({ isOpen: true, lesson: response.result });
         }
       } catch {
-        // Nếu lỗi (ví dụ: ACCESS_DENIED), hiển thị thông báo
         toast.error("Không thể xem bài học này");
       }
     } else {
@@ -191,8 +191,6 @@ export default function CourseDetailPage() {
   // Handle payment
   const handlePayment = async () => {
     if (!courseId) return;
-    
-    // Check if user is logged in
     if (!currentUser) {
       setAuthModal({
         isOpen: true,
@@ -202,8 +200,8 @@ export default function CourseDetailPage() {
       return;
     }
     
-    const wsClient = connectWebSocket();
     setPaymentModal({ isOpen: true, isLoading: true, data: null });
+    
     try {
       const result = await paymentApi.createPaymentLink(courseId);
       if (result.code === 201 && result.result) {
@@ -211,12 +209,10 @@ export default function CourseDetailPage() {
       } else {
         toast.error("Không thể tạo link thanh toán");
         setPaymentModal({ isOpen: false, isLoading: false, data: null });
-        wsClient.deactivate();
       }
     } catch {
       toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
-      wsClient.deactivate();
     }
   };
 
