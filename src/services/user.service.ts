@@ -75,6 +75,14 @@ export const userApi = {
     return response.data;
   },
 
+  updateProfileByAdmin: async (userId: string, data: UpdateProfileRequest) => {
+    const response = await apiClient.put<ApiResponse<UpdateProfileResponse>>(
+      `${API.UPDATE_PROFILE_BY_ADMIN}/${userId}`,
+      data,
+    );
+    return response.data;
+  },
+
   updateAvatar: async (avatar: File) => {
     const formData = new FormData();
     formData.append("avatar", avatar);

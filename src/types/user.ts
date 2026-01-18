@@ -10,13 +10,15 @@ export interface CreateUserResponse {
 }
 
 export interface UpdateProfileRequest {
-  username: string;
-  university: string;
+  username?: string;
+  university?: string;
+  userStatus?: UserStatus;
 }
 
 export interface UpdateProfileResponse {
   username: string;
   university: string;
+  userStatus?: UserStatus;
 }
 
 export interface UserDetailResponse {

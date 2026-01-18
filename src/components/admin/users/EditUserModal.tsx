@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { UserDetailResponse, UserStatus } from "@/types/user";
+import { UpdateProfileRequest, UserDetailResponse, UserStatus } from "@/types/user";
 import { userApi } from "@/services/user.service";
 import toast from "react-hot-toast";
 
@@ -30,9 +30,6 @@ export default function EditUserModal({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [imagePreview, setImagePreview] = useState<string>("");
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Reset form when user changes
   useEffect(() => {
@@ -45,7 +42,6 @@ export default function EditUserModal({
         mftEnable: user.mftEnable,
       });
       setImagePreview(user.avatar || "");
-      setSelectedFile(null);
       setErrors({});
     }
   }, [user, isOpen]);
@@ -58,34 +54,6 @@ export default function EditUserModal({
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  };
-
-  const handleImageUpload = (file: File) => {
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      setErrors((prev) => ({
-        ...prev,
-        avatar: "Vui lòng chọn file ảnh hợp lệ",
-      }));
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors((prev) => ({
-        ...prev,
-        avatar: "Kích thước ảnh không được vượt quá 5MB",
-      }));
-      return;
-    }
-
-    // Lưu file và tạo preview
-    setSelectedFile(file);
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
-    setErrors((prev) => ({ ...prev, avatar: "" }));
   };
 
   const validateForm = (): boolean => {
@@ -112,34 +80,14 @@ export default function EditUserModal({
 
     setIsLoading(true);
     try {
-      const updateData: Partial<UserDetailResponse> = {
-        username: formData.username,
-        email: formData.email,
-        university: formData.university,
+      const updateData: UpdateProfileRequest = {
+        username: formData.username?.trim() || undefined,
+        university: formData.university?.trim() || undefined,
         userStatus: formData.userStatus,
-        mftEnable: formData.mftEnable,
       };
 
-      // Nếu có file được chọn, upload avatar trước
-      if (selectedFile) {
-        setIsUploadingImage(true);
-        try {
-          const uploadResult = await userApi.updateAvatar(selectedFile);
-          updateData.avatar = uploadResult.result;
-        } catch (uploadError: unknown) {
-          setErrors((prev) => ({
-            ...prev,
-            avatar:
-              (uploadError as Error)?.message || "Lỗi khi tải ảnh lên",
-          }));
-          return;
-        } finally {
-          setIsUploadingImage(false);
-        }
-      }
-
-      // Cập nhật thông tin user
-      await userApi.update(user.id, updateData);
+      // Cập nhật thông tin profile bởi admin
+      await userApi.updateProfileByAdmin(user.id, updateData);
       toast.success("Cập nhật người dùng thành công!");
       onSuccess();
       handleClose();
@@ -155,11 +103,6 @@ export default function EditUserModal({
   };
 
   const handleClose = () => {
-    // Cleanup preview URL nếu có
-    if (imagePreview && imagePreview.startsWith("blob:") && !user?.avatar) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
     setFormData({
       username: "",
       email: "",
@@ -169,7 +112,6 @@ export default function EditUserModal({
     });
     setErrors({});
     setImagePreview("");
-    setSelectedFile(null);
     onClose();
   };
 
@@ -221,13 +163,13 @@ export default function EditUserModal({
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6">
             <div className="space-y-6">
-              {/* Avatar Section */}
+              {/* Avatar Section - Read Only for Admin */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Ảnh đại diện
                 </label>
 
-                {/* Avatar Preview */}
+                {/* Avatar Preview - Read Only */}
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="relative h-20 w-20">
                     {imagePreview ? (
@@ -247,57 +189,10 @@ export default function EditUserModal({
                       </div>
                     )}
                   </div>
-
-                  {/* Upload Button */}
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploadingImage || isLoading}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                  >
-                    {isUploadingImage ? (
-                      <>
-                        <svg
-                          className="animate-spin w-4 h-4 mr-2 inline"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Đang tải...
-                      </>
-                    ) : (
-                      "Thay đổi ảnh"
-                    )}
-                  </button>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleImageUpload(file);
-                    }}
-                    className="hidden"
-                  />
+                  <p className="text-sm text-gray-500">
+                    Admin không thể thay đổi avatar của người dùng
+                  </p>
                 </div>
-
-                {errors.avatar && (
-                  <p className="mt-1 text-sm text-red-600">{errors.avatar}</p>
-                )}
               </div>
 
               {/* Form Fields */}
@@ -449,9 +344,7 @@ export default function EditUserModal({
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    {isUploadingImage
-                      ? "Đang tải ảnh..."
-                      : "Đang cập nhật..."}
+                    Đang cập nhật...
                   </>
                 ) : (
                   <>

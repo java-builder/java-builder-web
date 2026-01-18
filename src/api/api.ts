@@ -16,6 +16,7 @@ export const API = {
     USER_PROFILE: "/api/v1/users/me",
     USER_PROFILE_AVATAR: "/api/v1/profiles/update-avatar",
     UPDATE_PROFILE: "/api/v1/profiles",
+    UPDATE_PROFILE_BY_ADMIN: "/api/v1/profiles", // + /:userId
     USER_PASSWORD_STATUS: "/api/v1/users/password-status",
     USER_PASSWORD: "/api/v1/users/password",
 

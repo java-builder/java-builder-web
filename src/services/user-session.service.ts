@@ -3,7 +3,6 @@ import { ApiResponse, PageResponse } from "@/types/api";
 import { UserSession } from "@/types/session";
 import { API } from "@/api/api";
 
-
 export interface UserSessionSearchParams {
   page?: number;
   size?: number;
