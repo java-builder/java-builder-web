@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { userApi } from "@/services/user.service";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useDebounce } from "@/hooks/useDebounce";
 import { UserDetailResponse, UserStatus } from "@/types/user";
 import { ApiResponse, PageResponse } from "@/types/api";
 import EditUserModal from "@/components/admin/users/EditUserModal";
@@ -38,6 +39,7 @@ const StatusBadge = ({ status }: { status: UserStatus | string }) => {
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [currentPage, setCurrentPage] = useState(0);
   const [response, setResponse] = useState<ApiResponse<
     PageResponse<UserDetailResponse>
@@ -56,7 +58,7 @@ export default function UsersPage() {
       setError("");
       const result = await userApi.search({
         page: currentPage + 1,
-        ...(search && { search }),
+        ...(debouncedSearch && { search: debouncedSearch }),
       });
 
       setResponse(result);
@@ -67,7 +69,7 @@ export default function UsersPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, search]);
+  }, [currentPage, debouncedSearch]);
 
   const handleDelete = async (id: string, userName: string) => {
     await confirm(
@@ -251,7 +253,13 @@ export default function UsersPage() {
               Quản lý người dùng
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-              Danh sách tất cả người dùng trong hệ thống JavaBuilder
+              {debouncedSearch ? (
+                <>
+                  Tìm thấy <span className="font-semibold">{response?.result?.totalElements || 0}</span> kết quả cho &ldquo;{debouncedSearch}&rdquo;
+                </>
+              ) : (
+                "Danh sách tất cả người dùng trong hệ thống JavaBuilder"
+              )}
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
@@ -418,7 +426,7 @@ export default function UsersPage() {
                 placeholder="Tìm kiếm theo tên, email..."
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200"
+                className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200"
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
@@ -435,6 +443,30 @@ export default function UsersPage() {
                   />
                 </svg>
               </div>
+              {search && search !== debouncedSearch && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg
+                    className="animate-spin h-4 w-4 text-accent"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-3">

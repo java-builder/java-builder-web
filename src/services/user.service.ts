@@ -46,6 +46,9 @@ export const userApi = {
       ApiResponse<PageResponse<UserDetailResponse>>
     >(API.USER_SEARCH, null, {
       params: queryParams,
+      paramsSerializer: {
+        indexes: null, // Không dùng indexes, sẽ tạo users=value1&users=value2
+      },
     });
     return response.data;
   },
