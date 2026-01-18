@@ -32,14 +32,11 @@ export const userApi = {
       size: 20,
     };
 
-    // Nếu có search text, thêm vào users array với pattern search
     if (params.search && params.search.trim()) {
       const searchText = params.search.trim();
-      // Tìm kiếm theo username hoặc email với CONTAIN operation (*)
-      // * = CONTAIN operation sẽ tạo LIKE %value%
       queryParams.users = [
-        `username*${searchText}|`,
-        `email*${searchText}`
+        `username~${searchText}|`,
+        `email~${searchText}`
       ];
     }
 
