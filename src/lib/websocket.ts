@@ -45,6 +45,7 @@ export const subscribeToPaymentSuccess = (
 
   return client.subscribe('/user/queue/payment-success', (message) => {
     try {
+      console.log(message);
       const notification: PaymentSuccessNotification = JSON.parse(message.body);
       callback(notification);
     } catch (error) {

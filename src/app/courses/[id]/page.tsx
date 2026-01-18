@@ -90,7 +90,6 @@ export default function CourseDetailPage() {
       try {
         setIsLoading(true);
         setError("");
-        
         // Fetch course detail (includes isFavorite, isEnrolled, isPremiumUser)
         const result = await courseApi.getById(courseId);
         if (result.code === 200 && result.result) {
