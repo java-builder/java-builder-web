@@ -27,24 +27,30 @@ export const blogService = {
     return response.data.result;
   },
 
-  // Lấy chi tiết blog
+  // Lấy chi tiết blog theo ID
   async getBlogById(id: string): Promise<Blog> {
     const response = await apiClient.get(`${API.GET_BLOG_BY_ID}/${id}`);
     return response.data.result;
   },
 
+  // Lấy chi tiết blog theo slug
+  async getBlogBySlug(slug: string): Promise<Blog> {
+    const response = await apiClient.get(`${API.GET_BLOG_BY_SLUG}/${slug}`);
+    return response.data.result;
+  },
+
   // Tăng lượt xem
-  async incrementView(id: string): Promise<number> {
+  async incrementView(slug: string): Promise<number> {
     const response = await apiClient.patch(
-      `${API.INCREMENT_VIEW}/${id}/increment-view`,
+      `${API.INCREMENT_VIEW}/${slug}/increment-view`,
     );
     return response.data.result as number;
   },
 
   // Tăng lượt thích
-  async incrementLike(id: string): Promise<number> {
+  async incrementLike(slug: string): Promise<number> {
     const response = await apiClient.patch(
-      `${API.INCREMENT_LIKE}/${id}/increment-like`,
+      `${API.INCREMENT_LIKE}/${slug}/increment-like`,
     );
     return response.data.result as number;
   },

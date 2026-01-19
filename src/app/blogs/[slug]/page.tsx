@@ -19,7 +19,7 @@ import CommentList from "@/components/blogs/CommentList";
 
 export default function BlogDetailPage() {
   const params = useParams();
-  const blogId = params.id as string;
+  const blogSlug = params.slug as string;
 
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
@@ -40,7 +40,7 @@ export default function BlogDetailPage() {
     replyToComment,
     deleteComment,
     loadMoreComments,
-  } = useComments(blogId);
+  } = useComments(blog?.id || "");
 
   useEffect(() => {
     const fetchBlogDetail = async () => {
@@ -48,7 +48,7 @@ export default function BlogDetailPage() {
         setIsLoading(true);
         setError(null);
 
-        const blogData = await blogService.getBlogById(blogId);
+        const blogData = await blogService.getBlogBySlug(blogSlug);
         setBlog(blogData);
 
         const relatedData = await blogService.getBlogs({
@@ -57,7 +57,7 @@ export default function BlogDetailPage() {
         });
 
         const filtered = relatedData.result
-          .filter((b) => b.id !== blogId)
+          .filter((b) => b.slug !== blogSlug)
           .slice(0, 3);
         setRelatedBlogs(filtered);
 
@@ -69,17 +69,17 @@ export default function BlogDetailPage() {
       }
     };
 
-    if (blogId) {
+    if (blogSlug) {
       fetchBlogDetail();
     }
-  }, [blogId, loadRootComments]);
+  }, [blogSlug, loadRootComments]);
 
   useEffect(() => {
     const incrementView = async () => {
-      if (!blogId || hasIncrementedViewRef.current) return;
+      if (!blogSlug || hasIncrementedViewRef.current) return;
       try {
         hasIncrementedViewRef.current = true;
-        const newCount = await blogService.incrementView(blogId);
+        const newCount = await blogService.incrementView(blogSlug);
         setBlog((prev) =>
           prev
             ? {
@@ -93,7 +93,7 @@ export default function BlogDetailPage() {
       }
     };
     incrementView();
-  }, [blogId]);
+  }, [blogSlug]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -169,12 +169,12 @@ export default function BlogDetailPage() {
   }, [comments, loadMoreComments, loadReplies]);
 
   useEffect(() => {
-    if (!blogId) return;
+    if (!blog?.id) return;
     try {
-      const liked = localStorage.getItem(`liked_blog_${blogId}`);
+      const liked = localStorage.getItem(`liked_blog_${blog.id}`);
       setIsLiked(liked === "1");
     } catch { }
-  }, [blogId]);
+  }, [blog?.id]);
 
   const handleAddComment = async (content: string) => {
     try {
@@ -561,7 +561,7 @@ export default function BlogDetailPage() {
                             }
                             try {
                               const newCount =
-                                await blogService.incrementLike(blogId);
+                                await blogService.incrementLike(blogSlug);
                               setBlog((prev) =>
                                 prev
                                   ? {
@@ -576,7 +576,7 @@ export default function BlogDetailPage() {
                               setIsLiked(true);
                               try {
                                 localStorage.setItem(
-                                  `liked_blog_${blogId}`,
+                                  `liked_blog_${blog.id}`,
                                   "1",
                                 );
                               } catch { }
@@ -715,7 +715,7 @@ export default function BlogDetailPage() {
                       {relatedBlogs.map((relatedBlog) => (
                         <Link
                           key={relatedBlog.id}
-                          href={`/blogs/${relatedBlog.id}`}
+                          href={`/blogs/${relatedBlog.slug}`}
                           className="block group"
                         >
                           <div className="flex space-x-2">

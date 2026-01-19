@@ -152,8 +152,7 @@ export default function EditCoursePage() {
         }
       }
 
-      const response = await courseApi.update({
-        id: courseId,
+      const response = await courseApi.update(courseId, {
         title: title.trim(),
         description: description.trim(),
         price,

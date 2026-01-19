@@ -13,6 +13,7 @@ export default function LearnCoursePage() {
   const params = useParams();
   const router = useRouter();
   const courseId = params?.courseId as string;
+  const slug = params?.slug as string;
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
@@ -35,7 +36,6 @@ export default function LearnCoursePage() {
   const fetchedCourseIdRef = useRef<string | null>(null);
 
   const loadChapterLessons = useCallback(async (chapterId: string, selectFirst = false) => {
-    // Đã có data thì không fetch lại
     if (chapterLessons[chapterId]) {
       if (selectFirst && chapterLessons[chapterId].length > 0) {
         const firstLesson = chapterLessons[chapterId][0];
@@ -71,7 +71,7 @@ export default function LearnCoursePage() {
 
   const initializeCourse = useCallback(async () => {
     if (!courseId || userLoading) return;
-    if (!currentUser) { router.push(`/courses/${courseId}`); return; }
+    if (!currentUser) { router.push(`/courses/${slug}`); return; }
     if (fetchedCourseIdRef.current === courseId) return;
     fetchedCourseIdRef.current = courseId;
 
@@ -80,13 +80,12 @@ export default function LearnCoursePage() {
       const courseResult = await courseApi.getById(courseId);
       
       if (courseResult.code !== 200 || !courseResult.result) {
-        router.push(`/courses/${courseId}`);
+        router.push(`/courses/${slug}`);
         return;
       }
 
       setCourse(courseResult.result);
 
-      // User được vào learn nếu đã enroll HOẶC là premium user
       const canAccess = courseResult.result.isEnrolled || courseResult.result.isPremiumUser;
       if (!canAccess) {
         setAccessDenied(true);
@@ -100,11 +99,11 @@ export default function LearnCoursePage() {
         await loadChapterLessons(firstChapter.id, true);
       }
     } catch {
-      router.push(`/courses/${courseId}`);
+      router.push(`/courses/${slug}`);
     } finally {
       setIsLoading(false);
     }
-  }, [courseId, currentUser, userLoading, router, loadChapterLessons]);
+  }, [courseId, slug, currentUser, userLoading, router, loadChapterLessons]);
 
   useEffect(() => { initializeCourse(); }, [initializeCourse]);
 
@@ -146,7 +145,6 @@ export default function LearnCoursePage() {
       if (currentLesson) {
         lessonApi.updateProgress({ lessonId: currentLesson.id, watchedSeconds: time, completed: true })
           .then(() => {
-            // Update the lesson's completed status in chapterLessons
             setChapterLessons(prev => {
               const updated = { ...prev };
               for (const chapterId in updated) {
@@ -169,7 +167,6 @@ export default function LearnCoursePage() {
         newExpanded.delete(chapter.id);
       } else {
         newExpanded.add(chapter.id);
-        // Load lessons nếu chưa có
         if (!chapterLessons[chapter.id]) {
           loadChapterLessons(chapter.id);
         }
@@ -186,7 +183,6 @@ export default function LearnCoursePage() {
   }, []);
 
   const selectLesson = useCallback(async (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => {
-    // Không fetch lại nếu đang chọn lesson hiện tại
     if (currentLesson?.id === lesson.id) return;
     
     await saveProgress();
@@ -206,13 +202,11 @@ export default function LearnCoursePage() {
     setCurrentChapter(chapter);
     resetProgressTracking();
     
-    // Chỉ đóng sidebar trên mobile
     if (window.innerWidth < 1024) {
       setSidebarOpen(false);
     }
   }, [currentLesson?.id, saveProgress, resetProgressTracking]);
 
-  // Memoize allLessons để tránh tính toán lại mỗi render
   const allLessons = useMemo(() => {
     if (!course?.chapters) return [];
     const all: { lesson: LessonDetailResponse; chapter: ChapterDetailResponse }[] = [];
@@ -262,7 +256,6 @@ export default function LearnCoursePage() {
   const canPrev = currentLessonIndex > 0;
   const canNext = currentLessonIndex >= 0 && currentLessonIndex < allLessons.length - 1;
 
-  // Memoize callbacks cho sidebar
   const handleCloseSidebar = useCallback(() => setSidebarOpen(false), []);
   const handleToggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), []);
   const handlePrev = useCallback(() => navigateLesson("prev"), [navigateLesson]);
@@ -294,25 +287,21 @@ export default function LearnCoursePage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-          {/* Icon */}
           <div className="w-20 h-20 mx-auto mb-6 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
             <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
 
-          {/* Title */}
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
             Bạn chưa có quyền truy cập
           </h1>
 
-          {/* Description */}
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             Để học khóa &quot;<span className="font-medium text-gray-900 dark:text-white">{course.title}</span>&quot;, 
             bạn cần đăng ký khóa học hoặc nâng cấp tài khoản Premium.
           </p>
 
-          {/* Course thumbnail */}
           {course.courseCover && (
             <div className="mb-6 rounded-lg overflow-hidden relative w-full aspect-video">
               <Image 
@@ -325,10 +314,9 @@ export default function LearnCoursePage() {
             </div>
           )}
 
-          {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
-              href={`/courses/${courseId}`}
+              href={`/courses/${slug}`}
               className="flex-1 py-2.5 px-4 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center"
             >
               Đăng ký khóa học
@@ -343,13 +331,12 @@ export default function LearnCoursePage() {
           </div>
 
           <Link
-            href={`/courses/${courseId}`}
+            href={`/courses/${slug}`}
             className="inline-block mt-4 text-sm text-gray-500 dark:text-gray-400 hover:text-accent transition-colors"
           >
             ← Quay lại
           </Link>
 
-          {/* Benefits hint */}
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
               Với Premium, bạn được:

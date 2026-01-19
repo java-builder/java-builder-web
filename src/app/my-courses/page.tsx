@@ -130,7 +130,7 @@ export default function MyCoursesPage() {
               {courses.map((course) => (
                 <Link
                   key={course.id}
-                  href={`/learn/${course.id}`}
+                  href={`/learn/${course.slug}/${course.id}`}
                   className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-300"
                 >
                   {/* Course Image */}

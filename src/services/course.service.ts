@@ -54,7 +54,7 @@ export const courseApi = {
     return response.data;
   },
 
-  // Lấy chi tiết khóa học
+  // Lấy chi tiết khóa học theo ID
   getById: async (id: string) => {
     const response = await apiClient.get<ApiResponse<CourseDetailResponse>>(
       `${API.GET_COURSE_BY_ID}/${id}`,
@@ -62,10 +62,18 @@ export const courseApi = {
     return response.data;
   },
 
+  // Lấy chi tiết khóa học theo slug
+  getBySlug: async (slug: string) => {
+    const response = await apiClient.get<ApiResponse<CourseDetailResponse>>(
+      `${API.GET_COURSE_BY_SLUG}/${slug}`,
+    );
+    return response.data;
+  },
+
   // Cập nhật khóa học
-  update: async (data: UpdateCourseRequest) => {
+  update: async (id: string, data: UpdateCourseRequest) => {
     const response = await apiClient.put<ApiResponse<CourseDetailResponse>>(
-      API.UPDATE_COURSE,
+      `${API.UPDATE_COURSE}/${id}`,
       data,
     );
     return response.data;

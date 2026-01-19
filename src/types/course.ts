@@ -11,7 +11,6 @@ export interface CreateCourseRequest {
 }
 
 export interface UpdateCourseRequest {
-  id: string;
   title?: string;
   description?: string;
   price?: number;
@@ -23,6 +22,7 @@ export interface UpdateCourseRequest {
 export interface CreateCourseResponse {
   id: string;
   title: string;
+  slug: string;
   description: string;
   price: number;
   duration?: number;
@@ -33,6 +33,7 @@ export interface CreateCourseResponse {
 export interface CourseDetailResponse {
   id: string;
   title: string;
+  slug: string;
   description: string;
   price: number;
   duration?: number;
@@ -49,6 +50,7 @@ export interface CourseDetailResponse {
 export interface MyEnrolledCourseResponse {
   id: string;
   title: string;
+  slug: string;
   description: string;
   price: number;
   duration?: number;

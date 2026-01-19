@@ -12,7 +12,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
   return (
     <article className="bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300 overflow-hidden group flex flex-col h-full">
       {blog.featuredImage && (
-        <Link href={`/blogs/${blog.id}`} className="block">
+        <Link href={`/blogs/${blog.slug}`} className="block">
           <div className="aspect-[16/10] w-full overflow-hidden relative">
             <Image
               src={blog.featuredImage}
@@ -47,7 +47,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
         </div>
 
         {/* Title */}
-        <Link href={`/blogs/${blog.id}`}>
+        <Link href={`/blogs/${blog.slug}`}>
           <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors duration-200 leading-tight">
             {blog.title}
           </h3>
@@ -123,7 +123,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
             </div>
 
             <Link
-              href={`/blogs/${blog.id}`}
+              href={`/blogs/${blog.slug}`}
               className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-accent to-accent-600 text-white text-xs font-medium rounded-md hover:from-accent-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               Đọc tiếp

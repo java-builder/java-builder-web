@@ -8,11 +8,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   try {
-    const { id } = await params;
-    const blog = await blogService.getBlogById(id);
+    const { slug } = await params;
+    const blog = await blogService.getBlogBySlug(slug);
 
     const description =
       blog.summary || blog.content.replace(/<[^>]*>/g, '').substring(0, 160);
@@ -28,7 +28,7 @@ export async function generateMetadata({
       title: blog.title,
       description,
       image: imgUrl,
-      url: `/blogs/${id}`,
+      url: `/blogs/${slug}`,
       type: 'article',
       publishedTime: blog.createdAt,
       modifiedTime: blog.createdAt,
@@ -47,13 +47,13 @@ export default async function BlogDetailLayout({
   params,
 }: {
   children: ReactNode;
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
   
   let structuredData = null;
   try {
-    const blog = await blogService.getBlogById(id);
+    const blog = await blogService.getBlogBySlug(slug);
     structuredData = generateBlogStructuredData(blog);
   } catch {
     // Fail silently

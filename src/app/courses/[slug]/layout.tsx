@@ -8,19 +8,19 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   try {
-    const { id } = await params;
-    const result = await courseApi.getById(id);
-    
+    const { slug } = await params;
+    const result = await courseApi.getBySlug(slug);
+
     if (result.code !== 200 || !result.result) {
       return { title: "Khóa học" };
     }
 
     const course = result.result;
     const description = course.description.substring(0, 160);
-    
+
     const imgUrl =
       course.courseCover && /^https?:\/\//i.test(course.courseCover)
         ? course.courseCover
@@ -32,7 +32,7 @@ export async function generateMetadata({
       title: course.title,
       description,
       image: imgUrl,
-      url: `/courses/${id}`,
+      url: `/courses/${slug}`,
       type: 'website',
       tags: [course.level || 'khóa học', 'lập trình', 'online course'],
     });
@@ -48,13 +48,13 @@ export default async function CourseDetailLayout({
   params,
 }: {
   children: ReactNode;
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  
+  const { slug } = await params;
+
   let structuredData = null;
   try {
-    const result = await courseApi.getById(id);
+    const result = await courseApi.getBySlug(slug);
     if (result.code === 200 && result.result) {
       structuredData = generateCourseStructuredData(result.result);
     }

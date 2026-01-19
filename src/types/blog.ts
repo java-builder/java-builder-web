@@ -29,6 +29,7 @@ export interface CreateBlogRequest {
 export interface CreateBlogResponse {
   id: string;
   title: string;
+  slug: string;
   content: string;
   summary?: string;
   blogType: BlogType;
@@ -41,6 +42,7 @@ export interface CreateBlogResponse {
 export interface Blog {
   id: string;
   title: string;
+  slug: string;
   content: string;
   summary?: string;
   blogType: BlogType;

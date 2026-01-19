@@ -21,10 +21,10 @@ import { QRCodeSVG } from "qrcode.react";
 
 export default function CourseDetailPage() {
   const params = useParams();
-  const courseId = params?.id as string;
+  const slug = params?.slug as string;
   const { data: currentUser } = useCurrentUser();
-  
-  usePaymentWebSocket(courseId);
+
+  usePaymentWebSocket(slug);
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +38,7 @@ export default function CourseDetailPage() {
 
   // Enrollment state
   const [isEnrolled, setIsEnrolled] = useState(false);
-  
+
   // Premium user state
   const [isPremiumUser, setIsPremiumUser] = useState(false);
 
@@ -83,7 +83,7 @@ export default function CourseDetailPage() {
   });
 
   useEffect(() => {
-    if (!courseId || hasFetched.current) return;
+    if (!slug || hasFetched.current) return;
     hasFetched.current = true;
 
     const fetchData = async () => {
@@ -91,7 +91,7 @@ export default function CourseDetailPage() {
         setIsLoading(true);
         setError("");
         // Fetch course detail (includes isFavorite, isEnrolled, isPremiumUser)
-        const result = await courseApi.getById(courseId);
+        const result = await courseApi.getBySlug(slug);
         if (result.code === 200 && result.result) {
           setCourse(result.result);
           // Set user-specific states from response
@@ -108,12 +108,12 @@ export default function CourseDetailPage() {
     };
 
     fetchData();
-  }, [courseId]);
+  }, [slug]);
 
   // Toggle favorite handler
   const handleToggleFavorite = async () => {
-    if (!courseId) return;
-    
+    if (!course?.id) return;
+
     // Check if user is logged in
     if (!currentUser) {
       setAuthModal({
@@ -126,7 +126,7 @@ export default function CourseDetailPage() {
 
     setFavoriteLoading(true);
     try {
-      const result = await favoriteApi.toggle(courseId);
+      const result = await favoriteApi.toggle(course.id);
       if (result.code === 200) {
         setIsFavorite(result.result ?? false);
         toast.success(result.result ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
@@ -189,7 +189,7 @@ export default function CourseDetailPage() {
 
   // Handle payment
   const handlePayment = async () => {
-    if (!courseId) return;
+    if (!course?.id) return;
     if (!currentUser) {
       setAuthModal({
         isOpen: true,
@@ -198,11 +198,11 @@ export default function CourseDetailPage() {
       });
       return;
     }
-    
+
     setPaymentModal({ isOpen: true, isLoading: true, data: null });
-    
+
     try {
-      const result = await paymentApi.createPaymentLink(courseId);
+      const result = await paymentApi.createPaymentLink(course.id);
       if (result.code === 201 && result.result) {
         setPaymentModal({ isOpen: true, isLoading: false, data: result.result });
       } else {
@@ -450,41 +450,37 @@ export default function CourseDetailPage() {
                     <nav className="-mb-px flex space-x-4 sm:space-x-8 min-w-max">
                       <button
                         onClick={() => setActiveTab("curriculum")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                          activeTab === "curriculum"
-                            ? "border-accent text-accent-600"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                        }`}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "curriculum"
+                          ? "border-accent text-accent-600"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          }`}
                       >
                         Nội dung
                       </button>
                       <button
                         onClick={() => setActiveTab("description")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                          activeTab === "description"
-                            ? "border-accent text-accent-600"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                        }`}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "description"
+                          ? "border-accent text-accent-600"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          }`}
                       >
                         Mô tả
                       </button>
                       <button
                         onClick={() => setActiveTab("instructor")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                          activeTab === "instructor"
-                            ? "border-accent text-accent-600"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                        }`}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "instructor"
+                          ? "border-accent text-accent-600"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          }`}
                       >
                         Tác giả
                       </button>
                       <button
                         onClick={() => setActiveTab("comments")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                          activeTab === "comments"
-                            ? "border-accent text-accent-600"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                        }`}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "comments"
+                          ? "border-accent text-accent-600"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          }`}
                       >
                         Đánh giá
                       </button>
@@ -549,66 +545,64 @@ export default function CourseDetailPage() {
                                       chapterLessons[chapter.id].map((lesson, lessonIndex) => {
                                         const canWatch = isEnrolled || isPremiumUser || lesson.isFreePreview;
                                         return (
-                                        <div
-                                          key={lesson.id}
-                                          className={`flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 transition-colors gap-2 ${
-                                            canWatch 
-                                              ? "hover:bg-accent-50 cursor-pointer group" 
+                                          <div
+                                            key={lesson.id}
+                                            className={`flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 transition-colors gap-2 ${canWatch
+                                              ? "hover:bg-accent-50 cursor-pointer group"
                                               : "bg-gray-50/30"
-                                          }`}
-                                          onClick={() => handleLessonClick(lesson)}
-                                        >
-                                          <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                                            <span className={`w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold flex-shrink-0 ${
-                                              canWatch 
-                                                ? "bg-accent/10 text-accent" 
+                                              }`}
+                                            onClick={() => handleLessonClick(lesson)}
+                                          >
+                                            <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                                              <span className={`w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold flex-shrink-0 ${canWatch
+                                                ? "bg-accent/10 text-accent"
                                                 : "bg-gray-100 text-gray-400"
-                                            } transition-colors`}>
-                                              {lessonIndex + 1}
-                                            </span>
-                                            <div className="min-w-0 flex-1">
-                                              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                                                <span className={`text-sm ${
-                                                  canWatch 
-                                                    ? "text-gray-900 group-hover:text-accent" 
+                                                } transition-colors`}>
+                                                {lessonIndex + 1}
+                                              </span>
+                                              <div className="min-w-0 flex-1">
+                                                <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                                                  <span className={`text-sm ${canWatch
+                                                    ? "text-gray-900 group-hover:text-accent"
                                                     : "text-gray-500"
-                                                } transition-colors break-words`}>
-                                                  {lesson.lessonName}
-                                                </span>
-                                                {lesson.isFreePreview && (
-                                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full flex-shrink-0">
+                                                    } transition-colors break-words`}>
+                                                    {lesson.lessonName}
+                                                  </span>
+                                                  {lesson.isFreePreview && (
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full flex-shrink-0">
+                                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                      </svg>
+                                                      Xem miễn phí
+                                                    </span>
+                                                  )}
+                                                </div>
+                                                {lesson.videoUrl && (
+                                                  <span className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
                                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                    Xem miễn phí
+                                                    Video
                                                   </span>
                                                 )}
                                               </div>
-                                              {lesson.videoUrl && (
-                                                <span className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                  </svg>
-                                                  Video
-                                                </span>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              {canWatch ? (
+                                                <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
+                                                  <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                              ) : (
+                                                <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
                                               )}
                                             </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            {canWatch ? (
-                                              <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M8 5v14l11-7z" />
-                                              </svg>
-                                            ) : (
-                                              <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                              </svg>
-                                            )}
-                                          </div>
-                                        </div>
-                                      );})
+                                        );
+                                      })
                                     ) : (
                                       <div className="px-3 sm:px-4 py-6 text-center text-gray-400 text-sm">
                                         Chưa có bài học nào
@@ -718,9 +712,9 @@ export default function CourseDetailPage() {
                     )}
 
                     {activeTab === "comments" && (
-                      <ReviewSection 
-                        courseId={courseId} 
-                        isEnrolled={isEnrolled} 
+                      <ReviewSection
+                        courseId={course?.id || ""}
+                        isEnrolled={isEnrolled}
                         isPremiumUser={isPremiumUser}
                       />
                     )}
@@ -738,11 +732,10 @@ export default function CourseDetailPage() {
                 <div className="text-center mb-5">
                   {isEnrolled || isPremiumUser ? (
                     <>
-                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 ${
-                        isPremiumUser && !isEnrolled 
-                          ? "bg-amber-100 text-amber-700" 
-                          : "bg-green-100 text-green-700"
-                      }`}>
+                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 ${isPremiumUser && !isEnrolled
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-green-100 text-green-700"
+                        }`}>
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
@@ -751,8 +744,8 @@ export default function CourseDetailPage() {
                         </span>
                       </div>
                       <p className="text-sm text-gray-600">
-                        {isPremiumUser && !isEnrolled 
-                          ? "Bạn có quyền truy cập với tư cách Premium" 
+                        {isPremiumUser && !isEnrolled
+                          ? "Bạn có quyền truy cập với tư cách Premium"
                           : "Bạn có quyền truy cập đầy đủ khóa học này"}
                       </p>
                     </>
@@ -771,8 +764,8 @@ export default function CourseDetailPage() {
                 {/* CTA Buttons */}
                 <div className="space-y-2 mb-6">
                   {isEnrolled || isPremiumUser ? (
-                    <Link 
-                      href={`/learn/${courseId}`}
+                    <Link
+                      href={`/learn/${course.slug}/${course.id}`}
                       className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
                     >
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -781,21 +774,20 @@ export default function CourseDetailPage() {
                       Học ngay
                     </Link>
                   ) : (
-                    <button 
+                    <button
                       onClick={handlePayment}
                       className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer"
                     >
                       Đăng ký ngay
                     </button>
                   )}
-                  <button 
+                  <button
                     onClick={handleToggleFavorite}
                     disabled={favoriteLoading}
-                    className={`w-full font-medium py-2.5 px-4 rounded-md border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${
-                      isFavorite 
-                        ? "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300" 
-                        : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300"
-                    }`}
+                    className={`w-full font-medium py-2.5 px-4 rounded-md border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${isFavorite
+                      ? "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300"
+                      : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300"
+                      }`}
                   >
                     {favoriteLoading ? (
                       <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -932,7 +924,7 @@ export default function CourseDetailPage() {
                   <p className="text-sm text-gray-600 text-center sm:text-left">
                     Đăng ký khóa học để xem tất cả bài học
                   </p>
-                  <button 
+                  <button
                     onClick={() => {
                       setPreviewModal({ isOpen: false, lesson: null });
                       handlePayment();
@@ -951,9 +943,9 @@ export default function CourseDetailPage() {
       {/* Payment Modal */}
       {paymentModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-            onClick={() => !paymentModal.isLoading && setPaymentModal({ isOpen: false, isLoading: false, data: null })} 
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => !paymentModal.isLoading && setPaymentModal({ isOpen: false, isLoading: false, data: null })}
           />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}

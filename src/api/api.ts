@@ -79,6 +79,7 @@ export const API = {
     UPDATE_COURSE: "/api/v1/courses", // + /:id
     DELETE_COURSE: "/api/v1/courses", // + /:id
     GET_COURSE_BY_ID: "/api/v1/courses", // + /:id
+    GET_COURSE_BY_SLUG: "/api/v1/courses/slug", // + /:slug
     GET_COURSES: "/api/v1/courses",
     GET_LEARNING_DETAILS: "/api/v1/courses", // + /:courseId/learning
 
@@ -123,7 +124,8 @@ export const API = {
     UPDATE_BLOG: "/api/v1/blogs", // + /:id
     DELETE_BLOG: "/api/v1/blogs", // + /:id
     GET_BLOG_BY_ID: "/api/v1/blogs", // + /:id
+    GET_BLOG_BY_SLUG: "/api/v1/blogs/slug", // + /:slug
     GET_BLOGS: "/api/v1/blogs",
-    INCREMENT_VIEW: "/api/v1/blogs", // + /:id/view
-    INCREMENT_LIKE: "/api/v1/blogs", // + /:id/like
+    INCREMENT_VIEW: "/api/v1/blogs", // + /:slug/increment-view
+    INCREMENT_LIKE: "/api/v1/blogs", // + /:slug/increment-like
 }
