@@ -4,13 +4,20 @@ import {
   CreateCommentRequest,
   CreateCommentResponse,
   CommentResponse,
+  CommentDetailResponse,
 } from "@/types/comment";
 import { API } from "@/api/api";
-
 
 export interface CommentSearchParams {
   page?: number;
   size?: number;
+}
+
+export interface AdminCommentParams {
+  page?: number;
+  size?: number;
+  type: "BLOG" | "LESSON";
+  status?: "ACTIVE" | "DELETED"; // Optional - null means all statuses (ACTIVE + DELETED)
 }
 
 export const commentApi = {
@@ -53,7 +60,7 @@ export const commentApi = {
     params: CommentSearchParams = {},
   ) => {
     const response = await apiClient.get<
-      ApiResponse<PageResponse<CommentResponse>>
+      ApiResponse<PageResponse<CommentDetailResponse>>
     >(API.GET_COMMENT_REPLIES, {
       params: {
         parentId,
@@ -68,6 +75,20 @@ export const commentApi = {
     const response = await apiClient.delete<ApiResponse<void>>(
       `${API.DELETE_COMMENT}/${id}`,
     );
+    return response.data;
+  },
+
+  getCommentsForAdmin: async (params: AdminCommentParams) => {
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<CommentDetailResponse>>
+    >(`${API.COMMENTS}/admin`, {
+      params: {
+        page: params.page || 1,
+        size: params.size || 10,
+        type: params.type,
+        ...(params.status && { status: params.status }), // Only include status if provided
+      },
+    });
     return response.data;
   },
 };

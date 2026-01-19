@@ -1,136 +1,98 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useConfirm } from "@/hooks/useConfirm";
 import ReplyModal from "./ReplyModal";
 import toast from "react-hot-toast";
 import CommentFilter from "./CommentFilter";
 import CommentCard from "./CommentCard";
+import { commentApi } from "@/services/comment.service";
+import { CommentDetailResponse } from "@/types/comment";
 
 type CommentStatus = "ACTIVE" | "DELETED" | "ALL";
-
-// Mock data with replies and avatars
-const mockBlogComments = [
-  {
-    id: "1",
-    content: "Bài viết rất hay và bổ ích! Cảm ơn tác giả đã chia sẻ kiến thức về Kafka. Mình đang tìm hiểu về message queue và bài viết này giúp mình hiểu rõ hơn nhiều.",
-    author: "Nguyễn Văn A",
-    authorEmail: "nguyenvana@example.com",
-    authorAvatar: "https://i.pravatar.cc/150?img=12",
-    blogTitle: "Kafka vs @Async: Xử lý đồng thời đúng cách",
-    blogSlug: "kafka-vs-async-xu-ly-dong-thoi-dung-cach",
-    status: "ACTIVE" as const,
-    createdAt: "19-01-2025 10:30:00",
-    likes: 12,
-    replies: [
-      {
-        id: "1-1",
-        content: "Cảm ơn bạn đã đọc! Rất vui khi bài viết giúp ích được cho bạn.",
-        author: "Admin",
-        authorEmail: "admin@example.com",
-        authorAvatar: "https://i.pravatar.cc/150?img=1",
-        createdAt: "19-01-2025 11:00:00",
-        isAdmin: true,
-      },
-    ],
-  },
-  {
-    id: "2",
-    content: "Mình có thể áp dụng Kafka cho dự án nhỏ không? Hay nên dùng RabbitMQ?",
-    author: "Trần Thị B",
-    authorEmail: "tranthib@example.com",
-    authorAvatar: "https://i.pravatar.cc/150?img=45",
-    blogTitle: "Kafka vs @Async: Xử lý đồng thời đúng cách",
-    blogSlug: "kafka-vs-async-xu-ly-dong-thoi-dung-cach",
-    status: "ACTIVE" as const,
-    createdAt: "19-01-2025 11:15:00",
-    likes: 5,
-    replies: [],
-  },
-  {
-    id: "3",
-    content: "Spam content here... Click this link to win money!!!",
-    author: "Spammer",
-    authorEmail: "spam@example.com",
-    authorAvatar: "https://i.pravatar.cc/150?img=60",
-    blogTitle: "Spring Boot 4: Tổng hợp các tính năng mới",
-    blogSlug: "spring-boot-4-tinh-nang-moi",
-    status: "DELETED" as const,
-    createdAt: "18-01-2025 14:20:00",
-    likes: 0,
-    replies: [],
-  },
-  {
-    id: "4",
-    content: "Code example rất dễ hiểu, thanks! Mình đã apply vào project và chạy ngon lành.",
-    author: "Lê Văn C",
-    authorEmail: "levanc@example.com",
-    authorAvatar: "https://i.pravatar.cc/150?img=33",
-    blogTitle: "Spring Method Security",
-    blogSlug: "spring-method-security",
-    status: "ACTIVE" as const,
-    createdAt: "18-01-2025 09:45:00",
-    likes: 8,
-    replies: [
-      {
-        id: "4-1",
-        content: "Tuyệt vời! Nếu có thắc mắc gì cứ hỏi nhé.",
-        author: "Admin",
-        authorEmail: "admin@example.com",
-        authorAvatar: "https://i.pravatar.cc/150?img=1",
-        createdAt: "18-01-2025 10:00:00",
-        isAdmin: true,
-      },
-      {
-        id: "4-2",
-        content: "Mình cũng đang dùng Spring Security, bài viết này rất hữu ích!",
-        author: "Phạm Thị D",
-        authorEmail: "phamthid@example.com",
-        authorAvatar: "https://i.pravatar.cc/150?img=47",
-        createdAt: "18-01-2025 14:30:00",
-        isAdmin: false,
-      },
-    ],
-  },
-];
 
 export default function BlogCommentsTab() {
   const [statusFilter, setStatusFilter] = useState<CommentStatus>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [replyModalOpen, setReplyModalOpen] = useState(false);
-  const [selectedComment, setSelectedComment] = useState<typeof mockBlogComments[0] | null>(null);
+  const [selectedComment, setSelectedComment] = useState<CommentDetailResponse | null>(null);
+  const [comments, setComments] = useState<CommentDetailResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { confirm } = useConfirm();
 
-  const filteredComments = mockBlogComments.filter((comment) => {
-    const matchesStatus =
-      statusFilter === "ALL" || comment.status === statusFilter;
-    const matchesSearch =
-      comment.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comment.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comment.blogTitle.toLowerCase().includes(searchQuery.toLowerCase());
+  const fetchComments = async (page: number, commentStatus?: "ACTIVE" | "DELETED") => {
+    try {
+      setLoading(true);
+      const response = await commentApi.getCommentsForAdmin({
+        page,
+        size: 10,
+        type: "BLOG",
+        status: commentStatus, // undefined = all statuses
+      });
 
-    return matchesStatus && matchesSearch;
+      if (response.result) {
+        return response.result;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      toast.error("Không thể tải bình luận");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadComments = async () => {
+      const result = await fetchComments(
+        currentPage,
+        statusFilter === "ALL" ? undefined : statusFilter
+      );
+      
+      if (result) {
+        setComments(result.result);
+        setTotalPages(result.totalPages);
+      }
+    };
+
+    loadComments();
+  }, [currentPage, statusFilter]);
+
+  const filteredComments = comments.filter((comment) => {
+    if (!searchQuery) return true;
+    return (
+      comment.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      comment.username.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   });
 
   const stats = {
-    total: mockBlogComments.length,
-    active: mockBlogComments.filter((c) => c.status === "ACTIVE").length,
-    deleted: mockBlogComments.filter((c) => c.status === "DELETED").length,
+    total: comments.length,
+    active: comments.filter((c) => c.status === "ACTIVE").length,
+    deleted: comments.filter((c) => c.status === "DELETED").length,
   };
 
   const handleDelete = async (id: string) => {
-    const comment = mockBlogComments.find((c) => c.id === id);
+    const comment = comments.find((c) => c.id === id);
     if (!comment) return;
 
     await confirm(
       async () => {
-        // TODO: Call API to delete comment
-        console.log("Delete comment:", id);
-        toast.success("Đã xóa bình luận");
+        try {
+          await commentApi.delete(id);
+          toast.success("Đã xóa bình luận");
+          // Reload comments
+          setComments(comments.filter((c) => c.id !== id));
+        } catch {
+          toast.error("Không thể xóa bình luận");
+        }
       },
       {
         title: "Xác nhận xóa bình luận",
-        message: `Bạn có chắc chắn muốn xóa bình luận của <strong>${comment.author}</strong>?<br/><br/><em class="text-gray-600">"${comment.content.substring(0, 100)}..."</em>`,
+        message: `Bạn có chắc chắn muốn xóa bình luận của <strong>${comment.username}</strong>?<br/><br/><em class="text-gray-600">"${comment.content.substring(0, 100)}..."</em>`,
         confirmText: "Xóa bình luận",
         cancelText: "Hủy bỏ",
         type: "error",
@@ -139,18 +101,18 @@ export default function BlogCommentsTab() {
   };
 
   const handleRestore = async (id: string) => {
-    const comment = mockBlogComments.find((c) => c.id === id);
+    const comment = comments.find((c) => c.id === id);
     if (!comment) return;
 
     await confirm(
       async () => {
-        // TODO: Call API to restore comment
+        // TODO: Implement restore API
         console.log("Restore comment:", id);
         toast.success("Đã khôi phục bình luận");
       },
       {
         title: "Xác nhận khôi phục",
-        message: `Khôi phục bình luận của <strong>${comment.author}</strong>?`,
+        message: `Khôi phục bình luận của <strong>${comment.username}</strong>?`,
         confirmText: "Khôi phục",
         cancelText: "Hủy bỏ",
         type: "warning",
@@ -159,7 +121,7 @@ export default function BlogCommentsTab() {
   };
 
   const handleReply = (id: string) => {
-    const comment = mockBlogComments.find((c) => c.id === id);
+    const comment = comments.find((c) => c.id === id);
     if (!comment) return;
 
     setSelectedComment(comment);
@@ -167,9 +129,20 @@ export default function BlogCommentsTab() {
   };
 
   const handleSubmitReply = async (content: string) => {
-    // TODO: Call API to submit reply
-    console.log("Reply to comment:", selectedComment?.id, "Content:", content);
-    toast.success("Đã gửi phản hồi");
+    if (!selectedComment) return;
+
+    try {
+      await commentApi.create({
+        blogId: selectedComment.blogId,
+        parentId: selectedComment.id,
+        content,
+      });
+      toast.success("Đã gửi phản hồi");
+      setReplyModalOpen(false);
+      setSelectedComment(null);
+    } catch {
+      toast.error("Không thể gửi phản hồi");
+    }
   };
 
   return (
@@ -201,38 +174,77 @@ export default function BlogCommentsTab() {
       />
 
       {/* Comments List */}
-      <div className="space-y-4">
-        {filteredComments.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-            <svg
-              className="w-20 h-20 text-gray-300 mx-auto mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredComments.length === 0 ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+              <svg
+                className="w-20 h-20 text-gray-300 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                />
+              </svg>
+              <p className="text-gray-500 text-lg font-medium">Không có bình luận nào</p>
+              <p className="text-gray-400 text-sm mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm</p>
+            </div>
+          ) : (
+            filteredComments.map((comment) => (
+              <CommentCard
+                key={comment.id}
+                comment={{
+                  id: comment.id,
+                  content: comment.content,
+                  author: comment.username,
+                  authorEmail: "",
+                  authorAvatar: comment.avatar || `https://i.pravatar.cc/150?u=${comment.username}`,
+                  status: comment.status,
+                  createdAt: comment.createdAt,
+                  likes: 0,
+                  replies: [],
+                }}
+                repliesCount={comment.repliesCount}
+                onDelete={handleDelete}
+                onRestore={handleRestore}
+                onReply={handleReply}
               />
-            </svg>
-            <p className="text-gray-500 text-lg font-medium">Không có bình luận nào</p>
-            <p className="text-gray-400 text-sm mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm</p>
-          </div>
-        ) : (
-          filteredComments.map((comment) => (
-            <CommentCard
-              key={comment.id}
-              comment={comment}
-              type="blog"
-              onDelete={handleDelete}
-              onRestore={handleRestore}
-              onReply={handleReply}
-            />
-          ))
-        )}
-      </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && statusFilter !== "ALL" && (
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          >
+            Trước
+          </button>
+          <span className="flex items-center px-4 text-sm text-gray-700">
+            Trang {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          >
+            Sau
+          </button>
+        </div>
+      )}
 
       {/* Reply Modal */}
       <ReplyModal
@@ -242,7 +254,7 @@ export default function BlogCommentsTab() {
           setSelectedComment(null);
         }}
         onSubmit={handleSubmitReply}
-        commentAuthor={selectedComment?.author || ""}
+        commentAuthor={selectedComment?.username || ""}
         commentContent={selectedComment?.content || ""}
       />
     </div>

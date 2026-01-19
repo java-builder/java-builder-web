@@ -110,6 +110,7 @@ export const API = {
     FAVORITES_MY: "/api/v1/favorites/my",
 
     // COMMENT
+    COMMENTS: "/api/v1/comments",
     CREATE_COMMENT: "/api/v1/comments",
     DELETE_COMMENT: "/api/v1/comments", // + /:id
     GET_ROOT_COMMENTS: "/api/v1/comments/root",

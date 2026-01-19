@@ -8,6 +8,18 @@ export interface CommentResponse {
   replies?: CommentResponse[];
 }
 
+export interface CommentDetailResponse {
+  id: string;
+  content: string;
+  username: string;
+  avatar?: string;
+  repliesCount: number;
+  status: "ACTIVE" | "DELETED";
+  blogId?: string;
+  lessonId?: string;
+  createdAt: string;
+}
+
 export interface CreateCommentRequest {
   lessonId?: string;
   blogId?: string;
