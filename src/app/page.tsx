@@ -16,7 +16,7 @@ export default function Home() {
   const { data: blogsData, isLoading: isLoadingBlogs, error: blogsError } = useFeaturedBlogs();
 
   const courses = coursesData?.result || [];
-  const blogs = (blogsData || []).slice(0, 3);
+  const blogs = (blogsData || []).slice(0, 6);
 
   return (
     <div className="min-h-screen bg-white">
