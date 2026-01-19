@@ -1,18 +1,17 @@
 import { MetadataRoute } from 'next';
+import { parseApiDate } from '@/utils/dateUtils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/f-learning';
 
 interface BlogItem {
   slug: string;
-  createdAt: string;
-  updatedAt?: string;
+  createdAt: string; // Format: "dd-MM-yyyy HH:mm:ss"
 }
 
 interface CourseItem {
   slug: string;
-  createdAt: string;
-  updatedAt?: string;
+  createdAt: string; // Format: "dd-MM-yyyy HH:mm:ss"
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -65,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
       url: `${SITE_URL}/blogs/${blog.slug}`,
-      lastModified: new Date(blog.updatedAt || blog.createdAt),
+      lastModified: parseApiDate(blog.createdAt),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));
@@ -79,7 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const coursePages: MetadataRoute.Sitemap = courses.map((course) => ({
       url: `${SITE_URL}/courses/${course.slug}`,
-      lastModified: new Date(course.updatedAt || course.createdAt),
+      lastModified: parseApiDate(course.createdAt),
       changeFrequency: 'weekly' as const,
       priority: 0.85,
     }));

@@ -101,3 +101,27 @@ export const formatRelativeTime = (dateString: string): string => {
     return dateString;
   }
 };
+
+// Parse API date string to Date object (for sitemap, etc.)
+export const parseApiDate = (dateString: string): Date => {
+  if (!dateString) return new Date();
+  
+  try {
+    const [datePart, timePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("-");
+    const [hour, minute, second] = timePart.split(":");
+
+    const date = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+      parseInt(hour),
+      parseInt(minute),
+      parseInt(second),
+    );
+
+    return isNaN(date.getTime()) ? new Date() : date;
+  } catch {
+    return new Date();
+  }
+};
