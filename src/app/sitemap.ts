@@ -1,9 +1,21 @@
 import { MetadataRoute } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/f-learning';
+
+interface BlogItem {
+  slug: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+interface CourseItem {
+  slug: string;
+  createdAt: string;
+  updatedAt?: string;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages với priority tối ưu cho SEO
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
@@ -43,10 +55,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // TODO: Fetch dynamic pages từ API (courses, blogs) để thêm vào sitemap
-  // const courses = await fetchCourses();
-  // const blogs = await fetchBlogs();
-  // const dynamicPages = [...courses, ...blogs].map(...)
+  try {
+    // Fetch blogs
+    const blogsResponse = await fetch(`${API_URL}/api/v1/blogs?page=1&size=1000`, {
+      next: { revalidate: 3600 }, // Cache 1 hour
+    });
+    const blogsData = await blogsResponse.json();
+    const blogs: BlogItem[] = blogsData?.result?.result || [];
 
-  return staticPages;
+    const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
+      url: `${SITE_URL}/blogs/${blog.slug}`,
+      lastModified: new Date(blog.updatedAt || blog.createdAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
+    // Fetch courses
+    const coursesResponse = await fetch(`${API_URL}/api/v1/courses?page=1&size=1000`, {
+      next: { revalidate: 3600 }, 
+    });
+    const coursesData = await coursesResponse.json();
+    const courses: CourseItem[] = coursesData?.result?.result || [];
+
+    const coursePages: MetadataRoute.Sitemap = courses.map((course) => ({
+      url: `${SITE_URL}/courses/${course.slug}`,
+      lastModified: new Date(course.updatedAt || course.createdAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    }));
+
+    return [...staticPages, ...blogPages, ...coursePages];
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    return staticPages;
+  }
 }
