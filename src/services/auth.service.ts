@@ -32,13 +32,17 @@ export const authApi = {
   },
 
   logout: async () => {
-    const response = await apiClient.post<ApiResponse<LogoutResponse>>(
-      API.LOGOUT,
-    );
-
+    // Xóa localStorage trước để ngăn các component fetch data
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_id");
-    return response.data;
+
+    // Gọi API logout nhưng không đợi response
+    try {
+      await apiClient.post<ApiResponse<LogoutResponse>>(API.LOGOUT);
+    } catch (error) {
+      // Ignore logout API errors since we already cleared local data
+      console.error("Logout API error (ignored):", error);
+    }
   },
 
   isAuthenticated: () => {

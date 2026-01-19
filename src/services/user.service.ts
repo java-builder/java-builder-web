@@ -134,4 +134,28 @@ export const userApi = {
     );
     return response.data;
   },
+
+  sendResetPasswordLink: async (email: string) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.USER_SEND_RESET_PASSWORD,
+      { email }
+    );
+    return response.data;
+  },
+
+  resetPassword: async (secretCode: string, newPassword: string) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.USER_RESET_PASSWORD,
+      { secretCode, newPassword }
+    );
+    return response.data;
+  },
+
+  changePassword: async (oldPassword: string, newPassword: string) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.USER_CHANGE_PASSWORD,
+      { oldPassword, newPassword }
+    );
+    return response.data;
+  },
 };

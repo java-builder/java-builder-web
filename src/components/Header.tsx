@@ -22,27 +22,29 @@ export default function Header() {
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const { data: currentUser, isLoading } = useCurrentUser();
   
-  // Check token ngay khi mount (client-side only)
   useEffect(() => {
     setHasToken(authApi.isAuthenticated());
   }, []);
 
-  // Nếu có token và đang loading → chưa render auth section
-  // Nếu không có token → render AuthButtons
-  // Nếu có currentUser → render UserMenu
+  useEffect(() => {
+    if (currentUser) {
+      setHasToken(true);
+    } else if (!isLoading && hasToken !== null) {
+      const tokenExists = authApi.isAuthenticated();
+      setHasToken(tokenExists);
+    }
+  }, [currentUser, isLoading, hasToken]);
+
   const isLoggedIn = !!currentUser;
   const showAuthLoading = hasToken === true && isLoading;
 
   const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch {
-      authApi.clearAuthData();
-    }
     setHasToken(false);
-    queryClient.setQueryData(["currentUser"], null);
+    queryClient.clear(); 
     setIsMobileMenuOpen(false);
-    router.push("/");
+    
+    await authApi.logout();
+    router.push("/login");
   };
 
   return (

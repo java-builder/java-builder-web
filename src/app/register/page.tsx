@@ -203,8 +203,8 @@ export default function RegisterPage() {
                 {...register("password", {
                   required: "Mật khẩu là bắt buộc",
                   minLength: {
-                    value: 6,
-                    message: "Mật khẩu phải có ít nhất 6 ký tự",
+                    value: 8,
+                    message: "Mật khẩu phải có ít nhất 8 ký tự",
                   },
                 })}
               />

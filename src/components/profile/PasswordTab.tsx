@@ -42,11 +42,6 @@ export default function PasswordTab() {
       toast.error("Mật khẩu xác nhận không khớp");
       return;
     }
-    if (formData.newPassword.length < 6) {
-      toast.error("Mật khẩu phải có ít nhất 6 ký tự");
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       if (passwordStatus === PasswordStatus.NOT_SET) {
@@ -59,10 +54,16 @@ export default function PasswordTab() {
           confirmPassword: "",
         });
       } else {
-        toast.error("Chức năng đổi mật khẩu chưa được cập nhật API");
+        await userApi.changePassword(formData.currentPassword, formData.newPassword);
+        toast.success("Đổi mật khẩu thành công!");
+        setFormData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Tạo mật khẩu thất bại.");
+      toast.error(error instanceof Error ? error.message : "Thao tác thất bại.");
       console.error("Failed to create/update password", error);
     } finally {
       setIsSubmitting(false);
@@ -157,7 +158,7 @@ export default function PasswordTab() {
                 }
                 className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                 placeholder="Nhập mật khẩu mới"
-                minLength={6}
+                minLength={8}
                 required
               />
               <button
@@ -178,7 +179,7 @@ export default function PasswordTab() {
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-1.5">
-              Mật khẩu phải có ít nhất 6 ký tự
+              Mật khẩu phải có ít nhất 8 ký tự
             </p>
           </div>
 
@@ -227,8 +228,8 @@ export default function PasswordTab() {
             </h4>
             <ul className="space-y-1.5 text-sm text-gray-600">
               <li className="flex items-start gap-2">
-                <span className="text-gray-400">•</span>
-                <span>Ít nhất 6 ký tự</span>
+                <span className="text-red-500">•</span>
+                <span><strong>Ít nhất 8 ký tự</strong> (bắt buộc)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-gray-400">•</span>
@@ -236,11 +237,7 @@ export default function PasswordTab() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-gray-400">•</span>
-                <span>Nên bao gồm số và ký tự đặc biệt</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-gray-400">•</span>
-                <span>Không sử dụng thông tin cá nhân</span>
+                <span>Nên bao gồm số hoặc ký tự đặc biệt</span>
               </li>
             </ul>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
 import { authApi } from "@/services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +10,7 @@ let isCallbackProcessed = false;
 
 const GoogleCallbackContent = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const { checkAuth } = useAuth();
   const [isProcessing, setIsProcessing] = useState(true);
@@ -38,6 +40,8 @@ const GoogleCallbackContent = () => {
         ) {
           // Gọi checkAuth để verify quyền từ introspect API
           const authorities = await checkAuth();
+          // Invalidate queries để Header refetch user data
+          await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
           const isAdmin = authorities.includes("ADMIN");
           router.push(isAdmin ? "/admin" : "/");
         } else {
@@ -59,7 +63,7 @@ const GoogleCallbackContent = () => {
         isCallbackProcessed = false;
       }, 1000);
     };
-  }, [searchParams, router, checkAuth]);
+  }, [searchParams, router, checkAuth, queryClient]);
 
   if (error) {
     return (

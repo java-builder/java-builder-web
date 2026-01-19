@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/services/auth.service";
 
 interface AuthState {
@@ -26,6 +27,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const queryClient = useQueryClient();
   const [state, setState] = useState<AuthState>({
     isAuthenticated: false,
     isLoading: true,
@@ -62,12 +64,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [checkAuth]);
 
   const logout = async () => {
+    setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
+    queryClient.clear();
+    
     try {
       await authApi.logout();
-      setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
     } catch (error) {
       authApi.clearAuthData();
-      setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
       console.error("Logout error:", error);
     }
   };

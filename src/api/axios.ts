@@ -1,5 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-import { ApiResponse } from "@/types/api";
+import { ApiResponse, ErrorResponse } from "@/types/api";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/f-learning";
@@ -83,7 +83,7 @@ apiClient.interceptors.response.use(
 
     return response;
   },
-  async (error: AxiosError<ApiResponse<unknown>>) => {
+  async (error: AxiosError<ErrorResponse>) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
@@ -91,11 +91,16 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401) {
       if (isPublicEndpoint(originalRequest.url)) {
-        return Promise.reject(error);
+        const customError = new Error(apiResponse?.message || error.message);
+        (customError as Error & { response?: typeof error.response; code?: number }).response = error.response;
+        (customError as Error & { response?: typeof error.response; code?: number }).code = apiResponse?.code;
+        return Promise.reject(customError);
       }
 
       if (originalRequest._retry) {
-        return Promise.reject(error);
+        const customError = new Error(apiResponse?.message || error.message);
+        (customError as Error & { response?: typeof error.response }).response = error.response;
+        return Promise.reject(customError);
       }
 
       if (originalRequest && !originalRequest._retry) {
@@ -138,7 +143,8 @@ apiClient.interceptors.response.use(
           try {
             return await apiClient(originalRequest);
           } catch (innerError: unknown) {
-            if ((innerError as AxiosError)?.response?.status === 401) {
+            const axiosError = innerError as AxiosError;
+            if (axiosError?.response?.status === 401) {
               if (typeof window !== "undefined") {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("user_id");
@@ -172,10 +178,10 @@ apiClient.interceptors.response.use(
     }
 
     if (apiResponse?.message) {
-      return Promise.reject({
-        ...error,
-        message: apiResponse.message,
-      });
+      const customError = new Error(apiResponse.message);
+      (customError as Error & { response?: typeof error.response; code?: number }).response = error.response;
+      (customError as Error & { response?: typeof error.response; code?: number }).code = apiResponse.code;
+      return Promise.reject(customError);
     }
 
     return Promise.reject(error);

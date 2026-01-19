@@ -4,6 +4,14 @@ export interface ApiResponse<T> {
   result?: T;
 }
 
+export interface ErrorResponse {
+  code: number;
+  error: string;
+  message: string;
+  timestamp: string;
+  path: string;
+}
+
 export interface PageResponse<T> {
   currentPages: number;
   pageSizes: number;

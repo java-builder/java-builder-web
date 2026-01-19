@@ -295,14 +295,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { data: currentUser } = useCurrentUser();
 
   const handleLogout = async () => {
-    try {
-      await authApi.logout();
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      authApi.clearAuthData();
-      router.push("/login");
-    }
+    await authApi.logout();
+    router.push("/login");
   };
 
   return (

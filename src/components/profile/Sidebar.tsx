@@ -24,14 +24,10 @@ export default function Sidebar({
   const handleLogout = async () => {
     if (isLoggingOut) return;
 
-    try {
-      setIsLoggingOut(true);
-      await logout();
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      setIsLoggingOut(false);
-    }
+    setIsLoggingOut(true);
+    await logout();
+    // Redirect ngay lập tức sau khi logout
+    router.push("/login");
   };
   const tabs = [
     {

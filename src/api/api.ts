@@ -19,6 +19,9 @@ export const API = {
     UPDATE_PROFILE_BY_ADMIN: "/api/v1/profiles", // + /:userId
     USER_PASSWORD_STATUS: "/api/v1/users/password-status",
     USER_PASSWORD: "/api/v1/users/password",
+    USER_CHANGE_PASSWORD: "/api/v1/users/change-password",
+    USER_SEND_RESET_PASSWORD: "/api/v1/users/send-link-reset-password",
+    USER_RESET_PASSWORD: "/api/v1/users/reset-password",
 
     // USER SESSION
     GET_USER_SESSIONS: "/api/v1/user-sessions",
