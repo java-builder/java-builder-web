@@ -12,18 +12,20 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Description */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
-              <Link href="/" className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-2.5 mb-4">
+              <div className="relative w-11 h-11 flex-shrink-0">
                 <Image
-                  src="/logos/java-coffee-logo-icon-vector.jpg"
-                  alt="JavaBuilder"
+                  src="/logos/java-logo.png"
+                  alt="Learning Platform"
                   width={44}
                   height={44}
-                  className="rounded-lg"
+                  className="object-contain"
                 />
-                <span className="text-xl font-bold text-white">JavaBuilder</span>
-              </Link>
-            </div>
+              </div>
+              <span className="text-[0.7rem] font-semibold text-gray-400 tracking-wider uppercase leading-tight">
+                Learning Platform
+              </span>
+            </Link>
             <p className="text-gray-300 text-sm leading-relaxed max-w-md mb-6">
               Nền tảng học tập trực tuyến hàng đầu Việt Nam, giúp bạn phát triển
               kỹ năng và thăng tiến trong sự nghiệp.
@@ -189,7 +191,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © {currentYear} JavaBuilder. Tất cả quyền được bảo lưu.
+            © {currentYear} Learning Platform. Tất cả quyền được bảo lưu.
           </p>
           <div className="flex items-center space-x-6 mt-4 md:mt-0">
             <span className="text-gray-400 text-sm">Được phát triển với</span>

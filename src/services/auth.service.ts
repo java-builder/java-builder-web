@@ -32,16 +32,23 @@ export const authApi = {
   },
 
   logout: async () => {
+    // Lấy token trước khi xóa
+    const hasToken = typeof window !== "undefined" && !!localStorage.getItem("access_token");
+    
     // Xóa localStorage trước để ngăn các component fetch data
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_id");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user_id");
+    }
 
-    // Gọi API logout nhưng không đợi response
-    try {
-      await apiClient.post<ApiResponse<LogoutResponse>>(API.LOGOUT);
-    } catch (error) {
-      // Ignore logout API errors since we already cleared local data
-      console.error("Logout API error (ignored):", error);
+    // Chỉ gọi API logout nếu có token
+    if (hasToken) {
+      try {
+        await apiClient.post<ApiResponse<LogoutResponse>>(API.LOGOUT);
+      } catch (error) {
+        // Ignore logout API errors since we already cleared local data
+        console.error("Logout API error (ignored):", error);
+      }
     }
   },
 

@@ -43,9 +43,9 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
-        <link rel="icon" type="image/jpeg" href="/logos/java-coffee-logo-icon-vector.jpg" />
+        <link rel="icon" type="image/png" href="/logos/java-logo.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="apple-touch-icon" href="/logos/java-coffee-logo-icon-vector.jpg" />
+        <link rel="apple-touch-icon" href="/logos/java-logo.png" />
         
         {/* Structured Data */}
         <script

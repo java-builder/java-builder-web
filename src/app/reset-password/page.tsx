@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useState, Suspense } from "react";
 import { userApi } from "@/services/user.service";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 type ResetPasswordFormData = {
   newPassword: string;
@@ -131,23 +132,17 @@ function ResetPasswordContent() {
                 </svg>
                 <span className="hidden sm:inline">Đăng nhập</span>
               </Link>
-              <Link href="/" className="inline-flex items-center">
-                <svg width="36" height="36" viewBox="0 0 64 58" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="resetCupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#0056d2' }} />
-                      <stop offset="100%" style={{ stopColor: '#0044aa' }} />
-                    </linearGradient>
-                  </defs>
-                  <g transform="translate(4, 0)">
-                    <path d="M16 12C16 12 18 6 16 0" stroke="url(#resetCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
-                    <path d="M24 14C24 14 26 8 24 2" stroke="url(#resetCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
-                    <path d="M32 12C32 12 34 6 32 0" stroke="url(#resetCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
-                    <path d="M8 18H40V42C40 48.627 34.627 54 28 54H20C13.373 54 8 48.627 8 42V18Z" fill="url(#resetCupGrad)" />
-                    <path d="M40 24H46C49.314 24 52 26.686 52 30V34C52 37.314 49.314 40 46 40H40" stroke="url(#resetCupGrad)" strokeWidth="4" fill="none" />
-                    <text x="14" y="40" fontFamily="monospace" fontSize="18" fontWeight="bold" fill="white">&lt;/&gt;</text>
-                  </g>
-                </svg>
+              <Link href="/" className="inline-flex items-center space-x-2">
+                <Image
+                  src="/logos/java-logo.png"
+                  alt="Learning Platform"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
+                <span className="text-[0.65rem] font-semibold text-gray-500 dark:text-gray-400 tracking-wider uppercase">
+                  Learning Platform
+                </span>
               </Link>
               <div className="w-10 sm:w-16"></div>
             </div>

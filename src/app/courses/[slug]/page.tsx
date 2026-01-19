@@ -645,9 +645,9 @@ export default function CourseDetailPage() {
                       <div className="space-y-6">
                         {/* Instructor Profile */}
                         <div className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg">
-                          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-white">
                             <Image
-                              src="/logos/java-coffee-logo-icon-vector.jpg"
+                              src="/logos/java-logo.png"
                               alt="JavaBuilder"
                               width={64}
                               height={64}

@@ -689,23 +689,14 @@ export default function BlogDetailPage() {
                     Về tác giả
                   </h3>
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-                      <svg width="32" height="32" viewBox="0 0 64 58" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                          <linearGradient id="authorCupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style={{ stopColor: '#0056d2' }} />
-                            <stop offset="100%" style={{ stopColor: '#0044aa' }} />
-                          </linearGradient>
-                        </defs>
-                        <g transform="translate(4, 0)">
-                          <path d="M16 12C16 12 18 6 16 0" stroke="url(#authorCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
-                          <path d="M24 14C24 14 26 8 24 2" stroke="url(#authorCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
-                          <path d="M32 12C32 12 34 6 32 0" stroke="url(#authorCupGrad)" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.6" />
-                          <path d="M8 18H40V42C40 48.627 34.627 54 28 54H20C13.373 54 8 48.627 8 42V18Z" fill="url(#authorCupGrad)" />
-                          <path d="M40 24H46C49.314 24 52 26.686 52 30V34C52 37.314 49.314 40 46 40H40" stroke="url(#authorCupGrad)" strokeWidth="4" fill="none" />
-                          <text x="14" y="40" fontFamily="monospace" fontSize="18" fontWeight="bold" fill="white">&lt;/&gt;</text>
-                        </g>
-                      </svg>
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-white rounded-full">
+                      <Image
+                        src="/logos/java-logo.png"
+                        alt="JavaBuilder"
+                        width={40}
+                        height={40}
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <div>
                       <h4 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">

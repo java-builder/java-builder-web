@@ -18,6 +18,7 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/auth/verify-email",
     "/api/v1/auth/refresh",
     "/api/v1/users/send-link-reset-password",
+    "/api/v1/users/reset-password",
   ];
 
   // Các endpoint GET public (không cần token)
