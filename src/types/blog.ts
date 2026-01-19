@@ -39,6 +39,21 @@ export interface CreateBlogResponse {
   createdAt: string;
 }
 
+export interface UpdateBlogResponse {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  summary?: string;
+  blogType: BlogType;
+  featuredImage?: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Blog {
   id: string;
   title: string;

@@ -57,9 +57,10 @@ export const blogService = {
 
   // Cập nhật blog
   async updateBlog(
-    data: { id: string } & Partial<CreateBlogRequest>,
+    id: string,
+    data: Partial<CreateBlogRequest>,
   ): Promise<Blog> {
-    const response = await apiClient.put(API.UPDATE_BLOG, data);
+    const response = await apiClient.put(`${API.UPDATE_BLOG}/${id}`, data);
     return response.data.result;
   },
 

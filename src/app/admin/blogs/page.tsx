@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useConfirm } from "@/hooks/useConfirm";
 import CreateBlogModal from "@/components/admin/blogs/CreateBlogModal";
+import UpdateBlogModal from "@/components/admin/blogs/UpdateBlogModal";
 import BlogGrid from "@/components/admin/blogs/BlogGrid";
 import BlogSuccessToast from "@/components/admin/blogs/BlogSuccessToast";
 import BlogPreviewModal from "@/components/admin/blogs/BlogPreviewModal";
@@ -15,6 +16,8 @@ export default function BlogsPage() {
   const [search, setSearch] = useState("");
   const [isDeleting, setIsDeleting] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
   // Grid view removed - always show table
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [previewBlog, setPreviewBlog] = useState<Blog | null>(null);
@@ -309,7 +312,8 @@ export default function BlogsPage() {
       <BlogGrid
         blogs={blogs}
         onEdit={(blog) => {
-          console.log("Edit blog:", blog);
+          setSelectedBlog(blog);
+          setIsUpdateModalOpen(true);
         }}
         onDelete={handleDelete}
         onPreview={(blog) => setPreviewBlog(blog)}
@@ -325,6 +329,20 @@ export default function BlogsPage() {
           fetchBlogs(); // Refresh the blog list
           setShowSuccessToast(true);
         }}
+      />
+
+      {/* Update Blog Modal */}
+      <UpdateBlogModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setSelectedBlog(null);
+        }}
+        onSuccess={() => {
+          fetchBlogs(); // Refresh the blog list
+          setShowSuccessToast(true);
+        }}
+        blog={selectedBlog}
       />
 
       {/* Success Toast */}
