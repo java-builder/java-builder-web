@@ -291,6 +291,21 @@ export default function BlogDetailPage() {
   }
 
   if (error || !blog) {
+    if (authModal.isOpen) {
+      return (
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+          <Header />
+          <AuthRequiredModal
+            isOpen={authModal.isOpen}
+            onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+            title={authModal.title}
+            message={authModal.message}
+          />
+          <Footer />
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <Header />
