@@ -7,11 +7,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <>
-      <div className="h-[240px] md:h-[220px]" aria-hidden />
-
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-b from-gray-900 to-gray-800 border-t border-accent shadow-xl">
-        <div className="max-w-7xl mx-auto px-6 py-12">
+    <footer className="bg-gradient-to-b from-gray-900 to-gray-800 border-t border-accent mt-16">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Description */}
           <div className="col-span-1 md:col-span-2">
@@ -218,6 +215,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-    </>
   );
 }
