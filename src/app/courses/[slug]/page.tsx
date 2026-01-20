@@ -173,6 +173,15 @@ export default function CourseDetailPage() {
   };
 
   const handleLessonClick = async (lesson: LessonDetailResponse) => {
+    if (!currentUser && lesson.isFreePreview) {
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để xem video miễn phí",
+        message: "Bạn cần đăng nhập để xem các video miễn phí trong khóa học này.",
+      });
+      return;
+    }
+
     if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
       try {
         const response = await lessonApi.getById(lesson.id);
