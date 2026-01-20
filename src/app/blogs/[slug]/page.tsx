@@ -81,10 +81,21 @@ export default function BlogDetailPage() {
       }
     };
 
-    if (blogSlug) {
-      fetchBlogDetail();
+    if (!blogSlug) return;
+    if (!currentUser) {
+      setIsLoading(false);
+      setError(null);
+      setBlog(null);
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để đọc bài viết",
+        message: "Bạn cần đăng nhập để đọc bài viết này. Vui lòng đăng nhập để tiếp tục.",
+      });
+      return;
     }
-  }, [blogSlug, loadRootComments]);
+
+    fetchBlogDetail();
+  }, [blogSlug, loadRootComments, currentUser]);
 
   useEffect(() => {
     const incrementView = async () => {
