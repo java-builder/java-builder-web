@@ -12,6 +12,7 @@ import BlogTypeIcon from "@/components/admin/blogs/BlogTypeIcon";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { authApi } from "@/services/auth.service";
 import toast from "react-hot-toast";
 import MotionWrapper from "@/components/MotionWrapper";
 import CommentList from "@/components/blogs/CommentList";
@@ -82,7 +83,9 @@ export default function BlogDetailPage() {
     };
 
     if (!blogSlug) return;
-    if (!currentUser) {
+
+    const isAuthed = authApi.isAuthenticated();
+    if (!isAuthed) {
       setIsLoading(false);
       setError(null);
       setBlog(null);
