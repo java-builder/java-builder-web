@@ -12,22 +12,34 @@ import BlogTypeIcon from "@/components/admin/blogs/BlogTypeIcon";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { authApi } from "@/services/auth.service";
 import toast from "react-hot-toast";
 import MotionWrapper from "@/components/MotionWrapper";
 import CommentList from "@/components/blogs/CommentList";
+import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function BlogDetailPage() {
   const params = useParams();
   const blogSlug = params.slug as string;
+  const { data: currentUser } = useCurrentUser();
 
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const hasIncrementedViewRef = useRef(false);
+
+  // Auth required modal
+  const [authModal, setAuthModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
 
   const {
     comments,
@@ -548,9 +560,12 @@ export default function BlogDetailPage() {
                       <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
                         <button
                           onClick={async () => {
-                            const isAuthed = authApi.isAuthenticated();
-                            if (!isAuthed) {
-                              setShowLoginModal(true);
+                            if (!currentUser) {
+                              setAuthModal({
+                                isOpen: true,
+                                title: "Đăng nhập để thích bài viết",
+                                message: "Bạn cần đăng nhập để thích bài viết này.",
+                              });
                               return;
                             }
                             if (isLiked) {
@@ -822,36 +837,13 @@ export default function BlogDetailPage() {
           </div>
         </div>
       </div>
-      {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/30 dark:bg-black/50"
-            onClick={() => setShowLoginModal(false)}
-          ></div>
-          <div className="relative w-full max-w-sm rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              Cần đăng nhập
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Vui lòng đăng nhập để thích bài viết này.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-end gap-2">
-              <button
-                onClick={() => setShowLoginModal(false)}
-                className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
-              >
-                Để sau
-              </button>
-              <Link
-                href="/login"
-                className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg bg-accent text-white hover:bg-accent-600 transition-colors text-center"
-              >
-                Đăng nhập
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Auth Required Modal */}
+      <AuthRequiredModal
+        isOpen={authModal.isOpen}
+        onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+        title={authModal.title}
+        message={authModal.message}
+      />
 
       {/* Footer */}
       <Footer />

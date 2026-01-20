@@ -1,14 +1,44 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { Blog, BlogTypeDisplayNames } from "@/types/blog";
 import BlogTypeIcon from "@/components/admin/blogs/BlogTypeIcon";
 import { formatApiDateOnly } from "@/utils/dateUtils";
+import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface PublicBlogCardProps {
   blog: Blog;
 }
 
 export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
+  const { data: currentUser } = useCurrentUser();
+
+  // Auth required modal
+  const [authModal, setAuthModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
+
+  const handleReadMoreClick = (e: React.MouseEvent) => {
+    // Check if user is logged in
+    if (!currentUser) {
+      e.preventDefault();
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để đọc bài viết",
+        message: "Bạn cần đăng nhập để đọc đầy đủ nội dung bài viết này.",
+      });
+      return;
+    }
+    // If logged in, allow normal navigation
+  };
+
   return (
     <article className="bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300 overflow-hidden group flex flex-col h-full">
       {blog.featuredImage && (
@@ -124,6 +154,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
 
             <Link
               href={`/blogs/${blog.slug}`}
+              onClick={handleReadMoreClick}
               className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-accent to-accent-600 text-white text-xs font-medium rounded-md hover:from-accent-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               Đọc tiếp
@@ -152,6 +183,14 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
           </div>
         </div>
       </div>
+
+      {/* Auth Required Modal */}
+      <AuthRequiredModal
+        isOpen={authModal.isOpen}
+        onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+        title={authModal.title}
+        message={authModal.message}
+      />
     </article>
   );
 }
