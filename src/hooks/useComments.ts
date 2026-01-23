@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CommentResponse } from "@/types/comment";
 import { commentApi } from "@/services/comment.service";
 
@@ -63,6 +63,19 @@ export const useComments = (blogId: string) => {
     [blogId],
   );
 
+  // Auto-fetch root comments when blogId (targetId) changes.
+  useEffect(() => {
+    if (!blogId) {
+      setComments([]);
+      setHasMore(true);
+      setCurrentPage(1);
+      return;
+    }
+
+    // Trigger initial load for new blogId
+    loadRootComments(1, false).catch(() => {});
+  }, [blogId, loadRootComments]);
+
   // Load replies for a specific comment
   const loadReplies = useCallback(async (commentId: string) => {
     try {
@@ -102,7 +115,8 @@ export const useComments = (blogId: string) => {
       try {
         setIsSubmitting(true);
         const response = await commentApi.create({
-          blogId,
+          targetId: blogId,
+          targetType: "BLOG",
           content: content.trim(),
         });
 
@@ -113,7 +127,7 @@ export const useComments = (blogId: string) => {
           avatar: response.result!.avatar,
           createdAt: response.result!.createdAt,
           replies: [],
-          repliesCount: 0,
+          repliesCount: response.result!.repliesCount || 0,
         };
 
         setComments((prev) => [newComment, ...prev]);
@@ -135,7 +149,8 @@ export const useComments = (blogId: string) => {
 
       try {
         const response = await commentApi.create({
-          blogId,
+          targetId: blogId,
+          targetType: "BLOG",
           parentId: commentId,
           content: content.trim(),
         });

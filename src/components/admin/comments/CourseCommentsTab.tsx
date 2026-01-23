@@ -133,7 +133,8 @@ export default function CourseCommentsTab() {
 
     try {
       await commentApi.create({
-        lessonId: selectedComment.lessonId,
+        targetId: selectedComment.targetId || "",
+        targetType: selectedComment.targetType || "LESSON",
         parentId: selectedComment.id,
         content,
       });

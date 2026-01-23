@@ -87,7 +87,8 @@ export const useLessonComments = (lessonId: string) => {
       try {
         setIsSubmitting(true);
         const response = await commentApi.create({
-          lessonId,
+          targetId: lessonId,
+          targetType: "LESSON",
           content: content.trim(),
         });
 
@@ -98,7 +99,7 @@ export const useLessonComments = (lessonId: string) => {
           avatar: response.result!.avatar,
           createdAt: response.result!.createdAt,
           replies: [],
-          repliesCount: 0,
+          repliesCount: response.result!.repliesCount || 0,
         };
 
         setComments((prev) => [newComment, ...prev]);
@@ -116,7 +117,8 @@ export const useLessonComments = (lessonId: string) => {
       }
 
       const response = await commentApi.create({
-        lessonId,
+        targetId: lessonId,
+        targetType: "LESSON",
         parentId: commentId,
         content: content.trim(),
       });

@@ -15,15 +15,14 @@ export interface CommentDetailResponse {
   avatar?: string;
   repliesCount: number;
   status: "ACTIVE" | "DELETED";
-  blogId?: string;
-  lessonId?: string;
+  targetId?: string;
+  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION";
   createdAt: string;
 }
 
 export interface CreateCommentRequest {
-  lessonId?: string;
-  blogId?: string;
-  parentCommentId?: string;
+  targetId: string;
+  targetType: "BLOG" | "LESSON" | "POST" | "QUESTION";
   parentId?: string;
   content: string;
 }
@@ -33,6 +32,7 @@ export interface CreateCommentResponse {
   content: string;
   username: string;
   avatar?: string;
+  repliesCount: number;
   createdAt: string;
 }
 

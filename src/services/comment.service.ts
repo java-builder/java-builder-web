@@ -16,8 +16,8 @@ export interface CommentSearchParams {
 export interface AdminCommentParams {
   page?: number;
   size?: number;
-  type: "BLOG" | "LESSON";
-  status?: "ACTIVE" | "DELETED"; // Optional - null means all statuses (ACTIVE + DELETED)
+  type: "BLOG" | "LESSON" | "POST" | "QUESTION";
+  status?: "ACTIVE" | "DELETED"; 
 }
 
 export const commentApi = {

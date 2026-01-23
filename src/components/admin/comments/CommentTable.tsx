@@ -12,7 +12,8 @@ interface Comment {
   blogSlug?: string;
   courseTitle?: string;
   lessonTitle?: string;
-  lessonId?: string;
+  targetId?: string;
+  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION";
 }
 
 interface CommentTableProps {

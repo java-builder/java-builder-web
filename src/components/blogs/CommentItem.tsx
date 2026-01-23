@@ -193,10 +193,10 @@ export default function CommentItem({
             </button>
 
             {repliesCount > 0 && (
-              <button
+            <button
                 onClick={handleLoadReplies}
                 disabled={isLoadingReplies}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-700 dark:hover:text-gray-300 rounded-full transition-all disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium text-accent dark:text-accent/90 hover:bg-accent/10 dark:hover:bg-accent/20 hover:text-accent rounded-full transition-all disabled:opacity-50"
               >
                 {isLoadingReplies ? (
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

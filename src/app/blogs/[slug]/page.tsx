@@ -31,7 +31,6 @@ export default function BlogDetailPage() {
   const [isLiked, setIsLiked] = useState(false);
   const hasIncrementedViewRef = useRef(false);
 
-  // Auth required modal
   const [authModal, setAuthModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -47,7 +46,6 @@ export default function BlogDetailPage() {
     isLoading: isLoadingComments,
     isSubmitting: isSubmittingComment,
     hasMore: hasMoreComments,
-    loadRootComments,
     loadReplies,
     addComment,
     replyToComment,
@@ -73,8 +71,6 @@ export default function BlogDetailPage() {
           .filter((b) => b.slug !== blogSlug)
           .slice(0, 3);
         setRelatedBlogs(filtered);
-
-        await loadRootComments(1, false);
       } catch {
         setError("Không thể tải bài viết. Vui lòng thử lại sau.");
       } finally {
@@ -98,8 +94,8 @@ export default function BlogDetailPage() {
     }
 
     fetchBlogDetail();
-  }, [blogSlug, loadRootComments, currentUser]);
-
+  }, [blogSlug, currentUser]);
+  
   useEffect(() => {
     const incrementView = async () => {
       if (!blogSlug || hasIncrementedViewRef.current) return;
