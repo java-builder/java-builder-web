@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { authApi } from "@/services/auth.service";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TwoFactorModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export default function TwoFactorModal({
   email,
   onSuccess,
 }: TwoFactorModalProps) {
+  const { setAuthFromLogin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
@@ -74,6 +76,8 @@ export default function TwoFactorModal({
       });
 
       if (result.code === 200 && result.data?.accessToken) {
+        // Update auth context directly from login response (avoids extra introspect)
+        setAuthFromLogin(result.data);
         onSuccess();
         handleClose();
       } else {

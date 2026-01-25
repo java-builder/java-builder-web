@@ -129,6 +129,25 @@ export const authApi = {
     return response.data;
   },
 
+  loginWithLinkedin: async (code: string) => {
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(
+      API.LOGIN_LINKEDIN,
+      null,
+      { params: { code } },
+    );
+
+    if (
+      response.data.code === 200 &&
+      response.data.data?.accessToken &&
+      response.data.data?.userId
+    ) {
+      localStorage.setItem("access_token", response.data.data.accessToken);
+      localStorage.setItem("user_id", response.data.data.userId);
+    }
+
+    return response.data;
+  },
+
   loginTwoFactor: async (data: TwoFactorAuthenticationRequest) => {
     const response = await apiClient.post<ApiResponse<LoginResponse>>(
       API.LOGIN_TWO_FACTOR,

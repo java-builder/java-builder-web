@@ -3,6 +3,7 @@ export const API = {
     LOGIN_USERNAME_PASSWORD: "/api/v1/auth/login",
     LOGIN_GOOGLE: "/api/v1/auth/login-google",
     LOGIN_GITHUB: "/api/v1/auth/login-github",
+    LOGIN_LINKEDIN: "/api/v1/auth/login-linkedin",
     LOGIN_TWO_FACTOR: "/api/v1/auth/login-two-factor",
     LOGOUT: "/api/v1/auth/logout",
     INTROSPECT: "/api/v1/auth/introspect",

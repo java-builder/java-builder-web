@@ -14,6 +14,7 @@ interface AuthState {
 interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   checkAuth: () => Promise<string[]>;
+  setAuthFromLogin: (loginData?: { authorities?: string[]; accessToken?: string; userId?: string } | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -63,6 +64,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuth();
   }, [checkAuth]);
 
+  const setAuthFromLogin = (loginData?: { authorities?: string[]; accessToken?: string; userId?: string } | null) => {
+    const authorities = loginData?.authorities || [];
+    setState({
+      isAuthenticated: !!loginData?.accessToken,
+      isLoading: false,
+      hasAdminAccess: authorities.includes("ADMIN"),
+      error: null,
+    });
+  };
+
   const logout = async () => {
     setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false, error: null });
     queryClient.clear();
@@ -76,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, logout, checkAuth }}>
+    <AuthContext.Provider value={{ ...state, logout, checkAuth, setAuthFromLogin }}>
       {children}
     </AuthContext.Provider>
   );
