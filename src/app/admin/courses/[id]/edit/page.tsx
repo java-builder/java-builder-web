@@ -88,8 +88,8 @@ export default function EditCoursePage() {
       setIsLoading(true);
       hasFetched.current = true;
       const response = await courseApi.getById(courseId);
-      if (response.result) {
-        const data = response.result;
+      if (response.data) {
+        const data = response.data;
         setCourse(data);
         setTitle(data.title);
         setDescription(data.description);
@@ -147,8 +147,8 @@ export default function EditCoursePage() {
       // Upload ảnh mới nếu có
       if (pendingImageFile) {
         const uploadResult = await fileApi.uploadSingleMedia(pendingImageFile);
-        if (uploadResult.result) {
-          finalCourseCover = uploadResult.result.url;
+        if (uploadResult.data) {
+          finalCourseCover = uploadResult.data.url;
         }
       }
 
@@ -164,8 +164,8 @@ export default function EditCoursePage() {
         toast.success("Cập nhật khóa học thành công!");
         setPendingImageFile(null);
         setCourseCover(finalCourseCover);
-        if (response.result) {
-          setCourse(response.result);
+        if (response.data) {
+          setCourse(response.data);
         }
       }
     } catch (error) {
@@ -200,8 +200,8 @@ export default function EditCoursePage() {
     setLoadingLessons(prev => new Set(prev).add(chapterId));
     try {
       const response = await lessonApi.getByChapterId(chapterId);
-      if (response.result) {
-        setChapterLessons(prev => ({ ...prev, [chapterId]: response.result || [] }));
+      if (response.data) {
+        setChapterLessons(prev => ({ ...prev, [chapterId]: response.data || [] }));
       }
     } catch (error) {
       console.error("Error fetching lessons:", error);
@@ -232,7 +232,7 @@ export default function EditCoursePage() {
           description: chapterModal.description || undefined,
         });
 
-        if (response.code === 200 && response.result) {
+        if (response.code === 200 && response.data) {
           toast.success("Cập nhật chương thành công!");
           await fetchCourse(true);
         }
@@ -244,7 +244,7 @@ export default function EditCoursePage() {
           description: chapterModal.description || undefined,
         });
 
-        if (response.code === 201 && response.result) {
+        if (response.code === 201 && response.data) {
           toast.success("Thêm chương thành công!");
           await fetchCourse(true);
         }
@@ -313,7 +313,7 @@ export default function EditCoursePage() {
         isFreePreview: lessonModal.isFreePreview,
       });
 
-      if (response.code === 201 && response.result) {
+      if (response.code === 201 && response.data) {
         toast.success("Thêm bài học thành công!");
         // Refresh lessons for this chapter
         await fetchLessons(lessonModal.chapterId);
@@ -331,8 +331,8 @@ export default function EditCoursePage() {
   const handlePreviewLesson = async (lesson: LessonDetailResponse) => {
     try {
       const response = await lessonApi.getById(lesson.id);
-      if (response.result) {
-        setPreviewModal({ isOpen: true, lesson: response.result });
+      if (response.data) {
+        setPreviewModal({ isOpen: true, lesson: response.data });
       }
     } catch (error) {
       console.error("Error fetching lesson:", error);

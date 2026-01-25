@@ -92,12 +92,12 @@ export default function CourseDetailPage() {
         setError("");
         // Fetch course detail (includes isFavorite, isEnrolled, isPremiumUser)
         const result = await courseApi.getBySlug(slug);
-        if (result.code === 200 && result.result) {
-          setCourse(result.result);
+        if (result.code === 200 && result.data) {
+          setCourse(result.data);
           // Set user-specific states from response
-          setIsFavorite(result.result.isFavorite ?? false);
-          setIsEnrolled(result.result.isEnrolled ?? false);
-          setIsPremiumUser(result.result.isPremiumUser ?? false);
+          setIsFavorite(result.data.isFavorite ?? false);
+          setIsEnrolled(result.data.isEnrolled ?? false);
+          setIsPremiumUser(result.data.isPremiumUser ?? false);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
@@ -128,8 +128,8 @@ export default function CourseDetailPage() {
     try {
       const result = await favoriteApi.toggle(course.id);
       if (result.code === 200) {
-        setIsFavorite(result.result ?? false);
-        toast.success(result.result ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
+        setIsFavorite(result.data ?? false);
+        toast.success(result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
       }
     } catch {
       toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
@@ -158,8 +158,8 @@ export default function CourseDetailPage() {
     setLoadingLessons(prev => new Set(prev).add(chapterId));
     try {
       const response = await lessonApi.getByChapterId(chapterId);
-      if (response.result) {
-        setChapterLessons(prev => ({ ...prev, [chapterId]: response.result || [] }));
+      if (response.data) {
+        setChapterLessons(prev => ({ ...prev, [chapterId]: response.data || [] }));
       }
     } catch (error) {
       console.error("Error fetching lessons:", error);
@@ -185,8 +185,8 @@ export default function CourseDetailPage() {
     if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
       try {
         const response = await lessonApi.getById(lesson.id);
-        if (response.result) {
-          setPreviewModal({ isOpen: true, lesson: response.result });
+        if (response.data) {
+          setPreviewModal({ isOpen: true, lesson: response.data });
         }
       } catch {
         toast.error("Không thể xem bài học này");
@@ -212,8 +212,8 @@ export default function CourseDetailPage() {
 
     try {
       const result = await paymentApi.createPaymentLink(course.id);
-      if (result.code === 201 && result.result) {
-        setPaymentModal({ isOpen: true, isLoading: false, data: result.result });
+      if (result.code === 201 && result.data) {
+        setPaymentModal({ isOpen: true, isLoading: false, data: result.data });
       } else {
         toast.error("Không thể tạo link thanh toán");
         setPaymentModal({ isOpen: false, isLoading: false, data: null });

@@ -84,8 +84,8 @@ export default function CreateCourseModal({
 
       if (data.imageFile) {
         const uploadResult = await fileApi.uploadSingleMedia(data.imageFile);
-        if (uploadResult.code === 200 && uploadResult.result) {
-          courseCover = uploadResult.result.url;
+        if (uploadResult.code === 200 && uploadResult.data) {
+          courseCover = uploadResult.data.url;
         }
       }
 

@@ -36,10 +36,3 @@ export interface CreateCommentResponse {
   createdAt: string;
 }
 
-export interface CommentPageResponse {
-  result: CommentResponse[];
-  currentPages: number;
-  pageSizes: number;
-  totalPages: number;
-  totalElements: number;
-}

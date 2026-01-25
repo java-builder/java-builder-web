@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiOutlineBell } from "react-icons/hi";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,7 +13,7 @@ export default function NotificationDropdown() {
   const { data: notifData } = useNotifications(1, activeTab);
   const markAsRead = useMarkAsRead();
 
-  const notifications = notifData?.result || [];
+  const notifications = notifData?.data || [];
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleOpen = () => {
@@ -23,6 +23,18 @@ export default function NotificationDropdown() {
       markAsRead.mutate(unreadIds);
     }
   };
+
+  // detect mobile view to render dropdown as fixed sheet (avoid being clipped)
+  const [isMobileView, setIsMobileView] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      if (typeof window === "undefined") return;
+      setIsMobileView(window.innerWidth < 640);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <div className="relative" data-dropdown>
@@ -40,7 +52,11 @@ export default function NotificationDropdown() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-50">
+        <div
+          className={`${isMobileView ? "fixed inset-x-2 top-16" : "absolute right-2 sm:right-0"} mt-2 w-[min(94vw,24rem)] sm:w-96 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-50 max-h-[70vh]`}
+          role="dialog"
+          aria-modal="true"
+        >
           {/* Header */}
           <div className="border-b border-gray-200 dark:border-slate-700">
             <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400">Thông báo</div>

@@ -14,7 +14,7 @@ export const useCourses = (
     queryKey: ["courses", page, size, title, level],
     queryFn: async () => {
       const res = await courseApi.getCourses(page, size, title, level);
-      return res.result;
+      return res.data;
     },
     staleTime: 10 * 60 * 1000, // 10 minutes - match BE cache
     gcTime: 15 * 60 * 1000, // 15 minutes

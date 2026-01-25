@@ -29,7 +29,7 @@ export default function AdminSubscriptionsPage() {
     try {
       setIsLoading(true);
       const response = await apiClient.get<ApiResponse<SubscriptionPlan[]>>("/api/v1/subscriptions/admin/plans");
-      if (response.data.result) setPlans(response.data.result);
+      if (response.data.data) setPlans(response.data.data);
     } catch {
       toast.error("Không thể tải danh sách gói");
     } finally {

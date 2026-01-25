@@ -6,7 +6,7 @@ export function useCourseDetail(courseId: string) {
     queryKey: ["course", courseId],
     queryFn: async () => {
       const res = await courseApi.getById(courseId);
-      return res.result;
+      return res.data;
     },
     enabled: !!courseId,
     staleTime: 10 * 60 * 1000, // 10 minutes

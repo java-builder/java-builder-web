@@ -29,7 +29,9 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
     const checkFavorite = async () => {
       try {
         const result = await favoriteApi.check(course.id);
-        if (result.result !== undefined) {
+        if ('data' in result && result.data !== undefined) {
+          setIsFavorite(result.data);
+        } else if ('result' in result && result.result !== undefined) {
           setIsFavorite(result.result);
         }
       } catch {
@@ -52,8 +54,8 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
     try {
       const result = await favoriteApi.toggle(course.id);
       if (result.code === 200) {
-        setIsFavorite(result.result ?? false);
-        toast.success(result.result ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
+        setIsFavorite(result.data ?? false);
+        toast.success(result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
       }
     } catch {
       toast.error("Có lỗi xảy ra");

@@ -1,7 +1,7 @@
 export interface ApiResponse<T> {
   code: number;
   message?: string;
-  result?: T;
+  data?: T;
 }
 
 export interface ErrorResponse {
@@ -13,9 +13,9 @@ export interface ErrorResponse {
 }
 
 export interface PageResponse<T> {
-  currentPages: number;
-  pageSizes: number;
+  currentPage: number;
+  pageSize: number;
   totalPages: number;
   totalElements: number;
-  result: T[];
+  data: T[];
 }

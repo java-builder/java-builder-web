@@ -36,8 +36,8 @@ export default function DocumentsPage() {
         page: 1,
         size: 50,
       });
-      setDocuments(response.result?.result || []);
-      setTotalElements(response.result?.totalElements || 0);
+      setDocuments(response.data?.data || []);
+      setTotalElements(response.data?.totalElements || 0);
     } catch (error) {
       console.error("Error fetching documents:", error);
       setDocuments([]);
@@ -66,45 +66,22 @@ export default function DocumentsPage() {
       <Header />
 
       {/* Hero */}
-      <section className="relative min-h-[50vh] bg-gradient-to-r from-white to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-20 left-10 text-indigo-400 font-mono text-xs">
-              <div>const documents = [</div>
-              <div>&nbsp;&nbsp;&quot;React Guide&quot;, &quot;Node.js&quot;,</div>
-              <div>&nbsp;&nbsp;&quot;Python&quot;, &quot;AWS&quot;,</div>
-              <div>&nbsp;&nbsp;&quot;Design Patterns&quot;</div>
-              <div>];</div>
-            </div>
-            <div className="absolute top-32 right-20 text-purple-400 font-mono text-xs">
-              <div>function learn() {`{`}</div>
-              <div>&nbsp;&nbsp;return &quot;knowledge&quot;;</div>
-              <div>{`}`}</div>
-            </div>
-            <div className="absolute bottom-32 left-20 text-blue-400 font-mono text-xs">
-              <div>while (learning) {`{`}</div>
-              <div>&nbsp;&nbsp;grow();</div>
-              <div>{`}`}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12">
+      <section className="relative bg-gradient-to-r from-white to-indigo-50 dark:from-slate-900 dark:to-slate-800 py-12 md:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-6 xl:col-span-7 text-gray-900 dark:text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              <div className="lg:col-span-7 text-gray-900 dark:text-white">
                 <div className="inline-block">
-                  <span className="bg-accent text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium">
                     📚 Sách & Tài liệu
                   </span>
                 </div>
 
-                <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight">
+                <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                   Sách & Tài liệu <span className="text-accent">chất lượng</span>
                 </h1>
 
-                <p className="mt-4 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-3xl">
+                <p className="mt-3 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
                   Bộ sưu tập sách và tài liệu chuyên sâu về Spring Boot, Microservices,
                   Java Backend và Cloud Native development.
                 </p>
@@ -112,7 +89,7 @@ export default function DocumentsPage() {
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
                   <a
                     href="#list"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-lg transform hover:scale-[1.02]"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                   >
                     Khám phá tài liệu
                   </a>
@@ -122,14 +99,14 @@ export default function DocumentsPage() {
                 </div>
               </div>
 
-              <div className="lg:col-span-6 xl:col-span-5">
-                <div className="w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10">
+              <div className="lg:col-span-5">
+                <div className="w-full rounded-xl overflow-hidden shadow-xl ring-1 ring-gray-200/50 dark:ring-gray-700/50">
                   <Image
                     src="/illustration.svg"
                     alt="Documents hero"
                     width={600}
                     height={400}
-                    className="w-full h-64 sm:h-80 md:h-96 lg:h-[400px] object-cover"
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover"
                     priority
                   />
                 </div>

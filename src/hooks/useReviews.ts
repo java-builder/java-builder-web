@@ -10,13 +10,13 @@ export function useReviews(courseId: string) {
     queryKey: ["reviews", courseId],
     queryFn: async () => {
       const result = await reviewApi.getByCourse(courseId, 1, 100);
-      return result.result;
+      return result.data;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: !!courseId,
   });
 
-  const reviews = data?.result || [];
+  const reviews = data?.data || [];
   const totalReviews = data?.totalElements || 0;
   const hasReviewed = currentUser ? reviews.some(r => r.username === currentUser.username) : false;
 
@@ -24,7 +24,7 @@ export function useReviews(courseId: string) {
     mutationFn: (params: { rating: number; content?: string }) => 
       reviewApi.create({ courseId, ...params }),
     onSuccess: (result) => {
-      if (result.code === 200 && result.result) {
+      if (result.code === 200 && result.data) {
         queryClient.invalidateQueries({ queryKey: ["reviews", courseId] });
       }
     },

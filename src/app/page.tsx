@@ -15,63 +15,33 @@ export default function Home() {
   const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useFeaturedCourses();
   const { data: blogsData, isLoading: isLoadingBlogs, error: blogsError } = useFeaturedBlogs();
 
-  const courses = coursesData?.result || [];
-  const blogs = (blogsData || []).slice(0, 6);
+  const courses = coursesData?.data || [];
+  const blogs = (blogsData?.data || []).slice(0, 6);
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100">
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full relative overflow-hidden bg-transparent">
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-20 left-10 text-green-400 font-mono text-xs">
-                <div>&lt;div className=&quot;hero&quot;&gt;</div>
-                <div>&nbsp;&nbsp;&lt;h1&gt;Welcome&lt;/h1&gt;</div>
-                <div>&lt;/div&gt;</div>
-              </div>
-              <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs">
-                <div>function learn() {`{`}</div>
-                <div>&nbsp;&nbsp;return &quot;success&quot;;</div>
-                <div>{`}`}</div>
-              </div>
-              <div className="absolute bottom-40 left-20 text-purple-400 font-mono text-xs">
-                <div>const skills = [</div>
-                <div>&nbsp;&nbsp;&quot;React&quot;, &quot;Node.js&quot;,</div>
-                <div>&nbsp;&nbsp;&quot;Python&quot;, &quot;AI&quot;</div>
-                <div>];</div>
-              </div>
-              <div className="absolute bottom-20 right-10 text-blue-400 font-mono text-xs">
-                <div>if (dedication) {`{`}</div>
-                <div>&nbsp;&nbsp;achieveGoals();</div>
-                <div>{`}`}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12 min-h-[60vh]">
+      <main className="relative bg-gradient-to-r from-white to-blue-50 py-12 md:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MotionWrapper animation="fadeInUp" duration={0.9}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left: Text / CTA */}
-              <div className="lg:col-span-6 xl:col-span-7">
-                <div className="space-y-6 md:space-y-8">
+              <div className="lg:col-span-7">
+                <div className="space-y-4 md:space-y-6">
                   <div className="inline-block">
-                    <span className="bg-accent text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">
+                    <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-sm">
                       Course & Training
                     </span>
                   </div>
 
-                  <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                     Khởi đầu hành trình{" "}
                     <span className="text-accent">lập trình</span>
                   </h1>
 
-                  <div className="text-base md:text-lg lg:text-xl text-gray-700 max-w-3xl">
-                    <p className="leading-relaxed">
-                      Hành trình chinh phục công nghệ cùng đội ngũ mentor chuyên
-                      nghiệp.
+                  <div className="text-base md:text-lg text-gray-700 max-w-2xl">
+                    <p className="leading-relaxed mb-2">
+                      Hành trình chinh phục công nghệ cùng đội ngũ mentor chuyên nghiệp.
                     </p>
                     <p className="leading-relaxed">
                       Từ zero đến hero, cùng{" "}
@@ -82,36 +52,32 @@ export default function Home() {
                     </p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0 mt-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0 pt-2">
                     <Link
                       href="/courses"
-                      className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-lg transition-transform transform hover:scale-[1.02]"
+                      className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                     >
                       Khám phá khóa học
                     </Link>
                     <Link
-                    href="/blogs"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    Khám phá bài viết
+                      href="/blogs"
+                      className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                    >
+                      Khám phá bài viết
                     </Link>
-                  </div>
-
-                  <div className="mt-6">
-                    {/* Search removed from hero per design */}
                   </div>
                 </div>
               </div>
 
               {/* Right: Illustration / image */}
-              <div className="lg:col-span-6 xl:col-span-5">
-                <div className="w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10">
+              <div className="lg:col-span-5">
+                <div className="w-full rounded-xl overflow-hidden shadow-xl ring-1 ring-gray-200/50">
                   <Image
                     src="/hero-background.jpg"
                     alt="Hero illustration"
-                    width={1200}
-                    height={800}
-                    className="w-full h-64 sm:h-80 md:h-96 lg:h-[420px] object-cover"
+                    width={600}
+                    height={400}
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover"
                     priority
                   />
                 </div>

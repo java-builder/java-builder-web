@@ -37,6 +37,28 @@ const StatusBadge = ({ status }: { status: UserStatus | string }) => {
   );
 };
 
+const getRoleClass = (role: string) => {
+  switch ((role || "").toUpperCase()) {
+    case "ADMIN":
+    case "ROLE_ADMIN":
+      return "bg-indigo-100 text-indigo-800";
+    case "MODERATOR":
+    case "ROLE_MODERATOR":
+      return "bg-blue-100 text-blue-800";
+    case "TEACHER":
+    case "INSTRUCTOR":
+      return "bg-emerald-100 text-emerald-800";
+    case "OWNER":
+    case "SUPERADMIN":
+    case "ROLE_SUPERADMIN":
+      return "bg-red-100 text-red-800";
+    case "USER":
+    return "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200";
+  default:
+    return "bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300";
+  }
+};
+
 export default function UsersPage() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -209,7 +231,7 @@ export default function UsersPage() {
     );
   }
 
-  if (!response?.result) {
+  if (!response?.data) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -245,7 +267,7 @@ export default function UsersPage() {
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
-        <div className="sm:flex sm:items-center sm:justify-between">
+                <div className="sm:flex sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
               Quản lý người dùng
@@ -253,7 +275,7 @@ export default function UsersPage() {
             <p className="mt-2 text-sm text-gray-600">
               {debouncedSearch ? (
                 <>
-                  Tìm thấy <span className="font-semibold">{response?.result?.totalElements || 0}</span> kết quả cho &ldquo;{debouncedSearch}&rdquo;
+                  Tìm thấy <span className="font-semibold">{response?.data?.totalElements || 0}</span> kết quả cho &ldquo;{debouncedSearch}&rdquo;
                 </>
               ) : (
                 "Danh sách tất cả người dùng trong hệ thống JavaBuilder"
@@ -314,7 +336,7 @@ export default function UsersPage() {
                 Tổng người dùng
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.result?.totalElements || 0}
+                {response?.data?.totalElements || 0}
               </p>
             </div>
           </div>
@@ -347,7 +369,7 @@ export default function UsersPage() {
                 Đang hoạt động
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.result?.result?.filter(
+                {response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "ACTIVE",
                 ).length || 0}
               </p>
@@ -382,7 +404,7 @@ export default function UsersPage() {
                 Không hoạt động
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.result?.result?.filter(
+                {response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "INACTIVE",
                 ).length || 0}
               </p>
@@ -405,7 +427,7 @@ export default function UsersPage() {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Bị cấm</p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.result?.result?.filter(
+                {response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "BANNED",
                 ).length || 0}
               </p>
@@ -539,6 +561,12 @@ export default function UsersPage() {
                   Trạng thái
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Vai trò
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  MFT
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ngày tạo
                 </th>
                 <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -547,7 +575,7 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {(response?.result?.result ?? []).map(
+              {(response?.data?.data ?? []).map(
                 (user: UserDetailResponse) => (
                   <tr
                     key={user.id}
@@ -587,6 +615,23 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <StatusBadge status={user.userStatus} />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        {(user.authorities || []).map((role) => (
+                          <span
+                            key={role}
+                            className={`inline-flex items-center px-2 py-0.5 text-xs rounded-md whitespace-nowrap ${getRoleClass(role)}`}
+                          >
+                            {role}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.mftEnable ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-700"}`}>
+                        {user.mftEnable ? "ON" : "OFF"}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.createdAt ? formatCreatedDate(user.createdAt) : "N/A"}
@@ -670,7 +715,7 @@ export default function UsersPage() {
       </div>
 
       {/* Pagination */}
-      {(response?.result?.totalPages || 0) > 1 && (
+      {(response?.data?.totalPages || 0) > 1 && (
         <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-gray-200 rounded-b-xl">
           <div className="flex-1 flex justify-between sm:hidden">
             <button
@@ -683,7 +728,7 @@ export default function UsersPage() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={
-                currentPage === (response?.result?.totalPages || 0) - 1 ||
+                currentPage === (response?.data?.totalPages || 0) - 1 ||
                 isLoading
               }
               className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -696,18 +741,18 @@ export default function UsersPage() {
               <p className="text-sm text-gray-700">
                 Hiển thị{" "}
                 <span className="font-medium">
-                  {currentPage * (response?.result?.pageSizes || 10) + 1}
+                  {currentPage * (response?.data?.pageSize || 10) + 1}
                 </span>{" "}
                 đến{" "}
                 <span className="font-medium">
                   {Math.min(
-                    (currentPage + 1) * (response?.result?.pageSizes || 10),
-                    response?.result?.totalElements || 0,
+                    (currentPage + 1) * (response?.data?.pageSize || 10),
+                    response?.data?.totalElements || 0,
                   )}
                 </span>{" "}
                 trong số{" "}
                 <span className="font-medium">
-                  {response?.result?.totalElements || 0}
+                  {response?.data?.totalElements || 0}
                 </span>{" "}
                 kết quả
               </p>
@@ -756,7 +801,7 @@ export default function UsersPage() {
 
                 {/* Page numbers */}
                 {(() => {
-                  const totalPages = response?.result?.totalPages || 0;
+                  const totalPages = response?.data?.totalPages || 0;
                   const maxVisiblePages = 5;
                   let startPage = Math.max(
                     0,
@@ -795,7 +840,7 @@ export default function UsersPage() {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={
-                    currentPage === (response?.result?.totalPages || 0) - 1 ||
+                    currentPage === (response?.data?.totalPages || 0) - 1 ||
                     isLoading
                   }
                   className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
@@ -815,10 +860,10 @@ export default function UsersPage() {
                 </button>
                 <button
                   onClick={() =>
-                    handlePageChange((response?.result?.totalPages ?? 1) - 1)
+                    handlePageChange((response?.data?.totalPages ?? 1) - 1)
                   }
                   disabled={
-                    currentPage === (response?.result?.totalPages || 0) - 1 ||
+                    currentPage === (response?.data?.totalPages || 0) - 1 ||
                     isLoading
                   }
                   className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"

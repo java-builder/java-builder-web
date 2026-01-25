@@ -8,7 +8,7 @@ export const useBlogs = (page = 1, size = 10) => {
     queryKey: ["blogs", page, size],
     queryFn: async () => {
       const res = await blogService.getBlogs({ page, size });
-      return res.result;
+      return res.data;
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });

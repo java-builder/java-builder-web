@@ -67,9 +67,9 @@ export default function BlogDetailPage() {
           blogType: blogData.blogType,
         });
 
-        const filtered = relatedData.result
-          .filter((b) => b.slug !== blogSlug)
-          .slice(0, 3);
+        const filtered = relatedData.data?.data
+          ?.filter((b) => b.slug !== blogSlug)
+          ?.slice(0, 3) || [];
         setRelatedBlogs(filtered);
       } catch {
         setError("Không thể tải bài viết. Vui lòng thử lại sau.");
@@ -425,13 +425,13 @@ export default function BlogDetailPage() {
               <article className="bg-white dark:bg-slate-800 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 {/* Featured Image */}
                 {blog.featuredImage && (
-                  <div className="aspect-[16/10] sm:aspect-[4/2] w-full overflow-hidden relative bg-gray-100">
+                  <div className="aspect-[16/9] w-full overflow-hidden relative bg-gray-100 rounded-lg">
                     <Image
                       src={blog.featuredImage}
                       alt={blog.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 60vw"
-                      className="object-scale-down"
+                      className="object-cover"
                       priority
                     />
                   </div>

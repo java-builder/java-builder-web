@@ -32,8 +32,8 @@ export default function BlogCommentsTab() {
         status: commentStatus, // undefined = all statuses
       });
 
-      if (response.result) {
-        return response.result;
+      if (response.data) {
+        return response.data;
       }
       return null;
     } catch (error) {
@@ -53,7 +53,7 @@ export default function BlogCommentsTab() {
       );
       
       if (result) {
-        setComments(result.result);
+        setComments(result.data);
         setTotalPages(result.totalPages);
       }
     };

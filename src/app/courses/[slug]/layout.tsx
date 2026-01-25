@@ -14,11 +14,11 @@ export async function generateMetadata({
     const { slug } = await params;
     const result = await courseApi.getBySlug(slug);
 
-    if (result.code !== 200 || !result.result) {
+    if (result.code !== 200 || !result.data) {
       return { title: "Khóa học" };
     }
 
-    const course = result.result;
+    const course = result.data;
     const description = course.description.substring(0, 160);
 
     const imgUrl =
@@ -55,8 +55,8 @@ export default async function CourseDetailLayout({
   let structuredData = null;
   try {
     const result = await courseApi.getBySlug(slug);
-    if (result.code === 200 && result.result) {
-      structuredData = generateCourseStructuredData(result.result);
+    if (result.code === 200 && result.data) {
+      structuredData = generateCourseStructuredData(result.data);
     }
   } catch {
     // Fail silently

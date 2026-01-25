@@ -35,8 +35,8 @@ const GoogleCallbackContent = () => {
 
         if (
           response.code === 200 &&
-          response.result?.accessToken &&
-          response.result?.userId
+          response.data?.accessToken &&
+          response.data?.userId
         ) {
           // Gọi checkAuth để verify quyền từ introspect API
           const authorities = await checkAuth();

@@ -23,7 +23,7 @@ export const useUser = (userId?: string) => {
       const response = userId 
         ? await userApi.getById(userId)
         : await userApi.getCurrentUser();
-      return response.result;
+      return response.data;
     },
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000,

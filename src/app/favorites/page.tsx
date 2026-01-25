@@ -20,9 +20,9 @@ export default function FavoritesPage() {
     try {
       setIsLoading(true);
       const result = await favoriteApi.getMyFavorites(page, 12);
-      if (result.result) {
-        setFavorites(result.result.result || []);
-        setTotalPages(result.result.totalPages || 1);
+      if (result.data) {
+        setFavorites(result.data.data || []);
+        setTotalPages(result.data.totalPages || 1);
         setCurrentPage(page);
       }
     } catch {

@@ -18,13 +18,13 @@ export const useLessonComments = (lessonId: string) => {
           size: 10,
         });
 
-        if (!response.result?.result || !Array.isArray(response.result.result)) {
+        if (!response.data?.data || !Array.isArray(response.data.data)) {
           if (!append) setComments([]);
           setHasMore(false);
           return;
         }
 
-        const commentsData: CommentResponse[] = response.result.result.map((comment) => ({
+        const commentsData: CommentResponse[] = response.data.data.map((comment) => ({
           id: comment.id,
           content: comment.content,
           username: comment.username,
@@ -40,7 +40,7 @@ export const useLessonComments = (lessonId: string) => {
           setComments(commentsData);
         }
 
-        setHasMore(response.result.currentPages < response.result.totalPages);
+        setHasMore(response.data.currentPage < response.data.totalPages);
         setCurrentPage(page);
       } catch (err) {
         console.error("Error loading lesson comments:", err);
@@ -59,7 +59,7 @@ export const useLessonComments = (lessonId: string) => {
         size: 10,
       });
 
-      const replies: CommentResponse[] = (response.result?.result || []).map((reply) => ({
+      const replies: CommentResponse[] = (response.data?.data || []).map((reply) => ({
         id: reply.id,
         content: reply.content,
         username: reply.username,
@@ -93,13 +93,13 @@ export const useLessonComments = (lessonId: string) => {
         });
 
         const newComment: CommentResponse = {
-          id: response.result!.id,
-          content: response.result!.content,
-          username: response.result!.username,
-          avatar: response.result!.avatar,
-          createdAt: response.result!.createdAt,
+          id: response.data!.id,
+          content: response.data!.content,
+          username: response.data!.username,
+          avatar: response.data!.avatar,
+          createdAt: response.data!.createdAt,
           replies: [],
-          repliesCount: response.result!.repliesCount || 0,
+          repliesCount: response.data!.repliesCount || 0,
         };
 
         setComments((prev) => [newComment, ...prev]);
@@ -124,11 +124,11 @@ export const useLessonComments = (lessonId: string) => {
       });
 
       const newReply: CommentResponse = {
-        id: response.result!.id,
-        content: response.result!.content,
-        username: response.result!.username,
-        avatar: response.result!.avatar,
-        createdAt: response.result!.createdAt,
+        id: response.data!.id,
+        content: response.data!.content,
+        username: response.data!.username,
+        avatar: response.data!.avatar,
+        createdAt: response.data!.createdAt,
       };
 
       setComments((prev) =>

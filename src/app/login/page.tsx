@@ -58,10 +58,10 @@ export default function LoginPage() {
       });
 
       if (result.code === 200) {
-        if (result.result?.mftEnable) {
+        if (result.data?.mftEnable) {
           setUserEmail(data.email);
           setShowTwoFactorModal(true);
-        } else if (result.result?.accessToken) {
+        } else if (result.data?.accessToken) {
           const authorities = await checkAuth();
           // Invalidate queries để Header refetch user data
           await queryClient.invalidateQueries({ queryKey: ["currentUser"] });

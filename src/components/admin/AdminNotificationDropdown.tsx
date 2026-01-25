@@ -53,9 +53,9 @@ export default function AdminNotificationDropdown() {
               size,
             )
             : await notificationApi.getMyNotifications(size ? 1 : page, size);
-        const list = res.result?.result || [];
-        const total = res.result?.totalPages || 1;
-        const pageSize = res.result?.pageSizes || 0;
+        const list = res.data?.data || [];
+        const total = res.data?.totalPages || 1;
+        const pageSize = res.data?.pageSize || 0;
 
         if (pageSize > 0) {
           setItemsPerPage((prev) => {

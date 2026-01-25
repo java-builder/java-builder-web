@@ -111,8 +111,8 @@ export default function PricingPage() {
     const fetchPlans = async () => {
       try {
         const response = await subscriptionApi.getPlans();
-        if (response.result) {
-          const apiPlans = response.result.map((plan: SubscriptionPlan) => convertToPlanDisplay(plan));
+        if (response.data) {
+          const apiPlans = response.data.map((plan: SubscriptionPlan) => convertToPlanDisplay(plan));
           apiPlans.sort((a, b) => a.price - b.price);
           setPlans([freePlan, ...apiPlans]);
         }
@@ -145,11 +145,11 @@ export default function PricingPage() {
       setLoadingPlan(plan.id);
       const response = await subscriptionApi.subscribe(plan.apiPlanId);
 
-      if (response.result) {
+      if (response.data) {
         setPaymentModal({
           isOpen: true,
           isLoading: false,
-          data: response.result,
+          data: response.data,
           planName: plan.name,
         });
       } else {

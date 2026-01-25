@@ -68,9 +68,9 @@ export default function AdminSessionsPage() {
         size: pageSize,
         filters: filters.trim() || undefined,
       });
-      if (response && response.result) {
-        setSessions(response.result.result || []);
-        setPagination(response.result);
+      if (response && response.data) {
+        setSessions(response.data.data || []);
+        setPagination(response.data);
       } else {
         setSessions([]);
         setPagination(null);

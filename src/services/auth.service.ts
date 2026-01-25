@@ -18,14 +18,14 @@ export const authApi = {
     );
 
     if (response.data.code === 200) {
-      if (response.data.result?.mftEnable) {
+      if (response.data.data?.mftEnable) {
         return response.data;
       } else if (
-        response.data.result?.accessToken &&
-        response.data.result?.userId
+        response.data.data?.accessToken &&
+        response.data.data?.userId
       ) {
-        localStorage.setItem("access_token", response.data.result.accessToken);
-        localStorage.setItem("user_id", response.data.result.userId);
+        localStorage.setItem("access_token", response.data.data.accessToken);
+        localStorage.setItem("user_id", response.data.data.userId);
       }
     }
     return response.data;
@@ -85,7 +85,7 @@ export const authApi = {
         API.INTROSPECT,
         request,
       );
-      return response.data.result || null;
+      return response.data.data || null;
     } catch {
       return null;
     }
@@ -100,11 +100,11 @@ export const authApi = {
 
     if (
       response.data.code === 200 &&
-      response.data.result?.accessToken &&
-      response.data.result?.userId
+      response.data.data?.accessToken &&
+      response.data.data?.userId
     ) {
-      localStorage.setItem("access_token", response.data.result.accessToken);
-      localStorage.setItem("user_id", response.data.result.userId);
+      localStorage.setItem("access_token", response.data.data.accessToken);
+      localStorage.setItem("user_id", response.data.data.userId);
     }
 
     return response.data;
@@ -119,11 +119,11 @@ export const authApi = {
 
     if (
       response.data.code === 200 &&
-      response.data.result?.accessToken &&
-      response.data.result?.userId
+      response.data.data?.accessToken &&
+      response.data.data?.userId
     ) {
-      localStorage.setItem("access_token", response.data.result.accessToken);
-      localStorage.setItem("user_id", response.data.result.userId);
+      localStorage.setItem("access_token", response.data.data.accessToken);
+      localStorage.setItem("user_id", response.data.data.userId);
     }
 
     return response.data;
@@ -137,11 +137,11 @@ export const authApi = {
 
     if (
       response.data.code === 200 &&
-      response.data.result?.accessToken &&
-      response.data.result?.userId
+      response.data.data?.accessToken &&
+      response.data.data?.userId
     ) {
-      localStorage.setItem("access_token", response.data.result.accessToken);
-      localStorage.setItem("user_id", response.data.result.userId);
+      localStorage.setItem("access_token", response.data.data.accessToken);
+      localStorage.setItem("user_id", response.data.data.userId);
     }
 
     return response.data;

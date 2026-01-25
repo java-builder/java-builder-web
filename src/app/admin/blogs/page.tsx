@@ -40,12 +40,12 @@ export default function BlogsPage() {
         titleOrSummary: search || undefined,
       });
 
-      setBlogs(response.result);
+      setBlogs(response.data?.data || []);
       setPagination({
-        page: response.currentPages,
-        size: response.pageSizes,
-        totalElements: response.totalElements,
-        totalPages: response.totalPages,
+        page: response.data?.currentPage || 0,
+        size: response.data?.pageSize || 10,
+        totalElements: response.data?.totalElements || 0,
+        totalPages: response.data?.totalPages || 0,
       });
     } catch (error) {
       console.error("Error fetching blogs:", error);

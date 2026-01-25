@@ -85,7 +85,7 @@ export default function AdminDashboard() {
     const fetchOverview = async () => {
       try {
         const response = await reportApi.getOverview();
-        setOverview(response.result ?? null);
+        setOverview(response.data ?? null);
       } catch (error) {
         console.error("Failed to fetch overview:", error);
       } finally {

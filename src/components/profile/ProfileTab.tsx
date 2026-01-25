@@ -88,11 +88,11 @@ export default function ProfileTab({
       setIsUploadingAvatar(true);
       const response = await userApi.updateAvatar(file);
 
-      if (response.result) {
-        setCurrentAvatar(response.result);
+      if (response.data) {
+        setCurrentAvatar(response.data);
         // Cập nhật user state để Sidebar cũng nhận được avatar mới
         if (onSave) {
-          await onSave({ avatar: response.result });
+          await onSave({ avatar: response.data });
         }
         toast.success("Cập nhật ảnh đại diện thành công!");
       }

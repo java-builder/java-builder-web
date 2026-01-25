@@ -38,8 +38,8 @@ export default function LessonNotes({
       try {
         setIsLoading(true);
         const response = await lessonNoteApi.getByLesson(lessonId);
-        if (response.code === 200 && response.result) {
-          setNotes(response.result);
+        if (response.code === 200 && response.data) {
+          setNotes(response.data);
         }
       } catch (error) {
         console.error("Error fetching notes:", error);
@@ -61,8 +61,8 @@ export default function LessonNotes({
         timestamp: attachTimestamp ? Math.floor(currentTime) : undefined,
       });
 
-      if (response.code === 201 && response.result) {
-        setNotes((prev) => [response.result!, ...prev]);
+      if (response.code === 201 && response.data) {
+        setNotes((prev) => [response.data!, ...prev]);
         setNewContent("");
         setIsAdding(false);
       }
@@ -79,9 +79,9 @@ export default function LessonNotes({
         content: editContent.trim(),
       });
 
-      if (response.code === 200 && response.result) {
+      if (response.code === 200 && response.data) {
         setNotes((prev) =>
-          prev.map((note) => (note.id === noteId ? response.result! : note))
+          prev.map((note) => (note.id === noteId ? response.data! : note))
         );
         setEditingId(null);
         setEditContent("");

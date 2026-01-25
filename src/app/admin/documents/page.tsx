@@ -61,7 +61,7 @@ export default function AdminDocumentsPage() {
     setIsLoading(true);
     try {
       const response = await documentApi.getAll({ page: 1, size: 100 });
-      setDocuments(response.result?.result || []);
+      setDocuments(response.data?.data || []);
     } catch {
       // Error handled silently
     } finally {
@@ -154,8 +154,8 @@ export default function AdminDocumentsPage() {
       // Upload ảnh nếu có file mới
       if (imageFile) {
         const uploadResult = await fileApi.uploadSingleMedia(imageFile);
-        if (uploadResult.code === 200 && uploadResult.result?.url) {
-          coverImage = uploadResult.result.url;
+        if (uploadResult.code === 200 && uploadResult.data?.url) {
+          coverImage = uploadResult.data.url;
         }
       }
 

@@ -73,7 +73,7 @@ export default function TwoFactorModal({
         code,
       });
 
-      if (result.code === 200 && result.result?.accessToken) {
+      if (result.code === 200 && result.data?.accessToken) {
         onSuccess();
         handleClose();
       } else {

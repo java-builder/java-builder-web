@@ -11,7 +11,7 @@ export const useCurrentUser = () => {
     queryKey: ["currentUser"],
     queryFn: async () => {
       const res = await userApi.getCurrentUser();
-      return res.result;
+      return res.data;
     },
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 phút

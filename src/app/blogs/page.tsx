@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
@@ -57,13 +56,13 @@ export default function BlogsPage() {
     try {
       const data = await blogService.getBlogs(params);
 
-      const content: Blog[] = Array.isArray(data?.result) ? data.result : [];
+      const content: Blog[] = Array.isArray(data?.data?.data) ? data.data.data : [];
 
       setBlogs(content);
 
-      const tp = Number.isFinite(data?.totalPages) ? data.totalPages : 1;
-      const te = Number.isFinite(data?.totalElements)
-        ? data.totalElements
+      const tp = Number.isFinite(data?.data?.totalPages) ? data.data!.totalPages : 1;
+      const te = Number.isFinite(data?.data?.totalElements)
+        ? data.data!.totalElements
         : content?.length || 0;
 
       setTotalPages(tp);
@@ -91,46 +90,22 @@ export default function BlogsPage() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <section className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100">
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full relative overflow-hidden bg-transparent">
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-20 left-10 text-blue-400 font-mono text-xs">
-                <div>const blog = {`{`}</div>
-                <div>&nbsp;&nbsp;title: "Learning",</div>
-                <div>&nbsp;&nbsp;content: "Knowledge"</div>
-                <div>{`}`};</div>
-              </div>
-              <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs">
-                <div>function share() {`{`}</div>
-                <div>&nbsp;&nbsp;return "wisdom";</div>
-                <div>{`}`}</div>
-              </div>
-              <div className="absolute bottom-40 left-20 text-purple-400 font-mono text-xs">
-                <div>if (learning) {`{`}</div>
-                <div>&nbsp;&nbsp;grow();</div>
-                <div>{`}`}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Content: two-column */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12">
+      <section className="relative bg-gradient-to-r from-white to-blue-50 py-12 md:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-7 text-gray-900">
                 <div className="inline-block">
-                  <span className="bg-accent text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium">
                     Blog & Knowledge
                   </span>
                 </div>
 
-                <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-gray-900">
+                <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
                   Chia sẻ <span className="text-accent">kiến thức</span>
                 </h1>
 
-                <p className="mt-4 text-base md:text-lg text-gray-700 max-w-3xl">
+                <p className="mt-3 text-base md:text-lg text-gray-700 max-w-2xl">
                   Nơi tôi (
                   <span className="text-accent font-semibold">
                     JavaBuilder
@@ -141,19 +116,19 @@ export default function BlogsPage() {
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
                   <Link
                     href="#list"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-lg transform hover:scale-[1.02]"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                   >
                     Khám phá bài viết
                   </Link>
                   <Link
                     href="/blogs"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
                   >
                     Xem tất cả
                   </Link>
                 </div>
 
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   {[
                     "Hướng dẫn",
                     "Kinh nghiệm",
@@ -172,13 +147,13 @@ export default function BlogsPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <div className="w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10">
+                <div className="w-full rounded-xl overflow-hidden shadow-xl ring-1 ring-gray-200/50">
                   <Image
                     src="/hero-background.jpg"
                     alt="Blog hero"
-                    width={1200}
-                    height={420}
-                    className="w-full h-64 sm:h-80 md:h-96 lg:h-[420px] object-cover"
+                    width={600}
+                    height={400}
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover"
                     priority
                   />
                 </div>

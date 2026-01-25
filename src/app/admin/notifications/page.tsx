@@ -27,7 +27,7 @@ export default function AdminNotificationsPage() {
       if (!authApi.isAuthenticated()) return;
       try {
         const res = await notificationApi.getMyNotifications(1, 50);
-        const list = res.result?.result || [];
+        const list = res.data?.data || [];
         const mapped = list.map((it: NotificationDetailResponse) => ({
           id: it.id,
           title: it.title || it.senderName || "Thông báo",

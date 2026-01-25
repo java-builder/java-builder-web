@@ -25,7 +25,7 @@ export default function SendNotificationPage() {
     setIsLoadingUsers(true);
     try {
       const res = await userApi.getAllUsers(1, 100);
-      setUsers(res.result?.result || []);
+      setUsers(res.data?.data || []);
     } catch {
       toast.error("Không thể tải danh sách người dùng");
     } finally {
@@ -82,7 +82,7 @@ export default function SendNotificationPage() {
       };
 
       const res = await notificationApi.sendAdminNotification(request);
-      toast.success(`Đã gửi thông báo đến ${res.result?.totalRecipients} người dùng`);
+      toast.success(`Đã gửi thông báo đến ${res.data?.totalRecipients} người dùng`);
       router.push("/admin/notifications");
     } catch {
       toast.error("Gửi thông báo thất bại");

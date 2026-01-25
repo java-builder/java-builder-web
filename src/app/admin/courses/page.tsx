@@ -91,10 +91,10 @@ export default function CoursesPage() {
       setIsLoading(true);
       setError("");
       const result = await courseApi.getCourses(1, 20);
-      setCourses(result.result?.result || []);
+      setCourses(result.data?.data || []);
       setStats((prev) => ({
         ...prev,
-        total: result.result?.totalElements || 0,
+        total: result.data?.totalElements || 0,
       }));
     } catch (err) {
       const errorMessage =

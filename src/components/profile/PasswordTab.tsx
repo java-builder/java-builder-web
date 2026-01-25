@@ -24,8 +24,8 @@ export default function PasswordTab() {
     const fetchStatus = async () => {
       try {
         const response = await userApi.getPasswordStatus();
-        if (response.result) {
-          setPasswordStatus(response.result.passwordStatus);
+        if (response.data) {
+          setPasswordStatus(response.data.passwordStatus);
         }
       } catch (error) {
         console.error("Failed to fetch password status", error);

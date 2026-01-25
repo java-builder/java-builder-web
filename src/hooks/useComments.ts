@@ -20,8 +20,8 @@ export const useComments = (blogId: string) => {
         });
 
         if (
-          !response.result?.result ||
-          !Array.isArray(response.result.result)
+          !response.data?.data ||
+          !Array.isArray(response.data.data)
         ) {
           if (append) {
             setComments((prev) => prev);
@@ -33,7 +33,7 @@ export const useComments = (blogId: string) => {
         }
 
         const commentsData: CommentResponse[] =
-          response.result.result.map((comment) => ({
+          response.data.data.map((comment) => ({
             id: comment.id,
             content: comment.content,
             username: comment.username,
@@ -49,7 +49,7 @@ export const useComments = (blogId: string) => {
           setComments(commentsData);
         }
 
-        setHasMore(response.result.currentPages < response.result.totalPages);
+        setHasMore(response.data.currentPage < response.data.totalPages);
         setCurrentPage(page);
       } catch (err) {
         console.error("Error loading root comments:", err);
@@ -85,7 +85,7 @@ export const useComments = (blogId: string) => {
       });
 
       const replies: CommentResponse[] = (
-        response.result?.result || []
+        response.data?.data || []
       ).map((reply) => ({
         id: reply.id,
         content: reply.content,
@@ -121,13 +121,13 @@ export const useComments = (blogId: string) => {
         });
 
         const newComment: CommentResponse = {
-          id: response.result!.id,
-          content: response.result!.content,
-          username: response.result!.username,
-          avatar: response.result!.avatar,
-          createdAt: response.result!.createdAt,
+          id: response.data!.id,
+          content: response.data!.content,
+          username: response.data!.username,
+          avatar: response.data!.avatar,
+          createdAt: response.data!.createdAt,
           replies: [],
-          repliesCount: response.result!.repliesCount || 0,
+          repliesCount: response.data!.repliesCount || 0,
         };
 
         setComments((prev) => [newComment, ...prev]);
@@ -156,11 +156,11 @@ export const useComments = (blogId: string) => {
         });
 
         const newReply: CommentResponse = {
-          id: response.result!.id,
-          content: response.result!.content,
-          username: response.result!.username,
-          avatar: response.result!.avatar,
-          createdAt: response.result!.createdAt,
+          id: response.data!.id,
+          content: response.data!.content,
+          username: response.data!.username,
+          avatar: response.data!.avatar,
+          createdAt: response.data!.createdAt,
         };
 
         setComments((prev) =>

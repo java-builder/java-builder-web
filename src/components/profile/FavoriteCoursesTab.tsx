@@ -18,9 +18,9 @@ export default function FavoriteCoursesTab() {
     try {
       setIsLoading(true);
       const response = await favoriteApi.getMyFavorites(currentPage, pageSize);
-      if (response.result) {
-        setCourses(response.result.result || []);
-        setTotalPages(response.result.totalPages || 1);
+      if (response.data) {
+        setCourses(response.data.data || []);
+        setTotalPages(response.data.totalPages || 1);
       }
     } catch (error) {
       console.error("Failed to fetch favorite courses", error);

@@ -58,8 +58,8 @@ export default function CommentCard({
       setLoadingReplies(true);
       try {
         const response = await commentApi.getRepliesByParentId(comment.id, { page: 1, size: 50 });
-        if (response.result) {
-          setReplies(response.result.result);
+        if (response.data) {
+          setReplies(response.data.data);
         }
       } catch (error) {
         console.error("Error loading replies:", error);

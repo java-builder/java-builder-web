@@ -38,9 +38,9 @@ export default function MyCoursesPage() {
         setIsLoading(true);
         try {
           const response = await enrollmentApi.getMyCourses(currentPage, pageSize);
-          if (response.result) {
-            setCourses(response.result.result || []);
-            setTotalPages(response.result.totalPages || 1);
+          if (response.data) {
+            setCourses(response.data.data || []);
+            setTotalPages(response.data.totalPages || 1);
           }
         } catch (error) {
           console.error("Error fetching courses:", error);

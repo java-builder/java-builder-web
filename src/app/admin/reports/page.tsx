@@ -65,17 +65,17 @@ export default function ReportsPage() {
     setIsLoading(true);
     try {
       const res = await reportApi.getStats(timeRange);
-      if (res.result) {
-        setStats(res.result);
-        setTopCourses(res.result.courseRevenues || []);
+      if (res.data) {
+        setStats(res.data);
+        setTopCourses(res.data.courseRevenues || []);
 
         // Transform data for Recharts
-        if (res.result.revenueChart && res.result.revenueChart.length > 0) {
-          const revenueValues = res.result.revenueChart.map(d => d.value);
+        if (res.data.revenueChart && res.data.revenueChart.length > 0) {
+          const revenueValues = res.data.revenueChart.map(d => d.value);
           const avgRevenue = revenueValues.reduce((a, b) => a + b, 0) / revenueValues.length;
 
           setRevenueChartData(
-            res.result.revenueChart.map(d => ({
+            res.data.revenueChart.map(d => ({
               name: d.label,
               value: d.value,
               avg: avgRevenue,
@@ -83,11 +83,11 @@ export default function ReportsPage() {
           );
         }
 
-        if (res.result.userChart && res.result.userChart.length > 0) {
-          const userValues = res.result.userChart.map(d => d.value);
+        if (res.data.userChart && res.data.userChart.length > 0) {
+          const userValues = res.data.userChart.map(d => d.value);
           // Tính trend line đơn giản (moving average)
           setUserChartData(
-            res.result.userChart.map((d, i) => {
+            res.data.userChart.map((d, i) => {
               const start = Math.max(0, i - 2);
               const slice = userValues.slice(start, i + 1);
               const trend = slice.reduce((a, b) => a + b, 0) / slice.length;

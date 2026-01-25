@@ -29,6 +29,7 @@ export interface UserDetailResponse {
   university?: string;
   userStatus: UserStatus;
   mftEnable: boolean;
+  authorities?: string[];
   createdAt: string;
 }
 

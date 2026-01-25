@@ -37,8 +37,8 @@ export default function TwoFactorModal({
       setIsLoading(true);
       setError("");
       const response = await twoFactorApi.activate();
-      if (response.result) {
-        setSetupData(response.result);
+      if (response.data) {
+        setSetupData(response.data);
       }
     } catch (error: unknown) {
       let errorMessage = "Có lỗi xảy ra khi thiết lập 2FA";

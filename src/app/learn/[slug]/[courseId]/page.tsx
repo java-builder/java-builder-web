@@ -40,8 +40,8 @@ export default function LearnCoursePage() {
       if (selectFirst && chapterLessons[chapterId].length > 0) {
         const firstLesson = chapterLessons[chapterId][0];
         const lessonDetail = await lessonApi.getById(firstLesson.id);
-        if (lessonDetail.result) {
-          setCurrentLesson(lessonDetail.result);
+        if (lessonDetail.data) {
+          setCurrentLesson(lessonDetail.data);
         }
       }
       return;
@@ -50,13 +50,13 @@ export default function LearnCoursePage() {
     setLoadingChapters(prev => new Set(prev).add(chapterId));
     try {
       const response = await lessonApi.getByChapterId(chapterId);
-      if (response.result) {
-        setChapterLessons(prev => ({ ...prev, [chapterId]: response.result || [] }));
-        
-        if (selectFirst && response.result?.length) {
-          const lessonDetail = await lessonApi.getById(response.result[0].id);
-          if (lessonDetail.result) {
-            setCurrentLesson(lessonDetail.result);
+      if (response.data) {
+        setChapterLessons(prev => ({ ...prev, [chapterId]: response.data || [] }));
+
+        if (selectFirst && response.data?.length) {
+          const lessonDetail = await lessonApi.getById(response.data[0].id);
+          if (lessonDetail.data) {
+            setCurrentLesson(lessonDetail.data);
           }
         }
       }
@@ -79,21 +79,21 @@ export default function LearnCoursePage() {
       setIsLoading(true);
       const courseResult = await courseApi.getById(courseId);
       
-      if (courseResult.code !== 200 || !courseResult.result) {
+      if (courseResult.code !== 200 || !courseResult.data) {
         router.push(`/courses/${slug}`);
         return;
       }
 
-      setCourse(courseResult.result);
+      setCourse(courseResult.data);
 
-      const canAccess = courseResult.result.isEnrolled || courseResult.result.isPremiumUser;
+      const canAccess = courseResult.data.isEnrolled || courseResult.data.isPremiumUser;
       if (!canAccess) {
         setAccessDenied(true);
         return;
       }
 
-      if (courseResult.result.chapters?.length) {
-        const firstChapter = courseResult.result.chapters[0];
+      if (courseResult.data.chapters?.length) {
+        const firstChapter = courseResult.data.chapters[0];
         setExpandedChapters(new Set([firstChapter.id]));
         setCurrentChapter(firstChapter);
         await loadChapterLessons(firstChapter.id, true);
@@ -190,8 +190,8 @@ export default function LearnCoursePage() {
     
     try {
       const response = await lessonApi.getById(lesson.id);
-      if (response.result) {
-        setCurrentLesson(response.result);
+      if (response.data) {
+        setCurrentLesson(response.data);
       }
     } catch {
       setCurrentLesson(lesson);
@@ -233,8 +233,8 @@ export default function LearnCoursePage() {
       
       try {
         const response = await lessonApi.getById(lesson.id);
-        if (response.result) {
-          setCurrentLesson(response.result);
+        if (response.data) {
+          setCurrentLesson(response.data);
         }
       } catch {
         setCurrentLesson(lesson);

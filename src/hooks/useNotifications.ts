@@ -13,7 +13,7 @@ export const useNotifications = (page = 1, type: "all" | "unread" = "all") => {
       const res = type === "unread"
         ? await notificationApi.getUnreadNotifications(page)
         : await notificationApi.getMyNotifications(page);
-      return res.result;
+      return res.data;
     },
     enabled: isAuthenticated,
     staleTime: 30 * 1000, // 30 seconds

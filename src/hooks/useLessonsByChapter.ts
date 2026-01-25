@@ -6,7 +6,7 @@ export function useLessonsByChapter(chapterId: string, enabled: boolean = true) 
     queryKey: ["lessons", "chapter", chapterId],
     queryFn: async () => {
       const res = await lessonApi.getByChapterId(chapterId);
-      return res.result || [];
+      return res.data || [];
     },
     enabled: !!chapterId && enabled,
     staleTime: 10 * 60 * 1000, // 10 minutes

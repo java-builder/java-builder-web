@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -41,9 +40,9 @@ export default function CoursesPage() {
         courseLevel || undefined,
       );
 
-      if (response.code === 200 && response.result) {
-        setCourses(response.result.result || []);
-        setTotalPages(response.result.totalPages || 1);
+      if (response.code === 200 && response.data) {
+        setCourses(response.data.data || []);
+        setTotalPages(response.data.totalPages || 1);
       } else {
         throw new Error("Không thể tải danh sách khóa học");
       }
@@ -71,68 +70,43 @@ export default function CoursesPage() {
       <Header />
 
       {/* Hero */}
-      <section className="relative min-h-[60vh] bg-gradient-to-r from-white to-blue-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full relative overflow-hidden bg-transparent">
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-20 left-10 text-blue-400 font-mono text-xs">
-                <div>const courses = [</div>
-                <div>&nbsp;&nbsp;"React", "Next.js",</div>
-                <div>&nbsp;&nbsp;"TypeScript", "Node.js"</div>
-                <div>];</div>
-              </div>
-              <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs">
-                <div>function learn() {`{`}</div>
-                <div>&nbsp;&nbsp;return "success";</div>
-                <div>{`}`}</div>
-              </div>
-              <div className="absolute bottom-40 left-20 text-purple-400 font-mono text-xs">
-                <div>if (dedication) {`{`}</div>
-                <div>&nbsp;&nbsp;masterSkills();</div>
-                <div>{`}`}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Content: two-column like home */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12">
+      <section className="relative bg-gradient-to-r from-white to-blue-50 dark:from-slate-900 dark:to-slate-800 py-12 md:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-6 xl:col-span-7 text-gray-900 dark:text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              <div className="lg:col-span-7 text-gray-900 dark:text-white">
                 <div className="inline-block">
-                  <span className="bg-accent text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium">
                     Course & Training
                   </span>
                 </div>
 
-                <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-gray-900 dark:text-white">
+                <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 dark:text-white">
                   Khóa học <span className="text-accent">chất lượng</span>
                 </h1>
 
-                <p className="mt-4 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-3xl">
-                  Lộ trình thực tiễn, mentor giàu kinh nghiệm, nội dung cập nhật
-                  xu hướng.
+                <p className="mt-3 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
+                  Lộ trình thực tiễn, mentor giàu kinh nghiệm, nội dung cập nhật xu hướng.
                 </p>
 
                 <div className="mt-6">
                   <Link
                     href="#list"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-lg transform hover:scale-[1.02]"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                   >
                     Khám phá khóa học
                   </Link>
                 </div>
               </div>
 
-              <div className="lg:col-span-6 xl:col-span-5">
-                <div className="w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10">
+              <div className="lg:col-span-5">
+                <div className="w-full rounded-xl overflow-hidden shadow-xl ring-1 ring-gray-200/50 dark:ring-gray-700/50">
                   <Image
                     src="/hero-background.jpg"
                     alt="Courses hero"
-                    width={1200}
-                    height={420}
-                    className="w-full h-64 sm:h-80 md:h-96 lg:h-[420px] object-cover"
+                    width={600}
+                    height={400}
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover"
                     priority
                   />
                 </div>

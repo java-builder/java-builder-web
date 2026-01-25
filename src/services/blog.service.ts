@@ -2,12 +2,13 @@ import { apiClient } from "@/api/axios";
 import { CreateBlogRequest, CreateBlogResponse, Blog } from "@/types/blog";
 import { FileMetaDataResponse } from "@/types/file";
 import { API } from "@/api/api";
+import { ApiResponse, PageResponse } from "@/types/api";
 
 export const blogService = {
   // Tạo blog mới
   async createBlog(data: CreateBlogRequest): Promise<CreateBlogResponse> {
     const response = await apiClient.post(API.CREATE_BLOG, data);
-    return response.data.result;
+    return response.data;
   },
 
   // Lấy danh sách blogs
@@ -16,27 +17,21 @@ export const blogService = {
     size?: number;
     titleOrSummary?: string;
     blogType?: string;
-  }): Promise<{
-    result: Blog[];
-    totalElements: number;
-    totalPages: number;
-    pageSizes: number;
-    currentPages: number;
-  }> {
+  }): Promise<ApiResponse<PageResponse<Blog>>> {
     const response = await apiClient.get(API.GET_BLOGS, { params });
-    return response.data.result;
+    return response.data;
   },
 
   // Lấy chi tiết blog theo ID
   async getBlogById(id: string): Promise<Blog> {
     const response = await apiClient.get(`${API.GET_BLOG_BY_ID}/${id}`);
-    return response.data.result;
+    return response.data;
   },
 
   // Lấy chi tiết blog theo slug
   async getBlogBySlug(slug: string): Promise<Blog> {
     const response = await apiClient.get(`${API.GET_BLOG_BY_SLUG}/${slug}`);
-    return response.data.result;
+    return response.data;
   },
 
   // Tăng lượt xem
@@ -61,7 +56,7 @@ export const blogService = {
     data: Partial<CreateBlogRequest>,
   ): Promise<Blog> {
     const response = await apiClient.put(`${API.UPDATE_BLOG}/${id}`, data);
-    return response.data.result;
+    return response.data;
   },
 
   // Xóa blog
@@ -83,6 +78,6 @@ export const blogService = {
         },
       },
     );
-    return response.data.result;
+    return response.data;
   },
 };

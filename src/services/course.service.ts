@@ -243,11 +243,11 @@ export const fileApi = {
   ): Promise<{ key: string }> => {
     // 1. Lấy presigned URL từ BE
     const presignedResponse = await fileApi.getPresignedUrl(file.name, folder);
-    if (!presignedResponse.result) {
+    if (!presignedResponse.data) {
       throw new Error("Không thể lấy URL upload");
     }
 
-    const { url, key } = presignedResponse.result;
+    const { url, key } = presignedResponse.data;
 
     // 2. Upload trực tiếp lên S3 bằng PUT request
     await new Promise<void>((resolve, reject) => {
