@@ -132,4 +132,9 @@ export const API = {
     GET_BLOGS: "/api/v1/blogs",
     INCREMENT_VIEW: "/api/v1/blogs", // + /:slug/increment-view
     INCREMENT_LIKE: "/api/v1/blogs", // + /:slug/increment-like
+    // CATEGORY
+    CREATE_CATEGORY: "/api/v1/categories",
+    GET_CATEGORIES: "/api/v1/categories",
+    DELETE_CATEGORY: "/api/v1/categories", // + /:id
+    UPDATE_CATEGORY: "/api/v1/categories", // + /:id
 }

@@ -135,7 +135,7 @@ const navigation = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+          d="M2 21l21-9L2 3v7l15 2-15 2v7z"
         />
       </svg>
     ),
@@ -157,6 +157,16 @@ const navigation = [
           strokeWidth={2}
           d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"
         />
+      </svg>
+    ),
+  },
+  {
+    name: "Danh mục",
+    href: "/admin/categories",
+    color: "text-emerald-600",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     ),
   },

@@ -37,12 +37,12 @@ const getProviderBadge = (provider: string) => {
 const getStatusBadge = (status: string) => {
   const isActive = status === 'ACTIVE';
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${isActive
+    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${isActive
       ? "bg-emerald-50 text-emerald-700 border-emerald-100 ring-1 ring-emerald-500/10"
       : "bg-slate-50 text-slate-500 border-slate-200"
       }`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`}></span>
-      {isActive ? "Đang hoạt động" : "Đã thu hồi"}
+      <span className={`w-2 h-2 rounded-full ${isActive ? "bg-emerald-500" : "bg-slate-400"} hidden sm:inline-block`}></span>
+      <span className="ml-0.5">{isActive ? "Đang hoạt động" : "Đã thu hồi"}</span>
     </span>
   );
 };
