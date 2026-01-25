@@ -14,6 +14,7 @@ export const API = {
     GET_USER_BY_ID: "/api/v1/users", // + /:id
     USER_SEARCH: "/api/v1/users/search",
     USER_PROFILE: "/api/v1/users/me",
+    USER_STATISTICS: "/api/v1/users/statistics",
     USER_PROFILE_AVATAR: "/api/v1/profiles/update-avatar",
     UPDATE_PROFILE: "/api/v1/profiles",
     UPDATE_PROFILE_BY_ADMIN: "/api/v1/profiles", // + /:userId

@@ -36,7 +36,7 @@ export interface UserDetailResponse {
 export enum UserStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
-  BANNED = "BANNED",
+  DELETED = "DELETED",
 }
 
 export enum PasswordStatus {
@@ -50,4 +50,11 @@ export interface PasswordStatusResponse {
 
 export interface CreatePasswordRequest {
   password: string;
+}
+
+export interface UserStatisticsResponse {
+  totalUsers: number;
+  activeUsers: number;
+  inactiveUsers: number;
+  deletedUsers: number;
 }

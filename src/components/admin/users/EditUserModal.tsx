@@ -264,7 +264,6 @@ export default function EditUserModal({
                 >
                   <option value={UserStatus.ACTIVE}>Hoạt động</option>
                   <option value={UserStatus.INACTIVE}>Không hoạt động</option>
-                  <option value={UserStatus.BANNED}>Bị cấm</option>
                 </select>
               </div>
 

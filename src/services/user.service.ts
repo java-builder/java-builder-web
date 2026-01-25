@@ -9,6 +9,7 @@ import {
   UpdateProfileResponse,
   PasswordStatusResponse,
   CreatePasswordRequest,
+  UserStatisticsResponse,
 } from "@/types/user";
 
 
@@ -124,6 +125,11 @@ export const userApi = {
     const response = await apiClient.post<ApiResponse<PasswordStatusResponse>>(
       API.USER_PASSWORD_STATUS
     );
+    return response.data;
+  },
+
+  getStatistics: async () => {
+    const response = await apiClient.get<ApiResponse<UserStatisticsResponse>>(API.USER_STATISTICS);
     return response.data;
   },
 

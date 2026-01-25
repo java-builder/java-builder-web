@@ -5,7 +5,7 @@ import Image from "next/image";
 import { userApi } from "@/services/user.service";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useDebounce } from "@/hooks/useDebounce";
-import { UserDetailResponse, UserStatus } from "@/types/user";
+import { UserDetailResponse, UserStatisticsResponse, UserStatus } from "@/types/user";
 import { ApiResponse, PageResponse } from "@/types/api";
 import EditUserModal from "@/components/admin/users/EditUserModal";
 import CreateUserModal from "@/components/admin/users/CreateUserModal";
@@ -73,6 +73,7 @@ export default function UsersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetailResponse | null>(null);
   const { confirm } = useConfirm();
+  const [stats, setStats] = useState<UserStatisticsResponse | null>(null);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -92,6 +93,15 @@ export default function UsersPage() {
       setIsLoading(false);
     }
   }, [currentPage, debouncedSearch]);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await userApi.getStatistics();
+      setStats(res.data ?? null);
+    } catch (err) {
+      console.error("Failed to fetch user statistics", err);
+    }
+  }, []);
 
   const handleDelete = async (id: string, userName: string) => {
     await confirm(
@@ -164,7 +174,8 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+    fetchStats();
+  }, [fetchUsers, fetchStats]);
 
   if (isLoading && !response) {
     return (
@@ -336,7 +347,7 @@ export default function UsersPage() {
                 Tổng người dùng
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.data?.totalElements || 0}
+                {stats?.totalUsers ?? (response?.data?.totalElements || 0)}
               </p>
             </div>
           </div>
@@ -369,9 +380,9 @@ export default function UsersPage() {
                 Đang hoạt động
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.data?.data?.filter(
+                {stats?.activeUsers ?? (response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "ACTIVE",
-                ).length || 0}
+                ).length || 0)}
               </p>
             </div>
           </div>
@@ -404,9 +415,9 @@ export default function UsersPage() {
                 Không hoạt động
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.data?.data?.filter(
+                {stats?.inactiveUsers ?? (response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "INACTIVE",
-                ).length || 0}
+                ).length || 0)}
               </p>
             </div>
           </div>
@@ -425,11 +436,11 @@ export default function UsersPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Bị cấm</p>
+              <p className="text-sm font-medium text-gray-600">Đã xoá</p>
               <p className="text-2xl font-bold text-gray-900">
-                {response?.data?.data?.filter(
-                  (user: UserDetailResponse) => user.userStatus === "BANNED",
-                ).length || 0}
+                {stats?.deletedUsers ?? (response?.data?.data?.filter(
+                  (user: UserDetailResponse) => user.userStatus === "DELETED",
+                ).length || 0)}
               </p>
             </div>
           </div>
