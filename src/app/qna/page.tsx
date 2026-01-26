@@ -107,11 +107,12 @@ export default function QNAPage() {
                     <input
                       type="text"
                       value={searchQuery}
+                      
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Tìm kiếm câu hỏi..."
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-accent focus:border-transparent"
                     />
-                    <svg
+                    <svg  
                       className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-500"
                       fill="none"
                       stroke="currentColor"

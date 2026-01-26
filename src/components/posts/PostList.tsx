@@ -1,6 +1,7 @@
  "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/api/axios";
 import { formatDistanceToNow } from "date-fns";
@@ -66,11 +67,11 @@ export default function PostList({
   filtered = [...filtered].sort((a, b) => {
     switch (sortBy) {
       case "popular":
-        return 0; // backend doesn't provide viewCount in PostDetailResponse
+        return 0; 
       case "unanswered":
-        return 0; // backend doesn't provide commentCount in PostDetailResponse
+        return 0; 
       case "resolved":
-        return 0; // backend doesn't provide isSolved in PostDetailResponse
+        return 0;
       case "oldest":
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
       case "newest":
@@ -91,37 +92,55 @@ export default function PostList({
           className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-6 hover:shadow-md transition-shadow"
         >
           <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <Link
-                href={`/qna/${post.id}`}
-                className="text-lg font-semibold text-gray-900 dark:text-white hover:text-accent transition-colors"
-              >
-                {post.title}
-              </Link>
-
-              <div className="mt-2 flex flex-wrap gap-2">
-                {(post.categoryName ? [post.categoryName] : []).map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-md"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                <span>{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: vi })}</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start">
+                  {post.avatar ? (
+                    <Image
+                      src={post.avatar}
+                      alt={post.username ?? "avatar"}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 flex items-center justify-center text-sm text-gray-600">U</div>
+                  )}
+                <div className="ml-3 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/qna/${post.slug}`}
+                      className="block text-lg font-semibold text-gray-900 dark:text-white hover:text-accent transition-colors truncate max-w-[32rem]"
+                    >
+                      {post.title}
+                    </Link>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
+                      {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: vi })}
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">{post.username}</div>
+                  <div className="mt-3">
+                    <div className="flex flex-wrap gap-2">
+                      {(post.categoryName ? [post.categoryName] : []).map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-md"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-              <div className="ml-4 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+              <div className="ml-4 flex-shrink-0 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
                 <div className="text-center">
-                  <div className="font-semibold text-gray-900 dark:text-white">0</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">{post.commentCount ?? 0}</div>
                   <div>câu trả lời</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-semibold text-gray-900 dark:text-white">0</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">{post.viewCount ?? 0}</div>
                   <div>lượt xem</div>
                 </div>
                 <div className="text-center">

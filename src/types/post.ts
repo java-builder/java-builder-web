@@ -4,6 +4,10 @@ export interface PostDetail {
   slug: string;
   content: string;
   thumbnail?: string | null;
+  username?: string | null;
+  avatar?: string | null;
+  viewCount?: number;
+  commentCount?: number;
   categoryId: string;
   categoryName: string;
   createdAt: string;

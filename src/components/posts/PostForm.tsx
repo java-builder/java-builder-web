@@ -1,9 +1,11 @@
  "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CreatePostRequest } from "@/types/post";
 import { useForm } from "react-hook-form";
+import { CategoryDetailResponse } from "@/types/category";
+import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 
 const POPULAR_TAGS = [
   "java", "spring-boot", "spring-security", "jpa", "hibernate",
@@ -13,14 +15,28 @@ const POPULAR_TAGS = [
 
 interface PostFormProps {
   onSubmit?: (data: CreatePostRequest) => void;
+  categories?: CategoryDetailResponse[] | null;
 }
 
-export default function PostForm({ onSubmit }: PostFormProps) {
+export default function PostForm({ onSubmit, categories = null }: PostFormProps) {
   const router = useRouter();
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [customTag, setCustomTag] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<CreatePostRequest>();
+  const [content, setContent] = useState<string>("");
 
-  const { register, handleSubmit, formState: { errors } } = useForm<CreatePostRequest>();
+  useEffect(() => {
+    register("content", { required: "Nội dung là bắt buộc" });
+  }, [register]);
+
+  useEffect(() => {
+    setValue("content", content);
+  }, [content, setValue]);
+
+  useEffect(() => {
+    if (selectedCategoryId) {
+      setValue("categoryId", selectedCategoryId);
+    }
+  }, [selectedCategoryId, setValue]);
 
   const handleFormSubmit = (data: CreatePostRequest) => {
     if (onSubmit) {
@@ -29,24 +45,6 @@ export default function PostForm({ onSubmit }: PostFormProps) {
       // Mock submission - redirect to main Q&A page
       console.log("Post submitted:", data);
       router.push("/qna");
-    }
-  };
-
-  const addTag = (tag: string) => {
-    if (tag && !selectedTags.includes(tag) && selectedTags.length < 5) {
-      setSelectedTags([...selectedTags, tag]);
-    }
-    setCustomTag("");
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setSelectedTags(selectedTags.filter(tag => tag !== tagToRemove));
-  };
-
-  const handleCustomTagKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag(customTag.trim());
     }
   };
 
@@ -63,9 +61,9 @@ export default function PostForm({ onSubmit }: PostFormProps) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tiêu đề câu hỏi *
             </label>
-                <input
-                  type="text"
-                  {...register("title", { required: "Tiêu đề là bắt buộc" })}
+            <input
+              type="text"
+              {...register("title", { required: "Tiêu đề là bắt buộc" })}
               className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-accent focus:border-accent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
               placeholder="Ví dụ: Lỗi NullPointer khi khởi tạo Bean trong Spring Boot"
             />
@@ -79,80 +77,43 @@ export default function PostForm({ onSubmit }: PostFormProps) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Nội dung chi tiết *
             </label>
-            <textarea
-              {...register("content", { required: "Nội dung là bắt buộc" })}
-              rows={8}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-accent focus:border-accent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+            <MarkdownEditor
+              value={content}
+              onChange={setContent}
               placeholder="Mô tả chi tiết vấn đề bạn gặp phải, kèm theo code mẫu, error message, và những gì bạn đã thử..."
+              height={300}
+              error={errors.content ? String(errors.content.message) : undefined}
             />
-            {errors.content && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.content.message}</p>
-            )}
           </div>
 
-          {/* Tags */}
+          {/* Tag (single-select) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Tags (tối đa 5 tags)
+              Chọn tag (chỉ chọn 1)
             </label>
 
-            {/* Selected Tags */}
-            {selectedTags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {selectedTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center px-2 py-1 text-sm bg-accent text-white rounded-md"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => removeTag(tag)}
-                      className="ml-1 hover:text-red-200"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
+            <input type="hidden" {...register("categoryId", { required: "Bạn phải chọn một chuyên mục" })} />
 
-            {/* Custom Tag Input */}
-            <div className="flex gap-2 mb-3">
-              <input
-                type="text"
-                value={customTag}
-                onChange={(e) => setCustomTag(e.target.value)}
-                onKeyPress={handleCustomTagKeyPress}
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-accent focus:border-accent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                placeholder="Thêm tag tùy chỉnh..."
-              />
-              <button
-                type="button"
-                onClick={() => addTag(customTag.trim())}
-                className="px-4 py-2 bg-gray-200 dark:bg-slate-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-slate-500"
-              >
-                Thêm
-              </button>
-            </div>
-
-            {/* Popular Tags */}
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Tags phổ biến:</p>
-              <div className="flex flex-wrap gap-2">
-                {POPULAR_TAGS.filter(tag => !selectedTags.includes(tag)).map((tag) => (
+            <div className="flex flex-wrap gap-2">
+              {(categories && categories.length > 0 ? categories.map(c => ({ id: c.id, name: c.name })) : POPULAR_TAGS.map(t => ({ id: t, name: t }))).map((opt) => {
+                const active = selectedCategoryId === opt.id;
+                return (
                   <button
-                    key={tag}
+                    key={opt.id}
                     type="button"
-                    onClick={() => addTag(tag)}
-                    disabled={selectedTags.length >= 5}
-                    className="px-2 py-1 text-sm bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      setSelectedCategoryId(opt.id);
+                    }}
+                    className={`inline-flex items-center justify-center h-8 px-3 rounded-full text-sm leading-none transition ${active ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
                   >
-                    {tag}
+                    {opt.name}
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
+            {errors.categoryId && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.categoryId.message}</p>
+            )}
           </div>
 
           {/* Submit Buttons */}
@@ -176,3 +137,4 @@ export default function PostForm({ onSubmit }: PostFormProps) {
     </div>
   );
 }
+

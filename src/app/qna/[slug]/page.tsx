@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import { postService } from "@/services/post.service";
 import { useComments } from "@/hooks/useComments";
 import CommentList from "@/components/blogs/CommentList";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { PostDetail } from "@/types/post";
 
 export default function PostDetailPage() {
@@ -80,13 +81,38 @@ export default function PostDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{post.title}</h1>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-6">{post.categoryName} • {new Date(post.createdAt).toLocaleString()}</div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-start gap-5 mb-6">
+            {post.avatar ? (
+              <Image
+                src={post.avatar}
+                alt={post.username ?? "avatar"}
+                width={56}
+                height={56}
+                className="w-14 h-14 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-full bg-gray-200 dark:bg-slate-700 flex items-center justify-center text-sm text-gray-600">U</div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white leading-tight">{post.title}</h1>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">{post.username} • {post.categoryName} • {new Date(post.createdAt).toLocaleString()}</div>
+              <div className="mt-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  <span>{post.viewCount ?? 0} lượt xem</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                  <span>{post.commentCount ?? 0} bình luận</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {post.thumbnail && (
-            <div className="mb-6">
+            <div className="mb-8">
               <div className="aspect-[16/9] w-full overflow-hidden relative bg-gray-100 rounded-lg">
                 <Image
                   src={post.thumbnail}
@@ -99,9 +125,11 @@ export default function PostDetailPage() {
             </div>
           )}
 
-          <div className="prose max-w-none dark:prose-invert break-words mb-8" dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div className="mb-10">
+            <PublicMarkdownRenderer content={post.content} className="prose dark:prose-invert max-w-none" />
+          </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-6 mt-6">
             <CommentList
               comments={comments}
               onAddComment={async (c: string) => await addComment(c)}
