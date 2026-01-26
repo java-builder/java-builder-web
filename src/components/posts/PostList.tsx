@@ -91,8 +91,8 @@ export default function PostList({
           key={post.id}
           className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-6 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-start justify-between">
-            <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row items-start justify-between">
+            <div className="flex-1 min-w-0 w-full">
               <div className="flex items-start">
                   {post.avatar ? (
                     <Image
@@ -134,7 +134,7 @@ export default function PostList({
               </div>
             </div>
 
-              <div className="ml-4 flex-shrink-0 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+              <div className="mt-3 sm:mt-0 ml-0 sm:ml-4 flex-shrink-0 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
                 <div className="text-center">
                   <div className="font-semibold text-gray-900 dark:text-white">{post.commentCount ?? 0}</div>
                   <div>câu trả lời</div>

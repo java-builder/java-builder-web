@@ -123,7 +123,7 @@ apiClient.interceptors.response.use(
                 },
               );
 
-              const token = response.data?.result?.accessToken;
+              const token = response.data.data?.accessToken;
               if (!token) {
                 throw new Error("No access token from refresh");
               }
