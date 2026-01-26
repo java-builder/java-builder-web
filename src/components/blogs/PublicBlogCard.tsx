@@ -174,12 +174,20 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
             </Link>
           </div>
 
-          {/* Author */}
+          {/* Author (show system logo + JavaBuilder instead of blog.author) */}
           <div className="pt-3 border-t border-gray-100">
-            <span className="text-xs text-gray-500">
-              <span className="font-medium text-gray-700">Tác giả:</span>{" "}
-              {blog.author}
-            </span>
+            <div className="flex items-center space-x-2">
+              <Image
+                src="/marino-logo.svg"
+                alt="JavaBuilder"
+                width={20}
+                height={20}
+                className="rounded-sm"
+              />
+              <span className="text-xs text-gray-500">
+                <span className="font-medium text-gray-700">JavaBuilder</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
