@@ -141,7 +141,6 @@ export const settingsConfig: SettingsConfig = {
               type: "text",
               label: "SMTP Host",
               placeholder: "smtp.gmail.com",
-              required: true,
             },
             {
               id: "smtp-port",
@@ -154,13 +153,12 @@ export const settingsConfig: SettingsConfig = {
               id: "smtp-username",
               type: "email",
               label: "Username",
-              required: true,
+              
             },
             {
               id: "smtp-password",
               type: "text",
               label: "Password",
-              required: true,
             },
             {
               id: "smtp-secure",

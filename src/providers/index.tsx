@@ -5,6 +5,7 @@ import { ReactNode, useState } from "react";
 import ToastProvider from "@/components/providers/ToastProvider";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -37,10 +38,12 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider>
-          {children}
-          <ToastProvider />
-        </ThemeProvider>
+        <SettingsProvider>
+          <ThemeProvider>
+            {children}
+            <ToastProvider />
+          </ThemeProvider>
+        </SettingsProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

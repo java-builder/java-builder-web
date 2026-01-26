@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { userApi } from "@/services/user.service";
 import { useConfirm } from "@/hooks/useConfirm";
@@ -176,6 +177,30 @@ export default function UsersPage() {
     fetchUsers();
     fetchStats();
   }, [fetchUsers, fetchStats]);
+
+  // Open create modal when query param ?create=1 is present
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams.get("create") === "1") {
+      setIsCreateModalOpen(true);
+    }
+  }, [searchParams]);
+
+  const closeCreateModal = () => {
+    setIsCreateModalOpen(false);
+    try {
+      if (typeof window !== "undefined" && searchParams.get("create") === "1") {
+        router.replace(window.location.pathname);
+      }
+    } catch {}
+  };
+
+  const handleCreateSuccess = () => {
+    closeCreateModal();
+    fetchUsers();
+  };
 
   if (isLoading && !response) {
     return (
@@ -909,11 +934,8 @@ export default function UsersPage() {
   {/* Create User Modal */}
   <CreateUserModal
     isOpen={isCreateModalOpen}
-    onClose={() => setIsCreateModalOpen(false)}
-    onSuccess={() => {
-      setIsCreateModalOpen(false);
-      fetchUsers();
-    }}
+    onClose={closeCreateModal}
+    onSuccess={handleCreateSuccess}
   />
     </div>
   );

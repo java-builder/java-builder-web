@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -169,6 +170,30 @@ export default function CoursesPage() {
   useEffect(() => {
     fetchCourses();
   }, [search, categoryFilter, statusFilter, levelFilter]);
+
+  // Open create modal when ?create=1 present in URL
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams.get("create") === "1") {
+      setIsCreateModalOpen(true);
+    }
+  }, [searchParams]);
+
+  const closeCreateModal = () => {
+    setIsCreateModalOpen(false);
+    try {
+      if (typeof window !== "undefined" && searchParams.get("create") === "1") {
+        router.replace(window.location.pathname);
+      }
+    } catch {}
+  };
+
+  const handleCreateSuccess = () => {
+    closeCreateModal();
+    fetchCourses();
+  };
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
@@ -675,11 +700,8 @@ export default function CoursesPage() {
       {/* Create Course Modal */}
       <CreateCourseModal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={() => {
-          // Refresh courses list after successful creation
-          fetchCourses();
-        }}
+        onClose={closeCreateModal}
+        onSuccess={handleCreateSuccess}
       />
 
       {/* Delete Confirm Modal */}
