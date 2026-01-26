@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -38,8 +38,8 @@ export default function MyPostsTab() {
   const [confirmPost, setConfirmPost] = useState<PostDetail | null>(null);
 
   const handleEdit = (post: PostDetail) => {
-    // navigate to edit page by id
-    router.push(`/qna/edit/${post.id}`);
+    // navigate to edit page by slug
+    router.push(`/qna/edit/${post.slug}`);
   };
 
   const handleDeleteClick = (post: PostDetail) => {

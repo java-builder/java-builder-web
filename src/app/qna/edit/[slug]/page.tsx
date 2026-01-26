@@ -12,7 +12,7 @@ import { CategoryDetailResponse } from "@/types/category";
 
 export default function EditPostPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const slug = params?.slug as string;
   const router = useRouter();
 
   const [initialData, setInitialData] = useState<Partial<UpdatePostRequest & { thumbnail?: string }> | null>(null);
@@ -34,17 +34,17 @@ export default function EditPostPage() {
   }, []);
 
   useEffect(() => {
-    if (!id) return;
+    if (!slug) return;
     (async () => {
       setLoading(true);
       try {
-        const resp = await postService.getById(id);
-        if (resp?.data) {
+        const post = await postService.getBySlug(slug);
+        if (post) {
           setInitialData({
-            title: resp.data.title,
-            content: resp.data.content,
-            thumbnail: resp.data.thumbnail ?? undefined,
-            categoryId: resp.data.categoryId,
+            title: post.title,
+            content: post.content,
+            thumbnail: post.thumbnail ?? undefined,
+            categoryId: post.categoryId,
           });
         }
       } catch (e) {
@@ -53,14 +53,16 @@ export default function EditPostPage() {
         setLoading(false);
       }
     })();
-  }, [id]);
+  }, [slug]);
 
   const handleSubmit = async (data: UpdatePostRequest) => {
     try {
-      const resp = await postService.update(id, data);
+      // Get the current post to get its ID
+      const currentPost = await postService.getBySlug(slug);
+      const resp = await postService.update(currentPost.id, data);
       const updated = resp?.data;
-      const slug = updated?.slug;
-      router.push(slug ? `/qna/${slug}` : "/qna");
+      const newSlug = updated?.slug;
+      router.push(newSlug ? `/qna/${newSlug}` : "/qna");
     } catch (e) {
       console.error("Update failed", e);
     }
