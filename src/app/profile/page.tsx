@@ -1,21 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useUser } from "@/hooks/useUser";
 import Sidebar from "@/components/profile/Sidebar";
 import ProfileTab from "@/components/profile/ProfileTab";
+import MyPostsTab from "@/components/profile/MyPostsTab";
 import SecurityTab from "@/components/profile/SecurityTab";
 import PasswordTab from "@/components/profile/PasswordTab";
-import FavoriteCoursesTab from "@/components/profile/FavoriteCoursesTab";
 import FavoriteBlogsTab from "@/components/profile/FavoriteBlogsTab";
 import { UserDetailResponse } from "@/types/user";
 
-export default function ProfilePage() {
+function ProfileContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams?.get("tab");
   const { user, loading, error, updateUser } = useUser();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState(tabParam || "profile");
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   const handleSave = async (data: Partial<UserDetailResponse>) => {
     try {
@@ -34,14 +43,14 @@ export default function ProfilePage() {
         return (
           <ProfileTab user={user!} onSave={handleSave} isSaving={isSaving} />
         );
-      case "favorite-courses":
-        return <FavoriteCoursesTab />;
       case "favorite-blogs":
         return <FavoriteBlogsTab />;
       case "security":
         return <SecurityTab user={user!} onUserUpdate={updateUser} />;
       case "password":
         return <PasswordTab />;
+      case "my-posts":
+        return <MyPostsTab />;
       default:
         return (
           <ProfileTab user={user!} onSave={handleSave} isSaving={isSaving} />
@@ -170,5 +179,22 @@ export default function ProfilePage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="animate-pulse">
+            <div className="h-64 bg-gray-200 rounded-2xl mb-8"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <ProfileContent />
+    </Suspense>
   );
 }

@@ -38,6 +38,13 @@ export const postService = {
         const response = await apiClient.get<ApiResponse<PostDetail>>(`${API.GET_POST_BY_ID}/${id}`);
         return response.data;
     },
+    getMyPosts: async (page: number = 1) => {
+        // Do NOT send size; backend will apply default size
+        const response = await apiClient.get<ApiResponse<PageResponse<PostDetail>>>(API.GET_MY_POSTS, {
+            params: { page },
+        });
+        return response.data;
+    },
     // Get post by slug (e.g. /api/v1/posts/slug/{slug})
     getBySlug: async (slug: string): Promise<PostDetail> => {
         if (postBySlugPromises.has(slug)) {

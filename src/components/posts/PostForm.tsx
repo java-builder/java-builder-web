@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,9 +16,10 @@ const POPULAR_TAGS = [
 interface PostFormProps {
   onSubmit?: (data: CreatePostRequest) => void;
   categories?: CategoryDetailResponse[] | null;
+  initialData?: Partial<CreatePostRequest & { thumbnail?: string }>;
 }
 
-export default function PostForm({ onSubmit, categories = null }: PostFormProps) {
+export default function PostForm({ onSubmit, categories = null, initialData }: PostFormProps) {
   const router = useRouter();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<CreatePostRequest>();
@@ -27,6 +28,24 @@ export default function PostForm({ onSubmit, categories = null }: PostFormProps)
   useEffect(() => {
     register("content", { required: "Nội dung là bắt buộc" });
   }, [register]);
+
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.title) setValue("title", initialData.title);
+      if (initialData.categoryId) {
+        setSelectedCategoryId(initialData.categoryId);
+        setValue("categoryId", initialData.categoryId);
+      }
+      if (initialData.content) setContent(initialData.content);
+      if (initialData.thumbnail) setValue("thumbnail", initialData.thumbnail);
+    }
+  }, [initialData, setValue]);
+
+  // populate initial values for edit flow
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // initialData handled via props; setValue called when initialData provided
+  }, []);
 
   useEffect(() => {
     setValue("content", content);

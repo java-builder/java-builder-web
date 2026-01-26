@@ -8,15 +8,12 @@ import Footer from "@/components/Footer";
 import PostList from "@/components/posts/PostList";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse } from "@/types/category";
-import { postService } from "@/services/post.service";
-import { PostDetail } from "@/types/post";
 
 export default function QNAPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [filterTag, setFilterTag] = useState("all");
   const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
-  const [posts, setPosts] = useState<PostDetail[] | null>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
@@ -26,20 +23,13 @@ export default function QNAPage() {
     (async () => {
       setLoadingData(true);
       try {
-        const [catResp, postResp] = await Promise.all([
-          categoryService.getAll(),
-          postService.getAll({ page: 1, size: 20 }),
-        ]);
-
+        const catResp = await categoryService.getAll();
         const cats = catResp?.data ?? [];
-        const items: PostDetail[] = Array.isArray(postResp?.data?.data) ? postResp.data.data : [];
-
         if (mounted) {
           setCategories(cats);
-          setPosts(items);
         }
       } catch (e) {
-        console.error("Failed to load categories or posts", e);
+        console.error("Failed to load categories", e);
       } finally {
         if (mounted) setLoadingData(false);
       }
@@ -185,7 +175,7 @@ export default function QNAPage() {
           {loadingData ? (
             <div className="text-center py-12">Đang tải dữ liệu...</div>
           ) : (
-            <PostList posts={posts ?? []} searchQuery={searchQuery} sortBy={sortBy} filterTag={filterTag} />
+            <PostList searchQuery={searchQuery} sortBy={sortBy} filterTag={filterTag} />
           )}
         </div>
 

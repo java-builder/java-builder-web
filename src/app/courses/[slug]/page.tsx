@@ -9,7 +9,6 @@ import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import VideoPlayer from "@/components/VideoPlayer";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
-import ReviewSection from "@/components/course/ReviewSection";
 import { courseApi, lessonApi, favoriteApi } from "@/services/course.service";
 import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
@@ -18,6 +17,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
+import ReviewSection from "@/components/courses/ReviewSection";
 
 export default function CourseDetailPage() {
   const params = useParams();

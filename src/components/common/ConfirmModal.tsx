@@ -71,10 +71,10 @@ export default function ConfirmModal({
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div
-              className={`flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-3 ${getIconColor()}`}
+              className={`flex-shrink-0 w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-3 ${getIconColor()}`}
             >
               <svg
-                className="w-6 h-6"
+                className="w-7 h-7"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -103,7 +103,7 @@ export default function ConfirmModal({
                 )}
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+            <h3 className="text-2xl font-semibold text-gray-900 leading-tight">{title}</h3>
           </div>
 
           <p className="text-sm text-gray-600 mb-6">{message}</p>

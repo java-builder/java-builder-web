@@ -138,6 +138,7 @@ export const API = {
     // POST (Q&A / forum posts)
     CREATE_POST: "/api/v1/posts",
     GET_POSTS: "/api/v1/posts",
+    GET_MY_POSTS: "/api/v1/posts/my-posts",
     GET_POST_BY_SLUG: "/api/v1/posts/slug", // + /:slug
     GET_POST_BY_ID: "/api/v1/posts", // + /:id
     UPDATE_POST: "/api/v1/posts", // + /:id
