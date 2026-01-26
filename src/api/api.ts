@@ -134,6 +134,14 @@ export const API = {
     GET_BLOGS: "/api/v1/blogs",
     INCREMENT_VIEW: "/api/v1/blogs", // + /:slug/increment-view
     INCREMENT_LIKE: "/api/v1/blogs", // + /:slug/increment-like
+    
+    // POST (Q&A / forum posts)
+    CREATE_POST: "/api/v1/posts",
+    GET_POSTS: "/api/v1/posts",
+    GET_POST_BY_SLUG: "/api/v1/posts/slug", // + /:slug
+    GET_POST_BY_ID: "/api/v1/posts", // + /:id
+    UPDATE_POST: "/api/v1/posts", // + /:id
+    DELETE_POST: "/api/v1/posts", // + /:id
     // CATEGORY
     CREATE_CATEGORY: "/api/v1/categories",
     GET_CATEGORIES: "/api/v1/categories",

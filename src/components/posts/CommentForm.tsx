@@ -1,25 +1,30 @@
-"use client";
+ "use client";
 
 import { useState, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
-import { AnswerFormData } from "@/types/qna";
+import { CreateCommentRequest } from "@/types/comment";
 import { useForm } from "react-hook-form";
+import { commentApi } from "@/services/comment.service";
 
-interface AnswerFormProps {
-  onSubmit?: (data: AnswerFormData) => void;
+interface CommentFormProps {
+  onSubmit?: (data: CreateCommentRequest) => Promise<void> | void;
   onCancel?: () => void;
   placeholder?: string;
+  targetId?: string;
+  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION";
 }
 
-export default function AnswerForm({
+export default function CommentForm({
   onSubmit,
   onCancel,
-  placeholder = "Viết câu trả lời của bạn..."
-}: AnswerFormProps) {
+  placeholder = "Viết bình luận của bạn...",
+  targetId,
+  targetType = "POST",
+}: CommentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<AnswerFormData>();
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<CreateCommentRequest>();
 
   useEffect(() => {
     register("content", {
@@ -31,19 +36,25 @@ export default function AnswerForm({
   const content = watch("content") || "";
   const charCount = content.length;
 
-  const handleFormSubmit = async (data: AnswerFormData) => {
+  const handleFormSubmit = async (data: CreateCommentRequest) => {
     setIsSubmitting(true);
 
     try {
+      const payload: CreateCommentRequest = {
+        ...data,
+        targetId: data.targetId || targetId || "",
+        targetType: data.targetType || targetType,
+      };
+
       if (onSubmit) {
-        await onSubmit(data);
+        await onSubmit(payload);
       } else {
-        // Mock submission
-        console.log("Answer submitted:", data);
+        // call API directly
+        await commentApi.create(payload);
       }
       reset();
     } catch (error) {
-      console.error("Error submitting answer:", error);
+      console.error("Error submitting comment:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -78,7 +89,7 @@ export default function AnswerForm({
             disabled={isSubmitting}
             className="px-4 py-2 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Đang gửi..." : "Gửi câu trả lời"}
+            {isSubmitting ? "Đang gửi..." : "Gửi bình luận"}
           </button>
           {onCancel && (
             <button

@@ -24,6 +24,8 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
   // Các endpoint GET public (không cần token)
   const publicGetPatterns = [
     "/api/v1/courses",
+    "/api/v1/categories",
+    "/api/v1/posts",
     "/api/v1/blogs",
     "/api/v1/comments",
     "/api/v1/lessons/chapter",

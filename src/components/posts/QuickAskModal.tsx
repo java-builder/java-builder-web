@@ -1,7 +1,7 @@
-"use client";
+ "use client";
 
 import { useState } from "react";
-import QuestionForm from "./QuestionForm";
+import PostForm from "./PostForm";
 
 interface QuickAskModalProps {
   targetId?: string;
@@ -28,7 +28,7 @@ export default function QuickAskModal({ }: QuickAskModalProps) {
               <h3 className="text-lg font-semibold">Hỏi nhanh</h3>
               <button onClick={() => setOpen(false)} className="text-gray-500">Đóng</button>
             </div>
-            <QuestionForm onSubmit={() => setOpen(false)} />
+            <PostForm onSubmit={() => setOpen(false)} />
           </div>
         </div>
       )}

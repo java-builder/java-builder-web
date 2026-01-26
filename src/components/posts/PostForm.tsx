@@ -1,8 +1,8 @@
-"use client";
+ "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { QuestionFormData } from "@/types/qna";
+import { CreatePostRequest } from "@/types/post";
 import { useForm } from "react-hook-form";
 
 const POPULAR_TAGS = [
@@ -11,28 +11,23 @@ const POPULAR_TAGS = [
   "kubernetes", "microservices", "rest-api", "database", "mysql"
 ];
 
-interface QuestionFormProps {
-  onSubmit?: (data: QuestionFormData) => void;
+interface PostFormProps {
+  onSubmit?: (data: CreatePostRequest) => void;
 }
 
-export default function QuestionForm({ onSubmit }: QuestionFormProps) {
+export default function PostForm({ onSubmit }: PostFormProps) {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTag, setCustomTag] = useState("");
 
-  const { register, handleSubmit, formState: { errors } } = useForm<QuestionFormData>();
+  const { register, handleSubmit, formState: { errors } } = useForm<CreatePostRequest>();
 
-  const handleFormSubmit = (data: QuestionFormData) => {
-    const questionData = {
-      ...data,
-      tags: selectedTags
-    };
-
+  const handleFormSubmit = (data: CreatePostRequest) => {
     if (onSubmit) {
-      onSubmit(questionData);
+      onSubmit(data);
     } else {
       // Mock submission - redirect to main Q&A page
-      console.log("Question submitted:", questionData);
+      console.log("Post submitted:", data);
       router.push("/qna");
     }
   };
@@ -68,9 +63,9 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tiêu đề câu hỏi *
             </label>
-            <input
-              type="text"
-              {...register("title", { required: "Tiêu đề là bắt buộc" })}
+                <input
+                  type="text"
+                  {...register("title", { required: "Tiêu đề là bắt buộc" })}
               className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-accent focus:border-accent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
               placeholder="Ví dụ: Lỗi NullPointer khi khởi tạo Bean trong Spring Boot"
             />

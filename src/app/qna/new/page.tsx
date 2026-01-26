@@ -1,16 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import QuestionForm from "@/components/questions/QuestionForm";
-import { QuestionFormData } from "@/types/qna";
+import { useEffect, useState } from "react";
+import PostForm from "@/components/posts/PostForm";
+import { CreatePostRequest } from "@/types/post";
+import { useAuth } from "@/contexts/AuthContext";
+import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import { authApi } from "@/services/auth.service";
 
 export default function NewQuestionPage() {
-  const handleQuestionSubmit = (data: QuestionFormData) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [checkedAuth, setCheckedAuth] = useState(false);
+
+  const handleQuestionSubmit = (data: CreatePostRequest) => {
     // Mock submission - in real app this would call an API
-    console.log("New question submitted:", data);
+    console.log("New post submitted:", data);
     // Redirect to Q&A main page
     window.location.href = "/qna";
   };
+
+  useEffect(() => {
+    const hasLocalToken = typeof window !== "undefined" && authApi.isAuthenticated();
+    if (hasLocalToken) {
+      setShowAuthModal(false);
+      setCheckedAuth(true);
+      return;
+    }
+
+    // Wait until AuthContext finishes loading. Do not show modal while loading to avoid flash.
+    if (!isLoading) {
+      setCheckedAuth(true);
+      if (!isAuthenticated) {
+        setShowAuthModal(true);
+      } else {
+        setShowAuthModal(false);
+      }
+    } else {
+      // still loading; ensure modal hidden
+      setShowAuthModal(false);
+    }
+  }, [isLoading, isAuthenticated]);
+
+  const localToken = typeof window !== "undefined" && authApi.isAuthenticated();
+  const showForm = checkedAuth && (localToken || isAuthenticated);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
@@ -52,8 +85,23 @@ export default function NewQuestionPage() {
           </nav>
         </div>
 
-        <QuestionForm onSubmit={handleQuestionSubmit} />
+        { !checkedAuth ? (
+          <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-6 text-center">
+            <p className="text-gray-600 dark:text-gray-400">Đang kiểm tra trạng thái đăng nhập...</p>
+          </div>
+        ) : showForm ? (
+          <PostForm onSubmit={handleQuestionSubmit} />
+        ) : (
+          <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-6 text-center">
+            <p className="text-gray-600 dark:text-gray-400">Bạn cần đăng nhập để đặt câu hỏi.</p>
+            <div className="mt-4 flex justify-center gap-3">
+              <Link href="/login" className="py-2 px-4 bg-accent text-white rounded-lg">Đăng nhập</Link>
+              <Link href="/qna" className="py-2 px-4 bg-gray-100 rounded-lg">Quay lại</Link>
+            </div>
+          </div>
+        )}
       </div>
+      <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );
 }
