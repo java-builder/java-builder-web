@@ -178,7 +178,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
           <div className="pt-3 border-t border-gray-100">
             <div className="flex items-center space-x-2">
               <Image
-                src="/marino-logo.svg"
+                src="/logos/java-logo.png"
                 alt="JavaBuilder"
                 width={20}
                 height={20}
