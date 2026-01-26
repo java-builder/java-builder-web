@@ -78,6 +78,6 @@ export const blogService = {
         },
       },
     );
-    return response.data;
+    return (response.data as { data?: FileMetaDataResponse }).data as FileMetaDataResponse;
   },
 };
