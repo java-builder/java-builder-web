@@ -25,13 +25,13 @@ export const blogService = {
   // Lấy chi tiết blog theo ID
   async getBlogById(id: string): Promise<Blog> {
     const response = await apiClient.get(`${API.GET_BLOG_BY_ID}/${id}`);
-    return response.data;
+    return (response.data as { data?: Blog }).data as Blog;
   },
 
   // Lấy chi tiết blog theo slug
   async getBlogBySlug(slug: string): Promise<Blog> {
     const response = await apiClient.get(`${API.GET_BLOG_BY_SLUG}/${slug}`);
-    return response.data;
+    return (response.data as { data?: Blog }).data as Blog;
   },
 
   // Tăng lượt xem
