@@ -13,7 +13,7 @@ export const useLessonComments = (lessonId: string) => {
     async (page: number = 1, append: boolean = false) => {
       try {
         setIsLoading(true);
-        const response = await commentApi.getRootByLessonId(lessonId, {
+        const response = await commentApi.getRootByTarget(lessonId, "LESSON", {
           page,
           size: 10,
         });

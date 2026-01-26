@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { CommentResponse } from "@/types/comment";
 import { commentApi } from "@/services/comment.service";
 
-export const useComments = (blogId: string) => {
+export const useComments = (targetId: string, targetType: "BLOG" | "LESSON" | "POST" | "QUESTION" = "BLOG") => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,7 +14,7 @@ export const useComments = (blogId: string) => {
     async (page: number = 1, append: boolean = false) => {
       try {
         setIsLoading(true);
-        const response = await commentApi.getRootByBlogId(blogId, {
+        const response = await commentApi.getRootByTarget(targetId, targetType, {
           page,
           size: 10,
         });
@@ -60,26 +60,26 @@ export const useComments = (blogId: string) => {
         setIsLoading(false);
       }
     },
-    [blogId],
+    [targetId, targetType],
   );
 
   // Auto-fetch root comments when blogId (targetId) changes.
   useEffect(() => {
-    if (!blogId) {
+    if (!targetId) {
       setComments([]);
       setHasMore(true);
       setCurrentPage(1);
       return;
     }
 
-    // Trigger initial load for new blogId
+    // Trigger initial load for new targetId
     loadRootComments(1, false).catch(() => {});
-  }, [blogId, loadRootComments]);
+  }, [targetId, loadRootComments]);
 
   // Load replies for a specific comment
   const loadReplies = useCallback(async (commentId: string) => {
     try {
-      const response = await commentApi.getRepliesByParentId(commentId, {
+        const response = await commentApi.getRepliesByParentId(commentId, {
         page: 1,
         size: 10,
       });
@@ -115,8 +115,8 @@ export const useComments = (blogId: string) => {
       try {
         setIsSubmitting(true);
         const response = await commentApi.create({
-          targetId: blogId,
-          targetType: "BLOG",
+          targetId,
+          targetType,
           content: content.trim(),
         });
 
@@ -137,7 +137,7 @@ export const useComments = (blogId: string) => {
         setIsSubmitting(false);
       }
     },
-    [blogId],
+    [targetId, targetType],
   );
 
   // Reply to comment
@@ -149,8 +149,8 @@ export const useComments = (blogId: string) => {
 
       try {
         const response = await commentApi.create({
-          targetId: blogId,
-          targetType: "BLOG",
+          targetId,
+          targetType,
           parentId: commentId,
           content: content.trim(),
         });
@@ -178,7 +178,7 @@ export const useComments = (blogId: string) => {
         throw err;
       }
     },
-    [blogId],
+    [targetId, targetType],
   );
 
   // Delete comment (root or reply)

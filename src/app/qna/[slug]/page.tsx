@@ -21,7 +21,7 @@ export default function PostDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { comments, isLoading: isLoadingComments, addComment, replyToComment, deleteComment, loadReplies, loadMoreComments, hasMore } =
-    useComments(post?.id || "");
+    useComments(post?.id || "", "POST");
 
   useEffect(() => {
     const fetch = async () => {

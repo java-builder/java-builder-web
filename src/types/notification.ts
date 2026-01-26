@@ -3,6 +3,7 @@ export interface NotificationDetailResponse {
     title: string;
     content: string;
     link: string;
+    thumbnail?: string | null;
     read: boolean;
     senderName: string;
     avatar: string | null;

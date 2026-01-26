@@ -30,11 +30,21 @@ export const commentApi = {
   },
 
   getRootByBlogId: async (blogId: string, params: CommentSearchParams = {}) => {
+    // Backwards-compatible wrapper that calls unified endpoint
+    return await commentApi.getRootByTarget(blogId, "BLOG", params);
+  },
+
+  /**
+   * Generic root comments loader by target id and type.
+   * Backend should accept `targetId` and `type` as query params on GET_ROOT_COMMENTS.
+   */
+  getRootByTarget: async (targetId: string, type: "BLOG" | "LESSON" | "POST" | "QUESTION", params: CommentSearchParams = {}) => {
     const response = await apiClient.get<
       ApiResponse<PageResponse<CommentResponse>>
     >(API.GET_ROOT_COMMENTS, {
       params: {
-        blogId,
+        targetId,
+        type,
         page: params.page || 1,
         size: params.size || 10,
       },
@@ -43,16 +53,8 @@ export const commentApi = {
   },
 
   getRootByLessonId: async (lessonId: string, params: CommentSearchParams = {}) => {
-    const response = await apiClient.get<
-      ApiResponse<PageResponse<CommentResponse>>
-    >(API.GET_LESSON_ROOT_COMMENTS, {
-      params: {
-        lessonId,
-        page: params.page || 1,
-        size: params.size || 10,
-      },
-    });
-    return response.data;
+    // Backwards-compatible wrapper that calls unified endpoint
+    return await commentApi.getRootByTarget(lessonId, "LESSON", params);
   },
 
   getRepliesByParentId: async (

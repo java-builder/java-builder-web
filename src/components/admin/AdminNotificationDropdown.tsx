@@ -88,7 +88,7 @@ export default function AdminNotificationDropdown() {
               await notificationApi.markAsRead(unreadIds);
               setNotifications((prev) =>
                 prev.map((n) =>
-                  unreadIds.includes(n.id) ? { ...n, read: true } : n,
+                  unreadIds.includes(n.id) ? { ...n, isRead: true } : n,
                 ),
               );
               setHasUnread(false);
@@ -138,7 +138,7 @@ export default function AdminNotificationDropdown() {
           await notificationApi.markAsRead(unreadIds);
           setNotifications((prev) =>
             prev.map((n) =>
-              unreadIds.includes(n.id) ? { ...n, read: true } : n,
+              unreadIds.includes(n.id) ? { ...n, isRead: true } : n,
             ),
           );
           setHasUnread(false);
@@ -246,7 +246,7 @@ export default function AdminNotificationDropdown() {
               filteredNotifications.map((n) => (
                 <Link
                   key={n.id}
-                  href={n.content || "#"}
+                  href={n.link || "#"}
                   className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-blue-50 ${!n.read ? "bg-blue-50/50" : "hover:bg-gray-50"}`}
                   onClick={() => setIsNotifOpen(false)}
                 >
@@ -276,16 +276,7 @@ export default function AdminNotificationDropdown() {
                       {n.createdAt}
                     </div>
                   </div>
-                  {n.link && (
-                    <Image
-                      src={n.link}
-                      alt="attachment"
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded object-contain bg-white border border-gray-200"
-                      unoptimized
-                    />
-                  )}
+                  {/* thumbnail not displayed on FE */}
                 </Link>
               ))
             )}

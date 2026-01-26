@@ -3,6 +3,9 @@ import { ApiResponse, PageResponse } from "@/types/api";
 import { PostDetail, CreatePostRequest, UpdatePostRequest, CreatePostResponse } from "@/types/post";
 import { API } from "@/api/api";
 
+// Simple in-memory dedupe cache for concurrent getBySlug calls.
+const postBySlugPromises = new Map<string, Promise<PostDetail>>();
+
 export const postService = {
     getAll: async (params: {
         page?: number;
@@ -37,7 +40,18 @@ export const postService = {
     },
     // Get post by slug (e.g. /api/v1/posts/slug/{slug})
     getBySlug: async (slug: string): Promise<PostDetail> => {
-        const response = await apiClient.get(`${API.GET_POST_BY_SLUG}/${slug}`);
-        return (response.data as { data?: PostDetail }).data as PostDetail;
+        if (postBySlugPromises.has(slug)) {
+            return postBySlugPromises.get(slug)!;
+        }
+
+        const promise = apiClient
+            .get(`${API.GET_POST_BY_SLUG}/${slug}`)
+            .then((response) => (response.data as { data?: PostDetail }).data as PostDetail)
+            .finally(() => {
+                postBySlugPromises.delete(slug);
+            });
+
+        postBySlugPromises.set(slug, promise);
+        return promise;
     },
 };
