@@ -70,11 +70,10 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
   };
 
   return (
-    <div 
+    <div
       onClick={handleClick}
-      className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-transparent dark:border-slate-700 ${
-        document.url ? 'cursor-pointer' : 'cursor-default'
-      }`}
+      className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-transparent dark:border-slate-700 ${document.url ? 'cursor-pointer' : 'cursor-default'
+        }`}
     >
       {/* Header */}
       <div className="relative h-56 overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-slate-700">
@@ -84,7 +83,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
             alt={document.title}
             width={400}
             height={224}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             unoptimized
             onError={() => setImageError(true)}
           />
@@ -130,11 +129,10 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
             handleClick();
           }}
           disabled={!document.url}
-          className={`w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 mt-auto ${
-            document.url
+          className={`w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 mt-auto ${document.url
               ? "bg-accent hover:bg-accent-600 text-white hover:shadow-md"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
+            }`}
         >
           {document.url ? (
             <>
