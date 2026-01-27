@@ -401,7 +401,7 @@ export default function CourseDetailPage() {
                       alt={course.title}
                       fill
                       priority
-                      className="object-contain bg-gray-100"
+                      className="object-cover bg-gray-100"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">

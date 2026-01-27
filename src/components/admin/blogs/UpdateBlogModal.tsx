@@ -236,9 +236,8 @@ export default function UpdateBlogModal({
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Nhập tiêu đề hấp dẫn cho bài viết..."
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
-                      errors.title ? "border-red-300 bg-red-50" : "border-gray-300"
-                    }`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${errors.title ? "border-red-300 bg-red-50" : "border-gray-300"
+                      }`}
                   />
                   {errors.title && (
                     <p className="mt-1 text-sm text-red-600">{errors.title}</p>
@@ -254,9 +253,8 @@ export default function UpdateBlogModal({
                     onChange={(e) =>
                       handleInputChange("blogType", e.target.value as BlogType)
                     }
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
-                      errors.blogType ? "border-red-300 bg-red-50" : "border-gray-300"
-                    }`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${errors.blogType ? "border-red-300 bg-red-50" : "border-gray-300"
+                      }`}
                   >
                     {Object.entries(BlogTypeDisplayNames).map(
                       ([key, displayName]) => (

@@ -299,7 +299,7 @@ export default function CreateCourseModal({
                         alt="Preview"
                         width={600}
                         height={300}
-                        className="w-full h-auto object-contain rounded-lg border border-gray-300"
+                        className="w-full h-auto object-cover rounded-lg border border-gray-300"
                       />
                       <button
                         type="button"

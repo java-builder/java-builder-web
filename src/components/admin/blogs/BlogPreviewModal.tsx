@@ -36,9 +36,9 @@ export default function BlogPreviewModal({
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
+        <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden dark:bg-slate-900 dark:border-slate-700">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <BlogTypeIcon
@@ -58,10 +58,10 @@ export default function BlogPreviewModal({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+              className="p-2 hover:bg-gray-200 rounded-lg transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-slate-800"
             >
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="w-6 h-6 text-gray-400 dark:text-gray-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -78,7 +78,7 @@ export default function BlogPreviewModal({
 
           {/* Content */}
           <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-            <article className="p-6">
+            <article className="p-6 text-gray-700 dark:text-gray-200">
               {/* Featured Image */}
               {blog.featuredImage && (
                 <div className="mb-6 relative w-full h-64">
@@ -87,7 +87,7 @@ export default function BlogPreviewModal({
                     alt={blog.title}
                     fill
                     sizes="100vw"
-                    className="object-cover rounded-lg"
+                  className="object-contain rounded-lg"
                   />
                 </div>
               )}
@@ -167,22 +167,22 @@ export default function BlogPreviewModal({
 
               {/* Summary */}
               {blog.summary && (
-                <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-                  <h3 className="font-medium text-blue-900 mb-2">Tóm tắt</h3>
+                <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg dark:bg-slate-800 dark:border-slate-700">
+                  <h3 className="font-medium text-blue-900 mb-2 dark:text-white">Tóm tắt</h3>
                   {mounted ? (
                     <MarkdownRenderer
                       content={blog.summary}
-                      className="text-blue-800"
+                      className="text-blue-800 dark:text-gray-200"
                     />
                   ) : (
-                    <p className="text-blue-800">{blog.summary}</p>
+                    <p className="text-blue-800 dark:text-gray-200">{blog.summary}</p>
                   )}
                 </div>
               )}
 
               {/* Content */}
               {mounted ? (
-                <MarkdownRenderer content={blog.content} />
+                <MarkdownRenderer content={blog.content} className="text-gray-700 dark:text-gray-200" />
               ) : (
                 <div className="animate-pulse space-y-4">
                   <div className="h-4 bg-gray-200 rounded w-full"></div>
@@ -195,7 +195,7 @@ export default function BlogPreviewModal({
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-gray-200 bg-gray-50">
+          <div className="p-6 border-t border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-500">
                 Bài viết này sẽ hiển thị như thế này khi được xuất bản

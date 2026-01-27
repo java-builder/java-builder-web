@@ -38,7 +38,7 @@ export default function Logo() {
       {(!rawAppName && clientTitle === null) ? (
         <span className="w-32 h-4 rounded bg-gray-200 dark:bg-slate-700 animate-pulse inline-block" />
       ) : (
-        <span className="text-[0.65rem] font-semibold text-gray-500 dark:text-gray-400 tracking-wider uppercase leading-tight">
+        <span className="text-[0.65rem] font-semibold text-gray-500 dark:text-white tracking-wider uppercase leading-tight">
           {appName}
         </span>
       )}

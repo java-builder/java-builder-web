@@ -30,7 +30,7 @@ export default function BlogCard({
             fill
             loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-contain w-full h-full transition-transform duration-300"
+            className="object-cover w-full h-full transition-transform duration-300"
           />
         </div>
       ) : (
@@ -74,7 +74,7 @@ export default function BlogCard({
           <div className="mb-4">
             <MarkdownRenderer
               content={blog.summary}
-            className="text-sm text-gray-600 line-clamp-2"
+              className="text-sm text-gray-600 line-clamp-2"
             />
           </div>
         )}
@@ -147,7 +147,7 @@ export default function BlogCard({
           {onPreview && (
             <button
               onClick={() => onPreview(blog)}
-              className="inline-flex items-center px-3 py-2 text-sm font-medium text-accent-700 bg-accent-100 hover:bg-accent-200 rounded-md transition-colors duration-200"
+              className="inline-flex items-center px-3 py-2 text-sm font-semibold !text-sky-700 dark:!text-sky-300 bg-accent-100 dark:bg-accent-900/30 hover:bg-accent-200 dark:hover:bg-accent-800/40 rounded-md transition-colors duration-200"
             >
               <svg
                 className="w-4 h-4 mr-2"
@@ -173,7 +173,7 @@ export default function BlogCard({
           )}
           <button
             onClick={() => onEdit(blog)}
-            className="inline-flex items-center px-2 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
+            className="inline-flex items-center px-2 py-1.5 text-sm font-semibold !text-gray-700 dark:!text-gray-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors duration-200"
           >
             <svg
               className="w-4 h-4 mr-2"
@@ -193,7 +193,7 @@ export default function BlogCard({
           <button
             onClick={() => onDelete(blog.id, blog.title)}
             disabled={isDeleting}
-            className="inline-flex items-center px-2 py-1.5 text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-2 py-1.5 text-sm font-semibold !text-red-700 dark:!text-red-300 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/40 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isDeleting ? (
               <>

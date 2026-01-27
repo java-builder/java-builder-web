@@ -28,7 +28,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       }
 
       const defaultTheme = settingsService.getSetting<string>(s, "display", "theme", "default-theme");
-      if (defaultTheme) {
+      // Only apply the default theme if the user hasn't explicitly chosen a theme.
+      const savedTheme = localStorage.getItem("theme");
+      if (!savedTheme && defaultTheme) {
         if (defaultTheme === "dark") {
           localStorage.setItem("theme", "dark");
           document.documentElement.classList.add("dark");

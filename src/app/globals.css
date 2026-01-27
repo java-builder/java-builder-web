@@ -406,6 +406,10 @@ body {
   color: #3b82f6 !important;
 }
 
+.dark .text-accent-600 {
+  color: #2563eb !important;
+}
+
 .dark .bg-accent {
   background-color: #2563eb !important;
 }
@@ -469,7 +473,9 @@ body {
 /* Icon colors */
 .dark .text-gray-400 svg,
 .dark .text-gray-500 svg {
-  color: #94a3b8 !important;
+  /* Keep a muted icon color in dark mode but avoid using !important so
+     explicit icon color classes (e.g. text-accent-600) can override this. */
+  color: #94a3b8;
 }
 
 /* Empty states */
@@ -613,6 +619,32 @@ body {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+/* Form controls - readable in both light and dark mode
+   Do not override elements that already have explicit Tailwind text-* classes. */
+input:not([class*="text-"]),
+textarea:not([class*="text-"]),
+select:not([class*="text-"]),
+button:not([class*="text-"]) {
+  color: var(--text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.dark input:not([class*="text-"]),
+.dark textarea:not([class*="text-"]),
+.dark select:not([class*="text-"]),
+.dark button:not([class*="text-"]) {
+  color: var(--text-primary);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #94a3b8;
+}
+
 .gradient-text {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-clip: text;
@@ -656,6 +688,9 @@ body {
 .text-accent {
   color: #0056d2 !important;
 }
+.text-accent-600 {
+  color: #0044aa !important;
+}
 .text-brand {
   color: #0056d2 !important;
 }
@@ -684,6 +719,13 @@ body {
 }
 .focus\:border-accent:focus {
   border-color: #0056d2 !important;
+}
+
+.dark .bg-accent:not([class*="text-"]),
+.dark .bg-accent-600:not([class*="text-"]),
+.dark .from-accent:not([class*="text-"]),
+.dark .to-accent-600:not([class*="text-"]) {
+  color: #ffffff !important;
 }
 
 .header-chat-modal {

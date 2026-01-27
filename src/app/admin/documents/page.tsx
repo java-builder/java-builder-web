@@ -20,12 +20,12 @@ const documentTypes = [
 const TypeBadge = ({ type }: { type: DocumentType }) => {
   const config = documentTypes.find((t) => t.type === type) || documentTypes[5];
   const colorMap: Record<DocumentType, string> = {
-    [DocumentType.BOOK]: "bg-blue-100 text-blue-800",
-    [DocumentType.PDF]: "bg-orange-100 text-orange-800",
-    [DocumentType.ARTICLE]: "bg-green-100 text-green-800",
-    [DocumentType.VIDEO]: "bg-red-100 text-red-800",
-    [DocumentType.TUTORIAL]: "bg-yellow-100 text-yellow-800",
-    [DocumentType.OTHER]: "bg-gray-100 text-gray-800",
+    [DocumentType.BOOK]: "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-white",
+    [DocumentType.PDF]: "bg-orange-100 text-orange-800 dark:bg-orange-700 dark:text-white",
+    [DocumentType.ARTICLE]: "bg-green-100 text-green-800 dark:bg-green-800 dark:text-white",
+    [DocumentType.VIDEO]: "bg-red-100 text-red-800 dark:bg-red-700 dark:text-white",
+    [DocumentType.TUTORIAL]: "bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-white",
+    [DocumentType.OTHER]: "bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-100",
   };
   return (
     <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${colorMap[type]}`}>
@@ -227,8 +227,8 @@ export default function AdminDocumentsPage() {
       <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div className="mb-6 lg:mb-0">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Quản lý Tài liệu</h1>
-            <p className="text-gray-600">Quản lý sách và tài liệu học tập</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Quản lý Tài liệu</h1>
+            <p className="text-gray-600 dark:text-gray-400">Quản lý sách và tài liệu học tập</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
@@ -243,7 +243,7 @@ export default function AdminDocumentsPage() {
             <button
               onClick={fetchDocuments}
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 dark:bg-slate-700 dark:text-gray-200 dark:hover:bg-slate-600"
             >
               <svg className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -255,8 +255,8 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div className="bg-white rounded-lg p-4 border border-gray-200 dark:bg-slate-800 dark:border-slate-700">
           <p className="text-sm text-gray-600">Tổng</p>
           <p className="text-2xl font-bold text-gray-900">{documents.length}</p>
         </div>
@@ -271,21 +271,21 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
+      <div className="bg-white rounded-xl p-6 border border-gray-200 dark:bg-slate-800 dark:border-slate-700">
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
+            <div className="flex-1">
             <input
               type="text"
               placeholder="Tìm kiếm tài liệu..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-gray-700 placeholder-gray-400"
             />
           </div>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as DocumentType | "")}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-gray-700"
           >
             <option value="">Tất cả loại</option>
             {documentTypes.map((t) => (
@@ -296,18 +296,18 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden dark:bg-slate-800 dark:border-slate-700">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase">Tài liệu</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase">Loại</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase">Ngày tạo</th>
-                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 uppercase">Thao tác</th>
+              <tr className="bg-gray-50 border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Tài liệu</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Loại</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Ngày tạo</th>
+                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
               {isLoading ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
@@ -326,7 +326,7 @@ export default function AdminDocumentsPage() {
                 </tr>
               ) : (
                 filteredDocuments.map((doc) => (
-                  <tr key={doc.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
@@ -339,9 +339,9 @@ export default function AdminDocumentsPage() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-semibold text-gray-900 truncate max-w-xs">{doc.title}</h3>
+                          <h3 className="font-semibold text-gray-900 dark:text-white truncate max-w-xs">{doc.title}</h3>
                           {doc.description && (
-                            <p className="text-sm text-gray-500 truncate max-w-xs">{doc.description}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">{doc.description}</p>
                           )}
                         </div>
                       </div>
@@ -450,7 +450,7 @@ export default function AdminDocumentsPage() {
                         alt="Preview"
                         width={400}
                         height={200}
-                        className="w-full h-48 object-contain rounded-lg border border-gray-300 bg-gray-50"
+                        className="w-full h-48 object-cover rounded-lg border border-gray-300 bg-gray-50"
                       />
                       <button
                         type="button"

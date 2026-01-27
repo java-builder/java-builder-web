@@ -770,7 +770,7 @@ export default function BlogDetailPage() {
                                   alt={relatedBlog.title}
                                   width={56}
                                   height={56}
-                                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                                 />
                               </div>
                             )}

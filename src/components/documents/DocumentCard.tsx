@@ -84,7 +84,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
             alt={document.title}
             width={400}
             height={224}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
             unoptimized
             onError={() => setImageError(true)}
           />

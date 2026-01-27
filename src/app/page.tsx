@@ -33,12 +33,11 @@ export default function Home() {
       try {
         const res = await documentApi.getAll({ page: 1, size: 6 });
         if (mounted) {
-          // res.data is a PageResponse<Document> — take its .data array
           setDocuments(res.data?.data || []);
           setDocumentsError(false);
         }
       } catch {
-        if (mounted) setDocumentsError(true);
+        if (mounted) setDocumentsError(true); 
       } finally {
         if (mounted) setIsLoadingDocuments(false);
       }

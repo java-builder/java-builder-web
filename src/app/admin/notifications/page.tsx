@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { notificationApi } from "@/services/notification.service";
+import Image from "next/image";
 import { NotificationDetailResponse } from "@/types/notification";
-import { authApi } from "@/services/auth.service";
+import { useNotifications } from "@/hooks/useNotifications";
 
 type NotificationItem = {
   id: string;
@@ -13,6 +13,8 @@ type NotificationItem = {
   time: string;
   read?: boolean;
   meta?: Record<string, string>;
+  avatar?: string | null;
+  senderName?: string;
 };
 
 export default function AdminNotificationsPage() {
@@ -21,28 +23,24 @@ export default function AdminNotificationsPage() {
   const [query, setQuery] = useState("");
   const [detailModal, setDetailModal] = useState<null | { title: string; meta?: Record<string, string> }>(null);
 
-  // Load notifications for current logged-in user
+  // Use shared react-query hook to fetch notifications (prevents duplicate network calls)
+  const { data: notifPageData } = useNotifications(1, filter === "unread" ? "unread" : "all");
+
   useEffect(() => {
-    const load = async () => {
-      if (!authApi.isAuthenticated()) return;
-      try {
-        const res = await notificationApi.getMyNotifications(1, 50);
-        const list = res.data?.data || [];
-        const mapped = list.map((it: NotificationDetailResponse) => ({
-          id: it.id,
-          title: it.title || it.senderName || "Thông báo",
-          desc: it.content || "",
-          time: it.createdAt ? new Date(it.createdAt).toLocaleString() : "",
-          read: it.read ?? false,
-          meta: {}, // API doesn't provide meta data
-        }));
-        setNotifications(mapped);
-      } catch (e) {
-        console.error("Failed to load notifications", e);
-      }
-    };
-    load();
-  }, []);
+    const list = notifPageData?.data || [];
+    const mapped = list.map((it: NotificationDetailResponse) => ({
+      id: it.id,
+      title: it.title || it.senderName || "Thông báo",
+      desc: it.content || "",
+      // keep raw createdAt string for formatting utilities elsewhere
+      time: it.createdAt ? it.createdAt : "",
+      avatar: it.avatar,
+      senderName: it.senderName,
+      read: it.read ?? false,
+      meta: {}, // API doesn't provide meta data
+    }));
+    setNotifications(mapped);
+  }, [notifPageData]);
 
   const markRead = (id: string) => {
     setNotifications((prev) =>
@@ -76,7 +74,7 @@ export default function AdminNotificationsPage() {
     });
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
@@ -86,7 +84,7 @@ export default function AdminNotificationsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <Link
               href="/admin/notifications/send"
               className="px-4 py-2 bg-accent-600 text-white rounded-md hover:bg-accent-700 flex items-center gap-2 text-sm font-medium"
@@ -105,23 +103,23 @@ export default function AdminNotificationsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm kiếm tiêu đề hoặc nội dung..."
-              className="w-full md:w-80 px-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full md:w-80 px-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent text-gray-700 placeholder-gray-400"
             />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm hidden md:block">
               {filtered.length} kết quả
             </div>
           </div>
 
-          <div className="inline-flex items-center rounded-md overflow-hidden bg-white border border-gray-200">
+          <div className="inline-flex flex-wrap items-center rounded-md overflow-hidden bg-white border border-gray-200">
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-2 text-sm ${filter === "all" ? "bg-accent-50 text-accent-700" : "text-gray-600 hover:bg-gray-50"}`}
+              className={`px-3 py-2 text-sm whitespace-nowrap ${filter === "all" ? "bg-accent-50 border border-accent text-accent-600" : "text-gray-700 hover:bg-gray-50"}`}
             >
               Tất cả
             </button>
             <button
               onClick={() => setFilter("unread")}
-              className={`px-3 py-2 text-sm ${filter === "unread" ? "bg-accent-50 text-accent-700" : "text-gray-600 hover:bg-gray-50"}`}
+              className={`px-3 py-2 text-sm whitespace-nowrap ${filter === "unread" ? "bg-accent-50 border border-accent text-accent-600" : "text-gray-700 hover:bg-gray-50"}`}
             >
               Chưa đọc
             </button>
@@ -129,14 +127,14 @@ export default function AdminNotificationsPage() {
 
           <button
             onClick={markAllRead}
-            className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+            className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 whitespace-nowrap"
           >
             Đánh dấu tất cả đã đọc
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-4">
+      <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-4 overflow-x-hidden">
         <div className="space-y-3">
           {filtered.length === 0 && (
             <div className="text-center text-sm text-gray-500 py-6">
@@ -150,18 +148,29 @@ export default function AdminNotificationsPage() {
               className={`flex items-start justify-between p-4 rounded-lg transition-colors shadow-sm ${n.read ? "bg-white hover:bg-gray-50" : "bg-accent-50 border-l-4 border-accent-600"}`}
             >
               <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${n.read ? "bg-gray-100" : "bg-gradient-to-br from-accent-50 to-accent-100"}`}>
-                  <svg className={`w-6 h-6 ${n.read ? "text-gray-500" : "text-accent-800"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
+                <div className={`w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center ${n.read ? "bg-gray-100" : "bg-gradient-to-br from-accent-50 to-accent-100"}`}>
+                  {n.avatar ? (
+                    <Image
+                      src={n.avatar}
+                      alt={n.senderName || "Avatar"}
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <svg className={`w-6 h-6 ${n.read ? "text-gray-500" : "text-accent-800"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                  )}
                 </div>
 
-                <div className="min-w-0">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className={`font-semibold truncate ${n.read ? "text-gray-900" : "text-accent-800"}`}>{n.title}</div>
-                    <div className="text-xs text-gray-400 whitespace-nowrap">{n.time}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className={`font-semibold text-base truncate ${n.read ? "text-gray-900" : "text-accent-800"}`}>{n.title}</div>
+                    <div className="text-xs text-gray-400 whitespace-nowrap mt-1 sm:mt-0 sm:ml-4">{n.time}</div>
                   </div>
-                  <div className="text-sm text-gray-600 mt-1">{n.desc}</div>
+                  <div className="text-sm text-gray-600 mt-2 line-clamp-3 break-words">{n.desc}</div>
                 </div>
               </div>
 

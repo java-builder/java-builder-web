@@ -1,150 +1,74 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HiOutlineBell } from "react-icons/hi";
 import Link from "next/link";
 import Image from "next/image";
 import { notificationApi } from "@/services/notification.service";
 import { NotificationDetailResponse } from "@/types/notification";
-import { useAuth } from "@/contexts/AuthContext";
+import { formatRelativeTime, formatApiDate } from "@/utils/dateUtils";
+import { useNotifications } from "@/hooks/useNotifications";
 
 export default function AdminNotificationDropdown() {
-  const { isAuthenticated } = useAuth();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationDetailResponse[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
-  const [tabPages, setTabPages] = useState<{ all: number; unread: number }>({
-    all: 1,
-    unread: 1,
-  });
-  const [itemsPerPage, setItemsPerPage] = useState<{
-    all: number;
-    unread: number;
-  }>({ all: 0, unread: 0 });
 
-  // Refs to prevent duplicate API calls
-  const hasInitiallyLoaded = useRef(false);
   const loadedTabsRef = useRef<Set<"all" | "unread">>(new Set());
-  const prevActiveTabRef = useRef<"all" | "unread">(activeTab);
 
-  const loadNotifications = useCallback(
-    async (
-      page: number = 1,
-      append: boolean = false,
-      markAsReadOnLoad: boolean = false,
-    ) => {
-      if (!isAuthenticated) return;
-      try {
-        let size: number | undefined = undefined;
-        const currentItemsPerPage = itemsPerPage[activeTab];
-        if (page > 1 && currentItemsPerPage > 0 && !append) {
-          size = page * currentItemsPerPage;
-        }
+  // Use shared react-query hook and enable only when dropdown is open to avoid duplicate calls
+  const { data: notifPageData, isFetching } = useNotifications(currentPage, activeTab, isNotifOpen);
 
-        const res =
-          activeTab === "unread"
-            ? await notificationApi.getUnreadNotifications(
-              size ? 1 : page,
-              size,
-            )
-            : await notificationApi.getMyNotifications(size ? 1 : page, size);
-        const list = res.data?.data || [];
-        const total = res.data?.totalPages || 1;
-        const pageSize = res.data?.pageSize || 0;
-
-        if (pageSize > 0) {
-          setItemsPerPage((prev) => {
-            if (prev[activeTab] !== pageSize) {
-              return { ...prev, [activeTab]: pageSize };
-            }
-            return prev;
-          });
-        }
-
-        setCurrentPage(page);
-        setTotalPages(total);
-        setTabPages((prev) => ({ ...prev, [activeTab]: page }));
-
-        if (append) {
-          setNotifications((prev) => [...prev, ...list]);
-        } else {
-          setNotifications(list);
-        }
-
-        // Update unread count from loaded notifications
-        const unreadInList = list.filter((n) => !n.read).length;
-        setHasUnread(unreadInList > 0);
-        setUnreadCount(unreadInList);
-
-        if (markAsReadOnLoad && list.length > 0) {
-          const unreadIds = list.filter((n) => !n.read).map((n) => n.id);
-          if (unreadIds.length > 0) {
-            try {
-              await notificationApi.markAsRead(unreadIds);
-              setNotifications((prev) =>
-                prev.map((n) =>
-                  unreadIds.includes(n.id) ? { ...n, isRead: true } : n,
-                ),
-              );
-              setHasUnread(false);
-              setUnreadCount(0);
-            } catch (e) {
-              console.error("Failed to mark notifications as read", e);
-            }
-          }
-        }
-      } catch (e) {
-        console.error("Failed to load notifications", e);
-      }
-    },
-    [isAuthenticated, activeTab, itemsPerPage],
-  );
-
-  // Single useEffect for initial load - prevents duplicate calls
+  // Sync query data into local state
   useEffect(() => {
-    if (!isAuthenticated || hasInitiallyLoaded.current) return;
+    if (!notifPageData) return;
+    const list = notifPageData.data || [];
+    const total = notifPageData.totalPages || 1;
 
-    hasInitiallyLoaded.current = true;
-    loadedTabsRef.current.add(activeTab);
-    prevActiveTabRef.current = activeTab;
+    setCurrentPage(notifPageData.currentPage || currentPage);
+    setTotalPages(total);
 
-    const savedPage = tabPages[activeTab] || 1;
-    loadNotifications(savedPage, false);
-  }, [isAuthenticated, activeTab, loadNotifications, tabPages]);
+    // Append if loading more, replace if first page
+    setNotifications(prev => {
+      if (notifPageData.currentPage === 1) return list;
+      // Avoid duplicates just in case
+      const existingIds = new Set(prev.map(n => n.id));
+      const newItems = list.filter(n => !existingIds.has(n.id));
+      return [...prev, ...newItems];
+    });
 
-  // Handle tab changes only (not initial load)
-  useEffect(() => {
-    if (!isAuthenticated || !hasInitiallyLoaded.current) return;
-
-    if (prevActiveTabRef.current !== activeTab && !loadedTabsRef.current.has(activeTab)) {
-      const savedPage = tabPages[activeTab] || 1;
-      loadNotifications(savedPage, false);
-      loadedTabsRef.current.add(activeTab);
-      prevActiveTabRef.current = activeTab;
+    // Update unread count based on the first page fetch mostly, 
+    // but simplified logic here just checks current list. 
+    // Ideally we trust API for unread count if it provided it.
+    const unreadInList = list.filter((n) => !n.read).length;
+    if (currentPage === 1) {
+      setHasUnread(unreadInList > 0);
+      setUnreadCount(unreadInList);
     }
-  }, [isAuthenticated, activeTab, loadNotifications, tabPages]);
+  }, [notifPageData, activeTab, currentPage]);
 
   const handleOpenNotifications = async () => {
     setIsNotifOpen(!isNotifOpen);
     if (!isNotifOpen) {
-      const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
-      if (unreadIds.length > 0) {
-        try {
-          await notificationApi.markAsRead(unreadIds);
-          setNotifications((prev) =>
-            prev.map((n) =>
-              unreadIds.includes(n.id) ? { ...n, isRead: true } : n,
-            ),
-          );
-          setHasUnread(false);
-          setUnreadCount(0);
-        } catch (e) {
-          console.error("Failed to mark notifications as read", e);
+      if (notifications.some(n => !n.read)) {
+        const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+        if (unreadIds.length > 0) {
+          try {
+            await notificationApi.markAsRead(unreadIds);
+            setNotifications((prev) =>
+              prev.map((n) =>
+                unreadIds.includes(n.id) ? { ...n, isRead: true, read: true } : n,
+              ),
+            );
+            setHasUnread(false);
+            setUnreadCount(0);
+          } catch (e) {
+            console.error("Failed to mark notifications as read", e);
+          }
         }
       }
     }
@@ -152,18 +76,16 @@ export default function AdminNotificationDropdown() {
 
   const handleTabChange = (tab: "all" | "unread") => {
     setActiveTab(tab);
+    setCurrentPage(1);
     setNotifications([]);
     loadedTabsRef.current.delete(tab);
   };
 
   const filteredNotifications = notifications;
 
-  const handleLoadMore = async () => {
-    if (currentPage >= totalPages || isLoadingMore) return;
-    setIsLoadingMore(true);
-    const nextPage = currentPage + 1;
-    await loadNotifications(nextPage, true, true);
-    setIsLoadingMore(false);
+  const handleLoadMore = () => {
+    if (currentPage >= totalPages || isFetching) return;
+    setCurrentPage(prev => prev + 1);
   };
 
   return (
@@ -191,8 +113,8 @@ export default function AdminNotificationDropdown() {
               <button
                 onClick={() => handleTabChange("all")}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${activeTab === "all"
-                    ? "text-accent border-b-2 border-accent"
-                    : "text-gray-600 hover:text-gray-800"
+                  ? "text-accent border-b-2 border-accent"
+                  : "text-gray-600 hover:text-gray-800"
                   }`}
               >
                 Tất cả
@@ -200,8 +122,8 @@ export default function AdminNotificationDropdown() {
               <button
                 onClick={() => handleTabChange("unread")}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors relative ${activeTab === "unread"
-                    ? "text-accent border-b-2 border-accent"
-                    : "text-gray-600 hover:text-gray-800"
+                  ? "text-accent border-b-2 border-accent"
+                  : "text-gray-600 hover:text-gray-800"
                   }`}
               >
                 Chưa đọc
@@ -272,8 +194,11 @@ export default function AdminNotificationDropdown() {
                         {n.title || "Thông báo"}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400">
-                      {n.createdAt}
+                    <div
+                      className="text-xs text-gray-400"
+                      title={n.createdAt ? formatApiDate(n.createdAt) : ""}
+                    >
+                      {n.createdAt ? formatRelativeTime(n.createdAt) : ""}
                     </div>
                   </div>
                   {/* thumbnail not displayed on FE */}
@@ -287,10 +212,10 @@ export default function AdminNotificationDropdown() {
             <div className="px-4 py-2.5 border-t border-gray-100">
               <button
                 onClick={handleLoadMore}
-                disabled={isLoadingMore}
+                disabled={isFetching}
                 className="w-full text-sm text-accent hover:text-blue-700 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
               >
-                {isLoadingMore ? (
+                {isFetching ? (
                   <>
                     <svg
                       className="animate-spin h-4 w-4"

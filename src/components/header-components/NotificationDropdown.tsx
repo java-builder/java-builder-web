@@ -5,6 +5,7 @@ import { HiOutlineBell } from "react-icons/hi";
 import Link from "next/link";
 import Image from "next/image";
 import { useNotifications, useMarkAsRead } from "@/hooks/useNotifications";
+import { formatRelativeTime, formatApiDate } from "@/utils/dateUtils";
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -105,7 +106,12 @@ export default function NotificationDropdown() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm text-gray-900 dark:text-gray-100 line-clamp-2">{n.title}</div>
-                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{n.createdAt}</div>
+                    <div
+                      className="text-xs text-gray-400 dark:text-gray-500 mt-1"
+                      title={n.createdAt ? formatApiDate(n.createdAt) : ""}
+                    >
+                      {n.createdAt ? formatRelativeTime(n.createdAt) : ""}
+                    </div>
                   </div>
                 </Link>
               ))

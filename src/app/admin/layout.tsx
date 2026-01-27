@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminNotificationDropdown from "@/components/admin/AdminNotificationDropdown";
+import ThemeToggle from "@/components/header-components/ThemeToggle";
 import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import Logo from "@/components/header-components/Logo";
@@ -541,6 +542,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </div>
 
                 <div className="flex items-center space-x-4">
+                  <ThemeToggle />
                   <AdminNotificationDropdown />
                 </div>
               </div>
