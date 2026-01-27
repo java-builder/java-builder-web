@@ -1,15 +1,19 @@
-"use client";
-
-import Link from "next/link";
-import Image from "next/image";
-import MotionWrapper from "@/components/MotionWrapper";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import CourseCard from "@/components/courses/CourseCard";
-import PublicBlogCard from "@/components/blogs/PublicBlogCard";
-import RoadmapSection from "@/components/roadmap/RoadmapSection";
-import { useFeaturedCourses } from "@/hooks/useCourses";
-import { useFeaturedBlogs } from "@/hooks/useBlogs";
+ "use client";
+ 
+ import { useState, useEffect } from "react";
+ import Link from "next/link";
+ import Image from "next/image";
+ import MotionWrapper from "@/components/MotionWrapper";
+ import Header from "@/components/Header";
+ import Footer from "@/components/Footer";
+ import CourseCard from "@/components/courses/CourseCard";
+ import PublicBlogCard from "@/components/blogs/PublicBlogCard";
+ import DocumentCard from "@/components/documents/DocumentCard";
+ import RoadmapSection from "@/components/roadmap/RoadmapSection";
+ import { useFeaturedCourses } from "@/hooks/useCourses";
+ import { useFeaturedBlogs } from "@/hooks/useBlogs";
+ import { documentApi } from "@/services/document.service";
+ import { Document } from "@/types/document";
 
 export default function Home() {
   const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useFeaturedCourses();
@@ -17,6 +21,33 @@ export default function Home() {
 
   const courses = coursesData?.data || [];
   const blogs = (blogsData?.data || []).slice(0, 6);
+
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
+  const [documentsError, setDocumentsError] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchDocuments = async () => {
+      setIsLoadingDocuments(true);
+      try {
+        const res = await documentApi.getAll({ page: 1, size: 6 });
+        if (mounted) {
+          // res.data is a PageResponse<Document> — take its .data array
+          setDocuments(res.data?.data || []);
+          setDocumentsError(false);
+        }
+      } catch {
+        if (mounted) setDocumentsError(true);
+      } finally {
+        if (mounted) setIsLoadingDocuments(false);
+      }
+    };
+    fetchDocuments();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -55,13 +86,13 @@ export default function Home() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0 pt-2">
                     <Link
                       href="/courses"
-                      className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                      className="inline-flex items-center justify-center px-6 py-3 bg-accent text-white font-semibold rounded-full shadow-md hover:shadow-lg transition transform duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent/30"
                     >
                       Khám phá khóa học
                     </Link>
                     <Link
                       href="/blogs"
-                      className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                      className="inline-flex items-center justify-center px-5 py-3 border border-gray-200 text-gray-700 bg-white rounded-full hover:bg-gray-50 transition-colors duration-200"
                     >
                       Khám phá bài viết
                     </Link>
@@ -175,7 +206,7 @@ export default function Home() {
             <div className="text-center mt-12">
               <Link
                 href="/blogs"
-                className="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                className="inline-flex items-center px-4 py-2 bg-accent text-white font-medium rounded-full shadow-sm hover:shadow-md transition transform duration-200 ease-in-out"
               >
                 Xem tất cả bài viết
                 <svg
@@ -196,6 +227,8 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Featured Documents Section (moved below courses) */}
 
       {/* Course Cards Section */}
       <section className="py-12 bg-white">
@@ -277,6 +310,86 @@ export default function Home() {
               </div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Featured Documents Section */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <MotionWrapper animation="fadeInUp" duration={0.8}>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Tài liệu nổi bật
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Tuyển tập tài liệu hữu ích cho quá trình học tập và tham khảo
+              </p>
+            </div>
+          </MotionWrapper>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {isLoadingDocuments && (
+              <div className="col-span-full flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
+              </div>
+            )}
+
+            {documentsError && !isLoadingDocuments && (
+              <div className="col-span-full text-center py-12">
+                <div className="text-red-600 mb-4">
+                  <svg
+                    className="w-12 h-12 mx-auto"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-gray-600">Có lỗi xảy ra khi tải tài liệu</p>
+              </div>
+            )}
+
+            {!isLoadingDocuments && !documentsError && documents.map((doc, index) => (
+              <MotionWrapper
+                key={doc.id}
+                animation="fadeInUp"
+                delay={0.2 * (index + 1)}
+                duration={0.6}
+              >
+                <DocumentCard document={doc} index={index} />
+              </MotionWrapper>
+            ))}
+          </div>
+
+          {!isLoadingDocuments && !documentsError && documents.length > 0 && (
+            <div className="text-center mt-12">
+              <Link
+                href="/documents"
+                className="inline-flex items-center px-4 py-2 bg-accent text-white font-medium rounded-full shadow-sm hover:shadow-md transition transform duration-200 ease-in-out"
+              >
+                Xem tất cả tài liệu
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

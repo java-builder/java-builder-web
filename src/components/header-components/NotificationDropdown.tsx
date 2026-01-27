@@ -88,10 +88,10 @@ export default function NotificationDropdown() {
               notifications.map((n) => (
                 <Link
                   key={n.id}
-                  href={n.link || "#"}
+                  href={n.content || "#"}
                   className={`flex items-start gap-3 px-4 py-3 transition-colors ${
-                    !n.read
-                      ? "bg-blue-50/50 dark:bg-slate-700/50"
+                    !n.read 
+                      ? "bg-blue-50/50 dark:bg-slate-700/50" 
                       : "hover:bg-gray-50 dark:hover:bg-slate-700"
                   }`}
                   onClick={() => setIsOpen(false)}
@@ -107,7 +107,6 @@ export default function NotificationDropdown() {
                     <div className="text-sm text-gray-900 dark:text-gray-100 line-clamp-2">{n.title}</div>
                     <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{n.createdAt}</div>
                   </div>
-                  {/* thumbnail hidden on FE per request */}
                 </Link>
               ))
             )}

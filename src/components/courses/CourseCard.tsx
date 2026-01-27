@@ -96,7 +96,6 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      {/* Header */}
       <div className="relative h-48 overflow-hidden">
         {course.courseCover ? (
           <Image
@@ -132,11 +131,9 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
             </div>
           </div>
         )}
-        {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
-      {/* Body */}
       <div className="p-6">
         <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{course.title}</h4>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3">
@@ -185,51 +182,55 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
           </div>
         </div>
 
-        {/* Price */}
-        <div className="mb-4">
+        <div className="flex items-center justify-between mb-4">
           <span className="text-2xl font-bold text-accent">
             {formatPrice(course.price)}
           </span>
-        </div>
 
-        {/* Buttons */}
-        <div className="flex gap-2">
-          <Link
-            href={`/courses/${course.slug}`}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-md transition-all duration-200 hover:shadow-md"
-          >
-            Xem chi tiết
-          </Link>
-          <button 
-            onClick={handleToggleFavorite}
-            disabled={isLoading}
-            className={`px-3 py-2 text-sm font-medium rounded-md border transition-all duration-200 disabled:opacity-50 ${
-              isFavorite 
-                ? "bg-red-50 hover:bg-red-100 text-red-500 border-red-200 hover:border-red-300 dark:bg-red-900/30 dark:border-red-800 dark:hover:bg-red-900/50 dark:hover:border-red-700" 
-                : "bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300 dark:bg-slate-700 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-600 dark:hover:border-slate-500"
-            }`}
-          >
-            {isLoading ? (
-              <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/courses/${course.slug}`}
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-accent text-sm font-medium rounded-md hover:bg-accent-50 hover:border-accent/20 transition-colors duration-150"
+            >
+              <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            ) : (
-              <svg
-                className="w-4 h-4"
-                fill={isFavorite ? "currentColor" : "none"}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            )}
-          </button>
+              Xem chi tiết
+            </Link>
+
+            <button
+              onClick={handleToggleFavorite}
+              disabled={isLoading}
+              className={`inline-flex items-center justify-center w-8 h-8 p-2 text-sm rounded-md border transition-all duration-200 disabled:opacity-50 ${
+                isFavorite
+                  ? "bg-red-50 text-red-500 border-red-200 hover:bg-red-100 hover:border-red-300 dark:bg-red-900/30 dark:border-red-800 dark:hover:bg-red-900/50"
+                  : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-800 dark:bg-slate-700 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-600"
+              }`}
+              aria-label={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
+              title={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
+            >
+              {isLoading ? (
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                <svg
+                  className="w-6 h-6"
+                  fill={isFavorite ? "currentColor" : "none"}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
