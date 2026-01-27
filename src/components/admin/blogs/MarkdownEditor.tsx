@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import MarkdownRenderer from "./MarkdownRenderer";
-import "@/styles/markdown-editor.css";
 
-// Import MDEditor dynamically để tránh SSR issues
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   {
@@ -42,6 +40,8 @@ export default function MarkdownEditor({
 }: MarkdownEditorProps) {
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("split");
+  const wordCount = value ? value.trim().split(/\s+/).filter(Boolean).length : 0;
+  const handleClear = () => onChange("");
 
   useEffect(() => {
     setMounted(true);
@@ -66,9 +66,10 @@ export default function MarkdownEditor({
 
   return (
     <div className="space-y-2">
-      {/* View Mode Tabs */}
-      <div className="flex items-center border border-gray-300 rounded-t-lg bg-gray-50">
-        <button
+      {/* View Mode Tabs + toolbar */}
+      <div className="flex items-center border border-gray-300 rounded-t-lg bg-white">
+        <div className="flex items-center">
+          <button
           onClick={() => setViewMode("edit")}
           className={`px-4 py-2 text-sm font-medium rounded-tl-lg transition-colors duration-200 ${
             viewMode === "edit"
@@ -91,7 +92,7 @@ export default function MarkdownEditor({
           </svg>
           Viết
         </button>
-        <button
+          <button
           onClick={() => setViewMode("preview")}
           className={`px-4 py-2 text-sm font-medium transition-colors duration-200 ${
             viewMode === "preview"
@@ -120,7 +121,7 @@ export default function MarkdownEditor({
           </svg>
           Xem trước
         </button>
-        <button
+          <button
           onClick={() => setViewMode("split")}
           className={`px-4 py-2 text-sm font-medium rounded-tr-lg transition-colors duration-200 ${
             viewMode === "split"
@@ -143,6 +144,24 @@ export default function MarkdownEditor({
           </svg>
           Chia đôi
         </button>
+        </div>
+
+        <div className="ml-auto flex items-center space-x-3 pr-3">
+          <div className="text-sm text-gray-600" aria-hidden="true">
+            {wordCount} từ
+          </div>
+          <button
+            aria-label="Xóa nội dung"
+            title="Xóa nội dung"
+            onClick={handleClear}
+            className="px-3 py-1 text-sm bg-gray-100 rounded-md hover:bg-gray-200 transition"
+          >
+            <svg className="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Xóa
+          </button>
+        </div>
       </div>
 
       {/* Editor Content */}

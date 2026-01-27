@@ -82,8 +82,8 @@ export default function PostDetailPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-start gap-5 mb-6">
+        <div className="max-w-4xl w-full mx-auto">
+          <div className="flex flex-col sm:flex-row items-start gap-5 mb-6">
             {post.avatar ? (
               <Image
                 src={post.avatar}
@@ -125,8 +125,8 @@ export default function PostDetailPage() {
             </div>
           )}
 
-          <div className="mb-10">
-            <PublicMarkdownRenderer content={post.content} className="prose dark:prose-invert max-w-none" />
+          <div className="mb-10 w-full">
+            <PublicMarkdownRenderer content={post.content} className="prose-sm sm:prose lg:prose-lg max-w-full break-words dark:prose-invert" />
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-6 mt-6">

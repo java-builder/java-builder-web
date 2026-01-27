@@ -46,7 +46,7 @@ export default function PublicMarkdownRenderer({
   };
 
   return (
-    <div className={`markdown-content ${className}`}>
+    <div className={`markdown-content max-w-full ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, rehypeRaw]}
