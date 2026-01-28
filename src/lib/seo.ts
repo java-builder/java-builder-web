@@ -124,6 +124,7 @@ export function generateSEO({
 export function generateBlogStructuredData(blog: {
   id: string;
   title: string;
+  slug: string;
   summary?: string;
   content: string;
   author?: string;
@@ -153,7 +154,7 @@ export function generateBlogStructuredData(blog: {
     dateModified: blog.createdAt,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${SITE_URL}/blogs/${blog.id}`,
+      '@id': `${SITE_URL}/blogs/${blog.slug}`,
     },
   };
 }

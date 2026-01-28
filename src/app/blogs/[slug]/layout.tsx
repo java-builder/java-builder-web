@@ -16,7 +16,7 @@ export async function generateMetadata({
 
     const description =
       blog.summary || blog.content.replace(/<[^>]*>/g, '').substring(0, 160);
-    
+
     const imgUrl =
       blog.featuredImage && /^https?:\/\//i.test(blog.featuredImage)
         ? blog.featuredImage
@@ -28,7 +28,7 @@ export async function generateMetadata({
       title: blog.title,
       description,
       image: imgUrl,
-      url: `/blogs/${slug}`,
+      url: `/blogs/${blog.slug}`,
       type: 'article',
       publishedTime: blog.createdAt,
       modifiedTime: blog.createdAt,
@@ -50,7 +50,7 @@ export default async function BlogDetailLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  
+
   let structuredData = null;
   try {
     const blog = await blogService.getBlogBySlug(slug);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -95,7 +95,7 @@ export default function BlogDetailPage() {
 
     fetchBlogDetail();
   }, [blogSlug, currentUser]);
-  
+
   useEffect(() => {
     const incrementView = async () => {
       if (!blogSlug || hasIncrementedViewRef.current) return;
