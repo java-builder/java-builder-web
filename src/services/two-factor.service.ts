@@ -11,9 +11,10 @@ export const twoFactorApi = {
   async activate(): Promise<ApiResponse<TwoFactorSetupResponse>> {
     const response = await apiClient.post(API.TWO_FACTOR_ACTIVATE);
     return {
-      ...response.data,
-      result: {
-        qrCodeData: response.data.result,
+      code: response.data.code,
+      message: response.data.message,
+      data: {
+        qrCodeData: response.data.data,
       },
     };
   },
