@@ -39,7 +39,7 @@ export const blogService = {
     const response = await apiClient.patch(
       `${API.INCREMENT_VIEW}/${slug}/increment-view`,
     );
-    return response.data.result as number;
+    return response.data.data as number;
   },
 
   // Tăng lượt thích
@@ -47,7 +47,7 @@ export const blogService = {
     const response = await apiClient.patch(
       `${API.INCREMENT_LIKE}/${slug}/increment-like`,
     );
-    return response.data.result as number;
+    return response.data.data as number;
   },
 
   // Cập nhật blog

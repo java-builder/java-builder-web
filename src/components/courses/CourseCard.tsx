@@ -23,16 +23,14 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
     // Skip if initialFavorite is provided or already checked
     if (initialFavorite !== undefined || hasCheckedFavorite.current) return;
     if (!authApi.isAuthenticated()) return;
-    
+
     hasCheckedFavorite.current = true;
-    
+
     const checkFavorite = async () => {
       try {
         const result = await favoriteApi.check(course.id);
-        if ('data' in result && result.data !== undefined) {
+        if (result && result.data !== undefined) {
           setIsFavorite(result.data);
-        } else if ('result' in result && result.result !== undefined) {
-          setIsFavorite(result.result);
         }
       } catch {
         // Silent fail
@@ -44,7 +42,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (!authApi.isAuthenticated()) {
       toast.error("Vui lòng đăng nhập để thêm vào yêu thích");
       return;
@@ -145,13 +143,12 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
           <div className="flex items-center space-x-2">
             {course.level && (
               <span
-                className={`px-2 py-1 rounded-md text-xs font-medium ${
-                  course.level === CourseLevel.BEGINNER
-                    ? "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300"
-                    : course.level === CourseLevel.INTERMEDIATE
-                      ? "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300"
-                      : "bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"
-                }`}
+                className={`px-2 py-1 rounded-md text-xs font-medium ${course.level === CourseLevel.BEGINNER
+                  ? "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300"
+                  : course.level === CourseLevel.INTERMEDIATE
+                    ? "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300"
+                    : "bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"
+                  }`}
               >
                 {course.level === CourseLevel.BEGINNER
                   ? "Cơ bản"
@@ -201,11 +198,10 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
             <button
               onClick={handleToggleFavorite}
               disabled={isLoading}
-              className={`inline-flex items-center justify-center w-8 h-8 p-2 text-sm rounded-md border transition-all duration-200 disabled:opacity-50 ${
-                isFavorite
-                  ? "bg-red-50 text-red-500 border-red-200 hover:bg-red-100 hover:border-red-300 dark:bg-red-900/30 dark:border-red-800 dark:hover:bg-red-900/50"
-                  : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-800 dark:bg-slate-700 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-600"
-              }`}
+              className={`inline-flex items-center justify-center w-8 h-8 p-2 text-sm rounded-md border transition-all duration-200 disabled:opacity-50 ${isFavorite
+                ? "bg-red-50 text-red-500 border-red-200 hover:bg-red-100 hover:border-red-300 dark:bg-red-900/30 dark:border-red-800 dark:hover:bg-red-900/50"
+                : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-800 dark:bg-slate-700 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-600"
+                }`}
               aria-label={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
               title={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
             >

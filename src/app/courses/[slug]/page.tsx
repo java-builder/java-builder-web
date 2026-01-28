@@ -90,14 +90,18 @@ export default function CourseDetailPage() {
       try {
         setIsLoading(true);
         setError("");
-        // Fetch course detail (includes isFavorite, isEnrolled, isPremiumUser)
         const result = await courseApi.getBySlug(slug);
         if (result.code === 200 && result.data) {
-          setCourse(result.data);
-          // Set user-specific states from response
-          setIsFavorite(result.data.isFavorite ?? false);
-          setIsEnrolled(result.data.isEnrolled ?? false);
-          setIsPremiumUser(result.data.isPremiumUser ?? false);
+          const courseData = result.data;
+          setCourse(courseData);
+
+          if (courseData.slug && courseData.slug !== slug) {
+            window.history.replaceState(null, "", `/courses/${courseData.slug}`);
+          }
+
+          setIsFavorite(courseData.isFavorite ?? false);
+          setIsEnrolled(courseData.isEnrolled ?? false);
+          setIsPremiumUser(courseData.isPremiumUser ?? false);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";

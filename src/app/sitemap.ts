@@ -60,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       next: { revalidate: 3600 }, // Cache 1 hour
     });
     const blogsData = await blogsResponse.json();
-    const blogs: BlogItem[] = blogsData?.result?.result || [];
+    const blogs: BlogItem[] = blogsData?.data?.data || [];
 
     const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
       url: `${SITE_URL}/blogs/${blog.slug}`,
@@ -71,10 +71,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Fetch courses
     const coursesResponse = await fetch(`${API_URL}/api/v1/courses?page=1&size=1000`, {
-      next: { revalidate: 3600 }, 
+      next: { revalidate: 3600 },
     });
     const coursesData = await coursesResponse.json();
-    const courses: CourseItem[] = coursesData?.result?.result || [];
+    const courses: CourseItem[] = coursesData?.data?.data || [];
 
     const coursePages: MetadataRoute.Sitemap = courses.map((course) => ({
       url: `${SITE_URL}/courses/${course.slug}`,

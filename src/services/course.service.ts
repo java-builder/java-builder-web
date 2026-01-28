@@ -184,7 +184,7 @@ export const favoriteApi = {
       );
       return response.data;
     } catch {
-      return { code: 200, result: false };
+      return { code: 200, data: false };
     }
   },
 

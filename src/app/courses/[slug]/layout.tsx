@@ -32,7 +32,7 @@ export async function generateMetadata({
       title: course.title,
       description,
       image: imgUrl,
-      url: `/courses/${slug}`,
+      url: `/courses/${course.slug}`,
       type: 'website',
       tags: [course.level || 'khóa học', 'lập trình', 'online course'],
     });
