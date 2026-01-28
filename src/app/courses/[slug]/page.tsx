@@ -95,10 +95,6 @@ export default function CourseDetailPage() {
           const courseData = result.data;
           setCourse(courseData);
 
-          if (courseData.slug && courseData.slug !== slug) {
-            window.history.replaceState(null, "", `/courses/${courseData.slug}`);
-          }
-
           setIsFavorite(courseData.isFavorite ?? false);
           setIsEnrolled(courseData.isEnrolled ?? false);
           setIsPremiumUser(courseData.isPremiumUser ?? false);
@@ -114,11 +110,9 @@ export default function CourseDetailPage() {
     fetchData();
   }, [slug]);
 
-  // Toggle favorite handler
   const handleToggleFavorite = async () => {
     if (!course?.id) return;
 
-    // Check if user is logged in
     if (!currentUser) {
       setAuthModal({
         isOpen: true,
