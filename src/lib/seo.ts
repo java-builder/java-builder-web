@@ -4,13 +4,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 const SITE_NAME = 'JavaBuilder';
 const SITE_DESCRIPTION = 'JavaBuilder.online - Nền tảng học lập trình Java, Spring Boot, React online số 1 Việt Nam. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng JavaBuilder.';
 const SITE_KEYWORDS = [
-  // Brand keywords - ưu tiên cao
   'javabuilder',
+  'java builder',
   'javabuilder.online',
   'java builder online',
   'javabuilder học java',
   'javabuilder khóa học',
-  // Long-tail keywords - dễ rank hơn
   'học java online việt nam',
   'khóa học java spring boot',
   'học lập trình java từ cơ bản đến nâng cao',
@@ -43,7 +42,7 @@ export interface SEOProps {
   author?: string;
   tags?: string[];
   noIndex?: boolean;
-  useTemplate?: boolean; // Thêm option để bật/tắt template
+  useTemplate?: boolean;
 }
 
 export function generateSEO({
@@ -57,7 +56,7 @@ export function generateSEO({
   author,
   tags,
   noIndex = false,
-  useTemplate = true, // Mặc định vẫn dùng template
+  useTemplate = true,
 }: SEOProps): Metadata {
   const fullTitle = useTemplate ? `${title} | ${SITE_NAME}` : title;
   const canonicalUrl = url ? `${SITE_URL}${url}` : SITE_URL;
@@ -72,20 +71,20 @@ export function generateSEO({
     publisher: SITE_NAME,
     robots: noIndex
       ? {
-          index: false,
-          follow: false,
-        }
+        index: false,
+        follow: false,
+      }
       : {
+        index: true,
+        follow: true,
+        googleBot: {
           index: true,
           follow: true,
-          googleBot: {
-            index: true,
-            follow: true,
-            'max-video-preview': -1,
-            'max-image-preview': 'large',
-            'max-snippet': -1,
-          },
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
         },
+      },
     alternates: {
       canonical: canonicalUrl,
     },
@@ -162,6 +161,7 @@ export function generateBlogStructuredData(blog: {
 export function generateCourseStructuredData(course: {
   id: string;
   title: string;
+  slug: string;
   description: string;
   price: number;
   courseCover?: string;
@@ -173,6 +173,7 @@ export function generateCourseStructuredData(course: {
     '@context': 'https://schema.org',
     '@type': 'Course',
     name: course.title,
+    url: `${SITE_URL}/courses/${course.slug}`,
     description: course.description,
     provider: {
       '@type': 'Organization',
