@@ -205,7 +205,7 @@ export function generateOrganizationStructuredData() {
     name: SITE_NAME,
     alternateName: ['Java Builder', 'javabuilder', 'JavaBuilder.online'],
     url: SITE_URL,
-    logo: `${SITE_URL}/favicon.svg`,
+    logo: `${SITE_URL}/logos/java-logo.png`,
     description: SITE_DESCRIPTION,
     founder: {
       '@type': 'Person',
@@ -250,7 +250,7 @@ export function generateEducationalOrganizationStructuredData() {
     name: SITE_NAME,
     alternateName: ['Java Builder', 'javabuilder', 'JavaBuilder.online', 'javabuilder online'],
     url: SITE_URL,
-    logo: `${SITE_URL}/favicon.svg`,
+    logo: `${SITE_URL}/logos/java-logo.png`,
     description: SITE_DESCRIPTION,
     areaServed: {
       '@type': 'Country',
