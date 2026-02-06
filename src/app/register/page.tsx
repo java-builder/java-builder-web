@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 import { userApi } from "@/services/user.service";
 import { CreateUserRequest } from "@/types/user";
 import toast from "react-hot-toast";
+import {
+  generateGoogleAuthUrl,
+  generateGithubAuthUrl,
+  generateLinkedinAuthUrl,
+} from "@/utils/oauthUtils";
 
 interface RegisterFormData extends CreateUserRequest {
   confirmPassword: string;
@@ -282,10 +287,11 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <button
                 type="button"
                 disabled={isLoading}
+                onClick={() => (window.location.href = generateGoogleAuthUrl())}
                 className="flex items-center justify-center px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
                 <Image src="/google.svg" alt="Google" width={14} height={14} />
@@ -294,10 +300,23 @@ export default function RegisterPage() {
               <button
                 type="button"
                 disabled={isLoading}
+                onClick={() => (window.location.href = generateGithubAuthUrl())}
                 className="flex items-center justify-center px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
                 <Image src="/github.svg" alt="GitHub" width={14} height={14} />
                 <span className="ml-2 text-xs text-gray-700">GitHub</span>
+              </button>
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => (window.location.href = generateLinkedinAuthUrl())}
+                className="flex items-center justify-center px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="24" height="24" rx="4" fill="#0A66C2"/>
+                  <path d="M7 9h3v7H7zM8.5 7.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM14 9c1.657 0 3 1.343 3 3v4h-3v-4c0-.552-.448-1-1-1s-1 .448-1 1v4h-3v-7h3v1c.33-.644.986-1 1.664-1z" fill="#fff"/>
+                </svg>
+                <span className="ml-2 text-xs text-gray-700">LinkedIn</span>
               </button>
             </div>
 
