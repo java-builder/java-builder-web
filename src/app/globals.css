@@ -195,7 +195,7 @@ body {
 }
 
 .dark .bg-blue-100 {
-  background-color: #1e40af !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
 }
 
 .dark .text-blue-600 {
@@ -207,7 +207,23 @@ body {
 }
 
 .dark .text-blue-800 {
-  color: #60a5fa !important;
+  color: #93c5fd !important;
+}
+
+.dark .text-blue-200 {
+  color: #93c5fd !important;
+}
+
+.dark .text-blue-300 {
+  color: #bfdbfe !important;
+}
+
+.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark .border-blue-500\/30 {
+  border-color: rgba(59, 130, 246, 0.3) !important;
 }
 
 .dark .bg-green-50 {

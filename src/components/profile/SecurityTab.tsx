@@ -59,29 +59,29 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">Bảo mật</h2>
-        <p className="text-sm text-gray-500 mt-1">Quản lý các cài đặt bảo mật cho tài khoản của bạn</p>
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Bảo mật</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Quản lý các cài đặt bảo mật cho tài khoản của bạn</p>
       </div>
 
       {/* Content */}
       <div className="p-6 space-y-6">
         {/* Two-Factor Authentication Card */}
-        <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+        <div className="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-5 border border-gray-200 dark:border-slate-600">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4 flex-1">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 border border-gray-200">
-                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-white dark:bg-slate-600 rounded-xl flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-slate-500">
+                <svg className="w-6 h-6 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-base font-semibold text-gray-900 mb-1">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
                   Xác thực hai yếu tố
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Thêm lớp bảo mật bổ sung cho tài khoản
                 </p>
               </div>
@@ -91,7 +91,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                 onClick={handleToggleTwoFactor}
                 disabled={isLoading}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
-                  twoFactorEnabled ? "bg-accent" : "bg-gray-300"
+                  twoFactorEnabled ? "bg-accent" : "bg-gray-300 dark:bg-gray-600"
                 }`}
               >
                 <span
@@ -100,7 +100,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                   }`}
                 />
               </button>
-              <span className={`text-sm font-medium ${twoFactorEnabled ? "text-accent" : "text-gray-500"}`}>
+              <span className={`text-sm font-medium ${twoFactorEnabled ? "text-accent" : "text-gray-500 dark:text-gray-400"}`}>
                 {twoFactorEnabled ? "Đã bật" : "Chưa bật"}
               </span>
             </div>
@@ -108,26 +108,26 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
         </div>
 
         {/* Security Tips */}
-        <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800/50">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-semibold text-blue-900 mb-2">Hướng dẫn sử dụng 2FA</h4>
-              <ul className="space-y-1.5 text-sm text-blue-800">
+              <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Hướng dẫn sử dụng 2FA</h4>
+              <ul className="space-y-1.5 text-sm text-blue-800 dark:text-blue-200">
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-0.5">1.</span>
+                  <span className="text-blue-600 dark:text-blue-400 mt-0.5">1.</span>
                   <span>Tải ứng dụng <strong>Google Authenticator</strong> trên điện thoại</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-0.5">2.</span>
+                  <span className="text-blue-600 dark:text-blue-400 mt-0.5">2.</span>
                   <span>Bật 2FA và quét mã QR bằng ứng dụng authenticator</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-0.5">3.</span>
+                  <span className="text-blue-600 dark:text-blue-400 mt-0.5">3.</span>
                   <span>Nhập mã 6 số từ ứng dụng để xác thực</span>
                 </li>
                 <li className="flex items-start gap-2">

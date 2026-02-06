@@ -284,7 +284,7 @@ export default function PostList({
             {/* Tags */}
             {post.categoryName && (
               <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-md">
+                <span className="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 rounded-md border border-blue-200 dark:border-blue-500/30">
                   {post.categoryName}
                 </span>
               </div>

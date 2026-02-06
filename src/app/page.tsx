@@ -1,6 +1,5 @@
  "use client";
  
- import { useState, useEffect } from "react";
  import Link from "next/link";
  import Image from "next/image";
  import MotionWrapper from "@/components/MotionWrapper";
@@ -12,41 +11,16 @@
  import RoadmapSection from "@/components/roadmap/RoadmapSection";
  import { useFeaturedCourses } from "@/hooks/useCourses";
  import { useFeaturedBlogs } from "@/hooks/useBlogs";
- import { documentApi } from "@/services/document.service";
- import { Document } from "@/types/document";
+ import { useFeaturedDocuments } from "@/hooks/useDocuments";
 
 export default function Home() {
   const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useFeaturedCourses();
   const { data: blogsData, isLoading: isLoadingBlogs, error: blogsError } = useFeaturedBlogs();
+  const { data: documentsData, isLoading: isLoadingDocuments, error: documentsError } = useFeaturedDocuments();
 
   const courses = coursesData?.data || [];
   const blogs = (blogsData?.data || []).slice(0, 6);
-
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
-  const [documentsError, setDocumentsError] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-    const fetchDocuments = async () => {
-      setIsLoadingDocuments(true);
-      try {
-        const res = await documentApi.getAll({ page: 1, size: 6 });
-        if (mounted) {
-          setDocuments(res.data?.data || []);
-          setDocumentsError(false);
-        }
-      } catch {
-        if (mounted) setDocumentsError(true); 
-      } finally {
-        if (mounted) setIsLoadingDocuments(false);
-      }
-    };
-    fetchDocuments();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const documents = documentsData?.data?.data || [];
 
   return (
     <div className="min-h-screen bg-white">

@@ -119,7 +119,7 @@ export default function QNAPage() {
                         <button
                           type="button"
                           onClick={() => setFilterTag("all")}
-                          className={`px-3 py-1.5 rounded-full text-sm transition ${filterTag === "all" ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
+                          className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${filterTag === "all" ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
                         >
                           Tất cả
                         </button>
@@ -131,7 +131,7 @@ export default function QNAPage() {
                             <button
                               type="button"
                               onClick={() => setFilterTag(c.name)}
-                              className={`px-3 py-1.5 rounded-full text-sm transition ${active ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
+                              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${active ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
                             >
                               {c.name}
                             </button>

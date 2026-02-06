@@ -61,19 +61,19 @@ export default function MyPostsTab() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-      <div className="px-6 py-4 border-b border-gray-200">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Bài viết của tôi</h2>
-            <p className="text-sm text-gray-500 mt-1">Danh sách câu hỏi/bài đăng bạn đã tạo</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Bài viết của tôi</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Danh sách câu hỏi/bài đăng bạn đã tạo</p>
           </div>
         </div>
       </div>
 
       <div className="p-6">
         {isLoading && posts.length === 0 ? (
-          <div className="text-center py-12">Đang tải...</div>
+          <div className="text-center py-12 text-gray-600 dark:text-gray-400">Đang tải...</div>
         ) : (
           <>
             <PostList posts={posts} showActions onEdit={handleEdit} onDelete={handleDeleteClick} />

@@ -79,7 +79,7 @@ export default function PasswordTab() {
 
   if (isLoadingStatus) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex justify-center items-center min-h-[400px]">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
       </div>
     );
@@ -88,13 +88,13 @@ export default function PasswordTab() {
   const isPasswordSet = passwordStatus === PasswordStatus.SET;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           {isPasswordSet ? "Đổi mật khẩu" : "Tạo mật khẩu"}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {isPasswordSet
             ? "Cập nhật mật khẩu để bảo vệ tài khoản của bạn"
             : "Tạo mật khẩu để có thể đăng nhập bằng email và mật khẩu"}

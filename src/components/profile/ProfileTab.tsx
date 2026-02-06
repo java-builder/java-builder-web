@@ -105,13 +105,13 @@ export default function ProfileTab({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Thông tin cá nhân</h2>
-            <p className="text-sm text-gray-500 mt-1">Quản lý thông tin cá nhân của bạn</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Thông tin cá nhân</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Quản lý thông tin cá nhân của bạn</p>
           </div>
           {!isEditing && (
             <button
@@ -128,7 +128,7 @@ export default function ProfileTab({
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Avatar Section */}
-          <div className="flex items-center gap-6 pb-6 border-b border-gray-200">
+          <div className="flex items-center gap-6 pb-6 border-b border-gray-200 dark:border-slate-700">
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-accent to-accent-600 flex items-center justify-center">
                 {currentAvatar ? (
@@ -176,9 +176,9 @@ export default function ProfileTab({
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">Ảnh đại diện</h3>
-              <p className="text-xs text-gray-500 mb-1">JPG, PNG hoặc GIF. Tối đa 5MB.</p>
-              <p className="text-xs text-gray-400">Nhấn vào icon camera để thay đổi</p>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Ảnh đại diện</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">JPG, PNG hoặc GIF. Tối đa 5MB.</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Nhấn vào icon camera để thay đổi</p>
             </div>
           </div>
 
@@ -186,7 +186,7 @@ export default function ProfileTab({
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Tên người dùng
                 </label>
                 <input
@@ -194,25 +194,25 @@ export default function ProfileTab({
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   disabled={!isEditing}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent transition-colors disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors disabled:bg-gray-50 dark:disabled:bg-slate-800 disabled:text-gray-500 dark:disabled:text-gray-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   value={formData.email}
                   disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Trường đại học
               </label>
               <input
@@ -220,7 +220,7 @@ export default function ProfileTab({
                 value={formData.university}
                 onChange={(e) => setFormData({ ...formData, university: e.target.value })}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent transition-colors disabled:bg-gray-50 disabled:text-gray-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors disabled:bg-gray-50 dark:disabled:bg-slate-800 disabled:text-gray-500 dark:disabled:text-gray-400"
                 placeholder="Nhập tên trường đại học"
               />
             </div>
@@ -228,11 +228,11 @@ export default function ProfileTab({
 
           {/* Action Buttons */}
           {isEditing && (
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
               >
                 Hủy
               </button>

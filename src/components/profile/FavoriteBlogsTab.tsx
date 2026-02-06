@@ -2,13 +2,13 @@
 
 export default function FavoriteBlogsTab() {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Bài viết yêu thích</h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Bài viết yêu thích</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Lưu các bài viết bạn quan tâm để đọc sau
             </p>
           </div>
@@ -18,9 +18,9 @@ export default function FavoriteBlogsTab() {
       {/* Content */}
       <div className="p-6">
         <div className="text-center py-16">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-10 h-10 text-blue-500"
+              className="w-10 h-10 text-blue-500 dark:text-blue-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -33,13 +33,13 @@ export default function FavoriteBlogsTab() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Tính năng đang phát triển
           </h3>
-          <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
             Chúng tôi đang hoàn thiện tính năng lưu bài viết yêu thích. Vui lòng quay lại sau!
           </p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium border border-blue-200">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
