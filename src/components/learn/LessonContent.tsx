@@ -131,16 +131,16 @@ export default function LessonContent({
       <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
         <div className="max-w-3xl mx-auto">
           {/* Tab Navigation */}
-          <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div className="sticky top-0 z-10 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-sm">
             <div className="flex">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 sm:flex-none px-4 sm:px-6 py-3 flex items-center justify-center gap-2 text-sm font-medium transition-colors border-b-2 ${
+                  className={`flex-1 sm:flex-none px-4 sm:px-6 py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all border-b-2 ${
                     activeTab === tab.id
-                      ? "border-accent text-accent"
-                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                      ? "border-accent text-accent bg-accent/5 dark:bg-accent/10"
+                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/50"
                   }`}
                 >
                   {tab.icon}
