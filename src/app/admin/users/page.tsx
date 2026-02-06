@@ -15,16 +15,16 @@ const StatusBadge = ({ status }: { status: UserStatus | string }) => {
   const getStatusConfig = (status: UserStatus | string) => {
     switch (status) {
       case "ACTIVE":
-        return { color: "bg-green-100 text-green-800", text: "Hoạt động" };
+        return { color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", text: "Hoạt động" };
       case "INACTIVE":
         return {
-          color: "bg-yellow-100 text-yellow-800",
+          color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
           text: "Không hoạt động",
         };
       case "BANNED":
-        return { color: "bg-red-100 text-red-800", text: "Bị cấm" };
+        return { color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", text: "Bị cấm" };
       default:
-        return { color: "bg-gray-100 text-gray-800", text: status };
+        return { color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300", text: status };
     }
   };
 
@@ -305,10 +305,10 @@ export default function UsersPage() {
       <div className="mb-8">
                 <div className="sm:flex sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Quản lý người dùng
             </h1>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               {debouncedSearch ? (
                 <>
                   Tìm thấy <span className="font-semibold">{response?.data?.totalElements || 0}</span> kết quả cho &ldquo;{debouncedSearch}&rdquo;
@@ -344,11 +344,11 @@ export default function UsersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-2 bg-accent-100 rounded-lg">
+            <div className="p-2 bg-accent-100 dark:bg-accent-900/30 rounded-lg">
               <svg
-                className="w-6 h-6 text-accent-600"
+                className="w-6 h-6 text-accent-600 dark:text-accent-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -368,20 +368,20 @@ export default function UsersPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Tổng người dùng
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats?.totalUsers ?? (response?.data?.totalElements || 0)}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <svg
-                className="w-6 h-6 text-green-600"
+                className="w-6 h-6 text-green-600 dark:text-green-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -401,10 +401,10 @@ export default function UsersPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Đang hoạt động
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats?.activeUsers ?? (response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "ACTIVE",
                 ).length || 0)}
@@ -412,11 +412,11 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
+            <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
               <svg
-                className="w-6 h-6 text-yellow-600"
+                className="w-6 h-6 text-yellow-600 dark:text-yellow-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -436,10 +436,10 @@ export default function UsersPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Không hoạt động
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats?.inactiveUsers ?? (response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "INACTIVE",
                 ).length || 0)}
@@ -447,11 +447,11 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
+            <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
               <svg
-                className="w-6 h-6 text-red-600"
+                className="w-6 h-6 text-red-600 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -461,8 +461,8 @@ export default function UsersPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Đã xoá</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Đã xoá</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats?.deletedUsers ?? (response?.data?.data?.filter(
                   (user: UserDetailResponse) => user.userStatus === "DELETED",
                 ).length || 0)}
@@ -473,7 +473,7 @@ export default function UsersPage() {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="flex-1 max-w-lg">
             <div className="relative">
@@ -482,7 +482,7 @@ export default function UsersPage() {
                 placeholder="Tìm kiếm theo tên, email..."
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 text-gray-700 placeholder-gray-400"
+                className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700"
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
@@ -529,7 +529,7 @@ export default function UsersPage() {
             <button
               onClick={handleRefresh}
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
               <svg
                 className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
@@ -582,40 +582,40 @@ export default function UsersPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Người dùng
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Trạng thái
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Vai trò
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   MFT
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Ngày tạo
                 </th>
-                <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Thao tác
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {(response?.data?.data ?? []).map(
                 (user: UserDetailResponse) => (
                   <tr
                     key={user.id}
-                    className="hover:bg-gray-50 transition-colors duration-200"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -640,14 +640,14 @@ export default function UsersPage() {
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {user.username}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.email}</div>
+                      <div className="text-sm text-gray-900 dark:text-gray-200">{user.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <StatusBadge status={user.userStatus} />
@@ -665,18 +665,18 @@ export default function UsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.mftEnable ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-700"}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.mftEnable ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}>
                         {user.mftEnable ? "ON" : "OFF"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {user.createdAt ? formatCreatedDate(user.createdAt) : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
                         <button
                           onClick={() => handleEditUser(user)}
-                          className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors duration-200"
+                          className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors duration-200"
                         >
                           <svg
                             className="w-4 h-4 mr-1"
@@ -696,7 +696,7 @@ export default function UsersPage() {
                         <button
                           onClick={() => handleDelete(user.id, user.username)}
                           disabled={isDeleting === user.id}
-                          className="inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                          className="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-800 text-xs font-medium rounded-md text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                         >
                           {isDeleting === user.id ? (
                             <>

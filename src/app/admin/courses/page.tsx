@@ -16,22 +16,22 @@ const LevelBadge = ({ level }: { level: CourseLevel }) => {
     switch (level) {
       case CourseLevel.BEGINNER:
         return {
-          color: "bg-accent-100 text-accent-800",
+          color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
           text: "Cơ bản",
         };
       case CourseLevel.INTERMEDIATE:
         return {
-          color: "bg-accent-100 text-accent-800",
+          color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
           text: "Trung cấp",
         };
       case CourseLevel.ADVANCED:
         return {
-          color: "bg-purple-100 text-purple-800",
+          color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
           text: "Nâng cao",
         };
       default:
         return {
-          color: "bg-gray-100 text-gray-800",
+          color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
           text: level,
         };
     }
@@ -544,23 +544,23 @@ export default function CoursesPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Khóa học
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Cấp độ
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Thời lượng
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Giá
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Ngày tạo
                 </th>
-                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Thao tác
                 </th>
               </tr>

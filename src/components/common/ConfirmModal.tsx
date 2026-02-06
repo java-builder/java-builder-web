@@ -66,7 +66,14 @@ export default function ConfirmModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
       <div className="relative bg-white rounded-lg shadow-xl max-w-sm w-full border border-gray-200 animate-in fade-in-0 zoom-in-95 duration-200">
         <div className="p-6">
           <div className="flex items-center mb-4">
