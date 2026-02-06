@@ -269,22 +269,9 @@ export default function CourseDetailPage() {
     }
   };
 
-  const getLevelColor = (level: CourseLevel) => {
-    switch (level) {
-      case CourseLevel.BEGINNER:
-        return "bg-accent-100 text-accent-800";
-      case CourseLevel.INTERMEDIATE:
-        return "bg-accent-100 text-accent-800";
-      case CourseLevel.ADVANCED:
-        return "bg-purple-100 text-purple-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <Header />
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex justify-center items-center min-h-[60vh]">
@@ -297,11 +284,11 @@ export default function CourseDetailPage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <Header />
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center py-12">
-            <div className="text-red-600 mb-4">
+            <div className="text-red-600 dark:text-red-400 mb-4">
               <svg
                 className="w-16 h-16 mx-auto"
                 fill="none"
@@ -316,10 +303,10 @@ export default function CourseDetailPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Không tìm thấy khóa học
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               {error || "Khóa học không tồn tại hoặc đã bị xóa."}
             </p>
             <Link
@@ -335,21 +322,21 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <Header />
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <nav className="flex items-center space-x-2 text-sm">
             <Link
               href="/"
-              className="text-gray-500 hover:text-accent transition-colors"
+              className="text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-400 transition-colors"
             >
               Trang chủ
             </Link>
             <svg
-              className="w-4 h-4 text-gray-400"
+              className="w-4 h-4 text-gray-400 dark:text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -363,12 +350,12 @@ export default function CourseDetailPage() {
             </svg>
             <Link
               href="/courses"
-              className="text-gray-500 hover:text-accent transition-colors"
+              className="text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-400 transition-colors"
             >
               Khóa học
             </Link>
             <svg
-              className="w-4 h-4 text-gray-400"
+              className="w-4 h-4 text-gray-400 dark:text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -380,7 +367,7 @@ export default function CourseDetailPage() {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-            <span className="text-gray-900 font-medium">{course.title}</span>
+            <span className="text-gray-900 dark:text-white font-medium">{course.title}</span>
           </nav>
         </div>
       </div>
@@ -390,7 +377,7 @@ export default function CourseDetailPage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <MotionWrapper animation="fadeInUp" duration={0.6}>
-              <div className="bg-white rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700">
                 {/* Course Cover */}
                 <div className="relative aspect-video overflow-hidden">
                   {course.courseCover ? (
@@ -435,17 +422,22 @@ export default function CourseDetailPage() {
                       <div className="flex items-center space-x-3 mb-4">
                         {course.level && (
                           <span
-                            className={`px-2 py-1 rounded-md text-xs font-medium ${getLevelColor(course.level)}`}
+                            className={`px-2 py-1 rounded-md text-xs font-medium ${course.level === CourseLevel.BEGINNER
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800"
+                              : course.level === CourseLevel.INTERMEDIATE
+                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+                                : "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800"
+                              }`}
                           >
                             {getLevelText(course.level)}
                           </span>
                         )}
                         {course.duration && (
-                          <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">
+                          <span className="px-2 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-md text-xs font-medium border border-gray-200 dark:border-slate-600">
                             {course.duration} giờ
                           </span>
                         )}
-                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-md text-xs font-medium">
+                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-md text-xs font-medium border border-blue-200 dark:border-blue-800">
                           {formatDate(course.createdAt)}
                         </span>
                       </div>
@@ -453,13 +445,13 @@ export default function CourseDetailPage() {
                   </div>
 
                   {/* Tabs */}
-                  <div className="border-b border-gray-200 mb-6 overflow-x-auto">
+                  <div className="border-b border-gray-200 dark:border-slate-700 mb-6 overflow-x-auto">
                     <nav className="-mb-px flex space-x-4 sm:space-x-8 min-w-max">
                       <button
                         onClick={() => setActiveTab("curriculum")}
                         className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "curriculum"
-                          ? "border-accent text-accent-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          ? "border-accent text-accent-600 dark:text-accent-400"
+                          : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
                           }`}
                       >
                         Nội dung
@@ -467,8 +459,8 @@ export default function CourseDetailPage() {
                       <button
                         onClick={() => setActiveTab("description")}
                         className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "description"
-                          ? "border-accent text-accent-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          ? "border-accent text-accent-600 dark:text-accent-400"
+                          : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
                           }`}
                       >
                         Mô tả
@@ -476,8 +468,8 @@ export default function CourseDetailPage() {
                       <button
                         onClick={() => setActiveTab("instructor")}
                         className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "instructor"
-                          ? "border-accent text-accent-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          ? "border-accent text-accent-600 dark:text-accent-400"
+                          : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
                           }`}
                       >
                         Tác giả
@@ -485,8 +477,8 @@ export default function CourseDetailPage() {
                       <button
                         onClick={() => setActiveTab("comments")}
                         className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === "comments"
-                          ? "border-accent text-accent-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                          ? "border-accent text-accent-600 dark:text-accent-400"
+                          : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
                           }`}
                       >
                         Đánh giá
@@ -497,8 +489,8 @@ export default function CourseDetailPage() {
                   {/* Tab Content */}
                   <div className="min-h-[300px]">
                     {activeTab === "description" && (
-                      <div className="prose max-w-none">
-                        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      <div className="prose dark:prose-invert max-w-none">
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                           {course.description}
                         </p>
                       </div>
@@ -508,40 +500,40 @@ export default function CourseDetailPage() {
                       <div className="space-y-3">
                         {course.chapters && course.chapters.length > 0 ? (
                           course.chapters.map((chapter, index) => (
-                            <div key={chapter.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                            <div key={chapter.id} className="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden">
                               {/* Chapter Header */}
                               <div
-                                className="flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors gap-2"
+                                className="flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 bg-gray-50 dark:bg-slate-700/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors gap-2"
                                 onClick={() => toggleChapter(chapter.id)}
                               >
                                 <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
                                   <svg
-                                    className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 mt-0.5 sm:mt-0 ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
+                                    className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 mt-0.5 sm:mt-0 ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                   >
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                   </svg>
                                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-                                    <span className="text-xs sm:text-sm font-medium text-gray-500 flex-shrink-0">Chương {index + 1}</span>
-                                    <span className="font-medium text-gray-900 text-sm sm:text-base truncate">{chapter.chapterName}</span>
+                                    <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">Chương {index + 1}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base truncate">{chapter.chapterName}</span>
                                   </div>
                                 </div>
-                                <span className="text-xs text-gray-400 flex-shrink-0">
+                                <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
                                   {chapterLessons[chapter.id] ? `${chapterLessons[chapter.id].length} bài` : ""}
                                 </span>
                               </div>
 
                               {/* Lessons List */}
                               {expandedChapters.has(chapter.id) && (
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border-gray-200 dark:border-slate-700">
                                   {chapter.description && (
-                                    <p className="text-sm text-gray-600 px-3 sm:px-4 py-2 bg-gray-50/50 border-b border-gray-100">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 px-3 sm:px-4 py-2 bg-gray-50/50 dark:bg-slate-700/30 border-b border-gray-100 dark:border-slate-700">
                                       {chapter.description}
                                     </p>
                                   )}
-                                  <div className="divide-y divide-gray-100">
+                                  <div className="divide-y divide-gray-100 dark:divide-slate-700">
                                     {loadingLessons.has(chapter.id) ? (
-                                      <div className="px-3 sm:px-4 py-6 text-center text-gray-400 text-sm flex items-center justify-center gap-2">
+                                      <div className="px-3 sm:px-4 py-6 text-center text-gray-400 dark:text-gray-500 text-sm flex items-center justify-center gap-2">
                                         <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -555,28 +547,28 @@ export default function CourseDetailPage() {
                                           <div
                                             key={lesson.id}
                                             className={`flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 transition-colors gap-2 ${canWatch
-                                              ? "hover:bg-accent-50 cursor-pointer group"
-                                              : "bg-gray-50/30"
+                                              ? "hover:bg-accent-50 dark:hover:bg-accent-900/20 cursor-pointer group"
+                                              : "bg-gray-50/30 dark:bg-slate-700/20"
                                               }`}
                                             onClick={() => handleLessonClick(lesson)}
                                           >
                                             <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
                                               <span className={`w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold flex-shrink-0 ${canWatch
-                                                ? "bg-accent/10 text-accent"
-                                                : "bg-gray-100 text-gray-400"
+                                                ? "bg-accent/10 dark:bg-accent-900/30 text-accent dark:text-accent-400"
+                                                : "bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500"
                                                 } transition-colors`}>
                                                 {lessonIndex + 1}
                                               </span>
                                               <div className="min-w-0 flex-1">
                                                 <div className="flex flex-wrap items-center gap-1 sm:gap-2">
                                                   <span className={`text-sm ${canWatch
-                                                    ? "text-gray-900 group-hover:text-accent"
-                                                    : "text-gray-500"
+                                                    ? "text-gray-900 dark:text-white group-hover:text-accent dark:group-hover:text-accent-400"
+                                                    : "text-gray-500 dark:text-gray-400"
                                                     } transition-colors break-words`}>
                                                     {lesson.lessonName}
                                                   </span>
                                                   {lesson.isFreePreview && (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full flex-shrink-0">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full flex-shrink-0 border border-emerald-200 dark:border-emerald-800">
                                                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -586,7 +578,7 @@ export default function CourseDetailPage() {
                                                   )}
                                                 </div>
                                                 {lesson.videoUrl && (
-                                                  <span className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                                                  <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-0.5">
                                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -598,11 +590,11 @@ export default function CourseDetailPage() {
                                             </div>
                                             <div className="flex-shrink-0">
                                               {canWatch ? (
-                                                <svg className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-5 h-5 text-accent dark:text-accent-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
                                                   <path d="M8 5v14l11-7z" />
                                                 </svg>
                                               ) : (
-                                                <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                                 </svg>
                                               )}
@@ -611,7 +603,7 @@ export default function CourseDetailPage() {
                                         );
                                       })
                                     ) : (
-                                      <div className="px-3 sm:px-4 py-6 text-center text-gray-400 text-sm">
+                                      <div className="px-3 sm:px-4 py-6 text-center text-gray-400 dark:text-gray-500 text-sm">
                                         Chưa có bài học nào
                                       </div>
                                     )}
@@ -622,7 +614,7 @@ export default function CourseDetailPage() {
                           ))
                         ) : (
                           <div className="text-center py-12">
-                            <div className="text-gray-400 mb-4">
+                            <div className="text-gray-400 dark:text-gray-500 mb-4">
                               <svg
                                 className="w-12 h-12 mx-auto"
                                 fill="none"
@@ -637,10 +629,10 @@ export default function CourseDetailPage() {
                                 />
                               </svg>
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                               Chưa có nội dung
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 dark:text-gray-400">
                               Nội dung khóa học đang được cập nhật
                             </p>
                           </div>
@@ -651,7 +643,7 @@ export default function CourseDetailPage() {
                     {activeTab === "instructor" && (
                       <div className="space-y-6">
                         {/* Instructor Profile */}
-                        <div className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg">
+                        <div className="flex items-start space-x-4 p-6 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
                           <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-white">
                             <Image
                               src="/logos/java-logo.png"
@@ -662,13 +654,13 @@ export default function CourseDetailPage() {
                             />
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-1">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                               JavaBuilder
                             </h3>
-                            <p className="text-accent-600 font-medium mb-2">
+                            <p className="text-accent-600 dark:text-accent-400 font-medium mb-2">
                               Backend Developer
                             </p>
-                            <p className="text-gray-600 text-sm leading-relaxed">
+                            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                               Chuyên gia phát triển backend với kinh nghiệm sâu
                               về Java, Spring Boot và các công nghệ cloud. Tôi
                               đam mê chia sẻ kiến thức và giúp đỡ các bạn trẻ
@@ -679,7 +671,7 @@ export default function CourseDetailPage() {
 
                         {/* Skills */}
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-3">
+                          <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
                             Kỹ năng chuyên môn
                           </h4>
                           <div className="flex flex-wrap gap-2">
@@ -694,7 +686,7 @@ export default function CourseDetailPage() {
                             ].map((skill) => (
                               <span
                                 key={skill}
-                                className="px-3 py-1 bg-accent-100 text-accent-700 rounded-full text-sm font-medium"
+                                className="px-3 py-1 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 rounded-full text-sm font-medium border border-accent-200 dark:border-accent-800"
                               >
                                 {skill}
                               </span>
@@ -703,11 +695,11 @@ export default function CourseDetailPage() {
                         </div>
 
                         {/* Contact */}
-                        <div className="p-4 bg-accent-50 rounded-lg">
-                          <h4 className="font-semibold text-gray-900 mb-2">
+                        <div className="p-4 bg-accent-50 dark:bg-accent-900/20 rounded-lg border border-accent-100 dark:border-accent-800">
+                          <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
                             Liên hệ với giảng viên
                           </h4>
-                          <p className="text-sm text-gray-600 mb-3">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                             Có câu hỏi về khóa học? Hãy liên hệ trực tiếp với
                             tôi!
                           </p>
@@ -734,14 +726,14 @@ export default function CourseDetailPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <MotionWrapper animation="fadeInUp" delay={0.2} duration={0.6}>
-              <div className="bg-white rounded-xl p-5 sticky top-8">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 sticky top-8 border border-gray-200 dark:border-slate-700">
                 {/* Price / Enrolled Status */}
                 <div className="text-center mb-5">
                   {isEnrolled || isPremiumUser ? (
                     <>
-                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 ${isPremiumUser && !isEnrolled
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-green-100 text-green-700"
+                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 border ${isPremiumUser && !isEnrolled
+                        ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
+                        : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800"
                         }`}>
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -750,7 +742,7 @@ export default function CourseDetailPage() {
                           {isPremiumUser && !isEnrolled ? "Premium Member" : "Đã đăng ký"}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {isPremiumUser && !isEnrolled
                           ? "Bạn có quyền truy cập với tư cách Premium"
                           : "Bạn có quyền truy cập đầy đủ khóa học này"}
@@ -758,10 +750,10 @@ export default function CourseDetailPage() {
                     </>
                   ) : (
                     <>
-                      <div className="text-3xl font-bold text-accent mb-2">
+                      <div className="text-3xl font-bold text-accent dark:text-accent-400 mb-2">
                         {formatPrice(course.price)}
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         Một lần thanh toán, học mãi mãi
                       </p>
                     </>
@@ -791,10 +783,11 @@ export default function CourseDetailPage() {
                   <button
                     onClick={handleToggleFavorite}
                     disabled={favoriteLoading}
-                    className={`w-full font-medium py-2.5 px-4 rounded-md border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${isFavorite
-                      ? "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300"
-                      : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300"
-                      }`}
+                    className={`w-full font-medium py-2.5 px-4 rounded-md border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${
+                      isFavorite
+                        ? "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300 dark:bg-rose-400/10 dark:hover:bg-rose-400/15 dark:text-rose-400 dark:border-rose-400/25 dark:hover:border-rose-400/35"
+                        : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-gray-300 dark:border-slate-600 dark:hover:border-slate-500"
+                    }`}
                   >
                     {favoriteLoading ? (
                       <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -821,27 +814,27 @@ export default function CourseDetailPage() {
                 </div>
 
                 {/* Course Stats */}
-                <div className="border-t border-gray-200 pt-5">
-                  <h3 className="font-semibold text-gray-900 mb-3 text-sm">
+                <div className="border-t border-gray-200 dark:border-slate-700 pt-5">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm">
                     Thông tin khóa học
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Trình độ:</span>
-                      <span className="font-medium text-gray-900">
+                      <span className="text-gray-600 dark:text-gray-400">Trình độ:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">
                         {getLevelText(course.level || CourseLevel.BEGINNER)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Thời lượng:</span>
-                      <span className="font-medium text-gray-900">
+                      <span className="text-gray-600 dark:text-gray-400">Thời lượng:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">
                         {course.duration || 0} giờ
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Đánh giá:</span>
+                      <span className="text-gray-600 dark:text-gray-400">Đánh giá:</span>
                       <div className="flex items-center space-x-1">
-                        <div className="flex text-yellow-400">
+                        <div className="flex text-yellow-400 dark:text-yellow-500">
                           {[...Array(5)].map((_, i) => (
                             <svg
                               key={i}
@@ -852,7 +845,7 @@ export default function CourseDetailPage() {
                             </svg>
                           ))}
                         </div>
-                        <span className="text-xs text-gray-500">(0)</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">(0)</span>
                       </div>
                     </div>
                   </div>
@@ -867,28 +860,28 @@ export default function CourseDetailPage() {
       {previewModal.isOpen && previewModal.lesson && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70" onClick={() => setPreviewModal({ isOpen: false, lesson: null })} />
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-start sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
+            <div className="flex items-start sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700 gap-3">
               <div className="min-w-0 flex-1">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2">{previewModal.lesson.lessonName}</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">{previewModal.lesson.lessonName}</h3>
                 {isPremiumUser && !isEnrolled ? (
-                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-800">
                     Premium Member
                   </span>
                 ) : isEnrolled ? (
-                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full border border-green-200 dark:border-green-800">
                     Đã đăng ký
                   </span>
                 ) : (
-                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full border border-green-200 dark:border-green-800">
                     Xem miễn phí
                   </span>
                 )}
               </div>
               <button
                 onClick={() => setPreviewModal({ isOpen: false, lesson: null })}
-                className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex-shrink-0 p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -918,17 +911,17 @@ export default function CourseDetailPage() {
 
             {/* Description */}
             {previewModal.lesson.description && (
-              <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Mô tả bài học</h4>
-                <p className="text-sm text-gray-600 whitespace-pre-wrap">{previewModal.lesson.description}</p>
+              <div className="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50">
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mô tả bài học</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{previewModal.lesson.description}</p>
               </div>
             )}
 
             {/* CTA - Only show if not enrolled and not premium */}
             {!isEnrolled && !isPremiumUser && (
-              <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-accent-50">
+              <div className="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-accent-50 dark:bg-accent-900/20">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <p className="text-sm text-gray-600 text-center sm:text-left">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left">
                     Đăng ký khóa học để xem tất cả bài học
                   </p>
                   <button

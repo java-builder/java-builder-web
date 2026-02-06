@@ -231,7 +231,7 @@ body {
 }
 
 .dark .bg-green-100 {
-  background-color: #166534 !important;
+  background-color: rgba(22, 101, 52, 0.3) !important;
 }
 
 .dark .text-green-600 {
@@ -239,19 +239,59 @@ body {
 }
 
 .dark .text-green-700 {
-  color: #22c55e !important;
+  color: #86efac !important;
 }
 
 .dark .text-green-800 {
   color: #4ade80 !important;
 }
 
+.dark .border-green-200 {
+  border-color: rgba(22, 101, 52, 0.5) !important;
+}
+
 .dark .bg-red-50 {
-  background-color: #450a0a !important;
+  background-color: rgba(254, 202, 202, 0.1) !important;
 }
 
 .dark .bg-red-100 {
-  background-color: #450a0a !important;
+  background-color: rgba(254, 202, 202, 0.15) !important;
+}
+
+.dark .hover\:bg-red-100:hover {
+  background-color: rgba(254, 202, 202, 0.2) !important;
+}
+
+.dark .text-red-600 {
+  color: #fca5a5 !important;
+}
+
+.dark .text-red-400 {
+  color: #f87171 !important;
+}
+
+/* Red 900 variants for favorite button */
+.dark .favorite-button-active {
+  background-color: rgba(254, 226, 226, 0.1) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.dark .favorite-button-active:hover {
+  background-color: rgba(254, 226, 226, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark .bg-amber-100 {
+  background-color: rgba(120, 53, 15, 0.3) !important;
+}
+
+.dark .text-amber-700 {
+  color: #fcd34d !important;
+}
+
+.dark .border-amber-200 {
+  border-color: rgba(120, 53, 15, 0.5) !important;
 }
 
 .dark .bg-yellow-50 {
@@ -362,23 +402,6 @@ body {
 
 .dark .bg-white.hover\:bg-gray-50:hover {
   background-color: #475569 !important;
-}
-
-/* Favorite button - red border fix */
-.dark .border-red-200 {
-  border-color: #7f1d1d !important;
-}
-
-.dark .hover\:border-red-300:hover {
-  border-color: #991b1b !important;
-}
-
-.dark .bg-red-50.hover\:bg-red-100 {
-  background-color: #450a0a !important;
-}
-
-.dark .bg-red-50.hover\:bg-red-100:hover {
-  background-color: #7f1d1d !important;
 }
 
 /* Search box and input containers */
@@ -763,14 +786,8 @@ textarea::placeholder {
 .hover\:bg-accent-600:hover {
   background-color: #0044aa !important;
 }
-.border-accent {
-  border-color: #0056d2 !important;
-}
 .focus\:ring-accent:focus {
   --tw-ring-color: rgba(0, 86, 210, 0.5) !important;
-}
-.focus\:border-accent:focus {
-  border-color: #0056d2 !important;
 }
 
 .dark .bg-accent:not([class*="text-"]),

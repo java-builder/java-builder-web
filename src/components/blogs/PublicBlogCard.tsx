@@ -118,7 +118,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
                   {blog.viewCount}
                 </span>
               </span>
-              <span className="flex items-center space-x-1 bg-red-50 text-red-700 px-2.5 py-1 rounded-full border border-red-100">
+              <span className="flex items-center space-x-1 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2.5 py-1 rounded-full border border-red-100 dark:border-red-800/50">
                 <svg
                   className="w-3.5 h-3.5"
                   fill="none"
@@ -134,7 +134,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
                 </svg>
                 <span className="font-semibold">{blog.likeCount}</span>
               </span>
-              <span className="flex items-center space-x-1 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full border border-blue-100">
+              <span className="flex items-center space-x-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full border border-blue-100 dark:border-blue-800/50">
                 <svg
                   className="w-3.5 h-3.5"
                   fill="none"

@@ -458,26 +458,18 @@ export default function BlogDetailPage() {
 
                     {/* Meta Info */}
                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
-                      {blog.author && (
-                        <div className="flex items-center space-x-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md text-xs">
-                          <svg
-                            className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                            />
-                          </svg>
-                          <span className="truncate max-w-[100px] sm:max-w-none">
-                            {blog.author}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md text-xs">
+                        <Image
+                          src="/logos/java-logo.png"
+                          alt="JavaBuilder"
+                          width={14}
+                          height={14}
+                          className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 object-contain"
+                        />
+                        <span className="truncate max-w-[100px] sm:max-w-none font-medium">
+                          JavaBuilder
+                        </span>
+                      </div>
                       <div className="flex items-center space-x-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
@@ -523,7 +515,7 @@ export default function BlogDetailPage() {
                           {blog.viewCount}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-1 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded-md text-xs">
+                      <div className="flex items-center space-x-1 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded-md border border-red-100 dark:border-red-800/50 text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                           fill="none"
@@ -539,7 +531,7 @@ export default function BlogDetailPage() {
                         </svg>
                         <span className="font-semibold">{blog.likeCount}</span>
                       </div>
-                      <div className="flex items-center space-x-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800 text-xs">
+                      <div className="flex items-center space-x-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800/50 text-xs">
                         <svg
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0"
                           fill="none"
@@ -770,7 +762,7 @@ export default function BlogDetailPage() {
                                   alt={relatedBlog.title}
                                   width={56}
                                   height={56}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
                                 />
                               </div>
                             )}
