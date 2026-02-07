@@ -380,9 +380,9 @@ export default function CourseDetailPage() {
               <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700">
                 {/* Course Cover */}
                 <div className="relative aspect-video overflow-hidden">
-                  {course.courseCover ? (
+                  {course.thumbnailUrl ? (
                     <Image
-                      src={course.courseCover}
+                      src={course.thumbnailUrl}
                       alt={course.title}
                       fill
                       priority

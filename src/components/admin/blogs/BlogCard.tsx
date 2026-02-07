@@ -22,10 +22,10 @@ export default function BlogCard({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden">
       {/* Featured Image */}
-      {blog.featuredImage ? (
+      {blog.thumbnailUrl ? (
         <div className="w-full h-28 sm:h-32 md:h-32 lg:h-36 overflow-hidden relative bg-gray-50 flex items-center justify-center">
           <Image
-            src={blog.featuredImage}
+            src={blog.thumbnailUrl}
             alt={blog.title}
             fill
             loading="lazy"

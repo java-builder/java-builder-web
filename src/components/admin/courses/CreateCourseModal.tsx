@@ -80,12 +80,24 @@ export default function CreateCourseModal({
     try {
       setIsLoading(true);
 
-      let courseCover = "";
+      let key = "";
 
+      // Upload ảnh bằng presigned URL
       if (data.imageFile) {
-        const uploadResult = await fileApi.uploadSingleMedia(data.imageFile);
-        if (uploadResult.code === 200 && uploadResult.data) {
-          courseCover = uploadResult.data.url;
+        const presignedResponse = await fileApi.getPresignedUrl(data.imageFile.name, 'public');
+        if (presignedResponse.data) {
+          const { url, key: uploadKey } = presignedResponse.data;
+          
+          // Upload trực tiếp lên S3
+          await fetch(url, {
+            method: 'PUT',
+            body: data.imageFile,
+            headers: {
+              'Content-Type': data.imageFile.type,
+            },
+          });
+          
+          key = uploadKey;
         }
       }
 
@@ -94,7 +106,7 @@ export default function CreateCourseModal({
         description: data.description,
         price: data.price,
         duration: data.duration,
-        courseCover: courseCover || undefined,
+        key: key || undefined,
         level: data.level,
       };
 

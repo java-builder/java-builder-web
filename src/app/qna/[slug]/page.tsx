@@ -111,11 +111,11 @@ export default function PostDetailPage() {
             </div>
           </div>
 
-          {post.thumbnail && (
+          {post.thumbnailUrl && (
             <div className="mb-8">
               <div className="aspect-[16/9] w-full overflow-hidden relative bg-gray-100 rounded-lg">
                 <Image
-                  src={post.thumbnail}
+                  src={post.thumbnailUrl}
                   alt={post.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 60vw"

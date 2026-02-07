@@ -22,7 +22,7 @@ export interface CreateBlogRequest {
   title: string;
   content: string;
   summary?: string;
-  featuredImage?: string;
+  key?: string;
   blogType: BlogType;
 }
 
@@ -33,7 +33,7 @@ export interface CreateBlogResponse {
   content: string;
   summary?: string;
   blogType: BlogType;
-  featuredImage?: string;
+  thumbnailUrl?: string;
   viewCount: number;
   likeCount: number;
   createdAt: string;
@@ -46,7 +46,7 @@ export interface UpdateBlogResponse {
   content: string;
   summary?: string;
   blogType: BlogType;
-  featuredImage?: string;
+  thumbnailUrl?: string;
   viewCount: number;
   likeCount: number;
   commentCount: number;
@@ -61,7 +61,7 @@ export interface Blog {
   content: string;
   summary?: string;
   blogType: BlogType;
-  featuredImage?: string;
+  thumbnailUrl?: string;
   viewCount: number;
   likeCount: number;
   commentCount: number;

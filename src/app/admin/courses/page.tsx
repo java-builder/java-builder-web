@@ -572,9 +572,9 @@ export default function CoursesPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="relative w-20 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                        {course.courseCover ? (
+                        {course.thumbnailUrl ? (
                           <Image
-                            src={course.courseCover}
+                            src={course.thumbnailUrl}
                             alt={course.title}
                             fill
                             className="object-cover"

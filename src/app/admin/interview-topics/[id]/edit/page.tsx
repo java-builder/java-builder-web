@@ -5,10 +5,9 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { interviewService } from "@/services/interview.service";
-import { questionSetService } from "@/services/question-set.service";
 import { InterviewTopicDetailResponse } from "@/types/interview";
-import { QuestionSetDetailResponse } from "@/types/question-set";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useQuestionSets, clearQuestionSetsCache } from "@/hooks/useQuestionSets";
 import CreateQuestionSetModal from "@/components/admin/interview/CreateQuestionSetModal";
 import toast from "react-hot-toast";
 
@@ -18,7 +17,7 @@ export default function EditInterviewTopicPage() {
   const hasFetched = useRef(false);
 
   const [topic, setTopic] = useState<InterviewTopicDetailResponse | null>(null);
-  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
+  const { questionSets } = useQuestionSets();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [deletingSetId, setDeletingSetId] = useState<string | null>(null);
@@ -28,7 +27,8 @@ export default function EditInterviewTopicPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [displayOrder, setDisplayOrder] = useState(1);
-  const [iconPath, setIconPath] = useState("");
+  const [key, setKey] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
 
   // Modal state
   const [isCreateSetOpen, setIsCreateSetOpen] = useState(false);
@@ -50,12 +50,9 @@ export default function EditInterviewTopicPage() {
         setName(foundTopic.name);
         setDescription(foundTopic.description || "");
         setDisplayOrder(foundTopic.displayOrder);
-        setIconPath(foundTopic.iconPath || "");
+        setKey("");
+        setThumbnailUrl(foundTopic.thumbnailUrl || "");
       }
-
-      // Fetch question sets
-      const setsRes = await questionSetService.getAllQuestionSets();
-      setQuestionSets(setsRes.data?.questionSets || []);
     } catch (error) {
       console.error("Error fetching topic:", error);
       toast.error("Không thể tải thông tin chủ đề");
@@ -80,7 +77,7 @@ export default function EditInterviewTopicPage() {
         name: name.trim(),
         description: description.trim() || undefined,
         displayOrder,
-        iconPath: iconPath || undefined,
+        key: key || undefined,
       });
       toast.success("Cập nhật chủ đề thành công!");
       await fetchTopic(true);
@@ -97,9 +94,10 @@ export default function EditInterviewTopicPage() {
       async () => {
         setDeletingSetId(id);
         try {
+          const { questionSetService } = await import("@/services/question-set.service");
           await questionSetService.deleteQuestionSet(id);
+          clearQuestionSetsCache();
           toast.success("Xóa bộ câu hỏi thành công!");
-          await fetchTopic(true);
         } catch (e) {
           console.error(e);
           toast.error("Xóa thất bại");
@@ -234,14 +232,14 @@ export default function EditInterviewTopicPage() {
               />
             </div>
 
-            {iconPath && (
+            {thumbnailUrl && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Icon hiện tại
                 </label>
                 <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
                   <Image
-                    src={iconPath}
+                    src={thumbnailUrl}
                     alt={name}
                     width={48}
                     height={48}
@@ -351,7 +349,7 @@ export default function EditInterviewTopicPage() {
         isOpen={isCreateSetOpen}
         onClose={() => setIsCreateSetOpen(false)}
         onSuccess={() => {
-          fetchTopic(true);
+          clearQuestionSetsCache();
           setIsCreateSetOpen(false);
         }}
         topicId={topicId}

@@ -13,7 +13,7 @@ export interface Document {
   description?: string;
   type: DocumentType;
   url?: string;
-  coverImage?: string;
+  thumbnailUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,7 +23,7 @@ export interface CreateDocumentRequest {
   description?: string;
   type: DocumentType;
   url?: string;
-  coverImage?: string;
+  key?: string;
 }
 
 export interface UpdateDocumentRequest {
@@ -31,5 +31,5 @@ export interface UpdateDocumentRequest {
   description?: string;
   type?: DocumentType;
   url?: string;
-  coverImage?: string;
+  key?: string;
 }

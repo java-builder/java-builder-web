@@ -22,7 +22,7 @@ export default function UpdateInterviewTopicModal({
   const [formData, setFormData] = useState<UpdateInterviewTopicRequest>({
     name: "",
     description: "",
-    iconPath: "",
+    key: "",
     displayOrder: 1,
     active: true,
   });
@@ -37,11 +37,11 @@ export default function UpdateInterviewTopicModal({
       setFormData({
         name: topic.name,
         description: topic.description || "",
-        iconPath: topic.iconPath || "",
+        key: "",
         displayOrder: topic.displayOrder,
         active: topic.active ?? true,
       });
-      setPreviewIcon(topic.iconPath || "");
+      setPreviewIcon(topic.thumbnailUrl || "");
     }
   }, [topic]);
 
@@ -72,7 +72,7 @@ export default function UpdateInterviewTopicModal({
   const handleRemoveIcon = () => {
     setSelectedFile(null);
     setPreviewIcon("");
-    setFormData({ ...formData, iconPath: "" });
+    setFormData({ ...formData, key: "" });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -91,19 +91,31 @@ export default function UpdateInterviewTopicModal({
 
     setIsSubmitting(true);
     try {
-      let iconUrl = formData.iconPath;
+      let key = formData.key;
       if (selectedFile) {
-        const uploadResponse = await fileApi.uploadSingleMedia(selectedFile);
-        if (uploadResponse.data?.url) {
-          iconUrl = uploadResponse.data.url;
-        } else {
-          throw new Error("Upload icon thất bại");
+        // 1. Lấy presigned URL từ BE
+        const presignedResponse = await fileApi.getPresignedUrl(selectedFile.name, 'public');
+        
+        if (!presignedResponse.data) {
+          throw new Error("Không thể lấy URL upload");
         }
+
+        // 2. Upload file lên S3
+        await fetch(presignedResponse.data.url, {
+          method: 'PUT',
+          body: selectedFile,
+          headers: {
+            'Content-Type': selectedFile.type,
+          },
+        });
+
+        // 3. Lấy key từ response
+        key = presignedResponse.data.key;
       }
 
       await interviewService.updateTopic(topic.id, {
         ...formData,
-        iconPath: iconUrl,
+        key: key || undefined,
       });
 
       setSelectedFile(null);

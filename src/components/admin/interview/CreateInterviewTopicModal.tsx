@@ -20,7 +20,7 @@ export default function CreateInterviewTopicModal({
   const [formData, setFormData] = useState<CreateInterviewTopicRequest>({
     name: "",
     description: "",
-    iconPath: "",
+    key: "",
     displayOrder: 1,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,25 +75,36 @@ export default function CreateInterviewTopicModal({
 
     setIsSubmitting(true);
     try {
-      // Upload icon nếu có file được chọn
-      let iconUrl = formData.iconPath;
+      // Upload icon bằng presigned URL nếu có file được chọn
+      let key = formData.key;
       if (selectedFile) {
-        const uploadResponse = await fileApi.uploadSingleMedia(selectedFile);
-        if (uploadResponse.data?.url) {
-          iconUrl = uploadResponse.data.url;
+        const presignedResponse = await fileApi.getPresignedUrl(selectedFile.name, 'public');
+        if (presignedResponse.data) {
+          const { url, key: uploadKey } = presignedResponse.data;
+          
+          // Upload trực tiếp lên S3
+          await fetch(url, {
+            method: 'PUT',
+            body: selectedFile,
+            headers: {
+              'Content-Type': selectedFile.type,
+            },
+          });
+          
+          key = uploadKey;
         } else {
           throw new Error("Upload icon thất bại");
         }
       }
 
-      // Tạo topic với icon URL
+      // Tạo topic với key
       await interviewService.createTopic({
         ...formData,
-        iconPath: iconUrl,
+        key: key,
       });
 
       // Reset form
-      setFormData({ name: "", description: "", iconPath: "", displayOrder: 1 });
+      setFormData({ name: "", description: "", key: "", displayOrder: 1 });
       setPreviewIcon("");
       setSelectedFile(null);
       if (fileInputRef.current) {
@@ -111,7 +122,7 @@ export default function CreateInterviewTopicModal({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setFormData({ name: "", description: "", iconPath: "", displayOrder: 1 });
+      setFormData({ name: "", description: "", key: "", displayOrder: 1 });
       setPreviewIcon("");
       setSelectedFile(null);
       setError("");

@@ -3,9 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
-import { interviewService } from "@/services/interview.service";
-import { InterviewTopicDetailResponse } from "@/types/interview";
+import { useState, useRef } from "react";
+import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 
 const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasDropdown?: boolean; isDynamic?: boolean }[] = [
   { href: "/", label: "Trang chủ" },
@@ -31,33 +30,9 @@ interface NavLinksProps {
 export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [interviewTopics, setInterviewTopics] = useState<InterviewTopicDetailResponse[]>([]);
-  const [isLoadingTopics, setIsLoadingTopics] = useState(true);
+  const { topics: interviewTopics, isLoading: isLoadingTopics } = useInterviewTopics();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const fetchInterviewTopics = async () => {
-      try {
-        const response = await interviewService.getAllTopics();
-        setInterviewTopics(response.data?.topics || []);
-      } catch (error) {
-        console.error("Failed to fetch interview topics:", error);
-        // Fallback: set empty array on error
-        setInterviewTopics([]);
-      } finally {
-        setIsLoadingTopics(false);
-      }
-    };
-
-    fetchInterviewTopics();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   // Build dropdown items from API data
   const getDropdownItems = (item: typeof NAV_ITEMS_STATIC[0]) => {
@@ -65,7 +40,7 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
       return interviewTopics.map(topic => ({
         href: `/interview/${topic.slug}`,
         label: topic.name,
-        iconPath: topic.iconPath || "/logos/logo-java.png",
+        iconPath: topic.thumbnailUrl || "/logos/logo-java.png",
       }));
     }
     return [];

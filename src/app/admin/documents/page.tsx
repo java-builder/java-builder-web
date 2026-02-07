@@ -54,7 +54,7 @@ export default function AdminDocumentsPage() {
     description: "",
     type: DocumentType.BOOK,
     url: "",
-    coverImage: "",
+    key: "",
   });
 
   const fetchDocuments = async () => {
@@ -91,9 +91,9 @@ export default function AdminDocumentsPage() {
         description: doc.description || "",
         type: doc.type,
         url: doc.url || "",
-        coverImage: doc.coverImage || "",
+        key: "", // Key không cần hiển thị lại
       });
-      setImagePreview(doc.coverImage || null);
+      setImagePreview(doc.thumbnailUrl || null);
     } else {
       setEditingDoc(null);
       setFormData({
@@ -101,7 +101,7 @@ export default function AdminDocumentsPage() {
         description: "",
         type: DocumentType.BOOK,
         url: "",
-        coverImage: "",
+        key: "",
       });
       setImagePreview(null);
     }
@@ -134,7 +134,7 @@ export default function AdminDocumentsPage() {
   const removeImage = () => {
     setImageFile(null);
     setImagePreview(null);
-    setFormData({ ...formData, coverImage: "" });
+    setFormData({ ...formData, key: "" });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -149,17 +149,28 @@ export default function AdminDocumentsPage() {
 
     setIsSubmitting(true);
     try {
-      let coverImage = formData.coverImage;
+      let key = formData.key;
 
-      // Upload ảnh nếu có file mới
+      // Upload ảnh bằng presigned URL nếu có file mới
       if (imageFile) {
-        const uploadResult = await fileApi.uploadSingleMedia(imageFile);
-        if (uploadResult.code === 200 && uploadResult.data?.url) {
-          coverImage = uploadResult.data.url;
+        const presignedResponse = await fileApi.getPresignedUrl(imageFile.name, 'public');
+        if (presignedResponse.data) {
+          const { url, key: uploadKey } = presignedResponse.data;
+          
+          // Upload trực tiếp lên S3
+          await fetch(url, {
+            method: 'PUT',
+            body: imageFile,
+            headers: {
+              'Content-Type': imageFile.type,
+            },
+          });
+          
+          key = uploadKey;
         }
       }
 
-      const data = { ...formData, coverImage };
+      const data = { ...formData, key };
 
       if (editingDoc) {
         const result = await documentApi.update(editingDoc.id, data);
@@ -330,8 +341,8 @@ export default function AdminDocumentsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                          {doc.coverImage ? (
-                            <Image src={doc.coverImage} alt={doc.title} fill className="object-cover" />
+                          {doc.thumbnailUrl ? (
+                            <Image src={doc.thumbnailUrl} alt={doc.title} fill className="object-cover" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
                               <span className="text-2xl">📚</span>

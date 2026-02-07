@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { CreatePostRequest } from "@/types/post";
 import { useForm } from "react-hook-form";
 import { CategoryDetailResponse } from "@/types/category";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import { fileApi } from "@/services/course.service";
 
 const POPULAR_TAGS = [
   "java", "spring-boot", "spring-security", "jpa", "hibernate",
@@ -16,7 +18,7 @@ const POPULAR_TAGS = [
 interface PostFormProps {
   onSubmit?: (data: CreatePostRequest) => void;
   categories?: CategoryDetailResponse[] | null;
-  initialData?: Partial<CreatePostRequest & { thumbnail?: string }>;
+  initialData?: Partial<CreatePostRequest>;
 }
 
 export default function PostForm({ onSubmit, categories = null, initialData }: PostFormProps) {
@@ -24,6 +26,9 @@ export default function PostForm({ onSubmit, categories = null, initialData }: P
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<CreatePostRequest>();
   const [content, setContent] = useState<string>("");
+  const [imageKey, setImageKey] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     register("content", { required: "Nội dung là bắt buộc" });
@@ -37,7 +42,10 @@ export default function PostForm({ onSubmit, categories = null, initialData }: P
         setValue("categoryId", initialData.categoryId);
       }
       if (initialData.content) setContent(initialData.content);
-      if (initialData.thumbnail) setValue("thumbnail", initialData.thumbnail);
+      if (initialData.key) {
+        setImageKey(initialData.key);
+        setValue("key", initialData.key);
+      }
     }
   }, [initialData, setValue]);
 
@@ -56,6 +64,39 @@ export default function PostForm({ onSubmit, categories = null, initialData }: P
       setValue("categoryId", selectedCategoryId);
     }
   }, [selectedCategoryId, setValue]);
+
+  useEffect(() => {
+    if (imageKey) {
+      setValue("key", imageKey);
+    }
+  }, [imageKey, setValue]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const presignedData = await fileApi.getPresignedUrl(file.name, 'public');
+      if (!presignedData.data) {
+        throw new Error("Không thể lấy URL upload");
+      }
+
+      await fetch(presignedData.data.url, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type },
+      });
+
+      setImageKey(presignedData.data.key);
+      setImagePreview(URL.createObjectURL(file));
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+      alert("Không thể tải ảnh lên. Vui lòng thử lại.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleFormSubmit = (data: CreatePostRequest) => {
     if (onSubmit) {
@@ -103,6 +144,26 @@ export default function PostForm({ onSubmit, categories = null, initialData }: P
               height={300}
               error={errors.content ? String(errors.content.message) : undefined}
             />
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Ảnh đại diện (tùy chọn)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploading}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-accent focus:border-accent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+            />
+            {uploading && <p className="mt-1 text-sm text-gray-500">Đang tải ảnh lên...</p>}
+            {imagePreview && (
+              <div className="mt-2 relative w-32 h-32">
+                <Image src={imagePreview} alt="Preview" fill className="object-cover rounded-md" />
+              </div>
+            )}
           </div>
 
           {/* Tag (single-select) */}

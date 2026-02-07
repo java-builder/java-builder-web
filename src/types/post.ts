@@ -3,7 +3,8 @@ export interface PostDetail {
   title: string;
   slug: string;
   content: string;
-  thumbnail?: string | null;
+  key?: string | null;
+  thumbnailUrl?: string | null;
   username?: string | null;
   avatar?: string | null;
   viewCount?: number;
@@ -16,14 +17,14 @@ export interface PostDetail {
 export interface CreatePostRequest {
   title: string;
   content?: string;
-  thumbnail?: string | null;
+  key?: string | null;
   categoryId: string;
 }
 
 export interface UpdatePostRequest {
   title?: string;
   content?: string;
-  thumbnail?: string | null;
+  key?: string | null;
   isSolved?: boolean;
   categoryId?: string;
 }
@@ -33,7 +34,7 @@ export interface CreatePostResponse {
   title: string;
   slug: string;
   content?: string;
-  thumbnail?: string | null;
+  thumbnailUrl?: string | null;
   categoryName?: string | null;
   createdAt: string;
 }
@@ -43,7 +44,7 @@ export interface UpdatePostResponse {
   title: string;
   content?: string;
   slug: string;
-  thumbnail?: string | null;
+  thumbnailUrl?: string | null;
   categoryName?: string | null;
   isSolved: boolean;
   updatedAt: string;

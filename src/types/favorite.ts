@@ -5,7 +5,7 @@ export interface FavoriteResponse {
   courseTitle: string;
   courseDescription: string;
   coursePrice: number;
-  courseCover: string;
+  thumbnailUrl: string;
   courseLevel: string;
   courseDuration: number;
   addedAt: string;

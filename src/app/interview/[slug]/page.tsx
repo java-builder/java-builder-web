@@ -7,48 +7,33 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import Link from "next/link";
-import { interviewService } from "@/services/interview.service";
-import { questionSetService } from "@/services/question-set.service";
 import { InterviewTopicDetailResponse } from "@/types/interview";
-import { QuestionSetDetailResponse } from "@/types/question-set";
+import { useInterviewTopics } from "@/hooks/useInterviewTopics";
+import { useQuestionSets } from "@/hooks/useQuestionSets";
 import toast from "react-hot-toast";
 
 export default function InterviewCategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
   
+  const { topics: allTopics, isLoading: isLoadingTopics } = useInterviewTopics();
+  const { questionSets, isLoading: isLoadingSets } = useQuestionSets();
   const [topic, setTopic] = useState<InterviewTopicDetailResponse | null>(null);
-  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
 
+  // Tìm topic từ cache
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        
-        const topicsRes = await interviewService.getAllTopics();
-        const foundTopic = topicsRes.data?.topics.find(t => t.slug === slug);
-        
-        if (!foundTopic) {
-          toast.error("Không tìm thấy chủ đề");
-          return;
-        }
-        
+    if (!isLoadingTopics && allTopics.length > 0) {
+      const foundTopic = allTopics.find(t => t.slug === slug);
+      if (foundTopic) {
         setTopic(foundTopic);
-        
-        const setsRes = await questionSetService.getAllQuestionSets();
-        setQuestionSets(setsRes.data?.questionSets || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Không thể tải dữ liệu");
-      } finally {
-        setIsLoading(false);
+      } else {
+        toast.error("Không tìm thấy chủ đề");
       }
-    };
+    }
+  }, [slug, allTopics, isLoadingTopics]);
 
-    fetchData();
-  }, [slug]);
+  const isLoading = isLoadingTopics || isLoadingSets;
 
   if (isLoading) {
     return (
@@ -151,10 +136,10 @@ export default function InterviewCategoryPage() {
             </Link>
 
             <div className="flex items-center gap-4 mb-4">
-              {topic.iconPath && (
+              {topic.thumbnailUrl && (
                 <div className="w-16 h-16 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center overflow-hidden relative">
                   <Image
-                    src={topic.iconPath}
+                    src={topic.thumbnailUrl}
                     alt={topic.name}
                     width={48}
                     height={48}

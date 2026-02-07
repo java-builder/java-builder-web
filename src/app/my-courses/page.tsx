@@ -135,9 +135,9 @@ export default function MyCoursesPage() {
                 >
                   {/* Course Image */}
                   <div className="relative aspect-video bg-gray-100 overflow-hidden">
-                    {course.courseCover ? (
+                    {course.thumbnailUrl ? (
                       <Image
-                        src={course.courseCover}
+                        src={course.thumbnailUrl}
                         alt={course.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"

@@ -7,7 +7,7 @@ export interface InterviewTopicDetailResponse {
   name: string;
   slug: string;
   description?: string;
-  iconPath?: string;
+  thumbnailUrl?: string;
   displayOrder: number;
   active?: boolean;
   createdAt: string;
@@ -37,14 +37,14 @@ export interface InterviewQuestionResponse {
 export interface CreateInterviewTopicRequest {
   name: string;
   description?: string;
-  iconPath?: string;
+  key?: string;
   displayOrder?: number;
 }
 
 export interface UpdateInterviewTopicRequest {
   name?: string;
   description?: string;
-  iconPath?: string;
+  key?: string;
   displayOrder?: number;
   active?: boolean;
 }

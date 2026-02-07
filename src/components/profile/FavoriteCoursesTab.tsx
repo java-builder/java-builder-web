@@ -138,10 +138,10 @@ export default function FavoriteCoursesTab() {
                 >
                   {/* Course Cover */}
                   <div className="relative w-full h-48 bg-white border-b border-gray-100">
-                    {course.courseCover ? (
+                    {course.thumbnailUrl ? (
                       <div className="relative w-full h-full p-4">
                         <Image
-                          src={course.courseCover}
+                          src={course.thumbnailUrl}
                           alt={course.courseTitle}
                           fill
                           className="object-contain"

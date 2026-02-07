@@ -21,12 +21,7 @@ export async function generateMetadata({
     const course = result.data;
     const description = course.description.substring(0, 160);
 
-    const imgUrl =
-      course.courseCover && /^https?:\/\//i.test(course.courseCover)
-        ? course.courseCover
-        : course.courseCover
-          ? `${SITE_URL}${course.courseCover.startsWith("/") ? "" : "/"}${course.courseCover}`
-          : `${SITE_URL}/hero-background.jpg`;
+    const imgUrl = course.thumbnailUrl || `${SITE_URL}/hero-background.jpg`;
 
     return generateSEO({
       title: course.title,

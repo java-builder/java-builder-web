@@ -26,7 +26,7 @@ export default function EditCoursePage() {
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState(0);
   const [level, setLevel] = useState<CourseLevel>(CourseLevel.BEGINNER);
-  const [courseCover, setCourseCover] = useState("");
+  const [imageKey, setImageKey] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -96,8 +96,8 @@ export default function EditCoursePage() {
         setPrice(data.price);
         setDuration(data.duration || 0);
         setLevel(data.level || CourseLevel.BEGINNER);
-        setCourseCover(data.courseCover || "");
-        setImagePreview(data.courseCover || null);
+        setImageKey("");
+        setImagePreview(data.thumbnailUrl || null);
         setChapters(data.chapters || []);
       }
     } catch (error) {
@@ -142,13 +142,24 @@ export default function EditCoursePage() {
     }
     setIsSaving(true);
     try {
-      let finalCourseCover = courseCover;
+      let key = imageKey;
 
-      // Upload ảnh mới nếu có
+      // Upload ảnh mới bằng presigned URL nếu có
       if (pendingImageFile) {
-        const uploadResult = await fileApi.uploadSingleMedia(pendingImageFile);
-        if (uploadResult.data) {
-          finalCourseCover = uploadResult.data.url;
+        const presignedResponse = await fileApi.getPresignedUrl(pendingImageFile.name, 'public');
+        if (presignedResponse.data) {
+          const { url, key: uploadKey } = presignedResponse.data;
+          
+          // Upload trực tiếp lên S3
+          await fetch(url, {
+            method: 'PUT',
+            body: pendingImageFile,
+            headers: {
+              'Content-Type': pendingImageFile.type,
+            },
+          });
+          
+          key = uploadKey;
         }
       }
 
@@ -158,12 +169,12 @@ export default function EditCoursePage() {
         price,
         duration,
         level,
-        courseCover: finalCourseCover || undefined,
+        key: key || undefined,
       });
       if (response.code === 200) {
         toast.success("Cập nhật khóa học thành công!");
         setPendingImageFile(null);
-        setCourseCover(finalCourseCover);
+        setImageKey(key);
         if (response.data) {
           setCourse(response.data);
         }

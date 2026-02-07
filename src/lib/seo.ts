@@ -128,7 +128,7 @@ export function generateBlogStructuredData(blog: {
   summary?: string;
   content: string;
   author?: string;
-  featuredImage?: string;
+  thumbnailUrl?: string;
   createdAt: string;
 }) {
   return {
@@ -136,7 +136,7 @@ export function generateBlogStructuredData(blog: {
     '@type': 'BlogPosting',
     headline: blog.title,
     description: blog.summary || blog.content.substring(0, 160),
-    image: blog.featuredImage || `${SITE_URL}/hero-background.jpg`,
+    image: blog.thumbnailUrl || `${SITE_URL}/hero-background.jpg`,
     author: {
       '@type': 'Person',
       name: blog.author || 'JavaBuilder',
@@ -165,7 +165,7 @@ export function generateCourseStructuredData(course: {
   slug: string;
   description: string;
   price: number;
-  courseCover?: string;
+  thumbnailUrl?: string;
   duration?: number;
   level?: string;
   createdAt: string;
@@ -181,7 +181,7 @@ export function generateCourseStructuredData(course: {
       name: SITE_NAME,
       sameAs: SITE_URL,
     },
-    image: course.courseCover || `${SITE_URL}/hero-background.jpg`,
+    image: course.thumbnailUrl || `${SITE_URL}/hero-background.jpg`,
     offers: {
       '@type': 'Offer',
       price: course.price,

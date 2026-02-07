@@ -112,8 +112,8 @@ export default function FavoritesPage() {
                 <div key={item.id} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-gray-200 dark:border-slate-700">
                   <Link href={`/courses/${item.courseId}`}>
                     <div className="relative aspect-video">
-                      {item.courseCover ? (
-                        <Image src={item.courseCover} alt={item.courseTitle} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                      {item.thumbnailUrl ? (
+                        <Image src={item.thumbnailUrl} alt={item.courseTitle} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">
                           <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">

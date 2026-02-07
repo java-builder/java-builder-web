@@ -6,15 +6,16 @@ import Link from "next/link";
 import { interviewService } from "@/services/interview.service";
 import { questionSetService } from "@/services/question-set.service";
 import { InterviewTopicDetailResponse } from "@/types/interview";
-import { QuestionSetDetailResponse } from "@/types/question-set";
 import { useConfirm } from "@/hooks/useConfirm";
+import { clearInterviewTopicsCache } from "@/hooks/useInterviewTopics";
+import { useQuestionSets, clearQuestionSetsCache } from "@/hooks/useQuestionSets";
 import CreateInterviewTopicModal from "@/components/admin/interview/CreateInterviewTopicModal";
 import UpdateInterviewTopicModal from "@/components/admin/interview/UpdateInterviewTopicModal";
 import CreateQuestionSetModal from "@/components/admin/interview/CreateQuestionSetModal";
 
 export default function InterviewTopicsPage() {
   const [topics, setTopics] = useState<InterviewTopicDetailResponse[]>([]);
-  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
+  const { questionSets } = useQuestionSets();
   const [isLoading, setIsLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingSetId, setDeletingSetId] = useState<string | null>(null);
@@ -39,19 +40,8 @@ export default function InterviewTopicsPage() {
     }
   };
 
-  const fetchQuestionSets = async () => {
-    try {
-      const res = await questionSetService.getAllQuestionSets();
-      setQuestionSets(res.data?.questionSets || []);
-    } catch (e) {
-      console.error(e);
-      setQuestionSets([]);
-    }
-  };
-
   useEffect(() => {
     fetchTopics();
-    fetchQuestionSets();
   }, []);
 
   const handleDelete = async (id: string, name: string) => {
@@ -60,6 +50,7 @@ export default function InterviewTopicsPage() {
         setDeletingId(id);
         try {
           await interviewService.deleteTopic(id);
+          clearInterviewTopicsCache();
           await fetchTopics();
         } catch (e) {
           console.error(e);
@@ -83,7 +74,7 @@ export default function InterviewTopicsPage() {
         setDeletingSetId(id);
         try {
           await questionSetService.deleteQuestionSet(id);
-          await fetchQuestionSets();
+          clearQuestionSetsCache();
         } catch (e) {
           console.error(e);
         } finally {
@@ -190,10 +181,10 @@ export default function InterviewTopicsPage() {
                   <div className="p-4 sm:p-5">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                        {topic.iconPath && (
+                        {topic.thumbnailUrl && (
                           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
                             <Image
-                              src={topic.iconPath}
+                              src={topic.thumbnailUrl}
                               alt={topic.name}
                               width={32}
                               height={32}
@@ -376,6 +367,7 @@ export default function InterviewTopicsPage() {
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         onSuccess={() => {
+          clearInterviewTopicsCache();
           fetchTopics();
           setIsCreateOpen(false);
         }}
@@ -388,6 +380,7 @@ export default function InterviewTopicsPage() {
           setSelectedTopic(null);
         }}
         onSuccess={() => {
+          clearInterviewTopicsCache();
           fetchTopics();
           setIsEditOpen(false);
           setSelectedTopic(null);
@@ -402,7 +395,7 @@ export default function InterviewTopicsPage() {
           setSelectedTopicForSet(null);
         }}
         onSuccess={() => {
-          fetchQuestionSets();
+          clearQuestionSetsCache();
           setIsCreateSetOpen(false);
           setSelectedTopicForSet(null);
         }}

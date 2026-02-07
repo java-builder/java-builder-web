@@ -22,7 +22,7 @@ interface UpdateBlogFormData {
   title: string;
   content: string;
   summary?: string;
-  featuredImage?: string;
+  key?: string;
   blogType: BlogType;
 }
 
@@ -36,7 +36,7 @@ export default function UpdateBlogModal({
     title: "",
     content: "",
     summary: "",
-    featuredImage: "",
+    key: "",
     blogType: BlogType.TUTORIAL,
   });
 
@@ -54,10 +54,10 @@ export default function UpdateBlogModal({
         title: blog.title,
         content: blog.content,
         summary: blog.summary || "",
-        featuredImage: blog.featuredImage || "",
+        key: "",
         blogType: blog.blogType,
       });
-      setImagePreview(blog.featuredImage || "");
+      setImagePreview(blog.thumbnailUrl || "");
     }
   }, [blog, isOpen]);
 
@@ -77,7 +77,7 @@ export default function UpdateBlogModal({
     if (!file.type.startsWith("image/")) {
       setErrors((prev) => ({
         ...prev,
-        featuredImage: "Vui lòng chọn file ảnh hợp lệ",
+        key: "Vui lòng chọn file ảnh hợp lệ",
       }));
       return;
     }
@@ -85,7 +85,7 @@ export default function UpdateBlogModal({
     if (file.size > 5 * 1024 * 1024) {
       setErrors((prev) => ({
         ...prev,
-        featuredImage: "Kích thước ảnh không được vượt quá 5MB",
+        key: "Kích thước ảnh không được vượt quá 5MB",
       }));
       return;
     }
@@ -93,7 +93,7 @@ export default function UpdateBlogModal({
     setSelectedFile(file);
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
-    setErrors((prev) => ({ ...prev, featuredImage: "" }));
+    setErrors((prev) => ({ ...prev, key: "" }));
   };
 
   const validateForm = (): boolean => {
@@ -123,18 +123,18 @@ export default function UpdateBlogModal({
 
     setIsLoading(true);
     try {
-      let finalImageUrl = formData.featuredImage;
+      let finalImageKey = formData.key;
 
       // Upload new image if selected
       if (selectedFile) {
         setIsUploadingImage(true);
         try {
           const uploadResult = await blogService.uploadFeaturedImage(selectedFile);
-          finalImageUrl = uploadResult.url;
+          finalImageKey = uploadResult.key;
         } catch (uploadError: unknown) {
           setErrors((prev) => ({
             ...prev,
-            featuredImage: (uploadError as Error)?.message || "Lỗi khi tải ảnh lên",
+            key: (uploadError as Error)?.message || "Lỗi khi tải ảnh lên",
           }));
           return;
         } finally {
@@ -147,7 +147,7 @@ export default function UpdateBlogModal({
         title: formData.title,
         content: formData.content,
         summary: formData.summary,
-        featuredImage: finalImageUrl,
+        key: finalImageKey,
         blogType: formData.blogType,
       });
 
@@ -175,7 +175,7 @@ export default function UpdateBlogModal({
       title: "",
       content: "",
       summary: "",
-      featuredImage: "",
+      key: "",
       blogType: BlogType.TUTORIAL,
     });
     setErrors({});
@@ -385,9 +385,9 @@ export default function UpdateBlogModal({
                   />
                 </div>
 
-                {errors.featuredImage && (
+                {errors.key && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.featuredImage}
+                    {errors.key}
                   </p>
                 )}
               </div>

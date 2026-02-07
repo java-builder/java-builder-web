@@ -80,10 +80,10 @@ export default function BlogPreviewModal({
           <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
             <article className="p-6 text-gray-700 dark:text-gray-200">
               {/* Featured Image */}
-              {blog.featuredImage && (
+              {blog.thumbnailUrl && (
                 <div className="mb-6 relative w-full h-64">
                   <Image
-                    src={blog.featuredImage}
+                    src={blog.thumbnailUrl}
                     alt={blog.title}
                     fill
                     sizes="100vw"

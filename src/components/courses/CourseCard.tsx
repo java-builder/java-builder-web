@@ -95,9 +95,9 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="relative h-48 overflow-hidden">
-        {course.courseCover ? (
+        {course.thumbnailUrl ? (
           <Image
-            src={course.courseCover}
+            src={course.thumbnailUrl}
             alt={course.title}
             width={400}
             height={192}

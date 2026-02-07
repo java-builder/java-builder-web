@@ -15,7 +15,7 @@ export default function EditPostPage() {
   const slug = params?.slug as string;
   const router = useRouter();
 
-  const [initialData, setInitialData] = useState<Partial<UpdatePostRequest & { thumbnail?: string }> | null>(null);
+  const [initialData, setInitialData] = useState<Partial<UpdatePostRequest> | null>(null);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<CategoryDetailResponse[] | null>(null);
 
@@ -43,7 +43,7 @@ export default function EditPostPage() {
           setInitialData({
             title: post.title,
             content: post.content,
-            thumbnail: post.thumbnail ?? undefined,
+            key: post.key ?? undefined,
             categoryId: post.categoryId,
           });
         }

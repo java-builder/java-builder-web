@@ -41,11 +41,11 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
 
   return (
     <article className="bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300 overflow-hidden group flex flex-col h-full">
-      {blog.featuredImage && (
+      {blog.thumbnailUrl && (
         <Link href={`/blogs/${blog.slug}`} className="block">
           <div className="aspect-[16/10] w-full overflow-hidden relative">
             <Image
-              src={blog.featuredImage}
+              src={blog.thumbnailUrl}
               alt={blog.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

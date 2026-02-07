@@ -17,12 +17,7 @@ export async function generateMetadata({
     const description =
       blog.summary || blog.content.replace(/<[^>]*>/g, '').substring(0, 160);
 
-    const imgUrl =
-      blog.featuredImage && /^https?:\/\//i.test(blog.featuredImage)
-        ? blog.featuredImage
-        : blog.featuredImage
-          ? `${SITE_URL}${blog.featuredImage.startsWith("/") ? "" : "/"}${blog.featuredImage}`
-          : `${SITE_URL}/hero-background.jpg`;
+    const imgUrl = blog.thumbnailUrl || `${SITE_URL}/hero-background.jpg`;
 
     return generateSEO({
       title: blog.title,

@@ -27,7 +27,7 @@ export default function CreateBlogModal({
     title: "",
     content: "",
     summary: "",
-    featuredImage: "",
+    key: "",
     blogType: BlogType.TUTORIAL,
   });
 
@@ -51,29 +51,26 @@ export default function CreateBlogModal({
   const handleImageUpload = (file: File) => {
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       setErrors((prev) => ({
         ...prev,
-        featuredImage: "Vui lòng chọn file ảnh hợp lệ",
+        key: "Vui lòng chọn file ảnh hợp lệ",
       }));
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setErrors((prev) => ({
         ...prev,
-        featuredImage: "Kích thước ảnh không được vượt quá 5MB",
+        key: "Kích thước ảnh không được vượt quá 5MB",
       }));
       return;
     }
 
-    // Lưu file và tạo preview
     setSelectedFile(file);
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
-    setErrors((prev) => ({ ...prev, featuredImage: "" }));
+    setErrors((prev) => ({ ...prev, key: "" }));
   };
 
   const validateForm = (): boolean => {
@@ -110,11 +107,11 @@ export default function CreateBlogModal({
         try {
           const uploadResult =
             await blogService.uploadFeaturedImage(selectedFile);
-          finalFormData.featuredImage = uploadResult.url;
+          finalFormData.key = uploadResult.key;
         } catch (uploadError: unknown) {
           setErrors((prev) => ({
             ...prev,
-            featuredImage:
+            key:
               (uploadError as Error)?.message || "Lỗi khi tải ảnh lên",
           }));
           return;
@@ -151,7 +148,7 @@ export default function CreateBlogModal({
       title: "",
       content: "",
       summary: "",
-      featuredImage: "",
+      key: "",
       blogType: BlogType.TUTORIAL,
     });
     setErrors({});
@@ -381,9 +378,9 @@ export default function CreateBlogModal({
                   />
                 </div>
 
-                {errors.featuredImage && (
+                {errors.key && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.featuredImage}
+                    {errors.key}
                   </p>
                 )}
               </div>

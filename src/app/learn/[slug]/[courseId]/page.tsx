@@ -302,10 +302,10 @@ export default function LearnCoursePage() {
             bạn cần đăng ký khóa học hoặc nâng cấp tài khoản Premium.
           </p>
 
-          {course.courseCover && (
+          {course.thumbnailUrl && (
             <div className="mb-6 rounded-lg overflow-hidden relative w-full aspect-video">
               <Image 
-                src={course.courseCover} 
+                src={course.thumbnailUrl} 
                 alt={course.title}
                 fill
                 className="object-contain"

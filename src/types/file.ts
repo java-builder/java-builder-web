@@ -3,7 +3,7 @@ export interface FileMetaDataResponse {
   name: string;
   contentType: string;
   size: number;
-  url: string;
+  key: string;
   displayOrder?: number;
 }
 

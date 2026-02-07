@@ -6,7 +6,7 @@ export interface CreateCourseRequest {
   description: string;
   price: number;
   duration?: number;
-  courseCover?: string;
+  key?: string;
   level?: CourseLevel;
 }
 
@@ -15,7 +15,7 @@ export interface UpdateCourseRequest {
   description?: string;
   price?: number;
   duration?: number;
-  courseCover?: string;
+  key?: string;
   level?: CourseLevel;
 }
 
@@ -26,7 +26,7 @@ export interface CreateCourseResponse {
   description: string;
   price: number;
   duration?: number;
-  courseCover?: string;
+  thumbnailUrl?: string;
   level?: CourseLevel;
 }
 
@@ -37,7 +37,7 @@ export interface CourseDetailResponse {
   description: string;
   price: number;
   duration?: number;
-  courseCover?: string;
+  thumbnailUrl?: string;
   level?: CourseLevel;
   chapters?: ChapterDetailResponse[];
   createdAt: string;
@@ -54,7 +54,7 @@ export interface MyEnrolledCourseResponse {
   description: string;
   price: number;
   duration?: number;
-  courseCover?: string;
+  thumbnailUrl?: string;
   level?: CourseLevel;
   progress: number;
   completed: boolean;

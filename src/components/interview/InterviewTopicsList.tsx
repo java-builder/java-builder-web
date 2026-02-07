@@ -40,7 +40,7 @@ export default function InterviewTopicsList({
             key={topic.id}
             slug={topic.slug}
             name={topic.name}
-            iconPath={topic.iconPath || "/logos/logo-java.png"}
+            iconPath={topic.thumbnailUrl || "/logos/logo-java.png"}
             description={topic.description || ""}
             totalQuestions={totalQuestionsInTopic}
             levels={["Junior", "Middle", "Senior"]}

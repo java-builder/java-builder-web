@@ -424,10 +424,10 @@ export default function BlogDetailPage() {
             <MotionWrapper animation="fadeInUp" duration={0.6} mode="mount">
               <article className="bg-white dark:bg-slate-800 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 {/* Featured Image */}
-                {blog.featuredImage && (
+                {blog.thumbnailUrl && (
                   <div className="aspect-[16/9] w-full overflow-hidden relative bg-gray-100 rounded-lg">
                     <Image
-                      src={blog.featuredImage}
+                      src={blog.thumbnailUrl}
                       alt={blog.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 60vw"
@@ -755,10 +755,10 @@ export default function BlogDetailPage() {
                           className="block group"
                         >
                           <div className="flex space-x-2">
-                            {relatedBlog.featuredImage && (
+                            {relatedBlog.thumbnailUrl && (
                               <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-md overflow-hidden bg-gray-100 dark:bg-slate-700">
                                 <Image
-                                  src={relatedBlog.featuredImage}
+                                  src={relatedBlog.thumbnailUrl}
                                   alt={relatedBlog.title}
                                   width={56}
                                   height={56}

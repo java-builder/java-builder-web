@@ -77,9 +77,9 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
     >
       {/* Header */}
       <div className="relative h-56 overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-slate-700">
-        {document.coverImage && !imageError ? (
+        {document.thumbnailUrl && !imageError ? (
           <Image
-            src={document.coverImage}
+            src={document.thumbnailUrl}
             alt={document.title}
             width={400}
             height={224}
