@@ -4,8 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+import { interviewService } from "@/services/interview.service";
+import { InterviewTopicDetailResponse } from "@/types/interview";
 
-const NAV_ITEMS: { href: string; label: string; isPremium?: boolean; hasDropdown?: boolean; dropdownItems?: { href: string; label: string; iconPath: string }[] }[] = [
+const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasDropdown?: boolean; isDynamic?: boolean }[] = [
   { href: "/", label: "Trang chủ" },
   { href: "/courses", label: "Khóa học" },
   { href: "/documents", label: "Tài liệu" },
@@ -14,13 +16,7 @@ const NAV_ITEMS: { href: string; label: string; isPremium?: boolean; hasDropdown
     href: "/interview", 
     label: "Phỏng vấn",
     hasDropdown: true,
-    dropdownItems: [
-      { href: "/interview/java-core", label: "Java Core", iconPath: "/logos/logo-java.png" },
-      { href: "/interview/spring-boot", label: "Spring Boot", iconPath: "/logos/logo-springboot.png" },
-      { href: "/interview/database", label: "Database", iconPath: "/logos/logo-posgtres.png" },
-      { href: "/interview/microservices", label: "Microservices", iconPath: "/logos/logo-microservices.png" },
-      { href: "/interview/aws", label: "AWS", iconPath: "/logos/aws-logo.png" },
-    ]
+    isDynamic: true, // Flag to load from API
   },
   { href: "/qna", label: "Q&A" },
   { href: "/about", label: "Giới thiệu" },
@@ -35,16 +31,49 @@ interface NavLinksProps {
 export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [interviewTopics, setInterviewTopics] = useState<InterviewTopicDetailResponse[]>([]);
+  const [isLoadingTopics, setIsLoadingTopics] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    const fetchInterviewTopics = async () => {
+      try {
+        const response = await interviewService.getAllTopics();
+        setInterviewTopics(response.data?.topics || []);
+      } catch (error) {
+        console.error("Failed to fetch interview topics:", error);
+        // Fallback: set empty array on error
+        setInterviewTopics([]);
+      } finally {
+        setIsLoadingTopics(false);
+      }
+    };
+
+    fetchInterviewTopics();
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
   }, []);
+
+  // Build dropdown items from API data
+  const getDropdownItems = (item: typeof NAV_ITEMS_STATIC[0]) => {
+    if (item.isDynamic && item.href === "/interview") {
+      return interviewTopics.map(topic => ({
+        href: `/interview/${topic.slug}`,
+        label: topic.name,
+        iconPath: topic.iconPath || "/logos/logo-java.png",
+      }));
+    }
+    return [];
+  };
+
+  const hasDropdown = (item: typeof NAV_ITEMS_STATIC[0]) => {
+    return item.hasDropdown === true;
+  };
 
   const handleMouseEnter = (href: string) => {
     if (timeoutRef.current) {
@@ -62,10 +91,11 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
   if (mobile) {
     return (
       <div className="space-y-2">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS_STATIC.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+          const dropdownItems = getDropdownItems(item);
           
-          if (item.hasDropdown && item.dropdownItems) {
+          if (hasDropdown(item)) {
             return (
               <div key={item.href}>
                 <button
@@ -91,25 +121,31 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
                 </button>
                 {openDropdown === item.href && (
                   <div className="pl-4 space-y-2 mt-2">
-                    {item.dropdownItems.map((dropItem) => (
-                      <Link
-                        key={dropItem.href}
-                        href={dropItem.href}
-                        className="block py-2 text-gray-600 dark:text-gray-400 hover:text-accent transition-colors flex items-center gap-2"
-                        onClick={onItemClick}
-                      >
-                        <div className="w-5 h-5 relative flex-shrink-0">
-                          <Image
-                            src={dropItem.iconPath}
-                            alt={dropItem.label}
-                            width={20}
-                            height={20}
-                            className="object-contain"
-                          />
-                        </div>
-                        <span>{dropItem.label}</span>
-                      </Link>
-                    ))}
+                    {isLoadingTopics ? (
+                      <div className="py-2 text-sm text-gray-500 dark:text-gray-400">
+                        Đang tải...
+                      </div>
+                    ) : dropdownItems.length > 0 ? (
+                      dropdownItems.map((dropItem) => (
+                        <Link
+                          key={dropItem.href}
+                          href={dropItem.href}
+                          className="block py-2 text-gray-600 dark:text-gray-400 hover:text-accent transition-colors flex items-center gap-2"
+                          onClick={onItemClick}
+                        >
+                          <div className="w-5 h-5 relative flex-shrink-0">
+                            <Image
+                              src={dropItem.iconPath}
+                              alt={dropItem.label}
+                              width={20}
+                              height={20}
+                              className="object-contain"
+                            />
+                          </div>
+                          <span>{dropItem.label}</span>
+                        </Link>
+                      ))
+                    ) : null}
                   </div>
                 )}
               </div>
@@ -140,10 +176,11 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
 
   return (
     <div className="hidden lg:flex items-center space-x-8">
-      {NAV_ITEMS.map((item) => {
+      {NAV_ITEMS_STATIC.map((item) => {
         const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+        const dropdownItems = getDropdownItems(item);
         
-        if (item.hasDropdown && item.dropdownItems) {
+        if (hasDropdown(item)) {
           return (
             <div
               key={item.href}
@@ -181,24 +218,30 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
                   onMouseEnter={() => handleMouseEnter(item.href)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {item.dropdownItems.map((dropItem) => (
-                    <Link
-                      key={dropItem.href}
-                      href={dropItem.href}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-accent transition-colors"
-                    >
-                      <div className="w-5 h-5 relative flex-shrink-0">
-                        <Image
-                          src={dropItem.iconPath}
-                          alt={dropItem.label}
-                          width={20}
-                          height={20}
-                          className="object-contain"
-                        />
-                      </div>
-                      <span>{dropItem.label}</span>
-                    </Link>
-                  ))}
+                  {isLoadingTopics ? (
+                    <div className="px-4 py-2.5 text-sm text-gray-500 dark:text-gray-400 text-center">
+                      Đang tải...
+                    </div>
+                  ) : dropdownItems.length > 0 ? (
+                    dropdownItems.map((dropItem) => (
+                      <Link
+                        key={dropItem.href}
+                        href={dropItem.href}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-accent transition-colors"
+                      >
+                        <div className="w-5 h-5 relative flex-shrink-0">
+                          <Image
+                            src={dropItem.iconPath}
+                            alt={dropItem.label}
+                            width={20}
+                            height={20}
+                            className="object-contain"
+                          />
+                        </div>
+                        <span>{dropItem.label}</span>
+                      </Link>
+                    ))
+                  ) : null}
                 </div>
               )}
             </div>
