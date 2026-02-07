@@ -148,4 +148,17 @@ export const API = {
     GET_CATEGORIES: "/api/v1/categories",
     DELETE_CATEGORY: "/api/v1/categories", // + /:id
     UPDATE_CATEGORY: "/api/v1/categories", // + /:id
+
+    // INTERVIEW TOPIC
+    CREATE_INTERVIEW_TOPIC: "/api/v1/interview-topics",
+    GET_INTERVIEW_TOPICS: "/api/v1/interview-topics",
+    GET_INTERVIEW_TOPIC_BY_SLUG: "/api/v1/interview-topics/slug", // + /:slug
+    UPDATE_INTERVIEW_TOPIC: "/api/v1/interview-topics", // + /:topicId
+    DELETE_INTERVIEW_TOPIC: "/api/v1/interview-topics", // + /:topicId
+
+    // QUESTION SET
+    CREATE_QUESTION_SET: "/api/v1/question-sets/topic", // + /:interviewTopicId
+    GET_QUESTION_SETS: "/api/v1/question-sets",
+    UPDATE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
+    DELETE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
 }
