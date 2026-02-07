@@ -4,7 +4,7 @@ export interface NotificationDetailResponse {
     content: string;
     link: string;
     thumbnail?: string | null;
-    read: boolean;
+    isRead: boolean;
     senderName: string;
     avatar: string | null;
     createdAt: string;

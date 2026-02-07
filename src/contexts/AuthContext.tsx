@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const result = await authApi.introspect();
       const authorities = result?.authorities || [];
       setState({
-        isAuthenticated: result?.valid || false,
+        isAuthenticated: result?.isValid || false,
         isLoading: false,
         hasAdminAccess: authorities.includes("ADMIN"),
         error: null,

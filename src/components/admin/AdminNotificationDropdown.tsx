@@ -44,7 +44,7 @@ export default function AdminNotificationDropdown() {
     // Update unread count based on the first page fetch mostly, 
     // but simplified logic here just checks current list. 
     // Ideally we trust API for unread count if it provided it.
-    const unreadInList = list.filter((n) => !n.read).length;
+    const unreadInList = list.filter((n) => !n.isRead).length;
     if (currentPage === 1) {
       setHasUnread(unreadInList > 0);
       setUnreadCount(unreadInList);
@@ -54,14 +54,14 @@ export default function AdminNotificationDropdown() {
   const handleOpenNotifications = async () => {
     setIsNotifOpen(!isNotifOpen);
     if (!isNotifOpen) {
-      if (notifications.some(n => !n.read)) {
-        const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+      if (notifications.some(n => !n.isRead)) {
+        const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n.id);
         if (unreadIds.length > 0) {
           try {
             await notificationApi.markAsRead(unreadIds);
             setNotifications((prev) =>
               prev.map((n) =>
-                unreadIds.includes(n.id) ? { ...n, isRead: true, read: true } : n,
+                unreadIds.includes(n.id) ? { ...n, isRead: true } : n,
               ),
             );
             setHasUnread(false);
@@ -169,7 +169,7 @@ export default function AdminNotificationDropdown() {
                 <Link
                   key={n.id}
                   href={n.link || "#"}
-                  className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-blue-50 ${!n.read ? "bg-blue-50/50" : "hover:bg-gray-50"}`}
+                  className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-blue-50 ${!n.isRead ? "bg-blue-50/50" : "hover:bg-gray-50"}`}
                   onClick={() => setIsNotifOpen(false)}
                 >
                   <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">

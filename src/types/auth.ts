@@ -21,7 +21,7 @@ export interface IntrospectRequest {
 }
 
 export interface IntrospectResponse {
-  valid: boolean;
+  isValid: boolean;
   authorities: string[];
 }
 

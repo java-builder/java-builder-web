@@ -15,12 +15,12 @@ export default function NotificationDropdown() {
   const markAsRead = useMarkAsRead();
 
   const notifications = notifData?.data || [];
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const handleOpen = () => {
     setIsOpen(!isOpen);
     if (!isOpen && unreadCount > 0) {
-      const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+      const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n.id);
       markAsRead.mutate(unreadIds);
     }
   };
@@ -89,9 +89,9 @@ export default function NotificationDropdown() {
               notifications.map((n) => (
                 <Link
                   key={n.id}
-                  href={n.content || "#"}
+                  href={n.link || "#"}
                   className={`flex items-start gap-3 px-4 py-3 transition-colors ${
-                    !n.read 
+                    !n.isRead 
                       ? "bg-blue-50/50 dark:bg-slate-700/50" 
                       : "hover:bg-gray-50 dark:hover:bg-slate-700"
                   }`}

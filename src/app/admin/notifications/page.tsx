@@ -36,7 +36,7 @@ export default function AdminNotificationsPage() {
       time: it.createdAt ? it.createdAt : "",
       avatar: it.avatar,
       senderName: it.senderName,
-      read: it.read ?? false,
+      read: it.isRead ?? false,
       meta: {}, // API doesn't provide meta data
     }));
     setNotifications(mapped);
