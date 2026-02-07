@@ -82,16 +82,16 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-gray-50 border-t border-gray-200 shadow-lg">
+        <div className="lg:hidden bg-gray-50 dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 shadow-lg">
           <div className="px-3 sm:px-6 py-3 sm:py-4">
             <NavLinks mobile onItemClick={() => setIsMobileMenuOpen(false)} />
             
             {isLoggedIn && (
               <>
-                <div className="border-t border-gray-200 my-3" />
+                <div className="border-t border-gray-200 dark:border-slate-700 my-3" />
                 <button 
                   onClick={handleLogout} 
-                  className="block py-2 text-red-600 w-full text-left"
+                  className="block py-2 text-red-600 dark:text-red-400 w-full text-left"
                 >
                   Đăng xuất
                 </button>
