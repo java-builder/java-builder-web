@@ -170,7 +170,7 @@ export default function InterviewTopicsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-6">
             {topics.map((topic) => {
               const topicQuestionSets = questionSets.filter(qs => qs.id); // Show all for now
-              const totalQuestions = topicQuestionSets.reduce((sum, set) => sum + (set.questions?.length || 0), 0);
+              const totalQuestions = topicQuestionSets.reduce((sum, set) => sum + (set.totalQuestions || 0), 0);
               const isExpanded = expandedTopicId === topic.id;
 
               return (
@@ -316,7 +316,7 @@ export default function InterviewTopicsPage() {
                                   {getLevelBadge(set.level)}
                                   {getDifficultyBadge(set.difficulty)}
                                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    {set.questions?.length || 0} câu hỏi
+                                    {set.totalQuestions || 0} câu hỏi
                                   </span>
                                 </div>
                               </div>

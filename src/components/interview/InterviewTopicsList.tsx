@@ -29,12 +29,6 @@ export default function InterviewTopicsList({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {topics.map((topic) => {
-        const totalQuestionsInTopic =
-          topic.questionSets?.reduce(
-            (sum, set) => sum + (set.questions?.length || 0),
-            0
-          ) || 0;
-
         return (
           <InterviewCategoryCard
             key={topic.id}
@@ -42,7 +36,7 @@ export default function InterviewTopicsList({
             name={topic.name}
             iconPath={topic.thumbnailUrl || "/logos/logo-java.png"}
             description={topic.description || ""}
-            totalQuestions={totalQuestionsInTopic}
+            totalQuestions={topic.totalQuestions || 0}
             levels={["Junior", "Middle", "Senior"]}
             color="text-orange-600 dark:text-orange-400"
           />

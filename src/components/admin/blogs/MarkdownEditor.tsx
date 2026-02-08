@@ -209,8 +209,8 @@ export default function MarkdownEditor({
 
       {/* Content Area */}
       <div
-        className={`relative flex-1 min-h-0 ${error ? "border-2 border-red-300 dark:border-red-700 rounded-b-lg" : ""}`}
-        style={{ height: `${height}px` }}
+        className={`relative ${error ? "border-2 border-red-300 dark:border-red-700 rounded-b-lg" : ""}`}
+        style={{ height: `${height}px`, minHeight: `${height}px` }}
       >
         {viewMode === "edit" && (
           <textarea

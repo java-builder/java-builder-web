@@ -8,8 +8,9 @@ import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import Link from "next/link";
 import { InterviewTopicDetailResponse } from "@/types/interview";
+import { QuestionSetDetailResponse } from "@/types/question-set";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
-import { useQuestionSets } from "@/hooks/useQuestionSets";
+import { questionSetService } from "@/services/question-set.service";
 import toast from "react-hot-toast";
 
 export default function InterviewCategoryPage() {
@@ -17,8 +18,9 @@ export default function InterviewCategoryPage() {
   const slug = params.slug as string;
   
   const { topics: allTopics, isLoading: isLoadingTopics } = useInterviewTopics();
-  const { questionSets, isLoading: isLoadingSets } = useQuestionSets();
   const [topic, setTopic] = useState<InterviewTopicDetailResponse | null>(null);
+  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
+  const [isLoadingSets, setIsLoadingSets] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
 
   // Tìm topic từ cache
@@ -32,6 +34,26 @@ export default function InterviewCategoryPage() {
       }
     }
   }, [slug, allTopics, isLoadingTopics]);
+
+  // Fetch question sets by topic slug
+  useEffect(() => {
+    const fetchQuestionSets = async () => {
+      if (!slug) return;
+      
+      try {
+        setIsLoadingSets(true);
+        const response = await questionSetService.getQuestionSetsByTopicSlug(slug);
+        setQuestionSets(response.data?.questionSets || []);
+      } catch (error) {
+        console.error("Failed to fetch question sets:", error);
+        toast.error("Không thể tải danh sách câu hỏi");
+      } finally {
+        setIsLoadingSets(false);
+      }
+    };
+
+    fetchQuestionSets();
+  }, [slug]);
 
   const isLoading = isLoadingTopics || isLoadingSets;
 
@@ -74,7 +96,7 @@ export default function InterviewCategoryPage() {
     ? questionSets 
     : questionSets.filter(set => set.level === selectedLevel);
 
-  const totalQuestions = questionSets.reduce((sum, set) => sum + (set.questions?.length || 0), 0);
+  const totalQuestions = questionSets.reduce((sum, set) => sum + (set.totalQuestions || 0), 0);
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -236,7 +258,7 @@ export default function InterviewCategoryPage() {
           {filteredSets.map((set) => (
             <Link
               key={set.id}
-              href={`/interview/${slug}/${set.id}`}
+              href={`/interview/${slug}/${set.slug}`}
               className="block group"
             >
               <div className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-5 hover:shadow-lg hover:border-accent/50 dark:hover:border-accent/50 transition-all duration-300">
@@ -274,7 +296,7 @@ export default function InterviewCategoryPage() {
                   <div className="flex flex-col items-end gap-2 flex-shrink-0">
                     <div className="text-right">
                       <div className="text-2xl font-bold text-accent">
-                        {set.questions?.length || 0}
+                        {set.totalQuestions || 0}
                       </div>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         câu hỏi

@@ -296,7 +296,7 @@ export default function EditInterviewTopicPage() {
                             {getLevelBadge(set.level)}
                             {getDifficultyBadge(set.difficulty)}
                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {set.questions?.length || 0} câu hỏi
+                              {set.totalQuestions || 0} câu hỏi
                             </span>
                           </div>
                           {set.topics && (

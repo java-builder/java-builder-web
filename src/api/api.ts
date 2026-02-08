@@ -159,6 +159,14 @@ export const API = {
     // QUESTION SET
     CREATE_QUESTION_SET: "/api/v1/question-sets/topic", // + /:interviewTopicId
     GET_QUESTION_SETS: "/api/v1/question-sets",
+    GET_QUESTION_SET_BY_SLUG: "/api/v1/question-sets/slug", // + /:slug
     UPDATE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
     DELETE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
+
+    // INTERVIEW QUESTION
+    CREATE_INTERVIEW_QUESTION: "/api/v1/interview-questions/question-set", // + /:questionSetId
+    GET_INTERVIEW_QUESTIONS: "/api/v1/interview-questions/question-set", // + /:questionSetId
+    GET_INTERVIEW_QUESTIONS_BY_SLUG: "/api/v1/interview-questions/question-set/slug", // + /:questionSetSlug
+    UPDATE_INTERVIEW_QUESTION: "/api/v1/interview-questions", // + /:questionId
+    DELETE_INTERVIEW_QUESTION: "/api/v1/interview-questions", // + /:questionId
 }

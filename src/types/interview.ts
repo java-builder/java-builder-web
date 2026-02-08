@@ -10,6 +10,8 @@ export interface InterviewTopicDetailResponse {
   thumbnailUrl?: string;
   displayOrder: number;
   active?: boolean;
+  totalQuestionSets?: number;
+  totalQuestions?: number;
   createdAt: string;
   updatedAt?: string;
   questionSets?: QuestionSetResponse[];

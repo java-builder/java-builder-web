@@ -6,7 +6,7 @@ import { InterviewTopicDetailResponse } from "@/types/interview";
 let cachedTopics: InterviewTopicDetailResponse[] | null = null;
 let cachePromise: Promise<InterviewTopicDetailResponse[]> | null = null;
 let cacheTimestamp: number | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 phút
+const CACHE_DURATION = 30 * 1000; // 30 giây (dev), production nên để 5 phút
 
 export function useInterviewTopics() {
   const [topics, setTopics] = useState<InterviewTopicDetailResponse[]>(cachedTopics || []);
@@ -62,14 +62,10 @@ export function useInterviewTopics() {
     fetchTopics();
   }, []);
 
-  // Tính tổng số câu hỏi
+  // Tính tổng số câu hỏi từ tất cả các topic
   const totalQuestions = useMemo(() => {
     return topics.reduce((total, topic) => {
-      const topicQuestions = topic.questionSets?.reduce(
-        (sum, set) => sum + (set.questions?.length || 0),
-        0
-      ) || 0;
-      return total + topicQuestions;
+      return total + (topic.totalQuestions || 0);
     }, 0);
   }, [topics]);
 

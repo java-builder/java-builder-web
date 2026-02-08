@@ -1,17 +1,19 @@
 export interface QuestionSetDetailResponse {
   id: string;
+  slug: string;
   title: string;
   level: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
   difficulty: "EASY" | "MEDIUM" | "HARD";
   topics?: string;
   displayOrder: number;
   active: boolean;
-  questions?: InterviewQuestionResponse[];
+  totalQuestions?: number;
   createdAt: string;
 }
 
 export interface InterviewQuestionResponse {
   id: string;
+  slug: string;
   question: string;
   answer: string;
   tips?: string;

@@ -4,9 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { questionSetService } from "@/services/question-set.service";
+import { interviewQuestionService } from "@/services/interview-question.service";
 import { QuestionSetDetailResponse, InterviewQuestionResponse } from "@/types/question-set";
 import { useConfirm } from "@/hooks/useConfirm";
 import toast from "react-hot-toast";
+import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
 
 export default function EditQuestionSetPage() {
   const params = useParams();
@@ -42,8 +45,10 @@ export default function EditQuestionSetPage() {
       
       if (foundSet) {
         setQuestionSet(foundSet);
-        setQuestions(foundSet.questions || []);
       }
+
+      const questionsRes = await interviewQuestionService.getQuestions(questionSetId);
+      setQuestions(questionsRes.data?.questions || []);
     } catch (error) {
       console.error("Error fetching question set:", error);
       toast.error("Không thể tải thông tin bộ câu hỏi");
@@ -65,14 +70,21 @@ export default function EditQuestionSetPage() {
     }
 
     try {
-      // TODO: Call API to create question
+      await interviewQuestionService.createQuestion(questionSetId, {
+        question: formData.question,
+        answer: formData.answer,
+        tips: formData.tips || undefined,
+        difficulty: formData.difficulty,
+        displayOrder: formData.displayOrder,
+      });
+      
       toast.success("Thêm câu hỏi thành công!");
       setFormData({
         question: "",
         answer: "",
         tips: "",
         difficulty: "EASY",
-        displayOrder: questions.length + 1,
+        displayOrder: questions.length + 2,
       });
       setIsCreateOpen(false);
       await fetchQuestionSet(true);
@@ -82,16 +94,16 @@ export default function EditQuestionSetPage() {
     }
   };
 
-  const handleDeleteQuestion = async (id: string, question: string) => {
+  const handleDeleteQuestion = async (questionId: string, question: string) => {
     await confirm(
       async () => {
         try {
-          // TODO: Call API to delete question
+          await interviewQuestionService.deleteQuestion(questionId);
           toast.success("Xóa câu hỏi thành công!");
           await fetchQuestionSet(true);
-        } catch (e) {
-          console.error(e);
-          toast.error("Xóa thất bại");
+        } catch (error) {
+          console.error("Error deleting question:", error);
+          toast.error("Xóa câu hỏi thất bại");
         }
       },
       {
@@ -224,7 +236,9 @@ export default function EditQuestionSetPage() {
                           </div>
                           <div>
                             <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Trả lời:</h4>
-                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{q.answer}</p>
+                            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 prose prose-sm dark:prose-invert max-w-none">
+                              <MarkdownRenderer content={q.answer} />
+                            </div>
                           </div>
                           {q.tips && (
                             <div>
@@ -245,8 +259,8 @@ export default function EditQuestionSetPage() {
 
       {/* Create Question Modal */}
       {isCreateOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-y-auto">
             <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-3 sm:py-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
@@ -282,14 +296,15 @@ export default function EditQuestionSetPage() {
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Câu trả lời <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  required
+                <MarkdownEditor
                   value={formData.answer}
-                  onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                  rows={6}
-                  className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Nhập câu trả lời chi tiết..."
+                  onChange={(value) => setFormData({ ...formData, answer: value })}
+                  placeholder="Nhập câu trả lời chi tiết... Hỗ trợ Markdown để format code"
+                  height={600}
                 />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  💡 Hỗ trợ Markdown: Dùng <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">```java</code> để format code
+                </p>
               </div>
 
               <div>
@@ -299,7 +314,7 @@ export default function EditQuestionSetPage() {
                 <textarea
                   value={formData.tips}
                   onChange={(e) => setFormData({ ...formData, tips: e.target.value })}
-                  rows={2}
+                  rows={3}
                   className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
                   placeholder="Gợi ý để trả lời tốt hơn..."
                 />

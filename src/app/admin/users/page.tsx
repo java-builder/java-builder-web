@@ -647,7 +647,7 @@ export default function UsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-gray-200">{user.email}</div>
+                      <div className="text-sm text-gray-900 dark:text-gray-200 max-w-xs truncate" title={user.email}>{user.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <StatusBadge status={user.userStatus} />
