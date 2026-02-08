@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { interviewService } from "@/services/interview.service";
 import { InterviewTopicDetailResponse } from "@/types/interview";
+import { QuestionSetDetailResponse } from "@/types/question-set";
 import { useConfirm } from "@/hooks/useConfirm";
-import { useQuestionSets, clearQuestionSetsCache } from "@/hooks/useQuestionSets";
 import CreateQuestionSetModal from "@/components/admin/interview/CreateQuestionSetModal";
 import toast from "react-hot-toast";
 
@@ -17,7 +17,7 @@ export default function EditInterviewTopicPage() {
   const hasFetched = useRef(false);
 
   const [topic, setTopic] = useState<InterviewTopicDetailResponse | null>(null);
-  const { questionSets } = useQuestionSets();
+  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [deletingSetId, setDeletingSetId] = useState<string | null>(null);
@@ -52,6 +52,11 @@ export default function EditInterviewTopicPage() {
         setDisplayOrder(foundTopic.displayOrder);
         setKey("");
         setThumbnailUrl(foundTopic.thumbnailUrl || "");
+        
+        // Fetch question sets by topic slug
+        const { questionSetService } = await import("@/services/question-set.service");
+        const setsRes = await questionSetService.getQuestionSetsByTopicSlug(foundTopic.slug);
+        setQuestionSets(setsRes.data?.questionSets || []);
       }
     } catch (error) {
       console.error("Error fetching topic:", error);
@@ -96,7 +101,7 @@ export default function EditInterviewTopicPage() {
         try {
           const { questionSetService } = await import("@/services/question-set.service");
           await questionSetService.deleteQuestionSet(id);
-          clearQuestionSetsCache();
+          await fetchTopic(true); // Refresh question sets
           toast.success("Xóa bộ câu hỏi thành công!");
         } catch (e) {
           console.error(e);
@@ -349,7 +354,7 @@ export default function EditInterviewTopicPage() {
         isOpen={isCreateSetOpen}
         onClose={() => setIsCreateSetOpen(false)}
         onSuccess={() => {
-          clearQuestionSetsCache();
+          fetchTopic(true); 
           setIsCreateSetOpen(false);
         }}
         topicId={topicId}
