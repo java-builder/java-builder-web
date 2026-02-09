@@ -1,6 +1,6 @@
 import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
-import { UserSession } from "@/types/session";
+import { UserSession, UserSessionStatistics } from "@/types/session";
 import { API } from "@/api/api";
 
 export interface UserSessionSearchParams {
@@ -35,6 +35,11 @@ export const userSessionApi = {
 
   revokeAllUserSessions: async (userId: string) => {
     const response = await apiClient.delete<ApiResponse<void>>(`/api/v1/tokens/users/${userId}`);
+    return response.data;
+  },
+
+  getStatistics: async () => {
+    const response = await apiClient.get<ApiResponse<UserSessionStatistics>>('/api/v1/user-sessions/statistics');
     return response.data;
   },
 };

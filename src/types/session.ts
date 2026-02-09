@@ -13,3 +13,12 @@ export interface UserSession {
   status: 'ACTIVE' | 'REVOKED';
   createdAt: string;
 }
+
+export interface UserSessionStatistics {
+  totalSessions: number;
+  activeSessions: number;
+  revokedSessions: number;
+  sessionsByProvider: Record<string, number>;
+  sessionsByDevice: Record<string, number>;
+  sessionsByBrowser: Record<string, number>;
+}
