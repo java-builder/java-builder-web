@@ -1,6 +1,9 @@
 export interface UserSession {
   sessionId: string;
   userId: string;
+  username: string;
+  email: string;
+  avatar?: string;
   browser: string;
   browserVersion: string;
   os: string;

@@ -32,4 +32,9 @@ export const userSessionApi = {
     const response = await apiClient.delete<ApiResponse<void>>(`${API.REVOKE_SESSION}/${sessionId}`);
     return response.data;
   },
+
+  revokeAllUserSessions: async (userId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(`/api/v1/tokens/users/${userId}`);
+    return response.data;
+  },
 };
