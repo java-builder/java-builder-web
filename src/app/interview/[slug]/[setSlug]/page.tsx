@@ -14,7 +14,7 @@ import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
 export default function InterviewSetPage() {
   const params = useParams();
   const router = useRouter();
-  const setSlug = params.setId as string;
+  const setSlug = params.setSlug as string;
 
   const [questionSet, setQuestionSet] = useState<QuestionSetDetailResponse | null>(null);
   const [questions, setQuestions] = useState<InterviewQuestionResponse[]>([]);
@@ -26,12 +26,15 @@ export default function InterviewSetPage() {
       try {
         setIsLoading(true);
 
-        const setRes = await questionSetService.getQuestionSetBySlug(setSlug);
+        const [setRes, questionsRes] = await Promise.all([
+          questionSetService.getQuestionSetBySlug(setSlug),
+          interviewQuestionService.getQuestionsBySlug(setSlug)
+        ]);
+
         if (setRes.data) {
           setQuestionSet(setRes.data);
         }
 
-        const questionsRes = await interviewQuestionService.getQuestionsBySlug(setSlug);
         const fetchedQuestions = questionsRes.data?.questions || [];
         setQuestions(fetchedQuestions);
 
