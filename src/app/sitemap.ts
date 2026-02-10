@@ -64,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
       url: `${SITE_URL}/blogs/${blog.slug}`,
-      lastModified: parseApiDate(blog.createdAt),
+      lastModified: parseApiDate(blog.createdAt) || new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));
@@ -78,7 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const coursePages: MetadataRoute.Sitemap = courses.map((course) => ({
       url: `${SITE_URL}/courses/${course.slug}`,
-      lastModified: parseApiDate(course.createdAt),
+      lastModified: parseApiDate(course.createdAt) || new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.85,
     }));

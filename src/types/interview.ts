@@ -20,9 +20,14 @@ export interface InterviewTopicDetailResponse {
 export interface QuestionSetResponse {
   id: string;
   name: string;
+  slug?: string;
   description?: string;
+  level?: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
+  difficulty?: "EASY" | "MEDIUM" | "HARD";
+  topics?: string;
   displayOrder: number;
   active: boolean;
+  totalQuestions?: number;
   questions?: InterviewQuestionResponse[];
 }
 

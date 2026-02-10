@@ -1,73 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { questionSetService } from "@/services/question-set.service";
 import { QuestionSetDetailResponse } from "@/types/question-set";
+import toast from "react-hot-toast";
 
-// Global cache để tránh gọi API nhiều lần
-let cachedQuestionSets: QuestionSetDetailResponse[] | null = null;
-let cachePromise: Promise<QuestionSetDetailResponse[]> | null = null;
-let cacheTimestamp: number | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 phút
-
-export function useQuestionSets() {
-  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>(cachedQuestionSets || []);
-  const [isLoading, setIsLoading] = useState(!cachedQuestionSets);
-  const [error, setError] = useState<Error | null>(null);
+export function useQuestionSets(topicSlug: string | null) {
+  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (!topicSlug || hasFetched.current) return;
+
     const fetchQuestionSets = async () => {
-      // Nếu có cache và chưa hết hạn, dùng cache
-      if (cachedQuestionSets && cacheTimestamp && Date.now() - cacheTimestamp < CACHE_DURATION) {
-        setQuestionSets(cachedQuestionSets);
-        setIsLoading(false);
-        return;
-      }
-
-      // Nếu đang có request đang chạy, đợi request đó
-      if (cachePromise) {
-        try {
-          const result = await cachePromise;
-          setQuestionSets(result);
-          setIsLoading(false);
-        } catch (err) {
-          setError(err as Error);
-          setIsLoading(false);
-        }
-        return;
-      }
-
-      // Tạo request mới
-      setIsLoading(true);
-      cachePromise = questionSetService.getAllQuestionSets()
-        .then(response => {
-          const setsData = response.data?.questionSets || [];
-          cachedQuestionSets = setsData;
-          cacheTimestamp = Date.now();
-          return setsData;
-        });
-
       try {
-        const result = await cachePromise;
-        setQuestionSets(result);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch question sets:", err);
-        setError(err as Error);
-        setQuestionSets([]);
+        setIsLoading(true);
+        hasFetched.current = true;
+        const response = await questionSetService.getQuestionSetsByTopicSlug(topicSlug);
+        setQuestionSets(response.data?.questionSets || []);
+      } catch (error) {
+        console.error("Failed to fetch question sets:", error);
+        toast.error("Không thể tải danh sách câu hỏi");
       } finally {
         setIsLoading(false);
-        cachePromise = null;
       }
     };
 
     fetchQuestionSets();
-  }, []);
+  }, [topicSlug]);
 
-  return { questionSets, isLoading, error };
+  return { questionSets, isLoading };
 }
 
-// Function để clear cache khi cần (ví dụ sau khi tạo/update/delete question set)
 export function clearQuestionSetsCache() {
-  cachedQuestionSets = null;
-  cachePromise = null;
-  cacheTimestamp = null;
+  window.location.reload();
 }

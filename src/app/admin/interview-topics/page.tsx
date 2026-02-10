@@ -8,14 +8,13 @@ import { questionSetService } from "@/services/question-set.service";
 import { InterviewTopicDetailResponse } from "@/types/interview";
 import { useConfirm } from "@/hooks/useConfirm";
 import { clearInterviewTopicsCache } from "@/hooks/useInterviewTopics";
-import { useQuestionSets, clearQuestionSetsCache } from "@/hooks/useQuestionSets";
+import { clearQuestionSetsCache } from "@/hooks/useQuestionSets";
 import CreateInterviewTopicModal from "@/components/admin/interview/CreateInterviewTopicModal";
 import UpdateInterviewTopicModal from "@/components/admin/interview/UpdateInterviewTopicModal";
 import CreateQuestionSetModal from "@/components/admin/interview/CreateQuestionSetModal";
 
 export default function InterviewTopicsPage() {
   const [topics, setTopics] = useState<InterviewTopicDetailResponse[]>([]);
-  const { questionSets } = useQuestionSets();
   const [isLoading, setIsLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingSetId, setDeletingSetId] = useState<string | null>(null);
@@ -169,8 +168,8 @@ export default function InterviewTopicsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-6">
             {topics.map((topic) => {
-              const topicQuestionSets = questionSets.filter(qs => qs.id); // Show all for now
-              const totalQuestions = topicQuestionSets.reduce((sum, set) => sum + (set.totalQuestions || 0), 0);
+              const topicQuestionSets = topic.questionSets || [];
+              const totalQuestions = topicQuestionSets.reduce((sum, set) => sum + (set.questions?.length || 0), 0);
               const isExpanded = expandedTopicId === topic.id;
 
               return (
@@ -310,11 +309,11 @@ export default function InterviewTopicsPage() {
                             <div className="flex flex-col gap-2">
                               <div className="flex-1 min-w-0">
                                 <h5 className="font-medium text-gray-900 dark:text-white text-xs sm:text-sm mb-2 break-words">
-                                  {set.title}
+                                  {set.name}
                                 </h5>
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  {getLevelBadge(set.level)}
-                                  {getDifficultyBadge(set.difficulty)}
+                                  {set.level && getLevelBadge(set.level)}
+                                  {set.difficulty && getDifficultyBadge(set.difficulty)}
                                   <span className="text-xs text-gray-500 dark:text-gray-400">
                                     {set.totalQuestions || 0} câu hỏi
                                   </span>
@@ -333,7 +332,7 @@ export default function InterviewTopicsPage() {
                                   <span className="sm:hidden">Câu hỏi</span>
                                 </Link>
                                 <button
-                                  onClick={() => handleDeleteQuestionSet(set.id, set.title)}
+                                  onClick={() => handleDeleteQuestionSet(set.id, set.name)}
                                   disabled={deletingSetId === set.id}
                                   className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors disabled:opacity-50"
                                   title="Xóa bộ câu hỏi"

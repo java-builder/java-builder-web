@@ -8,9 +8,8 @@ import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import Link from "next/link";
 import { InterviewTopicDetailResponse } from "@/types/interview";
-import { QuestionSetDetailResponse } from "@/types/question-set";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
-import { questionSetService } from "@/services/question-set.service";
+import { useQuestionSets } from "@/hooks/useQuestionSets";
 import toast from "react-hot-toast";
 
 export default function InterviewCategoryPage() {
@@ -18,9 +17,8 @@ export default function InterviewCategoryPage() {
   const slug = params.slug as string;
   
   const { topics: allTopics, isLoading: isLoadingTopics } = useInterviewTopics();
+  const { questionSets, isLoading: isLoadingSets } = useQuestionSets(slug);
   const [topic, setTopic] = useState<InterviewTopicDetailResponse | null>(null);
-  const [questionSets, setQuestionSets] = useState<QuestionSetDetailResponse[]>([]);
-  const [isLoadingSets, setIsLoadingSets] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
 
   useEffect(() => {
@@ -33,25 +31,6 @@ export default function InterviewCategoryPage() {
       }
     }
   }, [slug, allTopics, isLoadingTopics]);
-
-  useEffect(() => {
-    const fetchQuestionSets = async () => {
-      if (!slug) return;
-      
-      try {
-        setIsLoadingSets(true);
-        const response = await questionSetService.getQuestionSetsByTopicSlug(slug);
-        setQuestionSets(response.data?.questionSets || []);
-      } catch (error) {
-        console.error("Failed to fetch question sets:", error);
-        toast.error("Không thể tải danh sách câu hỏi");
-      } finally {
-        setIsLoadingSets(false);
-      }
-    };
-
-    fetchQuestionSets();
-  }, [slug]);
 
   const isLoading = isLoadingTopics || isLoadingSets;
 

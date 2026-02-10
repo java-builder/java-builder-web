@@ -1,127 +1,57 @@
-export const formatApiDate = (dateString: string): string => {
-  try {
-    const parts = dateString.split(" ");
-    const datePart = parts[0];
-    const timePart = parts[1];
-
-    const [day, month, year] = datePart.split("-");
-    const [hour, minute, second] = timePart.split(":");
-
-    const date = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
-      parseInt(hour),
-      parseInt(minute),
-      parseInt(second),
-    );
-
-    return date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch (error) {
-    console.error("Error parsing date:", dateString, error);
-    return "Ngày không hợp lệ";
-  }
+export const formatApiDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return "";
+  return dateString;
 };
 
-export const formatApiDateOnly = (dateString: string): string => {
-  try {
-    const parts = dateString.split(" ");
-    const datePart = parts[0];
-
-    const [day, month, year] = datePart.split("-");
-
-    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-
-    return date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  } catch (error) {
-    console.error("Error parsing date:", dateString, error);
-    return "Ngày không hợp lệ";
-  }
+export const formatApiDateOnly = (dateString: string | null | undefined): string => {
+  if (!dateString) return "";
+  const parts = dateString.split(" ");
+  return parts[0] || dateString;
 };
 
-// Format: dd/mm/yyyy
-export const formatShortDate = (dateString: string): string => {
-  try {
-    const [datePart] = dateString.split(" ");
-    const [day, month, year] = datePart.split("-");
-    return `${day}/${month}/${year}`;
-  } catch {
-    return dateString;
-  }
-};
-
-
-// Format relative time (e.g., "2 giờ trước", "3 ngày trước")
-export const formatRelativeTime = (dateString: string): string => {
-  try {
-    const parts = dateString.split(" ");
-    const datePart = parts[0];
-    const timePart = parts[1];
-
-    const [day, month, year] = datePart.split("-");
-    const [hour, minute, second] = timePart.split(":");
-
-    const date = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
-      parseInt(hour),
-      parseInt(minute),
-      parseInt(second),
-    );
-
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffSeconds = Math.floor(diffMs / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-    const diffWeeks = Math.floor(diffDays / 7);
-    const diffMonths = Math.floor(diffDays / 30);
-
-    if (diffSeconds < 60) return "Vừa xong";
-    if (diffMinutes < 60) return `${diffMinutes} phút trước`;
-    if (diffHours < 24) return `${diffHours} giờ trước`;
-    if (diffDays < 7) return `${diffDays} ngày trước`;
-    if (diffWeeks < 4) return `${diffWeeks} tuần trước`;
-    if (diffMonths < 12) return `${diffMonths} tháng trước`;
-
-    return formatApiDateOnly(dateString);
-  } catch {
-    return dateString;
-  }
-};
-
-// Parse API date string to Date object (for sitemap, etc.)
-export const parseApiDate = (dateString: string): Date => {
-  if (!dateString) return new Date();
+export const parseDate = (dateString: string | null | undefined): Date | null => {
+  if (!dateString) return null;
   
-  try {
-    const [datePart, timePart] = dateString.split(" ");
-    const [day, month, year] = datePart.split("-");
-    const [hour, minute, second] = timePart.split(":");
+  const parts = dateString.split(/[- :]/);
+  if (parts.length !== 6) return null;
+  
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[2], 10);
+  const hour = parseInt(parts[3], 10);
+  const minute = parseInt(parts[4], 10);
+  const second = parseInt(parts[5], 10);
+  
+  return new Date(year, month, day, hour, minute, second);
+};
 
-    const date = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
-      parseInt(hour),
-      parseInt(minute),
-      parseInt(second),
-    );
+export const parseApiDate = parseDate;
 
-    return isNaN(date.getTime()) ? new Date() : date;
-  } catch {
-    return new Date();
-  }
+export const formatShortDate = (dateString: string | null | undefined): string => {
+  const date = parseDate(dateString);
+  if (!date) return "";
+  
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  
+  return `${day}/${month}/${year}`;
+};
+
+export const formatRelativeTime = (dateString: string | null | undefined): string => {
+  const date = parseDate(dateString);
+  if (!date) return "";
+  
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 1) return "Vừa xong";
+  if (diffMins < 60) return `${diffMins} phút trước`;
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  if (diffDays < 7) return `${diffDays} ngày trước`;
+  
+  return formatApiDate(dateString);
 };
