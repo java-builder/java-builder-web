@@ -624,7 +624,7 @@ export default function UsersPage() {
                             <div className="relative h-10 w-10">
                               <Image
                                 src={user.avatar}
-                                alt={user.username}
+                                alt={user.username || user.email || "User avatar"}
                                 fill
                                 sizes="40px"
                                 className="rounded-full object-cover"

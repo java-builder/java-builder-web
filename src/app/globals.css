@@ -395,6 +395,43 @@ body {
   color: #94a3b8 !important;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+  caret-color: #111827 !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  box-shadow: 0 0 0 1000px #1e293b inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+  caret-color: #f1f5f9 !important;
+}
+
+/* Firefox autofill fix */
+input:-moz-autofill,
+input:-moz-autofill-preview {
+  filter: none !important;
+  background-color: white !important;
+  color: #111827 !important;
+}
+
+.dark input:-moz-autofill,
+.dark input:-moz-autofill-preview {
+  filter: none !important;
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
 /* Buttons */
 .dark .bg-white.hover\:bg-gray-50 {
   background-color: #334155 !important;
@@ -700,24 +737,69 @@ input:not([class*="text-"]),
 textarea:not([class*="text-"]),
 select:not([class*="text-"]),
 button:not([class*="text-"]) {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--text-tertiary);
+  color: var(--text-tertiary) !important;
+  opacity: 0.6 !important;
 }
 
 .dark input:not([class*="text-"]),
 .dark textarea:not([class*="text-"]),
 .dark select:not([class*="text-"]),
 .dark button:not([class*="text-"]) {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: #94a3b8;
+  color: #94a3b8 !important;
+  opacity: 0.6 !important;
+}
+
+/* Ensure input text is always visible and not transparent */
+input,
+textarea,
+select {
+  -webkit-text-fill-color: currentColor !important;
+  opacity: 1 !important;
+  color: #111827 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  -webkit-text-fill-color: #6b7280 !important;
+  opacity: 0.6 !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  -webkit-text-fill-color: #f1f5f9 !important;
+  opacity: 1 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  -webkit-text-fill-color: #94a3b8 !important;
+  opacity: 0.6 !important;
+}
+
+/* Additional fix for password managers and autofill */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  font-weight: 400 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Fix for GitHub icon in dark mode - invert black to white */
+.dark img[src*="github.svg"] {
+  filter: invert(1) brightness(1.2);
 }
 
 .gradient-text {
@@ -752,6 +834,24 @@ textarea::placeholder {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Utility class to force input text visibility - use this if needed */
+.input-force-visible {
+  -webkit-text-fill-color: currentColor !important;
+  color: inherit !important;
+  opacity: 1 !important;
+  font-weight: 400 !important;
+}
+
+.input-force-visible:-webkit-autofill {
+  -webkit-text-fill-color: currentColor !important;
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+}
+
+.dark .input-force-visible:-webkit-autofill {
+  -webkit-text-fill-color: #f1f5f9 !important;
+  -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
 }
 
 .bg-accent {

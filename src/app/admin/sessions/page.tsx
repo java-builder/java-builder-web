@@ -288,10 +288,10 @@ export default function AdminSessionsPage() {
                 <th className="px-4 py-3 text-center min-w-[80px]">Chi tiết</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                     <div className="flex items-center justify-center gap-2">
                       <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -303,20 +303,20 @@ export default function AdminSessionsPage() {
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                     {query ? "Không tìm thấy phiên đăng nhập phù hợp" : "Không có phiên đăng nhập nào"}
                   </td>
                 </tr>
               ) : (
                 filtered.map((s) => (
-                  <tr key={s.sessionId} className="hover:bg-gray-50 dark:hover:bg-slate-700">
+                  <tr key={s.sessionId} className="hover:bg-gray-50 dark:hover:bg-slate-700/50">
                     <td className="px-4 py-3 align-top">
                       <div className="flex items-center gap-2">
                         <div className="flex-shrink-0">
                           {s.avatar && !imageErrors.has(s.sessionId) ? (
                             <Image 
                               src={s.avatar} 
-                              alt={s.username} 
+                              alt={s.username || 'User avatar'} 
                               width={36} 
                               height={36} 
                               className="rounded-full object-cover" 
@@ -374,14 +374,14 @@ export default function AdminSessionsPage() {
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
         <div className="mt-6 flex items-center justify-between">
-          <div className="text-sm text-gray-700">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Hiển thị {(currentPage - 1) * pageSize + 1} đến {Math.min(currentPage * pageSize, pagination.totalElements)} trong tổng số {pagination.totalElements} phiên
           </div>
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="p-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-slate-800 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-700"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </button>
@@ -389,7 +389,7 @@ export default function AdminSessionsPage() {
             {getPages().map((p) => {
               if (typeof p === "string") {
                 return (
-                  <span key={p} className="min-w-[32px] h-8 px-2 text-sm rounded-lg font-medium flex items-center justify-center text-gray-400">
+                  <span key={p} className="min-w-[32px] h-8 px-2 text-sm rounded-lg font-medium flex items-center justify-center text-gray-400 dark:text-gray-500">
                     &hellip;
                   </span>
                 );
@@ -401,7 +401,7 @@ export default function AdminSessionsPage() {
                   onClick={() => setCurrentPage(p)}
                   className={`min-w-[32px] h-8 px-2 text-sm rounded-lg font-medium transition-colors ${currentPage === p
                     ? "bg-accent-600 text-white shadow-sm"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-accent-600"
+                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-accent-600 dark:bg-slate-800 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-700 dark:hover:text-accent-400"
                     }`}
                 >
                   {p}
@@ -412,7 +412,7 @@ export default function AdminSessionsPage() {
             <button
               onClick={() => setCurrentPage(Math.min(pagination.totalPages, currentPage + 1))}
               disabled={currentPage === pagination.totalPages}
-              className="p-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-slate-800 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-700"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </button>
@@ -442,7 +442,7 @@ export default function AdminSessionsPage() {
                 {viewSession.avatar && !imageErrors.has(viewSession.sessionId) ? (
                   <Image 
                     src={viewSession.avatar} 
-                    alt={viewSession.username} 
+                    alt={viewSession.username || 'User avatar'} 
                     width={48} 
                     height={48} 
                     className="rounded-full object-cover" 

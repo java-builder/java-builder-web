@@ -271,7 +271,7 @@ export default function LoginPage() {
                 onClick={handleGoogleLogin}
                 className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                <Image src="/google.svg" alt="Google" width={16} height={16} />
+                <Image src="/google.svg" alt="Google" width={16} height={16} className="social-icon" />
                 <span className="ml-2 text-sm text-gray-700">Google</span>
               </button>
               <button
@@ -280,7 +280,7 @@ export default function LoginPage() {
                 onClick={handleGithubLogin}
                 className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                <Image src="/github.svg" alt="GitHub" width={16} height={16} />
+                <Image src="/github.svg" alt="GitHub" width={16} height={16} className="social-icon" />
                 <span className="ml-2 text-sm text-gray-700">GitHub</span>
               </button>
               <button
@@ -289,7 +289,7 @@ export default function LoginPage() {
                 onClick={() => (window.location.href = generateLinkedinAuthUrl())}
                 className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                <Image src="/linkedin.svg" alt="LinkedIn" width={16} height={16} />
+                <Image src="/linkedin.svg" alt="LinkedIn" width={16} height={16} className="social-icon" />
                 <span className="ml-2 text-sm text-gray-700">LinkedIn</span>
               </button>
             </div>
