@@ -46,9 +46,11 @@ export const userApi = {
     >(API.USER_SEARCH, null, {
       params: queryParams,
       paramsSerializer: {
-        indexes: null, // Không dùng indexes, sẽ tạo users=value1&users=value2
+        indexes: null, 
       },
     });
+    
+    
     return response.data;
   },
 

@@ -23,7 +23,6 @@ export default function InterviewCategoryPage() {
   const [isLoadingSets, setIsLoadingSets] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
 
-  // Tìm topic từ cache
   useEffect(() => {
     if (!isLoadingTopics && allTopics.length > 0) {
       const foundTopic = allTopics.find(t => t.slug === slug);
@@ -35,7 +34,6 @@ export default function InterviewCategoryPage() {
     }
   }, [slug, allTopics, isLoadingTopics]);
 
-  // Fetch question sets by topic slug
   useEffect(() => {
     const fetchQuestionSets = async () => {
       if (!slug) return;
