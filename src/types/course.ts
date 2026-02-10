@@ -63,6 +63,17 @@ export interface MyEnrolledCourseResponse {
   completedLessons: number;
 }
 
+export interface CourseEnrollmentResponse {
+  enrollmentId: string;
+  userId: string;
+  username: string;
+  email: string;
+  avatar?: string;
+  progress: number;
+  completed: boolean;
+  enrolledAt: string;
+}
+
 export enum CourseLevel {
   BEGINNER = "BEGINNER",
   INTERMEDIATE = "INTERMEDIATE",

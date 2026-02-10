@@ -1,6 +1,7 @@
 import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
 import { MyEnrolledCourseResponse } from "@/types/course";
+import { CourseEnrollmentResponse } from "@/types/enrollment";
 import { API } from "@/api/api";
 
 export const enrollmentApi = {
@@ -30,6 +31,23 @@ export const enrollmentApi = {
     const response = await apiClient.post<ApiResponse<void>>(
       API.ENROLLMENTS_ADMIN,
       { email, courseId },
+    );
+    return response.data;
+  },
+
+  // Admin lấy danh sách học viên của khóa học
+  getCourseEnrollments: async (courseId: string, page: number = 1, size: number = 20) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<CourseEnrollmentResponse>>>(
+      `/api/v1/courses/${courseId}/enrollments`,
+      { params: { page, size } },
+    );
+    return response.data;
+  },
+
+  // Admin xóa học viên khỏi khóa học
+  unenrollStudent: async (enrollmentId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `/api/v1/courses/enrollments/${enrollmentId}`,
     );
     return response.data;
   },

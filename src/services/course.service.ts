@@ -5,6 +5,7 @@ import {
   CreateCourseResponse,
   UpdateCourseRequest,
   CourseDetailResponse,
+  CourseEnrollmentResponse,
   CourseLevel,
   CreateChapterRequest,
   CreateChapterResponse,
@@ -92,6 +93,23 @@ export const courseApi = {
     await apiClient.delete<ApiResponse<void>>(
       `${API.DELETE_COURSE}/${id}`,
     );
+  },
+
+  // Lấy danh sách học viên của khóa học
+  getEnrollments: async (courseId: string, page: number = 1, size: number = 20) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<CourseEnrollmentResponse>>>(
+      `${API.GET_COURSES}/${courseId}/enrollments`,
+      { params: { page, size } }
+    );
+    return response.data;
+  },
+
+  // Xóa học viên khỏi khóa học
+  unenrollStudent: async (enrollmentId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `${API.GET_COURSES}/enrollments/${enrollmentId}`
+    );
+    return response.data;
   },
 };
 
