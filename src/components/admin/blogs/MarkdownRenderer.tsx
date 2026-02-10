@@ -4,9 +4,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
-import "highlight.js/styles/github.css";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface MarkdownRendererProps {
   content: string;
@@ -18,6 +18,25 @@ export default function MarkdownRenderer({
   className = "",
 }: MarkdownRendererProps) {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    // Dynamically load highlight.js theme based on current theme
+    const loadTheme = async () => {
+      // Remove existing highlight.js stylesheets
+      const existingLinks = document.querySelectorAll('link[href*="highlight.js"]');
+      existingLinks.forEach(link => link.remove());
+
+      // Load appropriate theme
+      const themeFile = theme === 'dark' ? 'github-dark' : 'github';
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/${themeFile}.min.css`;
+      document.head.appendChild(link);
+    };
+
+    loadTheme();
+  }, [theme]);
 
   const copyToClipboard = async (children: React.ReactNode, codeId: string) => {
     try {
@@ -122,20 +141,20 @@ export default function MarkdownRenderer({
             return (
               <div className="relative group my-6 shadow-xl rounded-xl overflow-hidden border border-gray-300/30 dark:border-gray-600/30">
                   {/* Header */}
-                  <div className="flex items-center justify-between bg-gradient-to-r from-gray-800 to-gray-900 text-gray-300 px-4 py-3 border-b border-gray-600/50">
+                  <div className="flex items-center justify-between bg-gradient-to-r from-gray-800 to-gray-900 dark:from-slate-700 dark:to-slate-800 text-gray-300 px-4 py-3 border-b border-gray-600/50 dark:border-slate-600/50">
                     <div className="flex items-center space-x-2">
                       <div className="flex space-x-1">
                         <div className="w-3 h-3 rounded-full bg-red-500"></div>
                         <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                         <div className="w-3 h-3 rounded-full bg-green-500"></div>
                       </div>
-                        <span className="text-sm font-semibold text-gray-400">
+                        <span className="text-sm font-semibold text-gray-400 dark:text-gray-300">
                         {language || "text"}
                       </span>
                     </div>
                     <button
                       onClick={() => copyToClipboard(children, codeId)}
-                      className="opacity-70 group-hover:opacity-100 transition-all duration-200 p-2 hover:bg-gray-700 dark:hover:bg-slate-700 rounded-lg hover:scale-105"
+                      className="opacity-70 group-hover:opacity-100 transition-all duration-200 p-2 hover:bg-gray-700 dark:hover:bg-slate-600 rounded-lg hover:scale-105"
                       title="Copy code"
                     >
                       {copiedCode === codeId ? (
@@ -172,14 +191,11 @@ export default function MarkdownRenderer({
 
                   {/* Code Content */}
                   <div className="relative">
-                    <pre className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre">
+                    <pre className="!bg-[#0d1117] dark:!bg-[#0d1117] !text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre m-0">
                       <code className={className} {...props}>
                         {children}
                       </code>
                     </pre>
-
-                    {/* Subtle gradient overlay */}
-                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-transparent to-gray-900/20"></div>
                   </div>
                 </div>
               );
@@ -201,7 +217,7 @@ export default function MarkdownRenderer({
             }
             // For unprocessed pre blocks (plain text code blocks)
             return (
-              <pre className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre rounded-xl my-6">
+              <pre className="!bg-[#0d1117] dark:!bg-[#0d1117] !text-gray-100 p-6 overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre rounded-xl my-6 m-0">
                 {children}
               </pre>
             );
