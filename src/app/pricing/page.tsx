@@ -174,17 +174,39 @@ export default function PricingPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-4">
+      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
+        {/* Demo Notice Banner */}
+        <div className="max-w-4xl mx-auto px-4 mb-6">
+          <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 dark:border-amber-600 rounded-lg p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0">
+                <svg className="w-6 h-6 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-amber-800 dark:text-amber-400 mb-1">
+                  ⚠️ Tính năng Demo - Chỉ phục vụ mục đích học tập
+                </h3>
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  Đây là tính năng thanh toán demo được xây dựng trong quá trình học tập và nghiên cứu. 
+                  <strong className="font-semibold"> Vui lòng không thực hiện thanh toán thật.</strong> Tất cả giao dịch chỉ mang tính chất minh họa.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Hero Section */}
         <section className="pt-2 pb-8 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-sm font-medium rounded-full mb-3">
               ✨ Premium Membership
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
               Nâng cấp trải nghiệm học tập
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Truy cập toàn bộ tài liệu Premium, nhận hỗ trợ ưu tiên và nhiều quyền lợi đặc biệt khác
             </p>
           </div>
@@ -205,9 +227,9 @@ export default function PricingPage() {
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative bg-white rounded-2xl p-6 lg:p-8 transition-all duration-300 ${plan.popular
+                    className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 lg:p-8 transition-all duration-300 ${plan.popular
                       ? "ring-2 ring-accent shadow-xl scale-[1.02]"
-                      : "border border-gray-200 hover:border-accent/50 hover:shadow-lg"
+                      : "border border-gray-200 dark:border-gray-700 hover:border-accent/50 dark:hover:border-accent/50 hover:shadow-lg"
                       }`}
                   >
                     {plan.popular && (
@@ -219,23 +241,23 @@ export default function PricingPage() {
                     )}
 
                     <div className="text-center mb-6">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{plan.name}</h3>
-                      <p className="text-sm text-gray-500 mb-4">{plan.description}</p>
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{plan.description}</p>
 
                       <div className="flex items-baseline justify-center gap-1">
                         {plan.originalPrice && (
-                          <span className="text-lg text-gray-400 line-through mr-2">
+                          <span className="text-lg text-gray-400 dark:text-gray-500 line-through mr-2">
                             {formatPrice(plan.originalPrice)}đ
                           </span>
                         )}
-                        <span className="text-4xl font-bold text-gray-900">
+                        <span className="text-4xl font-bold text-gray-900 dark:text-white">
                           {plan.price === 0 ? "0" : formatPrice(plan.price)}
                         </span>
-                        <span className="text-gray-500">đ{plan.period}</span>
+                        <span className="text-gray-500 dark:text-gray-400">đ{plan.period}</span>
                       </div>
 
                       {plan.monthlyEquivalent && (
-                        <p className="text-sm text-green-600 font-medium mt-2">
+                        <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-2">
                           {plan.monthlyEquivalent}
                         </p>
                       )}
@@ -247,7 +269,7 @@ export default function PricingPage() {
                           <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-gray-700">{feature.text}</span>
+                          <span className="text-gray-700 dark:text-gray-300">{feature.text}</span>
                         </li>
                       ))}
                     </ul>
@@ -256,10 +278,10 @@ export default function PricingPage() {
                       onClick={() => handleSubscribe(plan)}
                       disabled={plan.disabled || loadingPlan === plan.id}
                       className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 ${plan.disabled
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                         : plan.popular
                           ? "bg-accent hover:bg-accent-600 text-white shadow-lg shadow-accent/25"
-                          : "bg-gray-900 hover:bg-gray-800 text-white"
+                          : "bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white"
                         }`}
                     >
                       {loadingPlan === plan.id ? (
@@ -282,9 +304,9 @@ export default function PricingPage() {
         </section>
 
         {/* Benefits Section */}
-        <section className="py-16 px-4 bg-gray-50">
+        <section className="py-16 px-4 bg-gray-50 dark:bg-gray-800/50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
               Quyền lợi Premium Member
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -293,10 +315,10 @@ export default function PricingPage() {
                 { icon: "🏆", title: "Badge đặc biệt", desc: "Hiển thị badge Premium trên profile của bạn" },
                 { icon: "💬", title: "Hỗ trợ ưu tiên", desc: "Được hỗ trợ nhanh chóng qua chat riêng" },
               ].map((benefit, idx) => (
-                <div key={idx} className="bg-white rounded-xl p-6 text-center">
+                <div key={idx} className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center border border-transparent dark:border-gray-700">
                   <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                  <h3 className="font-semibold text-gray-900 mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-gray-500">{benefit.desc}</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{benefit.title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{benefit.desc}</p>
                 </div>
               ))}
             </div>
@@ -306,19 +328,19 @@ export default function PricingPage() {
         {/* FAQ Section */}
         <section className="py-16 px-4">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
               Câu hỏi thường gặp
             </h2>
             <div className="space-y-4">
               {faqs.map((faq, idx) => (
-                <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden">
+                <div key={idx} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
                   <button
                     onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                   >
-                    <span className="font-medium text-gray-900">{faq.q}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{faq.q}</span>
                     <svg
-                      className={`w-5 h-5 text-gray-500 transition-transform ${expandedFaq === idx ? "rotate-180" : ""}`}
+                      className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${expandedFaq === idx ? "rotate-180" : ""}`}
                       fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -326,7 +348,7 @@ export default function PricingPage() {
                   </button>
                   {expandedFaq === idx && (
                     <div className="px-6 pb-4">
-                      <p className="text-gray-600">{faq.a}</p>
+                      <p className="text-gray-600 dark:text-gray-300">{faq.a}</p>
                     </div>
                   )}
                 </div>
