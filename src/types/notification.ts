@@ -21,3 +21,14 @@ export interface SendNotificationResponse {
     totalRecipients: number;
     message: string;
 }
+
+export interface NotificationItem {
+    id: string;
+    title: string;
+    content: string;
+    createdAt: string;
+    isRead: boolean;
+    avatar?: string | null;
+    senderName?: string;
+    link?: string;
+}

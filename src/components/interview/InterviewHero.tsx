@@ -1,4 +1,5 @@
 import MotionWrapper from "@/components/MotionWrapper";
+import Image from "next/image";
 
 interface InterviewHeroProps {
   totalQuestions: number;
@@ -16,6 +17,76 @@ export default function InterviewHero({
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-purple-500/5 to-blue-500/5 dark:from-accent/10 dark:via-purple-500/10 dark:to-blue-500/10" />
+      
+      {/* Floating Tech Icons */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Java Logo - Top Left */}
+        <div className="absolute top-12 left-4 sm:top-16 sm:left-8 md:left-16 lg:left-20 animate-float opacity-30 dark:opacity-40">
+          <Image 
+            src="/logos/logo-java.png" 
+            alt="Java" 
+            width={50} 
+            height={50} 
+            className="object-contain w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[70px] lg:h-[70px]" 
+          />
+        </div>
+        
+        {/* Docker Logo - Top Right */}
+        <div className="absolute top-16 right-4 sm:top-20 sm:right-8 md:right-16 lg:right-24 animate-float-delayed opacity-30 dark:opacity-40" style={{ animationDelay: '1s' }}>
+          <Image 
+            src="/logos/logo-docker.png" 
+            alt="Docker" 
+            width={55} 
+            height={55} 
+            className="object-contain w-14 h-14 sm:w-16 sm:h-16 md:w-[70px] md:h-[70px] lg:w-[75px] lg:h-[75px]" 
+          />
+        </div>
+        
+        {/* Spring Boot Logo - Middle Left */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-12 lg:left-16 animate-float opacity-30 dark:opacity-40" style={{ animationDelay: '2s' }}>
+          <Image 
+            src="/logos/logo-springboot.png" 
+            alt="Spring Boot" 
+            width={50} 
+            height={50} 
+            className="object-contain w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-[65px] lg:h-[65px]" 
+          />
+        </div>
+        
+        {/* Microservices Logo - Middle Right */}
+        <div className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-14 lg:right-20 animate-float-delayed opacity-30 dark:opacity-40" style={{ animationDelay: '0.5s' }}>
+          <Image 
+            src="/logos/logo-microservices.png" 
+            alt="Microservices" 
+            width={55} 
+            height={55} 
+            className="object-contain w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[70px] lg:h-[70px]" 
+          />
+        </div>
+        
+        {/* PostgreSQL Logo - Bottom Left */}
+        <div className="absolute bottom-16 left-6 sm:bottom-20 sm:left-12 md:left-20 lg:left-28 animate-float opacity-30 dark:opacity-40" style={{ animationDelay: '1.5s' }}>
+          <Image 
+            src="/logos/logo-posgtres.png" 
+            alt="PostgreSQL" 
+            width={50} 
+            height={50} 
+            className="object-contain w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-[60px] lg:h-[60px]" 
+          />
+        </div>
+        
+        {/* AWS Logo - Bottom Right */}
+        <div className="absolute bottom-20 right-6 sm:bottom-24 sm:right-12 md:right-24 lg:right-32 animate-float-delayed opacity-30 dark:opacity-40" style={{ animationDelay: '2.5s' }}>
+          <Image 
+            src="/logos/aws-logo.png" 
+            alt="AWS" 
+            width={50} 
+            height={50} 
+            className="object-contain w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-[65px] lg:h-[65px]" 
+          />
+        </div>
+      </div>
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
           <div className="text-center max-w-4xl mx-auto">

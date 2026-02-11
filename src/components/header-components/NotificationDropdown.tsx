@@ -86,37 +86,52 @@ export default function NotificationDropdown() {
                 {activeTab === "unread" ? "Không có thông báo chưa đọc" : "Chưa có thông báo"}
               </div>
             ) : (
-              notifications.map((n) => (
-                <Link
-                  key={n.id}
-                  href={n.link || "#"}
-                  className={`flex items-start gap-3 px-4 py-3 transition-colors ${
-                    !n.isRead 
-                      ? "bg-blue-50/50 dark:bg-slate-700/50" 
-                      : "hover:bg-gray-50 dark:hover:bg-slate-700"
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-600 flex items-center justify-center flex-shrink-0">
-                    {n.avatar ? (
-                      <Image src={n.avatar} alt="" width={36} height={36} className="w-full h-full object-cover rounded-full" unoptimized />
-                    ) : (
-                      <span className="text-xs text-gray-600 dark:text-gray-300">{(n.senderName || "U")[0]}</span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-gray-900 dark:text-gray-100 line-clamp-2">{n.title}</div>
-                    <div
-                      className="text-xs text-gray-400 dark:text-gray-500 mt-1"
-                      title={n.createdAt ? formatApiDate(n.createdAt) : ""}
-                    >
-                      {n.createdAt ? formatRelativeTime(n.createdAt) : ""}
+              <>
+                {notifications.map((n) => (
+                  <Link
+                    key={n.id}
+                    href={n.link || "#"}
+                    className={`flex items-start gap-3 px-4 py-3 transition-colors ${
+                      !n.isRead 
+                        ? "bg-blue-50/50 dark:bg-slate-700/50" 
+                        : "hover:bg-gray-50 dark:hover:bg-slate-700"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-600 flex items-center justify-center flex-shrink-0">
+                      {n.avatar ? (
+                        <Image src={n.avatar} alt="" width={36} height={36} className="w-full h-full object-cover rounded-full" unoptimized />
+                      ) : (
+                        <span className="text-xs text-gray-600 dark:text-gray-300">{(n.senderName || "U")[0]}</span>
+                      )}
                     </div>
-                  </div>
-                </Link>
-              ))
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm text-gray-900 dark:text-gray-100 line-clamp-2">{n.title}</div>
+                      <div
+                        className="text-xs text-gray-400 dark:text-gray-500 mt-1"
+                        title={n.createdAt ? formatApiDate(n.createdAt) : ""}
+                      >
+                        {n.createdAt ? formatRelativeTime(n.createdAt) : ""}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </>
             )}
           </div>
+
+          {/* Footer - View All Button */}
+          {notifications.length > 0 && (
+            <div className="border-t border-gray-200 dark:border-slate-700">
+              <Link
+                href="/notifications"
+                className="block px-4 py-3 text-center text-sm font-medium text-accent hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Xem tất cả thông báo
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </div>

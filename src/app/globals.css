@@ -714,6 +714,11 @@ input:-moz-autofill-preview {
   animation: float 6s ease-in-out infinite;
 }
 
+.animate-float-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-direction: reverse;
+}
+
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 4s ease infinite;

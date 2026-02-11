@@ -1,269 +1,174 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { NotificationDetailResponse } from "@/types/notification";
+import { NotificationItem } from "@/types/notification";
 import { useNotifications } from "@/hooks/useNotifications";
-
-type NotificationItem = {
-  id: string;
-  title: string;
-  desc: string;
-  time: string;
-  read?: boolean;
-  meta?: Record<string, string>;
-  avatar?: string | null;
-  senderName?: string;
-};
+import { notificationApi } from "@/services/notification.service";
+import NotificationTabs from "@/components/notifications/NotificationTabs";
+import AdminNotificationList from "@/components/notifications/AdminNotificationList";
+import ConfirmModal from "@/components/ui/ConfirmModal";
+import toast from "react-hot-toast";
 
 export default function AdminNotificationsPage() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const router = useRouter();
   const [filter, setFilter] = useState<"all" | "unread">("all");
-  const [query, setQuery] = useState("");
-  const [detailModal, setDetailModal] = useState<null | { title: string; meta?: Record<string, string> }>(null);
+  const [allNotifications, setAllNotifications] = useState<NotificationItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const previousFilterRef = useRef<"all" | "unread">("all");
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; title: string }>({
+    isOpen: false,
+    id: "",
+    title: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Use shared react-query hook to fetch notifications (prevents duplicate network calls)
-  const { data: notifPageData } = useNotifications(1, filter === "unread" ? "unread" : "all");
+  const { data: notifPageData, isFetching } = useNotifications(currentPage, filter === "unread" ? "unread" : "all");
 
   useEffect(() => {
-    const list = notifPageData?.data || [];
-    const mapped = list.map((it: NotificationDetailResponse) => ({
-      id: it.id,
-      title: it.title || it.senderName || "Thông báo",
-      desc: it.content || "",
-      // keep raw createdAt string for formatting utilities elsewhere
-      time: it.createdAt ? it.createdAt : "",
-      avatar: it.avatar,
-      senderName: it.senderName,
-      read: it.isRead ?? false,
-      meta: {}, // API doesn't provide meta data
-    }));
-    setNotifications(mapped);
-  }, [notifPageData]);
+    if (notifPageData) {
+      const list = notifPageData.data || [];
+      const mapped = list.map((it: NotificationDetailResponse) => ({
+        id: it.id,
+        title: it.title || it.senderName || "Thông báo",
+        content: it.content || "",
+        createdAt: it.createdAt ? it.createdAt : "",
+        avatar: it.avatar,
+        senderName: it.senderName,
+        isRead: it.isRead ?? false,
+        link: it.link || "#",
+      }));
 
-  const markRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+      setTotalPages(notifPageData.totalPages || 1);
+      
+      const filterChanged = previousFilterRef.current !== filter;
+      previousFilterRef.current = filter;
+      
+      if (currentPage === 1 && filterChanged) {
+        setAllNotifications(mapped);
+      } else if (currentPage === 1) {
+        setAllNotifications(mapped);
+      } else {
+        setAllNotifications((prev) => {
+          const existingIds = new Set(prev.map(n => n.id));
+          const newItems = mapped.filter((n: NotificationItem) => !existingIds.has(n.id));
+          return [...prev, ...newItems];
+        });
+      }
+    }
+  }, [notifPageData, currentPage, filter]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
+  const handleNotificationClick = (notification: NotificationItem) => {
+    setAllNotifications((prev) =>
+      prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
     );
-  };
-
-  const markUnread = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
-    );
-  };
-
-  const removeNotification = (id: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa thông báo này?")) return;
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    
+    if (notification.link && notification.link !== "#") {
+      router.push(notification.link);
+    }
   };
 
   const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    setAllNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
   };
 
-  const filtered = notifications
-    .filter((n) => (filter === "all" ? true : !n.read))
-    .filter((n) => {
-      const q = query.trim().toLowerCase();
-      if (!q) return true;
-      return (
-        n.title.toLowerCase().includes(q) || n.desc.toLowerCase().includes(q)
-      );
+  const handleLoadMore = () => {
+    if (currentPage < totalPages && !isFetching) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    const notification = allNotifications.find((n) => n.id === id);
+    setDeleteModal({
+      isOpen: true,
+      id,
+      title: notification?.title || "thông báo này",
     });
+  };
+
+  const confirmDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await notificationApi.deleteNotification(deleteModal.id);
+      setAllNotifications((prev) => prev.filter((n) => n.id !== deleteModal.id));
+      toast.success("Xóa thông báo thành công");
+      setDeleteModal({ isOpen: false, id: "", title: "" });
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+      toast.error("Xóa thông báo thất bại");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const filtered = allNotifications.filter((n) => (filter === "all" ? true : !n.isRead));
+  const unreadCount = allNotifications.filter((n) => !n.isRead).length;
+  const totalCount = allNotifications.length;
 
   return (
     <div className="p-4 md:p-6">
-      <div className="mb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Thông báo</h1>
-            <p className="text-sm text-gray-500 mt-1 max-w-xl">
-              Quản lý và duyệt các thông báo hệ thống, tương tác với người dùng
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Thông báo</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {unreadCount > 0 ? `Có ${unreadCount} thông báo chưa đọc` : "Không có thông báo mới"}
             </p>
           </div>
-
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <Link
-              href="/admin/notifications/send"
-              className="px-4 py-2 bg-accent-600 text-white rounded-md hover:bg-accent-700 flex items-center gap-2 text-sm font-medium"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-              Gửi thông báo
-            </Link>
-          </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4">
-          <div className="relative flex-1 md:flex-none">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm kiếm tiêu đề hoặc nội dung..."
-              className="w-full md:w-80 px-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent text-gray-700 placeholder-gray-400"
-            />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm hidden md:block">
-              {filtered.length} kết quả
-            </div>
-          </div>
-
-          <div className="inline-flex flex-wrap items-center rounded-md overflow-hidden bg-white border border-gray-200">
-            <button
-              onClick={() => setFilter("all")}
-              className={`px-3 py-2 text-sm whitespace-nowrap ${filter === "all" ? "bg-accent-50 border border-accent text-accent-600" : "text-gray-700 hover:bg-gray-50"}`}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => setFilter("unread")}
-              className={`px-3 py-2 text-sm whitespace-nowrap ${filter === "unread" ? "bg-accent-50 border border-accent text-accent-600" : "text-gray-700 hover:bg-gray-50"}`}
-            >
-              Chưa đọc
-            </button>
-          </div>
-
-          <button
-            onClick={markAllRead}
-            className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 whitespace-nowrap"
+          <Link
+            href="/admin/notifications/send"
+            className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors text-sm font-medium shadow-sm"
           >
-            Đánh dấu tất cả đã đọc
-          </button>
+            Gửi thông báo
+          </Link>
         </div>
-      </div>
 
-      <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-4 overflow-x-hidden">
-        <div className="space-y-3">
-          {filtered.length === 0 && (
-            <div className="text-center text-sm text-gray-500 py-6">
-              Không có thông báo phù hợp
-            </div>
-          )}
-
-          {filtered.map((n) => (
-            <div
-              key={n.id}
-              className={`flex items-start justify-between p-4 rounded-lg transition-colors shadow-sm ${n.read ? "bg-white hover:bg-gray-50" : "bg-accent-50 border-l-4 border-accent-600"}`}
+        <div className="flex items-center justify-between mb-6">
+          <NotificationTabs
+            activeTab={filter}
+            totalCount={totalCount}
+            unreadCount={unreadCount}
+            onTabChange={setFilter}
+          />
+          {unreadCount > 0 && (
+            <button
+              onClick={markAllRead}
+              className="text-sm text-accent hover:underline"
             >
-              <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center ${n.read ? "bg-gray-100" : "bg-gradient-to-br from-accent-50 to-accent-100"}`}>
-                  {n.avatar ? (
-                    <Image
-                      src={n.avatar}
-                      alt={n.senderName || "Avatar"}
-                      width={48}
-                      height={48}
-                      className="w-full h-full object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <svg className={`w-6 h-6 ${n.read ? "text-gray-500" : "text-accent-800"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                  )}
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <div className={`font-semibold text-base truncate ${n.read ? "text-gray-900" : "text-accent-800"}`}>{n.title}</div>
-                    <div className="text-xs text-gray-400 whitespace-nowrap mt-1 sm:mt-0 sm:ml-4">{n.time}</div>
-                  </div>
-                  <div className="text-sm text-gray-600 mt-2 line-clamp-3 break-words">{n.desc}</div>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-end gap-2">
-                {!n.read ? (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent-600 text-white">
-                    Mới
-                  </span>
-                ) : null}
-
-                <div className="flex items-center gap-2">
-                  {!n.read ? (
-                    <button
-                      onClick={() => markRead(n.id)}
-                      className="inline-flex items-center px-2 py-1 text-sm text-gray-600 hover:text-accent rounded"
-                      title="Đánh dấu đã đọc"
-                    >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Đã đọc
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => markUnread(n.id)}
-                      className="inline-flex items-center px-2 py-1 text-sm text-gray-600 hover:text-accent rounded"
-                      title="Đánh dấu chưa đọc"
-                    >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" />
-                      </svg>
-                      Chưa đọc
-                    </button>
-                  )}
-
-                  {n.meta && (
-                    <button
-                      onClick={() => setDetailModal({ title: n.title, meta: n.meta })}
-                      className="inline-flex items-center px-2 py-1 text-sm text-gray-600 hover:text-accent rounded"
-                      title="Xem chi tiết"
-                    >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
-                      </svg>
-                      Chi tiết
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => removeNotification(n.id)}
-                    className="inline-flex items-center px-2 py-1 text-sm text-red-600 hover:text-red-700 rounded"
-                    title="Xóa"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+              Đánh dấu tất cả đã đọc
+            </button>
+          )}
         </div>
+
+        <AdminNotificationList
+          notifications={filtered}
+          onNotificationClick={handleNotificationClick}
+          onDelete={handleDelete}
+          isLoading={isFetching}
+          hasMore={currentPage < totalPages}
+          onLoadMore={handleLoadMore}
+        />
       </div>
-      {/* Details modal */}
-      {detailModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 backdrop-blur-sm bg-black/10" onClick={() => setDetailModal(null)} />
-          <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg p-6 z-10">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold">{detailModal.title}</h3>
-                <p className="text-sm text-gray-500">Thông tin đăng nhập</p>
-              </div>
-              <button onClick={() => setDetailModal(null)} className="p-1 text-gray-500 hover:text-gray-700">
-                ×
-              </button>
-            </div>
-            <div className="space-y-2">
-              {Object.entries(detailModal.meta || {}).map(([k, v]) => (
-                <div key={k} className="flex justify-between text-sm">
-                  <div className="text-gray-500 capitalize">{k.replace(/_/g, " ")}:</div>
-                  <div className="font-medium text-gray-800 ml-2">{v}</div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-end">
-              <button onClick={() => setDetailModal(null)} className="px-4 py-2 bg-accent-600 text-white rounded-md hover:bg-accent-700">
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, id: "", title: "" })}
+        onConfirm={confirmDelete}
+        title="Xóa thông báo"
+        message={`Bạn có chắc chắn muốn xóa thông báo <strong>${deleteModal.title}</strong>?`}
+        confirmText="Xóa"
+        cancelText="Hủy"
+        type="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

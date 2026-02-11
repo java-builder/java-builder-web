@@ -59,6 +59,7 @@ export const API = {
     GET_UNREAD_NOTIFICATIONS: "/api/v1/notifications/unread",
     NOTIFICATIONS_MARK_READ: "/api/v1/notifications/mark-read",
     NOTIFICATIONS_ADMIN_SEND: "/api/v1/notifications/admin/send",
+    NOTIFICATIONS_DELETE: "/api/v1/notifications", // + /:notificationId
 
     // LESSON NOTE
     CREATE_LESSON_NOTE: "/api/v1/lesson-notes",

@@ -51,4 +51,11 @@ export const notificationApi = {
     );
     return response.data;
   },
+
+  deleteNotification: async (notificationId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `${API.NOTIFICATIONS_DELETE}/${notificationId}`,
+    );
+    return response.data;
+  },
 };
