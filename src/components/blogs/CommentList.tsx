@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 import { CommentResponse } from "@/types/comment";
+import { parseDate } from "@/utils/dateUtils";
 
 interface CommentListProps {
   comments: CommentResponse[];
@@ -48,10 +49,15 @@ export default function CommentList({
   }, []);
 
   const sortedComments = [...comments].sort((a, b) => {
+    const aDate = parseDate(a.createdAt);
+    const bDate = parseDate(b.createdAt);
+    const aTime = aDate ? aDate.getTime() : 0;
+    const bTime = bDate ? bDate.getTime() : 0;
+    
     if (sortBy === "newest") {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return bTime - aTime;
     }
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    return aTime - bTime;
   });
 
   if (isLoading && comments.length === 0) {

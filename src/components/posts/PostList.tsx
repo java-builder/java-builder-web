@@ -7,6 +7,7 @@ import { apiClient } from "@/api/axios";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { PostDetail } from "@/types/post";
+import { parseDate } from "@/utils/dateUtils";
 
 interface PostListProps {
   posts?: PostDetail[];
@@ -161,11 +162,21 @@ export default function PostList({
         return 0;
       case "resolved":
         return 0;
-      case "oldest":
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      case "oldest": {
+        const aDate = parseDate(a.createdAt);
+        const bDate = parseDate(b.createdAt);
+        const aTime = aDate ? aDate.getTime() : 0;
+        const bTime = bDate ? bDate.getTime() : 0;
+        return aTime - bTime;
+      }
       case "newest":
-      default:
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      default: {
+        const aDate = parseDate(a.createdAt);
+        const bDate = parseDate(b.createdAt);
+        const aTime = aDate ? aDate.getTime() : 0;
+        const bTime = bDate ? bDate.getTime() : 0;
+        return bTime - aTime;
+      }
     }
   });
 
@@ -275,7 +286,10 @@ export default function PostList({
                   <span className="truncate">{post.username}</span>
                   <span className="text-gray-300 dark:text-gray-600">•</span>
                   <span className="whitespace-nowrap">
-                    {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: vi })}
+                    {(() => {
+                      const date = parseDate(post.createdAt);
+                      return date ? formatDistanceToNow(date, { addSuffix: true, locale: vi }) : 'Vừa xong';
+                    })()}
                   </span>
                 </div>
               </div>

@@ -55,3 +55,17 @@ export const formatRelativeTime = (dateString: string | null | undefined): strin
   
   return formatApiDate(dateString);
 };
+
+export const formatLocaleString = (dateString: string | null | undefined, locale: string = "vi-VN"): string => {
+  const date = parseDate(dateString);
+  return date ? date.toLocaleString(locale) : "";
+};
+
+export const formatLocaleStringWithOptions = (
+  dateString: string | null | undefined, 
+  locale: string = "vi-VN",
+  options?: Intl.DateTimeFormatOptions
+): string => {
+  const date = parseDate(dateString);
+  return date ? date.toLocaleString(locale, options) : "";
+};
