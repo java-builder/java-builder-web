@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { questionContributionService } from "@/services/question-contribution.service";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import toast from "react-hot-toast";
-import { useConfirm } from "@/hooks/useConfirm";
 import ContributionCard from "@/components/admin/question-contributions/ContributionCard";
 import ContributionDetailModal from "@/components/admin/question-contributions/ContributionDetailModal";
 import RejectModal from "@/components/admin/question-contributions/RejectModal";
+import ApproveModal from "@/components/admin/question-contributions/ApproveModal";
 
 export default function QuestionContributionsPage() {
   const [contributions, setContributions] = useState<QuestionContributionDetailResponse[]>([]);
@@ -16,10 +16,10 @@ export default function QuestionContributionsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedContribution, setSelectedContribution] = useState<QuestionContributionDetailResponse | null>(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
-  const { confirm } = useConfirm();
 
   const fetchContributions = useCallback(async () => {
     try {
@@ -38,36 +38,27 @@ export default function QuestionContributionsPage() {
     fetchContributions();
   }, [fetchContributions]);
 
-  const handleApprove = async (id: string, question: string) => {
-    await confirm(
-      async () => {
-        try {
-          await questionContributionService.approveContribution(id);
-          fetchContributions();
-        } catch (err) {
-          const error = err as { response?: { data?: { message?: string } } };
-          toast.error(error.response?.data?.message || "Có lỗi xảy ra");
-          throw error;
-        }
-      },
-      {
-        title: "✅ Xác nhận duyệt câu hỏi",
-        message: `
-          <div style="text-align: center; line-height: 1.5;">
-            <p style="margin-bottom: 8px;">Bạn có chắc chắn muốn duyệt câu hỏi</p>
-            <p style="font-weight: 700; color: #059669; font-size: 14px; margin: 8px 0; padding: 6px 12px; background: #d1fae5; border-radius: 6px; display: inline-block; max-width: 280px; word-wrap: break-word;">
-              "${question}"
-            </p>
-            <p style="margin-top: 8px; font-size: 12px; color: #6b7280;">
-              Câu hỏi sẽ được thêm vào bộ câu hỏi
-            </p>
-          </div>
-        `,
-        confirmText: "✅ Duyệt câu hỏi",
-        cancelText: "❌ Hủy bỏ",
-        type: "success",
-      }
-    );
+  const handleApprove = async (id: string) => {
+    const contribution = contributions.find(c => c.id === id);
+    if (contribution) {
+      setSelectedContribution(contribution);
+      setShowApproveModal(true);
+    }
+  };
+
+  const handleApproveSubmit = async (answer?: string, tips?: string) => {
+    if (!selectedContribution) return;
+
+    try {
+      await questionContributionService.approveContribution(selectedContribution.id, answer, tips);
+      toast.success("Đã duyệt câu hỏi thành công");
+      setShowApproveModal(false);
+      setSelectedContribution(null);
+      fetchContributions();
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || "Có lỗi xảy ra");
+    }
   };
 
   const handleReject = async () => {
@@ -245,7 +236,7 @@ export default function QuestionContributionsPage() {
               setSelectedContribution(contribution);
               setShowDetailModal(true);
             }}
-            onApprove={() => handleApprove(contribution.id, contribution.question)}
+            onApprove={() => handleApprove(contribution.id)}
             onReject={() => {
               setSelectedContribution(contribution);
               setShowRejectModal(true);
@@ -296,14 +287,24 @@ export default function QuestionContributionsPage() {
             setSelectedContribution(null);
           }}
           onApprove={() => {
-            handleApprove(selectedContribution.id, selectedContribution.question);
+            handleApprove(selectedContribution.id);
             setShowDetailModal(false);
-            setSelectedContribution(null);
           }}
           onReject={() => {
             setShowDetailModal(false);
             setShowRejectModal(true);
           }}
+        />
+      )}
+
+      {showApproveModal && selectedContribution && (
+        <ApproveModal
+          contribution={selectedContribution}
+          onClose={() => {
+            setShowApproveModal(false);
+            setSelectedContribution(null);
+          }}
+          onApprove={handleApproveSubmit}
         />
       )}
 

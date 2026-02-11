@@ -32,8 +32,11 @@ export const questionContributionService = {
     );
   },
 
-  async approveContribution(id: string) {
-    return apiClient.put(`${API.APPROVE_CONTRIBUTION}/${id}/approve`);
+  async approveContribution(id: string, answer?: string, tips?: string) {
+    return apiClient.put(`${API.APPROVE_CONTRIBUTION}/${id}/approve`, {
+      answer,
+      tips
+    });
   },
 
   async rejectContribution(id: string, reason: string) {
