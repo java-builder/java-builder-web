@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -17,6 +17,8 @@ function ContributeQuestionForm() {
   const searchParams = useSearchParams();
   const questionSetId = searchParams.get("questionSetId");
   const questionSetTitle = searchParams.get("questionSetTitle");
+  const topicId = searchParams.get("topicId");
+  const topicName = searchParams.get("topicName");
 
   const { topics } = useInterviewTopics();
   const [contributeType, setContributeType] = useState<"existing" | "new">(
@@ -26,7 +28,7 @@ function ContributeQuestionForm() {
   const [previewTabs, setPreviewTabs] = useState<{ [key: string]: "write" | "preview" }>({});
 
   const [newSetForm, setNewSetForm] = useState({
-    interviewTopicId: "",
+    interviewTopicId: topicId || "",
     title: "",
     level: "JUNIOR" as LevelType,
     difficulty: "MEDIUM" as DifficultyType,
@@ -36,6 +38,13 @@ function ContributeQuestionForm() {
   const [questionsList, setQuestionsList] = useState([
     { question: "", answer: "", tips: "", difficulty: "MEDIUM" as DifficultyType },
   ]);
+
+  // Auto-fill topic when coming from topic page
+  useEffect(() => {
+    if (topicId && topicId !== newSetForm.interviewTopicId) {
+      setNewSetForm(prev => ({ ...prev, interviewTopicId: topicId }));
+    }
+  }, [topicId, newSetForm.interviewTopicId]);
 
   const addQuestion = () => {
     setQuestionsList([
@@ -127,6 +136,14 @@ function ContributeQuestionForm() {
           <p className="text-gray-600 dark:text-gray-400">
             Chia sẻ câu hỏi phỏng vấn bạn biết với cộng đồng
           </p>
+          {topicName && (
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-accent/10 text-accent rounded-lg text-sm">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              <span>Chủ đề: {topicName}</span>
+            </div>
+          )}
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6">

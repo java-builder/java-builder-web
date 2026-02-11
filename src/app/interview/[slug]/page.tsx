@@ -124,15 +124,27 @@ export default function InterviewCategoryPage() {
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <Link
-              href="/interview"
-              className="inline-flex items-center text-white/90 hover:text-white mb-4 text-sm"
-            >
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Quay lại
-            </Link>
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <Link
+                href="/interview"
+                className="inline-flex items-center text-white/90 hover:text-white text-sm"
+              >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Quay lại
+              </Link>
+
+              <Link
+                href={`/interview/contribute?topicId=${topic.id}&topicName=${encodeURIComponent(topic.name)}`}
+                className="flex items-center gap-2 px-4 py-2 bg-white text-accent hover:bg-gray-50 rounded-lg font-medium transition-colors text-sm shadow-md"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Đóng góp câu hỏi</span>
+              </Link>
+            </div>
 
             <div className="flex items-center gap-4 mb-4">
               {topic.thumbnailUrl && (

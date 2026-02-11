@@ -55,3 +55,38 @@ export interface UpdateInterviewTopicRequest {
   displayOrder?: number;
   active?: boolean;
 }
+
+export interface QuestionContributionRequest {
+  question: string;
+  answer: string;
+  tips?: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD";
+  questionSetId: string;
+  interviewTopicId: string;
+}
+
+export enum ContributionStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED"
+}
+
+export interface QuestionContributionDetail {
+  id: string;
+  question: string;
+  answer: string;
+  tips?: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD";
+  status: ContributionStatus;
+  questionSetId: string;
+  questionSetTitle: string;
+  level: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
+  contributorId: string;
+  contributorEmail: string;
+  contributorName: string;
+  contributorAvatar?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  rejectReason?: string;
+  createdAt: string;
+}
