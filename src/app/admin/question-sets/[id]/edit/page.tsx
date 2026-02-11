@@ -21,10 +21,21 @@ export default function EditQuestionSetPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<InterviewQuestionResponse | null>(null);
   const { confirm } = useConfirm();
 
   // Form state for creating question
   const [formData, setFormData] = useState({
+    question: "",
+    answer: "",
+    tips: "",
+    difficulty: "EASY" as "EASY" | "MEDIUM" | "HARD",
+    displayOrder: 1,
+  });
+
+  // Form state for editing question
+  const [editFormData, setEditFormData] = useState({
     question: "",
     answer: "",
     tips: "",
@@ -116,6 +127,45 @@ export default function EditQuestionSetPage() {
     );
   };
 
+  const handleEditQuestion = (question: InterviewQuestionResponse) => {
+    setEditingQuestion(question);
+    setEditFormData({
+      question: question.question,
+      answer: question.answer,
+      tips: question.tips || "",
+      difficulty: question.difficulty,
+      displayOrder: question.displayOrder,
+    });
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingQuestion || !editFormData.question.trim() || !editFormData.answer.trim()) {
+      toast.error("Vui lòng nhập câu hỏi và câu trả lời");
+      return;
+    }
+
+    try {
+      await interviewQuestionService.updateQuestion(editingQuestion.id, {
+        question: editFormData.question,
+        answer: editFormData.answer,
+        tips: editFormData.tips || undefined,
+        difficulty: editFormData.difficulty,
+        displayOrder: editFormData.displayOrder,
+      });
+      
+      toast.success("Cập nhật câu hỏi thành công!");
+      setIsEditOpen(false);
+      setEditingQuestion(null);
+      await fetchQuestionSet(true);
+    } catch (error) {
+      console.error("Error updating question:", error);
+      toast.error("Cập nhật câu hỏi thất bại");
+    }
+  };
+
   const getDifficultyBadge = (difficulty: string) => {
     const configs = {
       EASY: { color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", text: "Dễ" },
@@ -204,6 +254,18 @@ export default function EditQuestionSetPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditQuestion(q);
+                          }}
+                          className="p-1.5 sm:p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                          title="Sửa"
+                        >
+                          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -364,6 +426,126 @@ export default function EditQuestionSetPage() {
                   className="flex-1 px-4 py-2 text-sm bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
                 >
                   Thêm câu hỏi
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Question Modal */}
+      {isEditOpen && editingQuestion && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-3 sm:py-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                  Chỉnh sửa câu hỏi
+                </h2>
+                <button
+                  onClick={() => {
+                    setIsEditOpen(false);
+                    setEditingQuestion(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleUpdateQuestion} className="p-4 sm:p-6 space-y-4">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Câu hỏi <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  required
+                  value={editFormData.question}
+                  onChange={(e) => setEditFormData({ ...editFormData, question: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  placeholder="Nhập câu hỏi..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Câu trả lời <span className="text-red-500">*</span>
+                </label>
+                <MarkdownEditor
+                  value={editFormData.answer}
+                  onChange={(value) => setEditFormData({ ...editFormData, answer: value })}
+                  placeholder="Nhập câu trả lời chi tiết... Hỗ trợ Markdown để format code"
+                  height={600}
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  💡 Hỗ trợ Markdown: Dùng <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">```java</code> để format code
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Tips (Gợi ý)
+                </label>
+                <textarea
+                  value={editFormData.tips}
+                  onChange={(e) => setEditFormData({ ...editFormData, tips: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  placeholder="Gợi ý để trả lời tốt hơn..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Độ khó <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={editFormData.difficulty}
+                    onChange={(e) => setEditFormData({ ...editFormData, difficulty: e.target.value as "EASY" | "MEDIUM" | "HARD" })}
+                    className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="EASY">Dễ</option>
+                    <option value="MEDIUM">Trung bình</option>
+                    <option value="HARD">Khó</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Thứ tự hiển thị
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={editFormData.displayOrder}
+                    onChange={(e) => setEditFormData({ ...editFormData, displayOrder: parseInt(e.target.value) })}
+                    className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditOpen(false);
+                    setEditingQuestion(null);
+                  }}
+                  className="flex-1 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 text-sm bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
+                >
+                  Cập nhật
                 </button>
               </div>
             </form>
