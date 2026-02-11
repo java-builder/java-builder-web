@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { questionContributionService, QuestionContributionDetailResponse } from "@/services/question-contribution.service";
+import { questionContributionService } from "@/services/question-contribution.service";
+import { QuestionContributionDetailResponse } from "@/types/interview";
 import toast from "react-hot-toast";
 import { useConfirm } from "@/hooks/useConfirm";
 import ContributionCard from "@/components/admin/question-contributions/ContributionCard";

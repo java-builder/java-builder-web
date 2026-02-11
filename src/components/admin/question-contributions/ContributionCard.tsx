@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { QuestionContributionDetailResponse } from "@/services/question-contribution.service";
+import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
 
 interface ContributionCardProps {

@@ -41,10 +41,10 @@ function ContributeQuestionForm() {
 
   // Auto-fill topic when coming from topic page
   useEffect(() => {
-    if (topicId && topicId !== newSetForm.interviewTopicId) {
+    if (topicId) {
       setNewSetForm(prev => ({ ...prev, interviewTopicId: topicId }));
     }
-  }, [topicId, newSetForm.interviewTopicId]);
+  }, [topicId]);
 
   const addQuestion = () => {
     setQuestionsList([

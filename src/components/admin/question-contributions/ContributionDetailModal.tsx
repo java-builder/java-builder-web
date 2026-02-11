@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Image from "next/image";
-import { QuestionContributionDetailResponse } from "@/services/question-contribution.service";
+import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
+import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
 
 interface ContributionDetailModalProps {
   contribution: QuestionContributionDetailResponse;
@@ -15,6 +17,9 @@ export default function ContributionDetailModal({
   onApprove,
   onReject,
 }: ContributionDetailModalProps) {
+  const [answerTab, setAnswerTab] = useState<"write" | "preview">("preview");
+  const [tipsTab, setTipsTab] = useState<"write" | "preview">("preview");
+
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "PENDING":
@@ -164,8 +169,42 @@ export default function ContributionDetailModal({
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                   Câu trả lời
                 </label>
-                <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 whitespace-pre-wrap">
-                  {contribution.answer}
+                <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                  <div className="flex border-b border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+                    <button
+                      type="button"
+                      onClick={() => setAnswerTab("write")}
+                      className={`px-4 py-2 text-xs font-medium transition-colors ${
+                        answerTab === "write"
+                          ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                      }`}
+                    >
+                      Markdown
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAnswerTab("preview")}
+                      className={`px-4 py-2 text-xs font-medium transition-colors ${
+                        answerTab === "preview"
+                          ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                      }`}
+                    >
+                      Xem trước
+                    </button>
+                  </div>
+                  {answerTab === "write" ? (
+                    <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900/50 max-h-[400px] overflow-y-auto">
+                      <pre className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap font-mono">{contribution.answer}</pre>
+                    </div>
+                  ) : (
+                    <div className="px-4 py-3 bg-white dark:bg-gray-800 max-h-[400px] overflow-y-auto">
+                      <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <MarkdownRenderer content={contribution.answer} />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -175,8 +214,42 @@ export default function ContributionDetailModal({
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                   Gợi ý
                 </label>
-                <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 whitespace-pre-wrap">
-                  {contribution.tips}
+                <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                  <div className="flex border-b border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+                    <button
+                      type="button"
+                      onClick={() => setTipsTab("write")}
+                      className={`px-4 py-2 text-xs font-medium transition-colors ${
+                        tipsTab === "write"
+                          ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                      }`}
+                    >
+                      Markdown
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTipsTab("preview")}
+                      className={`px-4 py-2 text-xs font-medium transition-colors ${
+                        tipsTab === "preview"
+                          ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                      }`}
+                    >
+                      Xem trước
+                    </button>
+                  </div>
+                  {tipsTab === "write" ? (
+                    <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900/50 max-h-[300px] overflow-y-auto">
+                      <pre className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap font-mono">{contribution.tips}</pre>
+                    </div>
+                  ) : (
+                    <div className="px-4 py-3 bg-white dark:bg-gray-800 max-h-[300px] overflow-y-auto">
+                      <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <MarkdownRenderer content={contribution.tips} />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

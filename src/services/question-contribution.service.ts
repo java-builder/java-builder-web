@@ -1,70 +1,44 @@
 import { apiClient } from "@/api/axios";
-
-export interface QuestionItemRequest {
-  question: string;
-  answer?: string;
-  tips?: string;
-  difficulty: "EASY" | "MEDIUM" | "HARD";
-}
-
-export interface CreateQuestionContributionRequest {
-  questionSetId?: string;
-  interviewTopicId?: string;
-  newQuestionSetTitle?: string;
-  difficulty?: "EASY" | "MEDIUM" | "HARD";
-  level?: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
-  topics?: string;
-  questions: QuestionItemRequest[];
-}
-
-export interface CreateQuestionContributionResponse {
-  questionSetId: string;
-  questionSetTitle: string;
-  isNewQuestionSet: boolean;
-  totalQuestions: number;
-  status: string;
-  createdAt: string;
-}
-
-export interface QuestionContributionDetailResponse {
-  id: string;
-  question: string;
-  answer?: string;
-  tips?: string;
-  difficulty: string;
-  status: string;
-  questionSetId?: string;
-  questionSetTitle?: string;
-  level?: string;
-  contributorId: string;
-  contributorEmail: string;
-  contributorName: string;
-  contributorAvatar?: string;
-  reviewedBy?: string;
-  reviewedAt?: string;
-  rejectReason?: string;
-  createdAt: string;
-}
+import { API } from "@/api/api";
+import {
+  CreateQuestionContributionRequest,
+  CreateQuestionContributionResponse,
+  QuestionContributionDetailResponse,
+} from "@/types/interview";
 
 export const questionContributionService = {
   async createContribution(data: CreateQuestionContributionRequest) {
     return apiClient.post<CreateQuestionContributionResponse>(
-      "/api/v1/question-contributions",
+      API.CREATE_QUESTION_CONTRIBUTION,
       data
     );
   },
 
   async getContributions(page: number = 1, size: number = 10, status?: string) {
-    return apiClient.get("/api/v1/question-contributions", {
+    return apiClient.get(API.GET_QUESTION_CONTRIBUTIONS, {
       params: { page, size, ...(status && status !== "ALL" && { status }) }
     });
   },
 
+  async getMyContributions(page: number = 1, size: number = 10, status?: string) {
+    return apiClient.get(API.GET_MY_CONTRIBUTIONS, {
+      params: { page, size, ...(status && status !== "ALL" && { status }) }
+    });
+  },
+
+  async getContributionById(id: string) {
+    return apiClient.get<QuestionContributionDetailResponse>(
+      `${API.GET_CONTRIBUTION_BY_ID}/${id}`
+    );
+  },
+
   async approveContribution(id: string) {
-    return apiClient.put(`/api/v1/question-contributions/${id}/approve`);
+    return apiClient.put(`${API.APPROVE_CONTRIBUTION}/${id}/approve`);
   },
 
   async rejectContribution(id: string, reason: string) {
-    return apiClient.put(`/api/v1/question-contributions/${id}/reject`, { reason });
+    return apiClient.put(`${API.REJECT_CONTRIBUTION}/${id}/reject`, { reason });
   },
 };
+
+export type { QuestionContributionDetailResponse };

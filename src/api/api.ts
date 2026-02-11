@@ -169,4 +169,12 @@ export const API = {
     GET_INTERVIEW_QUESTIONS_BY_SLUG: "/api/v1/interview-questions/question-set/slug", // + /:questionSetSlug
     UPDATE_INTERVIEW_QUESTION: "/api/v1/interview-questions", // + /:questionId
     DELETE_INTERVIEW_QUESTION: "/api/v1/interview-questions", // + /:questionId
+
+    // QUESTION CONTRIBUTION
+    CREATE_QUESTION_CONTRIBUTION: "/api/v1/question-contributions",
+    GET_QUESTION_CONTRIBUTIONS: "/api/v1/question-contributions",
+    GET_MY_CONTRIBUTIONS: "/api/v1/question-contributions/my-contributions",
+    GET_CONTRIBUTION_BY_ID: "/api/v1/question-contributions", // + /:id
+    APPROVE_CONTRIBUTION: "/api/v1/question-contributions", // + /:id/approve
+    REJECT_CONTRIBUTION: "/api/v1/question-contributions", // + /:id/reject
 }

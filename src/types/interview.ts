@@ -90,3 +90,50 @@ export interface QuestionContributionDetail {
   rejectReason?: string;
   createdAt: string;
 }
+
+// Question Contribution Types
+export interface QuestionItemRequest {
+  question: string;
+  answer?: string;
+  tips?: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD";
+}
+
+export interface CreateQuestionContributionRequest {
+  questionSetId?: string;
+  interviewTopicId?: string;
+  newQuestionSetTitle?: string;
+  difficulty?: "EASY" | "MEDIUM" | "HARD";
+  level?: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
+  topics?: string;
+  questions: QuestionItemRequest[];
+}
+
+export interface CreateQuestionContributionResponse {
+  questionSetId: string;
+  questionSetTitle: string;
+  isNewQuestionSet: boolean;
+  totalQuestions: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface QuestionContributionDetailResponse {
+  id: string;
+  question: string;
+  answer?: string;
+  tips?: string;
+  difficulty: string;
+  status: string;
+  questionSetId?: string;
+  questionSetTitle?: string;
+  level?: string;
+  contributorId: string;
+  contributorEmail: string;
+  contributorName: string;
+  contributorAvatar?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  rejectReason?: string;
+  createdAt: string;
+}
