@@ -10,6 +10,7 @@ import EnrollUserModal from "@/components/admin/courses/EnrollUserModal";
 import { courseApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
 import { CourseStats, DeleteModalState } from "@/types/admin";
+import { formatReadableDate } from "@/utils/dateUtils";
 
 const LevelBadge = ({ level }: { level: CourseLevel }) => {
   const getLevelConfig = (level: CourseLevel) => {
@@ -142,37 +143,13 @@ export default function CoursesPage() {
   };
 
   const formatDate = (dateString: string) => {
-    try {
-      const [datePart, timePart] = dateString.split(" ");
-      const [day, month, year] = datePart.split("-");
-      const [hour, minute, second] = timePart.split(":");
-
-      const date = new Date(
-        parseInt(year),
-        parseInt(month) - 1,
-        parseInt(day),
-        parseInt(hour),
-        parseInt(minute),
-        parseInt(second),
-      );
-
-      return date.toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return dateString;
-    }
+    return formatReadableDate(dateString);
   };
 
   useEffect(() => {
     fetchCourses();
   }, [search, categoryFilter, statusFilter, levelFilter]);
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       if (openMenuId) setOpenMenuId(null);

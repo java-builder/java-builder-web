@@ -7,6 +7,7 @@ import { Document, DocumentType } from "@/types/document";
 import { documentApi } from "@/services/document.service";
 import { fileApi } from "@/services/course.service";
 import toast from "react-hot-toast";
+import { formatReadableDate } from "@/utils/dateUtils";
 
 const documentTypes = [
   { type: DocumentType.BOOK, label: "Sách", icon: "📚" },
@@ -221,15 +222,7 @@ export default function AdminDocumentsPage() {
   };
 
   const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      });
-    } catch {
-      return dateString;
-    }
+    return formatReadableDate(dateString);
   };
 
   return (

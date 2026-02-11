@@ -10,6 +10,7 @@ import { UserDetailResponse, UserStatisticsResponse, UserStatus } from "@/types/
 import { ApiResponse, PageResponse } from "@/types/api";
 import EditUserModal from "@/components/admin/users/EditUserModal";
 import CreateUserModal from "@/components/admin/users/CreateUserModal";
+import { formatReadableDate } from "@/utils/dateUtils";
 
 const StatusBadge = ({ status }: { status: UserStatus | string }) => {
   const getStatusConfig = (status: UserStatus | string) => {
@@ -158,19 +159,7 @@ export default function UsersPage() {
   };
 
   const formatCreatedDate = (createdAt: string): string => {
-    try {
-      const date = new Date(createdAt);
-      return date.toLocaleDateString("vi-VN", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (error) {
-      console.error("Error formatting date:", createdAt, error);
-      return "Ngày không hợp lệ";
-    }
+    return formatReadableDate(createdAt);
   };
 
   useEffect(() => {

@@ -16,6 +16,7 @@ import {
 } from "chart.js";
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
+import { parseDate } from "@/utils/dateUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -147,9 +148,10 @@ export default function RevenueReportPage() {
 
   // Chart data
   const revenueChartData = {
-    labels: revenueDetails.map((item) =>
-      new Date(item.date).toLocaleDateString("vi-VN"),
-    ),
+    labels: revenueDetails.map((item) => {
+      const date = parseDate(item.date);
+      return date ? date.toLocaleDateString("vi-VN", { day: "numeric", month: "short" }) : item.date;
+    }),
     datasets: [
       {
         label: "Doanh thu (VNĐ)",
@@ -169,9 +171,10 @@ export default function RevenueReportPage() {
   };
 
   const ordersChartData = {
-    labels: revenueDetails.map((item) =>
-      new Date(item.date).toLocaleDateString("vi-VN"),
-    ),
+    labels: revenueDetails.map((item) => {
+      const date = parseDate(item.date);
+      return date ? date.toLocaleDateString("vi-VN", { day: "numeric", month: "short" }) : item.date;
+    }),
     datasets: [
       {
         label: "Số đơn hàng",

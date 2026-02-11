@@ -6,6 +6,7 @@ import { UserSession } from "@/types/session";
 import { userSessionApi } from "@/services/user-session.service";
 import { PageResponse } from "@/types/api";
 import toast from "react-hot-toast";
+import { formatReadableDate } from "@/utils/dateUtils";
 
 
 const getProviderBadge = (provider: string) => {
@@ -242,7 +243,7 @@ export default function AdminSessionsPage() {
                 os: s.os,
                 device: s.device,
                 ipAddress: s.ipAddress,
-                createdAt: new Date(s.createdAt).toLocaleString("vi-VN"),
+                createdAt: formatReadableDate(s.createdAt),
               }));
               const csvHeader = Object.keys(rows[0]).join(",") + "\n";
               const csvBody = rows.map((r) => Object.values(r).map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -350,7 +351,7 @@ export default function AdminSessionsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-700 dark:text-gray-200 align-top whitespace-nowrap">{s.ipAddress}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 align-top whitespace-nowrap text-xs">{new Date(s.createdAt).toLocaleString("vi-VN")}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 align-top whitespace-nowrap text-xs">{formatReadableDate(s.createdAt)}</td>
                     <td className="px-4 py-3 text-center align-top">
                       <button
                         onClick={() => setViewSession(s)}
@@ -493,7 +494,7 @@ export default function AdminSessionsPage() {
               </div>
               <div className="flex justify-between">
                 <div className="text-gray-500 dark:text-gray-400">Thời gian</div>
-                <div className="font-medium text-gray-800 dark:text-gray-200">{new Date(viewSession.createdAt).toLocaleString("vi-VN")}</div>
+                <div className="font-medium text-gray-800 dark:text-gray-200">{formatReadableDate(viewSession.createdAt)}</div>
               </div>
             </div>
             

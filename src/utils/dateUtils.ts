@@ -38,6 +38,18 @@ export const formatShortDate = (dateString: string | null | undefined): string =
   return `${day}/${month}/${year}`;
 };
 
+export const formatReadableDate = (dateString: string | null | undefined): string => {
+  const date = parseDate(dateString);
+  if (!date || isNaN(date.getTime())) {
+    return "-";
+  }
+  return date.toLocaleDateString("vi-VN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 export const formatRelativeTime = (dateString: string | null | undefined): string => {
   const date = parseDate(dateString);
   if (!date) return "";

@@ -6,6 +6,7 @@ import CreateCategoryModal from "@/components/admin/categories/CreateCategoryMod
 import { CategoryDetailResponse } from "@/types/category";
 import { useConfirm } from "@/hooks/useConfirm";
 import UpdateCategoryModal from "@/components/admin/categories/UpdateCategoryModal";
+import { formatReadableDate } from "@/utils/dateUtils";
 
 export default function CategoriesPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -91,7 +92,7 @@ export default function CategoriesPage() {
                   <tr key={c.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{c.name}</td>
                     <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{c.description || "-"}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatReadableDate(c.createdAt)}</td>
                     <td className="px-6 py-4 text-right text-sm">
                       <div className="flex items-center justify-end gap-2">
                         <button
