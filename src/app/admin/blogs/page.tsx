@@ -9,7 +9,7 @@ import BlogSuccessToast from "@/components/admin/blogs/BlogSuccessToast";
 import BlogPreviewModal from "@/components/admin/blogs/BlogPreviewModal";
 import { Blog } from "@/types/blog";
 import { blogService } from "@/services/blog.service";
-
+import { Pagination } from "@/components/ui/Pagination";
 
 export default function BlogsPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -320,6 +320,18 @@ export default function BlogsPage() {
         isDeleting={isDeleting}
         isLoading={isLoading}
       />
+
+      {/* Pagination */}
+      {pagination.totalPages > 0 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          totalElements={pagination.totalElements}
+          pageSize={pagination.size}
+          onPageChange={(page) => setPagination({ ...pagination, page })}
+          itemName="bài viết"
+        />
+      )}
 
       {/* Create Blog Modal */}
       <CreateBlogModal

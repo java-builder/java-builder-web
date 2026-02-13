@@ -2,16 +2,16 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "@/services/user.service";
-import { UserDetailResponse } from "@/types/user";
+import { UserDetailResponse, UserStatisticsResponse } from "@/types/user";
 import { authApi } from "@/services/auth.service";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { ApiResponse, PageResponse } from "@/types/api";
 
 export const useUser = (userId?: string) => {
   const queryClient = useQueryClient();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check auth sau khi mount (client-side)
   useEffect(() => {
     setIsAuthenticated(authApi.isAuthenticated());
     setIsAuthChecked(true);
@@ -44,7 +44,6 @@ export const useUser = (userId?: string) => {
     queryClient.invalidateQueries({ queryKey });
   };
 
-  // Loading khi: chưa check auth xong HOẶC đang fetch
   const loading = !isAuthChecked || isLoading || (isFetching && !user);
 
   return {
@@ -54,5 +53,59 @@ export const useUser = (userId?: string) => {
     updateUser,
     refetch,
     isAuthenticated,
+  };
+};
+
+export const useUsersList = (debouncedSearch: string, currentPage: number) => {
+  const [response, setResponse] = useState<ApiResponse<PageResponse<UserDetailResponse>> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [stats, setStats] = useState<UserStatisticsResponse | null>(null);
+  const [statsLoaded, setStatsLoaded] = useState(false);
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+      const result = await userApi.search({
+        page: currentPage + 1,
+        ...(debouncedSearch && { search: debouncedSearch }),
+      });
+
+      setResponse(result);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, debouncedSearch]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    if (!statsLoaded) {
+      const fetchStats = async () => {
+        try {
+          const res = await userApi.getStatistics();
+          setStats(res.data ?? null);
+          setStatsLoaded(true);
+        } catch (err) {
+          console.error("Failed to fetch user statistics", err);
+        }
+      };
+      fetchStats();
+    }
+  }, [statsLoaded]);
+
+  return {
+    response,
+    isLoading,
+    error,
+    stats,
+    refetch: fetchUsers,
   };
 };

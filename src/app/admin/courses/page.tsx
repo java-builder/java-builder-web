@@ -2,62 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
 import EnrollUserModal from "@/components/admin/courses/EnrollUserModal";
+import { CourseFilters } from "@/components/admin/courses/CourseFilters";
+import { CourseStatsCards } from "@/components/admin/courses/CourseStatsCards";
+import { CourseCard } from "@/components/admin/courses/CourseCard";
+import { useCourses } from "@/hooks/useCourses";
 import { courseApi } from "@/services/course.service";
-import { CourseDetailResponse, CourseLevel } from "@/types/course";
-import { CourseStats, DeleteModalState } from "@/types/admin";
-import { formatReadableDate } from "@/utils/dateUtils";
-
-const LevelBadge = ({ level }: { level: CourseLevel }) => {
-  const getLevelConfig = (level: CourseLevel) => {
-    switch (level) {
-      case CourseLevel.BEGINNER:
-        return {
-          color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-          text: "Cơ bản",
-        };
-      case CourseLevel.INTERMEDIATE:
-        return {
-          color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-          text: "Trung cấp",
-        };
-      case CourseLevel.ADVANCED:
-        return {
-          color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
-          text: "Nâng cao",
-        };
-      default:
-        return {
-          color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
-          text: level,
-        };
-    }
-  };
-
-  const config = getLevelConfig(level);
-  return (
-    <span
-      className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${config.color}`}
-    >
-      {config.text}
-    </span>
-  );
-};
+import { DeleteModalState } from "@/types/admin";
+import { formatCurrency } from "@/utils/formatters";
 
 export default function CoursesPage() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [levelFilter, setLevelFilter] = useState("all");
-  const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
-  const [error, setError] = useState<string>("");
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
     isOpen: false,
     id: "",
@@ -70,15 +32,16 @@ export default function CoursesPage() {
   });
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  // Mock stats - có thể thay thế bằng API call thực tế sau
-  const [stats, setStats] = useState<CourseStats>({
-    total: 0,
+  const { data, isLoading, error, refetch } = useCourses(1, 20);
+  const courses = data?.data || [];
+  const stats = {
+    total: data?.totalElements || 0,
     published: 0,
     draft: 0,
     archived: 0,
     totalStudents: 0,
     totalRevenue: 0,
-  });
+  };
 
   const categories = [
     "Frontend Development",
@@ -89,25 +52,6 @@ export default function CoursesPage() {
     "Data Science",
   ];
 
-  const fetchCourses = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      const result = await courseApi.getCourses(1, 20);
-      setCourses(result.data?.data || []);
-      setStats((prev) => ({
-        ...prev,
-        total: result.data?.totalElements || 0,
-      }));
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleDelete = async (id: string, title: string) => {
     setDeleteModal({ isOpen: true, id, title });
   };
@@ -117,38 +61,13 @@ export default function CoursesPage() {
     setIsDeleting(id);
     try {
       await courseApi.delete(id);
-      setCourses(courses.filter((course) => course.id !== id));
       setDeleteModal({ isOpen: false, id: "", title: "" });
+      refetch();
     } catch {
-      // Error already handled by courseApi.delete with toast
     } finally {
       setIsDeleting("");
     }
   };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
-  const formatRevenue = (revenue: number) => {
-    if (revenue >= 1000000000) {
-      return `${(revenue / 1000000000).toFixed(1)}B VNĐ`;
-    } else if (revenue >= 1000000) {
-      return `${(revenue / 1000000).toFixed(1)}M VNĐ`;
-    }
-    return formatPrice(revenue);
-  };
-
-  const formatDate = (dateString: string) => {
-    return formatReadableDate(dateString);
-  };
-
-  useEffect(() => {
-    fetchCourses();
-  }, [search, categoryFilter, statusFilter, levelFilter]);
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -158,7 +77,6 @@ export default function CoursesPage() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [openMenuId]);
 
-  // Open create modal when ?create=1 present in URL
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -179,7 +97,7 @@ export default function CoursesPage() {
 
   const handleCreateSuccess = () => {
     closeCreateModal();
-    fetchCourses();
+    refetch();
   };
 
   return (
@@ -216,7 +134,7 @@ export default function CoursesPage() {
               Tạo khóa học mới
             </button>
             <button
-              onClick={fetchCourses}
+              onClick={() => refetch()}
               disabled={isLoading}
               className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50"
             >
@@ -239,239 +157,19 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
-                Tổng khóa học
-              </p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-            </div>
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <svg
-                className="w-5 h-5 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
+      <CourseStatsCards stats={stats} formatRevenue={formatCurrency} />
 
-        <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
-                Đã xuất bản
-              </p>
-              <p className="text-2xl font-bold text-green-600">
-                {stats.published}
-              </p>
-            </div>
-            <div className="p-2 bg-green-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Bản nháp</p>
-              <p className="text-2xl font-bold text-yellow-600">
-                {stats.draft}
-              </p>
-            </div>
-            <div className="p-2 bg-yellow-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-yellow-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Lưu trữ</p>
-              <p className="text-2xl font-bold text-gray-600">
-                {stats.archived}
-              </p>
-            </div>
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <svg
-                className="w-5 h-5 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Học viên</p>
-              <p className="text-2xl font-bold text-accent-600">
-                {stats.totalStudents.toLocaleString()}
-              </p>
-            </div>
-            <div className="p-2 bg-accent-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-accent-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
-                Doanh thu
-              </p>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatRevenue(stats.totalRevenue)}
-              </p>
-            </div>
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <svg
-                className="w-5 h-5 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
-          {/* Search */}
-          <div className="flex-1 max-w-md">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Tìm kiếm khóa học..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-gray-700 placeholder-gray-400"
-              />
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-wrap gap-3">
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm bg-white text-gray-700"
-            >
-              <option value="all">Tất cả danh mục</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm bg-white text-gray-700"
-            >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="PUBLISHED">Đã xuất bản</option>
-              <option value="DRAFT">Bản nháp</option>
-              <option value="ARCHIVED">Lưu trữ</option>
-            </select>
-
-            <select
-              value={levelFilter}
-              onChange={(e) => setLevelFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm bg-white text-gray-700"
-            >
-              <option value="all">Tất cả cấp độ</option>
-              <option value="BEGINNER">Cơ bản</option>
-              <option value="INTERMEDIATE">Trung cấp</option>
-              <option value="ADVANCED">Nâng cao</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <CourseFilters
+        search={search}
+        categoryFilter={categoryFilter}
+        statusFilter={statusFilter}
+        levelFilter={levelFilter}
+        categories={categories}
+        onSearchChange={setSearch}
+        onCategoryChange={setCategoryFilter}
+        onStatusChange={setStatusFilter}
+        onLevelChange={setLevelFilter}
+      />
 
       {/* Error State */}
       {error && !isLoading && (
@@ -490,7 +188,7 @@ export default function CoursesPage() {
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span className="text-sm text-red-700 font-medium">{error}</span>
+            <span className="text-sm text-red-700 font-medium">{(error as Error).message}</span>
           </div>
         </div>
       )}
@@ -547,161 +245,15 @@ export default function CoursesPage() {
         )}
 
         {!isLoading && courses.map((course) => (
-          <div key={course.id} className="bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200">
-            <div className="p-6">
-              <div className="flex items-start gap-4">
-                {/* Thumbnail */}
-                <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                  {course.thumbnailUrl ? (
-                    <Image
-                      src={course.thumbnailUrl}
-                      alt={course.title}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
-                      <svg className="w-8 h-8 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 text-lg mb-1 truncate">
-                        {course.title}
-                      </h3>
-                      <p className="text-sm text-gray-500 line-clamp-2 mb-3">
-                        {course.description}
-                      </p>
-                      
-                      {/* Meta Info */}
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
-                        <div className="flex items-center gap-1.5">
-                          <LevelBadge level={course.level || CourseLevel.BEGINNER} />
-                        </div>
-                        <div className="flex items-center gap-1.5 text-gray-600">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span>{course.duration || 0} giờ</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-gray-600">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                          </svg>
-                          <span className="font-semibold text-gray-900">{formatPrice(course.price)}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-gray-500">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <span className="text-xs">{course.createdAt ? formatDate(course.createdAt) : "-"}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Actions Dropdown */}
-                    <div className="relative flex-shrink-0">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenMenuId(openMenuId === course.id ? null : course.id);
-                        }}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Thao tác"
-                      >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                        </svg>
-                      </button>
-
-                      {/* Dropdown Menu */}
-                      {openMenuId === course.id && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-30"
-                            onClick={() => setOpenMenuId(null)}
-                          />
-                          <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-40">
-                            <Link
-                              href={`/courses/${course.slug}`}
-                              target="_blank"
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              onClick={() => setOpenMenuId(null)}
-                            >
-                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                              </svg>
-                              Xem trước
-                            </Link>
-                            <Link
-                              href={`/admin/courses/${course.id}/enrollments`}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              onClick={() => setOpenMenuId(null)}
-                            >
-                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                              </svg>
-                              Xem học viên
-                            </Link>
-                            <button
-                              onClick={() => {
-                                setEnrollModal({ isOpen: true, courseId: course.id, courseTitle: course.title });
-                                setOpenMenuId(null);
-                              }}
-                              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                            >
-                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                              </svg>
-                              Thêm học viên
-                            </button>
-                            <Link
-                              href={`/admin/courses/${course.id}/edit`}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              onClick={() => setOpenMenuId(null)}
-                            >
-                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                              Chỉnh sửa
-                            </Link>
-                            <div className="border-t border-gray-100 my-1" />
-                            <button
-                              onClick={() => {
-                                handleDelete(course.id, course.title);
-                                setOpenMenuId(null);
-                              }}
-                              disabled={isDeleting === course.id}
-                              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                            >
-                              {isDeleting === course.id ? (
-                                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                              ) : (
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              )}
-                              Xóa khóa học
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CourseCard
+            key={course.id}
+            course={course}
+            openMenuId={openMenuId}
+            isDeleting={isDeleting}
+            onMenuToggle={(id) => setOpenMenuId(openMenuId === id ? null : id)}
+            onDelete={handleDelete}
+            onEnroll={(courseId, courseTitle) => setEnrollModal({ isOpen: true, courseId, courseTitle })}
+          />
         ))}
       </div>
 
@@ -729,7 +281,7 @@ export default function CoursesPage() {
       <EnrollUserModal
         isOpen={enrollModal.isOpen}
         onClose={() => setEnrollModal({ isOpen: false, courseId: "", courseTitle: "" })}
-        onSuccess={() => fetchCourses()}
+        onSuccess={() => refetch()}
         courseId={enrollModal.courseId}
         courseTitle={enrollModal.courseTitle}
       />

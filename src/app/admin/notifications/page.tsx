@@ -26,7 +26,7 @@ export default function AdminNotificationsPage() {
   });
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data: notifPageData, isFetching } = useNotifications(currentPage, filter === "unread" ? "unread" : "all");
+  const { data: notifPageData, isFetching, isLoading } = useNotifications(currentPage, filter === "unread" ? "unread" : "all");
 
   useEffect(() => {
     if (notifPageData) {
@@ -112,6 +112,25 @@ export default function AdminNotificationsPage() {
   const filtered = allNotifications.filter((n) => (filter === "all" ? true : !n.isRead));
   const unreadCount = allNotifications.filter((n) => !n.isRead).length;
   const totalCount = allNotifications.length;
+
+  // Show loading spinner on initial load
+  if (isLoading && allNotifications.length === 0) {
+    return (
+      <div className="p-4 md:p-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Thông báo</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Đang tải thông báo...</p>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div className="p-8 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-6">

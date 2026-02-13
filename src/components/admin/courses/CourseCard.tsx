@@ -1,29 +1,27 @@
 import Link from "next/link";
 import Image from "next/image";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
-import { useState } from "react";
+import { LevelBadge } from "./LevelBadge";
+import { formatReadableDate } from "@/utils/dateUtils";
+import { formatPrice } from "@/utils/formatters";
 
 interface CourseCardProps {
   course: CourseDetailResponse;
+  openMenuId: string | null;
+  isDeleting: string;
+  onMenuToggle: (id: string) => void;
   onDelete: (id: string, title: string) => void;
   onEnroll: (courseId: string, courseTitle: string) => void;
-  isDeleting: boolean;
-  formatPrice: (price: number) => string;
-  formatDate: (date: string) => string;
-  LevelBadge: React.ComponentType<{ level: CourseLevel }>;
 }
 
-export default function CourseCard({
+export const CourseCard = ({
   course,
+  openMenuId,
+  isDeleting,
+  onMenuToggle,
   onDelete,
   onEnroll,
-  isDeleting,
-  formatPrice,
-  formatDate,
-  LevelBadge,
-}: CourseCardProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+}: CourseCardProps) => {
   return (
     <div className="bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200">
       <div className="p-6">
@@ -78,7 +76,7 @@ export default function CourseCard({
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span className="text-xs">{course.createdAt ? formatDate(course.createdAt) : "-"}</span>
+                    <span className="text-xs">{course.createdAt ? formatReadableDate(course.createdAt) : "-"}</span>
                   </div>
                 </div>
               </div>
@@ -88,7 +86,7 @@ export default function CourseCard({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setIsMenuOpen(!isMenuOpen);
+                    onMenuToggle(course.id);
                   }}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                   title="Thao tác"
@@ -99,18 +97,18 @@ export default function CourseCard({
                 </button>
 
                 {/* Dropdown Menu */}
-                {isMenuOpen && (
+                {openMenuId === course.id && (
                   <>
                     <div
                       className="fixed inset-0 z-30"
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => onMenuToggle("")}
                     />
                     <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-40">
                       <Link
                         href={`/courses/${course.slug}`}
                         target="_blank"
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={() => onMenuToggle("")}
                       >
                         <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -121,7 +119,7 @@ export default function CourseCard({
                       <Link
                         href={`/admin/courses/${course.id}/enrollments`}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={() => onMenuToggle("")}
                       >
                         <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -131,7 +129,7 @@ export default function CourseCard({
                       <button
                         onClick={() => {
                           onEnroll(course.id, course.title);
-                          setIsMenuOpen(false);
+                          onMenuToggle("");
                         }}
                         className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
@@ -143,7 +141,7 @@ export default function CourseCard({
                       <Link
                         href={`/admin/courses/${course.id}/edit`}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={() => onMenuToggle("")}
                       >
                         <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -154,12 +152,12 @@ export default function CourseCard({
                       <button
                         onClick={() => {
                           onDelete(course.id, course.title);
-                          setIsMenuOpen(false);
+                          onMenuToggle("");
                         }}
-                        disabled={isDeleting}
+                        disabled={isDeleting === course.id}
                         className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                       >
-                        {isDeleting ? (
+                        {isDeleting === course.id ? (
                           <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -181,4 +179,4 @@ export default function CourseCard({
       </div>
     </div>
   );
-}
+};

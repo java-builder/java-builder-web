@@ -8,6 +8,7 @@ import CommentFilter from "./CommentFilter";
 import CommentCard from "./CommentCard";
 import { commentApi } from "@/services/comment.service";
 import { CommentDetailResponse } from "@/types/comment";
+import { Pagination } from "@/components/ui/Pagination";
 
 type CommentStatus = "ACTIVE" | "DELETED" | "ALL";
 
@@ -20,6 +21,8 @@ export default function BlogCommentsTab() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [pageSize] = useState(10);
   const { confirm } = useConfirm();
 
   const fetchComments = async (page: number, commentStatus?: "ACTIVE" | "DELETED") => {
@@ -55,6 +58,7 @@ export default function BlogCommentsTab() {
       if (result) {
         setComments(result.data);
         setTotalPages(result.totalPages);
+        setTotalElements(result.totalElements);
       }
     };
 
@@ -225,26 +229,15 @@ export default function BlogCommentsTab() {
       )}
 
       {/* Pagination */}
-      {totalPages > 1 && statusFilter !== "ALL" && (
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-          >
-            Trước
-          </button>
-          <span className="flex items-center px-4 text-sm text-gray-700">
-            Trang {currentPage} / {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-          >
-            Sau
-          </button>
-        </div>
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalElements={totalElements}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          itemName="bình luận"
+        />
       )}
 
       {/* Reply Modal */}
