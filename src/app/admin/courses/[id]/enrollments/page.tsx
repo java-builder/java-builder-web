@@ -93,14 +93,27 @@ export default function CourseEnrollmentsPage() {
 
   const formatDate = (dateString: string) => {
     try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      // Parse format: "13-02-2026 10:08:49" (dd-MM-yyyy HH:mm:ss)
+      const parts = dateString.split(" ");
+      if (parts.length === 2) {
+        const [datePart, timePart] = parts;
+        const [day, month, year] = datePart.split("-");
+        const [hour, minute] = timePart.split(":");
+        
+        // Create date object (month is 0-indexed in JS)
+        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
+        
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+      }
+      return dateString;
     } catch {
       return dateString;
     }

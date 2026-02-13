@@ -124,14 +124,25 @@ export default function ReportsPage() {
   }, [fetchReports]);
 
   // Custom Tooltip cho Revenue Chart
-  const RevenueTooltip = ({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) => {
+  const RevenueTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{dataKey: string; value: number}>; label?: string }) => {
     if (active && payload && payload.length) {
+      // Tìm giá trị doanh thu thực tế (dataKey="value")
+      const revenueData = payload.find(p => p.dataKey === 'value');
+      const avgData = payload.find(p => p.dataKey === 'avg');
+      
       return (
         <div className="bg-white px-4 py-3 shadow-xl rounded-xl border border-gray-100">
-          <p className="text-sm font-medium text-gray-500 mb-1">📅 {label}</p>
-          <p className="text-lg font-bold text-blue-600">
-            {formatPrice(payload[0].value)}
-          </p>
+          <p className="text-sm font-medium text-gray-500 mb-2">{label}</p>
+          {revenueData && (
+            <p className="text-base font-bold text-blue-600 mb-1">
+              Doanh thu: {formatPrice(revenueData.value)}
+            </p>
+          )}
+          {avgData && (
+            <p className="text-sm text-gray-600">
+              Trung bình: {formatPrice(avgData.value)}
+            </p>
+          )}
         </div>
       );
     }
@@ -153,16 +164,28 @@ export default function ReportsPage() {
     return null;
   };
 
+  // Loading state
+  if (isLoading && !stats.totalRevenue) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <svg className="animate-spin h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+      <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-          <div className="mb-6 lg:mb-0">
+          <div className="mb-5 lg:mb-0">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              📊 Báo cáo & Thống kê
+              Báo cáo & Thống kê
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               Theo dõi hiệu suất và phân tích dữ liệu hệ thống
             </p>
           </div>
@@ -205,107 +228,84 @@ export default function ReportsPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="bg-gradient-to-r from-accent-50 to-accent-50 border border-accent-200 rounded-xl p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <div className="flex items-center">
-            <svg className="animate-spin h-5 w-5 text-accent-600 mr-3" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-4 w-4 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span className="text-sm text-accent-700 font-medium">Đang tải báo cáo...</span>
+            <span className="text-sm text-blue-700">Đang tải báo cáo...</span>
           </div>
         </div>
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Revenue Card */}
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-green-700 mb-1">Tổng doanh thu</p>
-              <p className="text-2xl font-bold text-green-900">{formatPrice(stats.totalRevenue)}</p>
-              <p className="text-xs text-green-600 mt-2">Trong khoảng thời gian đã chọn</p>
-            </div>
-            <div className="p-3 bg-green-500 rounded-xl">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-            </div>
+        <div className="relative bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all group overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+          <div className="relative">
+            <p className="text-sm font-medium text-gray-600 mb-1">Tổng doanh thu</p>
+            <p className="text-2xl font-bold text-gray-900 mb-2">{formatPrice(stats.totalRevenue)}</p>
+            <p className="text-xs text-green-600 font-medium">Trong khoảng thời gian đã chọn</p>
           </div>
         </div>
 
         {/* Users Card */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-blue-700 mb-1">Tổng người dùng</p>
-              <p className="text-2xl font-bold text-blue-900">{stats.totalUsers.toLocaleString()}</p>
-              <p className="text-xs text-blue-600 mt-2">Tổng số tài khoản</p>
-            </div>
-            <div className="p-3 bg-blue-500 rounded-xl">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </div>
+        <div className="relative bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all group overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+          <div className="relative">
+            <p className="text-sm font-medium text-gray-600 mb-1">Tổng người dùng</p>
+            <p className="text-2xl font-bold text-gray-900 mb-2">{stats.totalUsers.toLocaleString()}</p>
+            <p className="text-xs text-blue-600 font-medium">Tổng số tài khoản</p>
           </div>
         </div>
 
         {/* Courses Card */}
-        <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-6 border border-purple-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-purple-700 mb-1">Tổng khóa học</p>
-              <p className="text-2xl font-bold text-purple-900">{stats.totalCourses}</p>
-              <p className="text-xs text-purple-600 mt-2">Tổng số khóa học</p>
-            </div>
-            <div className="p-3 bg-purple-500 rounded-xl">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
+        <div className="relative bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all group overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+          <div className="relative">
+            <p className="text-sm font-medium text-gray-600 mb-1">Tổng khóa học</p>
+            <p className="text-2xl font-bold text-gray-900 mb-2">{stats.totalCourses}</p>
+            <p className="text-xs text-purple-600 font-medium">Tổng số khóa học</p>
           </div>
         </div>
 
         {/* Enrollments Card */}
-        <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-orange-700 mb-1">Tổng đăng ký</p>
-              <p className="text-2xl font-bold text-orange-900">{stats.totalEnrollments.toLocaleString()}</p>
-              <p className="text-xs text-orange-600 mt-2">Tổng lượt đăng ký khóa học</p>
-            </div>
-            <div className="p-3 bg-orange-500 rounded-xl">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
+        <div className="relative bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all group overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+          <div className="relative">
+            <p className="text-sm font-medium text-gray-600 mb-1">Tổng đăng ký</p>
+            <p className="text-2xl font-bold text-gray-900 mb-2">{stats.totalEnrollments.toLocaleString()}</p>
+            <p className="text-xs text-orange-600 font-medium">Tổng lượt đăng ký khóa học</p>
           </div>
         </div>
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Revenue Chart - LineChart với 2 đường */}
         <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Doanh thu theo thời gian</h3>
-              <p className="text-sm text-gray-500">
-                Biểu đồ doanh thu trong {timeRange === "7days" ? "7 ngày" : timeRange === "30days" ? "30 ngày" : timeRange === "3months" ? "3 tháng" : timeRange === "6months" ? "6 tháng" : "1 năm"} qua
-              </p>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <span className="w-1 h-6 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></span>
+              Doanh thu theo thời gian
+            </h3>
+            <p className="text-sm text-gray-500 mt-1 ml-4">
+              Biểu đồ doanh thu trong {timeRange === "7days" ? "7 ngày" : timeRange === "30days" ? "30 ngày" : timeRange === "3months" ? "3 tháng" : timeRange === "6months" ? "6 tháng" : "1 năm"} qua
+            </p>
+          </div>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 rounded-full bg-[#8884d8]"></div>
+              <span className="text-xs text-gray-600">Doanh thu</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 rounded-full bg-[#8884d8]"></div>
-                <span className="text-xs text-gray-600">Doanh thu</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 rounded-full bg-[#82ca9d]"></div>
-                <span className="text-xs text-gray-600">Trung bình</span>
-              </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 rounded-full bg-[#82ca9d]"></div>
+              <span className="text-xs text-gray-600">Trung bình</span>
             </div>
           </div>
-          <div className="h-80">
+          <div className="h-64">
             {revenueChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={revenueChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
@@ -354,27 +354,51 @@ export default function ReportsPage() {
               </div>
             )}
           </div>
+          {/* Summary Stats */}
+          {revenueChartData.length > 0 && (
+            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Tổng doanh thu</p>
+                <p className="text-lg font-bold text-green-600">
+                  {formatPrice(revenueChartData.reduce((sum, d) => sum + d.value, 0))}
+                </p>
+              </div>
+              <div className="text-center border-l border-r border-gray-100">
+                <p className="text-xs text-gray-500 mb-1">Trung bình/kỳ</p>
+                <p className="text-lg font-bold text-blue-600">
+                  {formatPrice(revenueChartData[0]?.avg || 0)}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Cao nhất</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {formatPrice(Math.max(...revenueChartData.map(d => d.value)))}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* User Chart - ComposedChart (Bar + Line) */}
         <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Người dùng mới</h3>
-              <p className="text-sm text-gray-500">Số lượng người dùng đăng ký mới theo ngày</p>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <span className="w-1 h-6 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full"></span>
+              Người dùng mới
+            </h3>
+            <p className="text-sm text-gray-500 mt-1 ml-4">Số lượng người dùng đăng ký mới theo ngày</p>
+          </div>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 rounded bg-[#8884d8]"></div>
+              <span className="text-xs text-gray-600">Người dùng</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 rounded bg-[#8884d8]"></div>
-                <span className="text-xs text-gray-600">Người dùng</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 rounded-full bg-[#ff7300]"></div>
-                <span className="text-xs text-gray-600">Xu hướng</span>
-              </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 rounded-full bg-[#ff7300]"></div>
+              <span className="text-xs text-gray-600">Xu hướng</span>
             </div>
           </div>
-          <div className="h-80">
+          <div className="h-64">
             {userChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={userChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
@@ -420,21 +444,40 @@ export default function ReportsPage() {
               </div>
             )}
           </div>
+          {/* Summary Stats */}
+          {userChartData.length > 0 && (
+            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Tổng người dùng mới</p>
+                <p className="text-lg font-bold text-emerald-600">
+                  {userChartData.reduce((sum, d) => sum + d.value, 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="text-center border-l border-r border-gray-100">
+                <p className="text-xs text-gray-500 mb-1">Trung bình/ngày</p>
+                <p className="text-lg font-bold text-blue-600">
+                  {Math.round(userChartData.reduce((sum, d) => sum + d.value, 0) / userChartData.length).toLocaleString()}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Cao nhất</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {Math.max(...userChartData.map(d => d.value)).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Top Courses */}
       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Doanh thu theo khóa học</h3>
-            <p className="text-sm text-gray-500">Top 10 khóa học có doanh thu cao nhất</p>
-          </div>
-          <div className="p-2 bg-amber-100 rounded-lg">
-            <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-          </div>
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <span className="w-1 h-6 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></span>
+            Doanh thu theo khóa học
+          </h3>
+          <p className="text-sm text-gray-500 mt-1 ml-4">Top 10 khóa học có doanh thu cao nhất</p>
         </div>
 
         {topCourses.length === 0 ? (
@@ -445,48 +488,45 @@ export default function ReportsPage() {
             <p className="text-lg font-medium">Chưa có dữ liệu khóa học</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {topCourses.map((course, index) => {
-              const maxRevenue = Math.max(...topCourses.map(c => c.revenue));
-              const percentage = maxRevenue > 0 ? (course.revenue / maxRevenue) * 100 : 0;
-
-              return (
-                <div key={course.id} className="group">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-amber-100 text-amber-700' :
-                          index === 1 ? 'bg-gray-100 text-gray-700' :
-                            index === 2 ? 'bg-orange-100 text-orange-700' :
-                              'bg-blue-50 text-blue-600'
-                        }`}>
-                        {index + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">STT</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tên khóa học</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Học viên</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Doanh thu</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {topCourses.map((course, index) => {
+                  return (
+                    <tr key={course.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-4">
+                        <span className="text-sm font-semibold text-gray-700">
+                          {index + 1}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <p className="text-sm font-medium text-gray-900">
                           {course.name}
-                        </h4>
-                        <p className="text-sm text-gray-500">
-                          {course.owners.toLocaleString()} người sở hữu
                         </p>
-                      </div>
-                    </div>
-                    <div className="text-right ml-4">
-                      <p className="font-bold text-green-600">{formatPrice(course.revenue)}</p>
-                    </div>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${index === 0 ? 'bg-gradient-to-r from-amber-400 to-amber-500' :
-                          index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
-                            index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
-                              'bg-gradient-to-r from-blue-400 to-blue-500'
-                        }`}
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="text-sm text-gray-700">
+                          {course.owners.toLocaleString()}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <span className="text-sm font-semibold text-gray-900">
+                          {formatPrice(course.revenue)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
