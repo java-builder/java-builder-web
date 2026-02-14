@@ -56,35 +56,45 @@ interface PaymentTableRowProps {
 export const PaymentTableRow = ({ payment }: PaymentTableRowProps) => {
   return (
     <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100">
         #{payment.paymentCode}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900 dark:text-gray-100 font-medium">
+      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+        <div className="text-xs sm:text-sm text-gray-900 dark:text-gray-100 font-medium truncate max-w-[120px] sm:max-w-none">
           {payment.userName}
         </div>
-        <div className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate max-w-[120px] sm:max-w-none">
           {payment.userEmail}
         </div>
       </td>
-      <td className="px-6 py-4">
-        <div className="text-sm text-gray-900 dark:text-gray-100 max-w-xs truncate">
+      <td className="hidden lg:table-cell px-3 sm:px-6 py-3 sm:py-4">
+        <div className="text-xs sm:text-sm text-gray-900 dark:text-gray-100 max-w-xs truncate">
           {payment.courseTitle || payment.subscriptionPlanName || "-"}
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
         <TransactionTypeBadge type={payment.transactionType} />
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-100">
-        {new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(payment.totalPrice)}
+      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <div className="hidden sm:block">
+          {new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }).format(payment.totalPrice)}
+        </div>
+        <div className="sm:hidden">
+          {new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+            notation: "compact",
+            compactDisplay: "short",
+          }).format(payment.totalPrice)}
+        </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
         <StatusBadge status={payment.paymentStatus} />
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+      <td className="hidden xl:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
         {formatReadableDate(payment.createdAt)}
       </td>
     </tr>
