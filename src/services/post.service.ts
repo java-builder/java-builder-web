@@ -39,7 +39,6 @@ export const postService = {
         return response.data;
     },
     getMyPosts: async (page: number = 1) => {
-        // Do NOT send size; backend will apply default size
         const response = await apiClient.get<ApiResponse<PageResponse<PostDetail>>>(API.GET_MY_POSTS, {
             params: { page },
         });

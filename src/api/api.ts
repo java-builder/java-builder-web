@@ -53,6 +53,8 @@ export const API = {
 
     // PAYMENT
     PAYMENT_CREATE_LINK: "/api/v1/payments/create-link",
+    PAYMENT_MY_HISTORY: "/api/v1/payments/my-history",
+    PAYMENT_ALL: "/api/v1/payments/all",
 
     // NOTIFICATION
     GET_NOTIFICATIONS: "/api/v1/notifications",
