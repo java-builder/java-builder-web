@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useAllPayments } from "@/hooks/usePayment";
 import { PaymentSearchBar } from "@/components/admin/payments/PaymentSearchBar";
 import { PaymentTableRow } from "@/components/admin/payments/PaymentTableRow";
+import { PaymentDetailModal } from "@/components/admin/payments/PaymentDetailModal";
 import { Pagination } from "@/components/ui/Pagination";
+import { PaymentDetailResponse } from "@/types/payment";
 
 export default function PaymentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,6 +14,7 @@ export default function PaymentsPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [status, setStatus] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState<PaymentDetailResponse | null>(null);
 
   const { data, isLoading, refetch } = useAllPayments({
     page: currentPage,
@@ -123,7 +126,11 @@ export default function PaymentsPage() {
                 </tr>
               ) : data?.data && data.data.length > 0 ? (
                 data.data.map((payment) => (
-                  <PaymentTableRow key={payment.id} payment={payment} />
+                  <PaymentTableRow 
+                    key={payment.id} 
+                    payment={payment}
+                    onClick={setSelectedPayment}
+                  />
                 ))
               ) : (
                 <tr>
@@ -165,6 +172,13 @@ export default function PaymentsPage() {
           </div>
         )}
       </div>
+
+      {selectedPayment && (
+        <PaymentDetailModal
+          payment={selectedPayment}
+          onClose={() => setSelectedPayment(null)}
+        />
+      )}
     </div>
   );
 }

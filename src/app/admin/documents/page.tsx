@@ -335,7 +335,7 @@ export default function AdminDocumentsPage() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           {doc.thumbnailUrl ? (
-                            <Image src={doc.thumbnailUrl} alt={doc.title} fill className="object-cover" />
+                            <Image src={doc.thumbnailUrl} alt={doc.title} fill className="object-contain" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
                               <span className="text-2xl">📚</span>
@@ -454,7 +454,7 @@ export default function AdminDocumentsPage() {
                         alt="Preview"
                         width={400}
                         height={200}
-                        className="w-full h-48 object-cover rounded-lg border border-gray-300 bg-gray-50"
+                        className="w-full h-48 object-contain rounded-lg border border-gray-300 bg-gray-50"
                       />
                       <button
                         type="button"

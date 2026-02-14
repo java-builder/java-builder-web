@@ -33,7 +33,7 @@ export const CourseCard = ({
                 src={course.thumbnailUrl}
                 alt={course.title}
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">

@@ -243,7 +243,7 @@ export default function CourseEnrollmentsPage() {
                         src={enrollment.avatar}
                         alt={enrollment.username}
                         fill
-                        className="object-cover"
+                        className="object-contain"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-accent-400 to-accent-600 text-white font-bold text-xl">

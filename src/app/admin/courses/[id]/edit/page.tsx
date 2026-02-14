@@ -506,7 +506,7 @@ export default function EditCoursePage() {
                   className="relative aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 hover:border-accent cursor-pointer overflow-hidden transition-colors"
                 >
                   {imagePreview ? (
-                    <Image src={imagePreview} alt="Cover" fill className="object-cover" />
+                    <Image src={imagePreview} alt="Cover" fill className="object-contain" />
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
                       <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

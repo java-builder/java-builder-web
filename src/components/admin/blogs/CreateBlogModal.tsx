@@ -298,7 +298,7 @@ export default function CreateBlogModal({
                       alt="Preview"
                       fill
                       sizes="100vw"
-                      className="object-cover rounded-lg border border-gray-200"
+                      className="object-contain rounded-lg border border-gray-200"
                       unoptimized
                     />
                   </div>

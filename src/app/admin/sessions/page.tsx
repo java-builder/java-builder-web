@@ -5,7 +5,6 @@ import { UserSession } from "@/types/session";
 import { userSessionApi } from "@/services/user-session.service";
 import { PageResponse } from "@/types/api";
 import toast from "react-hot-toast";
-import { formatReadableDate } from "@/utils/dateUtils";
 import { SessionsHeader } from "@/components/admin/sessions/SessionsHeader";
 import { SessionsSearchBar } from "@/components/admin/sessions/SessionsSearchBar";
 import { SessionTableRow } from "@/components/admin/sessions/SessionTableRow";
@@ -26,7 +25,6 @@ export default function AdminSessionsPage() {
   const [revokeTarget, setRevokeTarget] = useState<UserSession | null>(null);
   const [revokeUserTarget, setRevokeUserTarget] = useState<{ userId: string; username: string } | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   const fetchSessions = useCallback(async () => {
@@ -106,33 +104,6 @@ export default function AdminSessionsPage() {
     setCurrentPage(1);
   };
 
-  const handleExport = async () => {
-    setIsExporting(true);
-    const rows = filtered.map((s) => ({
-      sessionId: s.sessionId,
-      status: s.status === 'ACTIVE' ? "Hoạt động" : "Đã thu hồi",
-      provider: s.provider || "Tài khoản hệ thống",
-      userId: s.userId,
-      browser: s.browser,
-      browserVersion: s.browserVersion,
-      os: s.os,
-      device: s.device,
-      ipAddress: s.ipAddress,
-      createdAt: formatReadableDate(s.createdAt),
-    }));
-    const csvHeader = Object.keys(rows[0]).join(",") + "\n";
-    const csvBody = rows.map((r) => Object.values(r).map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const csv = csvHeader + csvBody;
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `sessions_export_${new Date().toISOString()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setIsExporting(false);
-  };
-
   const handleImageError = (sessionId: string) => {
     setImageErrors(prev => new Set(prev).add(sessionId));
   };
@@ -144,8 +115,6 @@ export default function AdminSessionsPage() {
       <SessionsSearchBar
         query={query}
         onSearch={handleSearch}
-        isExporting={isExporting}
-        onExport={handleExport}
       />
 
       <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-4 dark:bg-slate-800 dark:ring-0 dark:border dark:border-slate-700">

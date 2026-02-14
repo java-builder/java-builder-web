@@ -51,11 +51,15 @@ const TransactionTypeBadge = ({ type }: { type: TransactionType }) => {
 
 interface PaymentTableRowProps {
   payment: PaymentDetailResponse;
+  onClick: (payment: PaymentDetailResponse) => void;
 }
 
-export const PaymentTableRow = ({ payment }: PaymentTableRowProps) => {
+export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+    <tr 
+      className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer"
+      onClick={() => onClick(payment)}
+    >
       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100">
         #{payment.paymentCode}
       </td>
