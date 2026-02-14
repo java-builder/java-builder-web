@@ -9,6 +9,7 @@ export interface PaymentSearchParams {
   orderCode?: number;
   startDate?: string;
   endDate?: string;
+  status?: string;
 }
 
 export const paymentApi = {
@@ -40,6 +41,7 @@ export const paymentApi = {
           orderCode: params.orderCode,
           startDate: params.startDate,
           endDate: params.endDate,
+          status: params.status,
         },
       }
     );

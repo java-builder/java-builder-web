@@ -11,6 +11,7 @@ export default function PaymentsPage() {
   const [orderCode, setOrderCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [status, setStatus] = useState("");
 
   const { data, isLoading, refetch } = useAllPayments({
     page: currentPage,
@@ -18,6 +19,7 @@ export default function PaymentsPage() {
     orderCode: orderCode ? Number(orderCode) : undefined,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
+    status: status || undefined,
   });
 
   const handlePageChange = (page: number) => {
@@ -28,6 +30,7 @@ export default function PaymentsPage() {
     setOrderCode("");
     setStartDate("");
     setEndDate("");
+    setStatus("");
     setCurrentPage(1);
   };
 
@@ -36,7 +39,7 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -52,10 +55,12 @@ export default function PaymentsPage() {
         orderCode={orderCode}
         startDate={startDate}
         endDate={endDate}
+        status={status}
         isLoading={isLoading}
         onOrderCodeChange={setOrderCode}
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
+        onStatusChange={setStatus}
         onRefresh={handleRefresh}
         onClearFilters={handleClearFilters}
       />
