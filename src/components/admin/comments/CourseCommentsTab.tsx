@@ -85,14 +85,9 @@ export default function CourseCommentsTab() {
 
     await confirm(
       async () => {
-        try {
-          await commentApi.delete(id);
-          toast.success("Đã xóa bình luận");
-          // Reload comments
-          setComments(comments.filter((c) => c.id !== id));
-        } catch {
-          toast.error("Không thể xóa bình luận");
-        }
+        await commentApi.delete(id);
+        // Reload comments
+        setComments(comments.filter((c) => c.id !== id));
       },
       {
         title: "Xác nhận xóa bình luận",
