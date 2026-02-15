@@ -43,12 +43,12 @@ export default function CommentFilter({
         </div>
 
         {/* Status Filter */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600 font-medium">Trạng thái:</span>
-          <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <span className="text-sm text-gray-600 font-medium whitespace-nowrap">Trạng thái:</span>
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => onStatusChange("ALL")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === "ALL"
                   ? "bg-accent text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -58,7 +58,7 @@ export default function CommentFilter({
             </button>
             <button
               onClick={() => onStatusChange("ACTIVE")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === "ACTIVE"
                   ? "bg-green-600 text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -68,7 +68,7 @@ export default function CommentFilter({
             </button>
             <button
               onClick={() => onStatusChange("DELETED")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === "DELETED"
                   ? "bg-red-600 text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"

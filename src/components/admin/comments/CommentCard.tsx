@@ -95,9 +95,9 @@ export default function CommentCard({
           {/* Content */}
           <div className="flex-1 min-w-0">
             {/* Header */}
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-2 min-w-0">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                   {comment.author}
                 </h4>
                 {comment.status === "ACTIVE" ? (
@@ -110,18 +110,18 @@ export default function CommentCard({
                   </span>
                 )}
               </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap flex-shrink-0">
                 {formatRelativeTime(comment.createdAt)}
               </span>
             </div>
 
             {/* Comment Content */}
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-3 break-words overflow-wrap-anywhere">
               {comment.content}
             </p>
 
             {/* Actions */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               {repliesCount > 0 && (
                 <button
                   onClick={handleToggleReplies}
@@ -161,18 +161,18 @@ export default function CommentCard({
       {/* Replies Section */}
       {showReplies && replies.length > 0 && (
         <div className="border-t border-gray-200 bg-gray-50/50 dark:border-slate-700 dark:bg-transparent">
-          <div className="p-4 pl-16 space-y-3">
+          <div className="p-4 pl-8 sm:pl-16 space-y-3">
             {replies.map((reply, index) => (
               <div key={reply.id} className="relative">
                 {/* Vertical line connecting to parent */}
-                <div className="absolute -left-12 top-0 bottom-0 w-px bg-gray-300 dark:bg-slate-600" />
+                <div className="absolute -left-6 sm:-left-12 top-0 bottom-0 w-px bg-gray-300 dark:bg-slate-600" />
                 
                 {/* Horizontal line to reply */}
-                <div className="absolute -left-12 top-5 w-8 h-px bg-gray-300 dark:bg-slate-600" />
+                <div className="absolute -left-6 sm:-left-12 top-5 w-4 sm:w-8 h-px bg-gray-300 dark:bg-slate-600" />
                 
                 {/* Last reply - end the vertical line */}
                 {index === replies.length - 1 && (
-                  <div className="absolute -left-12 top-0 h-5 w-px bg-gray-300 dark:bg-slate-600" />
+                  <div className="absolute -left-6 sm:-left-12 top-0 h-5 w-px bg-gray-300 dark:bg-slate-600" />
                 )}
                 
                 <div className="flex items-start gap-2.5">
@@ -190,16 +190,16 @@ export default function CommentCard({
                   </div>
 
                   {/* Reply Content */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                         {reply.username}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
                         {formatRelativeTime(reply.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words overflow-wrap-anywhere">
                       {reply.content}
                     </p>
                   </div>
