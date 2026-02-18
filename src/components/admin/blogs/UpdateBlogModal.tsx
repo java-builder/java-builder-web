@@ -192,7 +192,7 @@ export default function UpdateBlogModal({
 
     setIsLoading(true);
     try {
-      let finalImageKey = formData.key;
+      let finalImageKey: string | undefined = undefined;
 
       // Upload new image if selected
       if (selectedFile) {
@@ -211,16 +211,30 @@ export default function UpdateBlogModal({
         }
       }
 
-      // Update blog
-      await blogService.updateBlog(blog.id, {
+      // Update blog - only include key if it was changed
+      const updatePayload: Partial<UpdateBlogFormData> & { key?: string } = {
         title: formData.title,
         content: formData.content,
         summary: formData.summary,
-        key: finalImageKey,
         blogType: formData.blogType,
         categoryId: formData.categoryId,
-        tags: formData.tags,
-      });
+      };
+
+      // Only include key if a new image was uploaded
+      if (finalImageKey !== undefined) {
+        updatePayload.key = finalImageKey;
+      }
+
+      // Only include tags if they were changed
+      const originalTags = blog.tags?.map(t => typeof t === 'string' ? t : t.name).sort() || [];
+      const currentTags = (formData.tags || []).sort();
+      const tagsChanged = JSON.stringify(originalTags) !== JSON.stringify(currentTags);
+      
+      if (tagsChanged) {
+        updatePayload.tags = formData.tags;
+      }
+
+      await blogService.updateBlog(blog.id, updatePayload);
 
       toast.success("Cập nhật bài viết thành công!");
       onSuccess();
