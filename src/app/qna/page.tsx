@@ -46,12 +46,12 @@ export default function QNAPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 Q&A - Hỏi đáp & Giải quyết vấn đề
               </h1>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 Nơi chia sẻ kiến thức, giải quyết các vấn đề lập trình và học hỏi lẫn nhau
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function QNAPage() {
                   setShowAuthModal(true);
                 }
               }}
-              className="inline-flex items-center px-4 py-2 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-colors"
+              className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-colors whitespace-nowrap flex-shrink-0"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
