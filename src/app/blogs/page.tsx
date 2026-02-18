@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { blogService } from "@/services/blog.service";
 import { categoryService } from "@/services/category.service";
-import { Blog, BlogType, BlogTypeDisplayNames } from "@/types/blog";
+import { Blog } from "@/types/blog";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import Header from "@/components/Header";
@@ -21,8 +21,7 @@ export default function BlogsPage() {
   const [totalElements, setTotalElements] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [currentSearch, setCurrentSearch] = useState("");
-  const [blogType, setBlogType] = useState<BlogType | "ALL">("ALL");
-  const [categoryId, setCategoryId] = useState<string | "ALL">("ALL");
+  const [categorySlug, setCategorySlug] = useState<string | "ALL">("ALL");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,8 +36,7 @@ export default function BlogsPage() {
       page: number;
       size: number;
       titleOrSummary?: string;
-      blogType?: string;
-      categoryId?: string;
+      categorySlug?: string;
     } = {
       page,
       size: 20,
@@ -48,16 +46,12 @@ export default function BlogsPage() {
       paramObj.titleOrSummary = currentSearch.trim();
     }
 
-    if (blogType !== "ALL") {
-      paramObj.blogType = blogType;
-    }
-
-    if (categoryId !== "ALL") {
-      paramObj.categoryId = categoryId;
+    if (categorySlug !== "ALL") {
+      paramObj.categorySlug = categorySlug;
     }
 
     return paramObj;
-  }, [page, currentSearch, blogType, categoryId]);
+  }, [page, currentSearch, categorySlug]);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -199,72 +193,48 @@ export default function BlogsPage() {
 
             {/* Filters in one row */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-              {/* Blog Type */}
-              <div className="flex items-center gap-3 flex-1">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Loại:</span>
-                <div className="flex flex-wrap gap-2">
-                  {(["ALL", BlogType.TUTORIAL, BlogType.EXPERIENCE, BlogType.TIPS, BlogType.NEWS] as Array<BlogType | "ALL">).map((t) => {
-                    const active = blogType === t;
-                    const label = t === "ALL" ? "Tất cả" : BlogTypeDisplayNames[t as BlogType];
-                    return (
+              {/* Category */}
+              {categories.length > 0 && (
+                <div className="flex items-start gap-3 flex-1">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap pt-1.5">Danh mục:</span>
+                  <div className="flex-1 overflow-x-auto scrollbar-hide">
+                    <div className="flex gap-2 pb-1">
                       <button
-                        key={t}
                         type="button"
-                        onClick={() => { setBlogType(t); setPage(1); }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          active
+                        onClick={() => { setCategorySlug("ALL"); setPage(1); }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+                          categorySlug === "ALL"
                             ? "bg-blue-600 text-white shadow-sm"
                             : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                         }`}
                       >
-                        {label}
+                        Tất cả
                       </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Category */}
-              {categories.length > 0 && (
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Danh mục:</span>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => { setCategoryId("ALL"); setPage(1); }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        categoryId === "ALL"
-                          ? "bg-blue-600 text-white shadow-sm"
-                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
-                      }`}
-                    >
-                      Tất cả
-                    </button>
-                    {categories.map((cat) => {
-                      const active = categoryId === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => { setCategoryId(cat.id); setPage(1); }}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                            active
-                              ? "bg-blue-600 text-white shadow-sm"
-                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
-                          }`}
-                        >
-                          {cat.name}
-                        </button>
-                      );
-                    })}
+                      {categories.map((cat) => {
+                        const active = categorySlug === cat.slug;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => { setCategorySlug(cat.slug); setPage(1); }}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+                              active
+                                ? "bg-blue-600 text-white shadow-sm"
+                                : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
+                            }`}
+                          >
+                            {cat.icon && <span className="mr-1">{cat.icon}</span>}
+                            {cat.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 pt-1.5 whitespace-nowrap">
+                    {totalElements} bài viết
                   </div>
                 </div>
               )}
-
-              {/* Results */}
-              <div className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap lg:ml-auto">
-                {isLoading ? "Đang tải..." : `${totalElements} bài viết`}
-              </div>
             </div>
           </div>
         </div>

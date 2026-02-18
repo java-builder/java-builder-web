@@ -1,13 +1,39 @@
 import { useEffect, useState } from "react";
 import { UpdateCategoryRequest, CategoryDetailResponse, CategoryType } from "@/types/category";
 import { categoryService } from "@/services/category.service";
+import toast from "react-hot-toast";
 
 const ICONS = ["📘","📂","🏷️","🟧","🟩","🟦","📚","🧩"];
 const COLORS = ["#0284C7","#0EA5A4","#10B981","#F97316","#F43F5E","#8B5CF6","#F59E0B","#374151"];
 const EMOJI_LIST = [
-  "💻","🖥️","🧑‍💻","🛠️","🧩","📦","📚","📝","🔧","⚙️","🧪","🧠","🐞","🐛","🔍",
-  "🚀","⚡","🧵","🔒","🧰","🗂️","🧾","📁","🧭","📌","🧷","📎","🔗","📊","📈",
-  "📉","🧮","🗃️","🗄️","🧿","🪲","🛡️","🔐"
+  // Code & Development
+  "💻","🖥️","⌨️","🖱️","🧑‍💻","👨‍💻","👩‍💻","💾","📀","🖲️",
+  // Tools & Settings
+  "🛠️","🔧","⚙️","🔩","⚡","🔌","🧰","🪛","⚒️","🔨",
+  // Backend & Database
+  "🗄️","💿","📊","📈","📉","🗂️","🗃️","📁","📂","🗳️",
+  // Security & Network
+  "🔒","🔐","🔑","🛡️","🔓","🔏","🌐","🌍","🌎","🌏",
+  // Code Quality & Testing
+  "🐞","🐛","🪲","🧪","🧬","🔬","🔍","🔎","🧮","📐",
+  // Architecture & Design
+  "🧩","🎯","🎨","🏗️","🏛️","🧱","🪜","📦","📮","📫",
+  // Documentation & Learning
+  "📚","📖","📝","📄","📃","📋","📌","📍","🔖","🏷️",
+  // Performance & Optimization
+  "🚀","⚡","💨","🔥","💡","⏱️","⏰","⏲️","🧭","🎯",
+  // API & Integration
+  "🔗","⛓️","🔀","🔁","🔄","↔️","↕️","🔃","🔂","🎚️",
+  // Monitoring & Analytics
+  "📊","📈","📉","💹","📶","📡","🛰️","📟","📠","🖨️",
+  // Cloud & DevOps
+  "☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","🌪️",
+  // Version Control
+  "🔀","🔁","🔄","↩️","↪️","⤴️","⤵️","🔃","🔂","🔄",
+  // Status & Alerts
+  "✅","❌","⚠️","🚨","🔔","🔕","📢","📣","💬","💭",
+  // Languages & Frameworks
+  "☕","🐍","🦀","🐹","🐘","🐳","🐋","🦈","🐧","🍃"
 ];
 
 export default function UpdateCategoryModal({ isOpen, onClose, category, onSuccess }: { isOpen: boolean; onClose: () => void; category?: CategoryDetailResponse | null; onSuccess?: () => void; }) {
@@ -32,7 +58,10 @@ export default function UpdateCategoryModal({ isOpen, onClose, category, onSucce
   if (!isOpen || !category) return null;
 
   const handleSubmit = async () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      toast.error("Vui lòng nhập tên danh mục");
+      return;
+    }
     setIsSubmitting(true);
     try {
       const payload: UpdateCategoryRequest = {
@@ -43,10 +72,13 @@ export default function UpdateCategoryModal({ isOpen, onClose, category, onSucce
         categoryType,
       };
       await categoryService.updateCategory(category.id, payload);
+      toast.success("Cập nhật danh mục thành công!");
       if (onSuccess) onSuccess();
       onClose();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Error updating category", err);
+      const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi cập nhật danh mục";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

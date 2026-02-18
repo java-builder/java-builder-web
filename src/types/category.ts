@@ -36,6 +36,7 @@ export interface CreateCategoryResponse {
 export interface CategoryDetailResponse {
   id: string;
   name: string;
+  slug: string;
   description?: string;
   icon?: string;
   color?: string;

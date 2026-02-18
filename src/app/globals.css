@@ -647,6 +647,16 @@ input:-moz-autofill-preview {
   background: #94a3b8;
 }
 
+/* Hide scrollbar for horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Exclude SweetAlert2 elements from global transitions */
 *:not(.swal2-popup):not(.swal2-container):not(.swal2-backdrop):not([class*="swal2"]) {
   transition-property:

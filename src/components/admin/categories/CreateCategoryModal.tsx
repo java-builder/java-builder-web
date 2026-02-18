@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CreateCategoryRequest, CategoryType } from "@/types/category";
 import { categoryService } from "@/services/category.service";
+import toast from "react-hot-toast";
 
 const ICONS = ["📘","📂","🏷️","📙","📗","📕","📒","🧩"];
 const COLORS = ["#0284C7","#0EA5A4","#10B981","#F97316","#F43F5E","#8B5CF6","#F59E0B","#374151"];
@@ -15,15 +16,43 @@ export default function CreateCategoryModal({ isOpen, onClose, onSuccess }: { is
   const [emojiSearch, setEmojiSearch] = useState("");
 
   const EMOJI_LIST = [
-    "💻","🖥️","🧑‍💻","🛠️","🧩","📦","📚","📝","🔧","⚙️","🧪","🧠","🐞","🐛","🔍",
-    "🚀","⚡","🧵","🔒","🧰","🗂️","🧾","📁","🧭","📌","🧷","📎","🔗","🧾","🧾",
-    "📊","📈","📉","🧮","🧾","🗃️","🗄️","🧾","🧿","🪲","🧪","🧩","🧰","🛡️","🔐"
+    // Code & Development
+    "💻","🖥️","⌨️","🖱️","🧑‍💻","👨‍💻","👩‍💻","💾","📀","🖲️",
+    // Tools & Settings
+    "🛠️","🔧","⚙️","🔩","⚡","🔌","🧰","🪛","⚒️","🔨",
+    // Backend & Database
+    "🗄️","💿","📊","📈","📉","🗂️","🗃️","📁","📂","🗳️",
+    // Security & Network
+    "🔒","🔐","🔑","🛡️","🔓","🔏","🌐","🌍","🌎","🌏",
+    // Code Quality & Testing
+    "🐞","🐛","🪲","🧪","🧬","🔬","🔍","🔎","🧮","📐",
+    // Architecture & Design
+    "🧩","🎯","🎨","🏗️","🏛️","🧱","🪜","📦","📮","📫",
+    // Documentation & Learning
+    "📚","📖","📝","📄","📃","📋","📌","📍","🔖","🏷️",
+    // Performance & Optimization
+    "🚀","⚡","💨","🔥","💡","⏱️","⏰","⏲️","🧭","🎯",
+    // API & Integration
+    "🔗","⛓️","🔀","🔁","🔄","↔️","↕️","🔃","🔂","🎚️",
+    // Monitoring & Analytics
+    "📊","📈","📉","💹","📶","📡","🛰️","📟","📠","🖨️",
+    // Cloud & DevOps
+    "☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","🌪️",
+    // Version Control
+    "🔀","🔁","🔄","↩️","↪️","⤴️","⤵️","🔃","🔂","🔄",
+    // Status & Alerts
+    "✅","❌","⚠️","🚨","🔔","🔕","📢","📣","💬","💭",
+    // Languages & Frameworks
+    "☕","🐍","🦀","🐹","🐘","🐳","🐋","🦈","🐧","🍃"
   ];
 
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      toast.error("Vui lòng nhập tên danh mục");
+      return;
+    }
     setIsSubmitting(true);
     try {
       const payload: CreateCategoryRequest = {
@@ -34,14 +63,18 @@ export default function CreateCategoryModal({ isOpen, onClose, onSuccess }: { is
         categoryType,
       };
       await categoryService.create(payload);
+      toast.success("Tạo danh mục thành công!");
       setName("");
       setDescription("");
+      setIcon(ICONS[0]);
       setColor(COLORS[0]);
       setCategoryType(CategoryType.BLOG);
       if (onSuccess) onSuccess();
       onClose();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Error creating category", err);
+      const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi tạo danh mục";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
