@@ -152,6 +152,13 @@ export const API = {
     DELETE_CATEGORY: "/api/v1/categories", // + /:id
     UPDATE_CATEGORY: "/api/v1/categories", // + /:id
 
+    // TAG
+    CREATE_TAG: "/api/v1/tags",
+    GET_TAGS: "/api/v1/tags",
+    UPDATE_TAG: "/api/v1/tags", // + /:id
+    DELETE_TAG: "/api/v1/tags", // + /:id
+    CREATE_TAGS_BATCH: "/api/v1/tags/batch",
+
     // INTERVIEW TOPIC
     CREATE_INTERVIEW_TOPIC: "/api/v1/interview-topics",
     GET_INTERVIEW_TOPICS: "/api/v1/interview-topics",

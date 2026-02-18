@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { categoryService } from "@/services/category.service";
 import CreateCategoryModal from "@/components/admin/categories/CreateCategoryModal";
-import { CategoryDetailResponse } from "@/types/category";
+import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { useConfirm } from "@/hooks/useConfirm";
 import UpdateCategoryModal from "@/components/admin/categories/UpdateCategoryModal";
 import { formatReadableDate } from "@/utils/dateUtils";
@@ -20,7 +20,7 @@ export default function CategoriesPage() {
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const res = await categoryService.getAll();
+      const res = await categoryService.getAll(CategoryType.BLOG);
       setCategories(res.data || []);
     } catch (e) {
       console.error(e);

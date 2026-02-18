@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PostList from "@/components/posts/PostList";
 import { categoryService } from "@/services/category.service";
-import { CategoryDetailResponse } from "@/types/category";
+import { CategoryDetailResponse, CategoryType } from "@/types/category";
 
 export default function QNAPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +23,7 @@ export default function QNAPage() {
     (async () => {
       setLoadingData(true);
       try {
-        const catResp = await categoryService.getAll();
+        const catResp = await categoryService.getAll(CategoryType.POST);
         const cats = catResp?.data ?? [];
         if (mounted) {
           setCategories(cats);

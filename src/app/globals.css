@@ -647,7 +647,8 @@ input:-moz-autofill-preview {
   background: #94a3b8;
 }
 
-* {
+/* Exclude SweetAlert2 elements from global transitions */
+*:not(.swal2-popup):not(.swal2-container):not(.swal2-backdrop):not([class*="swal2"]) {
   transition-property:
     color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -948,9 +949,19 @@ button[disabled],
 }
 
 /* SweetAlert2 Custom Styles */
+.swal2-container {
+  z-index: 9999 !important;
+  transition: none !important;
+}
+
+.swal2-container * {
+  transition: none !important;
+}
+
 .swal-modern-popup {
   border-radius: 16px !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  z-index: 10000 !important;
 }
 
 .swal-modern-title {
@@ -984,6 +995,7 @@ button[disabled],
   font-weight: 600 !important;
   transition: all 0.2s !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  cursor: pointer !important;
 }
 
 .swal-modern-confirm:hover {
@@ -1000,6 +1012,7 @@ button[disabled],
   font-size: 14px !important;
   font-weight: 600 !important;
   transition: all 0.2s !important;
+  cursor: pointer !important;
 }
 
 .dark .swal-modern-cancel {

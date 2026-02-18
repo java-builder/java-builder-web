@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import {
   BlogType,
@@ -8,6 +8,10 @@ import {
   CreateBlogRequest,
 } from "@/types/blog";
 import { blogService } from "@/services/blog.service";
+import { categoryService } from "@/services/category.service";
+import { tagService } from "@/services/tag.service";
+import { CategoryDetailResponse, CategoryType } from "@/types/category";
+import { Tag } from "@/types/tag";
 import MarkdownEditor from "./MarkdownEditor";
 
 interface CreateBlogModalProps {
@@ -29,6 +33,8 @@ export default function CreateBlogModal({
     summary: "",
     key: "",
     blogType: BlogType.TUTORIAL,
+    categoryId: undefined,
+    tags: [],
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -37,15 +43,75 @@ export default function CreateBlogModal({
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadCategories();
+    }
+  }, [isOpen]);
+
+  const loadCategories = async () => {
+    try {
+      const response = await categoryService.getAll(CategoryType.BLOG);
+      setCategories(response.data || []);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (tagInput.trim()) {
+        searchTags(tagInput);
+      } else {
+        setTagSuggestions([]);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [tagInput]);
+
+  const searchTags = async (query: string) => {
+    setIsLoadingTags(true);
+    try {
+      const response = await tagService.search(query, 1, 10);
+      setTagSuggestions(response.data?.data || []);
+    } catch (error) {
+      console.error("Error searching tags:", error);
+    } finally {
+      setIsLoadingTags(false);
+    }
+  };
 
   const handleInputChange = (
     field: keyof CreateBlogRequest,
-    value: string | BlogType,
+    value: string | BlogType | string[] | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
+  };
+
+  const handleAddTag = (tagName: string) => {
+    const trimmedTag = tagName.trim();
+    if (!trimmedTag) return;
+    
+    const currentTags = formData.tags || [];
+    if (!currentTags.includes(trimmedTag)) {
+      handleInputChange("tags", [...currentTags, trimmedTag]);
+    }
+    setTagInput("");
+    setTagSuggestions([]);
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    const currentTags = formData.tags || [];
+    handleInputChange("tags", currentTags.filter(tag => tag !== tagToRemove));
   };
 
   const handleImageUpload = (file: File) => {
@@ -150,10 +216,14 @@ export default function CreateBlogModal({
       summary: "",
       key: "",
       blogType: BlogType.TUTORIAL,
+      categoryId: undefined,
+      tags: [],
     });
     setErrors({});
     setImagePreview("");
     setSelectedFile(null);
+    setTagInput("");
+    setTagSuggestions([]);
     onClose();
   };
 
@@ -256,18 +326,227 @@ export default function CreateBlogModal({
                 </div>
               </div>
 
-              {/* Summary */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tóm tắt
-                </label>
-                <textarea
-                  value={formData.summary}
-                  onChange={(e) => handleInputChange("summary", e.target.value)}
-                  placeholder="Viết tóm tắt ngắn gọn về nội dung bài viết..."
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
-                />
+              {/* Category and Tags Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <svg className="w-4 h-4 inline mr-1.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Danh mục
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={formData.categoryId || ""}
+                      onChange={(e) =>
+                        handleInputChange("categoryId", e.target.value || undefined)
+                      }
+                      className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-200 bg-white appearance-none cursor-pointer hover:border-purple-400"
+                    >
+                      <option value="" className="text-gray-400">-- Chọn danh mục --</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id} className="text-gray-900">
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="mt-1.5 text-xs text-gray-500">
+                    Chọn danh mục phù hợp cho bài viết
+                  </p>
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <svg className="w-4 h-4 inline mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                    </svg>
+                    Tags
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddTag(tagInput);
+                        }
+                      }}
+                      placeholder="Nhập tag và nhấn Enter..."
+                      className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    />
+                    {isLoadingTags && (
+                      <div className="absolute right-3 top-3.5">
+                        <svg className="animate-spin w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      </div>
+                    )}
+                    {tagSuggestions.length > 0 && (
+                      <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        {tagSuggestions.map((tag) => (
+                          <button
+                            key={tag.id}
+                            type="button"
+                            onClick={() => handleAddTag(tag.name)}
+                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-blue-50 transition-colors duration-200 flex items-center space-x-2 border-b border-gray-100 last:border-b-0"
+                          >
+                            <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                            </svg>
+                            <span className="text-gray-700">{tag.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-1.5 text-xs text-gray-500">
+                    Thêm tags để dễ tìm kiếm (nhấn Enter để thêm)
+                  </p>
+                  {formData.tags && formData.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {formData.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-lg text-sm font-medium border border-blue-200 shadow-sm"
+                        >
+                          <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                          </svg>
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveTag(tag)}
+                            className="ml-2 text-blue-500 hover:text-blue-700 hover:bg-blue-200 rounded-full p-0.5 transition-colors duration-200"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Summary and Featured Image Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Summary */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tóm tắt
+                  </label>
+                  <textarea
+                    value={formData.summary}
+                    onChange={(e) => handleInputChange("summary", e.target.value)}
+                    placeholder="Viết tóm tắt ngắn gọn về nội dung bài viết..."
+                    className="w-full h-[200px] px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
+                  />
+                </div>
+
+                {/* Featured Image */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <svg className="w-4 h-4 inline mr-1.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Ảnh đại diện
+                  </label>
+                  
+                  <div
+                    onClick={() => !isUploadingImage && !isLoading && fileInputRef.current?.click()}
+                    className={`relative w-full h-[200px] rounded-lg border-2 border-dashed transition-all duration-200 overflow-hidden bg-gray-50 ${
+                      isUploadingImage || isLoading
+                        ? 'border-gray-300 cursor-not-allowed opacity-50'
+                        : 'border-gray-300 hover:border-green-400 hover:bg-green-50 cursor-pointer'
+                    }`}
+                  >
+                    {imagePreview ? (
+                      <Image
+                        src={imagePreview}
+                        alt="Preview"
+                        fill
+                        sizes="100vw"
+                        className="object-contain"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <svg
+                          className="w-12 h-12 text-gray-400 mb-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <span className="text-sm text-gray-600">Click để chọn ảnh</span>
+                        <span className="text-xs text-gray-400 mt-1">PNG, JPG, GIF tối đa 5MB</span>
+                      </div>
+                    )}
+                    
+                    {isUploadingImage && (
+                      <div className="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center">
+                        <svg
+                          className="animate-spin w-8 h-8 text-green-500 mb-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span className="text-sm text-green-600">Đang tải ảnh lên...</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                    }}
+                    className="hidden"
+                  />
+
+                  {errors.key && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {errors.key}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Content - Full Width */}
@@ -282,147 +561,6 @@ export default function CreateBlogModal({
                   error={errors.content}
                   height={500}
                 />
-              </div>
-
-              {/* Featured Image - Full Width */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ảnh đại diện
-                </label>
-
-                {/* Image Preview */}
-                {imagePreview && (
-                  <div className="mb-4 relative w-full max-w-md h-64">
-                    <Image
-                      src={imagePreview}
-                      alt="Preview"
-                      fill
-                      sizes="100vw"
-                      className="object-contain rounded-lg border border-gray-200"
-                      unoptimized
-                    />
-                  </div>
-                )}
-
-                {/* Upload Button */}
-                <div className="max-w-md">
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploadingImage || isLoading}
-                    className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <div className="flex flex-col items-center">
-                      {isUploadingImage ? (
-                        <>
-                          <svg
-                            className="animate-spin w-8 h-8 text-blue-500 mb-2"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          <span className="text-sm text-blue-600">
-                            Đang tải ảnh lên...
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <svg
-                            className="w-8 h-8 text-gray-400 mb-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            />
-                          </svg>
-                          <span className="text-sm text-gray-600">
-                            {selectedFile
-                              ? "Thay đổi ảnh"
-                              : "Chọn ảnh đại diện"}
-                          </span>
-                          <span className="text-xs text-gray-400 mt-1">
-                            PNG, JPG, GIF tối đa 5MB
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </button>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleImageUpload(file);
-                    }}
-                    className="hidden"
-                  />
-                </div>
-
-                {errors.key && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.key}
-                  </p>
-                )}
-              </div>
-
-              {/* Blog Type Info */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-start">
-                  <svg
-                    className="w-5 h-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <div>
-                    <h4 className="text-sm font-medium text-blue-900 mb-1">
-                      {BlogTypeDisplayNames[formData.blogType]}
-                    </h4>
-                    <p className="text-xs text-blue-700">
-                      {formData.blogType === BlogType.EXPERIENCE &&
-                        "Chia sẻ những trải nghiệm thực tế trong công việc và học tập"}
-                      {formData.blogType === BlogType.TUTORIAL &&
-                        "Hướng dẫn chi tiết từng bước thực hiện"}
-                      {formData.blogType === BlogType.QUESTION &&
-                        "Đặt câu hỏi để nhận được sự hỗ trợ từ cộng đồng"}
-                      {formData.blogType === BlogType.DISCUSSION &&
-                        "Thảo luận về các chủ đề công nghệ và xu hướng"}
-                      {formData.blogType === BlogType.TIPS &&
-                        "Chia sẻ các mẹo và thủ thuật hữu ích"}
-                      {formData.blogType === BlogType.REVIEW &&
-                        "Đánh giá sản phẩm, công cụ, khóa học"}
-                      {formData.blogType === BlogType.NEWS &&
-                        "Cập nhật tin tức mới nhất trong ngành"}
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 

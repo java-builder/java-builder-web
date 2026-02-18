@@ -565,6 +565,25 @@ export default function BlogDetailPage() {
                     </div>
                   )}
 
+                  {/* Category and Tags */}
+                  {(blog.categoryName || (blog.tags && blog.tags.length > 0)) && (
+                    <div className="mb-4 sm:mb-5 md:mb-6 flex flex-wrap gap-2">
+                      {blog.categoryName && (
+                        <span className="inline-flex items-center px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium border border-purple-200 dark:border-purple-800">
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                          </svg>
+                          {blog.categoryName}
+                        </span>
+                      )}
+                      {blog.tags && blog.tags.map((tag, index) => (
+                        <span key={typeof tag === 'string' ? tag : tag.id || index} className="inline-flex items-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-sm border border-blue-200 dark:border-blue-800">
+                          #{typeof tag === 'string' ? tag : tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Content */}
                   <div className="max-w-none prose prose-sm sm:prose lg:prose-lg dark:prose-invert">
                     <PublicMarkdownRenderer content={blog.content} />

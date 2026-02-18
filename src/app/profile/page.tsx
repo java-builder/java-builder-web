@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useUser } from "@/hooks/useUser";
@@ -11,10 +11,12 @@ import MyPostsTab from "@/components/profile/MyPostsTab";
 import SecurityTab from "@/components/profile/SecurityTab";
 import PasswordTab from "@/components/profile/PasswordTab";
 import FavoriteBlogsTab from "@/components/profile/FavoriteBlogsTab";
+import SessionsTab from "@/components/profile/SessionsTab";
 import { UserDetailResponse } from "@/types/user";
 
 function ProfileContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const tabParam = searchParams?.get("tab");
   const { user, loading, error, updateUser } = useUser();
   const [activeTab, setActiveTab] = useState(tabParam || "profile");
@@ -25,6 +27,11 @@ function ProfileContent() {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    router.push(`/profile?tab=${tab}`);
+  };
 
   const handleSave = async (data: Partial<UserDetailResponse>) => {
     try {
@@ -45,6 +52,8 @@ function ProfileContent() {
         );
       case "favorite-blogs":
         return <FavoriteBlogsTab />;
+      case "sessions":
+        return <SessionsTab />;
       case "security":
         return <SecurityTab user={user!} onUserUpdate={updateUser} />;
       case "password":
@@ -167,7 +176,7 @@ function ProfileContent() {
             <Sidebar
               user={user}
               activeTab={activeTab}
-              onTabChange={setActiveTab}
+              onTabChange={handleTabChange}
             />
           </div>
 

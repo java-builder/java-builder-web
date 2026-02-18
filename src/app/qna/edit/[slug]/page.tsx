@@ -8,7 +8,7 @@ import PostForm from "@/components/posts/PostForm";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
 import { UpdatePostRequest } from "@/types/post";
-import { CategoryDetailResponse } from "@/types/category";
+import { CategoryDetailResponse, CategoryType } from "@/types/category";
 
 export default function EditPostPage() {
   const params = useParams();
@@ -23,7 +23,7 @@ export default function EditPostPage() {
     let mounted = true;
     (async () => {
       try {
-        const resp = await categoryService.getAll();
+        const resp = await categoryService.getAll(CategoryType.POST);
         if (mounted) setCategories(resp?.data ?? []);
       } catch (e) {
         console.error("Failed to load categories", e);

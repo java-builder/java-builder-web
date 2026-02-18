@@ -21,7 +21,6 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/users/reset-password",
   ];
 
-  // Các endpoint GET public (không cần token)
   const publicGetPatterns = [
     "/api/v1/courses",
     "/api/v1/categories",
@@ -34,12 +33,10 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/documents",
   ];
 
-  // Các endpoint luôn public (mọi method)
   if (publicEndpoints.some((endpoint) => url.includes(endpoint))) {
     return true;
   }
 
-  // Chỉ public cho GET requests
   const isGetMethod = !method || method.toUpperCase() === "GET";
   if (isGetMethod && publicGetPatterns.some((pattern) => url.includes(pattern))) {
     return true;

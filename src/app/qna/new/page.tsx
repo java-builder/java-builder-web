@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PostForm from "@/components/posts/PostForm";
 import { categoryService } from "@/services/category.service";
-import { CategoryDetailResponse } from "@/types/category";
+import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { postService } from "@/services/post.service";
 import { CreatePostRequest, CreatePostResponse } from "@/types/post";
 import { ApiResponse } from "@/types/api";
@@ -27,14 +27,12 @@ export default function NewPostPage() {
     let mounted = true;
     (async () => {
       try {
-        const resp = await categoryService.getAll();
+        const resp = await categoryService.getAll(CategoryType.POST);
         if (mounted) setCategories(resp?.data ?? []);
       } catch (e) {
         console.error("Failed to load categories", e);
         if (mounted) setCategories(null);
-      } finally {
-        // finished loading categories
-      }
+      } 
     })();
     return () => { mounted = false; };
   }, []);

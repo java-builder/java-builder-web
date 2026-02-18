@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { blogService } from "@/services/blog.service";
+import { categoryService } from "@/services/category.service";
 import { Blog, BlogType, BlogTypeDisplayNames } from "@/types/blog";
+import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -13,12 +15,14 @@ import Image from "next/image";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [currentSearch, setCurrentSearch] = useState("");
   const [blogType, setBlogType] = useState<BlogType | "ALL">("ALL");
+  const [categoryId, setCategoryId] = useState<string | "ALL">("ALL");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +38,7 @@ export default function BlogsPage() {
       size: number;
       titleOrSummary?: string;
       blogType?: string;
+      categoryId?: string;
     } = {
       page,
       size: 20,
@@ -47,8 +52,12 @@ export default function BlogsPage() {
       paramObj.blogType = blogType;
     }
 
+    if (categoryId !== "ALL") {
+      paramObj.categoryId = categoryId;
+    }
+
     return paramObj;
-  }, [page, currentSearch, blogType]);
+  }, [page, currentSearch, blogType, categoryId]);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -80,6 +89,18 @@ export default function BlogsPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryService.getAll(CategoryType.BLOG);
+        setCategories(res.data || []);
+      } catch (e) {
+        console.error("Failed to fetch categories:", e);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const goToPage = (p: number) => {
     const clamped = Math.max(1, Math.min(totalPages || 1, p));
@@ -163,54 +184,86 @@ export default function BlogsPage() {
         </div>
       </section>
       <div id="list" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="relative mb-8">
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
-
-          <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
-            <div className="flex flex-col gap-4">
+        {/* Filter Section - Compact */}
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-4">
+            {/* Search Bar */}
+            <div className="mb-4">
               <SearchBar
                 placeholder="Tìm theo tiêu đề, nội dung..."
                 value={searchText}
                 onChange={setSearchText}
                 onSearch={handleSearch}
               />
+            </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Filters in one row */}
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+              {/* Blog Type */}
+              <div className="flex items-center gap-3 flex-1">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Loại:</span>
                 <div className="flex flex-wrap gap-2">
-                  {(
-                    [
-                      "ALL",
-                      BlogType.TUTORIAL,
-                      BlogType.EXPERIENCE,
-                      BlogType.TIPS,
-                      BlogType.NEWS,
-                    ] as Array<BlogType | "ALL">
-                  ).map((t) => {
+                  {(["ALL", BlogType.TUTORIAL, BlogType.EXPERIENCE, BlogType.TIPS, BlogType.NEWS] as Array<BlogType | "ALL">).map((t) => {
                     const active = blogType === t;
-                    const label =
-                      t === "ALL"
-                        ? "Tất cả"
-                        : BlogTypeDisplayNames[t as BlogType];
+                    const label = t === "ALL" ? "Tất cả" : BlogTypeDisplayNames[t as BlogType];
                     return (
                       <button
                         key={t}
                         type="button"
-                        onClick={() => {
-                          setBlogType(t);
-                          setPage(1);
-                        }}
-                        className={`px-3 py-1.5 rounded-full border text-sm transition ${active ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
+                        onClick={() => { setBlogType(t); setPage(1); }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          active
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
+                        }`}
                       >
                         {label}
                       </button>
                     );
                   })}
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {isLoading
-                    ? "Đang tải..."
-                    : `Tìm thấy ${totalElements} bài viết`}
+              </div>
+
+              {/* Category */}
+              {categories.length > 0 && (
+                <div className="flex items-center gap-3 flex-1">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Danh mục:</span>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => { setCategoryId("ALL"); setPage(1); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        categoryId === "ALL"
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
+                      }`}
+                    >
+                      Tất cả
+                    </button>
+                    {categories.map((cat) => {
+                      const active = categoryId === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => { setCategoryId(cat.id); setPage(1); }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            active
+                              ? "bg-blue-600 text-white shadow-sm"
+                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
+                          }`}
+                        >
+                          {cat.name}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
+              )}
+
+              {/* Results */}
+              <div className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap lg:ml-auto">
+                {isLoading ? "Đang tải..." : `${totalElements} bài viết`}
               </div>
             </div>
           </div>

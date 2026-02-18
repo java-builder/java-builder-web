@@ -1,3 +1,6 @@
+import { Tag } from "./tag";
+import { CategoryDetailResponse } from "./category";
+
 export enum BlogType {
   EXPERIENCE = "EXPERIENCE",
   TUTORIAL = "TUTORIAL",
@@ -24,6 +27,8 @@ export interface CreateBlogRequest {
   summary?: string;
   key?: string;
   blogType: BlogType;
+  categoryId?: string;
+  tags?: string[];
 }
 
 export interface CreateBlogResponse {
@@ -66,5 +71,8 @@ export interface Blog {
   likeCount: number;
   commentCount: number;
   author?: string;
+  category?: CategoryDetailResponse;
+  categoryName?: string;
+  tags: Tag[] | string[];
   createdAt: string;
 }

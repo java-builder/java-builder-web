@@ -49,7 +49,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
               alt={blog.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-contain group-hover:scale-105 transition-transform duration-300"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
               priority={false}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -88,6 +88,30 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
           <p className="text-sm text-gray-600 mb-3 line-clamp-2 leading-relaxed">
             {blog.summary}
           </p>
+        )}
+
+        {/* Category and Tags */}
+        {(blog.categoryName || (blog.tags && blog.tags.length > 0)) && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {blog.categoryName && (
+              <span className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-700 rounded-md text-xs font-medium">
+                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                {blog.categoryName}
+              </span>
+            )}
+            {blog.tags && blog.tags.slice(0, 3).map((tag, index) => (
+              <span key={typeof tag === 'string' ? tag : tag.id || index} className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md text-xs">
+                #{typeof tag === 'string' ? tag : tag.name}
+              </span>
+            ))}
+            {blog.tags && blog.tags.length > 3 && (
+              <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-xs">
+                +{blog.tags.length - 3} more
+              </span>
+            )}
+          </div>
         )}
 
         {/* Footer với stats và author */}

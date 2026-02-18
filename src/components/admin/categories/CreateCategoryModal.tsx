@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CreateCategoryRequest } from "@/types/category";
+import { CreateCategoryRequest, CategoryType } from "@/types/category";
 import { categoryService } from "@/services/category.service";
 
 const ICONS = ["📘","📂","🏷️","📙","📗","📕","📒","🧩"];
@@ -10,6 +10,7 @@ export default function CreateCategoryModal({ isOpen, onClose, onSuccess }: { is
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState<string>(ICONS[0]);
   const [color, setColor] = useState<string>(COLORS[0]);
+  const [categoryType, setCategoryType] = useState<CategoryType>(CategoryType.BLOG);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emojiSearch, setEmojiSearch] = useState("");
 
@@ -30,12 +31,14 @@ export default function CreateCategoryModal({ isOpen, onClose, onSuccess }: { is
         description: description.trim() || undefined,
         icon,
         color,
+        categoryType,
       };
       await categoryService.create(payload);
       setName("");
       setDescription("");
       setColor(COLORS[0]);
-              if (onSuccess) onSuccess();
+      setCategoryType(CategoryType.BLOG);
+      if (onSuccess) onSuccess();
       onClose();
     } catch (err) {
       console.error("Error creating category", err);
@@ -55,6 +58,32 @@ export default function CreateCategoryModal({ isOpen, onClose, onSuccess }: { is
           <div className="grid grid-cols-1 gap-3">
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tên danh mục" className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent" />
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Mô tả (tuỳ chọn)" className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Loại danh mục</label>
+            <div className="flex gap-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="categoryType"
+                  checked={categoryType === CategoryType.BLOG}
+                  onChange={() => setCategoryType(CategoryType.BLOG)}
+                  className="w-4 h-4 text-accent focus:ring-accent"
+                />
+                <span className="ml-2 text-sm text-gray-700">Blog</span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="categoryType"
+                  checked={categoryType === CategoryType.POST}
+                  onChange={() => setCategoryType(CategoryType.POST)}
+                  className="w-4 h-4 text-accent focus:ring-accent"
+                />
+                <span className="ml-2 text-sm text-gray-700">Post</span>
+              </label>
+            </div>
           </div>
 
           <div>
@@ -98,5 +127,3 @@ export default function CreateCategoryModal({ isOpen, onClose, onSuccess }: { is
       </div>
   );
 }
-
-
