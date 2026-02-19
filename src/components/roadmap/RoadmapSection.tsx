@@ -1,392 +1,795 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import MotionWrapper from "@/components/MotionWrapper";
-import { FaCheckCircle, FaClock } from "react-icons/fa";
+import { FaCheckCircle, FaClock, FaChevronDown, FaChevronRight } from "react-icons/fa";
 
-interface RoadmapStep {
-  id: string;
-  title: string;
-  shortTitle: string;
-  description: string;
-  duration: string;
-  topics: string[];
-  logo: string;
-  bgColor: string;
-  logoSize?: string;
+const allRoadmaps = {
+  backend: [
+    {
+      id: "java-core",
+      title: "1. Java Core",
+      description: "Nền tảng lập trình Java cơ bản",
+      duration: "2 tháng",
+      level: "beginner" as const,
+      topics: [
+        "Cú pháp Java, biến, kiểu dữ liệu",
+        "OOP: Class, Inheritance, Polymorphism, Encapsulation",
+        "Collections Framework: List, Set, Map",
+        "Exception Handling",
+        "Lambda Expressions & Stream API",
+        "Generics và Annotations"
+      ]
+    },
+    {
+      id: "sql",
+      title: "2. SQL & Database",
+      description: "Cơ sở dữ liệu quan hệ",
+      duration: "1 tháng",
+      level: "beginner" as const,
+      topics: [
+        "DDL: CREATE, ALTER, DROP",
+        "DML: SELECT, INSERT, UPDATE, DELETE",
+        "JOIN, Subquery, Aggregate Functions",
+        "Index, View, Transaction",
+        "PostgreSQL / MySQL"
+      ]
+    },
+    {
+      id: "jdbc",
+      title: "3. JDBC",
+      description: "Kết nối Java với Database",
+      duration: "2 tuần",
+      level: "beginner" as const,
+      topics: [
+        "JDBC Architecture",
+        "Connection, Statement, ResultSet",
+        "PreparedStatement",
+        "Transaction Management",
+        "Connection Pooling"
+      ]
+    },
+    {
+      id: "hibernate",
+      title: "4. Hibernate ORM",
+      description: "Object-Relational Mapping",
+      duration: "1 tháng",
+      level: "intermediate" as const,
+      topics: [
+        "ORM Concepts",
+        "Entity Mapping & Annotations",
+        "Relationships: OneToOne, OneToMany, ManyToMany",
+        "HQL & Criteria API",
+        "Caching Strategies"
+      ]
+    },
+    {
+      id: "spring-boot",
+      title: "5. Spring Boot",
+      description: "Framework xây dựng ứng dụng",
+      duration: "2 tháng",
+      level: "intermediate" as const,
+      topics: [
+        "IoC Container & Dependency Injection",
+        "Auto-configuration",
+        "Spring Data JPA",
+        "REST API & Spring MVC",
+        "Exception Handling & Validation",
+        "Testing"
+      ]
+    },
+    {
+      id: "spring-security",
+      title: "6. Spring Security",
+      description: "Bảo mật ứng dụng",
+      duration: "1.5 tháng",
+      level: "intermediate" as const,
+      topics: [
+        "Authentication & Authorization",
+        "JWT Token",
+        "OAuth2 & OpenID Connect",
+        "Method Security",
+        "RBAC"
+      ]
+    },
+    {
+      id: "cache-messaging",
+      title: "7. Caching & Messaging",
+      description: "Redis, Kafka, WebSocket",
+      duration: "1.5 tháng",
+      level: "advanced" as const,
+      topics: [
+        "Redis Caching",
+        "RabbitMQ / Apache Kafka",
+        "WebSocket",
+        "Async Processing",
+        "Event-Driven Architecture"
+      ]
+    },
+    {
+      id: "microservices",
+      title: "8. Microservices",
+      description: "Kiến trúc Microservices",
+      duration: "2 tháng",
+      level: "advanced" as const,
+      topics: [
+        "Microservices Patterns",
+        "Service Discovery",
+        "API Gateway",
+        "Circuit Breaker",
+        "Distributed Tracing"
+      ]
+    },
+    {
+      id: "spring-cloud",
+      title: "9. Spring Cloud",
+      description: "Hệ thống phân tán",
+      duration: "1.5 tháng",
+      level: "advanced" as const,
+      topics: [
+        "Eureka Server & Client",
+        "Spring Cloud Gateway",
+        "Config Server",
+        "OpenFeign",
+        "Sleuth & Zipkin"
+      ]
+    },
+    {
+      id: "devops",
+      title: "10. DevOps",
+      description: "CI/CD, Docker, Kubernetes",
+      duration: "1.5 tháng",
+      level: "advanced" as const,
+      topics: [
+        "Docker & Docker Compose",
+        "Kubernetes Basics",
+        "CI/CD Pipeline",
+        "AWS Services",
+        "Monitoring & Logging"
+      ]
+    }
+  ],
+  javaCore: [
+    {
+      id: "syntax",
+      title: "1. Cú pháp Java cơ bản",
+      description: "Biến, kiểu dữ liệu, toán tử",
+      duration: "2 tuần",
+      level: "beginner" as const,
+      topics: ["Variables & Data Types", "Operators", "Control Flow (if, switch)", "Loops (for, while)", "Arrays"]
+    },
+    {
+      id: "oop",
+      title: "2. Lập trình hướng đối tượng",
+      description: "OOP Principles",
+      duration: "1 tháng",
+      level: "beginner" as const,
+      topics: ["Class & Object", "Inheritance", "Polymorphism", "Encapsulation", "Abstraction", "Interface"]
+    },
+    {
+      id: "collections",
+      title: "3. Collections Framework",
+      description: "Cấu trúc dữ liệu trong Java",
+      duration: "3 tuần",
+      level: "intermediate" as const,
+      topics: ["ArrayList, LinkedList", "HashSet, TreeSet", "HashMap, TreeMap", "Iterator", "Comparable & Comparator"]
+    },
+    {
+      id: "exception",
+      title: "4. Exception Handling",
+      description: "Xử lý ngoại lệ",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["try-catch-finally", "Checked vs Unchecked Exceptions", "Custom Exceptions", "throw & throws"]
+    },
+    {
+      id: "advanced",
+      title: "5. Java nâng cao",
+      description: "Lambda, Stream, Generics",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["Lambda Expressions", "Stream API", "Optional", "Generics", "Annotations"]
+    }
+  ],
+  springBoot: [
+    {
+      id: "spring-core",
+      title: "1. Spring Core & IoC Container",
+      description: "Hiểu về Dependency Injection và IoC",
+      duration: "1 tuần",
+      level: "beginner" as const,
+      topics: ["IoC Container", "Dependency Injection (DI)", "Bean Lifecycle", "ApplicationContext", "@Component, @Service, @Repository, @Controller"]
+    },
+    {
+      id: "spring-configuration",
+      title: "2. Spring Configuration",
+      description: "Cấu hình ứng dụng Spring Boot",
+      duration: "1 tuần",
+      level: "beginner" as const,
+      topics: ["@Configuration & @Bean", "Component Scanning", "@Value & @ConfigurationProperties", "Profiles (dev, prod, test)", "application.yml vs application.properties"]
+    },
+    {
+      id: "spring-mvc-basics",
+      title: "3. Spring MVC Basics",
+      description: "Xây dựng Web Application",
+      duration: "1 tuần",
+      level: "beginner" as const,
+      topics: ["@Controller & @RestController", "@RequestMapping, @GetMapping, @PostMapping", "@PathVariable & @RequestParam", "View Resolvers", "Thymeleaf Templates"]
+    },
+    {
+      id: "rest-api-basics",
+      title: "4. RESTful API Basics",
+      description: "Xây dựng REST API cơ bản",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["REST Principles", "HTTP Methods (GET, POST, PUT, DELETE, PATCH)", "HTTP Status Codes", "@RequestBody & @ResponseBody", "Content Negotiation (JSON, XML)"]
+    },
+    {
+      id: "dto-mapping",
+      title: "5. DTO & Object Mapping",
+      description: "Chuyển đổi giữa Entity và DTO",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["DTO Pattern", "ModelMapper", "MapStruct", "Manual Mapping", "Builder Pattern"]
+    },
+    {
+      id: "spring-data-jpa",
+      title: "6. Spring Data JPA",
+      description: "Tương tác với Database",
+      duration: "2 tuần",
+      level: "intermediate" as const,
+      topics: ["JpaRepository & CrudRepository", "Query Methods", "Custom Queries với @Query", "Native Queries", "Derived Query Methods"]
+    },
+    {
+      id: "jpa-relationships",
+      title: "7. JPA Relationships",
+      description: "Quan hệ giữa các Entity",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["@OneToOne", "@OneToMany & @ManyToOne", "@ManyToMany", "Cascade Types", "Fetch Types (LAZY vs EAGER)", "Orphan Removal"]
+    },
+    {
+      id: "pagination-sorting",
+      title: "8. Pagination & Sorting",
+      description: "Phân trang và sắp xếp dữ liệu",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["Pageable & Page", "Sort & Sorting", "Custom Pagination Response", "PageRequest", "Slice vs Page"]
+    },
+    {
+      id: "jpa-auditing",
+      title: "9. JPA Auditing",
+      description: "Tự động tracking thời gian và người dùng",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["@CreatedDate & @LastModifiedDate", "@CreatedBy & @LastModifiedBy", "@EntityListeners", "AuditorAware", "@EnableJpaAuditing"]
+    },
+    {
+      id: "specifications",
+      title: "10. JPA Specifications",
+      description: "Dynamic Queries với Criteria API",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Specification Interface", "Criteria API", "Dynamic Filtering", "Complex Queries", "Predicate Builder"]
+    },
+    {
+      id: "validation",
+      title: "11. Bean Validation",
+      description: "Validate dữ liệu đầu vào",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["@Valid & @Validated", "@NotNull, @NotBlank, @NotEmpty", "@Size, @Min, @Max", "@Email, @Pattern", "Custom Validators", "Group Validation"]
+    },
+    {
+      id: "exception-handling",
+      title: "12. Exception Handling",
+      description: "Xử lý lỗi toàn cục",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["@ControllerAdvice", "@ExceptionHandler", "Custom Exception Classes", "ResponseEntityExceptionHandler", "Handling Validation Errors"]
+    },
+    {
+      id: "api-response",
+      title: "13. Chuẩn hóa API Response",
+      description: "Thiết kế Response Structure chuẩn",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["ApiResponse<T> Generic Class", "Success Response Structure", "Error Response Structure", "Pagination Response", "ResponseEntity & HttpStatus"]
+    },
+    {
+      id: "file-upload",
+      title: "14. File Upload & Download",
+      description: "Xử lý file trong Spring Boot",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["MultipartFile", "File Storage (Local)", "File Validation (size, type)", "Image Processing", "Download Files", "Serving Static Files"]
+    },
+    {
+      id: "cloud-storage",
+      title: "15. Cloud Storage Integration",
+      description: "Lưu trữ file trên Cloud",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["AWS S3 Integration", "Cloudinary", "Firebase Storage", "Pre-signed URLs", "CDN Integration"]
+    },
+    {
+      id: "email-service",
+      title: "16. Email Service",
+      description: "Gửi email trong ứng dụng",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["JavaMailSender", "SMTP Configuration", "HTML Email Templates", "Thymeleaf Email Templates", "Email Attachments", "Async Email Sending"]
+    },
+    {
+      id: "scheduling",
+      title: "17. Task Scheduling",
+      description: "Lập lịch tác vụ tự động",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["@Scheduled Annotation", "Cron Expressions", "Fixed Rate vs Fixed Delay", "@EnableScheduling", "Async Scheduling"]
+    },
+    {
+      id: "async-processing",
+      title: "18. Async Processing",
+      description: "Xử lý bất đồng bộ",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["@Async Annotation", "CompletableFuture", "Thread Pool Configuration", "Async Exception Handling", "@EnableAsync"]
+    },
+    {
+      id: "caching",
+      title: "19. Caching",
+      description: "Cache để tăng performance",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["@Cacheable, @CachePut, @CacheEvict", "Cache Providers (Caffeine, EhCache)", "Cache Configuration", "Cache Key Generation", "TTL & Eviction Policies"]
+    },
+    {
+      id: "redis-cache",
+      title: "20. Redis Caching",
+      description: "Distributed Caching với Redis",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Redis Setup", "RedisTemplate", "Spring Data Redis", "Redis Serialization", "Redis Cache Manager", "Cache Aside Pattern"]
+    },
+    {
+      id: "interceptors",
+      title: "21. Interceptors & Filters",
+      description: "Xử lý request/response",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["HandlerInterceptor", "Filter vs Interceptor", "Request/Response Logging", "CORS Configuration", "Custom Headers"]
+    },
+    {
+      id: "aop",
+      title: "22. Aspect-Oriented Programming (AOP)",
+      description: "Cross-cutting Concerns",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["@Aspect & @Around", "Pointcut Expressions", "Logging Aspect", "Performance Monitoring", "Transaction Management"]
+    },
+    {
+      id: "transaction",
+      title: "23. Transaction Management",
+      description: "Quản lý giao dịch Database",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["@Transactional", "Propagation Types", "Isolation Levels", "Rollback Rules", "Programmatic Transactions"]
+    },
+    {
+      id: "actuator",
+      title: "24. Spring Boot Actuator",
+      description: "Monitoring & Health Checks",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["Actuator Endpoints", "Health Indicators", "Metrics", "Custom Endpoints", "Actuator Security"]
+    },
+    {
+      id: "logging",
+      title: "25. Logging",
+      description: "Application Logging",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["SLF4J & Logback", "Log Levels", "Logback Configuration", "Log Patterns", "Rolling File Appender", "MDC (Mapped Diagnostic Context)"]
+    },
+    {
+      id: "api-documentation",
+      title: "26. API Documentation",
+      description: "Swagger/OpenAPI",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["Swagger UI Setup", "OpenAPI 3.0 Annotations", "@Operation, @ApiResponse", "Request/Response Examples", "Authentication in Swagger", "Grouping APIs"]
+    },
+    {
+      id: "testing-unit",
+      title: "27. Unit Testing",
+      description: "Test các component riêng lẻ",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["JUnit 5", "Mockito", "@Mock & @InjectMocks", "Test Service Layer", "Test Repository Layer", "AssertJ"]
+    },
+    {
+      id: "testing-integration",
+      title: "28. Integration Testing",
+      description: "Test toàn bộ ứng dụng",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["@SpringBootTest", "@WebMvcTest", "MockMvc", "@DataJpaTest", "TestContainers", "Test Database (H2)"]
+    },
+    {
+      id: "testing-api",
+      title: "29. API Testing",
+      description: "Test REST APIs",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["RestAssured", "MockMvc for REST", "Testing Controllers", "Testing Request/Response", "Test Coverage"]
+    },
+    {
+      id: "profiles-env",
+      title: "30. Profiles & Environment",
+      description: "Quản lý môi trường",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["Spring Profiles", "application-{profile}.yml", "Environment Variables", "@Profile Annotation", "External Configuration"]
+    },
+    {
+      id: "docker",
+      title: "31. Docker & Containerization",
+      description: "Đóng gói ứng dụng",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Dockerfile for Spring Boot", "Multi-stage Build", "Docker Compose", "Environment Variables in Docker", "Docker Networks"]
+    },
+    {
+      id: "deployment",
+      title: "32. Deployment",
+      description: "Deploy ứng dụng lên Production",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["JAR vs WAR", "Embedded Server vs External", "Cloud Deployment (AWS, Heroku)", "CI/CD Pipeline", "Health Checks & Monitoring"]
+    }
+  ],
+  springSecurity: [
+    {
+      id: "security-basics",
+      title: "1. Security Fundamentals",
+      description: "Authentication & Authorization",
+      duration: "1 tuần",
+      level: "beginner" as const,
+      topics: ["Authentication vs Authorization", "Security Filter Chain", "Password Encoding", "Security Context", "UserDetails & UserDetailsService"]
+    },
+    {
+      id: "jwt",
+      title: "2. JWT Authentication",
+      description: "Token-based Authentication",
+      duration: "2 tuần",
+      level: "intermediate" as const,
+      topics: ["JWT Structure", "Token Generation", "Token Validation", "Refresh Token", "Token Storage", "JWT Filter"]
+    },
+    {
+      id: "oauth2-basics",
+      title: "3. OAuth2 Fundamentals",
+      description: "OAuth2 Protocol & Grant Types",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["OAuth2 Overview", "Authorization Code Grant", "Client Credentials Grant", "Password Grant", "Implicit Grant", "Refresh Token Grant", "PKCE"]
+    },
+    {
+      id: "oauth2-social",
+      title: "4. OAuth2 Social Login",
+      description: "Third-party Authentication",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["OAuth2 Client Setup", "Google Login", "Facebook Login", "GitHub Login", "Account Linking", "Custom OAuth2 Provider"]
+    },
+    {
+      id: "openid-connect",
+      title: "5. OpenID Connect",
+      description: "Identity Layer on OAuth2",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["OIDC vs OAuth2", "ID Token", "UserInfo Endpoint", "OIDC Scopes", "Claims", "Discovery Document"]
+    },
+    {
+      id: "rbac",
+      title: "6. Role-Based Access Control",
+      description: "Authorization & Permissions",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["Roles & Authorities", "Method Security", "@PreAuthorize", "@Secured", "@RolesAllowed", "Permission-Based Access"]
+    },
+    {
+      id: "method-security",
+      title: "7. Method Security",
+      description: "Securing Service Layer",
+      duration: "1 tuần",
+      level: "intermediate" as const,
+      topics: ["@EnableMethodSecurity", "SpEL Expressions", "@PostAuthorize", "@PreFilter", "@PostFilter", "Custom Security Expressions"]
+    },
+    {
+      id: "cors-csrf",
+      title: "8. CORS & CSRF",
+      description: "Cross-Origin & CSRF Protection",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["CORS Configuration", "CSRF Token", "CSRF Protection", "SameSite Cookies", "Custom CORS Filter"]
+    },
+    {
+      id: "session-management",
+      title: "9. Session Management",
+      description: "Session Security",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["Session Fixation", "Concurrent Session Control", "Session Timeout", "Remember Me", "Session Registry"]
+    },
+    {
+      id: "two-factor",
+      title: "10. Two-Factor Authentication",
+      description: "2FA Implementation",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["TOTP (Time-based OTP)", "QR Code Generation", "Google Authenticator", "SMS OTP", "Email OTP", "Backup Codes"]
+    },
+    {
+      id: "password-security",
+      title: "11. Password Security",
+      description: "Password Management",
+      duration: "3 ngày",
+      level: "intermediate" as const,
+      topics: ["Password Encoding (BCrypt)", "Password Validation", "Password Reset Flow", "Forgot Password", "Password History"]
+    },
+    {
+      id: "api-security",
+      title: "12. API Security",
+      description: "Securing REST APIs",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["API Key Authentication", "Bearer Token", "Rate Limiting", "IP Whitelisting", "API Versioning Security"]
+    }
+  ],
+  microservices: [
+    {
+      id: "architecture",
+      title: "1. Microservices Architecture",
+      description: "Design Patterns & Principles",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["Monolith vs Microservices", "Service Boundaries", "Database per Service", "API Design", "Domain-Driven Design (DDD)", "Bounded Context"]
+    },
+    {
+      id: "service-discovery",
+      title: "2. Service Discovery",
+      description: "Eureka Server & Client",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Eureka Server Setup", "Service Registration", "Service Discovery", "Load Balancing", "Health Checks", "Self-Preservation Mode"]
+    },
+    {
+      id: "config-server",
+      title: "3. Config Server",
+      description: "Centralized Configuration",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Config Server Setup", "Git Backend", "Refresh Configuration", "Encryption & Decryption", "Multiple Profiles", "@RefreshScope"]
+    },
+    {
+      id: "api-gateway",
+      title: "4. API Gateway",
+      description: "Spring Cloud Gateway",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Gateway Routing", "Predicates & Filters", "Rate Limiting", "Request/Response Modification", "Load Balancing"]
+    },
+    {
+      id: "rest-communication",
+      title: "5. REST Communication",
+      description: "Synchronous Communication",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["OpenFeign Client", "RestTemplate", "WebClient (Reactive)", "Load Balancing", "Error Handling", "Timeouts & Retries"]
+    },
+    {
+      id: "circuit-breaker",
+      title: "6. Circuit Breaker & Resilience",
+      description: "Resilience4J",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Circuit Breaker Pattern", "Resilience4J Setup", "Fallback Methods", "Retry Mechanism", "Rate Limiter", "Bulkhead Pattern", "Timeout"]
+    },
+    {
+      id: "messaging",
+      title: "7. Message Queue & Event Streaming",
+      description: "Kafka & RabbitMQ",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["Kafka Architecture", "Producers & Consumers", "Topics & Partitions", "Consumer Groups", "RabbitMQ Setup", "Exchanges & Queues", "Routing Keys", "Dead Letter Queue"]
+    },
+    {
+      id: "data-management",
+      title: "8. Data Management",
+      description: "Database Strategies",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Database per Service", "Shared Database Anti-pattern", "Data Consistency", "Eventual Consistency", "Distributed Transactions", "API Composition"]
+    },
+    {
+      id: "saga-pattern",
+      title: "9. Saga Pattern",
+      description: "Distributed Transactions",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["Saga Pattern Overview", "Choreography-based Saga", "Orchestration-based Saga", "Compensating Transactions", "Saga State Management", "Failure Handling"]
+    },
+    {
+      id: "security",
+      title: "10. Microservices Security",
+      description: "Authentication & Authorization",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["JWT in Microservices", "OAuth2 & OpenID Connect", "API Gateway Authentication", "Service-to-Service Auth", "mTLS", "Secret Management"]
+    },
+    {
+      id: "distributed-tracing",
+      title: "11. Distributed Tracing",
+      description: "Zipkin & Sleuth",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Spring Cloud Sleuth", "Zipkin Server Setup", "Trace ID & Span ID", "Sampling", "Jaeger Integration", "Trace Visualization"]
+    },
+    {
+      id: "centralized-logging",
+      title: "12. Centralized Logging",
+      description: "ELK Stack",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Elasticsearch", "Logstash", "Kibana", "Log Aggregation", "Log Parsing", "Log Visualization", "Alerting"]
+    },
+    {
+      id: "monitoring",
+      title: "13. Monitoring & Metrics",
+      description: "Prometheus & Grafana",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Prometheus Setup", "Metrics Collection", "Grafana Dashboards", "Alerting Rules", "Service Health Monitoring", "Custom Metrics"]
+    },
+    {
+      id: "testing",
+      title: "14. Microservices Testing",
+      description: "Testing Strategies",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["Unit Testing", "Integration Testing", "Contract Testing (Pact)", "End-to-End Testing", "TestContainers", "Chaos Engineering"]
+    },
+    {
+      id: "deployment",
+      title: "15. Deployment Strategies",
+      description: "CI/CD & Orchestration",
+      duration: "2 tuần",
+      level: "advanced" as const,
+      topics: ["Docker & Docker Compose", "Kubernetes Basics", "Helm Charts", "Blue-Green Deployment", "Canary Deployment", "Rolling Updates"]
+    },
+    {
+      id: "service-mesh",
+      title: "16. Service Mesh",
+      description: "Istio & Linkerd",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Service Mesh Concepts", "Istio Architecture", "Traffic Management", "Security Policies", "Observability", "Sidecar Pattern"]
+    }
+  ]
+};
+
+interface RoadmapSectionProps {
+  activeTab: string;
 }
 
-const roadmapData: RoadmapStep[] = [
-  {
-    id: "java-core",
-    title: "Java Core",
-    shortTitle: "Java Core",
-    description: "Nền tảng vững chắc với Java cơ bản, OOP và các khái niệm quan trọng",
-    duration: "2 tháng",
-    topics: ["Cú pháp Java, biến, kiểu dữ liệu", "OOP: Class, Inheritance, Polymorphism", "Collections: List, Set, Map", "Exception Handling", "Lambda, Stream API, Optional", "Generics và Annotations"],
-    logo: "/logos/logo-java.png",
-    bgColor: "bg-orange-500",
-  },
-  {
-    id: "sql",
-    title: "SQL & Database",
-    shortTitle: "SQL",
-    description: "Cơ sở dữ liệu quan hệ và ngôn ngữ truy vấn SQL",
-    duration: "1 tháng",
-    topics: ["DDL: CREATE, ALTER, DROP", "DML: SELECT, INSERT, UPDATE, DELETE", "JOIN, Subquery, Aggregate", "Index, View, Transaction", "PostgreSQL / MySQL"],
-    logo: "/logos/logo-posgtres.png",
-    bgColor: "bg-blue-500",
-  },
-  {
-    id: "jdbc",
-    title: "JDBC",
-    shortTitle: "JDBC",
-    description: "Kết nối Java với Database thông qua JDBC API",
-    duration: "2 tuần",
-    topics: ["JDBC Architecture", "Connection, Statement, ResultSet", "PreparedStatement", "Transaction Management", "Connection Pooling"],
-    logo: "/logos/logo-jdbc.png",
-    bgColor: "bg-sky-600",
-    logoSize: "w-14 h-14 sm:w-16 sm:h-16",
-  },
-  {
-    id: "hibernate",
-    title: "Hibernate",
-    shortTitle: "Hibernate",
-    description: "ORM Framework để mapping Object với Database",
-    duration: "1 tháng",
-    topics: ["ORM Concept", "Entity, Annotations", "Relationships mapping", "HQL Query", "Caching strategies"],
-    logo: "/logos/logo-hibernate.png",
-    bgColor: "bg-amber-600",
-  },
-  {
-    id: "spring-boot",
-    title: "Spring Boot",
-    shortTitle: "Spring Boot",
-    description: "Framework xây dựng ứng dụng production-ready",
-    duration: "2 tháng",
-    topics: ["IoC Container, DI", "Auto-configuration", "Spring Data JPA", "REST API, MVC", "Exception Handling", "Validation, Testing"],
-    logo: "/logos/logo-springboot.png",
-    bgColor: "bg-green-600",
-  },
-  {
-    id: "jpa",
-    title: "JPA",
-    shortTitle: "JPA",
-    description: "Java Persistence API - Specification chuẩn cho ORM",
-    duration: "2 tuần",
-    topics: ["JPA Specification", "JPQL, Criteria API", "Lazy vs Eager Loading", "Entity Lifecycle", "Spring Data JPA"],
-    logo: "/logos/logo-jpa.jpg",
-    bgColor: "bg-gradient-to-r from-sky-600 to-orange-500",
-  },
-  {
-    id: "security",
-    title: "Spring Security",
-    shortTitle: "Security",
-    description: "Bảo mật ứng dụng với Authentication & Authorization",
-    duration: "1 tháng",
-    topics: ["Security Filter Chain", "JWT Token", "OAuth2, OpenID Connect", "Method Security", "RBAC"],
-    logo: "/logos/logo-security-black.webp",
-    bgColor: "bg-green-700",
-    logoSize: "w-14 h-14 sm:w-16 sm:h-16",
-  },
-  {
-    id: "cache",
-    title: "Caching & Message Queue",
-    shortTitle: "Cache",
-    description: "Redis, Kafka, WebSocket và các chủ đề nâng cao",
-    duration: "1.5 tháng",
-    topics: ["Redis Caching", "RabbitMQ / Kafka", "WebSocket", "Async Processing", "Docker basics"],
-    logo: "/logos/logo-cache.png",
-    bgColor: "bg-red-600",
-  },
-  {
-    id: "microservices",
-    title: "Microservices",
-    shortTitle: "Microservices",
-    description: "Kiến trúc Microservices và các patterns",
-    duration: "2 tháng",
-    topics: ["Service Discovery", "API Gateway", "Circuit Breaker", "Distributed Tracing", "Event-Driven"],
-    logo: "/logos/logo-microservices.png",
-    bgColor: "bg-indigo-600",
-  },
-  {
-    id: "cloud",
-    title: "Spring Cloud",
-    shortTitle: "Cloud",
-    description: "Spring Cloud cho hệ thống phân tán",
-    duration: "1.5 tháng",
-    topics: ["Eureka, Gateway", "Config Server", "OpenFeign", "Sleuth & Zipkin", "Spring Cloud Stream"],
-    logo: "/logos/aws-logo.png",
-    bgColor: "bg-blue-500",
-  },
-  {
-    id: "devops",
-    title: "DevOps",
-    shortTitle: "DevOps",
-    description: "CI/CD, Docker, Kubernetes và Cloud",
-    duration: "1.5 tháng",
-    topics: ["Docker & Compose", "Kubernetes", "CI/CD Pipeline", "AWS Services", "Monitoring"],
-    logo: "/logos/logo-docker.png",
-    bgColor: "bg-sky-600",
-    logoSize: "w-16 h-16 sm:w-20 sm:h-20",
-  },
-];
+export default function RoadmapSection({ activeTab }: RoadmapSectionProps) {
+  const [expandedStep, setExpandedStep] = useState<string | null>(null);
+  
+  const roadmapData = allRoadmaps[activeTab as keyof typeof allRoadmaps] || allRoadmaps.backend;
 
-export default function RoadmapSection() {
-  const [hoveredStep, setHoveredStep] = useState<RoadmapStep | null>(null);
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "beginner": return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+      case "intermediate": return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+      case "advanced": return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+      default: return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300";
+    }
+  };
+
+  const getLevelLabel = (level: string) => {
+    switch (level) {
+      case "beginner": return "Cơ bản";
+      case "intermediate": return "Trung cấp";
+      case "advanced": return "Nâng cao";
+      default: return "";
+    }
+  };
 
   return (
-    <section className="py-12 bg-gray-100 dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <MotionWrapper animation="fadeInUp" duration={0.6}>
-          <div className="text-center mb-6 md:mb-10">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 md:mb-3">
-              Sơ đồ lộ trình học tập
+    <section className="py-8 bg-white dark:bg-slate-900">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <MotionWrapper animation="fadeInUp" duration={0.6} key={activeTab}>
+          <div className="text-center mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              Lộ trình học tập
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
-              Di chuột vào từng bước để xem chi tiết nội dung cần học
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Click vào từng bước để xem chi tiết
             </p>
           </div>
         </MotionWrapper>
 
-        <MotionWrapper animation="fadeInUp" delay={0.2}>
-          {/* Desktop View */}
-          <div className="hidden xl:block relative bg-white dark:bg-slate-800 rounded-2xl p-6 xl:p-10 border border-gray-200 dark:border-slate-700">
-            <div className="flex flex-col items-center gap-6">
-              {/* Row 1 */}
-              <div className="relative flex items-center justify-center gap-3">
-                {roadmapData.slice(0, 4).map((step, index) => (
-                  <RoadmapCard key={step.id} step={step} index={index + 1} isHovered={hoveredStep?.id === step.id} onHover={setHoveredStep} showArrow={index < 3} />
-                ))}
-              </div>
+        <div className="space-y-3">
+          {roadmapData.map((step, index) => (
+            <MotionWrapper key={step.id} animation="fadeInUp" delay={index * 0.03} duration={0.3}>
+              <div 
+                className={`bg-white dark:bg-slate-800 rounded-lg border transition-all duration-200 ${
+                  expandedStep === step.id 
+                    ? 'border-gray-200 dark:border-slate-700 shadow-sm' 
+                    : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
+                }`}
+              >
+                <button
+                  onClick={() => setExpandedStep(expandedStep === step.id ? null : step.id)}
+                  className="w-full p-3 sm:p-4 text-left"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 rounded-md bg-accent/10 dark:bg-accent/20 flex items-center justify-center">
+                        <span className="text-lg font-bold text-accent">{index + 1}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {step.title}
+                        </h3>
+                        {expandedStep === step.id ? (
+                          <FaChevronDown className="text-gray-400 flex-shrink-0 mt-1" />
+                        ) : (
+                          <FaChevronRight className="text-gray-400 flex-shrink-0 mt-1" />
+                        )}
+                      </div>
+                      
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        {step.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${getLevelColor(step.level)}`}>
+                          {getLevelLabel(step.level)}
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300">
+                          <FaClock className="w-3 h-3" />
+                          {step.duration}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </button>
 
-              <svg className="w-5 h-10 text-accent" viewBox="0 0 20 40" fill="none">
-                <path d="M10 0V36M10 36L3 28M10 36L17 28" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-
-              {/* Row 2 */}
-              <div className="relative flex items-center justify-center gap-3">
-                {roadmapData.slice(4, 8).map((step, index) => (
-                  <RoadmapCard key={step.id} step={step} index={index + 5} isHovered={hoveredStep?.id === step.id} onHover={setHoveredStep} showArrow={index < 3} />
-                ))}
+                {expandedStep === step.id && (
+                  <div className="px-4 sm:px-5 pb-4 sm:pb-5 border-t border-gray-100 dark:border-slate-700 pt-4">
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                      Nội dung chi tiết:
+                    </h4>
+                    <ul className="space-y-2">
+                      {step.topics.map((topic, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                          <FaCheckCircle className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+                          <span>{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-
-              <svg className="w-5 h-10 text-accent" viewBox="0 0 20 40" fill="none">
-                <path d="M10 0V36M10 36L3 28M10 36L17 28" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-
-              {/* Row 3 */}
-              <div className="relative flex items-center justify-center gap-3">
-                {roadmapData.slice(8, 11).map((step, index) => (
-                  <RoadmapCard key={step.id} step={step} index={index + 9} isHovered={hoveredStep?.id === step.id} onHover={setHoveredStep} showArrow={index < 2} />
-                ))}
-              </div>
-
-              {/* Labels */}
-              <div className="flex justify-center gap-4 mt-6">
-                <span className="text-xs font-medium text-orange-800 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/40 px-4 py-1.5 rounded-full">Nền tảng</span>
-                <span className="text-xs font-medium text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-4 py-1.5 rounded-full">Spring Ecosystem</span>
-                <span className="text-xs font-medium text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-4 py-1.5 rounded-full">Nâng cao & DevOps</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Tablet View */}
-          <div className="hidden md:block xl:hidden">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700">
-              <div className="grid grid-cols-2 gap-4">
-                {roadmapData.map((step, index) => (
-                  <TabletRoadmapCard key={step.id} step={step} index={index + 1} />
-                ))}
-              </div>
-              <div className="flex flex-wrap justify-center gap-2 mt-6">
-                <span className="text-xs font-medium text-orange-800 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/40 px-3 py-1 rounded-full">Nền tảng</span>
-                <span className="text-xs font-medium text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-3 py-1 rounded-full">Spring Ecosystem</span>
-                <span className="text-xs font-medium text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-3 py-1 rounded-full">Nâng cao & DevOps</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile View */}
-          <div className="md:hidden">
-            <div className="relative">
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-accent/30" />
-              <div className="space-y-4">
-                {roadmapData.map((step, index) => (
-                  <MobileRoadmapCard key={step.id} step={step} index={index + 1} />
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-2 mt-8">
-              <span className="text-xs font-medium text-orange-800 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/40 px-3 py-1 rounded-full">Nền tảng</span>
-              <span className="text-xs font-medium text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-3 py-1 rounded-full">Spring Ecosystem</span>
-              <span className="text-xs font-medium text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-3 py-1 rounded-full">Nâng cao & DevOps</span>
-            </div>
-          </div>
-        </MotionWrapper>
+            </MotionWrapper>
+          ))}
+        </div>
       </div>
     </section>
-  );
-}
-
-
-// Desktop Roadmap Card
-function RoadmapCard({ step, index, isHovered, onHover, showArrow }: { 
-  step: RoadmapStep; index: number; isHovered: boolean; onHover: (step: RoadmapStep | null) => void; showArrow: boolean;
-}) {
-  const logoSizeClass = step.logoSize || "w-12 h-12 sm:w-14 sm:h-14";
-  
-  return (
-    <div className="flex items-center">
-      <div className="relative group">
-        <div
-          onMouseEnter={() => onHover(step)}
-          onMouseLeave={() => onHover(null)}
-          className={`relative flex flex-col items-center justify-center w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-2 transition-all duration-300 bg-gray-50 dark:bg-slate-700 cursor-pointer ${
-            isHovered ? "border-accent shadow-xl scale-105 ring-4 ring-accent/20" : "border-gray-200 dark:border-slate-600 hover:border-accent/50 hover:shadow-lg"
-          }`}
-        >
-          <div className={`${logoSizeClass} rounded-lg overflow-hidden mb-2`}>
-            <Image src={step.logo} alt={step.title} width={72} height={72} className="w-full h-full object-contain" />
-          </div>
-          <span className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-white text-center leading-tight">{step.shortTitle}</span>
-          <span className="absolute -top-2 -left-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-accent text-white text-xs flex items-center justify-center font-bold shadow">
-            {index}
-          </span>
-        </div>
-
-        {isHovered && (
-          <div className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-3 pointer-events-none">
-            <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 w-80 animate-fadeIn">
-              <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 bg-white dark:bg-slate-800 border-r border-b border-gray-200 dark:border-slate-700 rotate-45" />
-              <div className="relative p-5">
-                <div className="text-center mb-4">
-                  <span className="inline-block text-accent text-xs font-bold tracking-wider uppercase mb-1">Giai đoạn {index}</span>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{step.title}</h3>
-                  <div className="flex items-center justify-center gap-1 text-gray-500 dark:text-gray-400 text-sm mt-1">
-                    <FaClock className="w-3 h-3" />
-                    <span>{step.duration}</span>
-                  </div>
-                </div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm text-center italic mb-4">&ldquo;{step.description}&rdquo;</p>
-                <div className="space-y-2">
-                  {step.topics.map((topic, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                      <FaCheckCircle className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" />
-                      <span>{topic}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {showArrow && (
-        <svg className="w-8 h-5 text-accent mx-1" viewBox="0 0 32 20" fill="none">
-          <path d="M0 10H28M28 10L20 3M28 10L20 17" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      )}
-    </div>
-  );
-}
-
-// Mobile Roadmap Card
-function MobileRoadmapCard({ step, index }: { step: RoadmapStep; index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  
-  return (
-    <div className="relative pl-14">
-      <div className="absolute left-4 top-4 w-5 h-5 rounded-full bg-accent text-white text-xs flex items-center justify-center font-bold shadow z-10">
-        {index}
-      </div>
-      
-      <div 
-        className={`bg-white dark:bg-slate-800 rounded-xl border-2 transition-all duration-300 ${isExpanded ? "border-accent shadow-lg" : "border-gray-200 dark:border-slate-700"}`}
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div className="p-4 flex items-center gap-3 cursor-pointer">
-          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-            <Image src={step.logo} alt={step.title} width={48} height={48} className="w-full h-full object-contain" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{step.title}</h3>
-            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mt-0.5">
-              <FaClock className="w-3 h-3" />
-              <span>{step.duration}</span>
-            </div>
-          </div>
-          <svg className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-        
-        {isExpanded && (
-          <div className="px-4 pb-4 border-t border-gray-200 dark:border-slate-700 pt-3">
-            <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-3">&ldquo;{step.description}&rdquo;</p>
-            <div className="space-y-2">
-              {step.topics.map((topic, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <FaCheckCircle className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" />
-                  <span>{topic}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Tablet Roadmap Card
-function TabletRoadmapCard({ step, index }: { step: RoadmapStep; index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  
-  return (
-    <div 
-      className={`relative bg-white dark:bg-slate-800 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
-        isExpanded ? "border-accent shadow-lg" : "border-gray-200 dark:border-slate-700 hover:border-accent/50 hover:shadow-md"
-      }`}
-      onClick={() => setIsExpanded(!isExpanded)}
-    >
-      <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-accent text-white text-xs flex items-center justify-center font-bold shadow z-10">
-        {index}
-      </span>
-      
-      <div className="p-4">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-            <Image src={step.logo} alt={step.title} width={48} height={48} className="w-full h-full object-contain" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{step.title}</h3>
-            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mt-0.5">
-              <FaClock className="w-3 h-3" />
-              <span>{step.duration}</span>
-            </div>
-          </div>
-          <svg className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-        
-        {isExpanded && (
-          <div className="border-t border-gray-200 dark:border-slate-700 pt-3 mt-2">
-            <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-3">&ldquo;{step.description}&rdquo;</p>
-            <div className="space-y-2">
-              {step.topics.map((topic, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <FaCheckCircle className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" />
-                  <span>{topic}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }

@@ -8,7 +8,6 @@
  import CourseCard from "@/components/courses/CourseCard";
  import PublicBlogCard from "@/components/blogs/PublicBlogCard";
  import DocumentCard from "@/components/documents/DocumentCard";
- import RoadmapSection from "@/components/roadmap/RoadmapSection";
  import { useFeaturedCourses } from "@/hooks/useCourses";
  import { useFeaturedBlogs } from "@/hooks/useBlogs";
  import { useFeaturedDocuments } from "@/hooks/useDocuments";
@@ -90,9 +89,6 @@ export default function Home() {
           </MotionWrapper>
         </div>
       </main>
-
-      {/* Roadmap Section */}
-      <RoadmapSection />
 
       {/* Featured Blogs Section */}
       <section className="py-12 bg-gray-50">

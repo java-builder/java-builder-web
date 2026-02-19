@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState, useRef } from "react";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 
-const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasDropdown?: boolean; isDynamic?: boolean }[] = [
+const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasDropdown?: boolean; isDynamic?: boolean; icon?: string }[] = [
   { href: "/", label: "Trang chủ" },
   { href: "/courses", label: "Khóa học" },
   { href: "/documents", label: "Tài liệu" },
@@ -15,11 +15,10 @@ const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasD
     href: "/interview", 
     label: "Phỏng vấn",
     hasDropdown: true,
-    isDynamic: true, // Flag to load from API
+    isDynamic: true, 
   },
   { href: "/qna", label: "Q&A" },
-  { href: "/about", label: "Giới thiệu" },
-  { href: "/pricing", label: "Nâng cấp", isPremium: true },
+  { href: "/roadmap", label: "Lộ trình học tập", icon: "roadmap" }
 ];
 
 interface NavLinksProps {
@@ -34,7 +33,6 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Build dropdown items from API data
   const getDropdownItems = (item: typeof NAV_ITEMS_STATIC[0]) => {
     if (item.isDynamic && item.href === "/interview") {
       return interviewTopics.map(topic => ({
@@ -137,9 +135,9 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`block py-2 ${
+              className={`block py-2 flex items-center gap-2 ${
                 item.isPremium 
-                  ? "text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1.5" 
+                  ? "text-amber-600 dark:text-amber-500 font-medium" 
                   : isActive 
                   ? "text-accent font-medium" 
                   : "text-gray-700 dark:text-gray-300 hover:text-accent"
@@ -147,6 +145,11 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
               onClick={onItemClick}
             >
               {item.isPremium && <span>✨</span>}
+              {item.icon === "roadmap" && (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+              )}
               {item.label}
             </Link>
           );
@@ -156,7 +159,7 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
   }
 
   return (
-    <div className="hidden lg:flex items-center space-x-8">
+    <div className="hidden lg:flex items-center space-x-1">
       {NAV_ITEMS_STATIC.map((item) => {
         const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
         const dropdownItems = getDropdownItems(item);
@@ -172,10 +175,10 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
             >
               <Link
                 href={item.href}
-                className={`font-medium transition-colors flex items-center gap-1 py-2 ${
+                className={`font-medium transition-all flex items-center gap-1 py-2 px-3 rounded-lg ${
                   isActive 
-                    ? "text-accent" 
-                    : "text-gray-700 dark:text-gray-300 hover:text-accent"
+                    ? "text-accent bg-accent/5" 
+                    : "text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-slate-800"
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,15 +236,20 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
           <Link
             key={item.href}
             href={item.href}
-            className={`font-medium transition-colors ${
+            className={`font-medium transition-all flex items-center gap-2 py-2 px-3 rounded-lg ${
               item.isPremium
-                ? "text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 flex items-center gap-1"
+                ? "text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20"
                 : isActive 
-                ? "text-accent" 
-                : "text-gray-700 dark:text-gray-300 hover:text-accent"
+                ? "text-accent bg-accent/5" 
+                : "text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-slate-800"
             }`}
           >
             {item.isPremium && <span>✨</span>}
+            {item.icon === "roadmap" && (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+            )}
             {item.label}
           </Link>
         );
