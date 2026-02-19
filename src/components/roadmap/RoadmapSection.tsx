@@ -557,8 +557,24 @@ const allRoadmaps = {
       topics: ["Monolith vs Microservices", "Service Boundaries", "Database per Service", "API Design", "Domain-Driven Design (DDD)", "Bounded Context"]
     },
     {
+      id: "rest-communication",
+      title: "2. REST Communication",
+      description: "Synchronous Communication",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["OpenFeign Client", "RestTemplate", "WebClient (Reactive)", "Load Balancing", "Error Handling", "Timeouts & Retries"]
+    },
+    {
+      id: "api-gateway",
+      title: "3. API Gateway",
+      description: "Spring Cloud Gateway",
+      duration: "1 tuần",
+      level: "advanced" as const,
+      topics: ["Gateway Routing", "Predicates & Filters", "Rate Limiting", "Request/Response Modification", "Load Balancing"]
+    },
+    {
       id: "service-discovery",
-      title: "2. Service Discovery",
+      title: "4. Service Discovery",
       description: "Eureka Server & Client",
       duration: "1 tuần",
       level: "advanced" as const,
@@ -566,27 +582,11 @@ const allRoadmaps = {
     },
     {
       id: "config-server",
-      title: "3. Config Server",
+      title: "5. Config Server",
       description: "Centralized Configuration",
       duration: "1 tuần",
       level: "advanced" as const,
       topics: ["Config Server Setup", "Git Backend", "Refresh Configuration", "Encryption & Decryption", "Multiple Profiles", "@RefreshScope"]
-    },
-    {
-      id: "api-gateway",
-      title: "4. API Gateway",
-      description: "Spring Cloud Gateway",
-      duration: "1 tuần",
-      level: "advanced" as const,
-      topics: ["Gateway Routing", "Predicates & Filters", "Rate Limiting", "Request/Response Modification", "Load Balancing"]
-    },
-    {
-      id: "rest-communication",
-      title: "5. REST Communication",
-      description: "Synchronous Communication",
-      duration: "1 tuần",
-      level: "advanced" as const,
-      topics: ["OpenFeign Client", "RestTemplate", "WebClient (Reactive)", "Load Balancing", "Error Handling", "Timeouts & Retries"]
     },
     {
       id: "circuit-breaker",
