@@ -112,7 +112,7 @@ export default function SessionsTab() {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       <div className="p-6 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Phiên đăng nhập</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Lịch sử đăng nhập</h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
           Quản lý các phiên đăng nhập của bạn trên các thiết bị khác nhau
         </p>

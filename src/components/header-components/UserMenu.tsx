@@ -108,6 +108,16 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             </svg>
             Thông báo
           </Link>
+          <Link
+            href="/sessions"
+            className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700"
+            onClick={() => setIsOpen(false)}
+          >
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m-7 4h8a2 2 0 002-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Lịch sử đăng nhập
+          </Link>
           <div className="border-t border-gray-200 dark:border-slate-600 my-1" />
           <Link
             href="/profile?tab=security"
