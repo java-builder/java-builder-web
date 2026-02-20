@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { courseApi, fileApi } from "@/services/course.service";
-import { CreateCourseRequest, CourseLevel } from "@/types/course";
+import { CreateCourseRequest, CourseLevel, CourseFormat } from "@/types/course";
 import toast from "react-hot-toast";
 
 interface CreateCourseModalProps {
@@ -39,6 +39,7 @@ export default function CreateCourseModal({
       price: 0,
       duration: 0,
       level: CourseLevel.BEGINNER,
+      courseFormat: CourseFormat.VIDEO,
     },
   });
 
@@ -108,6 +109,7 @@ export default function CreateCourseModal({
         duration: data.duration,
         key: key || undefined,
         level: data.level,
+        courseFormat: data.courseFormat,
       };
 
       const result = await courseApi.create(courseData);
@@ -295,6 +297,29 @@ export default function CreateCourseModal({
                   <option value={CourseLevel.INTERMEDIATE}>Trung bình</option>
                   <option value={CourseLevel.ADVANCED}>Nâng cao</option>
                 </select>
+              </div>
+
+              {/* Course Format */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Định dạng khóa học *
+                </label>
+                <select
+                  {...register("courseFormat", {
+                    required: "Định dạng khóa học là bắt buộc",
+                  })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 bg-gray-50 hover:bg-white"
+                  disabled={isLoading}
+                >
+                  <option value={CourseFormat.VIDEO}>Video - Học qua video</option>
+                  <option value={CourseFormat.TEXT}>Text - Học qua tài liệu</option>
+                  <option value={CourseFormat.MIXED}>Mixed - Kết hợp cả hai</option>
+                </select>
+                {errors.courseFormat && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.courseFormat.message}
+                  </p>
+                )}
               </div>
 
               {/* Image Upload */}

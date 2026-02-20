@@ -1,8 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { courseApi } from "@/services/course.service";
-import { CourseLevel } from "@/types/course";
+import { courseApi, chapterApi, lessonApi, fileApi } from "@/services/course.service";
+import { CourseLevel, CourseFormat, UpdateLessonRequest } from "@/types/course";
+import { LessonFormat } from "@/types/lesson";
 
 export const useCourses = (
   page = 1, 
@@ -36,4 +37,160 @@ export const useCourseDetail = (courseId: string) => {
 
 export const useFeaturedCourses = () => {
   return useCourses(1, 3);
+};
+
+// Helper functions for course edit operations
+export const courseEditHelpers = {
+  updateCourse: async (
+    courseId: string,
+    data: {
+      title: string;
+      description: string;
+      price: number;
+      duration: number;
+      level: CourseLevel;
+      courseFormat: CourseFormat;
+      key?: string;
+    },
+    imageFile?: File | null
+  ) => {
+    let key = data.key;
+
+    if (imageFile) {
+      const presignedResponse = await fileApi.getPresignedUrl(imageFile.name, "public");
+      if (presignedResponse.data) {
+        const { url, key: uploadKey } = presignedResponse.data;
+
+        await fetch(url, {
+          method: "PUT",
+          body: imageFile,
+          headers: {
+            "Content-Type": imageFile.type,
+          },
+        });
+
+        key = uploadKey;
+      }
+    }
+
+    return await courseApi.update(courseId, {
+      ...data,
+      key: key || undefined,
+    });
+  },
+
+  // Fetch lessons by chapter
+  fetchLessonsByChapter: async (chapterId: string) => {
+    const response = await lessonApi.getByChapterId(chapterId);
+    return response.data || [];
+  },
+
+  // Create chapter
+  createChapter: async (data: {
+    courseId: string;
+    chapterName: string;
+    description?: string;
+  }) => {
+    return await chapterApi.create(data);
+  },
+
+  // Update chapter
+  updateChapter: async (data: {
+    id: string;
+    chapterName: string;
+    description?: string;
+  }) => {
+    return await chapterApi.update(data);
+  },
+
+  // Delete chapter
+  deleteChapter: async (id: string) => {
+    return await chapterApi.delete(id);
+  },
+
+  // Create lesson with optional video upload
+  createLesson: async (
+    data: {
+      chapterId: string;
+      lessonName: string;
+      description?: string;
+      content?: string;
+      lessonFormat: LessonFormat;
+      isFreePreview: boolean;
+    },
+    videoFile?: File | null,
+    onProgress?: (percent: number) => void
+  ) => {
+    let videoKey: string | undefined;
+
+    // Upload video if provided
+    if (videoFile && (data.lessonFormat === LessonFormat.VIDEO || data.lessonFormat === LessonFormat.MIXED)) {
+      const uploadResult = await fileApi.uploadVideoWithPresigned(
+        videoFile,
+        onProgress || (() => {}),
+        "private"
+      );
+      videoKey = uploadResult.key;
+    }
+
+    return await lessonApi.create({
+      chapterId: data.chapterId,
+      lessonName: data.lessonName,
+      description: data.description,
+      content: data.content,
+      lessonFormat: data.lessonFormat,
+      videoKey: videoKey,
+      isFreePreview: data.isFreePreview,
+    });
+  },
+
+  // Delete lesson
+  deleteLesson: async (id: string) => {
+    return await lessonApi.delete(id);
+  },
+
+  // Get lesson detail (with video URL)
+  getLessonDetail: async (lessonId: string) => {
+    const response = await lessonApi.getById(lessonId);
+    return response.data;
+  },
+
+  // Update lesson with optional video upload
+  updateLesson: async (
+    lessonId: string,
+    data: {
+      lessonName: string;
+      description?: string;
+      content?: string;
+      lessonFormat: LessonFormat;
+      isFreePreview: boolean;
+    },
+    videoFile?: File | null,
+    onProgress?: (percent: number) => void
+  ) => {
+    let videoKey: string | undefined;
+
+    if (videoFile) {
+      const uploadResult = await fileApi.uploadVideoWithPresigned(
+        videoFile,
+        onProgress || (() => {}),
+        "private"
+      );
+      videoKey = uploadResult.key;
+    }
+
+    const updateData: UpdateLessonRequest = {
+      lessonName: data.lessonName,
+      description: data.description || undefined,
+      content: data.content || undefined,
+      lessonFormat: data.lessonFormat,
+      isFreePreview: data.isFreePreview,
+    };
+
+    if (videoKey) {
+      updateData.videoKey = videoKey;
+    }
+
+    return await lessonApi.update(lessonId, updateData);
+  },
 };

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import { CourseDetailResponse, CourseLevel, CourseFormat } from "@/types/course";
 import { favoriteApi } from "@/services/course.service";
 import { authApi } from "@/services/auth.service";
 import toast from "react-hot-toast";
@@ -140,7 +140,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
         {/* Course Info */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-wrap gap-y-2">
             {course.level && (
               <span
                 className={`px-2 py-1 rounded-md text-xs font-medium ${course.level === CourseLevel.BEGINNER
@@ -155,6 +155,22 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
                   : course.level === CourseLevel.INTERMEDIATE
                     ? "Trung cấp"
                     : "Nâng cao"}
+              </span>
+            )}
+            {course.courseFormat && (
+              <span
+                className={`px-2 py-1 rounded-md text-xs font-medium ${course.courseFormat === CourseFormat.VIDEO
+                  ? "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300"
+                  : course.courseFormat === CourseFormat.TEXT
+                    ? "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300"
+                    : "bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300"
+                  }`}
+              >
+                {course.courseFormat === CourseFormat.VIDEO
+                  ? "Video"
+                  : course.courseFormat === CourseFormat.TEXT
+                    ? "Text"
+                    : "Mixed"}
               </span>
             )}
             {course.duration && (

@@ -13,6 +13,7 @@ import {
   UpdateChapterResponse,
   CreateLessonRequest,
   CreateLessonResponse,
+  UpdateLessonRequest,
   LessonDetailResponse,
   FavoriteResponse,
   FileMetaDataResponse,
@@ -171,6 +172,15 @@ export const lessonApi = {
   delete: async (id: string) => {
     const response = await apiClient.delete<ApiResponse<void>>(
       `${API.DELETE_LESSON}/${id}`,
+    );
+    return response.data;
+  },
+
+  // Cập nhật lesson
+  update: async (id: string, data: UpdateLessonRequest) => {
+    const response = await apiClient.put<ApiResponse<LessonDetailResponse>>(
+      `${API.UPDATE_LESSON}/${id}`,
+      data,
     );
     return response.data;
   },

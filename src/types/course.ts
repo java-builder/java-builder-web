@@ -8,6 +8,7 @@ export interface CreateCourseRequest {
   duration?: number;
   key?: string;
   level?: CourseLevel;
+  courseFormat: CourseFormat;
 }
 
 export interface UpdateCourseRequest {
@@ -17,6 +18,7 @@ export interface UpdateCourseRequest {
   duration?: number;
   key?: string;
   level?: CourseLevel;
+  courseFormat?: CourseFormat;
 }
 
 export interface CreateCourseResponse {
@@ -28,6 +30,7 @@ export interface CreateCourseResponse {
   duration?: number;
   thumbnailUrl?: string;
   level?: CourseLevel;
+  courseFormat: CourseFormat;
 }
 
 export interface CourseDetailResponse {
@@ -39,6 +42,7 @@ export interface CourseDetailResponse {
   duration?: number;
   thumbnailUrl?: string;
   level?: CourseLevel;
+  courseFormat: CourseFormat;
   chapters?: ChapterDetailResponse[];
   createdAt: string;
   updatedAt?: string;
@@ -56,6 +60,7 @@ export interface MyEnrolledCourseResponse {
   duration?: number;
   thumbnailUrl?: string;
   level?: CourseLevel;
+  courseFormat: CourseFormat;
   progress: number;
   completed: boolean;
   enrolledAt: string;
@@ -79,6 +84,12 @@ export enum CourseLevel {
   INTERMEDIATE = "INTERMEDIATE",
   ADVANCED = "ADVANCED",
   EXPERT = "EXPERT",
+}
+
+export enum CourseFormat {
+  VIDEO = "VIDEO",
+  TEXT = "TEXT",
+  MIXED = "MIXED",
 }
 
 // Re-export from other files

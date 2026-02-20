@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import { CourseDetailResponse, CourseLevel, CourseFormat } from "@/types/course";
 import { LevelBadge } from "./LevelBadge";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { formatPrice } from "@/utils/formatters";
@@ -60,6 +60,22 @@ export const CourseCard = ({
                   <div className="flex items-center gap-1.5">
                     <LevelBadge level={course.level || CourseLevel.BEGINNER} />
                   </div>
+                  {course.courseFormat && (
+                    <span
+                      className={`px-2 py-1 rounded-md text-xs font-medium ${course.courseFormat === CourseFormat.VIDEO
+                        ? "bg-red-100 text-red-800"
+                        : course.courseFormat === CourseFormat.TEXT
+                          ? "bg-green-100 text-green-800"
+                          : "bg-orange-100 text-orange-800"
+                        }`}
+                    >
+                      {course.courseFormat === CourseFormat.VIDEO
+                        ? "Video"
+                        : course.courseFormat === CourseFormat.TEXT
+                          ? "Text"
+                          : "Mixed"}
+                    </span>
+                  )}
                   <div className="flex items-center gap-1.5 text-gray-600">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
