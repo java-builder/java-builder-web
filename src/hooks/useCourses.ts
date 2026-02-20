@@ -9,16 +9,17 @@ export const useCourses = (
   page = 1, 
   size = 10, 
   title?: string, 
-  level?: CourseLevel
+  level?: CourseLevel,
+  courseFormat?: CourseFormat
 ) => {
   return useQuery({
-    queryKey: ["courses", page, size, title, level],
+    queryKey: ["courses", page, size, title, level, courseFormat],
     queryFn: async () => {
-      const res = await courseApi.getCourses(page, size, title, level);
+      const res = await courseApi.getCourses(page, size, title, level, courseFormat);
       return res.data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes - match BE cache
-    gcTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
   });
 };
 

@@ -74,6 +74,8 @@ export const API = {
     ENROLLMENTS_MY_COURSES: "/api/v1/enrollments/my-courses",
     ENROLLMENTS_CHECK: "/api/v1/enrollments/check", // + /:courseId
     ENROLLMENTS_ADMIN: "/api/v1/enrollments/admin/enroll",
+    GET_ENROLLMENTS_BY_COURSE: "/api/v1/enrollments/course", // + /:courseId
+    UNENROLL_STUDENT: "/api/v1/enrollments", // + /:enrollmentId
 
     // DOCUMENT
     CREATE_DOCUMENT: "/api/v1/documents",

@@ -38,7 +38,7 @@ export const enrollmentApi = {
   // Admin lấy danh sách học viên của khóa học
   getCourseEnrollments: async (courseId: string, page: number = 1, size: number = 20) => {
     const response = await apiClient.get<ApiResponse<PageResponse<CourseEnrollmentResponse>>>(
-      `/api/v1/courses/${courseId}/enrollments`,
+      `${API.GET_ENROLLMENTS_BY_COURSE}/${courseId}`,
       { params: { page, size } },
     );
     return response.data;
@@ -47,7 +47,7 @@ export const enrollmentApi = {
   // Admin xóa học viên khỏi khóa học
   unenrollStudent: async (enrollmentId: string) => {
     const response = await apiClient.delete<ApiResponse<void>>(
-      `/api/v1/courses/enrollments/${enrollmentId}`,
+      `${API.UNENROLL_STUDENT}/${enrollmentId}`,
     );
     return response.data;
   },
