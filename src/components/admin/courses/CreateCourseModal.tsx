@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { courseApi, fileApi } from "@/services/course.service";
 import { CreateCourseRequest, CourseLevel, CourseFormat } from "@/types/course";
+import { formatPriceInput, parsePriceInput } from "@/utils/formatters";
 import toast from "react-hot-toast";
 
 interface CreateCourseModalProps {
@@ -24,6 +25,7 @@ export default function CreateCourseModal({
 }: CreateCourseModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [priceDisplay, setPriceDisplay] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -46,13 +48,11 @@ export default function CreateCourseModal({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
       if (!file.type.startsWith("image/")) {
         toast.error("Vui lòng chọn file ảnh hợp lệ");
         return;
       }
 
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Kích thước file không được vượt quá 5MB");
         return;
@@ -60,13 +60,18 @@ export default function CreateCourseModal({
 
       setValue("imageFile", file);
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numValue = parsePriceInput(e.target.value);
+    setValue("price", numValue);
+    setPriceDisplay(formatPriceInput(e.target.value));
   };
 
   const removeImage = () => {
@@ -118,6 +123,7 @@ export default function CreateCourseModal({
         toast.success("Tạo khóa học thành công!");
         reset();
         setImagePreview(null);
+        setPriceDisplay("");
         onClose();
         onSuccess?.();
       }
@@ -132,6 +138,7 @@ export default function CreateCourseModal({
     if (!isLoading) {
       reset();
       setImagePreview(null);
+      setPriceDisplay("");
       onClose();
     }
   };
@@ -240,14 +247,9 @@ export default function CreateCourseModal({
                     Giá khóa học (VNĐ) *
                   </label>
                   <input
-                    type="number"
-                    {...register("price", {
-                      required: "Giá khóa học là bắt buộc",
-                      min: {
-                        value: 0,
-                        message: "Giá phải lớn hơn hoặc bằng 0",
-                      },
-                    })}
+                    type="text"
+                    value={priceDisplay}
+                    onChange={handlePriceChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 bg-gray-50 hover:bg-white"
                     placeholder="0"
                     disabled={isLoading}

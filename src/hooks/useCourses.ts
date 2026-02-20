@@ -37,7 +37,7 @@ export const useCourseDetail = (courseId: string) => {
 };
 
 export const useFeaturedCourses = () => {
-  return useCourses(1, 3);
+  return useCourses(1, 3, undefined, undefined, CourseFormat.VIDEO);
 };
 
 // Helper functions for course edit operations

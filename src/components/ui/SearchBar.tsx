@@ -107,12 +107,13 @@ export default function SearchBar({
           type="button"
           onClick={handleSearch}
           className={`
-            px-6 ${sizeClasses[size]} 
+            px-4 sm:px-6 ${sizeClasses[size]} 
             bg-accent hover:bg-accent-600 
             text-white rounded-lg font-medium 
             transition-colors duration-200 
             flex items-center gap-2
             whitespace-nowrap
+            flex-shrink-0
           `}
         >
           <svg
@@ -128,7 +129,7 @@ export default function SearchBar({
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-          {buttonText}
+          <span className="hidden sm:inline">{buttonText}</span>
         </button>
       )}
     </div>

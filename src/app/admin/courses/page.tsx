@@ -12,12 +12,14 @@ import { useCourses } from "@/hooks/useCourses";
 import { courseApi } from "@/services/course.service";
 import { DeleteModalState } from "@/types/admin";
 import { formatCurrency } from "@/utils/formatters";
+import { CourseFormat, CourseLevel } from "@/types/course";
+
+type CourseFormatTab = CourseFormat | "ALL";
 
 export default function CoursesPage() {
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [levelFilter, setLevelFilter] = useState("all");
+  const [levelFilter, setLevelFilter] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<CourseFormatTab>("ALL");
   const [isDeleting, setIsDeleting] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
@@ -32,7 +34,13 @@ export default function CoursesPage() {
   });
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  const { data, isLoading, error, refetch } = useCourses(1, 20);
+  const { data, isLoading, error, refetch } = useCourses(
+    1,
+    20,
+    undefined,
+    levelFilter === "all" ? undefined : (levelFilter as CourseLevel),
+    activeTab === "ALL" ? undefined : activeTab
+  );
   const courses = data?.data || [];
   const stats = {
     total: data?.totalElements || 0,
@@ -42,15 +50,6 @@ export default function CoursesPage() {
     totalStudents: 0,
     totalRevenue: 0,
   };
-
-  const categories = [
-    "Frontend Development",
-    "Backend Development",
-    "Mobile Development",
-    "Design",
-    "DevOps",
-    "Data Science",
-  ];
 
   const handleDelete = async (id: string, title: string) => {
     setDeleteModal({ isOpen: true, id, title });
@@ -159,15 +158,59 @@ export default function CoursesPage() {
 
       <CourseStatsCards stats={stats} formatRevenue={formatCurrency} />
 
+      {/* Course Format Tabs */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200">
+          {(["ALL", "VIDEO", "TEXT", "MIXED"] as CourseFormatTab[]).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 relative ${
+                activeTab === tab
+                  ? "text-accent bg-accent/5"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-center justify-center gap-2">
+                {tab === "ALL" && (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+                {tab === "VIDEO" && (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                )}
+                {tab === "TEXT" && (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                )}
+                {tab === "MIXED" && (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                )}
+                <span>
+                  {tab === "ALL" && "Tất cả"}
+                  {tab === "VIDEO" && "Video"}
+                  {tab === "TEXT" && "Văn bản"}
+                  {tab === "MIXED" && "Kết hợp"}
+                </span>
+              </div>
+              {activeTab === tab && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <CourseFilters
         search={search}
-        categoryFilter={categoryFilter}
-        statusFilter={statusFilter}
         levelFilter={levelFilter}
-        categories={categories}
         onSearchChange={setSearch}
-        onCategoryChange={setCategoryFilter}
-        onStatusChange={setStatusFilter}
         onLevelChange={setLevelFilter}
       />
 

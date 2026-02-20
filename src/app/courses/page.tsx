@@ -9,7 +9,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import Image from "next/image";
 import Link from "next/link";
 import { courseApi } from "@/services/course.service";
-import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import { CourseDetailResponse, CourseFormat, CourseLevel } from "@/types/course";
 
 export default function CoursesPage() {
   const [searchText, setSearchText] = useState("");
@@ -38,6 +38,7 @@ export default function CoursesPage() {
         size,
         currentSearch || undefined,
         courseLevel || undefined,
+        CourseFormat.VIDEO,
       );
 
       if (response.code === 200 && response.data) {
