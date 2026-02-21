@@ -59,15 +59,25 @@ export default function PublicMarkdownRenderer({
             );
           },
           h2({ children }) {
+            const text = String(children);
+            const id = text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, '')
+              .replace(/\s+/g, '-');
             return (
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mt-5 sm:mt-6 mb-2 sm:mb-3">
+              <h2 id={id} className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mt-5 sm:mt-6 mb-2 sm:mb-3 scroll-mt-20">
                 {children}
               </h2>
             );
           },
           h3({ children }) {
+            const text = String(children);
+            const id = text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, '')
+              .replace(/\s+/g, '-');
             return (
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mt-4 sm:mt-5 mb-2">
+              <h3 id={id} className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mt-4 sm:mt-5 mb-2 scroll-mt-20">
                 {children}
               </h3>
             );

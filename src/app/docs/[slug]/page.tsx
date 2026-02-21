@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import DocsHeader from "@/components/docs/DocsHeader";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import DocsArticle from "@/components/docs/DocsArticle";
 import DocsTableOfContents from "@/components/docs/DocsTableOfContents";
-import { courseApi } from "@/services/course.service";
-import { CourseDetailResponse } from "@/types/course";
+import CourseOverview from "@/components/docs/CourseOverview";
+import { courseApi, lessonApi } from "@/services/course.service";
+import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
 import { formatDate } from "@/utils/formatters";
+import { extractHeadings } from "@/utils/markdown";
 
 export default function DocsDetailPage() {
   const params = useParams();
@@ -20,6 +23,9 @@ export default function DocsDetailPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState<string | null>(null);
   const [showOverview, setShowOverview] = useState(true);
+  const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
+  const [loadedChapters, setLoadedChapters] = useState<Set<string>>(new Set());
+  const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -27,11 +33,39 @@ export default function DocsDetailPage() {
         setIsLoading(true);
         const response = await courseApi.getBySlug(slug);
         if (response.code === 200 && response.data) {
-          setCourse(response.data);
+          const courseData = response.data;
+          setCourse(courseData);
           setShowOverview(true);
-          const firstLesson = response.data.chapters?.[0]?.lessons?.[0];
-          if (firstLesson && response.data.chapters?.[0]) {
-            setOpenCategories([response.data.chapters[0].id]);
+          const firstLesson = courseData.chapters?.[0]?.lessons?.[0];
+          if (firstLesson && courseData.chapters?.[0]) {
+            setOpenCategories([courseData.chapters[0].id]);
+          }
+
+          if (courseData.chapters && courseData.chapters.length > 0) {
+            const fetchAllLessons = async () => {
+              const lessonsMap: Record<string, LessonDetailResponse[]> = {};
+              const loadedIds = new Set<string>();
+              await Promise.all(
+                courseData.chapters!.map(async (chapter) => {
+                  try {
+                    const lessonsResponse = await lessonApi.getByChapterId(chapter.id);
+                    if (lessonsResponse.data) {
+                      lessonsMap[chapter.id] = lessonsResponse.data;
+                    } else {
+                      lessonsMap[chapter.id] = [];
+                    }
+                    loadedIds.add(chapter.id);
+                  } catch (error) {
+                    console.error(`Error fetching lessons for chapter ${chapter.id}:`, error);
+                    lessonsMap[chapter.id] = [];
+                    loadedIds.add(chapter.id);
+                  }
+                })
+              );
+              setChapterLessons(lessonsMap);
+              setLoadedChapters(loadedIds);
+            };
+            fetchAllLessons();
           }
         }
       } catch (error) {
@@ -46,55 +80,35 @@ export default function DocsDetailPage() {
     }
   }, [slug]);
 
-  const handleLessonClick = (lessonId: string) => {
-    setSelectedChapter(lessonId);
-    setShowOverview(false);
+  const handleLessonClick = async (lessonId: string) => {
+    try {
+      const response = await lessonApi.getById(lessonId);
+      if (response.data) {
+        const lesson = response.data;
+        if (lesson.content) {
+          lesson.content = lesson.content.replace(/\n*\*Tiếp theo:[\s\S]*?\*\s*$/, '').trim();
+        }
+        setSelectedLesson(lesson);
+        setSelectedChapter(lessonId);
+        setShowOverview(false);
+      }
+    } catch (error) {
+      console.error("Error fetching lesson:", error);
+    }
   };
 
   const handleOverviewClick = () => {
     setShowOverview(true);
     setSelectedChapter(null);
-  };
-
-  const generateOverviewContent = (course: CourseDetailResponse | null) => {
-    if (!course) return "";
-
-    const levelText: Record<string, string> = {
-      BEGINNER: "Cơ bản",
-      INTERMEDIATE: "Trung cấp",
-      ADVANCED: "Nâng cao",
-      EXPERT: "Chuyên gia"
-    };
-
-    const levelDisplay = course.level ? (levelText[course.level] || course.level) : "Chưa xác định";
-    const totalLessons = course.chapters?.reduce((sum, ch) => sum + (ch.lessons?.length || 0), 0) || 0;
-
-    return `
-## Thông tin khóa học
-
-- **Cấp độ:** ${levelDisplay}
-- **Số chương:** ${course.chapters?.length || 0} chương
-- **Tổng số bài học:** ${totalLessons} bài học
-- **Cập nhật:** ${formatDate(course.updatedAt || course.createdAt)}
-
-## Nội dung khóa học
-
-${course.chapters?.map((chapter, index) => `
-### Chương ${index + 1}: ${chapter.chapterName}
-
-${chapter.description}
-
-*${chapter.lessons?.length || 0} bài học*
-`).join('\n') || ''}
-    `.trim();
+    setSelectedLesson(null);
   };
 
   const handleCategoryToggle = (categoryId: string) => {
-    setOpenCategories(prev =>
-      prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
-    );
+    const newOpenCategories = openCategories.includes(categoryId)
+      ? openCategories.filter(id => id !== categoryId)
+      : [...openCategories, categoryId];
+    
+    setOpenCategories(newOpenCategories);
   };
 
   const categories = [
@@ -106,7 +120,7 @@ ${chapter.description}
     ...(course?.chapters?.map(chapter => ({
       id: chapter.id,
       title: chapter.chapterName,
-      topics: chapter.lessons?.map(lesson => ({
+      topics: chapterLessons[chapter.id]?.map(lesson => ({
         id: lesson.id,
         title: lesson.lessonName,
         slug: lesson.id,
@@ -114,9 +128,7 @@ ${chapter.description}
     })) || [])
   ];
 
-  const currentLesson = course?.chapters
-    ?.flatMap(c => c.lessons || [])
-    .find(l => l.id === selectedChapter);
+  const currentLesson = selectedLesson;
 
   const currentChapter = course?.chapters?.find(c => 
     c.lessons?.some(l => l.id === selectedChapter)
@@ -166,21 +178,29 @@ ${chapter.description}
           onLessonClick={handleLessonClick}
           onBackClick={() => window.history.back()}
           isOpen={isSidebarOpen}
+          loadedChapters={loadedChapters}
         />
 
         <main className="flex-1 min-w-0">
           {showOverview ? (
-            <DocsArticle
-              title={course?.title || ""}
-              description={course?.description || ""}
-              readTime={`${course?.chapters?.reduce((sum, ch) => sum + (ch.lessons?.length || 0), 0) || 0} bài học`}
-              lastUpdated={formatDate(course?.updatedAt || course?.createdAt || "")}
-              content={generateOverviewContent(course)}
-              breadcrumbs={[
-                { label: "Tài liệu", href: "/docs" },
-                { label: course?.title || "" }
-              ]}
-            />
+            <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
+              <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                <Link href="/docs" className="hover:text-accent">Tài liệu</Link>
+                <span>/</span>
+                <span className="text-gray-900 dark:text-white">{course?.title || ""}</span>
+              </nav>
+
+              <header className="mb-8">
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                  {course?.title || ""}
+                </h1>
+                <p className="text-lg text-gray-600 dark:text-gray-400">
+                  {course?.description || ""}
+                </p>
+              </header>
+
+              {course && <CourseOverview course={course} />}
+            </div>
           ) : (
             <DocsArticle
               title={currentLesson?.lessonName || course?.title || ""}
@@ -198,7 +218,7 @@ ${chapter.description}
           )}
         </main>
 
-        <DocsTableOfContents items={[]} />
+        <DocsTableOfContents items={showOverview ? [] : extractHeadings(currentLesson?.content || "")} />
       </div>
 
       {isSidebarOpen && (
