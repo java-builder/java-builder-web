@@ -70,10 +70,6 @@ export default function DocsDetailPage() {
     const totalLessons = course.chapters?.reduce((sum, ch) => sum + (ch.lessons?.length || 0), 0) || 0;
 
     return `
-## Giới thiệu
-
-${course.description}
-
 ## Thông tin khóa học
 
 - **Cấp độ:** ${levelDisplay}

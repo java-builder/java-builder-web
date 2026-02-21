@@ -68,44 +68,7 @@ export default function DocsArticle({
         className="prose prose-lg dark:prose-invert max-w-none" 
       />
 
-      {/* Navigation Footer */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-700">
-        <div className="flex justify-between items-center">
-          <Link
-            href="#"
-            className="flex items-center gap-2 text-accent hover:underline"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Bài trước
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-2 text-accent hover:underline"
-          >
-            Bài tiếp theo
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
-      </div>
 
-      {/* Feedback Section */}
-      <div className="mt-8 p-6 bg-gray-100 dark:bg-slate-800 rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-          Bài viết này có hữu ích không?
-        </h3>
-        <div className="flex gap-3">
-          <button className="px-4 py-2 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors">
-            👍 Có
-          </button>
-          <button className="px-4 py-2 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors">
-            👎 Không
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
