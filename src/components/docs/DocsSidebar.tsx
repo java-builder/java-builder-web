@@ -102,9 +102,9 @@ export default function DocsSidebar({
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
                   }`}
                 >
-                  <span className="truncate flex items-center gap-2">
-                    {romanNumeral && <span className="font-semibold">{romanNumeral}.</span>}
-                    <span>{category.title}</span>
+                  <span className="flex items-center gap-2 min-w-0 flex-1">
+                    {romanNumeral && <span className="font-semibold flex-shrink-0">{romanNumeral}.</span>}
+                    <span className="truncate">{category.title}</span>
                   </span>
                   {category.id !== "overview" && (
                     <svg 
