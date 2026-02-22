@@ -4,5 +4,3 @@ export const LINKEDIN_CONFIG = {
   scope: process.env.NEXT_PUBLIC_LINKEDIN_SCOPE || "openid profile email",
   redirect_uri: process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_URI || "http://localhost:3000/oauth2/callback/linkedin",
 };
-
-

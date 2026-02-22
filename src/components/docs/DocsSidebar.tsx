@@ -23,6 +23,34 @@ interface DocsSidebarProps {
   loadedChapters?: Set<string>;
 }
 
+// Hàm chuyển đổi số sang La Mã
+function toRoman(num: number): string {
+  const romanNumerals: [number, string][] = [
+    [1000, 'M'],
+    [900, 'CM'],
+    [500, 'D'],
+    [400, 'CD'],
+    [100, 'C'],
+    [90, 'XC'],
+    [50, 'L'],
+    [40, 'XL'],
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I']
+  ];
+  
+  let result = '';
+  for (const [value, numeral] of romanNumerals) {
+    while (num >= value) {
+      result += numeral;
+      num -= value;
+    }
+  }
+  return result;
+}
+
 export default function DocsSidebar({ 
   categories, 
   openCategories, 
@@ -58,31 +86,39 @@ export default function DocsSidebar({
     `}>
       <div className="flex-1 overflow-y-auto p-6">
         <nav className="space-y-1">
-          {categories.map((category) => (
-            <div key={category.id}>
-              <button
-                onClick={() => handleCategoryClick(category.id)}
-                title={category.title}
-                className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  openCategories.includes(category.id)
-                    ? "bg-accent/10 text-accent"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                }`}
-              >
-                <span className="truncate">{category.title}</span>
-                {category.id !== "overview" && (
-                  <svg 
-                    className={`w-4 h-4 transition-transform flex-shrink-0 ${
-                      openCategories.includes(category.id) ? 'rotate-180' : ''
-                    }`}
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                )}
-              </button>
+          {categories.map((category, categoryIndex) => {
+            // Tính index cho chapter (bỏ qua overview)
+            const chapterIndex = category.id === "overview" ? -1 : categoryIndex;
+            const romanNumeral = chapterIndex > 0 ? toRoman(chapterIndex) : null;
+            
+            return (
+              <div key={category.id}>
+                <button
+                  onClick={() => handleCategoryClick(category.id)}
+                  title={category.title}
+                  className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    openCategories.includes(category.id)
+                      ? "bg-accent/10 text-accent"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  }`}
+                >
+                  <span className="truncate flex items-center gap-2">
+                    {romanNumeral && <span className="font-semibold">{romanNumeral}.</span>}
+                    <span>{category.title}</span>
+                  </span>
+                  {category.id !== "overview" && (
+                    <svg 
+                      className={`w-4 h-4 transition-transform flex-shrink-0 ${
+                        openCategories.includes(category.id) ? 'rotate-180' : ''
+                      }`}
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
+                </button>
               
               {openCategories.includes(category.id) && category.id !== "overview" && (
                 <ul className="mt-1 ml-3 space-y-1">
@@ -115,7 +151,7 @@ export default function DocsSidebar({
                 </ul>
               )}
             </div>
-          ))}
+          )})}
         </nav>
       </div>
 
