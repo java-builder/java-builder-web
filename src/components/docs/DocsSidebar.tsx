@@ -21,9 +21,9 @@ interface DocsSidebarProps {
   onBackClick?: () => void;
   isOpen: boolean;
   loadedChapters?: Set<string>;
+  selectedLessonId?: string | null;
 }
 
-// Hàm chuyển đổi số sang La Mã
 function toRoman(num: number): string {
   const romanNumerals: [number, string][] = [
     [1000, 'M'],
@@ -59,7 +59,8 @@ export default function DocsSidebar({
   onLessonClick,
   onBackClick,
   isOpen,
-  loadedChapters = new Set()
+  loadedChapters = new Set(),
+  selectedLessonId = null
 }: DocsSidebarProps) {
   
   const handleCategoryClick = (categoryId: string) => {
@@ -131,18 +132,25 @@ export default function DocsSidebar({
                       Đang tải...
                     </li>
                   ) : category.topics.length > 0 ? (
-                    category.topics.map((topic, index) => (
-                      <li key={topic.id}>
-                        <button
-                          onClick={(e) => handleTopicClick(e, topic.id)}
-                          title={topic.title}
-                          className="w-full text-left px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-md transition-colors flex items-start gap-2"
-                        >
-                          <span className="flex-shrink-0 font-medium">{index + 1}.</span>
-                          <span className="truncate">{topic.title}</span>
-                        </button>
-                      </li>
-                    ))
+                    category.topics.map((topic, index) => {
+                      const isActive = selectedLessonId === topic.id;
+                      return (
+                        <li key={topic.id}>
+                          <button
+                            onClick={(e) => handleTopicClick(e, topic.id)}
+                            title={topic.title}
+                            className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-start gap-2 ${
+                              isActive
+                                ? "bg-accent text-white font-medium"
+                                : "text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-gray-50 dark:hover:bg-slate-700/50"
+                            }`}
+                          >
+                            <span className="flex-shrink-0 font-medium">{index + 1}.</span>
+                            <span className="truncate">{topic.title}</span>
+                          </button>
+                        </li>
+                      );
+                    })
                   ) : (
                     <li className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500 italic">
                       Chưa có bài học nào

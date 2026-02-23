@@ -179,6 +179,7 @@ export default function DocsDetailPage() {
           onBackClick={() => window.history.back()}
           isOpen={isSidebarOpen}
           loadedChapters={loadedChapters}
+          selectedLessonId={selectedLesson?.id || null}
         />
 
         <main className="flex-1 min-w-0">
