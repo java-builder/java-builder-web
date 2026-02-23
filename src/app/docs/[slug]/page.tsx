@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import DocsHeader from "@/components/docs/DocsHeader";
 import DocsSidebar from "@/components/docs/DocsSidebar";
@@ -12,10 +12,13 @@ import { courseApi, lessonApi } from "@/services/course.service";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
 import { formatDate } from "@/utils/formatters";
 import { extractHeadings } from "@/utils/markdown";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function DocsDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
+  const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +31,18 @@ export default function DocsDetailPage() {
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
 
   useEffect(() => {
+    // Chỉ fetch khi user đã authenticated
+    if (isLoadingUser) {
+      // Đang check auth, giữ loading state
+      return;
+    }
+
+    if (!currentUser) {
+      // Chưa login, không fetch
+      setIsLoading(false);
+      return;
+    }
+
     const fetchCourse = async () => {
       try {
         setIsLoading(true);
@@ -78,7 +93,7 @@ export default function DocsDetailPage() {
     if (slug) {
       fetchCourse();
     }
-  }, [slug]);
+  }, [slug, currentUser, isLoadingUser]);
 
   const handleLessonClick = async (lessonId: string) => {
     try {
@@ -134,12 +149,52 @@ export default function DocsDetailPage() {
     c.lessons?.some(l => l.id === selectedChapter)
   );
 
-  if (isLoading) {
+  // Loading state: đang check auth hoặc đang load course
+  if (isLoadingUser || isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Đang tải tài liệu...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Chưa đăng nhập
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+        <DocsHeader 
+          showMenuButton={false}
+          onMenuClick={() => {}}
+        />
+        <div className="flex items-center justify-center py-20">
+          <div className="max-w-md text-center">
+            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Yêu cầu đăng nhập</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Bạn cần đăng nhập để xem nội dung này
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => router.push('/login')}
+                className="px-5 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors text-sm"
+              >
+                Đăng nhập
+              </button>
+              <button
+                onClick={() => router.push('/register')}
+                className="px-5 py-2.5 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors text-sm"
+              >
+                Đăng ký
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
