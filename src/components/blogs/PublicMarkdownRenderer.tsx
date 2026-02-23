@@ -4,10 +4,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import Image from "next/image";
-import "highlight.js/styles/github-dark.css";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface PublicMarkdownRendererProps {
   content: string;
@@ -19,6 +19,27 @@ export default function PublicMarkdownRenderer({
   className = "",
 }: PublicMarkdownRendererProps) {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const { theme } = useTheme();
+
+  // Dynamically load highlight.js theme based on current theme
+  useEffect(() => {
+    // Remove existing highlight.js stylesheets
+    const existingLinks = document.querySelectorAll('link[data-highlight-theme]');
+    existingLinks.forEach(link => link.remove());
+
+    // Add new stylesheet based on theme
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.setAttribute('data-highlight-theme', 'true');
+    link.href = theme === 'dark' 
+      ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+      : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+    document.head.appendChild(link);
+
+    return () => {
+      link.remove();
+    };
+  }, [theme]);
 
   const copyToClipboard = async (children: React.ReactNode, codeId: string) => {
     try {
@@ -216,7 +237,7 @@ export default function PublicMarkdownRenderer({
                   {/* Code Content */}
                   <div className="relative">
                     <pre
-                      className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-3 sm:p-6 overflow-x-auto text-xs sm:text-sm leading-relaxed"
+                      className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-3 sm:p-6 overflow-x-auto text-xs sm:text-sm leading-relaxed font-medium"
                       style={{
                         fontFamily:
                           'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
