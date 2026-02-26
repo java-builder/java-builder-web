@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { SubscriptionPlan } from "@/types/subscription";
-import { apiClient } from "@/api/axios";
-import { ApiResponse } from "@/types/api";
+import { subscriptionPlanService } from "@/services/subscription-plan.service";
 import toast from "react-hot-toast";
+import { formatNumber, formatPriceInput, parsePriceInput } from "@/utils/formatters";
 
 const freePlan = {
   id: "free",
@@ -28,8 +28,8 @@ export default function AdminSubscriptionsPage() {
   const fetchPlans = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await apiClient.get<ApiResponse<SubscriptionPlan[]>>("/api/v1/subscriptions/admin/plans");
-      if (response.data.data) setPlans(response.data.data);
+      const response = await subscriptionPlanService.getAllPlansAdmin();
+      if (response.data) setPlans(response.data);
     } catch {
       toast.error("Không thể tải danh sách gói");
     } finally {
@@ -43,17 +43,24 @@ export default function AdminSubscriptionsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const payload = {
-        ...formData,
-        price: Number(formData.price),
-        durationDays: Number(formData.durationDays),
-        ...(editingPlan && { id: editingPlan.id }),
-      };
       if (editingPlan) {
-        await apiClient.put("/api/v1/subscriptions/admin/plans", payload);
+        await subscriptionPlanService.updatePlan({
+          id: editingPlan.id,
+          name: formData.name,
+          price: parsePriceInput(formData.price),
+          durationDays: Number(formData.durationDays),
+          description: formData.description,
+          features: formData.features,
+        });
         toast.success("Cập nhật thành công");
       } else {
-        await apiClient.post("/api/v1/subscriptions/admin/plans", payload);
+        await subscriptionPlanService.createPlan({
+          name: formData.name,
+          price: parsePriceInput(formData.price),
+          durationDays: Number(formData.durationDays),
+          description: formData.description,
+          features: formData.features,
+        });
         toast.success("Tạo gói thành công");
       }
       setShowModal(false);
@@ -70,7 +77,7 @@ export default function AdminSubscriptionsPage() {
   const handleEdit = (plan: SubscriptionPlan) => {
     setEditingPlan(plan);
     setFormData({
-      name: plan.name, price: String(plan.price), durationDays: String(plan.durationDays),
+      name: plan.name, price: formatPriceInput(String(plan.price)), durationDays: String(plan.durationDays),
       description: plan.description || "", features: plan.features || "",
     });
     setShowModal(true);
@@ -79,7 +86,7 @@ export default function AdminSubscriptionsPage() {
   const handleDelete = async (planId: string, planName: string) => {
     if (!confirm(`Xóa gói "${planName}"?`)) return;
     try {
-      await apiClient.delete(`/api/v1/subscriptions/admin/plans/${planId}`);
+      await subscriptionPlanService.deletePlan(planId);
       toast.success("Đã xóa");
       fetchPlans();
     } catch {
@@ -87,10 +94,12 @@ export default function AdminSubscriptionsPage() {
     }
   };
 
-  const formatPrice = (price: number) => new Intl.NumberFormat("vi-VN").format(price);
-
-  // Combine free plan with API plans
-  const allPlans = [freePlan, ...plans];
+  // Combine free plan with API plans, sort to put monthly plan in middle
+  const sortedPlans = [...plans].sort((a, b) => {
+    // Sort by duration: shorter duration first (monthly before yearly)
+    return a.durationDays - b.durationDays;
+  });
+  const allPlans = [freePlan, ...sortedPlans];
 
   if (isLoading) {
     return (
@@ -126,7 +135,7 @@ export default function AdminSubscriptionsPage() {
       <div className="grid md:grid-cols-3 gap-5">
         {allPlans.map((plan, index) => {
           const isFree = plan.id === "free";
-          const isPopular = index === 1; // First premium plan
+          const isPopular = index === 1; // Middle plan (Premium Tháng)
 
           return (
             <div
@@ -141,11 +150,11 @@ export default function AdminSubscriptionsPage() {
               )}
 
               <div className="text-center mb-4">
-                <h3 className="font-semibold text-gray-900">{plan.name}</h3>
+                <h3 className="font-semibold text-gray-900 text-center">{plan.name}</h3>
                 <p className="text-xs text-gray-500 mt-1">{plan.description}</p>
                 <div className="mt-3">
                   <span className="text-2xl font-bold text-gray-900">
-                    {plan.price === 0 ? "0" : formatPrice(plan.price)}
+                    {plan.price === 0 ? "0" : formatNumber(plan.price)}
                   </span>
                   <span className="text-gray-500 text-sm">đ</span>
                   {plan.durationDays > 0 && (
@@ -227,9 +236,9 @@ export default function AdminSubscriptionsPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Giá (VNĐ) *</label>
                   <input
-                    type="number"
+                    type="text"
                     value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, price: formatPriceInput(e.target.value) })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
                     required
                   />

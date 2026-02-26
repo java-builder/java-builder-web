@@ -5,8 +5,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
-import { subscriptionApi } from "@/services/subscription.service";
-import { SubscriptionPlan, SubscribeResponse } from "@/types/subscription";
+import { subscriptionPlanService } from "@/services/subscription-plan.service";
+import { userSubscriptionService } from "@/services/user-subscription.service";
+import { SubscriptionPlan } from "@/types/subscription";
+import { SubscribeResponse } from "@/types/user-subscription";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -110,7 +112,7 @@ export default function PricingPage() {
 
     const fetchPlans = async () => {
       try {
-        const response = await subscriptionApi.getPlans();
+        const response = await subscriptionPlanService.getPlans();
         if (response.data) {
           const apiPlans = response.data.map((plan: SubscriptionPlan) => convertToPlanDisplay(plan));
           apiPlans.sort((a, b) => a.price - b.price);
@@ -143,7 +145,7 @@ export default function PricingPage() {
 
     try {
       setLoadingPlan(plan.id);
-      const response = await subscriptionApi.subscribe(plan.apiPlanId);
+      const response = await userSubscriptionService.subscribe(plan.apiPlanId);
 
       if (response.data) {
         setPaymentModal({

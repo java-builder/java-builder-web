@@ -34,12 +34,20 @@ export const API = {
     TWO_FACTOR_VERIFY_SETUP: "/api/v1/two-factor/verify-code-setup",
     TWO_FACTOR_DISABLE: "/api/v1/two-factor/disable",
 
-    // SUBSCRIPTION
+    // SUBSCRIPTION PLANS (Public & Admin)
     SUBSCRIPTION_PLANS: "/api/v1/subscriptions/plans",
-    SUBSCRIPTION_SUBSCRIBE: "/api/v1/subscriptions/subscribe",
-    SUBSCRIPTION_MY: "/api/v1/subscriptions/my-subscription",
-    SUBSCRIPTION_CHECK_PREMIUM: "/api/v1/subscriptions/check-premium",
-    SUBSCRIPTION_CANCEL: "/api/v1/subscriptions/cancel",
+    SUBSCRIPTION_ADMIN_PLANS: "/api/v1/subscriptions/admin/plans",
+    SUBSCRIPTION_CREATE_PLAN: "/api/v1/subscriptions/admin/plans",
+    SUBSCRIPTION_UPDATE_PLAN: "/api/v1/subscriptions/admin/plans",
+    SUBSCRIPTION_DELETE_PLAN: "/api/v1/subscriptions/admin/plans", // + /:planId
+
+    // USER SUBSCRIPTIONS
+    USER_SUBSCRIPTION_SUBSCRIBE: "/api/v1/user-subscriptions/subscribe",
+    USER_SUBSCRIPTION_MY: "/api/v1/user-subscriptions/my-subscription",
+    USER_SUBSCRIPTION_CHECK_PREMIUM: "/api/v1/user-subscriptions/check-premium",
+    USER_SUBSCRIPTION_CANCEL: "/api/v1/user-subscriptions/cancel",
+    USER_SUBSCRIPTION_ADMIN_ASSIGN: "/api/v1/user-subscriptions/admin/assign",
+    USER_SUBSCRIPTION_ADMIN_ALL: "/api/v1/user-subscriptions/admin/all",
 
     // REVIEW
     CREATE_REVIEW: "/api/v1/reviews",
