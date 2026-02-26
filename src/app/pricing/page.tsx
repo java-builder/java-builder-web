@@ -301,6 +301,7 @@ export default function PricingPage() {
                   </div>
                   {!paymentModal.isLoading && (
                     <button
+                      data-modal-close
                       onClick={() => setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
                       className="text-white/80 hover:text-white transition-colors"
                     >

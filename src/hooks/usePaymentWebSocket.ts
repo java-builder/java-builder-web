@@ -19,6 +19,7 @@ export const usePaymentWebSocket = (courseId?: string) => {
       }
       
       subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
+        console.log(notification)
         if (notification.transactionType === 'SUBSCRIPTION') {
           toast.success('🎉 Đăng ký Premium thành công!', {
             duration: 5000,
