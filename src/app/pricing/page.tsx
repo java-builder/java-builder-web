@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { subscriptionPlanService } from "@/services/subscription-plan.service";
 import { userSubscriptionService } from "@/services/user-subscription.service";
@@ -45,29 +46,13 @@ const freePlan: PlanDisplay = {
   apiPlanId: null,
 };
 
-const faqs = [
-  {
-    q: "Premium có gì khác so với miễn phí?",
-    a: "Premium cho phép bạn truy cập toàn bộ khóa học, tài liệu Ebooks chất lượng cao, badge đặc biệt và hỗ trợ ưu tiên.",
-  },
-  {
-    q: "Tôi có thể hủy subscription bất cứ lúc nào không?",
-    a: "Có, bạn có thể hủy bất cứ lúc nào. Bạn vẫn được sử dụng Premium đến hết thời hạn đã thanh toán.",
-  },
-  {
-    q: "Thanh toán bằng phương thức nào?",
-    a: "Chúng tôi hỗ trợ thanh toán qua QR Code ngân hàng, ví điện tử thông qua PayOS.",
-  },
-  {
-    q: "Có được hoàn tiền không?",
-    a: "Chúng tôi hỗ trợ hoàn tiền trong vòng 7 ngày đầu nếu bạn không hài lòng với dịch vụ.",
-  },
-];
+
 
 export default function PricingPage() {
   const { data: currentUser } = useCurrentUser();
+  usePaymentWebSocket();
+  
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<PlanDisplay[]>([freePlan]);
   const [isLoading, setIsLoading] = useState(true);
@@ -158,7 +143,6 @@ export default function PricingPage() {
         toast.error("Không thể tạo link thanh toán");
         setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
       }
-      setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Đăng ký thất bại");
       setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
@@ -171,36 +155,12 @@ export default function PricingPage() {
     return new Intl.NumberFormat("vi-VN").format(price);
   };
 
-  const monthlyPlan = plans.find((p) => p.popular && p.apiPlanId);
-
   return (
     <>
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
-        {/* Demo Notice Banner */}
-        <div className="max-w-4xl mx-auto px-4 mb-6">
-          <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 dark:border-amber-600 rounded-lg p-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0">
-                <svg className="w-6 h-6 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-semibold text-amber-800 dark:text-amber-400 mb-1">
-                  ⚠️ Tính năng Demo - Chỉ phục vụ mục đích học tập
-                </h3>
-                <p className="text-sm text-amber-700 dark:text-amber-300">
-                  Đây là tính năng thanh toán demo được xây dựng trong quá trình học tập và nghiên cứu. 
-                  <strong className="font-semibold"> Vui lòng không thực hiện thanh toán thật.</strong> Tất cả giao dịch chỉ mang tính chất minh họa.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Hero Section */}
-        <section className="pt-2 pb-8 px-4">
+        <section className="pt-8 pb-8 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-sm font-medium rounded-full mb-3">
               ✨ Premium Membership
@@ -302,89 +262,6 @@ export default function PricingPage() {
                 ))}
               </div>
             )}
-          </div>
-        </section>
-
-        {/* Benefits Section */}
-        <section className="py-16 px-4 bg-gray-50 dark:bg-gray-800/50">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-              Quyền lợi Premium Member
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { icon: "📚", title: "Tài liệu Premium", desc: "Truy cập 50+ Ebooks, cheatsheets chất lượng cao" },
-                { icon: "🏆", title: "Badge đặc biệt", desc: "Hiển thị badge Premium trên profile của bạn" },
-                { icon: "💬", title: "Hỗ trợ ưu tiên", desc: "Được hỗ trợ nhanh chóng qua chat riêng" },
-              ].map((benefit, idx) => (
-                <div key={idx} className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center border border-transparent dark:border-gray-700">
-                  <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{benefit.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-              Câu hỏi thường gặp
-            </h2>
-            <div className="space-y-4">
-              {faqs.map((faq, idx) => (
-                <div key={idx} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
-                  <button
-                    onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-                  >
-                    <span className="font-medium text-gray-900 dark:text-white">{faq.q}</span>
-                    <svg
-                      className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${expandedFaq === idx ? "rotate-180" : ""}`}
-                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {expandedFaq === idx && (
-                    <div className="px-6 pb-4">
-                      <p className="text-gray-600 dark:text-gray-300">{faq.a}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-4xl mx-auto text-center bg-gradient-to-r from-accent to-blue-600 rounded-3xl p-8 md:p-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Sẵn sàng nâng cấp?
-            </h2>
-            <p className="text-blue-100 mb-8 max-w-xl mx-auto">
-              Tham gia cùng hàng nghìn học viên Premium đang phát triển sự nghiệp Backend Developer
-            </p>
-            <button
-              onClick={() => monthlyPlan && handleSubscribe(monthlyPlan)}
-              disabled={!monthlyPlan || loadingPlan === monthlyPlan?.id}
-              className="bg-white text-accent font-semibold px-8 py-3 rounded-xl hover:bg-gray-100 transition-colors shadow-lg inline-flex items-center gap-2"
-            >
-              {loadingPlan === monthlyPlan?.id ? (
-                <>
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Đang xử lý...
-                </>
-              ) : (
-                "Bắt đầu với Premium Tháng"
-              )}
-            </button>
           </div>
         </section>
       </main>

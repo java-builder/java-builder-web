@@ -29,6 +29,7 @@ export interface CreateBlogRequest {
   blogType: BlogType;
   categoryId?: string;
   tags?: string[];
+  isPremium?: boolean;
 }
 
 export interface CreateBlogResponse {
@@ -37,6 +38,7 @@ export interface CreateBlogResponse {
   slug: string;
   content: string;
   summary?: string;
+  isPremium?: boolean;
   blogType: BlogType;
   thumbnailUrl?: string;
   viewCount: number;
@@ -50,6 +52,7 @@ export interface UpdateBlogResponse {
   slug: string;
   content: string;
   summary?: string;
+  isPremium?: boolean;
   blogType: BlogType;
   thumbnailUrl?: string;
   viewCount: number;
@@ -65,6 +68,8 @@ export interface Blog {
   slug: string;
   content: string;
   summary?: string;
+  isPremium?: boolean;
+  canAccess?: boolean;
   blogType: BlogType;
   thumbnailUrl?: string;
   viewCount: number;

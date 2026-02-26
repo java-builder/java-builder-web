@@ -30,6 +30,7 @@ interface UpdateBlogFormData {
   blogType: BlogType;
   categoryId?: string;
   tags?: string[];
+  isPremium?: boolean;
 }
 
 export default function UpdateBlogModal({
@@ -46,6 +47,7 @@ export default function UpdateBlogModal({
     blogType: BlogType.TUTORIAL,
     categoryId: undefined,
     tags: [],
+    isPremium: false,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -108,6 +110,7 @@ export default function UpdateBlogModal({
         blogType: blog.blogType,
         categoryId: blog.category?.id,
         tags: blog.tags?.map(t => typeof t === 'string' ? t : t.name) || [],
+        isPremium: blog.isPremium || false,
       });
       setImagePreview(blog.thumbnailUrl || "");
     }
@@ -115,7 +118,7 @@ export default function UpdateBlogModal({
 
   const handleInputChange = (
     field: keyof UpdateBlogFormData,
-    value: string | BlogType | string[] | undefined,
+    value: string | BlogType | string[] | boolean | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -279,7 +282,7 @@ export default function UpdateBlogModal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           onClick={handleClose}
         />
 
@@ -617,7 +620,24 @@ export default function UpdateBlogModal({
               </div>
             )}
 
-            <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+            {/* Premium Checkbox */}
+            <div className="flex items-center gap-3 mt-6 pt-6 border-t border-gray-200">
+              <input
+                type="checkbox"
+                id="isPremium"
+                checked={formData.isPremium || false}
+                onChange={(e) =>
+                  handleInputChange("isPremium", e.target.checked)
+                }
+                className="w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                disabled={isLoading}
+              />
+              <label htmlFor="isPremium" className="text-sm text-gray-700">
+                Chỉ dành cho Premium (yêu cầu subscription để đọc)
+              </label>
+            </div>
+
+            <div className="flex items-center justify-end space-x-4 mt-6 pt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={handleClose}

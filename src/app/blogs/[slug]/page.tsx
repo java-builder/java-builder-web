@@ -589,6 +589,56 @@ export default function BlogDetailPage() {
                     <PublicMarkdownRenderer content={blog.content} />
                   </div>
 
+                  {/* Premium Content Blocker */}
+                  {blog.isPremium && blog.canAccess === false && (
+                    <div className="mt-8 relative">
+                      <div className="relative text-center py-12 bg-gradient-to-b from-gray-50 to-white dark:from-slate-800/50 dark:to-slate-800 rounded-2xl border-2 border-dashed border-gray-300 dark:border-slate-600">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-4 shadow-lg">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                          Nội dung Premium
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                          Bài viết này yêu cầu gói Premium để đọc toàn bộ nội dung. Nâng cấp ngay để truy cập không giới hạn!
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                          <Link
+                            href="/pricing"
+                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                            Nâng cấp Premium
+                          </Link>
+                          <Link
+                            href="/pricing"
+                            className="inline-flex items-center px-6 py-3 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors border border-gray-300 dark:border-slate-600"
+                          >
+                            Xem các gói
+                          </Link>
+                        </div>
+                        <div className="mt-6 flex items-center justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Truy cập không giới hạn</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Nội dung độc quyền</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Tags & Actions */}
                   <div className="mt-4 sm:mt-6 md:mt-8 pt-4 sm:pt-6 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex flex-col gap-3 sm:gap-4">

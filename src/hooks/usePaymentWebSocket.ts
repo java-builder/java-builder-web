@@ -21,12 +21,20 @@ export const usePaymentWebSocket = (courseId?: string) => {
       subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
         if (notification.transactionType === 'SUBSCRIPTION') {
           toast.success('🎉 Đăng ký Premium thành công!', {
-            duration: 4000,
+            duration: 5000,
             position: 'top-center',
+            style: {
+              background: 'linear-gradient(to right, #fbbf24, #f97316)',
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              padding: '16px 24px',
+            },
           });
           
           setTimeout(() => {
             router.push('/profile/subscription');
+            router.refresh();
             client.deactivate();
           }, 2000);
           
