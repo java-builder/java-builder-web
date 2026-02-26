@@ -45,6 +45,7 @@ export const API = {
     USER_SUBSCRIPTION_SUBSCRIBE: "/api/v1/user-subscriptions/subscribe",
     USER_SUBSCRIPTION_MY: "/api/v1/user-subscriptions/my-subscription",
     USER_SUBSCRIPTION_CHECK_PREMIUM: "/api/v1/user-subscriptions/check-premium",
+    USER_SUBSCRIPTION_RENEW: "/api/v1/user-subscriptions/renew",
     USER_SUBSCRIPTION_CANCEL: "/api/v1/user-subscriptions/cancel",
     USER_SUBSCRIPTION_ADMIN_ASSIGN: "/api/v1/user-subscriptions/admin/assign",
     USER_SUBSCRIPTION_ADMIN_ALL: "/api/v1/user-subscriptions/admin/all",

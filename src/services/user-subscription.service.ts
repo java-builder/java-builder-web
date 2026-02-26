@@ -45,6 +45,20 @@ export const userSubscriptionService = {
     return response.data;
   },
 
+  // Gia hạn subscription
+  renew: async (subscriptionPlanId: string) => {
+    const response = await apiClient.post<ApiResponse<{
+      subscriptionPlanId: string;
+      subscriptionPlanName: string;
+      startDate: string;
+      expirationDate: string;
+    }>>(
+      API.USER_SUBSCRIPTION_RENEW,
+      { subscriptionPlanId }
+    );
+    return response.data;
+  },
+
   // Admin: Lấy tất cả user subscriptions
   getAllUserSubscriptions: async (
     page: number = 1,
