@@ -86,47 +86,53 @@ export default function MySubscriptionPage() {
       <Header />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Success Banner */}
-        <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-6">
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                🎉 Chúc mừng bạn đã là thành viên Premium!
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Bạn đã có quyền truy cập toàn bộ nội dung Premium của JavaBuilder
-              </p>
-            </div>
-          </div>
+        {/* Page Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Gói Premium của tôi
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Quản lý thông tin gói Premium và quyền lợi của bạn
+          </p>
         </div>
 
         {/* Subscription Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-8 text-white">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                   </svg>
-                  <span className="text-sm font-medium opacity-90">Gói hiện tại</span>
                 </div>
-                <h1 className="text-3xl font-bold">{subscription.planName}</h1>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {subscription.planName}
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Gói hiện tại
+                  </p>
+                </div>
               </div>
-              <div className={`px-4 py-2 rounded-full font-semibold ${
-                isActive 
-                  ? "bg-white/20 text-white" 
-                  : "bg-red-500 text-white"
-              }`}>
-                {isActive ? "Đang hoạt động" : "Đã hết hạn"}
+              <div className="flex items-center gap-3">
+                <div className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                  isActive 
+                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
+                    : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+                }`}>
+                  {isActive ? "Đang hoạt động" : "Đã hết hạn"}
+                </div>
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-600 transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Gia hạn gói
+                </Link>
               </div>
             </div>
           </div>
@@ -201,7 +207,7 @@ export default function MySubscriptionPage() {
                   <label className="text-sm text-gray-500 dark:text-gray-400 block mb-1">
                     Trạng thái
                   </label>
-                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
+                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${
                     isActive 
                       ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
                       : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
@@ -211,45 +217,6 @@ export default function MySubscriptionPage() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Benefits */}
-            <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-                Quyền lợi của bạn
-              </h3>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {[
-                  { icon: "📚", text: "Truy cập toàn bộ nội dung Premium" },
-                  { icon: "🎓", text: "Tải xuống tài liệu Ebooks" },
-                  { icon: "🏆", text: "Badge Premium trên profile" },
-                  { icon: "💬", text: "Hỗ trợ ưu tiên qua chat" },
-                ].map((benefit, idx) => (
-                  <div key={idx} className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                    <span className="text-2xl">{benefit.icon}</span>
-                    <span className="text-sm">{benefit.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="border-t border-gray-200 dark:border-slate-700 pt-6 mt-6 flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/pricing"
-                className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all shadow-lg"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Gia hạn gói
-              </Link>
-              <Link
-                href="/blogs"
-                className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors border border-gray-300 dark:border-slate-600"
-              >
-                Khám phá nội dung Premium
-              </Link>
             </div>
           </div>
         </div>
