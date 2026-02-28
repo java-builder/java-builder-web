@@ -39,19 +39,19 @@ export default function Home() {
 
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                     Khởi đầu hành trình{" "}
-                    <span className="text-accent">lập trình</span>
+                    <span className="text-accent">lập trình Java</span>
                   </h1>
 
                   <div className="text-base md:text-lg text-gray-700 max-w-2xl">
                     <p className="leading-relaxed mb-2">
-                      Hành trình chinh phục công nghệ cùng đội ngũ mentor chuyên nghiệp.
+                      Hành trình chinh phục Backend Java cùng Java Builder.
                     </p>
                     <p className="leading-relaxed">
                       Từ zero đến hero, cùng{" "}
                       <span className="text-accent font-semibold">
                         JavaBuilder
                       </span>{" "}
-                      phát triển kỹ năng coding thực sự.
+                      - nền tảng học Java online hàng đầu Việt Nam - phát triển kỹ năng coding thực sự.
                     </p>
                   </div>
 
