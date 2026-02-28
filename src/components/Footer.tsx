@@ -171,22 +171,22 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/terms"
                   className="text-gray-300 hover:text-accent text-sm transition-colors duration-200 flex items-center group"
                 >
                   <span className="w-1.5 h-1.5 bg-accent rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                   Điều khoản sử dụng
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/privacy-policy"
                   className="text-gray-300 hover:text-accent text-sm transition-colors duration-200 flex items-center group"
                 >
                   <span className="w-1.5 h-1.5 bg-accent rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                   Chính sách bảo mật
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -277,6 +277,26 @@ export default function RegisterPage() {
               {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
             </button>
 
+            {/* Terms and Privacy Policy Notice */}
+            <p className="text-center text-xs text-gray-500">
+              Bằng việc đăng ký, bạn đồng ý với{" "}
+              <Link
+                href="/terms"
+                className="text-accent hover:underline"
+                target="_blank"
+              >
+                Điều khoản sử dụng
+              </Link>
+              {" "}và{" "}
+              <Link
+                href="/privacy-policy"
+                className="text-accent hover:underline"
+                target="_blank"
+              >
+                Chính sách bảo mật
+              </Link>
+            </p>
+
             {/* Social Login */}
             <div className="relative my-3">
               <div className="absolute inset-0 flex items-center">
