@@ -17,8 +17,7 @@ export default function BlogsPage() {
   const [isDeleting, setIsDeleting] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
-  // Grid view removed - always show table
+  const [selectedBlogSlug, setSelectedBlogSlug] = useState<string | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [previewBlog, setPreviewBlog] = useState<Blog | null>(null);
   const { confirm } = useConfirm();
@@ -312,7 +311,7 @@ export default function BlogsPage() {
       <BlogGrid
         blogs={blogs}
         onEdit={(blog) => {
-          setSelectedBlog(blog);
+          setSelectedBlogSlug(blog.slug);
           setIsUpdateModalOpen(true);
         }}
         onDelete={handleDelete}
@@ -348,13 +347,13 @@ export default function BlogsPage() {
         isOpen={isUpdateModalOpen}
         onClose={() => {
           setIsUpdateModalOpen(false);
-          setSelectedBlog(null);
+          setSelectedBlogSlug(null);
         }}
         onSuccess={() => {
           fetchBlogs(); // Refresh the blog list
           setShowSuccessToast(true);
         }}
-        blog={selectedBlog}
+        blogSlug={selectedBlogSlug}
       />
 
       {/* Success Toast */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import {
   BlogType,
@@ -19,7 +19,7 @@ interface UpdateBlogModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  blog: Blog | null;
+  blogSlug: string | null;
 }
 
 interface UpdateBlogFormData {
@@ -37,7 +37,7 @@ export default function UpdateBlogModal({
   isOpen,
   onClose,
   onSuccess,
-  blog,
+  blogSlug,
 }: UpdateBlogModalProps) {
   const [formData, setFormData] = useState<UpdateBlogFormData>({
     title: "",
@@ -51,6 +51,8 @@ export default function UpdateBlogModal({
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingBlog, setIsLoadingBlog] = useState(false);
+  const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -100,21 +102,42 @@ export default function UpdateBlogModal({
     }
   };
 
-  useEffect(() => {
-    if (blog && isOpen) {
+  const loadBlogDetails = useCallback(async () => {
+    if (!blogSlug) return;
+    
+    setIsLoadingBlog(true);
+    try {
+      const fullBlog = await blogService.getBlogBySlug(blogSlug);
+      
+      if (!fullBlog) {
+        throw new Error("Blog not found");
+      }
+      
+      setCurrentBlog(fullBlog);
       setFormData({
-        title: blog.title,
-        content: blog.content,
-        summary: blog.summary || "",
+        title: fullBlog.title,
+        content: fullBlog.content || "",
+        summary: fullBlog.summary || "",
         key: "",
-        blogType: blog.blogType,
-        categoryId: blog.category?.id,
-        tags: blog.tags?.map(t => typeof t === 'string' ? t : t.name) || [],
-        isPremium: blog.isPremium || false,
+        blogType: fullBlog.blogType,
+        categoryId: fullBlog.category?.id,
+        tags: fullBlog.tags?.map(t => typeof t === 'string' ? t : t.name) || [],
+        isPremium: fullBlog.isPremium || false,
       });
-      setImagePreview(blog.thumbnailUrl || "");
+      setImagePreview(fullBlog.thumbnailUrl || "");
+    } catch (error) {
+      console.error("Error loading blog details:", error);
+      toast.error("Không thể tải nội dung bài viết");
+    } finally {
+      setIsLoadingBlog(false);
     }
-  }, [blog, isOpen]);
+  }, [blogSlug]);
+
+  useEffect(() => {
+    if (blogSlug && isOpen) {
+      loadBlogDetails();
+    }
+  }, [blogSlug, isOpen, loadBlogDetails]);
 
   const handleInputChange = (
     field: keyof UpdateBlogFormData,
@@ -190,7 +213,7 @@ export default function UpdateBlogModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!blog) return;
+    if (!currentBlog) return;
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -229,7 +252,7 @@ export default function UpdateBlogModal({
       }
 
       // Only include tags if they were changed
-      const originalTags = blog.tags?.map(t => typeof t === 'string' ? t : t.name).sort() || [];
+      const originalTags = currentBlog.tags?.map(t => typeof t === 'string' ? t : t.name).sort() || [];
       const currentTags = (formData.tags || []).sort();
       const tagsChanged = JSON.stringify(originalTags) !== JSON.stringify(currentTags);
       
@@ -237,7 +260,7 @@ export default function UpdateBlogModal({
         updatePayload.tags = formData.tags;
       }
 
-      await blogService.updateBlog(blog.id, updatePayload);
+      await blogService.updateBlog(currentBlog.id, updatePayload);
 
       toast.success("Cập nhật bài viết thành công!");
       onSuccess();
@@ -273,10 +296,11 @@ export default function UpdateBlogModal({
     setSelectedFile(null);
     setTagInput("");
     setTagSuggestions([]);
+    setCurrentBlog(null);
     onClose();
   };
 
-  if (!isOpen || !blog) return null;
+  if (!isOpen || !blogSlug) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -317,6 +341,32 @@ export default function UpdateBlogModal({
           </div>
 
           <form onSubmit={handleSubmit} className="p-6">
+            {isLoadingBlog ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <svg
+                    className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <p className="text-sm text-gray-600">Đang tải nội dung bài viết...</p>
+                </div>
+              </div>
+            ) : (
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
@@ -597,86 +647,12 @@ export default function UpdateBlogModal({
                   height={500}
                 />
               </div>
-            </div>
 
-            {errors.submit && (
-              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 text-red-500 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="text-sm text-red-700">{errors.submit}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Premium Checkbox */}
-            <div className="flex items-center gap-3 mt-6 pt-6 border-t border-gray-200">
-              <input
-                type="checkbox"
-                id="isPremium"
-                checked={formData.isPremium || false}
-                onChange={(e) =>
-                  handleInputChange("isPremium", e.target.checked)
-                }
-                className="w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
-                disabled={isLoading}
-              />
-              <label htmlFor="isPremium" className="text-sm text-gray-700">
-                Chỉ dành cho Premium (yêu cầu subscription để đọc)
-              </label>
-            </div>
-
-            <div className="flex items-center justify-end space-x-4 mt-6 pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
-              >
-                Hủy bỏ
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center"
-              >
-                {isLoading ? (
-                  <>
+              {errors.submit && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center">
                     <svg
-                      className="animate-spin w-4 h-4 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    {isUploadingImage ? "Đang tải ảnh..." : "Đang cập nhật..."}
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-4 h-4 mr-2"
+                      className="w-5 h-5 text-red-500 mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -685,14 +661,89 @@ export default function UpdateBlogModal({
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M5 13l4 4L19 7"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    Cập nhật
-                  </>
-                )}
-              </button>
+                    <span className="text-sm text-red-700">{errors.submit}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Premium Checkbox */}
+              <div className="flex items-center gap-3 mt-6 pt-6 border-t border-gray-200">
+                <input
+                  type="checkbox"
+                  id="isPremium"
+                  checked={formData.isPremium || false}
+                  onChange={(e) =>
+                    handleInputChange("isPremium", e.target.checked)
+                  }
+                  className="w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                  disabled={isLoading}
+                />
+                <label htmlFor="isPremium" className="text-sm text-gray-700">
+                  Chỉ dành cho Premium (yêu cầu subscription để đọc)
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end space-x-4 mt-6 pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="animate-spin w-4 h-4 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      {isUploadingImage ? "Đang tải ảnh..." : "Đang cập nhật..."}
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Cập nhật
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
+            )}
           </form>
         </div>
       </div>
