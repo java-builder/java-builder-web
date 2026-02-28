@@ -1,16 +1,21 @@
 {
-  "name": "JavaBuilder - Làm chủ Backend Java",
+  "name": "JavaBuilder - Java Builder Online",
   "short_name": "JavaBuilder",
   "description": "Nền tảng học lập trình Java Backend chuyên sâu",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0056d2",
+  "theme_color": "#f97316",
   "icons": [
     {
-      "src": "/logos/java-coffee-logo-icon-vector.jpg",
-      "sizes": "64x64 128x128 256x256",
-      "type": "image/jpeg"
+      "src": "/logos/java-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logos/java-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }

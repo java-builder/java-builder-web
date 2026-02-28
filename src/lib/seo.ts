@@ -4,12 +4,23 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 const SITE_NAME = 'JavaBuilder';
 const SITE_DESCRIPTION = 'JavaBuilder.online - Nền tảng học lập trình Java, Spring Boot, React online số 1 Việt Nam. Khóa học chất lượng cao với mentor chuyên nghiệp. Từ zero đến hero cùng JavaBuilder.';
 const SITE_KEYWORDS = [
+  // Brand keywords - ưu tiên cao nhất
   'javabuilder',
   'java builder',
-  'javabuilder.online',
+  'javabuilder online',
   'java builder online',
+  'javabuilder.online',
+  'www.javabuilder.online',
+  'javabuilder việt nam',
+  'java builder việt nam',
+  'javabuilder vn',
+  'java builder vn',
+  
+  // Course keywords
   'javabuilder học java',
   'javabuilder khóa học',
+  'khóa học javabuilder',
+  'học java javabuilder',
   'học java online việt nam',
   'khóa học java spring boot',
   'học lập trình java từ cơ bản đến nâng cao',
@@ -18,6 +29,7 @@ const SITE_KEYWORDS = [
   'học java miễn phí',
   'lộ trình học java',
   'java developer việt nam',
+  
   // General keywords
   'học java',
   'học lập trình java',
