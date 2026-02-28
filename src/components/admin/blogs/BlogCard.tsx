@@ -30,7 +30,7 @@ export default function BlogCard({
             fill
             loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover w-full h-full transition-transform duration-300"
+            className="object-contain w-full h-full transition-transform duration-300"
           />
         </div>
       ) : (
