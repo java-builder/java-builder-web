@@ -221,13 +221,15 @@ export default function AdminUserSubscriptionsPage() {
                   <tr key={sub.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <Image
-                          src={sub.avatar || "/default-avatar.png"}
-                          alt={sub.username}
-                          width={32}
-                          height={32}
-                          className="rounded-full object-cover"
-                        />
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                          <Image
+                            src={sub.avatar || "/default-avatar.png"}
+                            alt={sub.username}
+                            width={32}
+                            height={32}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <div>
                           <div className="text-sm font-medium text-gray-900">
                             {sub.username}
