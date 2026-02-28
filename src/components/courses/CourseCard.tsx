@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CourseDetailResponse, CourseLevel, CourseFormat } from "@/types/course";
-import { favoriteApi } from "@/services/course.service";
+import { favoriteService } from "@/services/favorite.service";
+import { FavoriteTargetType } from "@/types/favorite";
 import { authApi } from "@/services/auth.service";
 import toast from "react-hot-toast";
 
@@ -28,7 +29,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
     const checkFavorite = async () => {
       try {
-        const result = await favoriteApi.check(course.id);
+        const result = await favoriteService.check(course.id, FavoriteTargetType.COURSE);
         if (result && result.data !== undefined) {
           setIsFavorite(result.data);
         }
@@ -50,7 +51,10 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
     setIsLoading(true);
     try {
-      const result = await favoriteApi.toggle(course.id);
+      const result = await favoriteService.toggle({ 
+        targetId: course.id, 
+        targetType: FavoriteTargetType.COURSE 
+      });
       if (result.code === 200) {
         setIsFavorite(result.data ?? false);
         toast.success(result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");

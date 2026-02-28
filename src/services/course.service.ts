@@ -15,7 +15,6 @@ import {
   CreateLessonResponse,
   UpdateLessonRequest,
   LessonDetailResponse,
-  FavoriteResponse,
   FileMetaDataResponse,
   PreSignedResponse,
   CourseLearningResponse,
@@ -178,37 +177,6 @@ export const lessonApi = {
     const response = await apiClient.put<ApiResponse<void>>(
       API.LESSON_PROGRESS,
       data,
-    );
-    return response.data;
-  },
-};
-
-export const favoriteApi = {
-  // Toggle favorite (add/remove)
-  toggle: async (courseId: string) => {
-    const response = await apiClient.post<ApiResponse<boolean>>(
-      `${API.FAVORITES_TOGGLE}/${courseId}`,
-    );
-    return response.data;
-  },
-
-  // Check if course is favorited
-  check: async (courseId: string) => {
-    try {
-      const response = await apiClient.get<ApiResponse<boolean>>(
-        `${API.FAVORITES_CHECK}/${courseId}`,
-      );
-      return response.data;
-    } catch {
-      return { code: 200, data: false };
-    }
-  },
-
-  // Get user's favorites
-  getMyFavorites: async (page: number = 1, size: number = 10) => {
-    const response = await apiClient.get<ApiResponse<PageResponse<FavoriteResponse>>>(
-      API.FAVORITES_MY,
-      { params: { page, size } },
     );
     return response.data;
   },

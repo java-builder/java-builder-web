@@ -1,67 +1,70 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { favoriteApi } from "@/services/course.service";
-import { FavoriteResponse, CourseLevel } from "@/types/course";
+import { favoriteService } from "@/services/favorite.service";
+import { useFavorites } from "@/hooks/useFavorites";
+import { FavoriteTargetType } from "@/types/favorite";
+import { CourseLevel } from "@/types/course";
 import toast from "react-hot-toast";
 
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState<FavoriteResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<FavoriteTargetType>(FavoriteTargetType.COURSE);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const hasFetched = useRef(false);
+  const { favorites, isLoading, totalPages, refetch } = useFavorites(currentPage, 12, activeTab);
 
-  const fetchFavorites = async (page: number = 1) => {
-    try {
-      setIsLoading(true);
-      const result = await favoriteApi.getMyFavorites(page, 12);
-      if (result.data) {
-        setFavorites(result.data.data || []);
-        setTotalPages(result.data.totalPages || 1);
-        setCurrentPage(page);
-      }
-    } catch {
-      toast.error("Vui lòng đăng nhập để xem danh sách yêu thích");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleTabChange = (tab: FavoriteTargetType) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
   };
 
-  useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-    fetchFavorites();
-  }, []);
-
-  const handleRemoveFavorite = async (courseId: string) => {
+  const handleRemoveFavorite = async (targetId: string, targetType: FavoriteTargetType) => {
     try {
-      await favoriteApi.toggle(courseId);
-      setFavorites(prev => prev.filter(f => f.courseId !== courseId));
+      await favoriteService.toggle({ targetId, targetType });
+      refetch();
       toast.success("Đã xóa khỏi yêu thích");
     } catch {
       toast.error("Có lỗi xảy ra");
     }
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price?: number) => {
+    if (!price) return "Miễn phí";
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(price);
   };
 
-  const getLevelText = (level: string) => {
+  const getLevelText = (level?: string) => {
+    if (!level) return "";
     switch (level as CourseLevel) {
       case CourseLevel.BEGINNER: return "Cơ bản";
       case CourseLevel.INTERMEDIATE: return "Trung cấp";
       case CourseLevel.ADVANCED: return "Nâng cao";
       default: return level;
     }
+  };
+
+  const getItemUrl = (item: typeof favorites[0]) => {
+    return item.targetType === FavoriteTargetType.COURSE 
+      ? `/courses/${item.targetId}` 
+      : `/blogs/${item.targetId}`;
+  };
+
+  const getItemIcon = (targetType: FavoriteTargetType) => {
+    return targetType === FavoriteTargetType.COURSE ? (
+      <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    ) : (
+      <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+      </svg>
+    );
   };
 
   return (
@@ -75,7 +78,7 @@ export default function FavoritesPage() {
           <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-          <span className="text-gray-900 dark:text-white font-medium">Khóa học yêu thích</span>
+          <span className="text-gray-900 dark:text-white font-medium">Nội dung yêu thích</span>
         </nav>
 
         {/* Header */}
@@ -84,9 +87,45 @@ export default function FavoritesPage() {
             <svg className="w-7 h-7 text-red-500" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            Khóa học yêu thích
+            Nội dung yêu thích
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Danh sách các khóa học bạn đã lưu</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Danh sách khóa học và bài viết bạn đã lưu</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-6 border-b border-gray-200 dark:border-slate-700">
+          <nav className="flex gap-8">
+            <button
+              onClick={() => handleTabChange(FavoriteTargetType.COURSE)}
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === FavoriteTargetType.COURSE
+                  ? "border-accent text-accent"
+                  : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                Khóa học
+              </div>
+            </button>
+            <button
+              onClick={() => handleTabChange(FavoriteTargetType.BLOG)}
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === FavoriteTargetType.BLOG
+                  ? "border-accent text-accent"
+                  : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+                Bài viết
+              </div>
+            </button>
+          </nav>
         </div>
 
         {/* Content */}
@@ -99,10 +138,19 @@ export default function FavoritesPage() {
             <svg className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Chưa có khóa học yêu thích</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">Hãy khám phá và thêm các khóa học bạn quan tâm</p>
-            <Link href="/courses" className="inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors">
-              Khám phá khóa học
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              {activeTab === FavoriteTargetType.COURSE ? "Chưa có khóa học yêu thích" : "Chưa có bài viết yêu thích"}
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
+              {activeTab === FavoriteTargetType.COURSE 
+                ? "Hãy khám phá và thêm các khóa học bạn quan tâm" 
+                : "Hãy khám phá và thêm các bài viết bạn quan tâm"}
+            </p>
+            <Link 
+              href={activeTab === FavoriteTargetType.COURSE ? "/courses" : "/blogs"} 
+              className="inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
+            >
+              {activeTab === FavoriteTargetType.COURSE ? "Khám phá khóa học" : "Xem bài viết"}
             </Link>
           </div>
         ) : (
@@ -110,23 +158,31 @@ export default function FavoritesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {favorites.map((item) => (
                 <div key={item.id} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-gray-200 dark:border-slate-700">
-                  <Link href={`/courses/${item.courseId}`}>
+                  <Link href={getItemUrl(item)}>
                     <div className="relative aspect-video">
                       {item.thumbnailUrl ? (
-                        <Image src={item.thumbnailUrl} alt={item.courseTitle} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <Image src={item.thumbnailUrl} alt={item.targetTitle} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">
-                          <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                          </svg>
+                          {getItemIcon(item.targetType)}
                         </div>
                       )}
-                      {/* Favorite Badge */}
+                      {/* Type Badge */}
+                      <div className="absolute top-4 left-4">
+                        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                          item.targetType === FavoriteTargetType.COURSE 
+                            ? 'bg-blue-500 text-white' 
+                            : 'bg-purple-500 text-white'
+                        }`}>
+                          {item.targetType === FavoriteTargetType.COURSE ? 'Khóa học' : 'Bài viết'}
+                        </span>
+                      </div>
+                      {/* Favorite Button */}
                       <div className="absolute top-4 right-4">
                         <button
                           onClick={(e) => {
                             e.preventDefault();
-                            handleRemoveFavorite(item.courseId);
+                            handleRemoveFavorite(item.targetId, item.targetType);
                           }}
                           className="p-2 bg-white/90 hover:bg-red-50 text-red-500 rounded-full shadow-lg transition-colors"
                           title="Xóa khỏi yêu thích"
@@ -149,16 +205,22 @@ export default function FavoritesPage() {
                         <span className="text-sm text-gray-500 dark:text-gray-400">{item.courseDuration} giờ</span>
                       )}
                     </div>
-                    <Link href={`/courses/${item.courseId}`}>
+                    <Link href={getItemUrl(item)}>
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-accent transition-colors">
-                        {item.courseTitle}
+                        {item.targetTitle}
                       </h3>
                     </Link>
-                    <p className="text-gray-500 dark:text-gray-400 line-clamp-2 mt-2 mb-4">{item.courseDescription}</p>
+                    <p className="text-gray-500 dark:text-gray-400 line-clamp-2 mt-2 mb-4">{item.targetDescription}</p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
-                      <span className="text-xl font-bold text-accent">{formatPrice(item.coursePrice)}</span>
+                      {item.targetType === FavoriteTargetType.COURSE && item.coursePrice !== undefined ? (
+                        <span className="text-xl font-bold text-accent">{formatPrice(item.coursePrice)}</span>
+                      ) : (
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {new Date(item.addedAt).toLocaleDateString('vi-VN')}
+                        </span>
+                      )}
                       <Link
-                        href={`/courses/${item.courseId}`}
+                        href={getItemUrl(item)}
                         className="px-4 py-2 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
                       >
                         Xem chi tiết
@@ -173,7 +235,7 @@ export default function FavoritesPage() {
             {totalPages > 1 && (
               <div className="flex justify-center mt-8 gap-2">
                 <button
-                  onClick={() => fetchFavorites(currentPage - 1)}
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700"
                 >
@@ -183,7 +245,7 @@ export default function FavoritesPage() {
                   Trang {currentPage} / {totalPages}
                 </span>
                 <button
-                  onClick={() => fetchFavorites(currentPage + 1)}
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700"
                 >

@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { favoriteApi } from "@/services/course.service";
-import { FavoriteResponse } from "@/types/favorite";
+import { favoriteService } from "@/services/favorite.service";
+import { FavoriteResponse, FavoriteTargetType } from "@/types/favorite";
 import toast from "react-hot-toast";
 
 export default function FavoriteCoursesTab() {
@@ -17,7 +17,7 @@ export default function FavoriteCoursesTab() {
   const fetchFavoriteCourses = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await favoriteApi.getMyFavorites(currentPage, pageSize);
+      const response = await favoriteService.getMyFavorites(currentPage, pageSize, FavoriteTargetType.COURSE);
       if (response.data) {
         setCourses(response.data.data || []);
         setTotalPages(response.data.totalPages || 1);
@@ -34,9 +34,9 @@ export default function FavoriteCoursesTab() {
     fetchFavoriteCourses();
   }, [fetchFavoriteCourses]);
 
-  const handleRemoveFavorite = async (courseId: string) => {
+  const handleRemoveFavorite = async (targetId: string) => {
     try {
-      await favoriteApi.toggle(courseId);
+      await favoriteService.toggle({ targetId, targetType: FavoriteTargetType.COURSE });
       toast.success("Đã xóa khỏi danh sách yêu thích");
       fetchFavoriteCourses();
     } catch (error) {
@@ -45,8 +45,8 @@ export default function FavoriteCoursesTab() {
     }
   };
 
-  const formatPrice = (price: number) => {
-    if (price === 0) return "Miễn phí";
+  const formatPrice = (price?: number) => {
+    if (!price || price === 0) return "Miễn phí";
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -142,7 +142,7 @@ export default function FavoriteCoursesTab() {
                       <div className="relative w-full h-full p-4">
                         <Image
                           src={course.thumbnailUrl}
-                          alt={course.courseTitle}
+                          alt={course.targetTitle}
                           fill
                           className="object-contain"
                         />
@@ -167,7 +167,7 @@ export default function FavoriteCoursesTab() {
                     {/* Favorite Badge */}
                     <div className="absolute top-3 right-3">
                       <button
-                        onClick={() => handleRemoveFavorite(course.courseId)}
+                        onClick={() => handleRemoveFavorite(course.targetId)}
                         className="w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center text-red-500 hover:bg-white hover:scale-110 transition-all shadow-md border border-gray-200"
                         title="Xóa khỏi yêu thích"
                       >
@@ -184,14 +184,14 @@ export default function FavoriteCoursesTab() {
 
                   {/* Course Info */}
                   <div className="p-4">
-                    <Link href={`/courses/${course.courseId}`}>
+                    <Link href={`/courses/${course.targetId}`}>
                       <h3 className="text-base font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-accent transition-colors min-h-[3rem]">
-                        {course.courseTitle}
+                        {course.targetTitle}
                       </h3>
                     </Link>
 
                     <p className="text-sm text-gray-600 line-clamp-2 mb-4 min-h-[2.5rem]">
-                      {course.courseDescription}
+                      {course.targetDescription}
                     </p>
 
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
@@ -199,7 +199,7 @@ export default function FavoriteCoursesTab() {
                         {formatPrice(course.coursePrice)}
                       </span>
                       <Link
-                        href={`/courses/${course.courseId}`}
+                        href={`/courses/${course.targetId}`}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-accent hover:text-accent/80 text-sm font-medium transition-colors"
                       >
                         Xem chi tiết

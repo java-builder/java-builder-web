@@ -124,9 +124,9 @@ export const API = {
     FILES_PRE_SIGNED_URL: "/api/v1/files/pre-signed-url",
 
     // FAVORITES
-    FAVORITES_TOGGLE: "/api/v1/favorites/toggle", // + /:courseId
-    FAVORITES_CHECK: "/api/v1/favorites/check", // + /:courseId
-    FAVORITES_MY: "/api/v1/favorites/my",
+    FAVORITES_TOGGLE: "/api/v1/favorites/toggle",
+    FAVORITES_CHECK: "/api/v1/favorites/check", // + /:targetId?targetType=COURSE|BLOG
+    FAVORITES_ME: "/api/v1/favorites/me",
 
     // COMMENT
     COMMENTS: "/api/v1/comments",
