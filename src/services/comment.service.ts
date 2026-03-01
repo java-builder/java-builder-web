@@ -16,7 +16,7 @@ export interface CommentSearchParams {
 export interface AdminCommentParams {
   page?: number;
   size?: number;
-  type: "BLOG" | "LESSON" | "POST" | "QUESTION";
+  type: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS";
   status?: "ACTIVE" | "DELETED"; 
 }
 
@@ -38,7 +38,7 @@ export const commentApi = {
    * Generic root comments loader by target id and type.
    * Backend should accept `targetId` and `type` as query params on GET_ROOT_COMMENTS.
    */
-  getRootByTarget: async (targetId: string, type: "BLOG" | "LESSON" | "POST" | "QUESTION", params: CommentSearchParams = {}) => {
+  getRootByTarget: async (targetId: string, type: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS", params: CommentSearchParams = {}) => {
     const response = await apiClient.get<
       ApiResponse<PageResponse<CommentResponse>>
     >(API.GET_ROOT_COMMENTS, {

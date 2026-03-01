@@ -135,6 +135,7 @@ export default function CourseCurriculum({
                     return (
                       <div
                         key={lesson.id}
+                        id={`lesson-${lesson.id}`}
                         className={`flex items-start sm:items-center justify-between px-3 sm:px-4 py-3 transition-colors gap-2 ${
                           canWatch
                             ? "hover:bg-accent-50 dark:hover:bg-accent-900/20 cursor-pointer group"

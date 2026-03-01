@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
+import CommentList from "@/components/blogs/CommentList";
+import { useComments } from "@/hooks/useComments";
+import toast from "react-hot-toast";
 
 interface DocsArticleProps {
   title: string;
@@ -8,6 +13,7 @@ interface DocsArticleProps {
   lastUpdated: string;
   content: string;
   breadcrumbs: { label: string; href?: string }[];
+  lessonId?: string;
 }
 
 export default function DocsArticle({
@@ -16,8 +22,59 @@ export default function DocsArticle({
   readTime,
   lastUpdated,
   content,
-  breadcrumbs
+  breadcrumbs,
+  lessonId
 }: DocsArticleProps) {
+  const {
+    comments,
+    isLoading: isLoadingComments,
+    isSubmitting: isSubmittingComment,
+    hasMore: hasMoreComments,
+    loadReplies,
+    addComment,
+    replyToComment,
+    deleteComment,
+    loadMoreComments,
+  } = useComments(lessonId || "", "DOCS");
+
+  const handleAddComment = async (content: string) => {
+    if (!lessonId) return;
+    try {
+      await addComment(content);
+      toast.success("Đăng bình luận thành công");
+    } catch (err) {
+      toast.error((err as Error).message || "Không thể đăng bình luận");
+    }
+  };
+
+  const handleReplyComment = async (commentId: string, content: string) => {
+    if (!lessonId) return;
+    try {
+      await replyToComment(commentId, content);
+      toast.success("Đăng câu trả lời thành công");
+    } catch (err) {
+      toast.error((err as Error).message || "Không thể gửi trả lời");
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!lessonId) return;
+    try {
+      await deleteComment(commentId);
+      toast.success("Xóa bình luận thành công");
+    } catch {
+      toast.error("Không thể xóa bình luận");
+    }
+  };
+
+  const handleLoadMoreComments = async () => {
+    try {
+      await loadMoreComments();
+    } catch (err) {
+      console.error("Error loading more comments:", err);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
       {/* Breadcrumb */}
@@ -68,7 +125,25 @@ export default function DocsArticle({
         className="prose prose-lg dark:prose-invert max-w-none" 
       />
 
-
+      {/* Comments Section */}
+      {lessonId && (
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-700">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            Bình luận
+          </h2>
+          <CommentList
+            comments={comments}
+            onAddComment={handleAddComment}
+            onReplyComment={handleReplyComment}
+            onDeleteComment={handleDeleteComment}
+            onLoadReplies={loadReplies}
+            onLoadMore={handleLoadMoreComments}
+            isLoading={isLoadingComments}
+            isSubmitting={isSubmittingComment}
+            hasMore={hasMoreComments}
+          />
+        </div>
+      )}
     </div>
   );
 }

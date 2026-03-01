@@ -16,13 +16,13 @@ export interface CommentDetailResponse {
   repliesCount: number;
   status: "ACTIVE" | "DELETED";
   targetId?: string;
-  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION";
+  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS";
   createdAt: string;
 }
 
 export interface CreateCommentRequest {
   targetId: string;
-  targetType: "BLOG" | "LESSON" | "POST" | "QUESTION";
+  targetType: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS";
   parentId?: string;
   content: string;
 }

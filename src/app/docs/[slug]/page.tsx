@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import DocsHeader from "@/components/docs/DocsHeader";
 import DocsSidebar from "@/components/docs/DocsSidebar";
@@ -17,8 +17,10 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 export default function DocsDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
+  const hasProcessedLessonParam = useRef(false);
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +31,7 @@ export default function DocsDetailPage() {
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [loadedChapters, setLoadedChapters] = useState<Set<string>>(new Set());
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
+  const [isLoadingLesson, setIsLoadingLesson] = useState(false);
 
   useEffect(() => {
     // Chỉ fetch khi user đã authenticated
@@ -46,18 +49,32 @@ export default function DocsDetailPage() {
     const fetchCourse = async () => {
       try {
         setIsLoading(true);
+        
+        // Check if there's a lessonId in URL - set loading state immediately
+        const lessonId = searchParams.get('lessonId');
+        if (lessonId) {
+          setShowOverview(false);
+          setIsLoadingLesson(true);
+        }
+        
         const response = await courseApi.getBySlug(slug);
         if (response.code === 200 && response.data) {
           const courseData = response.data;
           setCourse(courseData);
-          setShowOverview(true);
+          
+          // If no lessonId, show overview
+          if (!lessonId) {
+            setShowOverview(true);
+          }
+          
           const firstLesson = courseData.chapters?.[0]?.lessons?.[0];
           if (firstLesson && courseData.chapters?.[0]) {
             setOpenCategories([courseData.chapters[0].id]);
           }
 
+          // Load lesson names for all chapters (lightweight)
           if (courseData.chapters && courseData.chapters.length > 0) {
-            const fetchAllLessons = async () => {
+            const fetchAllLessonNames = async () => {
               const lessonsMap: Record<string, LessonDetailResponse[]> = {};
               const loadedIds = new Set<string>();
               await Promise.all(
@@ -65,7 +82,11 @@ export default function DocsDetailPage() {
                   try {
                     const lessonsResponse = await lessonApi.getByChapterId(chapter.id);
                     if (lessonsResponse.data) {
-                      lessonsMap[chapter.id] = lessonsResponse.data;
+                      // Only store lesson names, not full content
+                      lessonsMap[chapter.id] = lessonsResponse.data.map(lesson => ({
+                        ...lesson,
+                        content: undefined, // Don't load content yet
+                      }));
                     } else {
                       lessonsMap[chapter.id] = [];
                     }
@@ -80,7 +101,7 @@ export default function DocsDetailPage() {
               setChapterLessons(lessonsMap);
               setLoadedChapters(loadedIds);
             };
-            fetchAllLessons();
+            fetchAllLessonNames();
           }
         }
       } catch (error) {
@@ -93,10 +114,19 @@ export default function DocsDetailPage() {
     if (slug) {
       fetchCourse();
     }
-  }, [slug, currentUser, isLoadingUser]);
+  }, [slug, currentUser, isLoadingUser, searchParams]);
 
-  const handleLessonClick = async (lessonId: string) => {
+  const handleLessonClick = useCallback(async (lessonId: string) => {
     try {
+      // Show loading state immediately
+      setIsLoadingLesson(true);
+      
+      // Update URL with lessonId
+      const url = new URL(window.location.href);
+      url.searchParams.set('lessonId', lessonId);
+      router.push(url.pathname + url.search, { scroll: false });
+
+      // Fetch full lesson content
       const response = await lessonApi.getById(lessonId);
       if (response.data) {
         const lesson = response.data;
@@ -109,10 +139,57 @@ export default function DocsDetailPage() {
       }
     } catch (error) {
       console.error("Error fetching lesson:", error);
+    } finally {
+      setIsLoadingLesson(false);
     }
-  };
+  }, [router]);
+
+  // Handle lessonId from URL params
+  useEffect(() => {
+    if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0 || hasProcessedLessonParam.current) return;
+    
+    const lessonId = searchParams.get('lessonId');
+    if (!lessonId) return;
+
+    hasProcessedLessonParam.current = true;
+
+    // Find the chapter containing this lesson
+    for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
+      const targetLesson = lessons.find(l => l.id === lessonId);
+      
+      if (targetLesson) {
+        // Open the chapter
+        if (!openCategories.includes(chapterId)) {
+          setOpenCategories(prev => [...prev, chapterId]);
+        }
+        
+        // Load and display the lesson with loading state
+        setIsLoadingLesson(true);
+        handleLessonClick(lessonId).finally(() => {
+          // Scroll to lesson after loading
+          setTimeout(() => {
+            const lessonElement = document.getElementById(`lesson-${lessonId}`);
+            if (lessonElement) {
+              lessonElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              lessonElement.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
+              setTimeout(() => {
+                lessonElement.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
+              }, 2000);
+            }
+          }, 300);
+        });
+        
+        break;
+      }
+    }
+  }, [course, chapterLessons, searchParams, openCategories, handleLessonClick]);
 
   const handleOverviewClick = () => {
+    // Remove lessonId from URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete('lessonId');
+    router.push(url.pathname + url.search, { scroll: false });
+
     setShowOverview(true);
     setSelectedChapter(null);
     setSelectedLesson(null);
@@ -237,9 +314,9 @@ export default function DocsDetailPage() {
           selectedLessonId={selectedLesson?.id || null}
         />
 
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 transition-opacity duration-200">
           {showOverview ? (
-            <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
+            <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 animate-in fade-in duration-300">
               <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
                 <Link href="/docs" className="hover:text-accent">Tài liệu</Link>
                 <span>/</span>
@@ -257,20 +334,56 @@ export default function DocsDetailPage() {
 
               {course && <CourseOverview course={course} />}
             </div>
+          ) : isLoadingLesson ? (
+            <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 animate-pulse">
+              {/* Breadcrumb skeleton */}
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-32"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-40"></div>
+              </div>
+
+              {/* Title skeleton */}
+              <div className="mb-6">
+                <div className="h-10 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-4"></div>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-32"></div>
+                </div>
+              </div>
+
+              {/* Content skeleton */}
+              <div className="space-y-4">
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4/6"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-2/3"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4/5"></div>
+              </div>
+            </div>
           ) : (
-            <DocsArticle
-              title={currentLesson?.lessonName || course?.title || ""}
-              description={currentLesson?.description || course?.description || ""}
-              readTime="15 phút"
-              lastUpdated={formatDate(course?.updatedAt || course?.createdAt || "")}
-              content={currentLesson?.content || course?.description || ""}
-              breadcrumbs={[
-                { label: "Tài liệu", href: "/docs" },
-                { label: course?.title || "", href: `/docs/${course?.slug}` },
-                ...(currentChapter ? [{ label: currentChapter.chapterName }] : []),
-                ...(currentLesson ? [{ label: currentLesson.lessonName }] : [])
-              ]}
-            />
+            <div className="animate-in fade-in duration-300">
+              <DocsArticle
+                title={currentLesson?.lessonName || course?.title || ""}
+                description={currentLesson?.description || course?.description || ""}
+                readTime="15 phút"
+                lastUpdated={formatDate(course?.updatedAt || course?.createdAt || "")}
+                content={currentLesson?.content || course?.description || ""}
+                lessonId={currentLesson?.id}
+                breadcrumbs={[
+                  { label: "Tài liệu", href: "/docs" },
+                  { label: course?.title || "", href: `/docs/${course?.slug}` },
+                  ...(currentChapter ? [{ label: currentChapter.chapterName }] : []),
+                  ...(currentLesson ? [{ label: currentLesson.lessonName }] : [])
+                ]}
+              />
+            </div>
           )}
         </main>
 

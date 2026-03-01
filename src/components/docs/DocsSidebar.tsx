@@ -135,7 +135,7 @@ export default function DocsSidebar({
                     category.topics.map((topic, index) => {
                       const isActive = selectedLessonId === topic.id;
                       return (
-                        <li key={topic.id}>
+                        <li key={topic.id} id={`lesson-${topic.id}`}>
                           <button
                             onClick={(e) => handleTopicClick(e, topic.id)}
                             title={topic.title}

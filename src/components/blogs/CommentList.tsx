@@ -63,10 +63,6 @@ export default function CommentList({
   if (isLoading && comments.length === 0) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="h-6 bg-gray-200 dark:bg-slate-700 rounded-lg w-32 animate-pulse" />
-          <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded-lg w-24 animate-pulse" />
-        </div>
         <div className="h-24 bg-gray-100 dark:bg-slate-700 rounded-xl animate-pulse" />
         {[...Array(3)].map((_, i) => (
           <div key={i} className="flex gap-4 animate-pulse">
@@ -83,21 +79,9 @@ export default function CommentList({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-accent/10 dark:bg-accent/20 rounded-xl flex items-center justify-center">
-            <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Bình luận</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{comments.length} bình luận</p>
-          </div>
-        </div>
-
-        {comments.length > 1 && (
+      {/* Sort buttons - only show when there are multiple comments */}
+      {comments.length > 1 && (
+        <div className="flex justify-end">
           <div className="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
             <button
               onClick={() => setSortBy("newest")}
@@ -120,10 +104,10 @@ export default function CommentList({
               Cũ nhất
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Comment Form */}
+      {/* Comment Form - At the top */}
       <CommentForm onSubmit={onAddComment} isSubmitting={isSubmitting} />
 
       {/* Divider */}
@@ -134,7 +118,7 @@ export default function CommentList({
           </div>
           <div className="relative flex justify-center">
             <span className="bg-white dark:bg-slate-800 px-4 text-sm text-gray-500 dark:text-gray-400">
-              {comments.length} bình luận
+              Tất cả bình luận
             </span>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { CommentResponse } from "@/types/comment";
 import { commentApi } from "@/services/comment.service";
 
-export const useComments = (targetId: string, targetType: "BLOG" | "LESSON" | "POST" | "QUESTION" = "BLOG") => {
+export const useComments = (targetId: string, targetType: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS" = "BLOG") => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
