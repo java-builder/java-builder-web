@@ -31,7 +31,7 @@ export default function DocsCommentsTab() {
       const response = await commentApi.getCommentsForAdmin({
         page,
         size: 10,
-        type: "LESSON",
+        type: "DOCS",
         status: commentStatus,
       });
 
@@ -131,7 +131,7 @@ export default function DocsCommentsTab() {
     try {
       await commentApi.create({
         targetId: selectedComment.targetId || "",
-        targetType: selectedComment.targetType || "LESSON",
+        targetType: selectedComment.targetType || "DOCS",
         parentId: selectedComment.id,
         content,
       });
