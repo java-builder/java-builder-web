@@ -3,8 +3,9 @@
 import { useState } from "react";
 import BlogCommentsTab from "@/components/admin/comments/BlogCommentsTab";
 import CourseCommentsTab from "@/components/admin/comments/CourseCommentsTab";
+import DocsCommentsTab from "@/components/admin/comments/DocsCommentsTab";
 
-type TabType = "blogs" | "courses";
+type TabType = "blogs" | "courses" | "docs";
 
 export default function CommentsPage() {
   const [activeTab, setActiveTab] = useState<TabType>("blogs");
@@ -74,6 +75,32 @@ export default function CommentsPage() {
                 <span className="whitespace-nowrap">Bình luận khóa học</span>
               </div>
             </button>
+
+            <button
+              onClick={() => setActiveTab("docs")}
+              className={`px-4 sm:px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "docs"
+                  ? "border-accent text-accent"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <span className="whitespace-nowrap">Bình luận Docs</span>
+              </div>
+            </button>
           </nav>
         </div>
 
@@ -81,6 +108,7 @@ export default function CommentsPage() {
         <div className="p-4 sm:p-6">
           {activeTab === "blogs" && <BlogCommentsTab />}
           {activeTab === "courses" && <CourseCommentsTab />}
+          {activeTab === "docs" && <DocsCommentsTab />}
         </div>
       </div>
     </div>
