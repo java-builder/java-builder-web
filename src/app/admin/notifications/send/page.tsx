@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -12,7 +11,6 @@ import { UserDetailResponse } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function SendNotificationPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -85,7 +83,12 @@ export default function SendNotificationPage() {
 
       const res = await notificationApi.sendAdminNotification(request);
       toast.success(`Đã gửi thông báo đến ${res.data?.totalRecipients} người dùng`);
-      router.push("/admin/notifications");
+      
+      setTitle("");
+      setContent("");
+      setLink("");
+      setSelectedUsers([]);
+      setSearchQuery("");
     } catch {
       toast.error("Gửi thông báo thất bại");
     } finally {
