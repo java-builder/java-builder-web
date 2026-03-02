@@ -9,6 +9,7 @@ import { notificationApi } from "@/services/notification.service";
 import { SendAdminNotificationRequest } from "@/types/notification";
 import { userApi } from "@/services/user.service";
 import { UserDetailResponse } from "@/types/user";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function SendNotificationPage() {
   const router = useRouter();
@@ -20,12 +21,24 @@ export default function SendNotificationPage() {
   const [users, setUsers] = useState<UserDetailResponse[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const loadUsers = useCallback(async () => {
+  const loadUsers = useCallback(async (search?: string) => {
     setIsLoadingUsers(true);
     try {
       const res = await userApi.getAllUsers(1, 100);
-      setUsers(res.data?.data || []);
+      let userData = res.data?.data || [];
+      
+      if (search) {
+        userData = userData.filter(
+          (user) =>
+            user.username?.toLowerCase().includes(search.toLowerCase()) ||
+            user.email?.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      
+      setUsers(userData);
     } catch {
       toast.error("Không thể tải danh sách người dùng");
     } finally {
@@ -37,11 +50,15 @@ export default function SendNotificationPage() {
     loadUsers();
   }, [loadUsers]);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    if (debouncedSearchQuery) {
+      loadUsers(debouncedSearchQuery);
+    } else {
+      loadUsers();
+    }
+  }, [debouncedSearchQuery, loadUsers]);
+
+  const filteredUsers = users;
 
   const handleUserSelect = (userId: string) => {
     setSelectedUsers((prev) =>
