@@ -1,7 +1,6 @@
  "use client";
  
  import Link from "next/link";
- import Image from "next/image";
  import MotionWrapper from "@/components/MotionWrapper";
  import Header from "@/components/Header";
  import Footer from "@/components/Footer";
@@ -54,35 +53,73 @@ export default function Home() {
                       - nền tảng học Java online hàng đầu Việt Nam - phát triển kỹ năng coding thực sự.
                     </p>
                   </div>
-
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0 pt-2">
-                    <Link
-                      href="/courses"
-                      className="inline-flex items-center justify-center px-6 py-3 bg-accent text-white font-semibold rounded-full shadow-md hover:shadow-lg transition transform duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent/30"
-                    >
-                      Khám phá khóa học
-                    </Link>
-                    <Link
-                      href="/blogs"
-                      className="inline-flex items-center justify-center px-5 py-3 border border-gray-200 text-gray-700 bg-white rounded-full hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      Khám phá bài viết
-                    </Link>
-                  </div>
                 </div>
               </div>
 
-              {/* Right: Illustration / image */}
+              {/* Right: Facebook Group Banner */}
               <div className="lg:col-span-5">
-                <div className="w-full rounded-xl overflow-hidden shadow-xl ring-1 ring-gray-200/50">
-                  <Image
-                    src="/hero-background.jpg"
-                    alt="Hero illustration"
-                    width={600}
-                    height={400}
-                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover"
-                    priority
-                  />
+                {/* Facebook Group Card */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/50 p-5 hover:bg-white hover:border-gray-300 transition-all duration-300">
+                  <div className="flex items-start space-x-3 mb-4">
+                    {/* Facebook Icon */}
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
+                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                        Cộng đồng
+                      </div>
+                      
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                        Tham gia nhóm JavaBuilder - Lập trình Backend Java
+                      </h3>
+                      
+                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                        Kết nối với cộng đồng Backend Java, chia sẻ kinh nghiệm và cùng phát triển.
+                      </p>
+
+                      {/* Stats */}
+                      <div className="flex items-center space-x-4 mb-4 text-xs text-gray-500">
+                        <div className="flex items-center">
+                          <svg className="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                          </svg>
+                          <span className="font-medium">1000+ thành viên</span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                          </svg>
+                          <span className="font-medium">Hoạt động</span>
+                        </div>
+                      </div>
+
+                      {/* CTA Button */}
+                      <a
+                        href="https://www.facebook.com/groups/779508281889441"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Tham gia nhóm
+                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
