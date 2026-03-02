@@ -139,13 +139,13 @@ export default function DocsSidebar({
                           <button
                             onClick={(e) => handleTopicClick(e, topic.id)}
                             title={topic.title}
-                            className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-start gap-2 ${
+                            className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-all duration-200 flex items-start gap-2.5 ${
                               isActive
-                                ? "bg-accent text-white font-medium"
-                                : "text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-gray-50 dark:hover:bg-slate-700/50"
+                                ? "bg-accent/10 text-accent font-medium"
+                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700/50"
                             }`}
                           >
-                            <span className="flex-shrink-0 font-medium">{index + 1}.</span>
+                            <span className="flex-shrink-0">{index + 1}.</span>
                             <span className="truncate">{topic.title}</span>
                           </button>
                         </li>

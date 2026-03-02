@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import DocsHeader from "@/components/docs/DocsHeader";
@@ -20,7 +20,7 @@ export default function DocsDetailPage() {
   const searchParams = useSearchParams();
   const slug = params.slug as string;
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
-  const hasProcessedLessonParam = useRef(false);
+  const currentLessonIdRef = useRef<string | null>(null);
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,14 +34,11 @@ export default function DocsDetailPage() {
   const [isLoadingLesson, setIsLoadingLesson] = useState(false);
 
   useEffect(() => {
-    // Chỉ fetch khi user đã authenticated
     if (isLoadingUser) {
-      // Đang check auth, giữ loading state
       return;
     }
 
     if (!currentUser) {
-      // Chưa login, không fetch
       setIsLoading(false);
       return;
     }
@@ -50,29 +47,16 @@ export default function DocsDetailPage() {
       try {
         setIsLoading(true);
         
-        // Check if there's a lessonId in URL - set loading state immediately
-        const lessonId = searchParams.get('lessonId');
-        if (lessonId) {
-          setShowOverview(false);
-          setIsLoadingLesson(true);
-        }
-        
         const response = await courseApi.getBySlug(slug);
         if (response.code === 200 && response.data) {
           const courseData = response.data;
           setCourse(courseData);
-          
-          // If no lessonId, show overview
-          if (!lessonId) {
-            setShowOverview(true);
-          }
           
           const firstLesson = courseData.chapters?.[0]?.lessons?.[0];
           if (firstLesson && courseData.chapters?.[0]) {
             setOpenCategories([courseData.chapters[0].id]);
           }
 
-          // Load lesson names for all chapters (lightweight)
           if (courseData.chapters && courseData.chapters.length > 0) {
             const fetchAllLessonNames = async () => {
               const lessonsMap: Record<string, LessonDetailResponse[]> = {};
@@ -82,10 +66,9 @@ export default function DocsDetailPage() {
                   try {
                     const lessonsResponse = await lessonApi.getByChapterId(chapter.id);
                     if (lessonsResponse.data) {
-                      // Only store lesson names, not full content
                       lessonsMap[chapter.id] = lessonsResponse.data.map(lesson => ({
                         ...lesson,
-                        content: undefined, // Don't load content yet
+                        content: undefined,
                       }));
                     } else {
                       lessonsMap[chapter.id] = [];
@@ -114,19 +97,24 @@ export default function DocsDetailPage() {
     if (slug) {
       fetchCourse();
     }
-  }, [slug, currentUser, isLoadingUser, searchParams]);
+  }, [slug, currentUser, isLoadingUser]);
 
   const handleLessonClick = useCallback(async (lessonId: string) => {
+    if (currentLessonIdRef.current === lessonId || isLoadingLesson) {
+      return;
+    }
+
     try {
-      // Show loading state immediately
+      currentLessonIdRef.current = lessonId;
+      
+      setSelectedChapter(lessonId);
+      setShowOverview(false);
       setIsLoadingLesson(true);
       
-      // Update URL with lessonId
       const url = new URL(window.location.href);
       url.searchParams.set('lessonId', lessonId);
-      router.push(url.pathname + url.search, { scroll: false });
+      window.history.replaceState({}, '', url.pathname + url.search);
 
-      // Fetch full lesson content
       const response = await lessonApi.getById(lessonId);
       if (response.data) {
         const lesson = response.data;
@@ -134,64 +122,57 @@ export default function DocsDetailPage() {
           lesson.content = lesson.content.replace(/\n*\*Tiếp theo:[\s\S]*?\*\s*$/, '').trim();
         }
         setSelectedLesson(lesson);
-        setSelectedChapter(lessonId);
-        setShowOverview(false);
       }
     } catch (error) {
       console.error("Error fetching lesson:", error);
+      currentLessonIdRef.current = null;
     } finally {
       setIsLoadingLesson(false);
     }
-  }, [router]);
+  }, [isLoadingLesson]);
 
-  // Handle lessonId from URL params
   useEffect(() => {
-    if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0 || hasProcessedLessonParam.current) return;
+    if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0) return;
     
     const lessonId = searchParams.get('lessonId');
-    if (!lessonId) return;
+    
+    if (!lessonId) {
+      if (!showOverview) {
+        setShowOverview(true);
+        setSelectedChapter(null);
+        setSelectedLesson(null);
+        currentLessonIdRef.current = null;
+      }
+      return;
+    }
 
-    hasProcessedLessonParam.current = true;
+    if (currentLessonIdRef.current === lessonId) {
+      return;
+    }
 
-    // Find the chapter containing this lesson
     for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
       const targetLesson = lessons.find(l => l.id === lessonId);
       
       if (targetLesson) {
-        // Open the chapter
         if (!openCategories.includes(chapterId)) {
           setOpenCategories(prev => [...prev, chapterId]);
         }
         
-        // Load and display the lesson - handleLessonClick will handle loading state
-        handleLessonClick(lessonId).then(() => {
-          // Scroll to lesson after loading
-          setTimeout(() => {
-            const lessonElement = document.getElementById(`lesson-${lessonId}`);
-            if (lessonElement) {
-              lessonElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              lessonElement.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
-              setTimeout(() => {
-                lessonElement.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
-              }, 2000);
-            }
-          }, 300);
-        });
-        
+        handleLessonClick(lessonId);
         break;
       }
     }
-  }, [course, chapterLessons, searchParams, openCategories, handleLessonClick]);
+  }, [course, chapterLessons, searchParams, openCategories, handleLessonClick, showOverview]);
 
   const handleOverviewClick = () => {
-    // Remove lessonId from URL
     const url = new URL(window.location.href);
     url.searchParams.delete('lessonId');
-    router.push(url.pathname + url.search, { scroll: false });
+    window.history.replaceState({}, '', url.pathname + url.search);
 
     setShowOverview(true);
     setSelectedChapter(null);
     setSelectedLesson(null);
+    currentLessonIdRef.current = null;
   };
 
   const handleCategoryToggle = (categoryId: string) => {
@@ -202,7 +183,7 @@ export default function DocsDetailPage() {
     setOpenCategories(newOpenCategories);
   };
 
-  const categories = [
+  const categories = useMemo(() => [
     {
       id: "overview",
       title: "📋 Tổng quan",
@@ -217,15 +198,21 @@ export default function DocsDetailPage() {
         slug: lesson.id,
       })) || []
     })) || [])
-  ];
+  ], [course?.chapters, chapterLessons]);
 
   const currentLesson = selectedLesson;
 
-  const currentChapter = course?.chapters?.find(c => 
-    c.lessons?.some(l => l.id === selectedChapter)
+  const currentChapter = useMemo(() => 
+    course?.chapters?.find(c => 
+      c.lessons?.some(l => l.id === selectedChapter)
+    ), [course?.chapters, selectedChapter]
   );
 
-  // Loading state: đang check auth hoặc đang load course
+  const tocItems = useMemo(() => 
+    showOverview ? [] : extractHeadings(currentLesson?.content || ""),
+    [showOverview, currentLesson?.content]
+  );
+
   if (isLoadingUser || isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
@@ -237,7 +224,6 @@ export default function DocsDetailPage() {
     );
   }
 
-  // Chưa đăng nhập
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
@@ -310,7 +296,7 @@ export default function DocsDetailPage() {
           onBackClick={() => window.history.back()}
           isOpen={isSidebarOpen}
           loadedChapters={loadedChapters}
-          selectedLessonId={selectedLesson?.id || null}
+          selectedLessonId={selectedChapter}
         />
 
         <main className="flex-1 min-w-0 transition-opacity duration-200">
@@ -335,7 +321,6 @@ export default function DocsDetailPage() {
             </div>
           ) : isLoadingLesson ? (
             <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 animate-pulse">
-              {/* Breadcrumb skeleton */}
               <div className="flex items-center gap-2 mb-6">
                 <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
                 <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4"></div>
@@ -344,7 +329,6 @@ export default function DocsDetailPage() {
                 <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-40"></div>
               </div>
 
-              {/* Title skeleton */}
               <div className="mb-6">
                 <div className="h-10 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-4"></div>
                 <div className="flex items-center gap-4 text-sm">
@@ -353,7 +337,6 @@ export default function DocsDetailPage() {
                 </div>
               </div>
 
-              {/* Content skeleton */}
               <div className="space-y-4">
                 <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
                 <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
@@ -367,7 +350,7 @@ export default function DocsDetailPage() {
               </div>
             </div>
           ) : (
-            <div className="animate-in fade-in duration-300">
+            <div key={currentLesson?.id || 'overview'} className="animate-in fade-in duration-300">
               <DocsArticle
                 title={currentLesson?.lessonName || course?.title || ""}
                 description={currentLesson?.description || course?.description || ""}
@@ -386,7 +369,7 @@ export default function DocsDetailPage() {
           )}
         </main>
 
-        <DocsTableOfContents items={showOverview ? [] : extractHeadings(currentLesson?.content || "")} />
+        <DocsTableOfContents items={tocItems} />
       </div>
 
       {isSidebarOpen && (

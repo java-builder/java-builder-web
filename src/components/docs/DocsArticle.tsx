@@ -77,7 +77,6 @@ export default function DocsArticle({
 
   return (
     <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
-      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
         {breadcrumbs.map((crumb, index) => (
           <span key={index} className="flex items-center gap-2">
@@ -95,7 +94,6 @@ export default function DocsArticle({
         ))}
       </nav>
 
-      {/* Article Header */}
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {title}
@@ -119,13 +117,11 @@ export default function DocsArticle({
         </div>
       </header>
 
-      {/* Article Content */}
       <PublicMarkdownRenderer 
         content={content} 
         className="prose prose-lg dark:prose-invert max-w-none" 
       />
 
-      {/* Comments Section */}
       {lessonId && (
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">

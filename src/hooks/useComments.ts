@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { CommentResponse } from "@/types/comment";
 import { commentApi } from "@/services/comment.service";
 
@@ -8,11 +8,18 @@ export const useComments = (targetId: string, targetType: "BLOG" | "LESSON" | "P
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef(false);
+  const currentTargetRef = useRef<string>("");
 
   // Load root comments
   const loadRootComments = useCallback(
     async (page: number = 1, append: boolean = false) => {
+      if (loadingRef.current) {
+        return;
+      }
+
       try {
+        loadingRef.current = true;
         setIsLoading(true);
         const response = await commentApi.getRootByTarget(targetId, targetType, {
           page,
@@ -58,25 +65,31 @@ export const useComments = (targetId: string, targetType: "BLOG" | "LESSON" | "P
         }
       } finally {
         setIsLoading(false);
+        loadingRef.current = false;
       }
     },
     [targetId, targetType],
   );
 
-  // Auto-fetch root comments when blogId (targetId) changes.
   useEffect(() => {
     if (!targetId) {
       setComments([]);
       setHasMore(true);
       setCurrentPage(1);
+      currentTargetRef.current = "";
       return;
     }
 
-    // Trigger initial load for new targetId
+    if (currentTargetRef.current === targetId) {
+      return;
+    }
+
+    currentTargetRef.current = targetId;
+    loadingRef.current = false;
+
     loadRootComments(1, false).catch(() => {});
   }, [targetId, loadRootComments]);
 
-  // Load replies for a specific comment
   const loadReplies = useCallback(async (commentId: string) => {
     try {
         const response = await commentApi.getRepliesByParentId(commentId, {
