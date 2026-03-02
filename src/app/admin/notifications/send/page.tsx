@@ -24,39 +24,24 @@ export default function SendNotificationPage() {
   
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const loadUsers = useCallback(async (search?: string) => {
+  const loadUsers = useCallback(async () => {
     setIsLoadingUsers(true);
     try {
-      const res = await userApi.getAllUsers(1, 100);
-      let userData = res.data?.data || [];
-      
-      if (search) {
-        userData = userData.filter(
-          (user) =>
-            user.username?.toLowerCase().includes(search.toLowerCase()) ||
-            user.email?.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      
-      setUsers(userData);
+      const res = await userApi.search({
+        page: 1,
+        ...(debouncedSearchQuery && { search: debouncedSearchQuery }),
+      });
+      setUsers(res.data?.data || []);
     } catch {
       toast.error("Không thể tải danh sách người dùng");
     } finally {
       setIsLoadingUsers(false);
     }
-  }, []);
+  }, [debouncedSearchQuery]);
 
   useEffect(() => {
     loadUsers();
   }, [loadUsers]);
-
-  useEffect(() => {
-    if (debouncedSearchQuery) {
-      loadUsers(debouncedSearchQuery);
-    } else {
-      loadUsers();
-    }
-  }, [debouncedSearchQuery, loadUsers]);
 
   const filteredUsers = users;
 
