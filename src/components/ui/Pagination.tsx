@@ -41,11 +41,11 @@ export const Pagination = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mt-6">
       <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
         Hiển thị {(currentPage - 1) * pageSize + 1} đến {Math.min(currentPage * pageSize, totalElements)} trong tổng số {totalElements} {itemName}
       </div>
-      <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}

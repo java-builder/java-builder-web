@@ -9,7 +9,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import Image from "next/image";
 import Link from "next/link";
 import { courseApi } from "@/services/course.service";
-import { CourseDetailResponse, CourseFormat, CourseLevel } from "@/types/course";
+import { CourseDetailResponse, CourseLevel } from "@/types/course";
 
 export default function CoursesPage() {
   const [searchText, setSearchText] = useState("");
@@ -38,7 +38,7 @@ export default function CoursesPage() {
         size,
         currentSearch || undefined,
         courseLevel || undefined,
-        CourseFormat.VIDEO,
+        undefined,
       );
 
       if (response.code === 200 && response.data) {
@@ -87,7 +87,9 @@ export default function CoursesPage() {
                 </h1>
 
                 <p className="mt-3 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
-                  Lộ trình thực tiễn, mentor giàu kinh nghiệm, nội dung cập nhật xu hướng.
+                  Khám phá các khóa học được thiết kế để giúp bạn dễ dàng tiếp cận kiến thức từ cơ bản đến nâng cao. 
+                  Nội dung được cập nhật liên tục theo xu hướng công nghệ mới nhất, kèm theo bài tập thực hành và 
+                  source code mẫu để bạn có thể áp dụng ngay vào dự án thực tế.
                 </p>
 
                 <div className="mt-6">

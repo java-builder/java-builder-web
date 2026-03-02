@@ -97,15 +97,19 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
   const category = getCourseCategory(index);
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      <div className="relative h-48 overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         {course.thumbnailUrl ? (
           <Image
             src={course.thumbnailUrl}
             alt={course.title}
             width={400}
             height={192}
-            className="w-full h-full object-cover"
+            className={`w-full h-full ${
+              course.courseFormat === CourseFormat.TEXT
+                ? "object-contain bg-gray-100 dark:bg-slate-700"
+                : "object-cover bg-gray-100 dark:bg-slate-700"
+            }`}
           />
         ) : (
           <div
@@ -136,14 +140,14 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
         <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 flex-1 flex flex-col">
         <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{course.title}</h4>
-        <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3">
+        <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3 flex-grow">
           {course.description}
         </p>
 
         {/* Course Info */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 mt-auto">
           <div className="flex items-center space-x-2 flex-wrap gap-y-2">
             {course.level && (
               <span
@@ -163,21 +167,38 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
             )}
             {course.courseFormat && (
               <span
-                className={`px-2 py-1 rounded-md text-xs font-medium ${course.courseFormat === CourseFormat.VIDEO
+                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium ${course.courseFormat === CourseFormat.VIDEO
                   ? "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300"
                   : course.courseFormat === CourseFormat.TEXT
                     ? "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300"
                     : "bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300"
                   }`}
               >
-                {course.courseFormat === CourseFormat.VIDEO
-                  ? "Video"
-                  : course.courseFormat === CourseFormat.TEXT
-                    ? "Text"
-                    : "Mixed"}
+                {course.courseFormat === CourseFormat.VIDEO ? (
+                  <>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                    </svg>
+                    Video
+                  </>
+                ) : course.courseFormat === CourseFormat.TEXT ? (
+                  <>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                    Text
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                    </svg>
+                    Mixed
+                  </>
+                )}
               </span>
             )}
-            {course.duration && (
+            {course.courseFormat !== CourseFormat.TEXT && course.duration && course.duration > 0 && (
               <span className="px-2 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-md text-xs font-medium">
                 {course.duration} giờ
               </span>
@@ -192,7 +213,7 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
           <div className="flex items-center gap-2">
             <Link
-              href={`/courses/${course.slug}`}
+              href={course.courseFormat === CourseFormat.TEXT ? `/docs/${course.slug}` : `/courses/${course.slug}`}
               className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-accent text-sm font-medium rounded-md hover:bg-accent-50 hover:border-accent/20 transition-colors duration-150"
             >
               <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>

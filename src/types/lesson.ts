@@ -12,6 +12,7 @@ export interface LessonDetailResponse {
   content?: string;
   lessonFormat: LessonFormat;
   isFreePreview: boolean;
+  canAccess?: boolean;
   videoKey?: string;
   videoUrl?: string;
   completed?: boolean;

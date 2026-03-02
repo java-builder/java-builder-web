@@ -358,6 +358,9 @@ export default function DocsDetailPage() {
                 lastUpdated={formatDate(course?.updatedAt || course?.createdAt || "")}
                 content={currentLesson?.content || course?.description || ""}
                 lessonId={currentLesson?.id}
+                canAccess={currentLesson?.canAccess}
+                isFreePreview={currentLesson?.isFreePreview}
+                courseSlug={course?.slug}
                 breadcrumbs={[
                   { label: "Tài liệu", href: "/docs" },
                   { label: course?.title || "", href: `/docs/${course?.slug}` },

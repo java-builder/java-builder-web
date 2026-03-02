@@ -173,6 +173,13 @@ export default function CourseDetailPage() {
     }
 
     if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
+      // If course format is TEXT, redirect to docs page
+      if (course?.courseFormat === "TEXT") {
+        window.location.href = `/docs/${course.slug}?lessonId=${lesson.id}`;
+        return;
+      }
+
+      // Otherwise, show video modal
       try {
         const response = await lessonApi.getById(lesson.id);
         if (response.data) {
