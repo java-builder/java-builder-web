@@ -163,9 +163,8 @@ export default function DocsDetailPage() {
           setOpenCategories(prev => [...prev, chapterId]);
         }
         
-        // Load and display the lesson with loading state
-        setIsLoadingLesson(true);
-        handleLessonClick(lessonId).finally(() => {
+        // Load and display the lesson - handleLessonClick will handle loading state
+        handleLessonClick(lessonId).then(() => {
           // Scroll to lesson after loading
           setTimeout(() => {
             const lessonElement = document.getElementById(`lesson-${lessonId}`);
