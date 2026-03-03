@@ -6,25 +6,49 @@ import { Blog, BlogTypeDisplayNames } from "@/types/blog";
 import BlogTypeIcon from "./BlogTypeIcon";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { formatApiDate } from "@/utils/dateUtils";
+import { blogService } from "@/services/blog.service";
 
 interface BlogPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  blog: Blog | null;
+  blogSlug: string | null;
 }
 
 export default function BlogPreviewModal({
   isOpen,
   onClose,
-  blog,
+  blogSlug,
 }: BlogPreviewModalProps) {
   const [mounted, setMounted] = useState(false);
+  const [blog, setBlog] = useState<Blog | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!isOpen || !blog) return null;
+  useEffect(() => {
+    const fetchBlog = async () => {
+      if (!blogSlug || !isOpen) {
+        setBlog(null);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const blogData = await blogService.getBlogBySlug(blogSlug);
+        setBlog(blogData);
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlog();
+  }, [blogSlug, isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -40,21 +64,30 @@ export default function BlogPreviewModal({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <BlogTypeIcon
-                  blogType={blog.blogType}
-                  className="w-5 h-5 text-blue-600"
-                />
-              </div>
-              <div>
+              {blog && (
+                <>
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <BlogTypeIcon
+                      blogType={blog.blogType}
+                      className="w-5 h-5 text-blue-600"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      Preview Bài viết
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      {BlogTypeDisplayNames[blog.blogType]} •{" "}
+                      {formatApiDate(blog.createdAt)}
+                    </p>
+                  </div>
+                </>
+              )}
+              {!blog && (
                 <h2 className="text-xl font-bold text-gray-900">
                   Preview Bài viết
                 </h2>
-                <p className="text-sm text-gray-600">
-                  {BlogTypeDisplayNames[blog.blogType]} •{" "}
-                  {formatApiDate(blog.createdAt)}
-                </p>
-              </div>
+              )}
             </div>
             <button
               onClick={onClose}
@@ -78,7 +111,19 @@ export default function BlogPreviewModal({
 
           {/* Content */}
           <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-            <article className="p-6 text-gray-700 dark:text-gray-200">
+            {isLoading ? (
+              <div className="p-6 flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+                  <p className="text-gray-600 dark:text-gray-400">Đang tải bài viết...</p>
+                </div>
+              </div>
+            ) : !blog ? (
+              <div className="p-6 flex items-center justify-center min-h-[400px]">
+                <p className="text-gray-600 dark:text-gray-400">Không tìm thấy bài viết</p>
+              </div>
+            ) : (
+              <article className="p-6 text-gray-700 dark:text-gray-200">
               {/* Featured Image */}
               {blog.thumbnailUrl && (
                 <div className="mb-6 relative w-full h-64">
@@ -192,6 +237,7 @@ export default function BlogPreviewModal({
                 </div>
               )}
             </article>
+            )}
           </div>
 
           {/* Footer */}

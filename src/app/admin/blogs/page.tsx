@@ -19,7 +19,7 @@ export default function BlogsPage() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedBlogSlug, setSelectedBlogSlug] = useState<string | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [previewBlog, setPreviewBlog] = useState<Blog | null>(null);
+  const [previewBlogSlug, setPreviewBlogSlug] = useState<string | null>(null);
   const { confirm } = useConfirm();
 
   // State cho blogs và pagination
@@ -315,7 +315,7 @@ export default function BlogsPage() {
           setIsUpdateModalOpen(true);
         }}
         onDelete={handleDelete}
-        onPreview={(blog) => setPreviewBlog(blog)}
+        onPreview={(blog) => setPreviewBlogSlug(blog.slug)}
         isDeleting={isDeleting}
         isLoading={isLoading}
       />
@@ -364,9 +364,9 @@ export default function BlogsPage() {
 
       {/* Preview Modal */}
       <BlogPreviewModal
-        isOpen={!!previewBlog}
-        onClose={() => setPreviewBlog(null)}
-        blog={previewBlog}
+        isOpen={!!previewBlogSlug}
+        onClose={() => setPreviewBlogSlug(null)}
+        blogSlug={previewBlogSlug}
       />
     </div>
   );
