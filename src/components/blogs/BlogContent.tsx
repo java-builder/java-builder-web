@@ -44,9 +44,11 @@ export default function BlogContent({ blog }: BlogContentProps) {
       )}
 
       {/* Content */}
-      <div className="max-w-none prose prose-sm sm:prose lg:prose-lg dark:prose-invert">
-        <PublicMarkdownRenderer content={blog.content} />
-      </div>
+      {blog.content && (
+        <div className="max-w-none prose prose-sm sm:prose lg:prose-lg dark:prose-invert">
+          <PublicMarkdownRenderer content={blog.content} />
+        </div>
+      )}
 
       {/* Premium Content Blocker */}
       {blog.isPremium && blog.canAccess === false && (

@@ -118,30 +118,30 @@ export default function AdminUserSubscriptionsPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-3 sm:p-4 md:p-6">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
             Quản lý User Subscriptions
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
             Danh sách người dùng đã đăng ký Premium
           </p>
         </div>
         <button
           onClick={() => setShowAssignModal(true)}
-          className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors"
+          className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors whitespace-nowrap"
         >
           Thêm Subscription
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Trạng thái
             </label>
             <select
@@ -150,7 +150,7 @@ export default function AdminUserSubscriptionsPage() {
                 setStatus(e.target.value);
                 setPage(1);
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-xs sm:text-sm"
             >
               <option value="">Tất cả</option>
               <option value="ACTIVE">Đang hoạt động</option>
@@ -160,7 +160,7 @@ export default function AdminUserSubscriptionsPage() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Tìm kiếm
             </label>
             <div className="flex gap-2">
@@ -170,11 +170,11 @@ export default function AdminUserSubscriptionsPage() {
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 placeholder="Tìm theo tên hoặc email..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-xs sm:text-sm"
               />
               <button
                 onClick={handleSearch}
-                className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors"
+                className="px-3 sm:px-4 py-2 bg-accent text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors"
               >
                 Tìm
               </button>
@@ -183,8 +183,8 @@ export default function AdminUserSubscriptionsPage() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      {/* Table - Desktop */}
+      <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -284,16 +284,92 @@ export default function AdminUserSubscriptionsPage() {
         )}
       </div>
 
+      {/* Cards - Mobile */}
+      <div className="md:hidden space-y-3">
+        {subscriptions.length === 0 ? (
+          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 text-sm">
+            Không có dữ liệu
+          </div>
+        ) : (
+          subscriptions.map((sub) => (
+            <div key={sub.id} className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                  <Image
+                    src={sub.avatar || "/default-avatar.png"}
+                    alt={sub.username}
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">
+                    {sub.username}
+                  </div>
+                  <div className="text-xs text-gray-500 truncate">{sub.email}</div>
+                </div>
+                {getStatusBadge(sub.status)}
+              </div>
+              
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Gói:</span>
+                  <span className="font-medium text-gray-900">{sub.planName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Bắt đầu:</span>
+                  <span className="text-gray-600">{formatDate(sub.startDate)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Kết thúc:</span>
+                  <span className="text-gray-600">{formatDate(sub.endDate)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Còn lại:</span>
+                  <span className="text-gray-600">
+                    {sub.daysRemaining > 0 ? `${sub.daysRemaining} ngày` : "Hết hạn"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+
+        {/* Pagination - Mobile */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Trước
+            </button>
+            <span className="text-xs text-gray-600">
+              Trang {page} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Sau
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Assign Modal */}
       {showAssignModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
               Thêm Subscription cho User
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Email người dùng
                 </label>
                 <input
@@ -303,11 +379,11 @@ export default function AdminUserSubscriptionsPage() {
                     setAssignForm({ ...assignForm, email: e.target.value })
                   }
                   placeholder="user@example.com"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-xs sm:text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Gói Premium
                 </label>
                 <select
@@ -318,7 +394,7 @@ export default function AdminUserSubscriptionsPage() {
                       subscriptionPlanId: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-xs sm:text-sm"
                 >
                   <option value="">Chọn gói</option>
                   {plans.map((plan) => (
@@ -329,21 +405,21 @@ export default function AdminUserSubscriptionsPage() {
                 </select>
               </div>
             </div>
-            <div className="flex gap-2 mt-6">
+            <div className="flex gap-2 mt-4 sm:mt-6">
               <button
                 onClick={() => {
                   setShowAssignModal(false);
                   setAssignForm({ email: "", subscriptionPlanId: "" });
                 }}
                 disabled={isAssigning}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
                 Hủy
               </button>
               <button
                 onClick={handleAssign}
                 disabled={isAssigning}
-                className="flex-1 px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-accent text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
               >
                 {isAssigning ? "Đang xử lý..." : "Thêm"}
               </button>
