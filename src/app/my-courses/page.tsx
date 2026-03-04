@@ -6,7 +6,7 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { enrollmentApi } from "@/services/enrollment.service";
-import { MyEnrolledCourseResponse, CourseLevel } from "@/types/course";
+import { MyEnrolledCourseResponse, CourseLevel, CourseFormat } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import { formatShortDate } from "@/utils/dateUtils";
@@ -130,7 +130,7 @@ export default function MyCoursesPage() {
               {courses.map((course) => (
                 <Link
                   key={course.id}
-                  href={`/learn/${course.slug}/${course.id}`}
+                  href={course.courseFormat === CourseFormat.TEXT ? `/docs/${course.slug}` : `/learn/${course.slug}/${course.id}`}
                   className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-300"
                 >
                   {/* Course Image */}
