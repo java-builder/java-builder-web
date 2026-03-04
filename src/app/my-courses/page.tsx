@@ -140,7 +140,11 @@ export default function MyCoursesPage() {
                         src={course.thumbnailUrl}
                         alt={course.title}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className={`${
+                          course.courseFormat === CourseFormat.TEXT
+                            ? "object-contain"
+                            : "object-cover group-hover:scale-105"
+                        } transition-transform duration-300`}
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">
