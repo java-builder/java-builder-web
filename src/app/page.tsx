@@ -72,31 +72,31 @@ export default function Home() {
 
                     {/* Content */}
                     <div className="flex-1">
-                      <div className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
+                      <div className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
                         <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                         </svg>
                         Cộng đồng
                       </div>
                       
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                         Tham gia nhóm JavaBuilder - Lập trình Backend Java
                       </h3>
                       
-                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
                         Kết nối với cộng đồng Backend Java, chia sẻ kinh nghiệm và cùng phát triển.
                       </p>
 
                       {/* Stats */}
-                      <div className="flex items-center space-x-4 mb-4 text-xs text-gray-500">
+                      <div className="flex items-center space-x-4 mb-4 text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-4 h-4 mr-1 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                           </svg>
                           <span className="font-medium">1000+ thành viên</span>
                         </div>
                         <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-4 h-4 mr-1 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                           </svg>
                           <span className="font-medium">Hoạt động</span>
@@ -108,7 +108,7 @@ export default function Home() {
                         href="https://www.facebook.com/groups/779508281889441"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                        className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 dark:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 dark:hover:bg-blue-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                       >
                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
