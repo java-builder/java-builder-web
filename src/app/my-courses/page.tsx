@@ -185,27 +185,29 @@ export default function MyCoursesPage() {
                     
                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">{course.description}</p>
                     
-                    {/* Progress Section */}
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between text-sm mb-1.5">
-                        <span className="text-gray-600">Tiến độ</span>
-                        <span className="font-semibold text-gray-900">{course.progress}%</span>
+                    {/* Progress Section - Only show for VIDEO/MIXED courses */}
+                    {course.courseFormat !== CourseFormat.TEXT && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between text-sm mb-1.5">
+                          <span className="text-gray-600">Tiến độ</span>
+                          <span className="font-semibold text-gray-900">{course.progress}%</span>
+                        </div>
+                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${getProgressColor(course.progress)} transition-all duration-500`}
+                            style={{ width: `${course.progress}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between mt-1.5">
+                          <span className="text-xs text-gray-400">
+                            {course.completedLessons}/{course.totalLessons} bài học
+                          </span>
+                          {course.duration && (
+                            <span className="text-xs text-gray-400">{course.duration} giờ</span>
+                          )}
+                        </div>
                       </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${getProgressColor(course.progress)} transition-all duration-500`}
-                          style={{ width: `${course.progress}%` }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-xs text-gray-400">
-                          {course.completedLessons}/{course.totalLessons} bài học
-                        </span>
-                        {course.duration && (
-                          <span className="text-xs text-gray-400">{course.duration} giờ</span>
-                        )}
-                      </div>
-                    </div>
+                    )}
                     
                     {/* Action Button */}
                     <button className="w-full py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors flex items-center justify-center gap-2">

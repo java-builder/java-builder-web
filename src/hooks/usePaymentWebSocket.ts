@@ -46,9 +46,7 @@ export const usePaymentWebSocket = (courseId?: string) => {
           });
           
           setTimeout(() => {
-            if (courseId) {
-              router.push(`/learn/${courseId}`);
-            }
+            router.push('/my-courses');
             router.refresh();
             client.deactivate();
           }, 2000);
