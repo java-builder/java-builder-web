@@ -33,6 +33,7 @@ export default function BlogDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const hasIncrementedViewRef = useRef(false);
 
   const [authModal, setAuthModal] = useState<{
@@ -144,6 +145,20 @@ export default function BlogDetailPage() {
     };
     checkFavorite();
   }, [blog?.id]);
+
+  // Handle scroll for back to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Scroll to hash
   useEffect(() => {
@@ -530,6 +545,19 @@ export default function BlogDetailPage() {
         title={authModal.title}
         message={authModal.message}
       />
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 z-50 p-3 bg-accent hover:bg-accent-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+          aria-label="Back to top"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </button>
+      )}
 
       <Footer />
     </div>

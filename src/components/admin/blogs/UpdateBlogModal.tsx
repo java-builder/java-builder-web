@@ -244,6 +244,7 @@ export default function UpdateBlogModal({
         summary: formData.summary,
         blogType: formData.blogType,
         categoryId: formData.categoryId,
+        isPremium: formData.isPremium || false,
       };
 
       // Only include key if a new image was uploaded
