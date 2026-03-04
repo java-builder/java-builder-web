@@ -80,6 +80,13 @@ export const commentApi = {
     return response.data;
   },
 
+  getById: async (id: string) => {
+    const response = await apiClient.get<ApiResponse<CommentDetailResponse>>(
+      `${API.COMMENTS}/${id}`,
+    );
+    return response.data;
+  },
+
   getCommentsForAdmin: async (params: AdminCommentParams) => {
     const response = await apiClient.get<
       ApiResponse<PageResponse<CommentDetailResponse>>
