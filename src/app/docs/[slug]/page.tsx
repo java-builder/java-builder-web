@@ -27,11 +27,13 @@ export default function DocsDetailPage() {
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState<string | null>(null);
-  const [showOverview, setShowOverview] = useState(true);
+  const lessonIdFromUrl = searchParams.get('lessonId');
+  const [showOverview, setShowOverview] = useState(!lessonIdFromUrl);
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [loadedChapters, setLoadedChapters] = useState<Set<string>>(new Set());
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
-  const [isLoadingLesson, setIsLoadingLesson] = useState(false);
+  const [isLoadingLesson, setIsLoadingLesson] = useState(!!lessonIdFromUrl);
+  const lessonCacheRef = useRef<Record<string, LessonDetailResponse>>({});
 
   useEffect(() => {
     if (isLoadingUser) {
@@ -99,6 +101,63 @@ export default function DocsDetailPage() {
     }
   }, [slug, currentUser, isLoadingUser]);
 
+  const loadLessonContent = useCallback(async (lessonId: string) => {
+    if (lessonCacheRef.current[lessonId]) {
+      setSelectedLesson(lessonCacheRef.current[lessonId]);
+      return lessonCacheRef.current[lessonId];
+    }
+
+    const response = await lessonApi.getById(lessonId);
+    if (response.data) {
+      const lesson = response.data;
+      if (lesson.content) {
+        if (course?.description) {
+          lesson.content = lesson.content.replace(course.description, '').trim();
+        }
+        lesson.content = lesson.content.replace(/\n*\*Tiếp theo:[\s\S]*?\*\s*$/, '').trim();
+      }
+      lessonCacheRef.current[lessonId] = lesson;
+      setSelectedLesson(lesson);
+      return lesson;
+    }
+    return null;
+  }, [course?.description]);
+
+  useEffect(() => {
+    if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0) return;
+    if (currentLessonIdRef.current) return;
+
+    const lessonId = searchParams.get('lessonId');
+    if (!lessonId) return;
+
+    const loadInitialLesson = async () => {
+      for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
+        const targetLesson = lessons.find(l => l.id === lessonId);
+        if (targetLesson) {
+          setOpenCategories(prev => {
+            if (!prev.includes(chapterId)) {
+              return [...prev, chapterId];
+            }
+            return prev;
+          });
+          try {
+            currentLessonIdRef.current = lessonId;
+            setSelectedChapter(lessonId);
+            await loadLessonContent(lessonId);
+          } catch (error) {
+            console.error("Error fetching lesson:", error);
+            currentLessonIdRef.current = null;
+          } finally {
+            setIsLoadingLesson(false);
+          }
+          break;
+        }
+      }
+    };
+
+    loadInitialLesson();
+  }, [course, chapterLessons, searchParams, loadLessonContent]);
+
   const handleLessonClick = useCallback(async (lessonId: string) => {
     if (currentLessonIdRef.current === lessonId || isLoadingLesson) {
       return;
@@ -115,21 +174,14 @@ export default function DocsDetailPage() {
       url.searchParams.set('lessonId', lessonId);
       window.history.replaceState({}, '', url.pathname + url.search);
 
-      const response = await lessonApi.getById(lessonId);
-      if (response.data) {
-        const lesson = response.data;
-        if (lesson.content) {
-          lesson.content = lesson.content.replace(/\n*\*Tiếp theo:[\s\S]*?\*\s*$/, '').trim();
-        }
-        setSelectedLesson(lesson);
-      }
+      await loadLessonContent(lessonId);
     } catch (error) {
       console.error("Error fetching lesson:", error);
       currentLessonIdRef.current = null;
     } finally {
       setIsLoadingLesson(false);
     }
-  }, [isLoadingLesson]);
+  }, [isLoadingLesson, loadLessonContent]);
 
   useEffect(() => {
     if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0) return;
@@ -141,6 +193,7 @@ export default function DocsDetailPage() {
         setShowOverview(true);
         setSelectedChapter(null);
         setSelectedLesson(null);
+        setIsLoadingLesson(false);
         currentLessonIdRef.current = null;
       }
       return;
@@ -150,19 +203,35 @@ export default function DocsDetailPage() {
       return;
     }
 
-    for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
-      const targetLesson = lessons.find(l => l.id === lessonId);
-      
-      if (targetLesson) {
-        if (!openCategories.includes(chapterId)) {
-          setOpenCategories(prev => [...prev, chapterId]);
-        }
+    const loadLesson = async () => {
+      for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
+        const targetLesson = lessons.find(l => l.id === lessonId);
         
-        handleLessonClick(lessonId);
-        break;
+        if (targetLesson) {
+          if (!openCategories.includes(chapterId)) {
+            setOpenCategories(prev => [...prev, chapterId]);
+          }
+          
+          try {
+            currentLessonIdRef.current = lessonId;
+            setSelectedChapter(lessonId);
+            setShowOverview(false);
+            setIsLoadingLesson(true);
+            
+            await loadLessonContent(lessonId);
+          } catch (error) {
+            console.error("Error fetching lesson:", error);
+            currentLessonIdRef.current = null;
+          } finally {
+            setIsLoadingLesson(false);
+          }
+          break;
+        }
       }
-    }
-  }, [course, chapterLessons, searchParams, openCategories, handleLessonClick, showOverview]);
+    };
+    
+    loadLesson();
+  }, [course, chapterLessons, searchParams, openCategories, showOverview, loadLessonContent]);
 
   const handleOverviewClick = () => {
     const url = new URL(window.location.href);
@@ -172,6 +241,7 @@ export default function DocsDetailPage() {
     setShowOverview(true);
     setSelectedChapter(null);
     setSelectedLesson(null);
+    setIsLoadingLesson(false);
     currentLessonIdRef.current = null;
   };
 
@@ -353,10 +423,10 @@ export default function DocsDetailPage() {
             <div key={currentLesson?.id || 'overview'} className="animate-in fade-in duration-300">
               <DocsArticle
                 title={currentLesson?.lessonName || course?.title || ""}
-                description={currentLesson?.description || course?.description || ""}
+                description={currentLesson?.description || ""}
                 readTime="15 phút"
                 lastUpdated={formatDate(course?.updatedAt || course?.createdAt || "")}
-                content={currentLesson?.content || course?.description || ""}
+                content={currentLesson?.content || ""}
                 lessonId={currentLesson?.id}
                 canAccess={currentLesson?.canAccess}
                 isFreePreview={currentLesson?.isFreePreview}
