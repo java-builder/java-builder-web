@@ -183,56 +183,6 @@ export default function DocsDetailPage() {
     }
   }, [isLoadingLesson, loadLessonContent]);
 
-  useEffect(() => {
-    if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0) return;
-    
-    const lessonId = searchParams.get('lessonId');
-    
-    if (!lessonId) {
-      if (!showOverview) {
-        setShowOverview(true);
-        setSelectedChapter(null);
-        setSelectedLesson(null);
-        setIsLoadingLesson(false);
-        currentLessonIdRef.current = null;
-      }
-      return;
-    }
-
-    if (currentLessonIdRef.current === lessonId) {
-      return;
-    }
-
-    const loadLesson = async () => {
-      for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
-        const targetLesson = lessons.find(l => l.id === lessonId);
-        
-        if (targetLesson) {
-          if (!openCategories.includes(chapterId)) {
-            setOpenCategories(prev => [...prev, chapterId]);
-          }
-          
-          try {
-            currentLessonIdRef.current = lessonId;
-            setSelectedChapter(lessonId);
-            setShowOverview(false);
-            setIsLoadingLesson(true);
-            
-            await loadLessonContent(lessonId);
-          } catch (error) {
-            console.error("Error fetching lesson:", error);
-            currentLessonIdRef.current = null;
-          } finally {
-            setIsLoadingLesson(false);
-          }
-          break;
-        }
-      }
-    };
-    
-    loadLesson();
-  }, [course, chapterLessons, searchParams, openCategories, showOverview, loadLessonContent]);
-
   const handleOverviewClick = () => {
     const url = new URL(window.location.href);
     url.searchParams.delete('lessonId');
