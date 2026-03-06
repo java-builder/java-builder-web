@@ -102,22 +102,22 @@ export default function DocsArticle({
       </nav>
 
       {/* Mobile breadcrumb - simplified */}
-      <nav className="flex sm:hidden items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-6">
+      <nav className="flex sm:hidden items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-6 min-w-0">
         {breadcrumbs.length > 0 && (
           <>
             {breadcrumbs[0].href ? (
-              <Link href={breadcrumbs[0].href} className="hover:text-accent">
+              <Link href={breadcrumbs[0].href} className="hover:text-accent flex-shrink-0">
                 {breadcrumbs[0].label}
               </Link>
             ) : (
-              <span>{breadcrumbs[0].label}</span>
+              <span className="flex-shrink-0">{breadcrumbs[0].label}</span>
             )}
             {breadcrumbs.length > 1 && (
               <>
-                <span>/</span>
-                <span>...</span>
-                <span>/</span>
-                <span className="text-gray-900 dark:text-white truncate">
+                <span className="flex-shrink-0">/</span>
+                <span className="flex-shrink-0">...</span>
+                <span className="flex-shrink-0">/</span>
+                <span className="text-gray-900 dark:text-white truncate min-w-0">
                   {breadcrumbs[breadcrumbs.length - 1].label}
                 </span>
               </>
