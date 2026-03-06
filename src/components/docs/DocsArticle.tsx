@@ -83,30 +83,47 @@ export default function DocsArticle({
 
   return (
     <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
-      <nav className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-6 overflow-x-auto pb-2 -mx-6 px-6 lg:mx-0 lg:px-0">
-        <style jsx>{`
-          nav::-webkit-scrollbar {
-            display: none;
-          }
-          nav {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-          }
-        `}</style>
+      {/* Desktop breadcrumb - full */}
+      <nav className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
         {breadcrumbs.map((crumb, index) => (
-          <span key={index} className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+          <span key={index} className="flex items-center gap-2">
             {crumb.href ? (
-              <Link href={crumb.href} className="hover:text-accent whitespace-nowrap">
+              <Link href={crumb.href} className="hover:text-accent">
                 {crumb.label}
               </Link>
             ) : (
-              <span className={`whitespace-nowrap ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
+              <span className={index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}>
                 {crumb.label}
               </span>
             )}
-            {index < breadcrumbs.length - 1 && <span className="flex-shrink-0">/</span>}
+            {index < breadcrumbs.length - 1 && <span>/</span>}
           </span>
         ))}
+      </nav>
+
+      {/* Mobile breadcrumb - simplified */}
+      <nav className="flex sm:hidden items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-6">
+        {breadcrumbs.length > 0 && (
+          <>
+            {breadcrumbs[0].href ? (
+              <Link href={breadcrumbs[0].href} className="hover:text-accent">
+                {breadcrumbs[0].label}
+              </Link>
+            ) : (
+              <span>{breadcrumbs[0].label}</span>
+            )}
+            {breadcrumbs.length > 1 && (
+              <>
+                <span>/</span>
+                <span>...</span>
+                <span>/</span>
+                <span className="text-gray-900 dark:text-white truncate">
+                  {breadcrumbs[breadcrumbs.length - 1].label}
+                </span>
+              </>
+            )}
+          </>
+        )}
       </nav>
 
       <header className="mb-8">
