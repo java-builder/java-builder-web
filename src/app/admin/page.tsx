@@ -1,13 +1,13 @@
 "use client";
 
-import { useAdminOverview } from "@/hooks/useAdminOverview";
+import { AdminOverviewProvider, useAdminOverviewContext } from "@/contexts/AdminOverviewContext";
 import { formatNumber, formatCurrency } from "@/utils/formatters";
 import { StatCard } from "@/components/admin/dashboard/StatCard";
 import { QuickActions } from "@/components/admin/dashboard/QuickActions";
 import { RecentActivities } from "@/components/admin/dashboard/RecentActivities";
 
-export default function AdminDashboard() {
-  const { overview, loading } = useAdminOverview();
+function AdminDashboardContent() {
+  const { overview, loading } = useAdminOverviewContext();
 
   const stats = [
     {
@@ -71,5 +71,13 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminDashboard() {
+  return (
+    <AdminOverviewProvider>
+      <AdminDashboardContent />
+    </AdminOverviewProvider>
   );
 }
