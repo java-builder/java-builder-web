@@ -221,15 +221,21 @@ export default function AdminUserSubscriptionsPage() {
                   <tr key={sub.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
-                          <Image
-                            src={sub.avatar || "/default-avatar.png"}
-                            alt={sub.username}
-                            width={32}
-                            height={32}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
+                        {sub.avatar ? (
+                          <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                            <Image
+                              src={sub.avatar}
+                              alt={sub.username}
+                              width={32}
+                              height={32}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-full flex-shrink-0 bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center text-white font-semibold text-sm">
+                            {sub.username?.charAt(0)?.toUpperCase() || 'U'}
+                          </div>
+                        )}
                         <div>
                           <div className="text-sm font-medium text-gray-900">
                             {sub.username}
@@ -294,15 +300,21 @@ export default function AdminUserSubscriptionsPage() {
           subscriptions.map((sub) => (
             <div key={sub.id} className="bg-white rounded-lg border border-gray-200 p-4">
               <div className="flex items-start gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
-                  <Image
-                    src={sub.avatar || "/default-avatar.png"}
-                    alt={sub.username}
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                {sub.avatar ? (
+                  <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                    <Image
+                      src={sub.avatar}
+                      alt={sub.username}
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-full flex-shrink-0 bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center text-white font-semibold text-sm">
+                    {sub.username?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-gray-900 truncate">
                     {sub.username}
