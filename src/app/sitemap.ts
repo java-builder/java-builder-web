@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { parseApiDate } from '@/utils/dateUtils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/f-learning';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/java-builder';
 
 interface BlogItem {
   slug: string;
