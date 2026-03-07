@@ -32,21 +32,17 @@ export const authApi = {
   },
 
   logout: async () => {
-    // Lấy token trước khi xóa
     const hasToken = typeof window !== "undefined" && !!localStorage.getItem("access_token");
     
-    // Xóa localStorage trước để ngăn các component fetch data
     if (typeof window !== "undefined") {
       localStorage.removeItem("access_token");
       localStorage.removeItem("user_id");
     }
 
-    // Chỉ gọi API logout nếu có token
     if (hasToken) {
       try {
         await apiClient.post<ApiResponse<LogoutResponse>>(API.LOGOUT);
       } catch (error) {
-        // Ignore logout API errors since we already cleared local data
         console.error("Logout API error (ignored):", error);
       }
     }
@@ -94,25 +90,6 @@ export const authApi = {
   loginWithGoogle: async (code: string) => {
     const response = await apiClient.post<ApiResponse<LoginResponse>>(
       API.LOGIN_GOOGLE,
-      null,
-      { params: { code } },
-    );
-
-    if (
-      response.data.code === 200 &&
-      response.data.data?.accessToken &&
-      response.data.data?.userId
-    ) {
-      localStorage.setItem("access_token", response.data.data.accessToken);
-      localStorage.setItem("user_id", response.data.data.userId);
-    }
-
-    return response.data;
-  },
-
-  loginWithGithub: async (code: string) => {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>(
-      API.LOGIN_GITHUB,
       null,
       { params: { code } },
     );

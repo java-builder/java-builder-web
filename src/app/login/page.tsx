@@ -9,7 +9,6 @@ import { authApi } from "@/services/auth.service";
 import { LoginRequest } from "@/types/auth";
 import {
   generateGoogleAuthUrl,
-  generateGithubAuthUrl,
   generateLinkedinAuthUrl,
 } from "@/utils/oauthUtils";
 import TwoFactorModal from "@/components/auth/TwoFactorModal";
@@ -84,10 +83,6 @@ export default function LoginPage() {
 
   const handleGoogleLogin = () => {
     window.location.href = generateGoogleAuthUrl();
-  };
-
-  const handleGithubLogin = () => {
-    window.location.href = generateGithubAuthUrl();
   };
 
   return (
@@ -264,7 +259,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 disabled={isLoading}
@@ -273,15 +268,6 @@ export default function LoginPage() {
               >
                 <Image src="/google.svg" alt="Google" width={16} height={16} className="social-icon" />
                 <span className="ml-2 text-sm text-gray-700">Google</span>
-              </button>
-              <button
-                type="button"
-                disabled={isLoading}
-                onClick={handleGithubLogin}
-                className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                <Image src="/github.svg" alt="GitHub" width={16} height={16} className="social-icon" />
-                <span className="ml-2 text-sm text-gray-700">GitHub</span>
               </button>
               <button
                 type="button"

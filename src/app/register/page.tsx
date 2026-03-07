@@ -9,7 +9,6 @@ import { CreateUserRequest } from "@/types/user";
 import toast from "react-hot-toast";
 import {
   generateGoogleAuthUrl,
-  generateGithubAuthUrl,
   generateLinkedinAuthUrl,
 } from "@/utils/oauthUtils";
 
@@ -307,7 +306,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 disabled={isLoading}
@@ -316,15 +315,6 @@ export default function RegisterPage() {
               >
                 <Image src="/google.svg" alt="Google" width={14} height={14} />
                 <span className="ml-2 text-xs text-gray-700">Google</span>
-              </button>
-              <button
-                type="button"
-                disabled={isLoading}
-                onClick={() => (window.location.href = generateGithubAuthUrl())}
-                className="flex items-center justify-center px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                <Image src="/github.svg" alt="GitHub" width={14} height={14} />
-                <span className="ml-2 text-xs text-gray-700">GitHub</span>
               </button>
               <button
                 type="button"
