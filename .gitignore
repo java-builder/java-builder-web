@@ -45,3 +45,6 @@ next-env.d.ts
 
 # interviews
 /interviews
+
+# generated files
+/public/firebase-messaging-sw.js

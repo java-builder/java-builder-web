@@ -197,4 +197,8 @@ export const API = {
     GET_CONTRIBUTION_BY_ID: "/api/v1/question-contributions", // + /:id
     APPROVE_CONTRIBUTION: "/api/v1/question-contributions", // + /:id/approve
     REJECT_CONTRIBUTION: "/api/v1/question-contributions", // + /:id/reject
+
+    // FCM TOKEN
+    REGISTER_FCM_TOKEN: "/api/v1/user-fcm-tokens",
+    DELETE_FCM_TOKEN: "/api/v1/user-fcm-tokens",
 }

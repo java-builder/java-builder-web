@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useState } from "react";
 import ToastProvider from "@/components/providers/ToastProvider";
+import PushNotificationProvider from "@/components/providers/PushNotificationProvider";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
@@ -40,8 +41,10 @@ export default function Providers({ children }: { children: ReactNode }) {
       <AuthProvider>
         <SettingsProvider>
           <ThemeProvider>
-            {children}
-            <ToastProvider />
+            <PushNotificationProvider>
+              {children}
+              <ToastProvider />
+            </PushNotificationProvider>
           </ThemeProvider>
         </SettingsProvider>
       </AuthProvider>
