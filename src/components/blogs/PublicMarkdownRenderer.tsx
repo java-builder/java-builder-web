@@ -237,7 +237,7 @@ export default function PublicMarkdownRenderer({
                   {/* Code Content */}
                   <div className="relative">
                     <pre
-                      className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-3 sm:p-6 overflow-x-auto text-xs sm:text-sm leading-relaxed font-medium"
+                      className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-3 sm:p-6 overflow-x-auto text-xs sm:text-sm leading-relaxed font-medium whitespace-pre"
                       style={{
                         fontFamily:
                           'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
