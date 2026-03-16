@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { UserDetailResponse } from "@/types/user";
 import { useTwoFactorStatus, useTwoFactorDisable } from "@/hooks/useTwoFactor";
 import TwoFactorModal from "./TwoFactorModal";
@@ -15,6 +16,7 @@ interface SecurityTabProps {
 export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
+  const queryClient = useQueryClient();
   
   const { data: twoFactorEnabled = false, isLoading: statusLoading } = useTwoFactorStatus();
   const disableMutation = useTwoFactorDisable();
@@ -47,6 +49,8 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   const handleTwoFactorSuccess = () => {
     setShowTwoFactorModal(false);
     toast.success("Đã bật xác thực hai yếu tố!");
+    queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
+    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
   };
 
   const isLoading = statusLoading || disableMutation.isPending;
