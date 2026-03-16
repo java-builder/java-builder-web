@@ -38,6 +38,8 @@ export default function TwoFactorModal({
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
+    } else if (e.key === "Enter" && otp.join("").length === 6 && !isLoading) {
+      onSubmit();
     }
   };
 

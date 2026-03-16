@@ -32,6 +32,7 @@ export const API = {
     TWO_FACTOR_ACTIVATE: "/api/v1/two-factor/activate",
     TWO_FACTOR_VERIFY_SETUP: "/api/v1/two-factor/verify-code-setup",
     TWO_FACTOR_DISABLE: "/api/v1/two-factor/disable",
+    TWO_FACTOR_STATUS: "/api/v1/two-factor/status",
 
     // SUBSCRIPTION PLANS (Public & Admin)
     SUBSCRIPTION_PLANS: "/api/v1/subscriptions/plans",

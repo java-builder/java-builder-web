@@ -6,7 +6,6 @@ import {
 } from "@/types/two-factor";
 import { API } from "@/api/api";
 
-
 export const twoFactorApi = {
   async activate(): Promise<ApiResponse<TwoFactorSetupResponse>> {
     const response = await apiClient.post(API.TWO_FACTOR_ACTIVATE);
@@ -31,6 +30,11 @@ export const twoFactorApi = {
 
   async disable(): Promise<ApiResponse<void>> {
     const response = await apiClient.put(API.TWO_FACTOR_DISABLE);
+    return response.data;
+  },
+
+  async getStatus(): Promise<ApiResponse<boolean>> {
+    const response = await apiClient.get(API.TWO_FACTOR_STATUS);
     return response.data;
   },
 };

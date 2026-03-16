@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { twoFactorApi } from "@/services/two-factor.service";
+import { useTwoFactor } from "@/hooks/useTwoFactor";
 import { TwoFactorSetupResponse } from "@/types/two-factor";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import toast from "react-hot-toast";
 
 interface TwoFactorModalProps {
   isOpen: boolean;
@@ -17,66 +18,44 @@ export default function TwoFactorModal({
   onClose,
   onSuccess,
 }: TwoFactorModalProps) {
-  const [setupData, setSetupData] = useState<TwoFactorSetupResponse | null>(
-    null,
-  );
+  const [setupData, setSetupData] = useState<TwoFactorSetupResponse | null>(null);
   const [verificationCode, setVerificationCode] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [qrCodeError, setQrCodeError] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const { activate, verifySetup, loading: isLoading, error, clearError } = useTwoFactor();
+
+  const handleSetup = useCallback(async () => {
+    try {
+      clearError();
+      const result = await activate();
+      if (result) {
+        setSetupData(result);
+      }
+    } catch (error) {
+      console.error("Setup failed:", error);
+    }
+  }, [activate, clearError]);
 
   useEffect(() => {
     if (isOpen) {
       handleSetup();
     }
-  }, [isOpen]);
-
-  const handleSetup = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      const response = await twoFactorApi.activate();
-      if (response.data) {
-        setSetupData(response.data);
-      }
-    } catch (error: unknown) {
-      let errorMessage = "Có lỗi xảy ra khi thiết lập 2FA";
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        errorMessage = axiosError.response?.data?.message || errorMessage;
-      }
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [isOpen, handleSetup]);
 
   const handleVerify = async () => {
     if (!verificationCode.trim()) {
-      setError("Vui lòng nhập mã xác thực");
+      toast.error("Vui lòng nhập mã xác thực");
       return;
     }
 
     try {
-      setIsLoading(true);
-      setError("");
-      await twoFactorApi.verifyCodeSetup({ code: verificationCode });
+      clearError();
+      await verifySetup(verificationCode);
       onSuccess();
       onClose();
-    } catch (error: unknown) {
-      let errorMessage = "Mã xác thực không đúng";
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        errorMessage = axiosError.response?.data?.message || errorMessage;
-      }
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error("Verification failed:", error);
     }
   };
 
@@ -91,9 +70,9 @@ export default function TwoFactorModal({
   const doClose = () => {
     setSetupData(null);
     setVerificationCode("");
-    setError("");
     setQrCodeError(false);
     setShowConfirm(false);
+    clearError();
     onClose();
   };
 
@@ -206,9 +185,15 @@ export default function TwoFactorModal({
                         e.target.value.replace(/\D/g, "").slice(0, 6),
                       )
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && verificationCode.length === 6 && !isLoading) {
+                        handleVerify();
+                      }
+                    }}
                     placeholder="000000"
                     className="w-full px-3 py-2 text-center text-lg font-mono border border-gray-300 rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                     maxLength={6}
+                    autoFocus
                   />
                 </div>
 
