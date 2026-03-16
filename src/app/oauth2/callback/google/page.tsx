@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
 import { authApi } from "@/services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
+import TwoFactorModal from "@/components/auth/TwoFactorModal";
 
 let isCallbackProcessed = false;
 
@@ -15,6 +16,8 @@ const GoogleCallbackContent = () => {
   const { setAuthFromLogin } = useAuth();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     if (isCallbackProcessed) return;
@@ -33,19 +36,27 @@ const GoogleCallbackContent = () => {
       try {
         const response = await authApi.loginWithGoogle(code);
 
-        if (
-          response.code === 200 &&
-          response.data?.accessToken &&
-          response.data?.userId
-        ) {
-          // Update auth context directly from login response (avoid extra introspect)
-          setAuthFromLogin(response.data);
-          // Invalidate currentUser so header/profile refetches
-          await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-          const isAdmin = response.data?.authorities?.includes("ADMIN");
-          router.push(isAdmin ? "/admin" : "/");
+        if (response.code === 200) {
+          if (response.data?.mftEnable && response.data?.userId) {
+            // User has MFA enabled, show 2FA modal
+            setUserId(response.data.userId);
+            setShowTwoFactorModal(true);
+            setIsProcessing(false);
+          } else if (
+            response.data?.accessToken &&
+            response.data?.userId
+          ) {
+            // Normal login success
+            setAuthFromLogin(response.data);
+            await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+            const isAdmin = response.data?.authorities?.includes("ADMIN");
+            router.push(isAdmin ? "/admin" : "/");
+          } else {
+            setError("Không nhận được thông tin đăng nhập từ Google");
+            setIsProcessing(false);
+          }
         } else {
-          setError("Không nhận được thông tin đăng nhập từ Google");
+          setError("Đăng nhập Google thất bại");
           setIsProcessing(false);
         }
       } catch (err) {
@@ -65,6 +76,11 @@ const GoogleCallbackContent = () => {
     };
   }, [searchParams, router, queryClient, setAuthFromLogin]);
 
+  const handleTwoFactorSuccess = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    router.push("/");
+  };
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -80,6 +96,20 @@ const GoogleCallbackContent = () => {
             Quay lại đăng nhập
           </button>
         </div>
+      </div>
+    );
+  }
+
+  if (showTwoFactorModal) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <TwoFactorModal
+          isOpen={showTwoFactorModal}
+          onClose={() => router.push("/login")}
+          userId={userId}
+          identityProvider="GOOGLE"
+          onSuccess={handleTwoFactorSuccess}
+        />
       </div>
     );
   }

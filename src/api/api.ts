@@ -1,8 +1,9 @@
 export const API = {
     // AUTHENTICATION
     LOGIN_USERNAME_PASSWORD: "/api/v1/auth/login",
-    LOGIN_GOOGLE: "/api/v1/auth/login-google",
-    LOGIN_LINKEDIN: "/api/v1/auth/login-linkedin",
+    LOGIN_GOOGLE: "/api/v1/oauth2/google",
+    LOGIN_LINKEDIN: "/api/v1/oauth2/linkedin",
+    LOGIN_GITHUB: "/api/v1/oauth2/github",
     LOGIN_TWO_FACTOR: "/api/v1/auth/login-two-factor",
     LOGOUT: "/api/v1/auth/logout",
     INTROSPECT: "/api/v1/auth/introspect",

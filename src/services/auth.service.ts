@@ -94,13 +94,17 @@ export const authApi = {
       { params: { code } },
     );
 
-    if (
-      response.data.code === 200 &&
-      response.data.data?.accessToken &&
-      response.data.data?.userId
-    ) {
-      localStorage.setItem("access_token", response.data.data.accessToken);
-      localStorage.setItem("user_id", response.data.data.userId);
+    if (response.data.code === 200) {
+      if (response.data.data?.mftEnable) {
+        // Return response with MFA flag, no tokens stored
+        return response.data;
+      } else if (
+        response.data.data?.accessToken &&
+        response.data.data?.userId
+      ) {
+        localStorage.setItem("access_token", response.data.data.accessToken);
+        localStorage.setItem("user_id", response.data.data.userId);
+      }
     }
 
     return response.data;
@@ -113,13 +117,17 @@ export const authApi = {
       { params: { code } },
     );
 
-    if (
-      response.data.code === 200 &&
-      response.data.data?.accessToken &&
-      response.data.data?.userId
-    ) {
-      localStorage.setItem("access_token", response.data.data.accessToken);
-      localStorage.setItem("user_id", response.data.data.userId);
+    if (response.data.code === 200) {
+      if (response.data.data?.mftEnable) {
+        // Return response with MFA flag, no tokens stored
+        return response.data;
+      } else if (
+        response.data.data?.accessToken &&
+        response.data.data?.userId
+      ) {
+        localStorage.setItem("access_token", response.data.data.accessToken);
+        localStorage.setItem("user_id", response.data.data.userId);
+      }
     }
 
     return response.data;
@@ -138,6 +146,29 @@ export const authApi = {
     ) {
       localStorage.setItem("access_token", response.data.data.accessToken);
       localStorage.setItem("user_id", response.data.data.userId);
+    }
+
+    return response.data;
+  },
+
+  loginWithGithub: async (code: string) => {
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(
+      API.LOGIN_GITHUB,
+      null,
+      { params: { code } },
+    );
+
+    if (response.data.code === 200) {
+      if (response.data.data?.mftEnable) {
+        // Return response with MFA flag, no tokens stored
+        return response.data;
+      } else if (
+        response.data.data?.accessToken &&
+        response.data.data?.userId
+      ) {
+        localStorage.setItem("access_token", response.data.data.accessToken);
+        localStorage.setItem("user_id", response.data.data.userId);
+      }
     }
 
     return response.data;

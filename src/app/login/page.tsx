@@ -25,6 +25,7 @@ export default function LoginPage() {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -58,8 +59,9 @@ export default function LoginPage() {
       });
 
       if (result.code === 200) {
-        if (result.data?.mftEnable) {
+        if (result.data?.mftEnable && result.data?.userId) {
           setUserEmail(data.email);
+          setUserId(result.data.userId);
           setShowTwoFactorModal(true);
         } else if (result.data?.accessToken) {
           setAuthFromLogin(result.data);
@@ -298,6 +300,8 @@ export default function LoginPage() {
         isOpen={showTwoFactorModal}
         onClose={() => setShowTwoFactorModal(false)}
         email={userEmail}
+        userId={userId}
+        identityProvider="USERNAME_PASSWORD"
         onSuccess={handleTwoFactorSuccess}
       />
     </div>

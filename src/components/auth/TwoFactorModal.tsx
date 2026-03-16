@@ -7,7 +7,9 @@ import { useAuth } from "@/contexts/AuthContext";
 interface TwoFactorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  email: string;
+  email?: string;
+  userId?: string;
+  identityProvider?: 'USERNAME_PASSWORD' | 'GOOGLE' | 'GITHUB' | 'LINKEDIN';
   onSuccess: () => void;
 }
 
@@ -15,6 +17,8 @@ export default function TwoFactorModal({
   isOpen,
   onClose,
   email,
+  userId,
+  identityProvider = 'USERNAME_PASSWORD',
   onSuccess,
 }: TwoFactorModalProps) {
   const { setAuthFromLogin } = useAuth();
@@ -72,9 +76,17 @@ export default function TwoFactorModal({
       setIsLoading(true);
       setError("");
 
+      // Use userId for both OAuth and regular 2FA
+      const requestUserId = userId || email;
+      if (!requestUserId) {
+        setError("Thiếu thông tin xác thực");
+        return;
+      }
+
       const result = await authApi.loginTwoFactor({
-        email,
+        userId: requestUserId,
         code,
+        identityProvider,
       });
 
       if (result.code === 200 && result.data?.accessToken) {
@@ -147,8 +159,8 @@ export default function TwoFactorModal({
           <h2 className="text-xl font-bold text-gray-900 mb-2">
             Xác thực 2 bước
           </h2>
-          <p className="text-gray-600 text-sm">Nhập mã OTP đã được gửi đến</p>
-          <p className="text-gray-900 font-medium text-sm">{email}</p>
+          <p className="text-gray-600 text-sm">Nhập mã OTP từ ứng dụng authenticator</p>
+          {email && <p className="text-gray-900 font-medium text-sm">{email}</p>}
         </div>
 
         {error && (

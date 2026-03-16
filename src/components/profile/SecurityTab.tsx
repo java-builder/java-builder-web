@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { UserDetailResponse } from "@/types/user";
-import { useTwoFactorStatus, useTwoFactorDisable } from "@/hooks/useTwoFactor";
+import { twoFactorApi } from "@/services/two-factor.service";
 import TwoFactorModal from "./TwoFactorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import toast from "react-hot-toast";
@@ -14,47 +13,82 @@ interface SecurityTabProps {
 }
 
 export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(user.mftEnable);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
-  const queryClient = useQueryClient();
-  
-  const { data: twoFactorEnabled = false, isLoading: statusLoading } = useTwoFactorStatus();
-  const disableMutation = useTwoFactorDisable();
+  const [error, setError] = useState("");
+  const initialUserMftEnable = useRef(user.mftEnable);
+
+  const handleUserUpdate = useCallback((updates: Partial<UserDetailResponse>) => {
+    onUserUpdate?.(updates);
+  }, [onUserUpdate]);
 
   useEffect(() => {
-    if (twoFactorEnabled !== user.mftEnable && onUserUpdate) {
-      onUserUpdate({ mftEnable: twoFactorEnabled });
-    }
-  }, [twoFactorEnabled, user.mftEnable, onUserUpdate]);
+    const checkMfaStatus = async () => {
+      try {
+        const response = await twoFactorApi.getStatus();
+        if (response.data !== undefined) {
+          setTwoFactorEnabled(response.data);
+          if (response.data !== initialUserMftEnable.current) {
+            handleUserUpdate({ mftEnable: response.data });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check MFA status:", error);
+        setTwoFactorEnabled(false);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+
+    checkMfaStatus();
+  }, [handleUserUpdate]);
 
   const handleToggleTwoFactor = () => {
+    setError("");
     if (twoFactorEnabled) {
       setShowDisableConfirm(true);
     } else {
       setShowTwoFactorModal(true);
     }
   };
-
   const handleDisableTwoFactor = async () => {
     try {
-      await disableMutation.mutateAsync();
+      setIsLoading(true);
+      setError("");
+      await twoFactorApi.disable();
+      setTwoFactorEnabled(false);
       setShowDisableConfirm(false);
       toast.success("Đã tắt xác thực hai yếu tố!");
-    } catch (error) {
-      console.error("Failed to disable 2FA:", error);
-      toast.error("Không thể tắt 2FA");
+      
+      if (onUserUpdate) {
+        onUserUpdate({ mftEnable: false });
+      }
+    } catch (error: unknown) {
+      let errorMessage = "Không thể tắt 2FA";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+      }
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleTwoFactorSuccess = () => {
+    setTwoFactorEnabled(true);
     setShowTwoFactorModal(false);
     toast.success("Đã bật xác thực hai yếu tố!");
-    queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
-    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    
+    if (onUserUpdate) {
+      onUserUpdate({ mftEnable: true });
+    }
   };
-
-  const isLoading = statusLoading || disableMutation.isPending;
-  const error = disableMutation.error?.message || "";
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
@@ -80,12 +114,14 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                   Xác thực hai yếu tố
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {twoFactorEnabled 
-                    ? "Tài khoản được bảo vệ bằng xác thực hai yếu tố" 
-                    : "Thêm lớp bảo mật bổ sung cho tài khoản"
+                  {isInitialLoading 
+                    ? "Đang kiểm tra trạng thái..." 
+                    : twoFactorEnabled 
+                      ? "Tài khoản được bảo vệ bằng xác thực hai yếu tố" 
+                      : "Thêm lớp bảo mật bổ sung cho tài khoản"
                   }
                 </p>
-                {twoFactorEnabled && (
+                {!isInitialLoading && twoFactorEnabled && (
                   <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -96,28 +132,38 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button
-                onClick={handleToggleTwoFactor}
-                disabled={isLoading}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
-                  twoFactorEnabled ? "bg-accent" : "bg-gray-300 dark:bg-gray-600"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    twoFactorEnabled ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
-              <span className={`text-sm font-medium ${twoFactorEnabled ? "text-accent" : "text-gray-500 dark:text-gray-400"}`}>
-                {twoFactorEnabled ? "Đã bật" : "Chưa bật"}
-              </span>
+              {isInitialLoading ? (
+                <div className="flex items-center gap-3">
+                  <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse">
+                    <div className="inline-block h-4 w-4 transform rounded-full bg-gray-300 dark:bg-gray-600 translate-x-1"></div>
+                  </div>
+                  <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={handleToggleTwoFactor}
+                    disabled={isLoading}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
+                      twoFactorEnabled ? "bg-accent" : "bg-gray-300 dark:bg-gray-600"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                        twoFactorEnabled ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                  <span className={`text-sm font-medium transition-colors duration-300 ${twoFactorEnabled ? "text-accent" : "text-gray-500 dark:text-gray-400"}`}>
+                    {twoFactorEnabled ? "Đã bật" : "Chưa bật"}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
-
         {/* Two-Factor Authentication Details - Only show when enabled */}
-        {twoFactorEnabled && (
+        {!isInitialLoading && twoFactorEnabled && (
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800/50">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -139,7 +185,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
         )}
 
         {/* Security Tips - Only show when 2FA is not enabled */}
-        {!twoFactorEnabled && (
+        {!isInitialLoading && !twoFactorEnabled && (
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800/50">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -171,7 +217,6 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
             </div>
           </div>
         )}
-
         {/* Error Message */}
         {error && (
           <div className="bg-red-50 rounded-xl p-5 border border-red-200">

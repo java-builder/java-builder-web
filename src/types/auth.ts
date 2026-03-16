@@ -26,6 +26,7 @@ export interface IntrospectResponse {
 }
 
 export interface TwoFactorAuthenticationRequest {
-  email: string;
+  userId: string;
   code: string;
+  identityProvider: 'USERNAME_PASSWORD' | 'GOOGLE' | 'GITHUB' | 'LINKEDIN';
 }
