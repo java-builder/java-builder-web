@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { UserDetailResponse } from "@/types/user";
-import { useTwoFactor } from "@/hooks/useTwoFactor";
+import { useTwoFactorStatus, useTwoFactorDisable } from "@/hooks/useTwoFactor";
 import TwoFactorModal from "./TwoFactorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import toast from "react-hot-toast";
@@ -16,15 +16,9 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
   
-  const { 
-    isEnabled: twoFactorEnabled, 
-    loading: isLoading, 
-    error, 
-    disable,
-    clearError 
-  } = useTwoFactor();
+  const { data: twoFactorEnabled = false, isLoading: statusLoading } = useTwoFactorStatus();
+  const disableMutation = useTwoFactorDisable();
 
-  // Update parent component when MFA status changes
   useEffect(() => {
     if (twoFactorEnabled !== user.mftEnable && onUserUpdate) {
       onUserUpdate({ mftEnable: twoFactorEnabled });
@@ -32,7 +26,6 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   }, [twoFactorEnabled, user.mftEnable, onUserUpdate]);
 
   const handleToggleTwoFactor = () => {
-    clearError();
     if (twoFactorEnabled) {
       setShowDisableConfirm(true);
     } else {
@@ -42,12 +35,12 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
 
   const handleDisableTwoFactor = async () => {
     try {
-      await disable();
+      await disableMutation.mutateAsync();
       setShowDisableConfirm(false);
       toast.success("Đã tắt xác thực hai yếu tố!");
     } catch (error) {
-      // Error is handled by the hook
       console.error("Failed to disable 2FA:", error);
+      toast.error("Không thể tắt 2FA");
     }
   };
 
@@ -55,6 +48,9 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
     setShowTwoFactorModal(false);
     toast.success("Đã bật xác thực hai yếu tố!");
   };
+
+  const isLoading = statusLoading || disableMutation.isPending;
+  const error = disableMutation.error?.message || "";
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
