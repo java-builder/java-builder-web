@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 // Mock data - sẽ thay bằng API thực tế
 const mockExercisesData = {
@@ -133,6 +134,14 @@ export default function ExercisesPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { stats, exercises } = mockExercisesData;
+
+  const handleExerciseClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast.success("Tính năng đang được phát triển", {
+      duration: 3000,
+      position: "top-center",
+    });
+  };
 
   const filteredExercises = exercises.filter((exercise) => {
     const matchesDifficulty = selectedDifficulty === "all" || exercise.difficulty === selectedDifficulty;
@@ -379,12 +388,12 @@ export default function ExercisesPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Link
-                    href={`/exercises/${exercise.id}`}
+                  <button
+                    onClick={handleExerciseClick}
                     className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium whitespace-nowrap"
                   >
                     {exercise.status === "completed" ? "Xem lại" : exercise.status === "in-progress" ? "Tiếp tục" : "Bắt đầu"}
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
