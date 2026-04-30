@@ -18,19 +18,27 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const { settings } = useSettingsContext();
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
     if (!rawAppName && typeof document !== "undefined") {
       setClientTitle(document.title || null);
     }
   }, [rawAppName]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAuthChecked(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const appName =
     typeof rawAppName === "string" && rawAppName.trim() !== ""
@@ -220,19 +228,33 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* User Profile Section */}
         <div className={`border-t border-gray-200 dark:border-slate-700 p-4 ${
           isCollapsed ? "flex flex-col items-center gap-3" : ""
         }`}>
-          <SidebarUserProfile
-            currentUser={currentUser}
-            isCollapsed={isCollapsed}
-            onLogout={handleLogout}
-          />
+          {!isAuthChecked || isLoading ? (
+            isCollapsed ? (
+              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 animate-pulse"></div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 animate-pulse flex-shrink-0"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse w-24"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded animate-pulse w-32"></div>
+                  </div>
+                </div>
+              </div>
+            )
+          ) : (
+            <SidebarUserProfile
+              currentUser={currentUser}
+              isCollapsed={isCollapsed}
+              onLogout={handleLogout}
+            />
+          )}
         </div>
       </aside>
 
-      {/* Spacer for desktop */}
       <div
         className={`hidden lg:block transition-all duration-300 ${
           isCollapsed ? "w-20" : "w-64"
