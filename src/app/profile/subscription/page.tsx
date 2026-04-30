@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { userSubscriptionService } from "@/services/user-subscription.service";
 import { UserSubscription } from "@/types/user-subscription";
 import { formatDate } from "@/utils/formatters";
@@ -56,28 +54,24 @@ export default function MySubscriptionPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
-        <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">        <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-1/3 mb-4"></div>
             <div className="h-64 bg-gray-200 dark:bg-slate-700 rounded"></div>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
-        <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="max-w-md mx-auto px-4 py-16">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-slate-800 rounded-full mb-6">
-              <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-accent/10 rounded-full mb-6">
+              <svg className="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -88,7 +82,7 @@ export default function MySubscriptionPage() {
             </p>
             <Link
               href="/pricing"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 transition-all shadow-lg"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -97,7 +91,6 @@ export default function MySubscriptionPage() {
             </Link>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -107,18 +100,25 @@ export default function MySubscriptionPage() {
   const isExpiringSoon = daysLeft <= 7 && daysLeft > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-      
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">      
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Gói Premium của tôi
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Quản lý thông tin gói Premium và quyền lợi của bạn
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                Gói Premium của tôi
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Quản lý thông tin gói Premium và quyền lợi của bạn
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Subscription Card */}
@@ -311,7 +311,6 @@ export default function MySubscriptionPage() {
         </div>
       )}
 
-      <Footer />
     </div>
   );
 }

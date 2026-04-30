@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import Link from "next/link";
 import { InterviewTopicDetailResponse } from "@/types/interview";
@@ -37,7 +35,6 @@ export default function InterviewCategoryPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900">
-        <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <div className="flex items-center justify-center gap-3 text-gray-500">
             <svg className="animate-spin w-6 h-6" fill="none" viewBox="0 0 24 24">
@@ -47,7 +44,6 @@ export default function InterviewCategoryPage() {
             <span>Đang tải...</span>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -55,7 +51,6 @@ export default function InterviewCategoryPage() {
   if (!topic) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900">
-        <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Không tìm thấy chủ đề
@@ -64,7 +59,6 @@ export default function InterviewCategoryPage() {
             Quay lại trang chủ
           </Link>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -117,12 +111,10 @@ export default function InterviewCategoryPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <Header />
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-accent to-accent-600 py-12 md:py-16">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
             <div className="flex items-start justify-between gap-4 mb-4">
               <Link
@@ -178,7 +170,7 @@ export default function InterviewCategoryPage() {
       </section>
 
       {/* Filter Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
         <div className="flex flex-wrap gap-3 mb-8">
           <button
             onClick={() => setSelectedLevel("all")}
@@ -311,7 +303,6 @@ export default function InterviewCategoryPage() {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 }

@@ -1,14 +1,10 @@
 "use client";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-      
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 md:p-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -319,7 +315,6 @@ export default function TermsPage() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

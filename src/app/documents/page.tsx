@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import DocumentCard from "@/components/documents/DocumentCard";
 import MotionWrapper from "@/components/MotionWrapper";
 import SearchBar from "@/components/ui/SearchBar";
@@ -63,11 +61,9 @@ export default function DocumentsPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      <Header />
-
       {/* Hero */}
       <section className="relative bg-gradient-to-r from-white to-indigo-50 dark:from-slate-900 dark:to-slate-800 py-12 md:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-7 text-gray-900 dark:text-white">
@@ -116,7 +112,7 @@ export default function DocumentsPage() {
         </div>
       </section>
 
-      <div id="list" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div id="list" className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-10">
         {/* Search */}
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
@@ -215,7 +211,6 @@ export default function DocumentsPage() {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 }

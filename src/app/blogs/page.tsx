@@ -6,8 +6,6 @@ import { categoryService } from "@/services/category.service";
 import { Blog } from "@/types/blog";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import SearchBar from "@/components/ui/SearchBar";
 import Link from "next/link";
@@ -103,24 +101,22 @@ export default function BlogsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-
-      <section className="relative bg-gradient-to-r from-white to-blue-50 py-12 md:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-gradient-to-r from-white to-blue-50 py-8 md:py-10 lg:py-12">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
               <div className="lg:col-span-7 text-gray-900">
                 <div className="inline-block">
-                  <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium">
+                  <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium">
                     Blog & Knowledge
                   </span>
                 </div>
 
-                <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+                <h1 className="mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900">
                   Chia sẻ <span className="text-accent">kiến thức</span>
                 </h1>
 
-                <p className="mt-3 text-base md:text-lg text-gray-700 max-w-2xl">
+                <p className="mt-3 text-sm md:text-base text-gray-700 max-w-xl">
                   Nơi tôi (
                   <span className="text-accent font-semibold">
                     JavaBuilder
@@ -128,16 +124,16 @@ export default function BlogsPage() {
                   ) chia sẻ kiến thức, cập nhật xu hướng và kinh nghiệm thực tế.
                 </p>
 
-                <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+                <div className="mt-5 flex flex-col sm:flex-row sm:items-center sm:gap-2 gap-3">
                   <Link
                     href="#list"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg text-sm"
                   >
                     Khám phá bài viết
                   </Link>
                   <Link
                     href="/blogs"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 text-sm font-semibold"
                   >
                     Xem tất cả
                   </Link>
@@ -177,7 +173,7 @@ export default function BlogsPage() {
           </MotionWrapper>
         </div>
       </section>
-      <div id="list" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div id="list" className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-10">
         {/* Filter Section - Compact */}
         <div className="mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-4">
@@ -359,7 +355,6 @@ export default function BlogsPage() {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 }

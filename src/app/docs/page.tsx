@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import SearchBar from "@/components/ui/SearchBar";
 import { useCourses } from "@/hooks/useCourses";
 import { CourseFormat } from "@/types/course";
@@ -23,8 +21,6 @@ export default function DocsPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <Header />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -134,7 +130,6 @@ export default function DocsPage() {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 }

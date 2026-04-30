@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import { InterviewHero, InterviewTopicsList } from "@/components/interview";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
@@ -19,8 +17,6 @@ export default function InterviewPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-800">
-      <Header />
-
       <InterviewHero
         totalQuestions={totalQuestions}
         totalCategories={topics.length}
@@ -29,13 +25,11 @@ export default function InterviewPage() {
       />
 
       {/* Categories Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-12 pb-20">
         <MotionWrapper animation="fadeInUp" duration={0.6} mode="mount">
           <InterviewTopicsList topics={filteredTopics} isLoading={isLoading} />
         </MotionWrapper>
       </div>
-
-      <Footer />
     </div>
   );
 }

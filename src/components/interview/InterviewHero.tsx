@@ -87,17 +87,17 @@ export default function InterviewHero({
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-10 md:py-14">
         <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-5">
               Ôn tập{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-600">
                 Phỏng vấn
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
               Bộ sưu tập câu hỏi phỏng vấn toàn diện cho Backend Developer với
               Java & Spring Boot.
               <br />
@@ -107,45 +107,45 @@ export default function InterviewHero({
             </p>
 
             {/* Stats */}
-            <div className="flex flex-wrap items-center justify-center gap-8 mb-10">
+            <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent mb-1">
+                <div className="text-2xl font-bold text-accent mb-1">
                   {totalQuestions}+
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   Câu hỏi
                 </div>
               </div>
-              <div className="w-px h-12 bg-gray-300 dark:bg-slate-700" />
+              <div className="w-px h-10 bg-gray-300 dark:bg-slate-700" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent mb-1">
+                <div className="text-2xl font-bold text-accent mb-1">
                   {totalCategories}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   Chủ đề
                 </div>
               </div>
-              <div className="w-px h-12 bg-gray-300 dark:bg-slate-700" />
+              <div className="w-px h-10 bg-gray-300 dark:bg-slate-700" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent mb-1">3</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-2xl font-bold text-accent mb-1">3</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   Cấp độ
                 </div>
               </div>
             </div>
 
             {/* Search Bar */}
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-xl mx-auto">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Tìm kiếm chủ đề phỏng vấn..."
                   value={searchText}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="w-full px-6 py-4 pl-14 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-accent dark:focus:border-accent shadow-sm transition-all"
+                  className="w-full px-5 py-3 pl-12 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-accent dark:focus:border-accent shadow-sm transition-all text-sm"
                 />
                 <svg
-                  className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

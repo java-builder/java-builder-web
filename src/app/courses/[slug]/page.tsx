@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { favoriteService } from "@/services/favorite.service";
@@ -270,7 +268,6 @@ export default function CourseDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex justify-center items-center min-h-[60vh]">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
@@ -283,7 +280,6 @@ export default function CourseDetailPage() {
   if (error || !course) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center py-12">
             <div className="text-red-600 dark:text-red-400 mb-4">
@@ -321,8 +317,6 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-
       {/* Breadcrumb */}
       <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -464,7 +458,6 @@ export default function CourseDetailPage() {
         message={authModal.message}
       />
 
-      <Footer />
     </div>
   );
 }

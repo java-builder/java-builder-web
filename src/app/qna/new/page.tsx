@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import PostForm from "@/components/posts/PostForm";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
@@ -72,9 +70,7 @@ export default function NewPostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
         { !checkedAuth ? (
           <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-6 text-center">
             <p className="text-gray-600 dark:text-gray-400">Đang kiểm tra trạng thái đăng nhập...</p>
@@ -92,7 +88,6 @@ export default function NewPostPage() {
         )}
       </div>
       <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
-      <Footer />
     </div>
   );
 }

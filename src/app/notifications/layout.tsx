@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export default function NotificationsLayout({
   children,
@@ -7,10 +5,7 @@ export default function NotificationsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Header />
-      <main className="min-h-screen">{children}</main>
-      <Footer />
+    <>      <main className="min-h-screen">{children}</main>
     </>
   );
 }

@@ -2,8 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import toast from "react-hot-toast";
 import { questionContributionService } from "@/services/question-contribution.service";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
@@ -115,8 +113,6 @@ function ContributeQuestionForm() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -500,7 +496,6 @@ function ContributeQuestionForm() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }
@@ -508,14 +503,11 @@ function ContributeQuestionForm() {
 export default function ContributeQuestionPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">        <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">Đang tải...</div>
           </div>
         </div>
-        <Footer />
       </div>
     }>
       <ContributeQuestionForm />

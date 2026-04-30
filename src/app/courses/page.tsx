@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import CourseCard from "@/components/courses/CourseCard";
 import MotionWrapper from "@/components/MotionWrapper";
 import SearchBar from "@/components/ui/SearchBar";
@@ -67,26 +65,24 @@ export default function CoursesPage() {
   const goTo = (p: number) => setPage(Math.max(1, Math.min(totalPages, p)));
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
-      <Header />
-
+    <>
       {/* Hero */}
-      <section className="relative bg-gradient-to-r from-white to-blue-50 dark:from-slate-900 dark:to-slate-800 py-12 md:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-gradient-to-r from-white to-blue-50 dark:from-slate-900 dark:to-slate-800 py-8 md:py-10 lg:py-12">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
               <div className="lg:col-span-7 text-gray-900 dark:text-white">
                 <div className="inline-block">
-                  <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium">
+                  <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium">
                     Course & Training
                   </span>
                 </div>
 
-                <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 dark:text-white">
+                <h1 className="mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900 dark:text-white">
                   Khóa học <span className="text-accent">chất lượng</span>
                 </h1>
 
-                <p className="mt-3 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
+                <p className="mt-3 text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-xl">
                   Khám phá các khóa học được thiết kế để giúp bạn dễ dàng tiếp cận kiến thức từ cơ bản đến nâng cao. 
                   Nội dung được cập nhật liên tục theo xu hướng công nghệ mới nhất, kèm theo bài tập thực hành và 
                   source code mẫu để bạn có thể áp dụng ngay vào dự án thực tế.
@@ -119,7 +115,7 @@ export default function CoursesPage() {
         </div>
       </section>
 
-      <div id="list" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div id="list" className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-10">
         {/* Search */}
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
@@ -304,8 +300,6 @@ export default function CoursesPage() {
           </div>
         )}
       </div>
-
-      <Footer />
-    </div>
+    </>
   );
 }

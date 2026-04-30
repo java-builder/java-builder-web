@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { useAuth } from "@/contexts/AuthContext";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import PostList from "@/components/posts/PostList";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
@@ -41,9 +39,7 @@ export default function QNAPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -181,8 +177,6 @@ export default function QNAPage() {
 
         {/* Stats removed as requested */}
       </div>
-
-      <Footer />
       <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );

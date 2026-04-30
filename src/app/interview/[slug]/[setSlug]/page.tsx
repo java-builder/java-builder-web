@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import MotionWrapper from "@/components/MotionWrapper";
 import { InterviewQuestionResponse } from "@/services/interview-question.service";
 import { useInterviewQuestions } from "@/hooks/useInterviewQuestions";
@@ -49,8 +47,7 @@ export default function InterviewSetPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-20 text-center">
           <div className="flex items-center justify-center">
             <svg className="animate-spin h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -59,7 +56,6 @@ export default function InterviewSetPage() {
             <span className="ml-3 text-gray-600 dark:text-gray-400">Đang tải...</span>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -67,8 +63,7 @@ export default function InterviewSetPage() {
   if (!questionSet) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Không tìm thấy bộ câu hỏi
           </h1>
@@ -79,16 +74,14 @@ export default function InterviewSetPage() {
             Quay lại
           </button>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
         <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
           <button
             onClick={() => router.back()}
@@ -236,7 +229,6 @@ export default function InterviewSetPage() {
         </MotionWrapper>
       </div>
 
-      <Footer />
     </div>
   );
 }

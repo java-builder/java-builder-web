@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
@@ -156,9 +154,7 @@ export default function PricingPage() {
   };
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
+    <>      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
         {/* Hero Section */}
         <section className="pt-8 pb-8 px-4">
           <div className="max-w-4xl mx-auto text-center">
@@ -265,7 +261,6 @@ export default function PricingPage() {
           </div>
         </section>
       </main>
-      <Footer />
 
       {/* Auth Required Modal */}
       <AuthRequiredModal

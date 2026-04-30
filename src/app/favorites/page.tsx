@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { favoriteService } from "@/services/favorite.service";
 import { useFavorites } from "@/hooks/useFavorites";
 import { FavoriteTargetType } from "@/types/favorite";
@@ -68,9 +66,7 @@ export default function FavoritesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-      
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">      
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm mb-6">
@@ -257,7 +253,6 @@ export default function FavoritesPage() {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 }

@@ -2,15 +2,12 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { useUser } from "@/hooks/useUser";
 import Sidebar from "@/components/profile/Sidebar";
 import ProfileTab from "@/components/profile/ProfileTab";
 import MyPostsTab from "@/components/profile/MyPostsTab";
 import SecurityTab from "@/components/profile/SecurityTab";
 import PasswordTab from "@/components/profile/PasswordTab";
-import FavoriteBlogsTab from "@/components/profile/FavoriteBlogsTab";
 import SessionsTab from "@/components/profile/SessionsTab";
 import { UserDetailResponse } from "@/types/user";
 
@@ -50,8 +47,6 @@ function ProfileContent() {
         return (
           <ProfileTab user={user!} onSave={handleSave} isSaving={isSaving} />
         );
-      case "favorite-blogs":
-        return <FavoriteBlogsTab />;
       case "sessions":
         return <SessionsTab />;
       case "security":
@@ -69,9 +64,7 @@ function ProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="animate-pulse">
             <div className="h-64 bg-gray-200 rounded-2xl mb-8"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -91,9 +84,7 @@ function ProfileContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -128,9 +119,7 @@ function ProfileContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -167,9 +156,26 @@ function ProfileContent() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
-      <Header />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        {/* Page Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                Tài khoản của tôi
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Quản lý thông tin cá nhân, bảo mật và các hoạt động của bạn
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 h-full">
           {/* Sidebar */}
           <div className="w-full lg:w-80 flex-shrink-0">
@@ -186,7 +192,6 @@ function ProfileContent() {
       </div>
 
       {/* Footer */}
-      <Footer />
     </div>
   );
 }
@@ -194,9 +199,7 @@ function ProfileContent() {
 export default function ProfilePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="animate-pulse">
             <div className="h-64 bg-gray-200 rounded-2xl mb-8"></div>
           </div>

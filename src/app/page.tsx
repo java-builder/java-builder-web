@@ -2,8 +2,6 @@
  
  import Link from "next/link";
  import MotionWrapper from "@/components/MotionWrapper";
- import Header from "@/components/Header";
- import Footer from "@/components/Footer";
  import CourseCard from "@/components/courses/CourseCard";
  import PublicBlogCard from "@/components/blogs/PublicBlogCard";
  import DocumentCard from "@/components/documents/DocumentCard";
@@ -21,27 +19,26 @@ export default function Home() {
   const documents = documentsData?.data?.data || [];
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <main className="relative bg-gradient-to-r from-white to-blue-50 py-12 md:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      <main className="relative bg-gradient-to-r from-white to-blue-50 py-8 md:py-10 lg:py-12">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.9}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
               {/* Left: Text / CTA */}
               <div className="lg:col-span-7">
-                <div className="space-y-4 md:space-y-6">
+                <div className="space-y-3 md:space-y-4">
                   <div className="inline-block">
-                    <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-sm">
+                    <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
                       Course & Training
                     </span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                     Khởi đầu hành trình{" "}
                     <span className="text-accent">lập trình Java</span>
                   </h1>
 
-                  <div className="text-base md:text-lg text-gray-700 max-w-2xl">
+                  <div className="text-sm md:text-base text-gray-700 max-w-xl">
                     <p className="leading-relaxed mb-2">
                       Hành trình chinh phục Backend Java cùng Java Builder.
                     </p>
@@ -59,12 +56,12 @@ export default function Home() {
               {/* Right: Facebook Group Banner */}
               <div className="lg:col-span-5">
                 {/* Facebook Group Card */}
-                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-5 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
-                  <div className="flex items-start space-x-3 mb-4">
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-4 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
+                  <div className="flex items-start space-x-3 mb-3">
                     {/* Facebook Icon */}
                     <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <div className="w-9 h-9 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
                       </div>
@@ -79,24 +76,24 @@ export default function Home() {
                         Cộng đồng
                       </div>
                       
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
                         Tham gia nhóm JavaBuilder - Lập trình Backend Java
                       </h3>
                       
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
                         Kết nối với cộng đồng Backend Java, chia sẻ kinh nghiệm và cùng phát triển.
                       </p>
 
                       {/* Stats */}
-                      <div className="flex items-center space-x-4 mb-4 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center space-x-4 mb-3 text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-3.5 h-3.5 mr-1 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                           </svg>
                           <span className="font-medium">1000+ thành viên</span>
                         </div>
                         <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-3.5 h-3.5 mr-1 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                           </svg>
                           <span className="font-medium">Hoạt động</span>
@@ -108,13 +105,13 @@ export default function Home() {
                         href="https://www.facebook.com/groups/779508281889441"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 dark:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 dark:hover:bg-blue-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                        className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow hover:bg-blue-700 dark:hover:bg-blue-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                       >
-                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
                         Tham gia nhóm
-                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
                       </a>
@@ -398,8 +395,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }

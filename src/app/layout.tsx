@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
+import ConditionalSidebar from "@/components/ConditionalSidebar";
+import ConditionalLayout from "@/components/ConditionalLayout";
 import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData, generateEducationalOrganizationStructuredData, generateFAQStructuredData } from "@/lib/seo";
 
 const geistSans = Geist({
@@ -53,7 +55,7 @@ export default function RootLayout({
   const faqSchema = generateFAQStructuredData();
 
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/logos/java-logo.png" />
         <link rel="manifest" href="/site.webmanifest" />
@@ -70,28 +72,39 @@ export default function RootLayout({
         <meta property="og:site_name" content="JavaBuilder - Java Builder Online" />
         <meta name="twitter:site" content="@JavaBuilder" />
         
-        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          suppressHydrationWarning
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+          suppressHydrationWarning
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(educationalSchema) }}
+          suppressHydrationWarning
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          suppressHydrationWarning
         />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+            <ConditionalSidebar />
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
+          </div>
+        </Providers>
       </body>
     </html>
   );

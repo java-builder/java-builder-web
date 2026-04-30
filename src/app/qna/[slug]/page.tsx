@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { postService } from "@/services/post.service";
 import { useComments } from "@/hooks/useComments";
 import CommentList from "@/components/blogs/CommentList";
@@ -45,8 +43,7 @@ export default function PostDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-1/3 mb-4"></div>
             <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4 mb-8"></div>
@@ -56,7 +53,6 @@ export default function PostDetailPage() {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -64,8 +60,7 @@ export default function PostDetailPage() {
   if (error || !post) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-16">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Không tìm thấy bài viết</h1>
             <p className="text-gray-600 dark:text-gray-400 mb-6">{error || "Bài viết này không tồn tại."}</p>
@@ -74,15 +69,13 @@ export default function PostDetailPage() {
             </Link>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-12">
         <div className="max-w-4xl w-full mx-auto">
           <div className="flex flex-col sm:flex-row items-start gap-5 mb-6">
             {post.avatar ? (
@@ -147,7 +140,6 @@ export default function PostDetailPage() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

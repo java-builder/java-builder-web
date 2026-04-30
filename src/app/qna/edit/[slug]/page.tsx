@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import PostForm from "@/components/posts/PostForm";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
@@ -70,15 +68,13 @@ export default function EditPostPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
         {loading ? (
           <div className="text-center py-12">Đang tải...</div>
         ) : (
           <PostForm initialData={initialData ?? undefined} onSubmit={handleSubmit} categories={categories} />
         )}
       </div>
-      <Footer />
     </div>
   );
 }

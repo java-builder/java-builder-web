@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ContactForm from "@/components/contact/ContactForm";
 import ContactInfo from "@/components/contact/ContactInfo";
 import MotionWrapper from "@/components/MotionWrapper";
@@ -19,11 +17,12 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const handleSubmit = (_data: ContactFormData) => {
+  const handleSubmit = (data: ContactFormData) => {
     setIsSubmitting(true);
     setSubmitStatus("idle");
     (async () => {
       try {
+        console.log("Form data:", data);
         await new Promise((resolve) => setTimeout(resolve, 1500));
         setSubmitStatus("success");
         
@@ -40,8 +39,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <Header />
+    <>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 md:py-16 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
@@ -106,7 +104,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-      <Footer />
-    </div>
+    </>
   );
 }

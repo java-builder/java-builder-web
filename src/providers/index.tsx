@@ -2,9 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useState } from "react";
+import { ThemeProvider } from "next-themes";
 import ToastProvider from "@/components/providers/ToastProvider";
 import PushNotificationProvider from "@/components/providers/PushNotificationProvider";
-import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 
@@ -14,7 +14,7 @@ function makeQueryClient() {
       queries: {
         refetchOnWindowFocus: false,
         retry: 1,
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: 60 * 1000, 
       },
     },
   });
@@ -24,10 +24,8 @@ let browserQueryClient: QueryClient | undefined = undefined;
 
 function getQueryClient() {
   if (typeof window === "undefined") {
-    // Server: always make a new query client
     return makeQueryClient();
   } else {
-    // Browser: make a new query client if we don't already have one
     if (!browserQueryClient) browserQueryClient = makeQueryClient();
     return browserQueryClient;
   }
@@ -38,16 +36,16 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <SettingsProvider>
-          <ThemeProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <AuthProvider>
+          <SettingsProvider>
             <PushNotificationProvider>
               {children}
               <ToastProvider />
             </PushNotificationProvider>
-          </ThemeProvider>
-        </SettingsProvider>
-      </AuthProvider>
+          </SettingsProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

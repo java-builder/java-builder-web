@@ -4,8 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useNotifications } from "@/hooks/useNotifications";
 import { NotificationItem } from "@/types/notification";
-import NotificationHeader from "@/components/notifications/NotificationHeader";
-import NotificationTabs from "@/components/notifications/NotificationTabs";
 import NotificationList from "@/components/notifications/NotificationList";
 
 export default function NotificationsPage() {
@@ -68,23 +66,63 @@ export default function NotificationsPage() {
   const totalCount = allNotifications.length;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <NotificationHeader unreadCount={unreadCount} onMarkAllRead={markAllRead} />
-      
-      <NotificationTabs
-        activeTab={filter}
-        totalCount={totalCount}
-        unreadCount={unreadCount}
-        onTabChange={setFilter}
-      />
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        {/* Minimal Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Thông báo
+          </h1>
+          {unreadCount > 0 && (
+            <button
+              onClick={markAllRead}
+              className="text-sm text-accent hover:text-accent/80 font-medium transition-colors"
+            >
+              Đánh dấu đã đọc
+            </button>
+          )}
+        </div>
 
-      <NotificationList
-        notifications={filtered}
-        onNotificationClick={handleNotificationClick}
-        isLoading={isFetching}
-        hasMore={currentPage < totalPages}
-        onLoadMore={handleLoadMore}
-      />
+        {/* Simple Tabs */}
+        <div className="flex gap-1 mb-4 border-b border-gray-200 dark:border-slate-700">
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+              filter === "all"
+                ? "text-accent border-b-2 border-accent"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+            }`}
+          >
+            Tất cả
+            <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">
+              ({totalCount})
+            </span>
+          </button>
+          <button
+            onClick={() => setFilter("unread")}
+            className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+              filter === "unread"
+                ? "text-accent border-b-2 border-accent"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+            }`}
+          >
+            Chưa đọc
+            {unreadCount > 0 && (
+              <span className="ml-1.5 px-1.5 py-0.5 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+        </div>
+
+        <NotificationList
+          notifications={filtered}
+          onNotificationClick={handleNotificationClick}
+          isLoading={isFetching}
+          hasMore={currentPage < totalPages}
+          onLoadMore={handleLoadMore}
+        />
+      </div>
     </div>
   );
 }

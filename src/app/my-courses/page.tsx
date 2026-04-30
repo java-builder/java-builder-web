@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { MyEnrolledCourseResponse, CourseLevel, CourseFormat } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -79,59 +77,92 @@ export default function MyCoursesPage() {
 
   if (!mounted || userLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Khóa học của tôi</h1>
-          <p className="text-gray-600">Các khóa học bạn đã đăng ký</p>
+    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-white to-blue-50 dark:from-slate-900 dark:to-slate-800 border-b border-gray-200 dark:border-slate-700">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Khóa học của tôi
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                Quản lý và theo dõi tiến độ học tập của bạn
+              </p>
+            </div>
+            
+            {/* Stats */}
+            {!isLoading && courses.length > 0 && (
+              <div className="flex gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent">{courses.length}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Khóa học</div>
+                </div>
+                <div className="w-px bg-gray-200 dark:bg-slate-700" />
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-500">
+                    {courses.filter(c => c.completed).length}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Hoàn thành</div>
+                </div>
+                <div className="w-px bg-gray-200 dark:bg-slate-700" />
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-amber-500">
+                    {courses.filter(c => !c.completed && c.progress > 0).length}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Đang học</div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+      </section>
 
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
           </div>
         ) : courses.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-accent/20 to-purple-500/20 rounded-full flex items-center justify-center">
+              <svg className="w-12 h-12 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Chưa có khóa học nào</h3>
-            <p className="text-gray-500 mb-6">Bạn chưa đăng ký khóa học nào. Hãy khám phá các khóa học của chúng tôi!</p>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              Bắt đầu hành trình học tập
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+              Bạn chưa đăng ký khóa học nào. Khám phá các khóa học chất lượng và bắt đầu học ngay hôm nay!
+            </p>
             <Link
               href="/courses"
-              className="inline-flex items-center px-6 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors"
+              className="inline-flex items-center px-8 py-3.5 bg-accent text-white font-semibold rounded-xl hover:bg-accent-600 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              Khám phá khóa học
-              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+              Khám phá khóa học
             </Link>
           </div>
         ) : (
           <>
             {/* Course Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses.map((course) => (
                 <Link
                   key={course.id}
                   href={course.courseFormat === CourseFormat.TEXT ? `/docs/${course.slug}` : `/learn/${course.slug}/${course.id}`}
-                  className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-300"
+                  className="group bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-xl hover:border-accent/30 dark:hover:border-accent/50 transition-all duration-300"
                 >
                   {/* Course Image */}
                   <div className="relative aspect-video bg-gray-100 overflow-hidden">
@@ -261,9 +292,7 @@ export default function MyCoursesPage() {
             )}
           </>
         )}
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </main>
   );
 }

@@ -18,7 +18,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    // Get saved theme or system preference
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     if (savedTheme) {
       setThemeState(savedTheme);
