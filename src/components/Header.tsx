@@ -49,7 +49,7 @@ export default function Header() {
 
   return (
     <nav className="w-full bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 relative z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <div className="flex items-center space-x-2 sm:space-x-3 flex-1">
           <MobileMenuButton 
             isOpen={isMobileMenuOpen} 
