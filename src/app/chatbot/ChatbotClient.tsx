@@ -139,13 +139,11 @@ export default function ChatbotClient() {
       
       setMessages((prev) => prev.filter((m) => m.id !== "typing"));
       
-      // Show error message
       const errorMessage = error instanceof Error && 'response' in error 
         ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại."
         : "Đã có lỗi xảy ra. Vui lòng thử lại.";
       toast.error(errorMessage);
       
-      // Add error message to chat
       const errorChatMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
