@@ -36,15 +36,15 @@ function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <div className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-      <div className={`flex gap-3 max-w-[85%] sm:max-w-[75%] ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+      <div className={`flex gap-2 sm:gap-3 max-w-[95%] sm:max-w-[85%] md:max-w-[75%] ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
         {/* Avatar */}
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
           message.role === "user" 
             ? "bg-accent text-white" 
             : "bg-white dark:bg-slate-700 border-2 border-gray-200 dark:border-slate-600 p-1"
         }`}>
           {message.role === "user" ? (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           ) : (
@@ -55,8 +55,8 @@ function ChatMessage({ message }: ChatMessageProps) {
         </div>
 
         {/* Message Content */}
-        <div className="flex flex-col">
-          <div className={`rounded-2xl px-4 py-3 ${
+        <div className="flex flex-col min-w-0 flex-1">
+          <div className={`rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 ${
             message.role === "user"
               ? "bg-accent text-white"
               : "bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white"

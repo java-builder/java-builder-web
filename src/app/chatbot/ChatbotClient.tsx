@@ -226,7 +226,7 @@ export default function ChatbotClient() {
         {/* Chat Container */}
         <div className="flex-1 overflow-hidden flex flex-col w-full">
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+          <div className="flex-1 overflow-y-auto px-2 sm:px-3 md:px-4 py-3 sm:py-4 md:py-6 space-y-3 sm:space-y-4 md:space-y-6">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
