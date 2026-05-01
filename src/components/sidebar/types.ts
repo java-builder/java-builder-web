@@ -4,6 +4,7 @@ export interface MenuItem {
   icon: React.ReactNode;
   badge?: string;
   requireAuth?: boolean;
+  highlight?: boolean;
 }
 
 export interface MenuGroup {

@@ -203,4 +203,7 @@ export const API = {
     // FCM TOKEN
     REGISTER_FCM_TOKEN: "/api/v1/user-fcm-tokens",
     DELETE_FCM_TOKEN: "/api/v1/user-fcm-tokens",
+
+    // CHATBOT
+    CHATBOT_CHAT: "/api/v1/chatbot/chat",
 }

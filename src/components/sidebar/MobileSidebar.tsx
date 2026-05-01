@@ -235,7 +235,9 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         <Link
                           href={item.href}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                            active
+                            item.highlight
+                              ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-400 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
+                              : active
                               ? "bg-accent/10 text-accent dark:bg-accent/20"
                               : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
                           }`}
@@ -243,14 +245,25 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         >
                           <span
                             className={`flex-shrink-0 ${
-                              active ? "text-accent" : "text-gray-500 dark:text-gray-400"
+                              item.highlight
+                                ? "text-purple-600 dark:text-purple-400"
+                                : active
+                                ? "text-accent"
+                                : "text-gray-500 dark:text-gray-400"
                             }`}
                           >
                             {item.icon}
                           </span>
-                          <span className="flex-1 font-medium text-sm">
+                          <span className={`flex-1 font-medium text-sm ${
+                            item.highlight ? "font-semibold" : ""
+                          }`}>
                             {item.label}
                           </span>
+                          {item.highlight && (
+                            <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
+                              NEW
+                            </span>
+                          )}
                           {item.badge && (
                             <span className="px-2 py-0.5 text-xs font-medium bg-red-600 text-white rounded-full">
                               {item.badge}
