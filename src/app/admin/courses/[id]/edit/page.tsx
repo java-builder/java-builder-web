@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { CourseDetailResponse, CourseLevel, CourseFormat, ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
+import { CourseDetailResponse, CourseLevel, CourseFormat, CourseStatus, ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
 import { LessonFormat } from "@/types/lesson";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -30,6 +30,7 @@ export default function EditCoursePage() {
   const [duration, setDuration] = useState(0);
   const [level, setLevel] = useState<CourseLevel>(CourseLevel.BEGINNER);
   const [courseFormat, setCourseFormat] = useState<CourseFormat>(CourseFormat.VIDEO);
+  const [courseStatus, setCourseStatus] = useState<CourseStatus>(CourseStatus.ACTIVE);
   const [imageKey, setImageKey] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
@@ -105,6 +106,7 @@ export default function EditCoursePage() {
         setDuration(data.duration || 0);
         setLevel(data.level || CourseLevel.BEGINNER);
         setCourseFormat(data.courseFormat || CourseFormat.VIDEO);
+        setCourseStatus(data.courseStatus || CourseStatus.ACTIVE);
         setImageKey("");
         setImagePreview(data.thumbnailUrl || null);
         setChapters(data.chapters || []);
@@ -149,6 +151,7 @@ export default function EditCoursePage() {
           duration,
           level,
           courseFormat,
+          courseStatus,
           key: imageKey,
         },
         pendingImageFile
@@ -435,6 +438,7 @@ export default function EditCoursePage() {
               duration={duration}
               level={level}
               courseFormat={courseFormat}
+              courseStatus={courseStatus}
               imagePreview={imagePreview}
               fileInputRef={fileInputRef}
               onTitleChange={setTitle}
@@ -443,6 +447,7 @@ export default function EditCoursePage() {
               onDurationChange={setDuration}
               onLevelChange={setLevel}
               onCourseFormatChange={setCourseFormat}
+              onCourseStatusChange={setCourseStatus}
               onImageChange={handleImageChange}
             />
           ) : (

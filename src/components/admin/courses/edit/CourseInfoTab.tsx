@@ -2,7 +2,7 @@
 
 import { RefObject } from "react";
 import Image from "next/image";
-import { CourseLevel, CourseFormat } from "@/types/course";
+import { CourseLevel, CourseFormat, CourseStatus } from "@/types/course";
 
 interface CourseInfoTabProps {
   title: string;
@@ -11,6 +11,7 @@ interface CourseInfoTabProps {
   duration: number;
   level: CourseLevel;
   courseFormat: CourseFormat;
+  courseStatus: CourseStatus;
   imagePreview: string | null;
   fileInputRef: RefObject<HTMLInputElement | null>;
   onTitleChange: (value: string) => void;
@@ -19,6 +20,7 @@ interface CourseInfoTabProps {
   onDurationChange: (value: number) => void;
   onLevelChange: (value: CourseLevel) => void;
   onCourseFormatChange: (value: CourseFormat) => void;
+  onCourseStatusChange: (value: CourseStatus) => void;
   onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -29,6 +31,7 @@ export default function CourseInfoTab({
   duration,
   level,
   courseFormat,
+  courseStatus,
   imagePreview,
   fileInputRef,
   onTitleChange,
@@ -37,6 +40,7 @@ export default function CourseInfoTab({
   onDurationChange,
   onLevelChange,
   onCourseFormatChange,
+  onCourseStatusChange,
   onImageChange,
 }: CourseInfoTabProps) {
   return (
@@ -105,6 +109,18 @@ export default function CourseInfoTab({
             <option value={CourseFormat.VIDEO}>Video - Học qua video</option>
             <option value={CourseFormat.TEXT}>Text - Học qua tài liệu</option>
             <option value={CourseFormat.MIXED}>Mixed - Kết hợp cả hai</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Trạng thái khóa học</label>
+          <select
+            value={courseStatus}
+            onChange={(e) => onCourseStatusChange(e.target.value as CourseStatus)}
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
+          >
+            <option value={CourseStatus.ACTIVE}>Hoạt động</option>
+            <option value={CourseStatus.INACTIVE}>Không hoạt động</option>
+            <option value={CourseStatus.DELETED}>Đã xóa</option>
           </select>
         </div>
       </div>

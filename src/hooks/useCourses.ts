@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { courseApi, chapterApi, lessonApi, fileApi } from "@/services/course.service";
-import { CourseLevel, CourseFormat, UpdateLessonRequest } from "@/types/course";
+import { CourseLevel, CourseFormat, UpdateCourseRequest, UpdateLessonRequest } from "@/types/course";
 import { LessonFormat } from "@/types/lesson";
 
 export const useCourses = (
@@ -44,15 +44,7 @@ export const useFeaturedCourses = () => {
 export const courseEditHelpers = {
   updateCourse: async (
     courseId: string,
-    data: {
-      title: string;
-      description: string;
-      price: number;
-      duration: number;
-      level: CourseLevel;
-      courseFormat: CourseFormat;
-      key?: string;
-    },
+    data: UpdateCourseRequest & { key?: string },
     imageFile?: File | null
   ) => {
     let key = data.key;

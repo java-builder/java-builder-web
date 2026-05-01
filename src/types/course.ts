@@ -19,6 +19,7 @@ export interface UpdateCourseRequest {
   key?: string;
   level?: CourseLevel;
   courseFormat?: CourseFormat;
+  courseStatus?: CourseStatus;
 }
 
 export interface CreateCourseResponse {
@@ -43,6 +44,7 @@ export interface CourseDetailResponse {
   thumbnailUrl?: string;
   level?: CourseLevel;
   courseFormat: CourseFormat;
+  courseStatus?: CourseStatus;
   chapters?: ChapterDetailResponse[];
   createdAt: string;
   updatedAt?: string;
@@ -90,6 +92,12 @@ export enum CourseFormat {
   VIDEO = "VIDEO",
   TEXT = "TEXT",
   MIXED = "MIXED",
+}
+
+export enum CourseStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  DELETED = "DELETED",
 }
 
 // Re-export from other files
