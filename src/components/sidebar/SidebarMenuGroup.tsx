@@ -71,7 +71,11 @@ export default function SidebarMenuGroup({
                         {item.label}
                       </span>
                       {item.badge && (
-                        <span className="px-2 py-0.5 text-xs font-medium bg-accent/20 text-accent rounded-full">
+                        <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                          item.href === "/notifications" 
+                            ? "bg-red-600 text-white" 
+                            : "bg-accent/20 text-accent"
+                        }`}>
                           {item.badge}
                         </span>
                       )}
@@ -81,7 +85,11 @@ export default function SidebarMenuGroup({
                     <div className="absolute left-full ml-6 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg">
                       {item.label}
                       {item.badge && (
-                        <span className="ml-2 px-1.5 py-0.5 text-xs bg-accent rounded">
+                        <span className={`ml-2 px-1.5 py-0.5 text-xs rounded ${
+                          item.href === "/notifications"
+                            ? "bg-red-600 text-white"
+                            : "bg-accent text-white"
+                        }`}>
                           {item.badge}
                         </span>
                       )}

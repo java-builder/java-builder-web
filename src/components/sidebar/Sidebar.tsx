@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useNotifications } from "@/hooks/useNotifications";
 import { useSettingsContext } from "@/contexts/SettingsContext";
 import { menuGroups } from "./menuData";
 import { MenuItem, MenuGroup } from "./types";
@@ -19,6 +20,7 @@ export default function Sidebar() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: currentUser, isLoading } = useCurrentUser();
+  const { data: notifData } = useNotifications(1, "all");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
@@ -26,6 +28,25 @@ export default function Sidebar() {
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+
+  const notifications = notifData?.data || [];
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  // Update menu groups with notification badge
+  const menuGroupsWithBadge = useMemo(() => {
+    return menuGroups.map((group) => ({
+      ...group,
+      items: group.items.map((item) => {
+        if (item.href === "/notifications" && unreadCount > 0) {
+          return {
+            ...item,
+            badge: unreadCount > 9 ? "9+" : String(unreadCount),
+          };
+        }
+        return item;
+      }),
+    }));
+  }, [unreadCount]);
 
   useEffect(() => {
     if (!rawAppName && typeof document !== "undefined") {
@@ -55,11 +76,11 @@ export default function Sidebar() {
 
   useEffect(() => {
     const initialOpenState: Record<string, boolean> = {};
-    menuGroups.forEach((group) => {
+    menuGroupsWithBadge.forEach((group) => {
       initialOpenState[group.title] = group.defaultOpen ?? false;
     });
     setOpenGroups(initialOpenState);
-  }, []);
+  }, [menuGroupsWithBadge]);
 
   const toggleGroup = (title: string) => {
     setOpenGroups((prev) => ({
@@ -211,7 +232,7 @@ export default function Sidebar() {
 
         {/* Menu Groups */}
         <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-2">
-          {menuGroups.map((group) => {
+          {menuGroupsWithBadge.map((group) => {
             if (!shouldShowGroup(group)) return null;
 
             return (
