@@ -47,25 +47,13 @@ export default function ChatbotClient() {
   ]);
   const [conversations] = useState<Conversation[]>([
     {
-      id: "1",
-      title: "OOP trong Java",
-      lastMessage: "Giải thích về OOP trong Java",
-      timestamp: new Date(Date.now() - 86400000),
-    },
-    {
-      id: "2",
-      title: "ArrayList vs LinkedList",
-      lastMessage: "Sự khác biệt giữa ArrayList và LinkedList",
-      timestamp: new Date(Date.now() - 172800000),
-    },
-    {
-      id: "3",
-      title: "Exception Handling",
-      lastMessage: "Cách xử lý exception trong Java",
-      timestamp: new Date(Date.now() - 259200000),
+      id: "current",
+      title: "Trò chuyện hiện tại",
+      lastMessage: "Cuộc trò chuyện với AI Assistant",
+      timestamp: new Date(),
     },
   ]);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>("current");
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -161,7 +149,6 @@ export default function ChatbotClient() {
   }, [handleSendMessage]);
 
   const handleNewChat = useCallback(() => {
-    setCurrentConversationId(null);
     setMessages([
       {
         id: "welcome",
@@ -174,14 +161,7 @@ export default function ChatbotClient() {
 
   const handleSelectConversation = useCallback((conversationId: string) => {
     setCurrentConversationId(conversationId);
-    setMessages([
-      {
-        id: "welcome",
-        role: "assistant",
-        content: "Đã tải cuộc trò chuyện. Đây là nội dung mock.",
-        timestamp: new Date(),
-      },
-    ]);
+    // Không cần load lại messages vì chỉ có 1 conversation duy nhất
   }, []);
 
   const handleDeleteAll = useCallback(() => {
