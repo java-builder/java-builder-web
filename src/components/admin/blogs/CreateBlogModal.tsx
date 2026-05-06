@@ -241,9 +241,9 @@ export default function CreateBlogModal({
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-7xl bg-white rounded-2xl shadow-2xl">
+        <div className="relative w-full max-w-7xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
                 Tạo bài viết mới
@@ -395,18 +395,18 @@ export default function CreateBlogModal({
                       </div>
                     )}
                     {tagSuggestions.length > 0 && (
-                      <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {tagSuggestions.map((tag) => (
                           <button
                             key={tag.id}
                             type="button"
                             onClick={() => handleAddTag(tag.name)}
-                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-blue-50 transition-colors duration-200 flex items-center space-x-2 border-b border-gray-100 last:border-b-0"
+                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center space-x-2 border-b border-gray-100 dark:border-gray-600 last:border-b-0"
                           >
                             <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                             </svg>
-                            <span className="text-gray-700">{tag.name}</span>
+                            <span className="text-gray-700 dark:text-gray-300">{tag.name}</span>
                           </button>
                         ))}
                       </div>
@@ -420,7 +420,7 @@ export default function CreateBlogModal({
                       {formData.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-lg text-sm font-medium border border-blue-200 shadow-sm"
+                          className="inline-flex items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white dark:text-white rounded-lg text-sm font-medium border border-blue-600 dark:border-blue-500 shadow-sm hover:bg-blue-700 dark:hover:bg-blue-400 transition-colors duration-200"
                         >
                           <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -429,7 +429,7 @@ export default function CreateBlogModal({
                           <button
                             type="button"
                             onClick={() => handleRemoveTag(tag)}
-                            className="ml-2 text-blue-500 hover:text-blue-700 hover:bg-blue-200 rounded-full p-0.5 transition-colors duration-200"
+                            className="ml-2 text-white/80 hover:text-white hover:bg-white/20 dark:hover:bg-white/30 rounded-full p-0.5 transition-colors duration-200"
                           >
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

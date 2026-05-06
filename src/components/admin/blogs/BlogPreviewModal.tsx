@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Blog, BlogTypeDisplayNames } from "@/types/blog";
 import BlogTypeIcon from "./BlogTypeIcon";
-import MarkdownRenderer from "./MarkdownRenderer";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { formatApiDate } from "@/utils/dateUtils";
 import { blogService } from "@/services/blog.service";
 
@@ -73,10 +73,10 @@ export default function BlogPreviewModal({
                     />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                       Preview Bài viết
                     </h2>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {BlogTypeDisplayNames[blog.blogType]} •{" "}
                       {formatApiDate(blog.createdAt)}
                     </p>
@@ -84,7 +84,7 @@ export default function BlogPreviewModal({
                 </>
               )}
               {!blog && (
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   Preview Bài viết
                 </h2>
               )}
@@ -138,12 +138,12 @@ export default function BlogPreviewModal({
               )}
 
               {/* Title */}
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 {blog.title}
               </h1>
 
               {/* Meta */}
-              <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 pb-4 border-b border-gray-200">
+              <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 dark:text-gray-400 pb-4 border-b border-gray-200 dark:border-gray-700">
                 {blog.author && (
                   <>
                     <span>Tác giả: {blog.author}</span>
@@ -212,22 +212,22 @@ export default function BlogPreviewModal({
 
               {/* Summary */}
               {blog.summary && (
-                <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg dark:bg-slate-800 dark:border-slate-700">
-                  <h3 className="font-medium text-blue-900 mb-2 dark:text-white">Tóm tắt</h3>
+                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-500 rounded-r-lg">
+                  <h3 className="font-medium text-blue-900 dark:text-blue-300 mb-2">Tóm tắt</h3>
                   {mounted ? (
-                    <MarkdownRenderer
+                    <PublicMarkdownRenderer
                       content={blog.summary}
-                      className="text-blue-800 dark:text-gray-200"
+                      className="text-blue-800 dark:text-blue-200"
                     />
                   ) : (
-                    <p className="text-blue-800 dark:text-gray-200">{blog.summary}</p>
+                    <p className="text-blue-800 dark:text-blue-200">{blog.summary}</p>
                   )}
                 </div>
               )}
 
               {/* Content */}
               {mounted ? (
-                <MarkdownRenderer content={blog.content} className="text-gray-700 dark:text-gray-200" />
+                <PublicMarkdownRenderer content={blog.content} className="text-gray-700 dark:text-gray-200" />
               ) : (
                 <div className="animate-pulse space-y-4">
                   <div className="h-4 bg-gray-200 rounded w-full"></div>
@@ -243,7 +243,7 @@ export default function BlogPreviewModal({
           {/* Footer */}
           <div className="p-6 border-t border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 Bài viết này sẽ hiển thị như thế này khi được xuất bản
               </div>
               <button

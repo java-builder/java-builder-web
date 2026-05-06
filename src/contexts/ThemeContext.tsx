@@ -30,16 +30,32 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    const updateTheme = () => {
+      setThemeState(newTheme);
+      localStorage.setItem("theme", newTheme);
+      
+      if (newTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    document.documentElement.classList.add('theme-switching');
+    
+    requestAnimationFrame(() => {
+      updateTheme();
+      
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-switching');
+      }, 300);
+    });
   };
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  // Prevent flash of wrong theme
   if (!mounted) {
     return <>{children}</>;
   }
@@ -53,7 +69,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
 export function useTheme() {
   const context = useContext(ThemeContext);
-  // Return default values during SSR/prerender
   if (context === undefined) {
     return {
       theme: "light" as Theme,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import MarkdownRenderer from "./MarkdownRenderer";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 interface MarkdownEditorProps {
   value: string;
@@ -226,7 +226,7 @@ export default function MarkdownEditor({
         {viewMode === "preview" && (
           <div className="h-full overflow-y-auto p-6 bg-white dark:bg-gray-900">
             {value ? (
-              <MarkdownRenderer content={value} />
+              <PublicMarkdownRenderer content={value} />
             ) : (
               <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 italic">
                 Chưa có nội dung để hiển thị
@@ -247,7 +247,7 @@ export default function MarkdownEditor({
             />
             <div className="h-full overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900/50">
               {value ? (
-                <MarkdownRenderer content={value} />
+                <PublicMarkdownRenderer content={value} />
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 italic text-sm">
                   Preview sẽ hiển thị ở đây...

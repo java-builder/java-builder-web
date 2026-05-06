@@ -55,6 +55,39 @@ body {
     sans-serif;
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
+html:not(.dark) {
+  color-scheme: light;
+}
+
+/* Smooth theme switching transitions */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *:before,
+html.theme-switching *:after {
+  transition: background-color 0.25s ease-out, 
+              color 0.25s ease-out, 
+              border-color 0.25s ease-out,
+              fill 0.25s ease-out,
+              stroke 0.25s ease-out !important;
+}
+
+/* Prevent flash during theme switch */
+html.theme-switching {
+  transition-delay: 0ms !important;
+}
+
+/* Ensure syntax highlighter transitions smoothly */
+html.theme-switching .not-prose pre,
+html.theme-switching .not-prose code,
+html.theme-switching .not-prose span {
+  transition: background-color 0.25s ease-out, 
+              color 0.25s ease-out !important;
+}
+
 /* Global Dark Mode Overrides */
 .dark .bg-white {
   background-color: #1e293b !important;
@@ -500,12 +533,12 @@ input:-moz-autofill-preview {
   background-color: #1e293b !important;
 }
 
-/* Code blocks */
-.dark pre,
+/* Code blocks - DISABLED to allow react-syntax-highlighter to work properly */
+/* .dark pre,
 .dark code {
   background-color: #0f172a !important;
   color: #e2e8f0 !important;
-}
+} */
 
 /* Badges and tags */
 .dark .bg-gray-100.text-gray-800 {
@@ -657,12 +690,13 @@ input:-moz-autofill-preview {
   display: none;
 }
 
-/* Exclude SweetAlert2 elements from global transitions */
-*:not(.swal2-popup):not(.swal2-container):not(.swal2-backdrop):not([class*="swal2"]) {
-  transition-property:
-    color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+/* Minimal transitions for non-theme elements */
+button,
+a,
+input,
+textarea,
+select {
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 @keyframes float {
@@ -1222,4 +1256,60 @@ button[disabled],
 
 .dark .prose hr {
   border-color: #475569;
+}
+
+/* Ensure react-syntax-highlighter is not affected by prose styles */
+.prose pre[class*="language-"],
+.prose code[class*="language-"] {
+  background-color: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+}
+
+.dark .prose pre[class*="language-"],
+.dark .prose code[class*="language-"] {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* Smooth theme transition for syntax highlighter */
+.prose pre[class*="language-"],
+.prose pre[class*="language-"] *,
+.prose code[class*="language-"],
+.prose code[class*="language-"] * {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out !important;
+}
+
+/* Override global code styles for syntax highlighter - highest specificity */
+.not-prose div[style] pre,
+.not-prose div[style] code,
+.not-prose div[style] span,
+.not-prose div[style] div {
+  background: transparent !important;
+}
+
+.dark .not-prose div[style] pre,
+.dark .not-prose div[style] code,
+.dark .not-prose div[style] span,
+.dark .not-prose div[style] div {
+  background: transparent !important;
+}
+
+/* Force syntax highlighter to use its own styles */
+.not-prose pre[class*="language-"],
+.not-prose code[class*="language-"],
+.not-prose pre[class*="language-"] *,
+.not-prose code[class*="language-"] * {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.dark .not-prose pre[class*="language-"],
+.dark .not-prose code[class*="language-"],
+.dark .not-prose pre[class*="language-"] *,
+.dark .not-prose code[class*="language-"] * {
+  background: transparent !important;
+  color: inherit !important;
 }
