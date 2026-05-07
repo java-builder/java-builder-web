@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications, useMarkAsRead } from "@/hooks/useNotifications";
 import { NotificationItem } from "@/types/notification";
 import NotificationList from "@/components/notifications/NotificationList";
 
@@ -15,6 +15,19 @@ export default function NotificationsPage() {
   const previousFilterRef = useRef<"all" | "unread">("all");
 
   const { data: notifData, isFetching } = useNotifications(currentPage, filter);
+  const markAsRead = useMarkAsRead();
+
+  const hasMarkedInitialRead = useRef(false);
+  
+  useEffect(() => {
+    if (!hasMarkedInitialRead.current && allNotifications.length > 0) {
+      const unreadIds = allNotifications.filter((n) => !n.isRead).map((n) => n.id);
+      if (unreadIds.length > 0) {
+        markAsRead.mutate(unreadIds);
+        hasMarkedInitialRead.current = true;
+      }
+    }
+  }, [allNotifications, markAsRead]);
 
   useEffect(() => {
     if (notifData) {
@@ -42,6 +55,12 @@ export default function NotificationsPage() {
   }, [filter]);
 
   const handleNotificationClick = (notification: NotificationItem) => {
+    // Đánh dấu đã đọc nếu chưa đọc
+    if (!notification.isRead) {
+      markAsRead.mutate([notification.id]);
+    }
+    
+    // Update local state ngay lập tức để UI responsive
     setAllNotifications((prev) =>
       prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
     );
@@ -52,7 +71,16 @@ export default function NotificationsPage() {
   };
 
   const markAllRead = () => {
-    setAllNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    // Lấy tất cả notification chưa đọc
+    const unreadIds = allNotifications.filter((n) => !n.isRead).map((n) => n.id);
+    
+    if (unreadIds.length > 0) {
+      // Gọi API để đánh dấu đã đọc
+      markAsRead.mutate(unreadIds);
+      
+      // Update local state ngay lập tức
+      setAllNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    }
   };
 
   const handleLoadMore = () => {
