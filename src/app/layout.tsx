@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/providers";
 import ConditionalSidebar from "@/components/ConditionalSidebar";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData, generateEducationalOrganizationStructuredData, generateFAQStructuredData } from "@/lib/seo";
 
 const geistSans = Geist({
@@ -97,6 +98,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <GoogleAnalytics />
         <Providers>
           <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
             <ConditionalSidebar />
