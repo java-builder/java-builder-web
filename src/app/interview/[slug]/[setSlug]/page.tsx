@@ -6,7 +6,7 @@ import Link from "next/link";
 import MotionWrapper from "@/components/MotionWrapper";
 import { InterviewQuestionResponse } from "@/services/interview-question.service";
 import { useInterviewQuestions } from "@/hooks/useInterviewQuestions";
-import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 export default function InterviewSetPage() {
   const params = useParams();
@@ -185,7 +185,7 @@ export default function InterviewSetPage() {
                           </h3>
                         </div>
                         <div className="prose prose-sm dark:prose-invert max-w-none text-blue-900 dark:text-gray-200">
-                          <MarkdownRenderer content={selectedQuestion.answer} />
+                          <PublicMarkdownRenderer content={selectedQuestion.answer} />
                         </div>
                       </div>
 
