@@ -18,7 +18,6 @@ export default function StudyProgressClient() {
 
   // Calculate date based on filter
   const getFilterDate = (filter: typeof dateFilter): string => {
-    
     const today = new Date();
     // Use local date to avoid timezone issues
     const year = today.getFullYear();
@@ -257,7 +256,7 @@ export default function StudyProgressClient() {
 
         {/* Statistics Cards */}
         {Object.keys(stats).length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
             {Object.entries(stats).map(([type, count]) => {
               const activityType = type as ActivityType;
               return (
