@@ -18,6 +18,7 @@ export default function StudyProgressClient() {
 
   // Calculate date based on filter
   const getFilterDate = (filter: typeof dateFilter): string => {
+    
     const today = new Date();
     // Use local date to avoid timezone issues
     const year = today.getFullYear();
@@ -45,7 +46,7 @@ export default function StudyProgressClient() {
       case "custom":
         return selectedDate;
       default:
-        targetDate = new Date(year, month, day);
+        return "";
     }
     
     // Format as YYYY-MM-DD (ISO date format)
