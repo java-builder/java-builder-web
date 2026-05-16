@@ -3,6 +3,7 @@ export interface MenuItem {
   label: string;
   icon: React.ReactNode;
   badge?: string;
+  badgeColor?: string;
   requireAuth?: boolean;
   highlight?: boolean;
 }

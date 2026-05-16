@@ -84,9 +84,11 @@ export default function SidebarMenuGroup({
                         </span>
                       )}
                       {item.badge && (
-                        <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                        <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${
                           item.href === "/notifications" 
                             ? "bg-red-600 text-white" 
+                            : item.badgeColor
+                            ? `${item.badgeColor} text-white animate-pulse`
                             : "bg-accent/20 text-accent"
                         }`}>
                           {item.badge}
@@ -103,9 +105,11 @@ export default function SidebarMenuGroup({
                         </span>
                       )}
                       {item.badge && (
-                        <span className={`ml-2 px-1.5 py-0.5 text-xs rounded ${
+                        <span className={`ml-2 px-1.5 py-0.5 text-xs font-bold rounded ${
                           item.href === "/notifications"
                             ? "bg-red-600 text-white"
+                            : item.badgeColor
+                            ? `${item.badgeColor} text-white`
                             : "bg-accent text-white"
                         }`}>
                           {item.badge}
