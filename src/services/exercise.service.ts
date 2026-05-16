@@ -4,7 +4,9 @@ import {
   CreateExerciseRequest, 
   CreateExerciseResponse, 
   ExerciseSummary, 
-  ExerciseFilters 
+  ExerciseFilters,
+  ExerciseDetail,
+  SubmitExerciseRequest
 } from '@/types/exercise';
 import { ApiResponse, PageResponse } from '@/types/api';
 
@@ -26,6 +28,18 @@ export const exerciseApi = {
     if (filters.difficulty) params.append('difficulty', filters.difficulty);
 
     const response = await apiClient.get(`${API.GET_EXERCISES}?${params.toString()}`);
+    return response.data;
+  },
+
+  // Lấy chi tiết bài tập theo slug
+  getExerciseBySlug: async (slug: string): Promise<ApiResponse<ExerciseDetail>> => {
+    const response = await apiClient.get(`${API.GET_EXERCISES}/${slug}`);
+    return response.data;
+  },
+
+  // Nộp bài tập
+  submitExercise: async (data: SubmitExerciseRequest): Promise<ApiResponse<unknown>> => {
+    const response = await apiClient.post(API.SUBMIT_EXERCISE, data);
     return response.data;
   }
 };

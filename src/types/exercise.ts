@@ -48,6 +48,7 @@ export interface CreateExerciseRequest {
 
 export interface ExerciseSummary {
   id: string;
+  slug: string;
   title: string;
   description: string;
   exerciseType: ExerciseType;
@@ -77,4 +78,47 @@ export interface ExerciseFilters {
   title?: string;
   exerciseType?: ExerciseType;
   difficulty?: Difficulty;
+}
+
+// Exercise Detail Types
+export interface QuestionOptionDetail {
+  id: string;
+  orderIndex: number;
+  content: string;
+  isCorrect: boolean;
+}
+
+export interface QuestionDetail {
+  id: string;
+  content: string;
+  questionType: QuestionType;
+  score: number;
+  orderIndex: number;
+  options: QuestionOptionDetail[];
+}
+
+export interface ExerciseDetail {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string;
+  exerciseType: ExerciseType;
+  difficulty: Difficulty;
+  timeLimit: number;
+  maxScore: number;
+  status: ExerciseStatus;
+  publishedAt: string;
+  questions: QuestionDetail[];
+  createdAt: string;
+}
+
+// User Answer Types
+export interface UserAnswer {
+  questionId: string;
+  selectedOptionIds: string[];
+}
+
+export interface SubmitExerciseRequest {
+  exerciseId: string;
+  answers: UserAnswer[];
 }

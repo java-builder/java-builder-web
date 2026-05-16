@@ -213,4 +213,5 @@ export const API = {
     // EXERCISES
     CREATE_EXERCISE: "/api/v1/exercises",
     GET_EXERCISES: "/api/v1/exercises",
+    SUBMIT_EXERCISE: "/api/v1/exercises/submit",
 }

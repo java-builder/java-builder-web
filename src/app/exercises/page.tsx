@@ -81,8 +81,8 @@ export default function ExercisesPage() {
     setFilters(prev => ({ ...prev, page }));
   };
 
-  const handleExerciseClick = (exerciseId: string) => {
-    router.push(`/exercises/${exerciseId}`);
+  const handleExerciseClick = (exerciseSlug: string) => {
+    router.push(`/exercises/${exerciseSlug}`);
   };
 
   if (isLoading) {
@@ -210,7 +210,7 @@ export default function ExercisesPage() {
               {publishedExercises.map((exercise) => (
                 <div
                   key={exercise.id}
-                  onClick={() => handleExerciseClick(exercise.id)}
+                  onClick={() => handleExerciseClick(exercise.slug)}
                   className="group bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg hover:border-blue-200 transition-all duration-200 cursor-pointer overflow-hidden"
                 >
                   <div className="p-6">
