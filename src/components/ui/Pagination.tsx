@@ -68,8 +68,8 @@ export const Pagination = ({
               key={p}
               onClick={() => onPageChange(p)}
               className={`min-w-[28px] sm:min-w-[32px] h-7 sm:h-8 px-1.5 sm:px-2 text-xs sm:text-sm rounded-lg font-medium transition-colors ${currentPage === p
-                ? "bg-accent-600 text-white shadow-sm"
-                : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-accent-600 dark:bg-slate-800 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-700 dark:hover:text-accent-400"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-700 dark:hover:text-blue-400"
                 }`}
             >
               {p}

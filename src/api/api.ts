@@ -209,4 +209,8 @@ export const API = {
 
     // AI TRAINING
     AI_TRAINING_INGEST_MARKDOWN: "/api/v1/ingestion/markdown",
+
+    // EXERCISES
+    CREATE_EXERCISE: "/api/v1/exercises",
+    GET_EXERCISES: "/api/v1/exercises",
 }
