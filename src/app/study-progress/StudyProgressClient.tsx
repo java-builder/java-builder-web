@@ -7,7 +7,7 @@ import {
   ActivityTypeDisplayNames, 
   ActivityTypeColors 
 } from "@/types/user-activity";
-import { formatRelativeTime, formatApiDate } from "@/utils/dateUtils";
+import { formatRelativeTime, formatApiDate, parseDate } from "@/utils/dateUtils";
 import ActivityTypeIcon from "@/components/activity/ActivityTypeIcon";
 
 export default function StudyProgressClient() {
@@ -72,8 +72,10 @@ export default function StudyProgressClient() {
     const groups: Record<string, typeof activities> = {};
     
     activities.forEach((activity) => {
-      // Parse date properly to avoid timezone issues
-      const activityDate = new Date(activity.activityDateTime);
+      // Parse date properly using dateUtils
+      const activityDate = parseDate(activity.activityDateTime);
+      if (!activityDate) return;
+      
       const date = activityDate.toLocaleDateString('vi-VN', {
         year: 'numeric',
         month: 'long',
