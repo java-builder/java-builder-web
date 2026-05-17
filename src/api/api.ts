@@ -218,4 +218,6 @@ export const API = {
     // EXERCISE SUBMISSIONS
     START_EXERCISE: "/api/v1/exercise-submission",
     SUBMIT_EXERCISE: "/api/v1/exercise-submission",
+    MY_EXERCISES: "/api/v1/exercise-submission/my-exercises",
+    MY_STATISTICS: "/api/v1/exercise-submission/my-statistics",
 }

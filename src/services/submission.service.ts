@@ -2,9 +2,11 @@ import { apiClient } from '@/api/axios';
 import { API } from '@/api/api';
 import { 
   ExerciseSubmissionResponse, 
-  ExerciseSubmissionRequest
+  ExerciseSubmissionRequest,
+  ExerciseSubmissionSummaryResponse,
+  ExerciseSubmissionStatisticsResponse
 } from '@/types/submission';
-import { ApiResponse } from '@/types/api';
+import { ApiResponse, PageResponse } from '@/types/api';
 
 export const submissionApi = {
   // Bắt đầu làm bài tập
@@ -24,6 +26,18 @@ export const submissionApi = {
   // Xem kết quả submission
   getSubmissionResult: async (submissionId: string): Promise<ApiResponse<ExerciseSubmissionResponse>> => {
     const response = await apiClient.get(`${API.START_EXERCISE}/${submissionId}`);
+    return response.data;
+  },
+
+  // Lấy danh sách bài tập đã làm
+  getMyExercises: async (page: number = 1): Promise<ApiResponse<PageResponse<ExerciseSubmissionSummaryResponse>>> => {
+    const response = await apiClient.get(`${API.MY_EXERCISES}?page=${page}`);
+    return response.data;
+  },
+
+  // Lấy thống kê tổng hợp
+  getMyStatistics: async (): Promise<ApiResponse<ExerciseSubmissionStatisticsResponse>> => {
+    const response = await apiClient.get(API.MY_STATISTICS);
     return response.data;
   }
 };

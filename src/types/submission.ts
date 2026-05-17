@@ -29,6 +29,31 @@ export interface ExerciseSubmissionResponse {
   results?: QuestionResultResponse[];  // Có khi submit
 }
 
+// Exercise Submission Summary (dùng cho My Exercises page)
+export interface ExerciseSubmissionSummaryResponse {
+  submissionId: string;
+  submissionStatus: SubmissionStatus;
+  exerciseId: string;
+  exerciseTitle: string;
+  exerciseSlug: string;
+  score: number;
+  maxScore: number;
+  correctCount: number;
+  totalQuestions: number;
+  submittedAt: string;
+}
+
+// Exercise Submission Statistics (thống kê tổng hợp)
+export interface ExerciseSubmissionStatisticsResponse {
+  totalSubmissions: number;
+  totalQuestions: number;
+  totalCorrect: number;
+  totalWrong: number;
+  avgScore: number;
+  accuracy: number;
+  perfectScores: number;
+}
+
 // User Answer
 export interface UserAnswer {
   questionId: string;
