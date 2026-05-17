@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCreateExercise } from "@/hooks/useExercises";
@@ -28,6 +28,7 @@ export default function CreateExercisePage() {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<ExerciseFormData>({
     defaultValues: {
@@ -36,7 +37,7 @@ export default function CreateExercisePage() {
       exerciseType: ExerciseType.MULTIPLE_CHOICE,
       difficulty: Difficulty.EASY,
       timeLimit: 60,
-      maxScore: 100,
+      maxScore: 0,
       questions: [],
     },
   });
@@ -51,6 +52,17 @@ export default function CreateExercisePage() {
   });
 
   const exerciseType = watch("exerciseType");
+  const watchedQuestions = watch("questions");
+
+  // Auto-calculate maxScore from sum of all question scores
+  useEffect(() => {
+    if (exerciseType === ExerciseType.MULTIPLE_CHOICE && watchedQuestions) {
+      const totalScore = watchedQuestions.reduce((sum, question) => {
+        return sum + (Number(question.score) || 0);
+      }, 0);
+      setValue("maxScore", totalScore);
+    }
+  }, [watchedQuestions, exerciseType, setValue]);
 
   const addNewQuestion = () => {
     const newQuestion: Question = {
@@ -213,42 +225,54 @@ export default function CreateExercisePage() {
               <div className="relative">
                 <input
                   type="number"
-                  min="1"
                   {...register("maxScore")}
-                  className={exerciseInputClassName}
-                  placeholder="100"
+                  className={`${exerciseInputClassName} bg-gray-50 cursor-not-allowed`}
+                  placeholder="Tự động tính từ tổng điểm câu hỏi"
+                  disabled
+                  readOnly
                 />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
               </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Tự động tính = tổng điểm của tất cả câu hỏi
+              </p>
             </div>
           </div>
         </div>
 
         {exerciseType === ExerciseType.MULTIPLE_CHOICE && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Câu hỏi</h2>
+            </div>
+
+            {questions.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 mb-4">
+                <p>Chưa có câu hỏi nào. Nhấn &quot;Thêm câu hỏi&quot; để bắt đầu.</p>
+              </div>
+            ) : (
+              <div className="space-y-6 mb-4">
+                {questions.map((question, questionIndex) => (
+                  <ExerciseQuestionBlock
+                    key={question.id}
+                    questionIndex={questionIndex}
+                    control={control}
+                    register={register}
+                    onRemove={() => removeQuestion(questionIndex)}
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className="flex justify-center">
               <button type="button" onClick={addNewQuestion} className={exercisePrimaryButtonClassName}>
                 + Thêm câu hỏi
               </button>
             </div>
-
-            <div className="space-y-6">
-              {questions.map((question, questionIndex) => (
-                <ExerciseQuestionBlock
-                  key={question.id}
-                  questionIndex={questionIndex}
-                  control={control}
-                  register={register}
-                  onRemove={() => removeQuestion(questionIndex)}
-                />
-              ))}
-            </div>
-
-            {questions.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <p>Chưa có câu hỏi nào. Nhấn &quot;Thêm câu hỏi&quot; để bắt đầu.</p>
-              </div>
-            )}
           </div>
         )}
 

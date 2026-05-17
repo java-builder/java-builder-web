@@ -7,10 +7,12 @@ import { ExerciseDetailResponse, Difficulty, ExerciseType } from '@/types/exerci
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import ExerciseStartScreen from '@/components/exercises/ExerciseStartScreen';
-import ExerciseHeader from '@/components/exercises/ExerciseHeader';
 import QuestionCard from '@/components/exercises/QuestionCard';
 import ExerciseFooter from '@/components/exercises/ExerciseFooter';
 import ExerciseResultScreen from '@/components/exercises/ExerciseResultScreen';
+import QuestionNavigator from '@/components/exercises/QuestionNavigator';
+import MobileQuestionNav from '@/components/exercises/MobileQuestionNav';
+import SubmittingOverlay from '@/components/exercises/SubmittingOverlay';
 import { useExerciseSubmission } from '@/hooks/useExerciseSubmission';
 import { useExerciseTimer } from '@/hooks/useExerciseTimer';
 import { useExerciseAnswers } from '@/hooks/useExerciseAnswers';
@@ -26,6 +28,8 @@ export default function ExerciseDetailPage() {
   const [loading, setLoading] = useState(true);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [markedQuestions, setMarkedQuestions] = useState<Set<string>>(new Set());
+  const [currentQuestion, setCurrentQuestion] = useState(0);
 
   const {
     submission,
@@ -51,6 +55,39 @@ export default function ExerciseDetailPage() {
     const answers = getAnswersArray();
     await submitExerciseApi(submission.submissionId, answers);
   }, [submission, getAnswersArray, submitExerciseApi]);
+
+  const handleToggleMark = useCallback((questionId: string) => {
+    setMarkedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const handleQuestionClick = useCallback((index: number) => {
+    setCurrentQuestion(index);
+    const element = document.getElementById(`question-${index}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
+
+  const getAnsweredQuestionsSet = useCallback(() => {
+    const set = new Set<string>();
+    if (exercise) {
+      exercise.questions.forEach((q, idx) => {
+        const answers = userAnswers.get(q.id);
+        if (answers && answers.length > 0) {
+          set.add(`q-${idx}`);
+        }
+      });
+    }
+    return set;
+  }, [exercise, userAnswers]);
 
   const { timeRemaining, formatTime } = useExerciseTimer({
     initialTime: exercise?.timeLimit ? exercise.timeLimit * 60 : 0,
@@ -179,39 +216,76 @@ export default function ExerciseDetailPage() {
 
   // Exercise screen
   return (
-    <div className="min-h-screen bg-gray-50 py-4 px-4">
-      <div className="max-w-4xl mx-auto">
-        <ExerciseHeader
-          title={exercise.title}
-          difficulty={exercise.difficulty}
-          timeRemaining={timeRemaining}
-          onExit={handleExit}
-          getDifficultyColor={getDifficultyColor}
-          getDifficultyLabel={getDifficultyLabel}
-          formatTime={formatTime}
-        />
+    <>
+      {submitting && <SubmittingOverlay />}
+      
+      {/* Mobile Question Navigator - Top */}
+      <MobileQuestionNav
+        title={exercise.title}
+        difficulty={exercise.difficulty}
+        timeRemaining={timeRemaining}
+        formatTime={formatTime}
+        getDifficultyColor={getDifficultyColor}
+        getDifficultyLabel={getDifficultyLabel}
+        totalQuestions={exercise.questions.length}
+        currentQuestion={currentQuestion}
+        answeredQuestions={getAnsweredQuestionsSet()}
+        markedQuestions={markedQuestions}
+        questionIds={exercise.questions.map(q => q.id)}
+        onQuestionClick={handleQuestionClick}
+        onExit={handleExit}
+      />
+      
+      <div className="min-h-screen bg-gray-50 py-4 md:py-4 pt-32 md:pt-4">
+        <div className="flex gap-4">
+          {/* Main content */}
+          <div className="flex-1 px-4">
+            <div className="max-w-4xl mx-auto">
+              {/* Questions */}
+              <div className="space-y-4 mb-20 md:mb-4">
+                {exercise.questions.map((question, index) => (
+                  <QuestionCard
+                    key={question.id}
+                    question={question}
+                    index={index}
+                    selectedOptions={userAnswers.get(question.id) || []}
+                    isSubmitted={isSubmitted}
+                    isMarked={markedQuestions.has(question.id)}
+                    onAnswerChange={handleAnswerChange}
+                    onToggleMark={handleToggleMark}
+                  />
+                ))}
+              </div>
 
-        {/* Questions */}
-        <div className="space-y-4">
-          {exercise.questions.map((question, index) => (
-            <QuestionCard
-              key={question.id}
-              question={question}
-              index={index}
-              selectedOptions={userAnswers.get(question.id) || []}
-              isSubmitted={isSubmitted}
-              onAnswerChange={handleAnswerChange}
+              <ExerciseFooter
+                answeredCount={getAnsweredCount()}
+                totalQuestions={exercise.questions.length}
+                isSubmitting={submitting}
+                isSubmitted={isSubmitted}
+                onSubmit={handleSubmit}
+              />
+            </div>
+          </div>
+
+          {/* Question Navigator Sidebar - Desktop */}
+          <div className="hidden lg:block w-96 pr-4 flex-shrink-0">
+            <QuestionNavigator
+              title={exercise.title}
+              difficulty={exercise.difficulty}
+              timeRemaining={timeRemaining}
+              formatTime={formatTime}
+              getDifficultyColor={getDifficultyColor}
+              getDifficultyLabel={getDifficultyLabel}
+              totalQuestions={exercise.questions.length}
+              currentQuestion={currentQuestion}
+              answeredQuestions={getAnsweredQuestionsSet()}
+              markedQuestions={markedQuestions}
+              questionIds={exercise.questions.map(q => q.id)}
+              onQuestionClick={handleQuestionClick}
+              onExit={handleExit}
             />
-          ))}
+          </div>
         </div>
-
-        <ExerciseFooter
-          answeredCount={getAnsweredCount()}
-          totalQuestions={exercise.questions.length}
-          isSubmitting={submitting}
-          isSubmitted={isSubmitted}
-          onSubmit={handleSubmit}
-        />
 
         {/* Modals */}
         <ConfirmModal
@@ -237,6 +311,6 @@ export default function ExerciseDetailPage() {
           isLoading={submitting}
         />
       </div>
-    </div>
+    </>
   );
 }

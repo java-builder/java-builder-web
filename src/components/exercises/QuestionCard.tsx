@@ -1,11 +1,14 @@
 import { QuestionDetail } from '@/types/exercise';
+import { Flag } from 'lucide-react';
 
 interface QuestionCardProps {
   question: QuestionDetail;
   index: number;
   selectedOptions: string[];
   isSubmitted: boolean;
+  isMarked: boolean;
   onAnswerChange: (questionId: string, optionId: string, isMultiple: boolean) => void;
+  onToggleMark: (questionId: string) => void;
 }
 
 export default function QuestionCard({
@@ -13,12 +16,14 @@ export default function QuestionCard({
   index,
   selectedOptions,
   isSubmitted,
-  onAnswerChange
+  isMarked,
+  onAnswerChange,
+  onToggleMark
 }: QuestionCardProps) {
   const isMultiple = question.questionType === 'MULTIPLE_CHOICE';
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-4 md:p-5 border border-gray-100 dark:border-slate-700">
+    <div id={`question-${index}`} className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-4 md:p-5 border border-gray-100 dark:border-slate-700 scroll-mt-20">
       <div className="flex items-start gap-3 mb-3">
         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-white text-sm font-bold">
           {index + 1}
@@ -38,6 +43,19 @@ export default function QuestionCard({
             </p>
           )}
         </div>
+        {!isSubmitted && (
+          <button
+            onClick={() => onToggleMark(question.id)}
+            className={`flex-shrink-0 p-2 rounded-lg transition-all ${
+              isMarked
+                ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+                : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'
+            }`}
+            title={isMarked ? 'Bỏ đánh dấu' : 'Đánh dấu xem lại'}
+          >
+            <Flag className={`w-4 h-4 ${isMarked ? 'fill-yellow-600' : ''}`} />
+          </button>
+        )}
       </div>
 
       <div className="space-y-2 ml-0 md:ml-11">

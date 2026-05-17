@@ -185,7 +185,7 @@ export default function MyExercisesClient() {
           <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">Điểm tuyệt đối</span>
+              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">Bài điểm tối đa</span>
             </div>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.perfectScores}</p>
           </div>
