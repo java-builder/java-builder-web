@@ -3,10 +3,9 @@ import { API } from '@/api/api';
 import { 
   CreateExerciseRequest, 
   CreateExerciseResponse, 
-  ExerciseSummary, 
+  ExerciseSummaryResponse, 
   ExerciseFilters,
-  ExerciseDetail,
-  SubmitExerciseRequest
+  ExerciseDetailResponse
 } from '@/types/exercise';
 import { ApiResponse, PageResponse } from '@/types/api';
 
@@ -18,7 +17,7 @@ export const exerciseApi = {
   },
 
   // Lấy danh sách bài tập với phân trang và tìm kiếm
-  getExercises: async (filters: ExerciseFilters = {}): Promise<ApiResponse<PageResponse<ExerciseSummary>>> => {
+  getExercises: async (filters: ExerciseFilters = {}): Promise<ApiResponse<PageResponse<ExerciseSummaryResponse>>> => {
     const params = new URLSearchParams();
     
     if (filters.page) params.append('page', filters.page.toString());
@@ -32,14 +31,8 @@ export const exerciseApi = {
   },
 
   // Lấy chi tiết bài tập theo slug
-  getExerciseBySlug: async (slug: string): Promise<ApiResponse<ExerciseDetail>> => {
+  getExerciseBySlug: async (slug: string): Promise<ApiResponse<ExerciseDetailResponse>> => {
     const response = await apiClient.get(`${API.GET_EXERCISES}/${slug}`);
-    return response.data;
-  },
-
-  // Nộp bài tập
-  submitExercise: async (data: SubmitExerciseRequest): Promise<ApiResponse<unknown>> => {
-    const response = await apiClient.post(API.SUBMIT_EXERCISE, data);
     return response.data;
   }
 };

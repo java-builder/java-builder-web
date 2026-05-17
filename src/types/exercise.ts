@@ -46,7 +46,7 @@ export interface CreateExerciseRequest {
   questions: Question[];
 }
 
-export interface ExerciseSummary {
+export interface ExerciseSummaryResponse {
   id: string;
   slug: string;
   title: string;
@@ -97,7 +97,7 @@ export interface QuestionDetail {
   options: QuestionOptionDetail[];
 }
 
-export interface ExerciseDetail {
+export interface ExerciseDetailResponse {
   id: string;
   slug: string;
   title: string;
@@ -110,15 +110,4 @@ export interface ExerciseDetail {
   publishedAt: string;
   questions: QuestionDetail[];
   createdAt: string;
-}
-
-// User Answer Types
-export interface UserAnswer {
-  questionId: string;
-  selectedOptionIds: string[];
-}
-
-export interface SubmitExerciseRequest {
-  exerciseId: string;
-  answers: UserAnswer[];
 }
