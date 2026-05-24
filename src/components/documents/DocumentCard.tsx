@@ -72,7 +72,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
   return (
     <div
       onClick={handleClick}
-      className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-transparent dark:border-slate-700 ${document.url ? 'cursor-pointer' : 'cursor-default'
+      className={`group bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden hover:shadow-2xl hover:shadow-accent/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full border border-gray-100 dark:border-slate-700 ${document.url ? 'cursor-pointer' : 'cursor-default'
         }`}
     >
       {/* Header */}

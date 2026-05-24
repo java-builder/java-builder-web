@@ -1,7 +1,8 @@
  "use client";
  
  import Link from "next/link";
- import MotionWrapper from "@/components/MotionWrapper";
+import Image from "next/image";
+import MotionWrapper from "@/components/MotionWrapper";
  import CourseCard from "@/components/courses/CourseCard";
  import PublicBlogCard from "@/components/blogs/PublicBlogCard";
  import DocumentCard from "@/components/documents/DocumentCard";
@@ -54,8 +55,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right: Facebook Group Banner */}
-              <div className="lg:col-span-5">
+              {/* Right: Community Banners */}
+              <div className="lg:col-span-5 space-y-4">
                 {/* Facebook Group Card */}
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-4 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
                   <div className="flex items-start space-x-3 mb-3">
@@ -114,6 +115,46 @@ export default function Home() {
                         Tham gia nhóm
                         <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Discord Group Card */}
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-4 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-9 h-9 bg-white dark:bg-indigo-50 rounded-full flex items-center justify-center overflow-hidden shadow-sm ring-1 ring-indigo-100">
+                        <Image
+                          src="/logos/discord.png"
+                          alt="Discord"
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 object-contain"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="inline-flex items-center bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
+                        Học nhóm
+                      </div>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
+                        Discord học tập JavaBuilder
+                      </h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
+                        Không gian học nhóm, hỏi đáp nhanh, review bài tập và cùng nhau giữ nhịp học mỗi ngày.
+                      </p>
+                      <a
+                        href="https://discord.gg/DfTsStwT"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full px-4 py-2 bg-accent dark:bg-accent text-white text-xs font-semibold rounded-lg shadow hover:bg-accent-600 dark:hover:bg-accent-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                      >
+                        Tham gia Discord
+                        <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                       </a>
                     </div>
@@ -321,15 +362,23 @@ export default function Home() {
       </section>
 
       {/* Featured Documents Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="relative overflow-hidden py-16 bg-gradient-to-b from-slate-50 via-white to-blue-50/60">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-24 right-10 h-72 w-72 rounded-full bg-accent/10 blur-3xl"></div>
+          <div className="absolute bottom-10 -left-20 h-72 w-72 rounded-full bg-blue-400/10 blur-3xl"></div>
+        </div>
+        <div className="relative max-w-7xl mx-auto px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <div className="mx-auto mb-14 max-w-3xl text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-white/80 px-4 py-1.5 text-sm font-semibold text-accent shadow-sm backdrop-blur">
+                <span className="h-2 w-2 rounded-full bg-accent"></span>
+                Thư viện học tập chọn lọc
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-950 mb-5">
                 Tài liệu nổi bật
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Tuyển tập tài liệu hữu ích cho quá trình học tập và tham khảo
+              <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Tổng hợp sách, PDF, video và hướng dẫn thực chiến giúp bạn học Java Backend có hệ thống hơn.
               </p>
             </div>
           </MotionWrapper>
