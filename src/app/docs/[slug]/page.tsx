@@ -54,8 +54,7 @@ export default function DocsDetailPage() {
           const courseData = response.data;
           setCourse(courseData);
           
-          const firstLesson = courseData.chapters?.[0]?.lessons?.[0];
-          if (firstLesson && courseData.chapters?.[0]) {
+          if (courseData.chapters?.[0]) {
             setOpenCategories([courseData.chapters[0].id]);
           }
 
@@ -224,8 +223,8 @@ export default function DocsDetailPage() {
 
   const currentChapter = useMemo(() => 
     course?.chapters?.find(c => 
-      c.lessons?.some(l => l.id === selectedChapter)
-    ), [course?.chapters, selectedChapter]
+      chapterLessons[c.id]?.some(l => l.id === selectedChapter)
+    ), [course?.chapters, chapterLessons, selectedChapter]
   );
 
   const tocItems = useMemo(() => 

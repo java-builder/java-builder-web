@@ -12,7 +12,7 @@ export default function FavoriteCoursesTab() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 9;
+  const pageSize = 10;
 
   const fetchFavoriteCourses = useCallback(async () => {
     try {
@@ -53,9 +53,13 @@ export default function FavoriteCoursesTab() {
     }).format(price);
   };
 
+  const getCourseUrl = (course: FavoriteResponse) => {
+    return `/courses/${course.targetSlug || course.targetId}`;
+  };
+
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 p-6">
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
         </div>
@@ -64,22 +68,22 @@ export default function FavoriteCoursesTab() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white/80 dark:bg-slate-900/95 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center justify-between">
+      <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-950/60">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Khóa học yêu thích</h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <h2 className="text-lg font-semibold text-gray-950 dark:text-slate-50">Lộ trình đã lưu</h2>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
               {courses.length > 0
-                ? `${courses.length} khóa học`
-                : "Chưa có khóa học yêu thích"}
+                ? `${courses.length} khóa học đang được lưu để học sau`
+                : "Chưa có khóa học nào trong thư viện"}
             </p>
           </div>
           {courses.length > 0 && (
             <Link
               href="/courses"
-              className="text-sm text-accent hover:text-accent/80 font-medium transition-colors"
+              className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm text-accent hover:bg-accent/10 font-medium transition-colors"
             >
               Khám phá thêm →
             </Link>
@@ -88,7 +92,7 @@ export default function FavoriteCoursesTab() {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {courses.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-20 h-20 bg-gradient-to-br from-accent/10 to-accent/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -106,10 +110,10 @@ export default function FavoriteCoursesTab() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Chưa có khóa học yêu thích
             </h3>
-            <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
               Khám phá và lưu các khóa học bạn quan tâm để học sau
             </p>
             <Link
@@ -129,28 +133,27 @@ export default function FavoriteCoursesTab() {
           </div>
         ) : (
           <>
-            {/* Course Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="divide-y divide-gray-100 dark:divide-slate-800">
               {courses.map((course) => (
-                <div
+                <article
                   key={course.id}
-                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-200"
+                  className="group flex flex-col sm:flex-row gap-4 py-5 first:pt-0 last:pb-0"
                 >
-                  {/* Course Cover */}
-                  <div className="relative w-full h-48 bg-white border-b border-gray-100">
+                  <Link
+                    href={getCourseUrl(course)}
+                    className="relative h-32 sm:h-28 sm:w-44 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800"
+                  >
                     {course.thumbnailUrl ? (
-                      <div className="relative w-full h-full p-4">
-                        <Image
-                          src={course.thumbnailUrl}
-                          alt={course.targetTitle}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
+                      <Image
+                        src={course.thumbnailUrl}
+                        alt={course.targetTitle}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-900">
                         <svg
-                          className="w-16 h-16 text-gray-300"
+                          className="w-10 h-10 text-gray-300 dark:text-slate-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -164,62 +167,73 @@ export default function FavoriteCoursesTab() {
                         </svg>
                       </div>
                     )}
-                    {/* Favorite Badge */}
-                    <div className="absolute top-3 right-3">
+                  </Link>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
+                      <span className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-950/50 px-2 py-0.5 font-medium text-red-600 dark:text-red-300 border border-red-100 dark:border-red-900">
+                        Đã lưu
+                      </span>
+                      {course.courseLevel && (
+                        <span className="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 font-medium text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900">
+                          {course.courseLevel}
+                        </span>
+                      )}
+                      {course.courseDuration !== undefined && (
+                        <span>{course.courseDuration} giờ</span>
+                      )}
+                    </div>
+
+                    <Link href={getCourseUrl(course)}>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-950 dark:text-slate-50 line-clamp-2 group-hover:text-accent transition-colors">
+                        {course.targetTitle}
+                      </h3>
+                    </Link>
+
+                    <p className="text-sm text-gray-600 dark:text-slate-300 line-clamp-2 mt-2">
+                      {course.targetDescription}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-3 mt-4">
+                      <span className="text-sm font-semibold text-accent">
+                        {formatPrice(course.coursePrice)}
+                      </span>
+                      <Link
+                        href={getCourseUrl(course)}
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
+                      >
+                        Xem khóa học
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
                       <button
                         onClick={() => handleRemoveFavorite(course.targetId)}
-                        className="w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center text-red-500 hover:bg-white hover:scale-110 transition-all shadow-md border border-gray-200"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
                         title="Xóa khỏi yêu thích"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path
                             fillRule="evenodd"
                             d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                             clipRule="evenodd"
                           />
                         </svg>
+                        Bỏ lưu
                       </button>
                     </div>
                   </div>
-
-                  {/* Course Info */}
-                  <div className="p-4">
-                    <Link href={`/courses/${course.targetId}`}>
-                      <h3 className="text-base font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-accent transition-colors min-h-[3rem]">
-                        {course.targetTitle}
-                      </h3>
-                    </Link>
-
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 min-h-[2.5rem]">
-                      {course.targetDescription}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                      <span className="text-lg font-bold text-accent">
-                        {formatPrice(course.coursePrice)}
-                      </span>
-                      <Link
-                        href={`/courses/${course.targetId}`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-accent hover:text-accent/80 text-sm font-medium transition-colors"
-                      >
-                        Xem chi tiết
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                </article>
               ))}
             </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-8 pt-6 border-t border-gray-200">
+              <div className="flex items-center justify-center gap-2 mt-8 pt-6 border-t border-gray-200 dark:border-slate-700">
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800"
                 >
                   ← Trước
                 </button>
@@ -243,7 +257,7 @@ export default function FavoriteCoursesTab() {
                         className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                           currentPage === pageNum
                             ? "bg-accent text-white"
-                            : "text-gray-700 hover:bg-gray-100"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
                         }`}
                       >
                         {pageNum}
@@ -254,7 +268,7 @@ export default function FavoriteCoursesTab() {
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800"
                 >
                   Sau →
                 </button>

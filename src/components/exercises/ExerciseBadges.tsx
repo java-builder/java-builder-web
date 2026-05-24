@@ -6,9 +6,9 @@ interface ExerciseTypeBadgeProps {
 
 export const ExerciseTypeBadge = ({ type }: ExerciseTypeBadgeProps) => {
   const colors = {
-    [ExerciseType.MULTIPLE_CHOICE]: 'bg-blue-100 text-blue-800 border-blue-200',
-    [ExerciseType.ESSAY]: 'bg-green-100 text-green-800 border-green-200',
-    [ExerciseType.CODING]: 'bg-purple-100 text-purple-800 border-purple-200',
+    [ExerciseType.MULTIPLE_CHOICE]: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-700',
+    [ExerciseType.ESSAY]: 'bg-green-100 text-green-800 border-green-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700',
+    [ExerciseType.CODING]: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-700',
   };
 
   const labels = {
@@ -49,9 +49,9 @@ interface DifficultyBadgeProps {
 
 export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
   const colors = {
-    [Difficulty.EASY]: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    [Difficulty.MEDIUM]: 'bg-amber-100 text-amber-800 border-amber-200',
-    [Difficulty.HARD]: 'bg-rose-100 text-rose-800 border-rose-200',
+    [Difficulty.EASY]: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700',
+    [Difficulty.MEDIUM]: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-700',
+    [Difficulty.HARD]: 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-700',
   };
 
   const labels = {

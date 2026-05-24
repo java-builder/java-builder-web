@@ -48,9 +48,10 @@ export default function FavoritesPage() {
   };
 
   const getItemUrl = (item: typeof favorites[0]) => {
+    const slug = item.targetSlug || item.targetId;
     return item.targetType === FavoriteTargetType.COURSE 
-      ? `/courses/${item.targetId}` 
-      : `/blogs/${item.targetId}`;
+      ? `/courses/${slug}` 
+      : `/blogs/${slug}`;
   };
 
   const getItemIcon = (targetType: FavoriteTargetType) => {

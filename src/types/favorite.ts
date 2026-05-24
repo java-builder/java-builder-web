@@ -7,6 +7,7 @@ export enum FavoriteTargetType {
 export interface FavoriteResponse {
   id: string;
   targetId: string;
+  targetSlug?: string;
   targetType: FavoriteTargetType;
   targetTitle: string;
   targetDescription: string;

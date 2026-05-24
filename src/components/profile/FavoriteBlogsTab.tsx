@@ -4,14 +4,14 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { favoriteService } from "@/services/favorite.service";
-import { FavoriteTargetType } from "@/types/favorite";
+import { FavoriteResponse, FavoriteTargetType } from "@/types/favorite";
 import { useFavorites } from "@/hooks/useFavorites";
 import { formatShortDate } from "@/utils/dateUtils";
 import toast from "react-hot-toast";
 
 export default function FavoriteBlogsTab() {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 9;
+  const pageSize = 10;
   const { favorites: blogs, isLoading, totalPages, refetch } = useFavorites(currentPage, pageSize, FavoriteTargetType.BLOG);
 
   const handleRemoveFavorite = async (targetId: string) => {
@@ -25,9 +25,13 @@ export default function FavoriteBlogsTab() {
     }
   };
 
+  const getBlogUrl = (blog: FavoriteResponse) => {
+    return `/blogs/${blog.targetSlug || blog.targetId}`;
+  };
+
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 p-6">
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
         </div>
@@ -36,22 +40,22 @@ export default function FavoriteBlogsTab() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+    <div className="bg-white/80 dark:bg-slate-900/95 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-950/60">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Bài viết yêu thích</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <h2 className="text-lg font-semibold text-gray-950 dark:text-slate-50">Thư viện đã lưu</h2>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
               {blogs.length > 0
-                ? `${blogs.length} bài viết`
-                : "Chưa có bài viết yêu thích"}
+                ? `${blogs.length} bài viết đang được lưu để đọc lại`
+                : "Chưa có bài viết nào trong thư viện"}
             </p>
           </div>
           {blogs.length > 0 && (
             <Link
               href="/blogs"
-              className="text-sm text-accent hover:text-accent/80 font-medium transition-colors"
+              className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm text-accent hover:bg-accent/10 font-medium transition-colors"
             >
               Khám phá thêm →
             </Link>
@@ -60,7 +64,7 @@ export default function FavoriteBlogsTab() {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {blogs.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-20 h-20 bg-gradient-to-br from-accent/10 to-accent/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -101,28 +105,27 @@ export default function FavoriteBlogsTab() {
           </div>
         ) : (
           <>
-            {/* Blog Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="divide-y divide-gray-100 dark:divide-slate-800">
               {blogs.map((blog) => (
-                <div
+                <article
                   key={blog.id}
-                  className="group bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 dark:hover:border-slate-500 transition-all duration-200"
+                  className="group flex flex-col sm:flex-row gap-4 py-5 first:pt-0 last:pb-0"
                 >
-                  {/* Blog Cover */}
-                  <div className="relative w-full h-48 bg-white dark:bg-slate-600 border-b border-gray-100 dark:border-slate-600">
+                  <Link
+                    href={getBlogUrl(blog)}
+                    className="relative h-32 sm:h-28 sm:w-44 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800"
+                  >
                     {blog.thumbnailUrl ? (
-                      <div className="relative w-full h-full p-4">
-                        <Image
-                          src={blog.thumbnailUrl}
-                          alt={blog.targetTitle}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
+                      <Image
+                        src={blog.thumbnailUrl}
+                        alt={blog.targetTitle}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-700 dark:to-slate-600">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-900">
                         <svg
-                          className="w-16 h-16 text-gray-300 dark:text-gray-500"
+                          className="w-10 h-10 text-gray-300 dark:text-slate-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -136,52 +139,53 @@ export default function FavoriteBlogsTab() {
                         </svg>
                       </div>
                     )}
-                    {/* Favorite Badge */}
-                    <div className="absolute top-3 right-3">
+                  </Link>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
+                      <span className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-950/50 px-2 py-0.5 font-medium text-red-600 dark:text-red-300 border border-red-100 dark:border-red-900">
+                        Đã lưu
+                      </span>
+                      <span>{formatShortDate(blog.addedAt)}</span>
+                    </div>
+
+                    <Link href={getBlogUrl(blog)}>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-950 dark:text-slate-50 line-clamp-2 group-hover:text-accent transition-colors">
+                        {blog.targetTitle}
+                      </h3>
+                    </Link>
+
+                    <p className="text-sm text-gray-600 dark:text-slate-300 line-clamp-2 mt-2">
+                      {blog.targetDescription}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-3 mt-4">
+                      <Link
+                        href={getBlogUrl(blog)}
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
+                      >
+                        Đọc bài viết
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
                       <button
                         onClick={() => handleRemoveFavorite(blog.targetId)}
-                        className="w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center text-red-500 hover:bg-white hover:scale-110 transition-all shadow-md border border-gray-200"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
                         title="Xóa khỏi yêu thích"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path
                             fillRule="evenodd"
                             d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                             clipRule="evenodd"
                           />
                         </svg>
+                        Bỏ lưu
                       </button>
                     </div>
                   </div>
-
-                  {/* Blog Info */}
-                  <div className="p-4">
-                    <Link href={`/blogs/${blog.targetId}`}>
-                      <h3 className="text-base font-semibold text-gray-900 dark:text-white line-clamp-2 mb-2 group-hover:text-accent transition-colors min-h-[3rem]">
-                        {blog.targetTitle}
-                      </h3>
-                    </Link>
-
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 min-h-[2.5rem]">
-                      {blog.targetDescription}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-600">
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {formatShortDate(blog.addedAt)}
-                      </span>
-                      <Link
-                        href={`/blogs/${blog.targetId}`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-accent hover:text-accent/80 text-sm font-medium transition-colors"
-                      >
-                        Xem chi tiết
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                </article>
               ))}
             </div>
 

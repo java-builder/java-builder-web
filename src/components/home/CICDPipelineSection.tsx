@@ -30,24 +30,24 @@ export default function CICDPipelineSection() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % steps.length);
-    }, 1200); // Faster: 1.2s instead of 2s
+    }, 800  ); 
     return () => clearInterval(interval);
   }, [steps.length]);
 
   return (
-    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-slate-50 mb-4 leading-tight">
             Từ Code Đến Production
             <span className="block mt-1 px-1 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-blue-700 dark:from-cyan-400 dark:via-blue-400 dark:to-blue-500" style={{ WebkitTextFillColor: "transparent", WebkitBackgroundClip: "text" }}>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-blue-700 dark:from-cyan-300 dark:via-sky-300 dark:to-blue-300" style={{ WebkitTextFillColor: "transparent", WebkitBackgroundClip: "text" }}>
                 Quy Trình CI/CD Chuyên Nghiệp
               </span>
             </span>
           </h2>
-          <p className="text-base md:text-lg text-gray-600 dark:text-slate-300 max-w-3xl mx-auto">
-            Tự động hóa toàn bộ quy trình: <span className="font-semibold text-gray-700 dark:text-slate-200">Build → Test → Security Scan → Deploy</span>. 
+          <p className="text-base md:text-lg text-gray-600 dark:text-slate-200 max-w-3xl mx-auto">
+            Tự động hóa toàn bộ quy trình: <span className="font-semibold text-gray-700 dark:text-cyan-100">Build → Test → Security Scan → Deploy</span>. 
             Học cách triển khai ứng dụng như các công ty công nghệ hàng đầu.
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function CICDPipelineSection() {
               return (
                 <div key={step.id} className="flex items-center gap-6 md:gap-8">
                   {/* Square Card */}
-                  <div className={`w-28 h-28 sm:w-32 sm:h-32 bg-white dark:bg-slate-800 rounded-xl p-3 border-2 transition-all duration-300 shadow-md hover:shadow-lg flex flex-col items-center justify-center relative ${
+                  <div className={`w-28 h-28 sm:w-32 sm:h-32 bg-white dark:bg-slate-900/90 rounded-xl p-3 border-2 transition-all duration-300 shadow-md hover:shadow-lg dark:shadow-black/40 dark:hover:shadow-cyan-500/20 flex flex-col items-center justify-center relative ${
                     isActive 
                       ? 'border-cyan-500 dark:border-cyan-400 scale-105 shadow-cyan-500/50' 
                       : isPassed
@@ -81,7 +81,7 @@ export default function CICDPipelineSection() {
                     <h3 className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-white text-center leading-tight mb-1">
                       {step.title}
                     </h3>
-                    <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-gray-400 text-center">
+                    <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-slate-300 text-center">
                       {step.description}
                     </p>
                     
@@ -173,7 +173,7 @@ export default function CICDPipelineSection() {
                   )}
                   
                   {/* Square Card */}
-                  <div className={`w-28 h-28 sm:w-32 sm:h-32 bg-white dark:bg-slate-800 rounded-xl p-3 border-2 transition-all duration-300 shadow-md hover:shadow-lg flex flex-col items-center justify-center relative ${
+                  <div className={`w-28 h-28 sm:w-32 sm:h-32 bg-white dark:bg-slate-900/90 rounded-xl p-3 border-2 transition-all duration-300 shadow-md hover:shadow-lg dark:shadow-black/40 dark:hover:shadow-cyan-500/20 flex flex-col items-center justify-center relative ${
                     isActive 
                       ? 'border-cyan-500 dark:border-cyan-400 scale-105 shadow-cyan-500/50' 
                       : isPassed
@@ -192,7 +192,7 @@ export default function CICDPipelineSection() {
                     <h3 className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-white text-center leading-tight mb-1">
                       {step.title}
                     </h3>
-                    <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-gray-400 text-center">
+                    <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-slate-300 text-center">
                       {step.description}
                     </p>
                     

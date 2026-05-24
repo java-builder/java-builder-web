@@ -11,11 +11,11 @@ export default function NotificationCard({ notification, onClick }: Notification
   return (
     <div
       onClick={() => onClick(notification)}
-      className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
+      className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer ${
         notification.isRead
-          ? "bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/50"
-          : "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30"
-      } shadow-sm hover:shadow-md`}
+          ? "bg-white dark:bg-slate-800"
+          : "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/70 dark:to-indigo-950/70"
+      } shadow-sm`}
     >
       {/* Unread Indicator */}
       {!notification.isRead && (
@@ -44,19 +44,19 @@ export default function NotificationCard({ notification, onClick }: Notification
       <div className="flex-1 min-w-0">
         <h3 className={`text-sm font-semibold line-clamp-1 mb-1.5 ${
           notification.isRead 
-            ? "text-gray-700 dark:text-gray-300" 
+            ? "text-gray-700 dark:text-slate-200" 
             : "text-gray-900 dark:text-white"
         }`}>
           {notification.title}
         </h3>
         <p className={`text-sm line-clamp-2 mb-2 ${
           notification.isRead
-            ? "text-gray-500 dark:text-gray-400"
-            : "text-gray-700 dark:text-gray-300"
+            ? "text-gray-500 dark:text-slate-300"
+            : "text-gray-700 dark:text-slate-200"
         }`}>
           {notification.content}
         </p>
-        <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+        <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-slate-400">
           {notification.senderName && (
             <div className="flex items-center gap-1.5">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
