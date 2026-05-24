@@ -66,7 +66,7 @@ export default function SidebarMenuGroup({
                         ? "text-purple-600 dark:text-purple-400"
                         : active
                         ? "text-accent"
-                        : "text-gray-500 dark:text-gray-400"
+                        : item.color || "text-gray-500 dark:text-gray-400"
                     }`}
                   >
                     {item.icon}

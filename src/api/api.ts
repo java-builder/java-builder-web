@@ -60,6 +60,7 @@ export const API = {
     // REPORT
     REPORT_STATS: "/api/v1/reports/stats",
     REPORT_OVERVIEW: "/api/v1/reports/overview",
+    REPORT_COURSES_OVERVIEW: "/api/v1/reports/courses",
 
     // PAYMENT
     PAYMENT_CREATE_LINK: "/api/v1/payments/create-link",

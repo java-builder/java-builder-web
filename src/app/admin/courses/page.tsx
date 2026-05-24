@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
@@ -10,9 +10,11 @@ import { CourseStatsCards } from "@/components/admin/courses/CourseStatsCards";
 import { CourseCard } from "@/components/admin/courses/CourseCard";
 import { useCourses } from "@/hooks/useCourses";
 import { courseApi } from "@/services/course.service";
+import { reportApi } from "@/services/report.service";
 import { DeleteModalState } from "@/types/admin";
 import { formatCurrency } from "@/utils/formatters";
 import { CourseFormat, CourseLevel } from "@/types/course";
+import { CourseOverviewResponse } from "@/types/report";
 
 type CourseFormatTab = CourseFormat;
 
@@ -33,6 +35,8 @@ export default function CoursesPage() {
     courseTitle: "",
   });
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [courseOverview, setCourseOverview] = useState<CourseOverviewResponse | null>(null);
+  const [isLoadingOverview, setIsLoadingOverview] = useState(true);
 
   const { data, isLoading, error, refetch } = useCourses(
     1,
@@ -43,13 +47,31 @@ export default function CoursesPage() {
   );
   const courses = data?.data || [];
   const stats = {
-    total: data?.totalElements || 0,
+    total: courseOverview?.totalCourses || 0,
     published: 0,
     draft: 0,
     archived: 0,
-    totalStudents: 0,
-    totalRevenue: 0,
+    totalStudents: courseOverview?.totalStudents || 0,
+    totalRevenue: courseOverview?.totalRevenue || 0,
   };
+
+  const fetchCourseOverview = useCallback(async () => {
+    try {
+      setIsLoadingOverview(true);
+      const response = await reportApi.getCourseOverview();
+      if (response.data) {
+        setCourseOverview(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch course overview:", error);
+    } finally {
+      setIsLoadingOverview(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCourseOverview();
+  }, [fetchCourseOverview]);
 
   const handleDelete = async (id: string, title: string) => {
     setDeleteModal({ isOpen: true, id, title });
@@ -156,7 +178,7 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      <CourseStatsCards stats={stats} formatRevenue={formatCurrency} />
+      <CourseStatsCards stats={stats} formatRevenue={formatCurrency} isLoading={isLoadingOverview} />
 
       {/* Course Format Tabs */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

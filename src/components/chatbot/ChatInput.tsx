@@ -4,7 +4,7 @@ interface ChatInputProps {
   value: string;
   isLoading: boolean;
   onChange: (value: string) => void;
-  onSend: () => void;
+  onSend: (content?: string) => void;
 }
 
 function ChatInput({ value, isLoading, onChange, onSend }: ChatInputProps) {
@@ -13,7 +13,15 @@ function ChatInput({ value, isLoading, onChange, onSend }: ChatInputProps) {
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      onSend();
+      if (value.trim()) {
+        onSend(value);
+      }
+    }
+  };
+
+  const handleSendClick = () => {
+    if (value.trim()) {
+      onSend(value);
     }
   };
 
@@ -34,7 +42,7 @@ function ChatInput({ value, isLoading, onChange, onSend }: ChatInputProps) {
           />
         </div>
         <button
-          onClick={onSend}
+          onClick={handleSendClick}
           disabled={!value.trim() || isLoading}
           style={{ height: '40px' }}
           className="px-3 sm:px-4 bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5 sm:gap-2 flex-shrink-0"

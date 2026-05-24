@@ -329,7 +329,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2) !important;
             }
           `}</style>
-        <div className="h-screen flex bg-gray-50 overflow-hidden">
+        <div className="h-screen flex bg-gray-50 overflow-hidden" suppressHydrationWarning>
           {/* Mobile sidebar overlay */}
           {sidebarOpen && (
             <div className="fixed inset-0 z-40 lg:hidden">

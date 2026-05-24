@@ -6,6 +6,7 @@ import { API } from "@/api/api";
 import {
   ReportStatsResponse,
   OverviewStatsResponse,
+  CourseOverviewResponse,
 } from "@/types/report";
 
 export const reportApi = {
@@ -20,6 +21,13 @@ export const reportApi = {
   getOverview: async () => {
     const response = await apiClient.get<ApiResponse<OverviewStatsResponse>>(
       API.REPORT_OVERVIEW
+    );
+    return response.data;
+  },
+
+  getCourseOverview: async () => {
+    const response = await apiClient.get<ApiResponse<CourseOverviewResponse>>(
+      API.REPORT_COURSES_OVERVIEW
     );
     return response.data;
   },

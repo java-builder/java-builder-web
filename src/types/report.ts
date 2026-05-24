@@ -45,3 +45,9 @@ export interface OverviewStatsResponse {
     newEnrollments: number;
     recentActivities: RecentActivityResponse[];
 }
+
+export interface CourseOverviewResponse {
+    totalCourses: number;
+    totalStudents: number;
+    totalRevenue: number;
+}

@@ -1,3 +1,17 @@
+// Difficulty enum
+export enum Difficulty {
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD'
+}
+
+// Exercise Type enum
+export enum ExerciseType {
+  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
+  ESSAY = 'ESSAY',
+  CODING = 'CODING'
+}
+
 // Submission Status
 export enum SubmissionStatus {
   IN_PROGRESS = 'IN_PROGRESS',
@@ -36,6 +50,9 @@ export interface ExerciseSubmissionSummaryResponse {
   exerciseId: string;
   exerciseTitle: string;
   exerciseSlug: string;
+  difficulty: Difficulty;
+  exerciseType: ExerciseType;
+  timeLimit: number;
   score: number;
   maxScore: number;
   correctCount: number;

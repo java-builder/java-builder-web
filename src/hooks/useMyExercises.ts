@@ -16,7 +16,6 @@ export function useMyExercises(page: number = 1) {
         setLoading(true);
         setError(null);
         
-        // Fetch cả submissions và statistics song song
         const [submissionsResponse, statisticsResponse] = await Promise.all([
           submissionApi.getMyExercises(page),
           submissionApi.getMyStatistics()

@@ -6,6 +6,7 @@ export interface MenuItem {
   badgeColor?: string;
   requireAuth?: boolean;
   highlight?: boolean;
+  color?: string;
 }
 
 export interface MenuGroup {

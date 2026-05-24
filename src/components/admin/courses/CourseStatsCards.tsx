@@ -3,9 +3,28 @@ import { CourseStats } from "@/types/admin";
 interface CourseStatsCardsProps {
   stats: CourseStats;
   formatRevenue: (revenue: number) => string;
+  isLoading?: boolean;
 }
 
-export const CourseStatsCards = ({ stats, formatRevenue }: CourseStatsCardsProps) => {
+export const CourseStatsCards = ({ stats, formatRevenue, isLoading = false }: CourseStatsCardsProps) => {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-white rounded-lg p-6 border border-gray-200 animate-pulse">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="h-4 bg-gray-200 rounded w-24 mb-3"></div>
+                <div className="h-8 bg-gray-200 rounded w-16"></div>
+              </div>
+              <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200">

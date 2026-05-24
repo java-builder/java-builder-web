@@ -6,6 +6,7 @@ import {
   Line,
   ComposedChart,
   Bar,
+  BarChart,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -25,7 +26,7 @@ interface ChartDataPoint {
 }
 
 export default function ReportsPage() {
-  const [timeRange, setTimeRange] = useState("1year");
+  const [timeRange, setTimeRange] = useState("30days");
   const [isLoading, setIsLoading] = useState(false);
 
   const [stats, setStats] = useState<ReportStatsResponse>({
@@ -470,7 +471,7 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      {/* Top Courses */}
+      {/* Top Courses - Bar Chart */}
       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -488,46 +489,85 @@ export default function ReportsPage() {
             <p className="text-lg font-medium">Chưa có dữ liệu khóa học</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">STT</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tên khóa học</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Học viên</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Doanh thu</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {topCourses.map((course, index) => {
-                  return (
-                    <tr key={course.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-4">
-                        <span className="text-sm font-semibold text-gray-700">
-                          {index + 1}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <p className="text-sm font-medium text-gray-900">
-                          {course.name}
-                        </p>
-                      </td>
-                      <td className="py-4 px-4 text-center">
-                        <span className="text-sm text-gray-700">
-                          {course.owners.toLocaleString()}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-right">
-                        <span className="text-sm font-semibold text-gray-900">
-                          {formatPrice(course.revenue)}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <>
+            <div className="h-96">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart 
+                  data={topCourses.map(course => ({
+                    name: course.name.length > 30 ? course.name.substring(0, 30) + '...' : course.name,
+                    fullName: course.name,
+                    revenue: course.revenue,
+                    owners: course.owners
+                  }))}
+                  margin={{ top: 5, right: 20, left: 20, bottom: 80 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis
+                    dataKey="name"
+                    angle={-45}
+                    textAnchor="end"
+                    height={100}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6B7280', fontSize: 11 }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6B7280', fontSize: 12 }}
+                    tickFormatter={formatYAxis}
+                  />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="bg-white px-4 py-3 shadow-xl rounded-xl border border-gray-100">
+                            <p className="text-sm font-medium text-gray-900 mb-2">{data.fullName}</p>
+                            <p className="text-base font-bold text-amber-600 mb-1">
+                              💰 {formatPrice(data.revenue)}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              👥 {data.owners.toLocaleString()} học viên
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Bar
+                    dataKey="revenue"
+                    fill="#f59e0b"
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={60}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            
+            {/* Summary Stats */}
+            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Tổng doanh thu</p>
+                <p className="text-lg font-bold text-amber-600">
+                  {formatPrice(topCourses.reduce((sum, c) => sum + c.revenue, 0))}
+                </p>
+              </div>
+              <div className="text-center border-l border-r border-gray-100">
+                <p className="text-xs text-gray-500 mb-1">Tổng học viên</p>
+                <p className="text-lg font-bold text-blue-600">
+                  {topCourses.reduce((sum, c) => sum + c.owners, 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Cao nhất</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {formatPrice(Math.max(...topCourses.map(c => c.revenue)))}
+                </p>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
