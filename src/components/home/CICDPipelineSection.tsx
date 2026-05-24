@@ -38,14 +38,16 @@ export default function CICDPipelineSection() {
     <section className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
             Từ Code Đến Production
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500 mt-2">
-              Quy Trình CI/CD Chuyên Nghiệp
+            <span className="block mt-1 px-1 leading-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-blue-700 dark:from-cyan-400 dark:via-blue-400 dark:to-blue-500" style={{ WebkitTextFillColor: "transparent", WebkitBackgroundClip: "text" }}>
+                Quy Trình CI/CD Chuyên Nghiệp
+              </span>
             </span>
           </h2>
-          <p className="text-base md:text-lg text-gray-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Tự động hóa toàn bộ quy trình: Build → Test → Security Scan → Deploy. 
+          <p className="text-base md:text-lg text-gray-600 dark:text-slate-300 max-w-3xl mx-auto">
+            Tự động hóa toàn bộ quy trình: <span className="font-semibold text-gray-700 dark:text-slate-200">Build → Test → Security Scan → Deploy</span>. 
             Học cách triển khai ứng dụng như các công ty công nghệ hàng đầu.
           </p>
         </div>
@@ -84,7 +86,7 @@ export default function CICDPipelineSection() {
                     </p>
                     
                     {isActive && (
-                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-cyan-500 rounded-full animate-pulse"></div>
+                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-cyan-500 dark:bg-cyan-400 rounded-full animate-pulse-custom"></div>
                     )}
                     
                     {/* Vertical Arrow below SonarQube (last card) */}
@@ -195,7 +197,7 @@ export default function CICDPipelineSection() {
                     </p>
                     
                     {isActive && (
-                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-cyan-500 rounded-full animate-pulse"></div>
+                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-cyan-500 dark:bg-cyan-400 rounded-full animate-pulse-custom"></div>
                     )}
                   </div>
                 </div>
@@ -217,11 +219,24 @@ export default function CICDPipelineSection() {
             stroke-dashoffset: 20;
           }
         }
+        @keyframes pulse-custom {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.5;
+            transform: scale(1.3);
+          }
+        }
         .animate-dash {
           animation: dash 1.5s linear infinite;
         }
         .animate-dash-reverse {
           animation: dash-reverse 1.5s linear infinite;
+        }
+        .animate-pulse-custom {
+          animation: pulse-custom 1.5s ease-in-out infinite;
         }
       `}</style>
     </section>

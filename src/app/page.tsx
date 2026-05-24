@@ -213,11 +213,11 @@ export default function Home() {
             <div className="text-center mt-12">
               <Link
                 href="/blogs"
-                className="inline-flex items-center px-4 py-2 bg-accent text-white font-medium rounded-full shadow-sm hover:shadow-md transition transform duration-200 ease-in-out"
+                className="inline-flex items-center justify-center px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:border-accent dark:hover:border-accent text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-accent font-semibold rounded-lg shadow-sm hover:shadow transition-all duration-200 group"
               >
                 Xem tất cả bài viết
                 <svg
-                  className="w-5 h-5 ml-2"
+                  className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-200 text-gray-400 group-hover:text-accent"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -225,7 +225,7 @@ export default function Home() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={2.5}
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                   />
                 </svg>
@@ -378,11 +378,11 @@ export default function Home() {
             <div className="text-center mt-12">
               <Link
                 href="/documents"
-                className="inline-flex items-center px-4 py-2 bg-accent text-white font-medium rounded-full shadow-sm hover:shadow-md transition transform duration-200 ease-in-out"
+                className="inline-flex items-center justify-center px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:border-accent dark:hover:border-accent text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-accent font-semibold rounded-lg shadow-sm hover:shadow transition-all duration-200 group"
               >
                 Xem tất cả tài liệu
                 <svg
-                  className="w-5 h-5 ml-2"
+                  className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-200 text-gray-400 group-hover:text-accent"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -390,7 +390,7 @@ export default function Home() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={2.5}
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                   />
                 </svg>

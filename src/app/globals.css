@@ -629,7 +629,8 @@ input:-moz-autofill-preview {
 }
 
 /* Specific fix for document/course cards with gradient headers */
-.dark [class*="from-"][class*="to-"] {
+/* Exclude bg-clip-text elements (gradient text) from brightness filter */
+.dark [class*="from-"][class*="to-"]:not([class*="bg-clip-text"]):not(.cicd-gradient-text) {
   filter: brightness(0.85);
 }
 
