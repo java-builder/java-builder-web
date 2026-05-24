@@ -125,7 +125,7 @@ export default function Home() {
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-4 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0">
-                      <div className="w-9 h-9 bg-white dark:bg-indigo-50 rounded-full flex items-center justify-center overflow-hidden shadow-sm ring-1 ring-indigo-100">
+                      <div className="w-9 h-9 bg-white dark:bg-indigo-50 rounded-full flex items-center justify-center overflow-hidden">
                         <Image
                           src="/logos/discord.png"
                           alt="Discord"
