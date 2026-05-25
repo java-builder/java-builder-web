@@ -140,7 +140,7 @@ export default function Footer() {
                   className="text-gray-300 hover:text-accent text-sm transition-colors duration-200 flex items-center group"
                 >
                   <span className="w-1.5 h-1.5 bg-accent rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                  Liên hệ
+                  Ủng hộ
                 </Link>
               </li>
             </ul>

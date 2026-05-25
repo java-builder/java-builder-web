@@ -6,8 +6,12 @@ import { useEffect, useState } from "react";
 export default function ThemePage() {
   const { theme, setTheme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [accentTheme, setAccentTheme] = useState("blue");
 
   useEffect(() => {
+    const savedAccentTheme = localStorage.getItem("accent-theme") || "blue";
+    document.documentElement.dataset.accentTheme = savedAccentTheme;
+    setAccentTheme(savedAccentTheme);
     setMounted(true);
   }, []);
 
@@ -20,6 +24,12 @@ export default function ThemePage() {
   }
 
   const currentTheme = theme === "system" ? systemTheme : theme;
+
+  const setAccent = (id: string) => {
+    setAccentTheme(id);
+    localStorage.setItem("accent-theme", id);
+    document.documentElement.dataset.accentTheme = id;
+  };
 
   const themes = [
     {
@@ -57,6 +67,69 @@ export default function ThemePage() {
       ),
       preview: "bg-gradient-to-br from-white to-slate-800 border-gray-400",
       textColor: "text-gray-700",
+    },
+  ];
+
+  const accentThemes = [
+    {
+      id: "blue",
+      name: "Java Blue",
+      description: "Mặc định, hiện đại và dễ nhìn",
+      preview: "from-blue-600 to-blue-800",
+    },
+    {
+      id: "emerald",
+      name: "Emerald",
+      description: "Xanh lá dịu, cảm giác tập trung",
+      preview: "from-emerald-600 to-emerald-800",
+    },
+    {
+      id: "purple",
+      name: "Purple",
+      description: "Tím công nghệ, nổi bật hơn",
+      preview: "from-purple-600 to-purple-800",
+    },
+    {
+      id: "rose",
+      name: "Rose",
+      description: "Ấm hơn, cá tính hơn",
+      preview: "from-rose-600 to-rose-800",
+    },
+    {
+      id: "amber",
+      name: "Amber",
+      description: "Vàng cam năng lượng",
+      preview: "from-amber-600 to-amber-800",
+    },
+    {
+      id: "cyan",
+      name: "Cyan",
+      description: "Mát mẻ, sáng và hiện đại",
+      preview: "from-cyan-500 to-cyan-700",
+    },
+    {
+      id: "teal",
+      name: "Teal",
+      description: "Cân bằng, dễ chịu khi học lâu",
+      preview: "from-teal-500 to-teal-700",
+    },
+    {
+      id: "indigo",
+      name: "Indigo",
+      description: "Sâu hơn, đậm chất developer",
+      preview: "from-indigo-600 to-indigo-800",
+    },
+    {
+      id: "pink",
+      name: "Pink",
+      description: "Tươi sáng, trẻ trung hơn",
+      preview: "from-pink-600 to-pink-800",
+    },
+    {
+      id: "slate",
+      name: "Slate",
+      description: "Trung tính, tối giản và nghiêm túc",
+      preview: "from-slate-600 to-slate-800",
     },
   ];
 
@@ -123,6 +196,59 @@ export default function ThemePage() {
           ))}
         </div>
 
+        <div className="mb-6">
+          <div className="mb-3">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Màu chủ đề
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Chọn màu nhấn cho nút, liên kết và trạng thái đang chọn
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {accentThemes.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setAccent(item.id)}
+                className={`relative overflow-hidden p-4 rounded-2xl border transition-all duration-300 text-left group bg-white dark:bg-slate-800 ${
+                  accentTheme === item.id
+                    ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-md shadow-accent/10"
+                    : "border-gray-200 dark:border-slate-700 hover:border-accent/50 hover:shadow-md"
+                }`}
+              >
+                <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br ${item.preview} opacity-10 transition-opacity duration-300 group-hover:opacity-20`} />
+                {accentTheme === item.id && (
+                  <div className="absolute top-3 right-3">
+                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-sm">
+                      <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+
+                <div className="relative flex items-center gap-4">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.preview} shadow-sm ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-105`} />
+                  <div className="min-w-0 pr-8">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {item.name}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {item.description}
+                    </p>
+                    <div className="mt-3 flex gap-1.5">
+                      <span className={`h-1.5 w-8 rounded-full bg-gradient-to-r ${item.preview}`} />
+                      <span className="h-1.5 w-4 rounded-full bg-gray-200 dark:bg-slate-700" />
+                      <span className="h-1.5 w-4 rounded-full bg-gray-200 dark:bg-slate-700" />
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Current Status - Compact */}
         {theme === "system" && (
           <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
@@ -144,19 +270,6 @@ export default function ThemePage() {
           </div>
         )}
 
-        {/* Info Tip - Compact */}
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800/50">
-          <div className="flex gap-3">
-            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-            <div>
-              <p className="text-sm text-blue-900 dark:text-blue-300">
-                <span className="font-medium">Mẹo:</span> Chế độ &quot;Hệ thống&quot; tự động điều chỉnh theo thiết bị của bạn, giúp bảo vệ mắt tốt hơn.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

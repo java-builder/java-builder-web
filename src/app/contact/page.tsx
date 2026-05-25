@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
-  title: "Liên hệ - JavaBuilder",
-  description: "Liên hệ với JavaBuilder để được hỗ trợ và giải đáp thắc mắc về lập trình Java",
+  title: "Ủng hộ & Liên hệ - JavaBuilder",
+  description: "Ủng hộ JavaBuilder qua QR code và kết nối qua email, Zalo hoặc Facebook",
 };
 
 export default function ContactPage() {

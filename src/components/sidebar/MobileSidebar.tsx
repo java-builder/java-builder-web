@@ -249,7 +249,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                                 ? "text-purple-600 dark:text-purple-400"
                                 : active
                                 ? "text-accent"
-                                : "text-gray-500 dark:text-gray-400"
+                                : item.color || "text-gray-500 dark:text-gray-400"
                             }`}
                           >
                             {item.icon}
@@ -265,7 +265,13 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                             </span>
                           )}
                           {item.badge && (
-                            <span className="px-2 py-0.5 text-xs font-medium bg-red-600 text-white rounded-full">
+                            <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${
+                              item.href === "/notifications" 
+                                ? "bg-red-600 text-white" 
+                                : item.badgeColor
+                                ? `${item.badgeColor} text-white animate-pulse`
+                                : "bg-accent/20 text-accent"
+                            }`}>
                               {item.badge}
                             </span>
                           )}

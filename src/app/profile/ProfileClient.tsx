@@ -10,6 +10,7 @@ import SecurityTab from "@/components/profile/SecurityTab";
 import PasswordTab from "@/components/profile/PasswordTab";
 import SessionsTab from "@/components/profile/SessionsTab";
 import { UserDetailResponse } from "@/types/user";
+import { User } from "lucide-react";
 
 function ProfileContent() {
   const searchParams = useSearchParams();
@@ -155,21 +156,19 @@ function ProfileContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Page Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+            <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center">
+              <User className="w-6 h-6 text-gray-700 dark:text-gray-300" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Tài khoản của tôi
               </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                 Quản lý thông tin cá nhân, bảo mật và các hoạt động của bạn
               </p>
             </div>

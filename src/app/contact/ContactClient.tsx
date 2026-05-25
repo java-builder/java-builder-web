@@ -1,43 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import ContactForm from "@/components/contact/ContactForm";
+import Image from "next/image";
 import ContactInfo from "@/components/contact/ContactInfo";
 import MotionWrapper from "@/components/MotionWrapper";
 
-interface ContactFormData {
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-}
-
 export default function ContactClient() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-
-  const handleSubmit = (data: ContactFormData) => {
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
-    (async () => {
-      try {
-        console.log("Form data:", data);
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setSubmitStatus("success");
-        
-        setTimeout(() => {
-          setSubmitStatus("idle");
-        }, 3000);
-      } catch (error) {
-        console.error("Error submitting contact form:", error);
-        setSubmitStatus("error");
-      } finally {
-        setIsSubmitting(false);
-      }
-    })();
-  };
-
   return (
     <>
       {/* Hero Section */}
@@ -52,18 +19,18 @@ export default function ContactClient() {
             <div className="text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 dark:bg-accent/20 rounded-full mb-4">
                 <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 10v-1m0 0c-1.11 0-2.08-.402-2.599-1M12 16c1.11 0 2.08-.402 2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm font-medium text-accent">Liên hệ với chúng tôi</span>
+                <span className="text-sm font-medium text-accent">Ủng hộ JavaBuilder</span>
               </div>
               
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-                Chúng tôi luôn sẵn sàng
-                <span className="block text-accent mt-2">hỗ trợ bạn</span>
+                Nếu bạn yêu quý nội dung
+                <span className="block text-accent mt-2">hãy ủng hộ JavaBuilder</span>
               </h1>
               
               <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                Có câu hỏi hoặc cần hỗ trợ? Hãy liên hệ với chúng tôi qua form bên dưới hoặc các kênh liên lạc khác. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.
+                Sự ủng hộ của bạn là động lực để JavaBuilder tiếp tục chia sẻ thêm nhiều tài liệu, bài học và nội dung chất lượng về lập trình Java.
               </p>
             </div>
           </MotionWrapper>
@@ -77,20 +44,35 @@ export default function ContactClient() {
             {/* Contact Form - 2 columns */}
             <div className="lg:col-span-2">
               <MotionWrapper animation="fadeInUp" delay={0.2}>
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 md:p-8">
-                  <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                      Gửi tin nhắn cho chúng tôi
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      Điền thông tin vào form bên dưới và chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể.
-                    </p>
+                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 md:p-8 h-full">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                        Quét QR để ủng hộ
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                        Nếu các bài viết và tài liệu trên JavaBuilder giúp ích cho bạn, bạn có thể gửi một khoản ủng hộ nhỏ qua mã QR bên cạnh.
+                      </p>
+                      <div className="rounded-xl bg-accent/10 dark:bg-accent/20 p-4 text-accent">
+                        <p className="font-semibold mb-1">Cảm ơn bạn rất nhiều!</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          Mỗi lượt ủng hộ đều giúp mình duy trì và phát triển thêm nội dung miễn phí cho cộng đồng.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center">
+                      <div className="rounded-2xl bg-gray-50 dark:bg-slate-900 p-4 border border-gray-200 dark:border-slate-700 shadow-inner">
+                        <Image
+                          src="/donate/qrcode.jpg"
+                          alt="QR code ủng hộ JavaBuilder"
+                          width={320}
+                          height={320}
+                          className="w-full max-w-xs rounded-xl"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <ContactForm
-                    onSubmit={handleSubmit}
-                    isSubmitting={isSubmitting}
-                    submitStatus={submitStatus}
-                  />
                 </div>
               </MotionWrapper>
             </div>

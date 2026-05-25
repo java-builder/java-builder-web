@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { ThemeProvider } from "next-themes";
 import ToastProvider from "@/components/providers/ToastProvider";
 import PushNotificationProvider from "@/components/providers/PushNotificationProvider";
@@ -33,6 +33,11 @@ function getQueryClient() {
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => getQueryClient());
+
+  useEffect(() => {
+    const accentTheme = localStorage.getItem("accent-theme") || "blue";
+    document.documentElement.dataset.accentTheme = accentTheme;
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -27,7 +27,7 @@ const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasD
   },
   // { href: "/qna", label: "Q&A" },
   { href: "/roadmap", label: "Lộ trình học tập", icon: "roadmap" },
-  { href: "/contact", label: "Liên hệ", icon: "contact" },
+  { href: "/contact", label: "Ủng hộ", icon: "contact" },
   { href: "/pricing", label: "Membership", isPremium: true }
 ];
 
