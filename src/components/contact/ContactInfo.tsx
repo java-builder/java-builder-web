@@ -29,21 +29,6 @@ export default function ContactInfo() {
     },
   ];
 
-  const socialLinks = [
-    {
-      name: "Facebook",
-      icon: <FaFacebookF className="w-5 h-5" />,
-      url: "https://www.facebook.com/le.khanh.uc.10632",
-      color: "text-blue-600 hover:text-blue-700",
-    },
-    {
-      name: "Zalo",
-      icon: <SiZalo className="w-5 h-5" />,
-      url: "https://zalo.me/0368103455",
-      color: "text-blue-500 hover:text-blue-600",
-    },
-  ];
-
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-8">
       <div className="mb-6">
