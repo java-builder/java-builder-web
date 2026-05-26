@@ -6,6 +6,7 @@ import { twoFactorApi } from "@/services/two-factor.service";
 import TwoFactorModal from "./TwoFactorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SecurityTabProps {
   user: UserDetailResponse;
@@ -13,6 +14,7 @@ interface SecurityTabProps {
 }
 
 export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
+  const { t } = useI18n();
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(user.mftEnable);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -61,13 +63,13 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
       await twoFactorApi.disable();
       setTwoFactorEnabled(false);
       setShowDisableConfirm(false);
-      toast.success("Đã tắt xác thực hai yếu tố!");
+      toast.success(t("profilePage.securityTab.disableSuccess"));
       
       if (onUserUpdate) {
         onUserUpdate({ mftEnable: false });
       }
     } catch (error: unknown) {
-      let errorMessage = "Không thể tắt 2FA";
+      let errorMessage = t("profilePage.securityTab.disableFailed");
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { data?: { message?: string } };
@@ -83,19 +85,33 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   const handleTwoFactorSuccess = () => {
     setTwoFactorEnabled(true);
     setShowTwoFactorModal(false);
-    toast.success("Đã bật xác thực hai yếu tố!");
+    toast.success(t("profilePage.securityTab.enableSuccess"));
     
     if (onUserUpdate) {
       onUserUpdate({ mftEnable: true });
     }
   };
 
+  const formattedSecurityNote = () => {
+    const noteText = t("profilePage.securityTab.securityActivatedNote");
+    const colonIndex = noteText.indexOf(":");
+    if (colonIndex !== -1) {
+      return (
+        <>
+          <strong>{noteText.slice(0, colonIndex + 1)}</strong>
+          {noteText.slice(colonIndex + 1)}
+        </>
+      );
+    }
+    return noteText;
+  };
+
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Bảo mật</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Quản lý các cài đặt bảo mật cho tài khoản của bạn</p>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("profilePage.securityTab.security")}</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("profilePage.securityTab.securityDesc")}</p>
       </div>
 
       {/* Content */}
@@ -111,14 +127,14 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
               </div>
               <div className="flex-1">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
-                  Xác thực hai yếu tố
+                  {t("profilePage.securityTab.twoFactor")}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   {isInitialLoading 
-                    ? "Đang kiểm tra trạng thái..." 
+                    ? t("profilePage.securityTab.checkingStatus") 
                     : twoFactorEnabled 
-                      ? "Tài khoản được bảo vệ bằng xác thực hai yếu tố" 
-                      : "Thêm lớp bảo mật bổ sung cho tài khoản"
+                      ? t("profilePage.securityTab.twoFactorProtected") 
+                      : t("profilePage.securityTab.twoFactorAddLyr")
                   }
                 </p>
                 {!isInitialLoading && twoFactorEnabled && (
@@ -126,7 +142,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    Đã kích hoạt
+                    {t("profilePage.securityTab.activated")}
                   </div>
                 )}
               </div>
@@ -155,7 +171,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                     />
                   </button>
                   <span className={`text-sm font-medium transition-colors duration-300 ${twoFactorEnabled ? "text-accent" : "text-gray-500 dark:text-gray-400"}`}>
-                    {twoFactorEnabled ? "Đã bật" : "Chưa bật"}
+                    {twoFactorEnabled ? t("profilePage.securityTab.enabled") : t("profilePage.securityTab.disabled")}
                   </span>
                 </>
               )}
@@ -172,12 +188,12 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                 </svg>
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-green-900 dark:text-green-300 mb-2">Bảo mật đã được kích hoạt</h4>
+                <h4 className="text-sm font-semibold text-green-900 dark:text-green-300 mb-2">{t("profilePage.securityTab.securityActivated")}</h4>
                 <p className="text-sm text-green-800 dark:text-green-200 mb-3">
-                  Tài khoản của bạn được bảo vệ bằng mã xác thực 6 chữ số từ ứng dụng authenticator.
+                  {t("profilePage.securityTab.securityActivatedDesc")}
                 </p>
                 <p className="text-xs text-green-700 dark:text-green-300">
-                  <strong>Lưu ý:</strong> Hãy đảm bảo bạn luôn có quyền truy cập vào ứng dụng authenticator.
+                  {formattedSecurityNote()}
                 </p>
               </div>
             </div>
@@ -194,23 +210,23 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                 </svg>
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-2">Hướng dẫn sử dụng 2FA</h4>
+                <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-2">{t("profilePage.securityTab.twoFactorGuide")}</h4>
                 <ul className="space-y-1.5 text-sm text-amber-800 dark:text-amber-200">
                   <li className="flex items-start gap-2">
                     <span className="text-amber-600 dark:text-amber-400 mt-0.5">1.</span>
-                    <span>Tải ứng dụng <strong>Google Authenticator</strong> trên điện thoại</span>
+                    <span>{t("profilePage.securityTab.guideStep1")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-amber-600 dark:text-amber-400 mt-0.5">2.</span>
-                    <span>Bật 2FA và quét mã QR bằng ứng dụng authenticator</span>
+                    <span>{t("profilePage.securityTab.guideStep2")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-amber-600 dark:text-amber-400 mt-0.5">3.</span>
-                    <span>Nhập mã 6 số từ ứng dụng để xác thực</span>
+                    <span>{t("profilePage.securityTab.guideStep3")}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-amber-600 mt-0.5">4.</span>
-                    <span>Khi đăng nhập, bạn sẽ cần nhập mã từ ứng dụng authenticator</span>
+                    <span className="text-amber-600 dark:text-amber-400 mt-0.5">4.</span>
+                    <span>{t("profilePage.securityTab.guideStep4")}</span>
                   </li>
                 </ul>
               </div>
@@ -227,7 +243,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
                 </svg>
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-red-900 mb-1">Lỗi</h4>
+                <h4 className="text-sm font-semibold text-red-900 mb-1">{t("profilePage.securityTab.error")}</h4>
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             </div>
@@ -246,10 +262,10 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
         isOpen={showDisableConfirm}
         onClose={() => setShowDisableConfirm(false)}
         onConfirm={handleDisableTwoFactor}
-        title="Tắt xác thực 2 bước"
-        message="Bạn có chắc chắn muốn tắt xác thực 2 bước? Tài khoản của bạn sẽ kém an toàn hơn."
-        confirmText="Tắt 2FA"
-        cancelText="Hủy"
+        title={t("profilePage.securityTab.disableConfirmTitle")}
+        message={t("profilePage.securityTab.disableConfirmMsg")}
+        confirmText={t("profilePage.securityTab.disableBtn")}
+        cancelText={t("profilePage.securityTab.cancelBtn")}
         type="danger"
       />
     </div>

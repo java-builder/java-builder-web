@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import PostList from "@/components/posts/PostList";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function QNAClient() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,6 +16,7 @@ export default function QNAClient() {
   const [loadingData, setLoadingData] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
+  const { t } = useI18n();
 
   useEffect(() => {
     let mounted = true;
@@ -45,10 +47,10 @@ export default function QNAClient() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                Q&A - Hỏi đáp & Giải quyết vấn đề
+                {t("qnaPage.title")}
               </h1>
               <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                Nơi chia sẻ kiến thức, giải quyết các vấn đề lập trình và học hỏi lẫn nhau
+                {t("qnaPage.subtitle")}
               </p>
             </div>
             <button
@@ -65,7 +67,7 @@ export default function QNAClient() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              Đặt câu hỏi
+              {t("qnaPage.askQuestion")}
             </button>
           </div>
         </div>
@@ -93,9 +95,8 @@ export default function QNAClient() {
                     <input
                       type="text"
                       value={searchQuery}
-                      
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Tìm kiếm câu hỏi..."
+                      placeholder={t("qnaPage.searchPlaceholder")}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-accent focus:border-transparent"
                     />
                     <svg  
@@ -117,7 +118,7 @@ export default function QNAClient() {
                           onClick={() => setFilterTag("all")}
                           className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${filterTag === "all" ? "bg-accent text-white border-accent shadow" : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600"}`}
                         >
-                          Tất cả
+                          {t("coursesPage.filterAll")}
                         </button>
                       </div>
                       {categories.map((c) => {
@@ -142,18 +143,18 @@ export default function QNAClient() {
               {/* Right: sort select (aligned center vertically) */}
               <div className="lg:col-span-1 flex items-center justify-end">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600 dark:text-gray-300 mr-2">Sắp xếp</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300 mr-2">{t("qnaPage.sortBy")}</span>
                   <div className="relative inline-block">
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
                       className="appearance-none px-3 py-1.5 pr-8 rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-0"
                     >
-                      <option value="newest">Mới nhất</option>
-                      <option value="oldest">Cũ nhất</option>
-                      <option value="popular">Phổ biến</option>
-                      <option value="unanswered">Chưa trả lời</option>
-                      <option value="resolved">Đã giải quyết</option>
+                      <option value="newest">{t("qnaPage.sortNewest")}</option>
+                      <option value="oldest">{t("qnaPage.sortOldest")}</option>
+                      <option value="popular">{t("qnaPage.sortPopular")}</option>
+                      <option value="unanswered">{t("qnaPage.sortUnanswered")}</option>
+                      <option value="resolved">{t("qnaPage.sortResolved")}</option>
                     </select>
                     {/* subtle chevron */}
                     <svg className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +170,7 @@ export default function QNAClient() {
         {/* Questions List */}
         <div className="mb-8">
           {loadingData ? (
-            <div className="text-center py-12">Đang tải dữ liệu...</div>
+            <div className="text-center py-12">{t("qnaPage.loadingData")}</div>
           ) : (
             <PostList searchQuery={searchQuery} sortBy={sortBy} filterTag={filterTag} />
           )}

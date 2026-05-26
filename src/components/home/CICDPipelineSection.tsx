@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface PipelineStep {
   id: string;
@@ -11,6 +12,7 @@ interface PipelineStep {
 }
 
 export default function CICDPipelineSection() {
+  const { t } = useI18n();
   const [activeStep, setActiveStep] = useState(0);
 
   const steps: PipelineStep[] = [
@@ -39,16 +41,15 @@ export default function CICDPipelineSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-slate-50 mb-4 leading-tight">
-            Từ Code Đến Production
+            {t("home.cicdTitle")}
             <span className="block mt-1 px-1 leading-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-blue-700 dark:from-cyan-300 dark:via-sky-300 dark:to-blue-300" style={{ WebkitTextFillColor: "transparent", WebkitBackgroundClip: "text" }}>
-                Quy Trình CI/CD Chuyên Nghiệp
+                {t("home.cicdSubtitle")}
               </span>
             </span>
           </h2>
-          <p className="text-base md:text-lg text-gray-600 dark:text-slate-200 max-w-3xl mx-auto">
-            Tự động hóa toàn bộ quy trình: <span className="font-semibold text-gray-700 dark:text-cyan-100">Build → Test → Security Scan → Deploy</span>. 
-            Học cách triển khai ứng dụng như các công ty công nghệ hàng đầu.
+          <p className="text-base md:text-lg text-gray-600 dark:text-slate-200 max-w-3xl mx-auto leading-relaxed">
+            {t("home.cicdDesc")}
           </p>
         </div>
 

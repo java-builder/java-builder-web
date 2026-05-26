@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 const mockExercisesData = {
   stats: {
@@ -108,25 +109,14 @@ const difficultyColors = {
   hard: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
 };
 
-const difficultyLabels = {
-  easy: "Dễ",
-  medium: "Trung bình",
-  hard: "Khó",
-};
-
 const statusColors = {
   completed: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
   "in-progress": "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400",
   "not-started": "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-400",
 };
 
-const statusLabels = {
-  completed: "Hoàn thành",
-  "in-progress": "Đang làm",
-  "not-started": "Chưa làm",
-};
-
 export default function ExercisesClient() {
+  const { t } = useI18n();
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,10 +125,24 @@ export default function ExercisesClient() {
 
   const handleExerciseClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    toast.success("Tính năng đang được phát triển", {
+    toast.success(t("rateLimit.message") || "Tính năng đang được phát triển", {
       duration: 3000,
       position: "top-center",
     });
+  };
+
+  const getDifficultyLabel = (diff: string) => {
+    if (diff === "easy") return t("exercisesPage.filterEasy");
+    if (diff === "medium") return t("exercisesPage.filterMedium");
+    if (diff === "hard") return t("exercisesPage.filterHard");
+    return diff;
+  };
+
+  const getStatusLabel = (status: string) => {
+    if (status === "completed") return t("exercisesPage.filterCompleted");
+    if (status === "in-progress") return t("exercisesPage.filterInProgress");
+    if (status === "not-started") return t("exercisesPage.filterNotStarted");
+    return status;
   };
 
   const filteredExercises = exercises.filter((exercise) => {
@@ -164,10 +168,10 @@ export default function ExercisesClient() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                Bài tập
+                {t("exercisesPage.title")}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Luyện tập và củng cố kiến thức qua các bài tập thực hành
+                {t("exercisesPage.desc")}
               </p>
             </div>
           </div>
@@ -184,7 +188,7 @@ export default function ExercisesClient() {
               </div>
               <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Tổng bài tập</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t("exercisesPage.totalStats")}</p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
@@ -196,7 +200,7 @@ export default function ExercisesClient() {
               </div>
               <span className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.completed}</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Hoàn thành</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t("exercisesPage.completedStats")}</p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
@@ -208,7 +212,7 @@ export default function ExercisesClient() {
               </div>
               <span className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.inProgress}</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Đang làm</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t("exercisesPage.inProgressStats")}</p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
@@ -220,7 +224,7 @@ export default function ExercisesClient() {
               </div>
               <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">{completionRate}%</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Tỷ lệ hoàn thành</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t("exercisesPage.rateStats")}</p>
           </div>
         </div>
 
@@ -235,7 +239,7 @@ export default function ExercisesClient() {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Tìm kiếm bài tập..."
+                  placeholder={t("exercisesPage.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-slate-900 text-gray-900 dark:text-white"
@@ -253,7 +257,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Tất cả
+                {t("exercisesPage.filterAll")}
               </button>
               <button
                 onClick={() => setSelectedDifficulty("easy")}
@@ -263,7 +267,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Dễ
+                {t("exercisesPage.filterEasy")}
               </button>
               <button
                 onClick={() => setSelectedDifficulty("medium")}
@@ -273,7 +277,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                TB
+                {t("exercisesPage.filterMedium")}
               </button>
               <button
                 onClick={() => setSelectedDifficulty("hard")}
@@ -283,7 +287,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Khó
+                {t("exercisesPage.filterHard")}
               </button>
             </div>
 
@@ -297,7 +301,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Tất cả
+                {t("exercisesPage.filterAll")}
               </button>
               <button
                 onClick={() => setSelectedStatus("not-started")}
@@ -307,7 +311,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Chưa làm
+                {t("exercisesPage.filterNotStarted")}
               </button>
               <button
                 onClick={() => setSelectedStatus("in-progress")}
@@ -317,7 +321,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Đang làm
+                {t("exercisesPage.filterInProgress")}
               </button>
               <button
                 onClick={() => setSelectedStatus("completed")}
@@ -327,7 +331,7 @@ export default function ExercisesClient() {
                     : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
-                Hoàn thành
+                {t("exercisesPage.filterCompleted")}
               </button>
             </div>
           </div>
@@ -352,10 +356,10 @@ export default function ExercisesClient() {
                           {exercise.course}
                         </span>
                         <span className={`text-xs font-medium px-2 py-1 rounded ${difficultyColors[exercise.difficulty as keyof typeof difficultyColors]}`}>
-                          {difficultyLabels[exercise.difficulty as keyof typeof difficultyLabels]}
+                          {getDifficultyLabel(exercise.difficulty)}
                         </span>
                         <span className={`text-xs font-medium px-2 py-1 rounded ${statusColors[exercise.status as keyof typeof statusColors]}`}>
-                          {statusLabels[exercise.status as keyof typeof statusLabels]}
+                          {getStatusLabel(exercise.status)}
                         </span>
                       </div>
                     </div>
@@ -366,20 +370,20 @@ export default function ExercisesClient() {
                       <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                       </svg>
-                      {exercise.points} điểm
+                      {exercise.points} {t("exercisesPage.pointsSuffix")}
                     </span>
                     <span className="flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      ~{exercise.timeEstimate} phút
+                      ~{exercise.timeEstimate} {t("exercisesPage.timeSuffix")}
                     </span>
                     {exercise.status === "completed" && exercise.score !== null && (
                       <span className="flex items-center gap-1 text-green-600 dark:text-green-400 font-medium">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Điểm: {exercise.score}/100
+                        {t("exercisesPage.scoreLabel")}: {exercise.score}/100
                       </span>
                     )}
                   </div>
@@ -390,7 +394,11 @@ export default function ExercisesClient() {
                     onClick={handleExerciseClick}
                     className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium whitespace-nowrap"
                   >
-                    {exercise.status === "completed" ? "Xem lại" : exercise.status === "in-progress" ? "Tiếp tục" : "Bắt đầu"}
+                    {exercise.status === "completed" 
+                      ? t("exercisesPage.btnReview") 
+                      : exercise.status === "in-progress" 
+                      ? t("exercisesPage.btnContinue") 
+                      : t("exercisesPage.btnSolve")}
                   </button>
                 </div>
               </div>
@@ -404,10 +412,10 @@ export default function ExercisesClient() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Không tìm thấy bài tập
+              {t("exercisesPage.noExercisesTitle")}
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
+              {t("exercisesPage.noExercisesDesc")}
             </p>
           </div>
         )}

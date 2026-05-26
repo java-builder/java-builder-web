@@ -10,6 +10,7 @@ import ChatInput from "@/components/chatbot/ChatInput";
 import SuggestedQuestions from "@/components/chatbot/SuggestedQuestions";
 import { chatbotApi } from "@/services/chatbot.service";
 import { toast } from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface Message {
   id: string;
@@ -26,33 +27,50 @@ interface Conversation {
   timestamp: Date;
 }
 
-const SUGGESTED_QUESTIONS = [
-  "Giải thích về OOP trong Java",
-  "Sự khác biệt giữa ArrayList và LinkedList",
-  "Cách xử lý exception trong Java",
-  "Design patterns phổ biến trong Java",
-  "Spring Boot là gì?",
-  "Cách tối ưu hiệu suất Java application",
-];
-
 export default function ChatbotClient() {
+  const { t } = useI18n();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+
+  const welcomeMessageText = useMemo(() => t("chatbotPage.welcomeMessage"), [t]);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
-      content: "Xin chào! Tôi là trợ lý AI của JavaBuilder. Tôi có thể giúp bạn giải đáp các thắc mắc về lập trình Java, giải thích khái niệm, debug code, và hỗ trợ học tập. Bạn muốn hỏi gì?",
+      content: "", // Will be filled on client side mount to avoid hydration mismatch
       timestamp: new Date(),
     },
   ]);
-  const [conversations] = useState<Conversation[]>([
+
+  useEffect(() => {
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        content: welcomeMessageText,
+        timestamp: new Date(),
+      },
+    ]);
+  }, [welcomeMessageText]);
+
+  const conversations = useMemo<Conversation[]>(() => [
     {
       id: "current",
-      title: "Trò chuyện hiện tại",
-      lastMessage: "Cuộc trò chuyện với AI Assistant",
+      title: t("chatbotPage.currentChat"),
+      lastMessage: t("chatbotPage.lastMsgDesc"),
       timestamp: new Date(),
     },
-  ]);
+  ], [t]);
+
+  const suggestedQuestions = useMemo(() => [
+    t("chatbotPage.suggestedOop"),
+    t("chatbotPage.suggestedCollections"),
+    t("chatbotPage.suggestedException"),
+    t("chatbotPage.suggestedDesignPatterns"),
+    t("chatbotPage.suggestedSpringBoot"),
+    t("chatbotPage.suggestedPerformance"),
+  ], [t]);
+
   const [currentConversationId, setCurrentConversationId] = useState<string | null>("current");
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +135,7 @@ export default function ChatbotClient() {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: response.data || "Xin lỗi, tôi không thể trả lời câu hỏi này.",
+        content: response.data || t("chatbotPage.sendError"),
         timestamp: new Date(),
       };
 
@@ -128,21 +146,21 @@ export default function ChatbotClient() {
       setMessages((prev) => prev.filter((m) => m.id !== "typing"));
       
       const errorMessage = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại."
-        : "Đã có lỗi xảy ra. Vui lòng thử lại.";
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || t("chatbotPage.genericError")
+        : t("chatbotPage.genericError");
       toast.error(errorMessage);
       
       const errorChatMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "Xin lỗi, đã có lỗi xảy ra khi xử lý câu hỏi của bạn. Vui lòng thử lại sau.",
+        content: t("chatbotPage.systemError"),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorChatMessage]);
     } finally {
       setIsLoading(false);
     }
-  }, [inputValue, isLoading, authLoading, isAuthenticated]);
+  }, [inputValue, isLoading, authLoading, isAuthenticated, t]);
 
   const handleSuggestedQuestion = useCallback((question: string) => {
     handleSendMessage(question);
@@ -153,15 +171,14 @@ export default function ChatbotClient() {
       {
         id: "welcome",
         role: "assistant",
-        content: "Xin chào! Tôi là trợ lý AI của JavaBuilder. Tôi có thể giúp bạn giải đáp các thắc mắc về lập trình Java, giải thích khái niệm, debug code, và hỗ trợ học tập. Bạn muốn hỏi gì?",
+        content: welcomeMessageText,
         timestamp: new Date(),
       },
     ]);
-  }, []);
+  }, [welcomeMessageText]);
 
   const handleSelectConversation = useCallback((conversationId: string) => {
     setCurrentConversationId(conversationId);
-    // Không cần load lại messages vì chỉ có 1 conversation duy nhất
   }, []);
 
   const handleDeleteAll = useCallback(() => {
@@ -216,7 +233,7 @@ export default function ChatbotClient() {
           {/* Suggested Questions */}
           {showSuggestedQuestions && (
             <SuggestedQuestions
-              questions={SUGGESTED_QUESTIONS}
+              questions={suggestedQuestions}
               onSelect={handleSuggestedQuestion}
             />
           )}

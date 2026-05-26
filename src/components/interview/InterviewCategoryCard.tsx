@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface InterviewCategoryCardProps {
   slug: string;
@@ -20,6 +21,8 @@ export default function InterviewCategoryCard({
   levels,
   color,
 }: InterviewCategoryCardProps) {
+  const { t } = useI18n();
+
   return (
     <Link href={`/interview/${slug}`} className="group">
       <div className="relative h-full bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-accent dark:hover:border-accent transition-all duration-300">
@@ -41,7 +44,7 @@ export default function InterviewCategoryCard({
                 {totalQuestions}
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                câu hỏi
+                {t("interviewPage.questionsCount")}
               </div>
             </div>
           </div>
@@ -70,7 +73,7 @@ export default function InterviewCategoryCard({
 
           {/* Arrow */}
           <div className="flex items-center text-accent font-medium text-sm group-hover:translate-x-2 transition-transform">
-            Xem chi tiết
+            {t("interviewPage.viewDetails")}
             <svg
               className="w-4 h-4 ml-1"
               fill="none"

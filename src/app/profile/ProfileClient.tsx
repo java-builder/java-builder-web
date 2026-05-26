@@ -11,8 +11,10 @@ import PasswordTab from "@/components/profile/PasswordTab";
 import SessionsTab from "@/components/profile/SessionsTab";
 import { UserDetailResponse } from "@/types/user";
 import { User } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 function ProfileContent() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const router = useRouter();
   const tabParam = searchParams?.get("tab");
@@ -65,7 +67,8 @@ function ProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="animate-pulse">
             <div className="h-64 bg-gray-200 rounded-2xl mb-8"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -85,7 +88,8 @@ function ProfileContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -103,14 +107,14 @@ function ProfileContent() {
               </svg>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Có lỗi xảy ra
+              {t("profilePage.errorTitle")}
             </h2>
             <p className="text-gray-600 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors"
+              className="px-6 py-2 bg-accent text-white rounded-lg font-medium transition-colors hover:bg-accent/90"
             >
-              Thử lại
+              {t("profilePage.retry")}
             </button>
           </div>
         </div>
@@ -120,7 +124,8 @@ function ProfileContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -138,16 +143,16 @@ function ProfileContent() {
               </svg>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Không tìm thấy thông tin người dùng
+              {t("profilePage.notFoundUser")}
             </h2>
             <p className="text-gray-600 mb-4">
-              Vui lòng đăng nhập để xem thông tin cá nhân
+              {t("profilePage.loginToView")}
             </p>
             <a
               href="/login"
-              className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors"
+              className="px-6 py-2 bg-accent text-white rounded-lg font-medium transition-colors hover:bg-accent/90"
             >
-              Đăng nhập
+              {t("profilePage.loginBtn")}
             </a>
           </div>
         </div>
@@ -166,10 +171,10 @@ function ProfileContent() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Tài khoản của tôi
+                {t("profilePage.title")}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                Quản lý thông tin cá nhân, bảo mật và các hoạt động của bạn
+                {t("profilePage.subtitle")}
               </p>
             </div>
           </div>
@@ -189,8 +194,6 @@ function ProfileContent() {
           <div className="flex-1 min-w-0">{renderTabContent()}</div>
         </div>
       </div>
-
-      {/* Footer */}
     </div>
   );
 }
@@ -198,7 +201,8 @@ function ProfileContent() {
 export default function ProfilePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50">        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="animate-pulse">
             <div className="h-64 bg-gray-200 rounded-2xl mb-8"></div>
           </div>

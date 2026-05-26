@@ -1,3 +1,7 @@
+"use client";
+
+import { useI18n } from "@/contexts/I18nContext";
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -15,6 +19,8 @@ export const Pagination = ({
   onPageChange,
   itemName = "mục"
 }: PaginationProps) => {
+  const { t, locale } = useI18n();
+
   const getPages = () => {
     const delta = 2; 
     const left = Math.max(1, currentPage - delta);
@@ -40,10 +46,26 @@ export const Pagination = ({
 
   if (totalPages <= 1) return null;
 
+  const defaultItemsMap: Record<string, string> = {
+    vi: "mục",
+    en: "items",
+    ja: "件",
+    ko: "개",
+  };
+  const resolvedItemName = itemName === "mục" ? (defaultItemsMap[locale] || "mục") : itemName;
+
+  const from = (currentPage - 1) * pageSize + 1;
+  const to = Math.min(currentPage * pageSize, totalElements);
+  const paginationText = t("common.paginationInfo")
+    .replace("{from}", String(from))
+    .replace("{to}", String(to))
+    .replace("{total}", String(totalElements))
+    .replace("{itemName}", resolvedItemName);
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mt-6">
       <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
-        Hiển thị {(currentPage - 1) * pageSize + 1} đến {Math.min(currentPage * pageSize, totalElements)} trong tổng số {totalElements} {itemName}
+        {paginationText}
       </div>
       <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
         <button

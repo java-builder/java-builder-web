@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useI18n } from "@/contexts/I18nContext";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
 
 interface CourseSidebarProps {
@@ -26,6 +27,8 @@ export default function CourseSidebar({
   formatPrice,
   getLevelText,
 }: CourseSidebarProps) {
+  const { t } = useI18n();
+
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl p-5 sticky top-8 border border-gray-200 dark:border-slate-700">
       {/* Price / Enrolled Status */}
@@ -51,13 +54,13 @@ export default function CourseSidebar({
                 />
               </svg>
               <span className="font-medium">
-                {isPremiumUser && !isEnrolled ? "Premium Member" : "Đã đăng ký"}
+                {isPremiumUser && !isEnrolled ? t("courseDetail.premiumMember") : t("courseDetail.enrolled")}
               </span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {isPremiumUser && !isEnrolled
-                ? "Bạn có quyền truy cập với tư cách Premium"
-                : "Bạn có quyền truy cập đầy đủ khóa học này"}
+                ? t("courseDetail.premiumAccess")
+                : t("courseDetail.fullAccess")}
             </p>
           </>
         ) : (
@@ -66,7 +69,7 @@ export default function CourseSidebar({
               {formatPrice(course.price)}
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Một lần thanh toán, học mãi mãi
+              {t("courseDetail.lifetimeAccess")}
             </p>
           </>
         )}
@@ -86,14 +89,14 @@ export default function CourseSidebar({
                 clipRule="evenodd"
               />
             </svg>
-            Học ngay
+            {t("courseDetail.learnNow")}
           </Link>
         ) : (
           <button
             onClick={onPayment}
             className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer"
           >
-            Đăng ký ngay
+            {t("courseDetail.enrollNow")}
           </button>
         )}
         <button
@@ -140,19 +143,19 @@ export default function CourseSidebar({
               />
             </svg>
           )}
-          <span>{isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}</span>
+          <span>{isFavorite ? t("courseDetail.favorited") : t("courseDetail.addFavorite")}</span>
         </button>
       </div>
 
       {/* Course Stats */}
       <div className="border-t border-gray-200 dark:border-slate-700 pt-5">
         <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm">
-          Thông tin khóa học
+          {t("courseDetail.courseInfo")}
         </h3>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">
-              Trình độ:
+              {t("courseDetail.level")}
             </span>
             <span className="font-medium text-gray-900 dark:text-white">
               {getLevelText(course.level || CourseLevel.BEGINNER)}
@@ -160,14 +163,14 @@ export default function CourseSidebar({
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">
-              Thời lượng:
+              {t("courseDetail.duration")}
             </span>
             <span className="font-medium text-gray-900 dark:text-white">
-              {course.duration || 0} giờ
+              {course.duration || 0} {t("courseDetail.hours")}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">Đánh giá:</span>
+            <span className="text-gray-600 dark:text-gray-400">{t("courseDetail.rating")}</span>
             <div className="flex items-center space-x-1">
               <div className="flex text-yellow-400 dark:text-yellow-500">
                 {[...Array(5)].map((_, i) => (

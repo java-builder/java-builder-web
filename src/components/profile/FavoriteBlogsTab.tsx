@@ -8,8 +8,10 @@ import { FavoriteResponse, FavoriteTargetType } from "@/types/favorite";
 import { useFavorites } from "@/hooks/useFavorites";
 import { formatShortDate } from "@/utils/dateUtils";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function FavoriteBlogsTab() {
+  const { t } = useI18n();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { favorites: blogs, isLoading, totalPages, refetch } = useFavorites(currentPage, pageSize, FavoriteTargetType.BLOG);
@@ -17,11 +19,11 @@ export default function FavoriteBlogsTab() {
   const handleRemoveFavorite = async (targetId: string) => {
     try {
       await favoriteService.toggle({ targetId, targetType: FavoriteTargetType.BLOG });
-      toast.success("Đã xóa khỏi danh sách yêu thích");
+      toast.success(t("favoritesPage.removeSuccess"));
       refetch();
     } catch (error) {
       console.error("Failed to remove favorite", error);
-      toast.error("Không thể xóa khỏi danh sách yêu thích");
+      toast.error(t("favoritesPage.removeError"));
     }
   };
 
@@ -45,11 +47,11 @@ export default function FavoriteBlogsTab() {
       <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-950/60">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-gray-950 dark:text-slate-50">Thư viện đã lưu</h2>
-            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
+            <h2 className="text-lg font-semibold text-gray-950 dark:text-slate-50">{t("favoritesPage.blogsLibrary")}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {blogs.length > 0
-                ? `${blogs.length} bài viết đang được lưu để đọc lại`
-                : "Chưa có bài viết nào trong thư viện"}
+                ? t("favoritesPage.blogsLibraryCount").replace("{count}", String(blogs.length))
+                : t("favoritesPage.blogsLibraryEmpty")}
             </p>
           </div>
           {blogs.length > 0 && (
@@ -57,7 +59,7 @@ export default function FavoriteBlogsTab() {
               href="/blogs"
               className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm text-accent hover:bg-accent/10 font-medium transition-colors"
             >
-              Khám phá thêm →
+              {t("favoritesPage.exploreMore")}
             </Link>
           )}
         </div>
@@ -83,10 +85,10 @@ export default function FavoriteBlogsTab() {
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Chưa có bài viết yêu thích
+              {t("favoritesPage.blogsEmptyTitle")}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-              Khám phá và lưu các bài viết bạn quan tâm để đọc sau
+              {t("favoritesPage.blogsEmptyDesc")}
             </p>
             <Link
               href="/blogs"
@@ -100,7 +102,7 @@ export default function FavoriteBlogsTab() {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              Khám phá bài viết
+              {t("favoritesPage.blogsEmptyBtn")}
             </Link>
           </div>
         ) : (
@@ -144,7 +146,7 @@ export default function FavoriteBlogsTab() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
                       <span className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-950/50 px-2 py-0.5 font-medium text-red-600 dark:text-red-300 border border-red-100 dark:border-red-900">
-                        Đã lưu
+                        {t("favoritesPage.savedBadge")}
                       </span>
                       <span>{formatShortDate(blog.addedAt)}</span>
                     </div>
@@ -164,7 +166,7 @@ export default function FavoriteBlogsTab() {
                         href={getBlogUrl(blog)}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
                       >
-                        Đọc bài viết
+                        {t("favoritesPage.readBlog")}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -172,7 +174,7 @@ export default function FavoriteBlogsTab() {
                       <button
                         onClick={() => handleRemoveFavorite(blog.targetId)}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
-                        title="Xóa khỏi yêu thích"
+                        title={t("favoritesPage.removeFavorite")}
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path
@@ -181,7 +183,7 @@ export default function FavoriteBlogsTab() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        Bỏ lưu
+                        {t("favoritesPage.removeFavorite")}
                       </button>
                     </div>
                   </div>
@@ -197,7 +199,7 @@ export default function FavoriteBlogsTab() {
                   disabled={currentPage === 1}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800"
                 >
-                  ← Trước
+                  {t("common.prev")}
                 </button>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -232,7 +234,7 @@ export default function FavoriteBlogsTab() {
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800"
                 >
-                  Sau →
+                  {t("common.next")}
                 </button>
               </div>
             )}

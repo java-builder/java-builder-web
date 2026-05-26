@@ -1,10 +1,15 @@
+"use client";
+
 import Image from "next/image";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface ChatHeaderProps {
   onToggleSidebar: () => void;
 }
 
 export default function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
+  const { t } = useI18n();
+
   return (
     <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 px-3 sm:px-4 py-3 flex-shrink-0">
       <div className="flex items-center gap-3">
@@ -26,7 +31,7 @@ export default function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
             AI Chatbot
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-            Trợ lý AI hỗ trợ học lập trình Java 24/7
+            {t("chatbotPage.chatSubtitle")}
           </p>
         </div>
         <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-green-50 dark:bg-green-800/30 border border-green-200 dark:border-green-700 rounded-full flex-shrink-0">

@@ -9,8 +9,10 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import { formatShortDate } from "@/utils/dateUtils";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function MyCoursesPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
   const [courses, setCourses] = useState<MyEnrolledCourseResponse[]>([]);
@@ -42,21 +44,21 @@ export default function MyCoursesPage() {
           }
         } catch (error) {
           console.error("Error fetching courses:", error);
-          toast.error("Không thể tải danh sách khóa học. Vui lòng thử lại!");
+          toast.error(t("myCoursesPage.loadError"));
         } finally {
           setIsLoading(false);
         }
       };
       fetchMyCourses();
     }
-  }, [currentPage, currentUser]);
+  }, [currentPage, currentUser, t]);
 
   const getLevelText = (level?: CourseLevel) => {
     switch (level) {
-      case CourseLevel.BEGINNER: return "Cơ bản";
-      case CourseLevel.INTERMEDIATE: return "Trung cấp";
-      case CourseLevel.ADVANCED: return "Nâng cao";
-      default: return "Tất cả";
+      case CourseLevel.BEGINNER: return t("courseDetail.beginner");
+      case CourseLevel.INTERMEDIATE: return t("courseDetail.intermediate");
+      case CourseLevel.ADVANCED: return t("courseDetail.advanced");
+      default: return t("common.all");
     }
   };
 
@@ -91,10 +93,10 @@ export default function MyCoursesPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                Khóa học của tôi
+                {t("myCoursesPage.title")}
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Quản lý và theo dõi tiến độ học tập của bạn
+                {t("myCoursesPage.subtitle")}
               </p>
             </div>
             
@@ -103,21 +105,21 @@ export default function MyCoursesPage() {
               <div className="flex gap-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-accent">{courses.length}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Khóa học</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("myCoursesPage.statsCourses")}</div>
                 </div>
                 <div className="w-px bg-gray-200 dark:bg-slate-700" />
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-500">
                     {courses.filter(c => c.completed).length}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Hoàn thành</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("myCoursesPage.statsCompleted")}</div>
                 </div>
                 <div className="w-px bg-gray-200 dark:bg-slate-700" />
                 <div className="text-center">
                   <div className="text-2xl font-bold text-amber-500">
                     {courses.filter(c => !c.completed && c.progress > 0).length}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Đang học</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("myCoursesPage.statsLearning")}</div>
                 </div>
               </div>
             )}
@@ -139,10 +141,10 @@ export default function MyCoursesPage() {
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-              Bắt đầu hành trình học tập
+              {t("myCoursesPage.emptyTitle")}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
-              Bạn chưa đăng ký khóa học nào. Khám phá các khóa học chất lượng và bắt đầu học ngay hôm nay!
+              {t("myCoursesPage.emptyDesc")}
             </p>
             <Link
               href="/courses"
@@ -151,7 +153,7 @@ export default function MyCoursesPage() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              Khám phá khóa học
+              {t("myCoursesPage.exploreCourses")}
             </Link>
           </div>
         ) : (
@@ -191,11 +193,11 @@ export default function MyCoursesPage() {
                           <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          Hoàn thành
+                          {t("myCoursesPage.statusCompleted")}
                         </span>
                       ) : (
                         <span className="px-3 py-1.5 bg-accent text-white text-xs font-medium rounded-full shadow-lg">
-                          Đang học
+                          {t("myCoursesPage.statusLearning")}
                         </span>
                       )}
                     </div>
@@ -210,24 +212,24 @@ export default function MyCoursesPage() {
                         </span>
                       )}
                       <span className="text-xs text-gray-400">
-                        Đăng ký: {formatShortDate(course.enrolledAt)}
+                        {t("myCoursesPage.enrolledAt").replace("{date}", formatShortDate(course.enrolledAt))}
                       </span>
                     </div>
                     
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-accent transition-colors">
                       {course.title}
                     </h3>
                     
-                    <p className="text-gray-500 text-sm line-clamp-2 mb-4">{course.description}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4">{course.description}</p>
                     
                     {/* Progress Section - Only show for VIDEO/MIXED courses */}
                     {course.courseFormat !== CourseFormat.TEXT && (
                       <div className="mb-4">
                         <div className="flex items-center justify-between text-sm mb-1.5">
-                          <span className="text-gray-600">Tiến độ</span>
-                          <span className="font-semibold text-gray-900">{course.progress}%</span>
+                          <span className="text-gray-600 dark:text-gray-400">{t("myCoursesPage.progress")}</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{course.progress}%</span>
                         </div>
-                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden">
                           <div 
                             className={`h-full ${getProgressColor(course.progress)} transition-all duration-500`}
                             style={{ width: `${course.progress}%` }}
@@ -235,10 +237,14 @@ export default function MyCoursesPage() {
                         </div>
                         <div className="flex items-center justify-between mt-1.5">
                           <span className="text-xs text-gray-400">
-                            {course.completedLessons}/{course.totalLessons} bài học
+                            {t("myCoursesPage.lessonsCount")
+                              .replace("{completed}", String(course.completedLessons))
+                              .replace("{total}", String(course.totalLessons))}
                           </span>
                           {course.duration && (
-                            <span className="text-xs text-gray-400">{course.duration} giờ</span>
+                            <span className="text-xs text-gray-400">
+                              {t("myCoursesPage.duration").replace("{hours}", String(course.duration))}
+                            </span>
                           )}
                         </div>
                       </div>
@@ -249,7 +255,11 @@ export default function MyCoursesPage() {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                       </svg>
-                      {course.progress === 0 ? "Bắt đầu học" : course.completed ? "Xem lại" : "Tiếp tục học"}
+                      {course.progress === 0 
+                        ? t("myCoursesPage.btnStart") 
+                        : course.completed 
+                          ? t("myCoursesPage.btnReview") 
+                          : t("myCoursesPage.btnContinue")}
                     </button>
                   </div>
                 </Link>
@@ -262,9 +272,9 @@ export default function MyCoursesPage() {
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Trước
+                  {t("common.prev")}
                 </button>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -274,7 +284,7 @@ export default function MyCoursesPage() {
                       className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                         currentPage === page
                           ? "bg-accent text-white"
-                          : "text-gray-700 hover:bg-gray-100"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
                       }`}
                     >
                       {page}
@@ -284,9 +294,9 @@ export default function MyCoursesPage() {
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Sau
+                  {t("common.next")}
                 </button>
               </div>
             )}

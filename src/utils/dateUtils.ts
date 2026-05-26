@@ -38,19 +38,26 @@ export const formatShortDate = (dateString: string | null | undefined): string =
   return `${day}/${month}/${year}`;
 };
 
-export const formatReadableDate = (dateString: string | null | undefined): string => {
+export const formatReadableDate = (
+  dateString: string | null | undefined,
+  locale: string = "vi-VN"
+): string => {
   const date = parseDate(dateString);
   if (!date || isNaN(date.getTime())) {
     return "-";
   }
-  return date.toLocaleDateString("vi-VN", {
+  return date.toLocaleDateString(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",
   });
 };
 
-export const formatRelativeTime = (dateString: string | null | undefined): string => {
+export const formatRelativeTime = (
+  dateString: string | null | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t?: (key: any) => string
+): string => {
   const date = parseDate(dateString);
   if (!date) return "";
   
@@ -63,6 +70,17 @@ export const formatRelativeTime = (dateString: string | null | undefined): strin
   const diffWeeks = Math.floor(diffDays / 7);
   const diffMonths = Math.floor(diffDays / 30);
   const diffYears = Math.floor(diffDays / 365);
+  
+  if (t) {
+    if (diffSeconds < 10) return t("time.justNow");
+    if (diffSeconds < 60) return t("time.secondsAgo").replace("{count}", String(diffSeconds));
+    if (diffMins < 60) return t("time.minutesAgo").replace("{count}", String(diffMins));
+    if (diffHours < 24) return t("time.hoursAgo").replace("{count}", String(diffHours));
+    if (diffDays < 7) return t("time.daysAgo").replace("{count}", String(diffDays));
+    if (diffWeeks < 4) return t("time.weeksAgo").replace("{count}", String(diffWeeks));
+    if (diffMonths < 12) return t("time.monthsAgo").replace("{count}", String(diffMonths));
+    return t("time.yearsAgo").replace("{count}", String(diffYears));
+  }
   
   if (diffSeconds < 10) return "Vừa xong";
   if (diffSeconds < 60) return `${diffSeconds} giây trước`;

@@ -3,6 +3,7 @@
 import { InterviewTopicDetailResponse } from "@/types/interview";
 import InterviewCategoryCard from "./InterviewCategoryCard";
 import InterviewEmptyState from "./InterviewEmptyState";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface InterviewTopicsListProps {
   topics: InterviewTopicDetailResponse[];
@@ -13,11 +14,13 @@ export default function InterviewTopicsList({
   topics,
   isLoading,
 }: InterviewTopicsListProps) {
+  const { t } = useI18n();
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
         <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
-        <p className="mt-4 text-gray-600 dark:text-gray-400">Đang tải...</p>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">{t("common.loading")}</p>
       </div>
     );
   }

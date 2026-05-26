@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface AuthRequiredModalProps {
   isOpen: boolean;
@@ -12,9 +13,11 @@ interface AuthRequiredModalProps {
 export default function AuthRequiredModal({
   isOpen,
   onClose,
-  title = "Đăng nhập để tiếp tục",
-  message = "Bạn cần đăng nhập để sử dụng tính năng này.",
+  title,
+  message,
 }: AuthRequiredModalProps) {
+  const { t } = useI18n();
+
   if (!isOpen) return null;
 
   return (
@@ -34,8 +37,8 @@ export default function AuthRequiredModal({
           </div>
 
           {/* Title & Message */}
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
-          <p className="text-sm text-gray-500 mb-5">{message}</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">{title || t("authRequired.title")}</h3>
+          <p className="text-sm text-gray-500 mb-5">{message || t("authRequired.message")}</p>
 
           {/* Actions */}
           <div className="flex gap-3">
@@ -43,13 +46,13 @@ export default function AuthRequiredModal({
               onClick={onClose}
               className="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
-              Để sau
+              {t("common.later")}
             </button>
             <Link
               href="/login"
               className="flex-1 py-2.5 text-sm font-medium text-white bg-accent hover:bg-accent-600 rounded-lg transition-colors"
             >
-              Đăng nhập
+              {t("auth.login")}
             </Link>
           </div>
         </div>

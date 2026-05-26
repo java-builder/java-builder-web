@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import RateLimitModal from "@/components/ui/RateLimitModal";
 import { subscriptionPlanService } from "@/services/subscription-plan.service";
 import { userSubscriptionService } from "@/services/user-subscription.service";
 import { SubscriptionPlan } from "@/types/subscription";
 import { SubscribeResponse } from "@/types/user-subscription";
+import { getErrorMessage, isRateLimitError } from "@/utils/apiError";
 import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface PlanDisplay {
   id: string;
@@ -26,34 +29,16 @@ interface PlanDisplay {
   monthlyEquivalent?: string;
 }
 
-const freePlan: PlanDisplay = {
-  id: "free",
-  name: "Miễn phí",
-  price: 0,
-  period: "",
-  description: "Bắt đầu hành trình học Java",
-  features: [
-    { text: "Truy cập khóa học miễn phí", included: true },
-    { text: "Đọc blog & bài viết", included: true },
-    { text: "Tài liệu công khai", included: true },
-    { text: "Tài liệu Premium (Ebooks)", included: true },
-  ],
-  buttonText: "Đang sử dụng",
-  popular: false,
-  disabled: true,
-  apiPlanId: null,
-};
-
-
-
 export default function PricingPage() {
+  const { t, locale } = useI18n();
   const { data: currentUser } = useCurrentUser();
   usePaymentWebSocket();
   
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
-  const [plans, setPlans] = useState<PlanDisplay[]>([freePlan]);
+  const [apiPlans, setApiPlans] = useState<PlanDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [rateLimitModalOpen, setRateLimitModalOpen] = useState(false);
 
   // Payment modal state
   const [paymentModal, setPaymentModal] = useState<{
@@ -68,6 +53,27 @@ export default function PricingPage() {
     planName: "",
   });
 
+  const plans = useMemo<PlanDisplay[]>(() => {
+    const freePlan: PlanDisplay = {
+      id: "free",
+      name: t("pricingPage.freePlanName"),
+      price: 0,
+      period: "",
+      description: t("pricingPage.freePlanDesc"),
+      features: [
+        { text: t("pricingPage.freeFeature1"), included: true },
+        { text: t("pricingPage.freeFeature2"), included: true },
+        { text: t("pricingPage.freeFeature3"), included: true },
+        { text: t("pricingPage.freeFeature4"), included: true },
+      ],
+      buttonText: t("pricingPage.statusUsing"),
+      popular: false,
+      disabled: true,
+      apiPlanId: null,
+    };
+    return [freePlan, ...apiPlans];
+  }, [t, apiPlans]);
+
   useEffect(() => {
     const convertToPlanDisplay = (plan: SubscriptionPlan): PlanDisplay => {
       const isMonthly = plan.durationDays <= 31;
@@ -81,15 +87,21 @@ export default function PricingPage() {
         id: plan.id,
         name: plan.name,
         price: plan.price,
-        period: isMonthly ? "/tháng" : isYearly ? "/năm" : `/${plan.durationDays} ngày`,
+        period: isMonthly 
+          ? t("pricingPage.periodMonthly") 
+          : isYearly 
+            ? t("pricingPage.periodYearly") 
+            : t("pricingPage.periodDays").replace("{days}", plan.durationDays.toString()),
         description: plan.description || "",
         features,
-        buttonText: "Đăng ký ngay",
+        buttonText: t("pricingPage.subscribeBtn"),
         popular: isMonthly,
         disabled: false,
         apiPlanId: plan.id,
         originalPrice: isYearly ? 499000 * 12 : undefined,
-        monthlyEquivalent: isYearly ? `≈ ${new Intl.NumberFormat("vi-VN").format(Math.round(plan.price / 12))}đ/tháng` : undefined,
+        monthlyEquivalent: isYearly 
+          ? t("pricingPage.monthlyEquivalent").replace("{price}", new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(Math.round(plan.price / 12)))
+          : undefined,
       };
     };
 
@@ -97,9 +109,9 @@ export default function PricingPage() {
       try {
         const response = await subscriptionPlanService.getPlans();
         if (response.data) {
-          const apiPlans = response.data.map((plan: SubscriptionPlan) => convertToPlanDisplay(plan));
-          apiPlans.sort((a, b) => a.price - b.price);
-          setPlans([freePlan, ...apiPlans]);
+          const apiPlansData = response.data.map((plan: SubscriptionPlan) => convertToPlanDisplay(plan));
+          apiPlansData.sort((a, b) => a.price - b.price);
+          setApiPlans(apiPlansData);
         }
       } catch (error) {
         console.error("Failed to fetch plans:", error);
@@ -108,7 +120,7 @@ export default function PricingPage() {
       }
     };
     fetchPlans();
-  }, []);
+  }, [t, locale]);
 
   const handleSubscribe = async (plan: PlanDisplay) => {
     if (!plan.apiPlanId) return;
@@ -138,34 +150,39 @@ export default function PricingPage() {
           planName: plan.name,
         });
       } else {
-        toast.error("Không thể tạo link thanh toán");
+        toast.error(t("pricingPage.paymentLinkError"));
         setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Đăng ký thất bại");
       setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" });
+      if (isRateLimitError(error)) {
+        setRateLimitModalOpen(true);
+        return;
+      }
+      toast.error(getErrorMessage(error, t("pricingPage.subscribeFailed")));
     } finally {
       setLoadingPlan(null);
     }
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN").format(price);
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(price);
   };
 
   return (
-    <>      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
+    <>
+      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
         {/* Hero Section */}
         <section className="pt-8 pb-8 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-sm font-medium rounded-full mb-3">
-              ✨ Premium Membership
+              {t("pricingPage.heroBadge")}
             </span>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
-              Nâng cấp trải nghiệm học tập
+              {t("pricingPage.heroTitle")}
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Truy cập toàn bộ tài liệu Premium, nhận hỗ trợ ưu tiên và nhiều quyền lợi đặc biệt khác
+              {t("pricingPage.heroDesc")}
             </p>
           </div>
         </section>
@@ -193,7 +210,7 @@ export default function PricingPage() {
                     {plan.popular && (
                       <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                         <span className="bg-accent text-white text-sm font-medium px-4 py-1 rounded-full shadow-lg">
-                          Phổ biến nhất
+                          {t("pricingPage.popularBadge")}
                         </span>
                       </div>
                     )}
@@ -248,7 +265,7 @@ export default function PricingPage() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                           </svg>
-                          Đang xử lý...
+                          {t("pricingPage.processing")}
                         </>
                       ) : (
                         plan.buttonText
@@ -266,146 +283,144 @@ export default function PricingPage() {
       <AuthRequiredModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
-        title="Đăng nhập để đăng ký Premium"
-        message="Bạn cần đăng nhập để đăng ký gói Premium."
+        title={t("pricingPage.authModalTitle")}
+        message={t("pricingPage.authModalMsg")}
+      />
+
+      <RateLimitModal
+        isOpen={rateLimitModalOpen}
+        onClose={() => setRateLimitModalOpen(false)}
       />
 
       {/* Payment Modal */}
       {paymentModal.isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
-            <div
-              className="fixed inset-0 bg-black/50 transition-opacity"
-              onClick={() => !paymentModal.isLoading && setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
-            />
-
-            <div className="relative bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-md sm:w-full">
-              {/* Modal Header */}
-              <div className="bg-gradient-to-r from-accent to-blue-600 px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white">Thanh toán</h3>
-                      <p className="text-white/80 text-sm">{paymentModal.planName}</p>
-                    </div>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 flex items-center justify-center p-4">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-md sm:w-full border border-gray-100 dark:border-slate-700">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-accent to-blue-600 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
                   </div>
-                  {!paymentModal.isLoading && (
-                    <button
-                      data-modal-close
-                      onClick={() => setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
-                      className="text-white/80 hover:text-white transition-colors"
-                    >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Modal Body */}
-              <div className="px-6 py-6">
-                {paymentModal.isLoading ? (
-                  <div className="text-center py-8">
-                    {/* Animated Payment Icon */}
-                    <div className="relative w-20 h-20 mx-auto mb-6">
-                      <div className="absolute inset-0 bg-accent/10 rounded-full animate-ping" />
-                      <div className="relative w-20 h-20 bg-gradient-to-br from-accent to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-accent/30">
-                        <svg className="w-10 h-10 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Loading Steps */}
-                    <div className="space-y-3 max-w-xs mx-auto">
-                      <div className="flex items-center gap-3 text-left">
-                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <span className="text-sm text-gray-600">Xác nhận thông tin gói</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-left">
-                        <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
-                          <div className="w-2 h-2 bg-white rounded-full" />
-                        </div>
-                        <span className="text-sm text-gray-900 font-medium">Đang tạo mã thanh toán...</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-left opacity-40">
-                        <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                        </div>
-                        <span className="text-sm text-gray-500">Hiển thị QR Code</span>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-400 text-xs mt-6">Vui lòng không đóng cửa sổ này</p>
-                  </div>
-                ) : paymentModal.data ? (
                   <div>
-                    {/* Price Info */}
-                    <div className="text-center mb-5">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="text-2xl font-bold text-accent">
-                          {formatPrice(paymentModal.data.totalPrice)}đ
-                        </span>
-                        <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">
-                          Chờ thanh toán
-                        </span>
-                      </div>
-                    </div>
+                    <h3 className="text-lg font-bold text-white">{t("pricingPage.paymentModalTitle")}</h3>
+                    <p className="text-white/80 text-sm">{paymentModal.planName}</p>
+                  </div>
+                </div>
+                {!paymentModal.isLoading && (
+                  <button
+                    data-modal-close
+                    onClick={() => setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
+                    className="text-white/80 hover:text-white transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
 
-                    {/* QR Code */}
-                    {paymentModal.data.qrCode && (
-                      <div className="flex justify-center mb-6">
-                        <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                          <QRCodeSVG
-                            value={paymentModal.data.qrCode}
-                            size={200}
-                            level="M"
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Order Info */}
-                    <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg mb-4">
-                      <span className="text-sm text-gray-500">Mã đơn hàng</span>
-                      <span className="font-mono font-semibold text-gray-900">{paymentModal.data.orderCode}</span>
-                    </div>
-
-                    {/* Checkout Button */}
-                    {paymentModal.data.checkoutUrl && (
-                      <a
-                        href={paymentModal.data.checkoutUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-medium rounded-xl transition-colors"
-                      >
-                        Thanh toán qua PayOS
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </a>
-                    )}
-
-                    {/* Footer Note */}
-                    <div className="mt-4 flex items-start gap-2 text-xs text-gray-400">
-                      <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            {/* Modal Body */}
+            <div className="px-6 py-6">
+              {paymentModal.isLoading ? (
+                <div className="text-center py-8">
+                  {/* Animated Payment Icon */}
+                  <div className="relative w-20 h-20 mx-auto mb-6">
+                    <div className="absolute inset-0 bg-accent/10 rounded-full animate-ping" />
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-accent to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-accent/30">
+                      <svg className="w-10 h-10 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Thanh toán được bảo mật bởi PayOS. Premium sẽ được kích hoạt tự động sau khi thanh toán thành công.</span>
                     </div>
                   </div>
-                ) : null}
-              </div>
+
+                  {/* Loading Steps */}
+                  <div className="space-y-3 max-w-xs mx-auto">
+                    <div className="flex items-center gap-3 text-left">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">{t("pricingPage.confirmInfoStep")}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-left">
+                      <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      </div>
+                      <span className="text-sm text-gray-900 dark:text-white font-medium">{t("pricingPage.creatingPaymentStep")}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-left opacity-40">
+                      <div className="w-6 h-6 bg-gray-200 dark:bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="w-2 h-2 bg-gray-400 dark:bg-slate-500 rounded-full" />
+                      </div>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">{t("pricingPage.showQrStep")}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-400 dark:text-gray-500 text-xs mt-6">{t("pricingPage.doNotCloseNote")}</p>
+                </div>
+              ) : paymentModal.data ? (
+                <div>
+                  {/* Price Info */}
+                  <div className="text-center mb-5">
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-2xl font-bold text-accent">
+                        {formatPrice(paymentModal.data.totalPrice)}đ
+                      </span>
+                      <span className="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 text-xs font-medium rounded-full">
+                        {t("pricingPage.pendingPayment")}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* QR Code */}
+                  {paymentModal.data.qrCode && (
+                    <div className="flex justify-center mb-6">
+                      <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                        <QRCodeSVG
+                          value={paymentModal.data.qrCode}
+                          size={200}
+                          level="M"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Order Info */}
+                  <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg mb-4">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{t("pricingPage.orderCode")}</span>
+                    <span className="font-mono font-semibold text-gray-900 dark:text-white">{paymentModal.data.orderCode}</span>
+                  </div>
+
+                  {/* Checkout Button */}
+                  {paymentModal.data.checkoutUrl && (
+                    <a
+                      href={paymentModal.data.checkoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-medium rounded-xl transition-colors"
+                    >
+                      {t("pricingPage.payWithPayOS")}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
+
+                  {/* Footer Note */}
+                  <div className="mt-4 flex items-start gap-2 text-xs text-gray-400 dark:text-gray-500">
+                    <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>{t("pricingPage.securePaymentNote")}</span>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

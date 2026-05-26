@@ -3,17 +3,19 @@
 import { useState } from "react";
 import RoadmapSection from "./RoadmapSection";
 import RoadmapHero from "./RoadmapHero";
+import { useI18n } from "@/contexts/I18nContext";
 
 const tabs = [
-  { id: "intern", label: "Intern", icon: "🌱", desc: "Thực tập sinh" },
-  { id: "fresher", label: "Fresher", icon: "🚀", desc: "Mới ra trường" },
-  { id: "junior", label: "Junior", icon: "⭐", desc: "1-2 năm KN" },
-  { id: "middle", label: "Middle", icon: "🔥", desc: "2-4 năm KN" },
-  { id: "senior", label: "Senior", icon: "👑", desc: "4+ năm KN" }
+  { id: "intern", label: "Intern", icon: "🌱", descKey: "roadmapPage.tabInternDesc" as const },
+  { id: "fresher", label: "Fresher", icon: "🚀", descKey: "roadmapPage.tabFresherDesc" as const },
+  { id: "junior", label: "Junior", icon: "⭐", descKey: "roadmapPage.tabJuniorDesc" as const },
+  { id: "middle", label: "Middle", icon: "🔥", descKey: "roadmapPage.tabMiddleDesc" as const },
+  { id: "senior", label: "Senior", icon: "👑", descKey: "roadmapPage.tabSeniorDesc" as const }
 ];
 
 export default function RoadmapTabs() {
   const [activeTab, setActiveTab] = useState("intern");
+  const { t } = useI18n();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
@@ -38,7 +40,7 @@ export default function RoadmapTabs() {
                   {tab.label}
                 </span>
                 <span className={`text-[10px] ${activeTab === tab.id ? 'text-accent-600 dark:text-accent-400 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>
-                  {tab.desc}
+                  {t(tab.descKey)}
                 </span>
               </button>
             ))}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@/contexts/I18nContext";
 import { ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
 
 interface CourseCurriculumProps {
@@ -23,6 +24,8 @@ export default function CourseCurriculum({
   onToggleChapter,
   onLessonClick,
 }: CourseCurriculumProps) {
+  const { t } = useI18n();
+
   if (!chapters || chapters.length === 0) {
     return (
       <div className="text-center py-12">
@@ -42,10 +45,10 @@ export default function CourseCurriculum({
           </svg>
         </div>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          Chưa có nội dung
+          {t("courseDetail.emptyCurriculumTitle")}
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          Nội dung khóa học đang được cập nhật
+          {t("courseDetail.emptyCurriculumMessage")}
         </p>
       </div>
     );
@@ -81,7 +84,7 @@ export default function CourseCurriculum({
               </svg>
               <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
                 <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                  Chương {index + 1}
+                  {t("courseDetail.chapter")} {index + 1}
                 </span>
                 <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base truncate">
                   {chapter.chapterName}
@@ -90,7 +93,7 @@ export default function CourseCurriculum({
             </div>
             <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
               {chapterLessons[chapter.id]
-                ? `${chapterLessons[chapter.id].length} bài`
+                ? `${chapterLessons[chapter.id].length} ${t("courseDetail.lessonCount")}`
                 : ""}
             </span>
           </div>
@@ -125,7 +128,7 @@ export default function CourseCurriculum({
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    Đang tải...
+                    {t("common.loading")}
                   </div>
                 ) : chapterLessons[chapter.id] &&
                   chapterLessons[chapter.id].length > 0 ? (
@@ -185,7 +188,7 @@ export default function CourseCurriculum({
                                       d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                     />
                                   </svg>
-                                  Xem miễn phí
+                                  {t("courseDetail.freePreview")}
                                 </span>
                               )}
                             </div>
@@ -210,7 +213,7 @@ export default function CourseCurriculum({
                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                   />
                                 </svg>
-                                Video
+                                {t("common.video")}
                               </span>
                             )}
                           </div>
@@ -245,7 +248,7 @@ export default function CourseCurriculum({
                   })
                 ) : (
                   <div className="px-3 sm:px-4 py-6 text-center text-gray-400 dark:text-gray-500 text-sm">
-                    Chưa có bài học nào
+                    {t("courseDetail.noLessons")}
                   </div>
                 )}
               </div>

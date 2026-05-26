@@ -1,5 +1,6 @@
 import MotionWrapper from "@/components/MotionWrapper";
 import Image from "next/image";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface InterviewHeroProps {
   totalQuestions: number;
@@ -14,6 +15,8 @@ export default function InterviewHero({
   searchText,
   onSearchChange,
 }: InterviewHeroProps) {
+  const { t } = useI18n();
+
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-purple-500/5 to-blue-500/5 dark:from-accent/10 dark:via-purple-500/10 dark:to-blue-500/10" />
@@ -91,19 +94,14 @@ export default function InterviewHero({
         <MotionWrapper animation="fadeInUp" duration={0.8} mode="mount">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-5">
-              Ôn tập{" "}
+              {t("interviewPage.heroTitleStart")}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-600">
-                Phỏng vấn
+                {t("interviewPage.heroTitleAccent")}
               </span>
             </h1>
 
             <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-              Bộ sưu tập câu hỏi phỏng vấn toàn diện cho Backend Developer với
-              Java & Spring Boot.
-              <br />
-              Mỗi câu hỏi đều có câu trả lời mẫu chi tiết, mẹo trả lời chuyên
-              nghiệp và các chủ đề liên quan để giúp bạn tự tin hơn trong mỗi
-              buổi phỏng vấn.
+              {t("interviewPage.heroDesc")}
             </p>
 
             {/* Stats */}
@@ -113,7 +111,7 @@ export default function InterviewHero({
                   {totalQuestions}+
                 </div>
                 <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Câu hỏi
+                  {t("interviewPage.statQuestions")}
                 </div>
               </div>
               <div className="w-px h-10 bg-gray-300 dark:bg-slate-700" />
@@ -122,14 +120,14 @@ export default function InterviewHero({
                   {totalCategories}
                 </div>
                 <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Chủ đề
+                  {t("interviewPage.statTopics")}
                 </div>
               </div>
               <div className="w-px h-10 bg-gray-300 dark:bg-slate-700" />
               <div className="text-center">
                 <div className="text-2xl font-bold text-accent mb-1">3</div>
                 <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Cấp độ
+                  {t("interviewPage.statLevels")}
                 </div>
               </div>
             </div>
@@ -139,7 +137,7 @@ export default function InterviewHero({
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Tìm kiếm chủ đề phỏng vấn..."
+                  placeholder={t("interviewPage.searchPlaceholder")}
                   value={searchText}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="w-full px-5 py-3 pl-12 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-accent dark:focus:border-accent shadow-sm transition-all text-sm"

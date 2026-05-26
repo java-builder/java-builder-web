@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useNotifications, useMarkAsRead } from "@/hooks/useNotifications";
 import { NotificationItem } from "@/types/notification";
 import NotificationList from "@/components/notifications/NotificationList";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function NotificationsPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function NotificationsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const previousFilterRef = useRef<"all" | "unread">("all");
+  const { t } = useI18n();
 
   const { data: notifData, isFetching } = useNotifications(currentPage, filter);
   const markAsRead = useMarkAsRead();
@@ -99,14 +101,14 @@ export default function NotificationsPage() {
         {/* Minimal Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Thông báo
+            {t("notificationsPage.title")}
           </h1>
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
               className="text-sm text-accent hover:text-accent/80 font-medium transition-colors"
             >
-              Đánh dấu đã đọc
+              {t("notificationsPage.markAllRead")}
             </button>
           )}
         </div>
@@ -121,7 +123,7 @@ export default function NotificationsPage() {
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
             }`}
           >
-            Tất cả
+            {t("notificationsPage.tabAll")}
             <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">
               ({totalCount})
             </span>
@@ -134,7 +136,7 @@ export default function NotificationsPage() {
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
             }`}
           >
-            Chưa đọc
+            {t("notificationsPage.tabUnread")}
             {unreadCount > 0 && (
               <span className="ml-1.5 px-1.5 py-0.5 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
                 {unreadCount}

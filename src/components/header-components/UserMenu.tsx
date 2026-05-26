@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface UserMenuProps {
   onLogout: () => void;
@@ -12,6 +13,7 @@ interface UserMenuProps {
 export default function UserMenu({ onLogout }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { data: currentUser } = useCurrentUser();
+  const { t } = useI18n();
 
   const handleLogout = () => {
     setIsOpen(false);
@@ -46,7 +48,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            Thông tin cá nhân
+            {t("userMenu.profile")}
           </Link>
           <Link
             href="/profile?tab=my-posts"
@@ -56,7 +58,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Bài viết của tôi
+            {t("userMenu.myPosts")}
           </Link>
           <Link
             href="/my-courses"
@@ -66,7 +68,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            Khóa học của tôi
+            {t("userMenu.myCourses")}
           </Link>
           <Link
             href="/favorites"
@@ -76,7 +78,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            Khóa học yêu thích
+            {t("userMenu.favoriteCourses")}
           </Link>
           <Link
             href="/my-contributions"
@@ -86,7 +88,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Câu hỏi đóng góp
+            {t("userMenu.contributions")}
           </Link>
           <Link
             href="/profile/subscription"
@@ -96,7 +98,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
-            Gói Premium của tôi
+            {t("userMenu.subscription")}
           </Link>
           <Link
             href="/payment-history"
@@ -106,7 +108,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
-            Lịch sử thanh toán
+            {t("userMenu.paymentHistory")}
           </Link>
           <Link
             href="/notifications"
@@ -116,7 +118,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            Thông báo
+            {t("userMenu.notifications")}
           </Link>
           <Link
             href="/profile?tab=sessions"
@@ -126,7 +128,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
             </svg>
-            Lịch sử đăng nhập
+            {t("userMenu.loginHistory")}
           </Link>
           <div className="border-t border-gray-200 dark:border-slate-600 my-1" />
           <Link
@@ -137,7 +139,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Bảo mật
+            {t("userMenu.security")}
           </Link>
           <Link
             href="/profile?tab=password"
@@ -147,7 +149,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5 text-gray-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
             </svg>
-            Mật khẩu
+            {t("userMenu.password")}
           </Link>
           <div className="border-t border-gray-200 dark:border-slate-600 my-1" />
           <button
@@ -157,7 +159,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Đăng xuất
+            {t("auth.logout")}
           </button>
         </div>
       )}

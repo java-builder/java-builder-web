@@ -1,4 +1,10 @@
+"use client";
+
+import { useI18n } from '@/contexts/I18nContext';
+
 export default function ExerciseEmptyState() {
+  const { t } = useI18n();
+
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-12">
       <div className="text-center">
@@ -8,10 +14,10 @@ export default function ExerciseEmptyState() {
           </svg>
         </div>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          Chưa có bài tập nào
+          {t("exercisesPage.emptyTitle")}
         </h3>
         <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-          Hiện tại chưa có bài tập nào được xuất bản. Hãy quay lại sau nhé!
+          {t("exercisesPage.emptyDesc")}
         </p>
       </div>
     </div>

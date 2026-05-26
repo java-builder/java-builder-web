@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserDetailResponse } from "@/types/user";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SidebarProps {
   user: UserDetailResponse;
@@ -20,10 +21,11 @@ export default function Sidebar({
   const router = useRouter();
   const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
+  const { t } = useI18n();
+ 
   const handleLogout = async () => {
     if (isLoggingOut) return;
-
+ 
     setIsLoggingOut(true);
     await logout();
     // Redirect ngay lập tức sau khi logout
@@ -32,7 +34,7 @@ export default function Sidebar({
   const tabs = [
     {
       id: "profile",
-      label: "Thông tin cá nhân",
+      label: t("userMenu.profile"),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -41,7 +43,7 @@ export default function Sidebar({
     },
     {
       id: "my-posts",
-      label: "Bài viết của tôi",
+      label: t("userMenu.myPosts"),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -50,7 +52,7 @@ export default function Sidebar({
     },
     {
       id: "password",
-      label: "Đổi mật khẩu",
+      label: t("profilePage.passwordTab.changePassword"),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
@@ -59,7 +61,7 @@ export default function Sidebar({
     },
     {
       id: "security",
-      label: "Bảo mật",
+      label: t("profilePage.securityTab.security"),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -68,7 +70,7 @@ export default function Sidebar({
     },
     {
       id: "sessions",
-      label: "Lịch sử đăng nhập",
+      label: t("profilePage.sessionsTab.sessionsTitle"),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -111,7 +113,7 @@ export default function Sidebar({
           </div>
           <div className="flex-1 min-w-0 text-left">
             <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-              {user.username || "Người dùng"}
+              {user.username || t("profilePage.sidebar.user")}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
             {user.university && (
@@ -151,7 +153,7 @@ export default function Sidebar({
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          <span>{isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}</span>
+          <span>{isLoggingOut ? t("profilePage.sidebar.loggingOut") : t("profilePage.sidebar.logout")}</span>
         </button>
       </div>
     </div>

@@ -3,27 +3,30 @@
 import { FaFacebookF, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { SiZalo } from "react-icons/si";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function ContactInfo() {
+  const { t } = useI18n();
+
   const contactMethods = [
     {
       icon: <FaPhoneAlt className="w-5 h-5" />,
-      title: "Điện thoại",
+      title: t("contact.phone"),
       details: ["0368103455"],
-      description: "Gọi cho chúng tôi từ 8:00 - 22:00 (Hàng ngày)",
+      description: t("contact.phoneDescription"),
       color: "text-blue-600",
     },
     {
       icon: <MdEmail className="w-6 h-6" />,
       title: "Email",
       details: ["lekhanhduc212003@gmail.com"],
-      description: "Gửi email cho chúng tôi bất cứ lúc nào",
+      description: t("contact.emailDescription"),
       color: "text-green-600",
     },
     {
       icon: <FaMapMarkerAlt className="w-5 h-5" />,
-      title: "Địa chỉ",
-      details: ["Đà Nẵng, Việt Nam"],
+      title: t("contact.address"),
+      details: [t("contact.addressValue")],
       description: "",
       color: "text-accent",
     },
@@ -33,10 +36,10 @@ export default function ContactInfo() {
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-8">
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Thông tin liên hệ
+          {t("contact.title")}
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          Bạn có thể kết nối với mình qua email, Zalo hoặc Facebook
+          {t("contact.subtitle")}
         </p>
       </div>
 
@@ -71,7 +74,7 @@ export default function ContactInfo() {
 
       {/* Quick Contact */}
       <div className="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700">
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Liên hệ nhanh</h4>
+        <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("contact.quickContact")}</h4>
         <div className="space-y-3">
           <a
             href="tel:0368103455"
@@ -79,7 +82,7 @@ export default function ContactInfo() {
           >
             <FaPhoneAlt className="w-5 h-5 text-accent" />
             <span className="font-medium text-gray-900 dark:text-white">
-              Gọi ngay: 0368103455
+              {t("contact.callNow")}
             </span>
           </a>
 
@@ -91,7 +94,7 @@ export default function ContactInfo() {
           >
             <SiZalo className="w-6 h-6" />
             <span className="font-medium text-gray-900 dark:text-white">
-              Chat Zalo: 0368103455
+              {t("contact.chatZalo")}
             </span>
           </a>
 

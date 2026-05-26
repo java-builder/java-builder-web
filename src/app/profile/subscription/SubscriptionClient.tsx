@@ -6,8 +6,10 @@ import { UserSubscription } from "@/types/user-subscription";
 import { formatDate } from "@/utils/formatters";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function MySubscriptionPage() {
+  const { t } = useI18n();
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showRenewModal, setShowRenewModal] = useState(false);
@@ -38,14 +40,14 @@ export default function MySubscriptionPage() {
       const response = await userSubscriptionService.renew(subscription.planId);
       
       if (response.code === 200) {
-        toast.success("Gia hạn gói Premium thành công!");
+        toast.success(t("subscriptionPage.renewSuccess"));
         setShowRenewModal(false);
         // Refresh subscription data
         await fetchSubscription();
       }
     } catch (error) {
       console.error("Error renewing subscription:", error);
-      const errorMessage = error instanceof Error ? error.message : "Có lỗi xảy ra khi gia hạn gói";
+      const errorMessage = error instanceof Error ? error.message : t("subscriptionPage.renewFailed");
       toast.error(errorMessage);
     } finally {
       setIsRenewing(false);
@@ -75,10 +77,10 @@ export default function MySubscriptionPage() {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Chưa có gói Premium
+              {t("subscriptionPage.noPremiumTitle")}
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Bạn chưa đăng ký gói Premium nào. Nâng cấp ngay để truy cập toàn bộ nội dung!
+              {t("subscriptionPage.noPremiumDesc")}
             </p>
             <Link
               href="/pricing"
@@ -87,7 +89,7 @@ export default function MySubscriptionPage() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
-              Xem các gói Premium
+              {t("subscriptionPage.viewPlansBtn")}
             </Link>
           </div>
         </div>
@@ -112,10 +114,10 @@ export default function MySubscriptionPage() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                Gói Premium của tôi
+                {t("subscriptionPage.title")}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Quản lý thông tin gói Premium và quyền lợi của bạn
+                {t("subscriptionPage.subtitle")}
               </p>
             </div>
           </div>
@@ -137,7 +139,7 @@ export default function MySubscriptionPage() {
                     {subscription.planName}
                   </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Gói hiện tại
+                    {t("subscriptionPage.currentPlan")}
                   </p>
                 </div>
               </div>
@@ -147,7 +149,7 @@ export default function MySubscriptionPage() {
                     ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
                     : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
                 }`}>
-                  {isActive ? "Đang hoạt động" : "Đã hết hạn"}
+                  {isActive ? t("subscriptionPage.statusActive") : t("subscriptionPage.statusExpired")}
                 </div>
                 <button
                   onClick={() => setShowRenewModal(true)}
@@ -156,7 +158,7 @@ export default function MySubscriptionPage() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Gia hạn gói
+                  {t("subscriptionPage.renewBtn")}
                 </button>
               </div>
             </div>
@@ -173,10 +175,10 @@ export default function MySubscriptionPage() {
                   </svg>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-amber-900 dark:text-amber-200 text-sm sm:text-base">
-                      Gói Premium sắp hết hạn
+                      {t("subscriptionPage.expiringSoonTitle")}
                     </p>
                     <p className="text-xs sm:text-sm text-amber-700 dark:text-amber-300 mt-1">
-                      Gói của bạn sẽ hết hạn trong {daysLeft} ngày. Gia hạn ngay để tiếp tục sử dụng!
+                      {t("subscriptionPage.expiringSoonDesc").replace("{days}", String(daysLeft))}
                     </p>
                   </div>
                 </div>
@@ -188,7 +190,7 @@ export default function MySubscriptionPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 block mb-1">
-                    Ngày bắt đầu
+                    {t("subscriptionPage.startDate")}
                   </label>
                   <div className="flex items-center gap-2 text-sm sm:text-base text-gray-900 dark:text-white font-medium">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +201,7 @@ export default function MySubscriptionPage() {
                 </div>
                 <div>
                   <label className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 block mb-1">
-                    Ngày hết hạn
+                    {t("subscriptionPage.endDate")}
                   </label>
                   <div className="flex items-center gap-2 text-sm sm:text-base text-gray-900 dark:text-white font-medium">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,7 +215,7 @@ export default function MySubscriptionPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 block mb-1">
-                    Thời gian còn lại
+                    {t("subscriptionPage.timeLeft")}
                   </label>
                   <div className="flex items-center gap-2">
                     <div className={`text-2xl sm:text-3xl font-bold ${
@@ -225,12 +227,12 @@ export default function MySubscriptionPage() {
                     }`}>
                       {daysLeft}
                     </div>
-                    <span className="text-sm sm:text-base text-gray-600 dark:text-gray-400">ngày</span>
+                    <span className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("subscriptionPage.days")}</span>
                   </div>
                 </div>
                 <div>
                   <label className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 block mb-1">
-                    Trạng thái
+                    {t("subscriptionPage.statusLabel")}
                   </label>
                   <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium ${
                     isActive 
@@ -238,7 +240,7 @@ export default function MySubscriptionPage() {
                       : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
                   }`}>
                     <div className={`w-2 h-2 rounded-full ${isActive ? "bg-green-500" : "bg-red-500"}`}></div>
-                    {subscription.status}
+                    {isActive ? t("subscriptionPage.statusActive") : t("subscriptionPage.statusExpired")}
                   </div>
                 </div>
               </div>
@@ -254,25 +256,25 @@ export default function MySubscriptionPage() {
             {/* Modal Header */}
             <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
-                Xác nhận gia hạn gói
+                {t("subscriptionPage.renewModalTitle")}
               </h3>
             </div>
-
+ 
             {/* Modal Content */}
             <div className="px-4 sm:px-6 py-4">
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4">
-                Bạn có chắc chắn muốn gia hạn gói Premium không?
+                {t("subscriptionPage.renewModalDesc")}
               </p>
               
               <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3 sm:p-4 space-y-2">
                 <div className="flex justify-between text-xs sm:text-sm gap-2">
-                  <span className="text-gray-600 dark:text-gray-400 flex-shrink-0">Gói:</span>
+                  <span className="text-gray-600 dark:text-gray-400 flex-shrink-0">{t("subscriptionPage.planLabel")}</span>
                   <span className="font-medium text-gray-900 dark:text-white text-right break-words">
                     {subscription.planName}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm gap-2">
-                  <span className="text-gray-600 dark:text-gray-400 flex-shrink-0">Ngày hết hạn hiện tại:</span>
+                  <span className="text-gray-600 dark:text-gray-400 flex-shrink-0">{t("subscriptionPage.currentEndDateLabel")}</span>
                   <span className="font-medium text-gray-900 dark:text-white text-right break-all">
                     {formatDate(subscription.endDate)}
                   </span>
@@ -287,7 +289,7 @@ export default function MySubscriptionPage() {
                 disabled={isRenewing}
                 className="w-full sm:w-auto px-4 py-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
               >
-                Hủy
+                {t("subscriptionPage.cancelBtn")}
               </button>
               <button
                 onClick={handleRenew}
@@ -300,10 +302,10 @@ export default function MySubscriptionPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Đang xử lý...
+                    {t("subscriptionPage.processing")}
                   </>
                 ) : (
-                  "Xác nhận gia hạn"
+                  t("subscriptionPage.confirmRenewBtn")
                 )}
               </button>
             </div>

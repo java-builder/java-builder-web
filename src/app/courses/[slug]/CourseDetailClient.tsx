@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import RateLimitModal from "@/components/ui/RateLimitModal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { favoriteService } from "@/services/favorite.service";
 import { FavoriteTargetType } from "@/types/favorite";
@@ -12,6 +13,7 @@ import { CreatePaymentResponse } from "@/types/payment";
 import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
+import { isRateLimitError } from "@/utils/apiError";
 import toast from "react-hot-toast";
 import ReviewSection from "@/components/courses/ReviewSection";
 import CourseHeader from "@/components/courses/CourseHeader";
@@ -21,11 +23,13 @@ import CourseInstructor from "@/components/courses/CourseInstructor";
 import CourseSidebar from "@/components/courses/CourseSidebar";
 import VideoPreviewModal from "@/components/courses/VideoPreviewModal";
 import PaymentModal from "@/components/courses/PaymentModal";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function CourseDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const { data: currentUser } = useCurrentUser();
+  const { locale, t } = useI18n();
 
   usePaymentWebSocket(slug);
 
@@ -73,6 +77,7 @@ export default function CourseDetailPage() {
     isLoading: false,
     data: null,
   });
+  const [rateLimitModalOpen, setRateLimitModalOpen] = useState(false);
 
   useEffect(() => {
     if (!slug || hasFetched.current) return;
@@ -91,7 +96,7 @@ export default function CourseDetailPage() {
           setIsPremiumUser(courseData.isPremiumUser ?? false);
         }
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi tải dữ liệu";
+        const errorMessage = err instanceof Error ? err.message : t("courseDetail.loadError");
         setError(errorMessage);
       } finally {
         setIsLoading(false);
@@ -99,15 +104,15 @@ export default function CourseDetailPage() {
     };
 
     fetchData();
-  }, [slug]);
+  }, [slug, t]);
 
   const handleToggleFavorite = async () => {
     if (!course?.id) return;
     if (!currentUser) {
       setAuthModal({
         isOpen: true,
-        title: "Đăng nhập để yêu thích",
-        message: "Bạn cần đăng nhập để thêm khóa học vào danh sách yêu thích.",
+        title: t("courseDetail.favoriteLoginTitle"),
+        message: t("courseDetail.favoriteLoginMessage"),
       });
       return;
     }
@@ -120,10 +125,10 @@ export default function CourseDetailPage() {
       });
       if (result.code === 200) {
         setIsFavorite(result.data ?? false);
-        toast.success(result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
+        toast.success(result.data ? t("courseDetail.addedFavorite") : t("courseDetail.removedFavorite"));
       }
     } catch {
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      toast.error(t("courseDetail.genericError"));
     } finally {
       setFavoriteLoading(false);
     }
@@ -164,8 +169,8 @@ export default function CourseDetailPage() {
     if (!currentUser && lesson.isFreePreview) {
       setAuthModal({
         isOpen: true,
-        title: "Đăng nhập để xem video miễn phí",
-        message: "Bạn cần đăng nhập để xem các video miễn phí trong khóa học này.",
+        title: t("courseDetail.freePreviewLoginTitle"),
+        message: t("courseDetail.freePreviewLoginMessage"),
       });
       return;
     }
@@ -184,10 +189,10 @@ export default function CourseDetailPage() {
           setPreviewModal({ isOpen: true, lesson: response.data });
         }
       } catch {
-        toast.error("Không thể xem bài học này");
+        toast.error(t("courseDetail.lessonUnavailable"));
       }
     } else {
-      toast.error("Vui lòng đăng ký khóa học để xem bài học này");
+      toast.error(t("courseDetail.enrollToWatch"));
     }
   };
 
@@ -196,8 +201,8 @@ export default function CourseDetailPage() {
     if (!currentUser) {
       setAuthModal({
         isOpen: true,
-        title: "Đăng nhập để đăng ký",
-        message: "Bạn cần đăng nhập để đăng ký khóa học này.",
+        title: t("courseDetail.enrollLoginTitle"),
+        message: t("courseDetail.enrollLoginMessage"),
       });
       return;
     }
@@ -209,17 +214,21 @@ export default function CourseDetailPage() {
       if (result.code === 201 && result.data) {
         setPaymentModal({ isOpen: true, isLoading: false, data: result.data });
       } else {
-        toast.error("Không thể tạo link thanh toán");
+        toast.error(t("courseDetail.paymentLinkError"));
         setPaymentModal({ isOpen: false, isLoading: false, data: null });
       }
-    } catch {
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    } catch (error) {
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      if (isRateLimitError(error)) {
+        setRateLimitModalOpen(true);
+        return;
+      }
+      toast.error(t("courseDetail.genericError"));
     }
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : locale, {
       style: "currency",
       currency: "VND",
     }).format(price);
@@ -240,7 +249,7 @@ export default function CourseDetailPage() {
         parseInt(second),
       );
 
-      return date.toLocaleDateString("vi-VN", {
+      return date.toLocaleDateString(locale === "vi" ? "vi-VN" : locale, {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -255,11 +264,11 @@ export default function CourseDetailPage() {
   const getLevelText = (level: CourseLevel) => {
     switch (level) {
       case CourseLevel.BEGINNER:
-        return "Cơ bản";
+        return t("courseDetail.beginner");
       case CourseLevel.INTERMEDIATE:
-        return "Trung cấp";
+        return t("courseDetail.intermediate");
       case CourseLevel.ADVANCED:
-        return "Nâng cao";
+        return t("courseDetail.advanced");
       default:
         return level;
     }
@@ -298,16 +307,16 @@ export default function CourseDetailPage() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Không tìm thấy khóa học
+              {t("courseDetail.notFoundTitle")}
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {error || "Khóa học không tồn tại hoặc đã bị xóa."}
+              {error || t("courseDetail.notFoundMessage")}
             </p>
             <Link
               href="/courses"
               className="inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors duration-300"
             >
-              Quay lại danh sách khóa học
+              {t("courseDetail.backToCourses")}
             </Link>
           </div>
         </div>
@@ -325,7 +334,7 @@ export default function CourseDetailPage() {
               href="/"
               className="text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-400 transition-colors"
             >
-              Trang chủ
+              {t("common.home")}
             </Link>
             <svg
               className="w-4 h-4 text-gray-400 dark:text-gray-500"
@@ -344,7 +353,7 @@ export default function CourseDetailPage() {
               href="/courses"
               className="text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-400 transition-colors"
             >
-              Khóa học
+              {t("common.courses")}
             </Link>
             <svg
               className="w-4 h-4 text-gray-400 dark:text-gray-500"
@@ -456,6 +465,11 @@ export default function CourseDetailPage() {
         onClose={() => setAuthModal({ ...authModal, isOpen: false })}
         title={authModal.title}
         message={authModal.message}
+      />
+
+      <RateLimitModal
+        isOpen={rateLimitModalOpen}
+        onClose={() => setRateLimitModalOpen(false)}
       />
 
     </div>

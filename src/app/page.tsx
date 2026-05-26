@@ -1,17 +1,19 @@
- "use client";
- 
- import Link from "next/link";
+"use client";
+
+import Link from "next/link";
 import Image from "next/image";
 import MotionWrapper from "@/components/MotionWrapper";
- import CourseCard from "@/components/courses/CourseCard";
- import PublicBlogCard from "@/components/blogs/PublicBlogCard";
- import DocumentCard from "@/components/documents/DocumentCard";
- import CICDPipelineSection from "@/components/home/CICDPipelineSection";
- import { useFeaturedCourses } from "@/hooks/useCourses";
- import { useFeaturedBlogs } from "@/hooks/useBlogs";
- import { useFeaturedDocuments } from "@/hooks/useDocuments";
+import CourseCard from "@/components/courses/CourseCard";
+import PublicBlogCard from "@/components/blogs/PublicBlogCard";
+import DocumentCard from "@/components/documents/DocumentCard";
+import CICDPipelineSection from "@/components/home/CICDPipelineSection";
+import { useFeaturedCourses } from "@/hooks/useCourses";
+import { useFeaturedBlogs } from "@/hooks/useBlogs";
+import { useFeaturedDocuments } from "@/hooks/useDocuments";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function Home() {
+  const { t } = useI18n();
   const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useFeaturedCourses();
   const { data: blogsData, isLoading: isLoadingBlogs, error: blogsError } = useFeaturedBlogs();
   const { data: documentsData, isLoading: isLoadingDocuments, error: documentsError } = useFeaturedDocuments();
@@ -31,25 +33,23 @@ export default function Home() {
                 <div className="space-y-3 md:space-y-4">
                   <div className="inline-block">
                     <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
-                      Course & Training
+                      {t("home.heroBadge")}
                     </span>
                   </div>
 
                   <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                    Khởi đầu hành trình{" "}
-                    <span className="text-accent">lập trình Java</span>
+                    {t("home.heroTitleStart")}{" "}
+                    <span className="text-accent">
+                      {t("home.heroTitleEnd")}
+                    </span>
                   </h1>
 
                   <div className="text-sm md:text-base text-gray-700 max-w-xl">
                     <p className="leading-relaxed mb-2">
-                      Hành trình chinh phục Backend Java cùng Java Builder.
+                      {t("home.heroDesc1")}
                     </p>
                     <p className="leading-relaxed">
-                      Từ zero đến hero, cùng{" "}
-                      <span className="text-accent font-semibold">
-                        JavaBuilder
-                      </span>{" "}
-                      - nền tảng học Java online hàng đầu Việt Nam - phát triển kỹ năng coding thực sự.
+                      {t("home.heroDesc2")}
                     </p>
                   </div>
                 </div>
@@ -75,15 +75,15 @@ export default function Home() {
                         <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                         </svg>
-                        Cộng đồng
+                        {t("home.communityBadge")}
                       </div>
                       
                       <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
-                        Tham gia nhóm JavaBuilder - Lập trình Backend Java
+                        {t("home.fbGroupTitle")}
                       </h3>
                       
                       <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
-                        Kết nối với cộng đồng Backend Java, chia sẻ kinh nghiệm và cùng phát triển.
+                        {t("home.fbGroupDesc")}
                       </p>
 
                       {/* Stats */}
@@ -92,13 +92,13 @@ export default function Home() {
                           <svg className="w-3.5 h-3.5 mr-1 text-accent" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                           </svg>
-                          <span className="font-medium">1000+ thành viên</span>
+                          <span className="font-medium">{t("home.fbMembers")}</span>
                         </div>
                         <div className="flex items-center">
                           <svg className="w-3.5 h-3.5 mr-1 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                           </svg>
-                          <span className="font-medium">Hoạt động</span>
+                          <span className="font-medium">{t("home.fbActive")}</span>
                         </div>
                       </div>
 
@@ -112,7 +112,7 @@ export default function Home() {
                         <svg className="w-3.5 h-3.5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
-                        Tham gia nhóm
+                        {t("home.fbJoin")}
                         <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
@@ -138,13 +138,13 @@ export default function Home() {
 
                     <div className="flex-1">
                       <div className="inline-flex items-center bg-accent/10 dark:bg-accent/20 text-accent px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
-                        Học nhóm
+                        {t("home.discordBadge")}
                       </div>
                       <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
-                        Discord học tập JavaBuilder
+                        {t("home.discordTitle")}
                       </h3>
                       <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
-                        Không gian học nhóm, hỏi đáp nhanh, review bài tập và cùng nhau giữ nhịp học mỗi ngày.
+                        {t("home.discordDesc")}
                       </p>
                       <a
                         href="https://discord.gg/DfTsStwT"
@@ -152,7 +152,7 @@ export default function Home() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full px-4 py-2 bg-accent text-white text-xs font-semibold rounded-lg shadow hover:bg-accent-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                       >
-                        Tham gia Discord
+                        {t("home.discordJoin")}
                         <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
@@ -175,10 +175,10 @@ export default function Home() {
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Bài viết nổi bật
+                {t("home.featuredBlogs")}
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Khám phá những kiến thức mới nhất từ cộng đồng lập trình
+                {t("home.featuredBlogsDesc")}
               </p>
             </div>
           </MotionWrapper>
@@ -209,7 +209,7 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600">Có lỗi xảy ra khi tải blogs</p>
+                <p className="text-gray-600">{t("home.loadBlogsError")}</p>
               </div>
             )}
 
@@ -245,7 +245,7 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600">Chưa có bài viết nào</p>
+                <p className="text-gray-600">{t("home.noBlogs")}</p>
               </div>
             )}
           </div>
@@ -256,7 +256,7 @@ export default function Home() {
                 href="/blogs"
                 className="inline-flex items-center justify-center px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:border-accent dark:hover:border-accent text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-accent font-semibold rounded-lg shadow-sm hover:shadow transition-all duration-200 group"
               >
-                Xem tất cả bài viết
+                {t("home.viewAllBlogs")}
                 <svg
                   className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-200 text-gray-400 group-hover:text-accent"
                   fill="none"
@@ -284,10 +284,10 @@ export default function Home() {
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Khóa học nổi bật
+                {t("home.featuredCourses")}
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Chọn lộ trình phù hợp với mục tiêu và trình độ của bạn
+                {t("home.featuredCoursesDesc")}
               </p>
             </div>
           </MotionWrapper>
@@ -318,7 +318,7 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600">Có lỗi xảy ra khi tải khóa học</p>
+                <p className="text-gray-600">{t("home.loadCoursesError")}</p>
               </div>
             )}
 
@@ -354,7 +354,7 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600">Chưa có khóa học nào</p>
+                <p className="text-gray-600">{t("home.noCourses")}</p>
               </div>
             )}
           </div>
@@ -372,13 +372,13 @@ export default function Home() {
             <div className="mx-auto mb-14 max-w-3xl text-center">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-white/80 dark:bg-slate-800/80 px-4 py-1.5 text-sm font-semibold text-accent shadow-sm backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-accent"></span>
-                Thư viện học tập chọn lọc
+                {t("home.featuredDocsBadge")}
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-950 dark:text-white mb-5">
-                Tài liệu nổi bật
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-955 dark:text-white mb-5">
+                {t("home.featuredDocs")}
               </h2>
               <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                Tổng hợp sách, PDF, video và hướng dẫn thực chiến giúp bạn học Java Backend có hệ thống hơn.
+                {t("home.featuredDocsDesc")}
               </p>
             </div>
           </MotionWrapper>
@@ -407,7 +407,7 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300">Có lỗi xảy ra khi tải tài liệu</p>
+                <p className="text-gray-600 dark:text-gray-300">{t("home.loadDocsError")}</p>
               </div>
             )}
 
@@ -429,7 +429,7 @@ export default function Home() {
                 href="/documents"
                 className="inline-flex items-center justify-center px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:border-accent dark:hover:border-accent text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-accent font-semibold rounded-lg shadow-sm hover:shadow transition-all duration-200 group"
               >
-                Xem tất cả tài liệu
+                {t("home.viewAllDocs")}
                 <svg
                   className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-200 text-gray-400 group-hover:text-accent"
                   fill="none"

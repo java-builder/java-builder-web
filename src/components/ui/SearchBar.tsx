@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -15,16 +16,20 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({
-  placeholder = "Tìm kiếm...",
+  placeholder,
   value: controlledValue,
   onChange,
   onSearch,
   showButton = true,
-  buttonText = "Tìm kiếm",
+  buttonText,
   className = "",
   inputClassName = "",
   size = "md",
 }: SearchBarProps) {
+  const { t } = useI18n();
+  const displayPlaceholder = placeholder ?? t("common.searchPlaceholder");
+  const displayButtonText = buttonText ?? t("common.search");
+  
   const [internalValue, setInternalValue] = useState("");
   
   const isControlled = controlledValue !== undefined;
@@ -82,7 +87,7 @@ export default function SearchBar({
           </span>
           <input
             type="text"
-            placeholder={placeholder}
+            placeholder={displayPlaceholder}
             className={`
               w-full ${sizeClasses[size]} rounded-lg border 
               border-gray-300 dark:border-slate-600 
@@ -129,7 +134,7 @@ export default function SearchBar({
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-          <span className="hidden sm:inline">{buttonText}</span>
+          <span className="hidden sm:inline">{displayButtonText}</span>
         </button>
       )}
     </div>

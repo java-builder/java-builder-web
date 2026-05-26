@@ -5,6 +5,7 @@ import { useMyPaymentHistory } from "@/hooks/usePayment";
 import { PaymentStatus, TransactionType } from "@/types/payment";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { Pagination } from "@/components/ui/Pagination";
+import { useI18n } from "@/contexts/I18nContext";
 import {
   ArrowDownToLine,
   ArrowUpRight,
@@ -18,48 +19,48 @@ import {
   XCircle,
 } from "lucide-react";
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat("vi-VN", {
+const formatCurrency = (value: number, dateLocale: string) =>
+  new Intl.NumberFormat(dateLocale, {
     style: "currency",
     currency: "VND",
   }).format(value);
 
-const StatusBadge = ({ status }: { status: PaymentStatus }) => {
+const StatusBadge = ({ status, t }: { status: PaymentStatus; t: ReturnType<typeof useI18n>["t"] }) => {
   const getStatusConfig = (status: PaymentStatus) => {
     switch (status) {
       case PaymentStatus.SUCCESS:
         return {
           color:
             "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20",
-          text: "Thành công",
+          text: t("paymentHistoryPage.success"),
           icon: <CheckCircle2 className="h-3.5 w-3.5" />,
         };
       case PaymentStatus.PENDING:
         return {
           color:
             "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/20",
-          text: "Đang xử lý",
+          text: t("paymentHistoryPage.pending"),
           icon: <Clock3 className="h-3.5 w-3.5" />,
         };
       case PaymentStatus.FAILED:
         return {
           color:
             "bg-rose-50 text-rose-700 ring-rose-600/20 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-400/20",
-          text: "Thất bại",
+          text: t("paymentHistoryPage.failed"),
           icon: <XCircle className="h-3.5 w-3.5" />,
         };
       case PaymentStatus.CANCELLED:
         return {
           color:
             "bg-slate-100 text-slate-700 ring-slate-600/20 dark:bg-slate-700/60 dark:text-slate-300 dark:ring-slate-400/20",
-          text: "Đã hủy",
+          text: t("paymentHistoryPage.cancelled"),
           icon: <XCircle className="h-3.5 w-3.5" />,
         };
       case PaymentStatus.EXPIRED:
         return {
           color:
             "bg-orange-50 text-orange-700 ring-orange-600/20 dark:bg-orange-500/10 dark:text-orange-300 dark:ring-orange-400/20",
-          text: "Hết hạn",
+          text: t("paymentHistoryPage.expired"),
           icon: <Clock3 className="h-3.5 w-3.5" />,
         };
       default:
@@ -81,28 +82,28 @@ const StatusBadge = ({ status }: { status: PaymentStatus }) => {
   );
 };
 
-const TransactionTypeBadge = ({ type }: { type: TransactionType }) => {
+const TransactionTypeBadge = ({ type, t }: { type: TransactionType; t: ReturnType<typeof useI18n>["t"] }) => {
   const getTypeConfig = (type: TransactionType) => {
     switch (type) {
       case TransactionType.PAYIN:
         return {
           color:
             "bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-400/20",
-          text: "Thanh toán",
+          text: t("paymentHistoryPage.typePayment"),
           icon: <ArrowDownToLine className="h-3.5 w-3.5" />,
         };
       case TransactionType.PAYOUT:
         return {
           color:
             "bg-violet-50 text-violet-700 ring-violet-600/20 dark:bg-violet-500/10 dark:text-violet-300 dark:ring-violet-400/20",
-          text: "Rút tiền",
+          text: t("paymentHistoryPage.typeWithdraw"),
           icon: <ArrowUpRight className="h-3.5 w-3.5" />,
         };
       case TransactionType.SUBSCRIPTION:
         return {
           color:
             "bg-indigo-50 text-indigo-700 ring-indigo-600/20 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-400/20",
-          text: "Đăng ký",
+          text: t("paymentHistoryPage.typeSubscribe"),
           icon: <WalletCards className="h-3.5 w-3.5" />,
         };
       default:
@@ -125,6 +126,7 @@ const TransactionTypeBadge = ({ type }: { type: TransactionType }) => {
 };
 
 export default function PaymentHistoryPage() {
+  const { locale, t } = useI18n();
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = useMyPaymentHistory(currentPage, 10);
   const payments = data?.data ?? [];
@@ -138,6 +140,8 @@ export default function PaymentHistoryPage() {
     (total, payment) => total + payment.totalPrice,
     0
   );
+
+  const dateLocale = locale === "vi" ? "vi-VN" : locale === "en" ? "en-US" : locale === "ja" ? "ja-JP" : "ko-KR";
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -154,10 +158,10 @@ export default function PaymentHistoryPage() {
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                  Lịch sử thanh toán
+                  {t("paymentHistoryPage.title")}
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Xem lại các giao dịch và trạng thái thanh toán của bạn
+                  {t("paymentHistoryPage.subtitle")}
                 </p>
               </div>
             </div>
@@ -166,17 +170,17 @@ export default function PaymentHistoryPage() {
               <div className="flex gap-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-accent">{data?.totalElements ?? 0}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Giao dịch</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("paymentHistoryPage.transactions")}</div>
                 </div>
                 <div className="w-px bg-gray-200 dark:bg-slate-700" />
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-500">{successfulPayments.length}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Thành công</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("paymentHistoryPage.success")}</div>
                 </div>
                 <div className="w-px bg-gray-200 dark:bg-slate-700" />
                 <div className="text-center">
                   <div className="text-2xl font-bold text-amber-500">{pendingPayments.length}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Đang xử lý</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("paymentHistoryPage.pending")}</div>
                 </div>
               </div>
             )}
@@ -188,7 +192,7 @@ export default function PaymentHistoryPage() {
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-10 h-10 animate-spin text-accent" />
               <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                Đang tải lịch sử thanh toán...
+                {t("paymentHistoryPage.loading")}
               </p>
             </div>
           ) : payments.length > 0 ? (
@@ -201,16 +205,16 @@ export default function PaymentHistoryPage() {
                     </div>
                     <div>
                       <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        Danh sách giao dịch
+                        {t("paymentHistoryPage.listTitle")}
                       </h2>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Tổng tiền đã thanh toán: {formatCurrency(totalPaid)}
+                        {t("paymentHistoryPage.totalPaid").replace("{amount}", formatCurrency(totalPaid, dateLocale))}
                       </p>
                     </div>
                   </div>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300">
                     <WalletCards className="w-4 h-4" />
-                    {data?.totalElements ?? 0} giao dịch
+                    {data?.totalElements ?? 0} {t("paymentHistoryPage.transactionItem")}
                   </div>
                 </div>
               </div>
@@ -219,12 +223,12 @@ export default function PaymentHistoryPage() {
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                   <thead className="bg-gray-50 dark:bg-slate-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mã đơn</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nội dung</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Loại</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Số tiền</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ngày tạo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableCode")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableContent")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableType")}</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableAmount")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableStatus")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableDate")}</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
@@ -246,16 +250,16 @@ export default function PaymentHistoryPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <TransactionTypeBadge type={payment.transactionType} />
+                          <TransactionTypeBadge type={payment.transactionType} t={t} />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          {formatCurrency(payment.totalPrice)}
+                          {formatCurrency(payment.totalPrice, dateLocale)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <StatusBadge status={payment.paymentStatus} />
+                          <StatusBadge status={payment.paymentStatus} t={t} />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {formatReadableDate(payment.createdAt)}
+                          {formatReadableDate(payment.createdAt, dateLocale)}
                         </td>
                       </tr>
                     ))}
@@ -268,10 +272,10 @@ export default function PaymentHistoryPage() {
                   <div key={payment.id} className="rounded-xl border border-gray-200 dark:border-slate-700 p-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Mã đơn</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{t("paymentHistoryPage.tableCode")}</p>
                         <p className="mt-1 font-semibold text-gray-900 dark:text-white">#{payment.paymentCode}</p>
                       </div>
-                      <StatusBadge status={payment.paymentStatus} />
+                      <StatusBadge status={payment.paymentStatus} t={t} />
                     </div>
                     <div className="mt-4">
                       <p className="font-medium text-gray-900 dark:text-gray-100">
@@ -283,18 +287,18 @@ export default function PaymentHistoryPage() {
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 dark:border-slate-700 pt-4">
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Loại</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{t("paymentHistoryPage.tableType")}</p>
                         <div className="mt-1">
-                          <TransactionTypeBadge type={payment.transactionType} />
+                          <TransactionTypeBadge type={payment.transactionType} t={t} />
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Số tiền</p>
-                        <p className="mt-1 font-semibold text-gray-900 dark:text-white">{formatCurrency(payment.totalPrice)}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{t("paymentHistoryPage.tableAmount")}</p>
+                        <p className="mt-1 font-semibold text-gray-900 dark:text-white">{formatCurrency(payment.totalPrice, dateLocale)}</p>
                       </div>
                       <div className="col-span-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                         <CalendarDays className="h-4 w-4" />
-                        {formatReadableDate(payment.createdAt)}
+                        {formatReadableDate(payment.createdAt, dateLocale)}
                       </div>
                     </div>
                   </div>
@@ -309,7 +313,7 @@ export default function PaymentHistoryPage() {
                     totalElements={data.totalElements}
                     pageSize={data.pageSize}
                     onPageChange={handlePageChange}
-                    itemName="giao dịch"
+                    itemName={t("paymentHistoryPage.transactionItem")}
                   />
                 </div>
               )}
@@ -320,10 +324,10 @@ export default function PaymentHistoryPage() {
                 <CreditCard className="w-12 h-12 text-accent" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                Chưa có giao dịch nào
+                {t("paymentHistoryPage.emptyTitle")}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-                Khi bạn mua khóa học hoặc đăng ký gói Premium, lịch sử thanh toán sẽ được hiển thị tại đây.
+                {t("paymentHistoryPage.emptyDesc")}
               </p>
             </div>
           )}

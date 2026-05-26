@@ -5,6 +5,7 @@ import Image from "next/image";
 import { UserDetailResponse } from "@/types/user";
 import { userApi } from "@/services/user.service";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface ProfileTabProps {
   user: UserDetailResponse;
@@ -17,6 +18,7 @@ export default function ProfileTab({
   isSaving,
   onSave,
 }: ProfileTabProps) {
+  const { t } = useI18n();
   const [isEditing, setIsEditing] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState(user.avatar || "");
@@ -53,11 +55,11 @@ export default function ProfileTab({
         });
       }
 
-      toast.success("Cập nhật thông tin thành công!");
+      toast.success(t("profilePage.profileTab.updateSuccess"));
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error(error instanceof Error ? error.message : "Cập nhật thông tin thất bại.");
+      toast.error(error instanceof Error ? error.message : t("profilePage.profileTab.updateFailed"));
     }
   };
 
@@ -75,12 +77,12 @@ export default function ProfileTab({
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB.");
+      alert(t("profilePage.profileTab.fileTooLarge"));
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      alert("Vui lòng chọn file ảnh hợp lệ.");
+      alert(t("profilePage.profileTab.invalidImage"));
       return;
     }
 
@@ -94,11 +96,11 @@ export default function ProfileTab({
         if (onSave) {
           await onSave({ avatar: response.data });
         }
-        toast.success("Cập nhật ảnh đại diện thành công!");
+        toast.success(t("profilePage.profileTab.avatarSuccess"));
       }
     } catch (error) {
       console.error("Error updating avatar:", error);
-      toast.error(error instanceof Error ? error.message : "Cập nhật ảnh đại diện thất bại.");
+      toast.error(error instanceof Error ? error.message : t("profilePage.profileTab.avatarFailed"));
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -110,15 +112,15 @@ export default function ProfileTab({
       <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Thông tin cá nhân</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Quản lý thông tin cá nhân của bạn</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("profilePage.profileTab.personalInfo")}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("profilePage.profileTab.manageDesc")}</p>
           </div>
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors"
             >
-              Chỉnh sửa
+              {t("profilePage.profileTab.editBtn")}
             </button>
           )}
         </div>
@@ -176,9 +178,9 @@ export default function ProfileTab({
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Ảnh đại diện</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">JPG, PNG hoặc GIF. Tối đa 5MB.</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">Nhấn vào icon camera để thay đổi</p>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{t("profilePage.profileTab.avatarLabel")}</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t("profilePage.profileTab.avatarTip1")}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{t("profilePage.profileTab.avatarTip2")}</p>
             </div>
           </div>
 
@@ -187,7 +189,7 @@ export default function ProfileTab({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Tên người dùng
+                  {t("profilePage.profileTab.username")}
                 </label>
                 <input
                   type="text"
@@ -200,7 +202,7 @@ export default function ProfileTab({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email
+                  {t("profilePage.profileTab.email")}
                 </label>
                 <input
                   type="email"
@@ -213,7 +215,7 @@ export default function ProfileTab({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Trường đại học
+                {t("profilePage.profileTab.university")}
               </label>
               <input
                 type="text"
@@ -221,7 +223,7 @@ export default function ProfileTab({
                 onChange={(e) => setFormData({ ...formData, university: e.target.value })}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors disabled:bg-gray-50 dark:disabled:bg-slate-800 disabled:text-gray-500 dark:disabled:text-gray-400"
-                placeholder="Nhập tên trường đại học"
+                placeholder={t("profilePage.profileTab.universityPlaceholder")}
               />
             </div>
           </div>
@@ -234,14 +236,14 @@ export default function ProfileTab({
                 onClick={handleCancel}
                 className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
               >
-                Hủy
+                {t("profilePage.profileTab.cancelBtn")}
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
                 className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
+                {isSaving ? t("profilePage.profileTab.savingBtn") : t("profilePage.profileTab.saveBtn")}
               </button>
             </div>
           )}

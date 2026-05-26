@@ -6,8 +6,10 @@ import Link from "next/link";
 import { favoriteService } from "@/services/favorite.service";
 import { FavoriteResponse, FavoriteTargetType } from "@/types/favorite";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function FavoriteCoursesTab() {
+  const { t } = useI18n();
   const [courses, setCourses] = useState<FavoriteResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,11 +26,11 @@ export default function FavoriteCoursesTab() {
       }
     } catch (error) {
       console.error("Failed to fetch favorite courses", error);
-      toast.error("Không thể tải danh sách khóa học yêu thích");
+      toast.error(t("favoritesPage.loadErrorCourses"));
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, t]);
 
   useEffect(() => {
     fetchFavoriteCourses();
@@ -37,16 +39,16 @@ export default function FavoriteCoursesTab() {
   const handleRemoveFavorite = async (targetId: string) => {
     try {
       await favoriteService.toggle({ targetId, targetType: FavoriteTargetType.COURSE });
-      toast.success("Đã xóa khỏi danh sách yêu thích");
+      toast.success(t("favoritesPage.removeSuccess"));
       fetchFavoriteCourses();
     } catch (error) {
       console.error("Failed to remove favorite", error);
-      toast.error("Không thể xóa khỏi danh sách yêu thích");
+      toast.error(t("favoritesPage.removeError"));
     }
   };
 
   const formatPrice = (price?: number) => {
-    if (!price || price === 0) return "Miễn phí";
+    if (!price || price === 0) return t("favoritesPage.free");
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -73,11 +75,11 @@ export default function FavoriteCoursesTab() {
       <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-950/60">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-gray-950 dark:text-slate-50">Lộ trình đã lưu</h2>
-            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
+            <h2 className="text-lg font-semibold text-gray-950 dark:text-slate-50">{t("favoritesPage.coursesLibrary")}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {courses.length > 0
-                ? `${courses.length} khóa học đang được lưu để học sau`
-                : "Chưa có khóa học nào trong thư viện"}
+                ? t("favoritesPage.coursesLibraryCount").replace("{count}", String(courses.length))
+                : t("favoritesPage.coursesLibraryEmpty")}
             </p>
           </div>
           {courses.length > 0 && (
@@ -85,7 +87,7 @@ export default function FavoriteCoursesTab() {
               href="/courses"
               className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm text-accent hover:bg-accent/10 font-medium transition-colors"
             >
-              Khám phá thêm →
+              {t("favoritesPage.exploreMore")}
             </Link>
           )}
         </div>
@@ -111,10 +113,10 @@ export default function FavoriteCoursesTab() {
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Chưa có khóa học yêu thích
+              {t("favoritesPage.coursesEmptyTitle")}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-              Khám phá và lưu các khóa học bạn quan tâm để học sau
+              {t("favoritesPage.coursesEmptyDesc")}
             </p>
             <Link
               href="/courses"
@@ -128,7 +130,7 @@ export default function FavoriteCoursesTab() {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              Khám phá khóa học
+              {t("favoritesPage.coursesEmptyBtn")}
             </Link>
           </div>
         ) : (
@@ -172,7 +174,7 @@ export default function FavoriteCoursesTab() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
                       <span className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-950/50 px-2 py-0.5 font-medium text-red-600 dark:text-red-300 border border-red-100 dark:border-red-900">
-                        Đã lưu
+                        {t("favoritesPage.savedBadge")}
                       </span>
                       {course.courseLevel && (
                         <span className="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 font-medium text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900">
@@ -180,7 +182,7 @@ export default function FavoriteCoursesTab() {
                         </span>
                       )}
                       {course.courseDuration !== undefined && (
-                        <span>{course.courseDuration} giờ</span>
+                        <span>{t("favoritesPage.duration").replace("{hours}", String(course.courseDuration))}</span>
                       )}
                     </div>
 
@@ -202,7 +204,7 @@ export default function FavoriteCoursesTab() {
                         href={getCourseUrl(course)}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
                       >
-                        Xem khóa học
+                        {t("favoritesPage.viewCourse")}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -210,7 +212,7 @@ export default function FavoriteCoursesTab() {
                       <button
                         onClick={() => handleRemoveFavorite(course.targetId)}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
-                        title="Xóa khỏi yêu thích"
+                        title={t("favoritesPage.removeFavorite")}
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path
@@ -219,7 +221,7 @@ export default function FavoriteCoursesTab() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        Bỏ lưu
+                        {t("favoritesPage.removeFavorite")}
                       </button>
                     </div>
                   </div>
@@ -235,7 +237,7 @@ export default function FavoriteCoursesTab() {
                   disabled={currentPage === 1}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800"
                 >
-                  ← Trước
+                  {t("common.prev")}
                 </button>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -249,16 +251,15 @@ export default function FavoriteCoursesTab() {
                     } else {
                       pageNum = currentPage - 2 + i;
                     }
-                    
+
                     return (
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
-                          currentPage === pageNum
+                        className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${currentPage === pageNum
                             ? "bg-accent text-white"
                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                        }`}
+                          }`}
                       >
                         {pageNum}
                       </button>
@@ -270,7 +271,7 @@ export default function FavoriteCoursesTab() {
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800"
                 >
-                  Sau →
+                  {t("common.next")}
                 </button>
               </div>
             )}

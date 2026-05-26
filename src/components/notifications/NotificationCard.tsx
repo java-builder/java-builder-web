@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { NotificationItem } from "@/types/notification";
 import { formatRelativeTime } from "@/utils/dateUtils";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface NotificationCardProps {
   notification: NotificationItem;
@@ -8,6 +9,8 @@ interface NotificationCardProps {
 }
 
 export default function NotificationCard({ notification, onClick }: NotificationCardProps) {
+  const { t } = useI18n();
+
   return (
     <div
       onClick={() => onClick(notification)}
@@ -69,7 +72,7 @@ export default function NotificationCard({ notification, onClick }: Notification
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>{formatRelativeTime(notification.createdAt)}</span>
+            <span>{formatRelativeTime(notification.createdAt, t)}</span>
           </div>
         </div>
       </div>

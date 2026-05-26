@@ -8,8 +8,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { courseApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function CoursesPage() {
+  const { t } = useI18n();
   const [searchText, setSearchText] = useState("");
   const [currentSearch, setCurrentSearch] = useState("");
   const [courseLevel, setCourseLevel] = useState<CourseLevel | "">("");
@@ -43,18 +45,18 @@ export default function CoursesPage() {
         setCourses(response.data.data || []);
         setTotalPages(response.data.totalPages || 1);
       } else {
-        throw new Error("Không thể tải danh sách khóa học");
+        throw new Error(t("courseDetail.loadError") || "Không thể tải danh sách khóa học");
       }
     } catch (err) {
       console.error("Error fetching courses:", err);
       setError(
-        err instanceof Error ? err.message : "Có lỗi xảy ra khi tải khóa học",
+        err instanceof Error ? err.message : (t("courseDetail.loadError") || "Có lỗi xảy ra khi tải khóa học"),
       );
       setCourses([]);
     } finally {
       setIsLoading(false);
     }
-  }, [page, size, currentSearch, courseLevel]);
+  }, [page, size, currentSearch, courseLevel, t]);
 
   useEffect(() => {
     fetchCourses();
@@ -74,18 +76,16 @@ export default function CoursesPage() {
               <div className="lg:col-span-7 text-gray-900 dark:text-white">
                 <div className="inline-block">
                   <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium">
-                    Course & Training
+                    {t("coursesPage.heroBadge")}
                   </span>
                 </div>
 
                 <h1 className="mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900 dark:text-white">
-                  Khóa học <span className="text-accent">chất lượng</span>
+                  {t("coursesPage.heroTitleStart")} <span className="text-accent">{t("coursesPage.heroTitleAccent")}</span>
                 </h1>
 
-                <p className="mt-3 text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-xl">
-                  Khám phá các khóa học được thiết kế để giúp bạn dễ dàng tiếp cận kiến thức từ cơ bản đến nâng cao. 
-                  Nội dung được cập nhật liên tục theo xu hướng công nghệ mới nhất, kèm theo bài tập thực hành và 
-                  source code mẫu để bạn có thể áp dụng ngay vào dự án thực tế.
+                <p className="mt-3 text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-xl leading-relaxed">
+                  {t("coursesPage.heroDesc")}
                 </p>
 
                 <div className="mt-6">
@@ -93,7 +93,7 @@ export default function CoursesPage() {
                     href="#list"
                     className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                   >
-                    Khám phá khóa học
+                    {t("coursesPage.exploreBtn")}
                   </Link>
                 </div>
               </div>
@@ -121,7 +121,7 @@ export default function CoursesPage() {
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
           <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
             <SearchBar
-              placeholder="Tìm khóa học..."
+              placeholder={t("coursesPage.searchPlaceholder")}
               value={searchText}
               onChange={setSearchText}
               onSearch={handleSearch}
@@ -144,7 +144,7 @@ export default function CoursesPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
-              Tất cả
+              {t("coursesPage.filterAll")}
             </button>
             <button
               type="button"
@@ -158,7 +158,7 @@ export default function CoursesPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
-              Beginner
+              {t("coursesPage.filterBeginner")}
             </button>
             <button
               type="button"
@@ -172,7 +172,7 @@ export default function CoursesPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
-              Intermediate
+              {t("coursesPage.filterIntermediate")}
             </button>
             <button
               type="button"
@@ -186,7 +186,7 @@ export default function CoursesPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
-              Advanced
+              {t("coursesPage.filterAdvanced")}
             </button>
             <button
               type="button"
@@ -200,7 +200,7 @@ export default function CoursesPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
-              Expert
+              {t("coursesPage.filterExpert") || "Expert"}
             </button>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function CoursesPage() {
         {isLoading ? (
           <div className="text-center py-16">
             <div className="mx-auto w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400">Đang tải khóa học...</p>
+            <p className="text-gray-600 dark:text-gray-400">{t("coursesPage.loading")}</p>
           </div>
         ) : error ? (
           <div className="text-center py-16">
@@ -229,14 +229,14 @@ export default function CoursesPage() {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Có lỗi xảy ra
+              {t("coursesPage.errorTitle")}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-4">{error}</p>
             <button
               onClick={fetchCourses}
               className="px-4 py-2 bg-accent hover:bg-accent-600 text-white rounded-md transition-colors"
             >
-              Thử lại
+              {t("coursesPage.retryBtn")}
             </button>
           </div>
         ) : filteredCourses.length === 0 ? (
@@ -255,10 +255,10 @@ export default function CoursesPage() {
               />
             </svg>
             <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
-              Chưa có khóa học phù hợp
+              {t("coursesPage.noCoursesTitle")}
             </p>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
+              {t("coursesPage.noCoursesDesc")}
             </p>
           </div>
         ) : (
@@ -277,7 +277,7 @@ export default function CoursesPage() {
               onClick={() => goTo(page - 1)}
               disabled={page <= 1}
             >
-              Trước
+              {t("coursesPage.prevBtn")}
             </button>
             {Array.from({ length: totalPages })
               .slice(0, 7)
@@ -295,7 +295,7 @@ export default function CoursesPage() {
               onClick={() => goTo(page + 1)}
               disabled={page >= totalPages}
             >
-              Sau
+              {t("coursesPage.nextBtn")}
             </button>
           </div>
         )}

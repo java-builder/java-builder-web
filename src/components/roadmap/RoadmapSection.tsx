@@ -3,7 +3,8 @@
 import { useState } from "react";
 import MotionWrapper from "@/components/MotionWrapper";
 import { FaCheckCircle, FaClock, FaChevronDown, FaChevronRight } from "react-icons/fa";
-import { roadmapData, RoadmapLevel } from "@/data/roadmapData";
+import { getLocalizedRoadmapData, RoadmapLevel } from "@/data/roadmapData";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface RoadmapSectionProps {
   activeTab: string;
@@ -11,15 +12,17 @@ interface RoadmapSectionProps {
 
 export default function RoadmapSection({ activeTab }: RoadmapSectionProps) {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
+  const { locale, t } = useI18n();
   
-  const roadmapInfo = roadmapData[activeTab as keyof typeof roadmapData] as RoadmapLevel;
+  const localizedData = getLocalizedRoadmapData(locale);
+  const roadmapInfo = localizedData[activeTab as keyof typeof localizedData] as RoadmapLevel;
 
   // Fallback nếu không tìm thấy roadmap cho tab
   if (!roadmapInfo || !roadmapInfo.steps) {
     return (
       <section className="py-8 bg-white dark:bg-slate-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-gray-600 dark:text-gray-400">Roadmap đang được cập nhật...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("roadmapPage.updating")}</p>
         </div>
       </section>
     );
@@ -36,9 +39,9 @@ export default function RoadmapSection({ activeTab }: RoadmapSectionProps) {
 
   const getLevelLabel = (level: string) => {
     switch (level) {
-      case "beginner": return "Cơ bản";
-      case "intermediate": return "Trung cấp";
-      case "advanced": return "Nâng cao";
+      case "beginner": return t("courseDetail.beginner");
+      case "intermediate": return t("courseDetail.intermediate");
+      case "advanced": return t("courseDetail.advanced");
       default: return "";
     }
   };
@@ -49,7 +52,7 @@ export default function RoadmapSection({ activeTab }: RoadmapSectionProps) {
         <MotionWrapper animation="fadeInUp" duration={0.6} key={activeTab}>
           <div className="text-center mb-8">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-3">
-              Lộ trình {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              {t("roadmapPage.roadmapOfLevel").replace("{level}", activeTab.charAt(0).toUpperCase() + activeTab.slice(1))}
             </h2>
             <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4 max-w-3xl mx-auto">
               {roadmapInfo.description}
@@ -116,7 +119,7 @@ export default function RoadmapSection({ activeTab }: RoadmapSectionProps) {
                 {expandedStep === step.id && (
                   <div className="px-4 sm:px-5 pb-4 sm:pb-5 border-t border-gray-100 dark:border-slate-700 pt-4">
                     <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                      Nội dung chi tiết:
+                      {t("roadmapPage.detailedContent")}
                     </h4>
                     <ul className="space-y-2">
                       {step.topics.map((topic, i) => (

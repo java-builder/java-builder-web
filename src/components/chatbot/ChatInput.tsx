@@ -1,4 +1,5 @@
 import { useRef, KeyboardEvent, memo } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface ChatInputProps {
   value: string;
@@ -8,6 +9,7 @@ interface ChatInputProps {
 }
 
 function ChatInput({ value, isLoading, onChange, onSend }: ChatInputProps) {
+  const { t } = useI18n();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -34,7 +36,7 @@ function ChatInput({ value, isLoading, onChange, onSend }: ChatInputProps) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Nhập câu hỏi của bạn..."
+            placeholder={t("chatbotPage.inputPlaceholder")}
             disabled={isLoading}
             rows={1}
             className="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border border-gray-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-accent focus:border-transparent resize-none disabled:opacity-50 text-sm leading-5 scrollbar-hide"
@@ -54,7 +56,7 @@ function ChatInput({ value, isLoading, onChange, onSend }: ChatInputProps) {
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-              <span className="hidden sm:inline text-sm font-medium">Gửi</span>
+              <span className="hidden sm:inline text-sm font-medium">{t("chatbotPage.sendBtn")}</span>
             </>
           )}
         </button>

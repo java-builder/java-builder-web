@@ -1,3 +1,7 @@
+"use client";
+
+import { useI18n } from "@/contexts/I18nContext";
+
 interface Conversation {
   id: string;
   title: string;
@@ -24,15 +28,24 @@ export default function ConversationSidebar({
   onDeleteAll,
   onClose,
 }: ConversationSidebarProps) {
+  const { t, locale } = useI18n();
+
   const formatDate = (date: Date) => {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     
-    if (days === 0) return "Hôm nay";
-    if (days === 1) return "Hôm qua";
-    if (days < 7) return `${days} ngày trước`;
-    return date.toLocaleDateString("vi-VN");
+    if (days === 0) return t("time.today");
+    if (days === 1) return t("time.yesterday");
+    if (days < 7) return t("time.daysAgo").replace("{count}", String(days));
+    
+    const localeMap: Record<string, string> = {
+      vi: "vi-VN",
+      en: "en-US",
+      ja: "ja-JP",
+      ko: "ko-KR",
+    };
+    return date.toLocaleDateString(localeMap[locale] || "vi-VN");
   };
 
   return (
@@ -46,7 +59,7 @@ export default function ConversationSidebar({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Làm mới cuộc trò chuyện
+          {t("chatbotPage.newChatBtn")}
         </button>
         {/* Close button for mobile */}
         <button
@@ -100,7 +113,7 @@ export default function ConversationSidebar({
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
-            Xóa tất cả
+            {t("chatbotPage.deleteAll")}
           </button>
         </div>
       )}

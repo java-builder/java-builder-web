@@ -1,6 +1,9 @@
+"use client";
+
 import { ExerciseSummaryResponse } from '@/types/exercise';
 import { ExerciseTypeBadge, DifficultyBadge } from './ExerciseBadges';
 import { formatReadableDate } from '@/utils/dateUtils';
+import { useI18n } from '@/contexts/I18nContext';
 
 interface ExerciseCardProps {
   exercise: ExerciseSummaryResponse;
@@ -8,6 +11,8 @@ interface ExerciseCardProps {
 }
 
 export default function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
+  const { t } = useI18n();
+
   return (
     <div
       onClick={() => onClick(exercise.slug)}
@@ -41,14 +46,14 @@ export default function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="font-medium">{exercise.timeLimit}</span>
-            <span className="ml-1">phút</span>
+            <span className="ml-1">{t("exercisesPage.timeSuffix")}</span>
           </div>
           <div className="flex items-center text-gray-600 dark:text-slate-300">
             <svg className="w-4 h-4 mr-2 text-green-500 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
             </svg>
             <span className="font-medium">{exercise.maxScore}</span>
-            <span className="ml-1">điểm</span>
+            <span className="ml-1">{t("exercisesPage.pointsSuffix")}</span>
           </div>
         </div>
 
@@ -62,7 +67,7 @@ export default function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
           </div>
           
           <div className="flex items-center text-blue-600 dark:text-cyan-300 group-hover:text-blue-700 dark:group-hover:text-cyan-200 font-medium text-sm transition-colors">
-            <span>Bắt đầu</span>
+            <span>{t("exercisesPage.btnSolve")}</span>
             <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

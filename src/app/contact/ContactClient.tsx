@@ -3,8 +3,11 @@
 import Image from "next/image";
 import ContactInfo from "@/components/contact/ContactInfo";
 import MotionWrapper from "@/components/MotionWrapper";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function ContactClient() {
+  const { t } = useI18n();
+
   return (
     <>
       {/* Hero Section */}
@@ -21,16 +24,16 @@ export default function ContactClient() {
                 <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 10v-1m0 0c-1.11 0-2.08-.402-2.599-1M12 16c1.11 0 2.08-.402 2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm font-medium text-accent">Ủng hộ JavaBuilder</span>
+                <span className="text-sm font-medium text-accent">{t("contactPage.heroBadge")}</span>
               </div>
               
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-                Nếu bạn yêu quý nội dung
-                <span className="block text-accent mt-2">hãy ủng hộ JavaBuilder</span>
+                {t("contactPage.heroTitle")}
+                <span className="block text-accent mt-2">{t("contactPage.heroTitleAccent")}</span>
               </h1>
               
               <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                Sự ủng hộ của bạn là động lực để JavaBuilder tiếp tục chia sẻ thêm nhiều tài liệu, bài học và nội dung chất lượng về lập trình Java.
+                {t("contactPage.heroDesc")}
               </p>
             </div>
           </MotionWrapper>
@@ -48,15 +51,15 @@ export default function ContactClient() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div>
                       <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                        Quét QR để ủng hộ
+                        {t("contactPage.qrTitle")}
                       </h2>
                       <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                        Nếu các bài viết và tài liệu trên JavaBuilder giúp ích cho bạn, bạn có thể gửi một khoản ủng hộ nhỏ qua mã QR bên cạnh.
+                        {t("contactPage.qrDesc")}
                       </p>
                       <div className="rounded-xl bg-accent/10 dark:bg-accent/20 p-4 text-accent">
-                        <p className="font-semibold mb-1">Cảm ơn bạn rất nhiều!</p>
+                        <p className="font-semibold mb-1">{t("contactPage.thanksTitle")}</p>
                         <p className="text-sm text-gray-700 dark:text-gray-300">
-                          Mỗi lượt ủng hộ đều giúp mình duy trì và phát triển thêm nội dung miễn phí cho cộng đồng.
+                          {t("contactPage.thanksDesc")}
                         </p>
                       </div>
                     </div>
@@ -65,7 +68,7 @@ export default function ContactClient() {
                       <div className="rounded-2xl bg-gray-50 dark:bg-slate-900 p-4 border border-gray-200 dark:border-slate-700 shadow-inner">
                         <Image
                           src="/donate/qrcode.jpg"
-                          alt="QR code ủng hộ JavaBuilder"
+                          alt={t("contactPage.qrAlt")}
                           width={320}
                           height={320}
                           className="w-full max-w-xs rounded-xl"

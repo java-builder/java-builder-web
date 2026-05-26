@@ -1,4 +1,8 @@
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function InterviewEmptyState() {
+  const { t } = useI18n();
+
   return (
     <div className="text-center py-20">
       <div className="w-20 h-20 mx-auto mb-6 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
@@ -17,10 +21,10 @@ export default function InterviewEmptyState() {
         </svg>
       </div>
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-        Không tìm thấy chủ đề phù hợp
+        {t("interviewPage.noTopicsTitle")}
       </h3>
       <p className="text-gray-600 dark:text-gray-400">
-        Thử thay đổi từ khóa tìm kiếm
+        {t("interviewPage.noTopicsDesc")}
       </p>
     </div>
   );

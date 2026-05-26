@@ -7,11 +7,13 @@ import MotionWrapper from "@/components/MotionWrapper";
 import { InterviewQuestionResponse } from "@/services/interview-question.service";
 import { useInterviewQuestions } from "@/hooks/useInterviewQuestions";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function InterviewSetPage() {
   const params = useParams();
   const router = useRouter();
   const setSlug = params.setSlug as string;
+  const { t } = useI18n();
 
   const { questionSet, questions, isLoading } = useInterviewQuestions(setSlug);
   const [selectedQuestion, setSelectedQuestion] = useState<InterviewQuestionResponse | null>(null);
@@ -37,9 +39,9 @@ export default function InterviewSetPage() {
 
   const getDifficultyLabel = (difficulty: string) => {
     switch (difficulty) {
-      case "EASY": return "Dễ";
-      case "MEDIUM": return "Trung bình";
-      case "HARD": return "Khó";
+      case "EASY": return t("exercisesPage.filterEasy");
+      case "MEDIUM": return t("exercisesPage.filterMedium");
+      case "HARD": return t("exercisesPage.filterHard");
       default: return difficulty;
     }
   };
@@ -53,7 +55,7 @@ export default function InterviewSetPage() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span className="ml-3 text-gray-600 dark:text-gray-400">Đang tải...</span>
+            <span className="ml-3 text-gray-600 dark:text-gray-400">{t("common.loading")}</span>
           </div>
         </div>
       </div>
@@ -65,13 +67,13 @@ export default function InterviewSetPage() {
       <div className="min-h-screen bg-white dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Không tìm thấy bộ câu hỏi
+            {t("interviewPage.noQuestionSetTitle")}
           </h1>
           <button
             onClick={() => router.back()}
             className="text-accent hover:underline"
           >
-            Quay lại
+            {t("interviewPage.back")}
           </button>
         </div>
       </div>
@@ -93,7 +95,7 @@ export default function InterviewSetPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Quay lại
+            {t("interviewPage.back")}
           </button>
 
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-accent via-accent to-accent-600 p-6 md:p-8 text-white mb-8 shadow-xl shadow-accent/10">
@@ -106,13 +108,13 @@ export default function InterviewSetPage() {
                 </span>
                 <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-3">{questionSet.title}</h1>
                 <p className="text-white/85 text-sm md:text-base leading-relaxed">
-                  Luyện phỏng vấn theo từng câu hỏi, xem đáp án mẫu và ghi nhớ mẹo trả lời quan trọng.
+                  {t("interviewPage.setSubtitle")}
                 </p>
               </div>
               <div className="flex w-full sm:w-auto flex-col sm:flex-row lg:flex-col gap-3">
                 <div className="rounded-xl bg-white/15 border border-white/20 px-5 py-3 backdrop-blur">
                   <div className="text-2xl font-bold">{questions.length}</div>
-                  <div className="text-xs text-white/80">câu hỏi phỏng vấn</div>
+                  <div className="text-xs text-white/80">{t("interviewPage.questionsCountLabel")}</div>
                 </div>
                 <Link
                   href={`/interview/contribute?questionSetId=${questionSet.id}&questionSetTitle=${encodeURIComponent(questionSet.title)}`}
@@ -121,7 +123,7 @@ export default function InterviewSetPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  <span>Thêm câu hỏi</span>
+                  <span>{t("interviewPage.addQuestion")}</span>
                 </Link>
               </div>
             </div>
@@ -138,7 +140,7 @@ export default function InterviewSetPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                       </span>
-                      Danh sách câu hỏi
+                      {t("interviewPage.questionList")}
                     </h2>
                     <span className="rounded-full bg-white dark:bg-slate-700 px-2.5 py-1 text-xs font-semibold text-gray-500 dark:text-gray-300 border border-gray-200 dark:border-slate-600">
                       {questions.length}
@@ -195,7 +197,7 @@ export default function InterviewSetPage() {
                       </span>
                       {selectedQuestionIndex >= 0 && (
                         <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          Câu {selectedQuestionIndex + 1}/{questions.length}
+                          {t("interviewPage.questionNumber").replace("{index}", String(selectedQuestionIndex + 1)).replace("{total}", String(questions.length))}
                         </span>
                       )}
                     </div>
@@ -214,7 +216,7 @@ export default function InterviewSetPage() {
                             </svg>
                           </span>
                           <h3 className="font-bold text-gray-950 dark:text-white">
-                            Câu trả lời mẫu
+                            {t("interviewPage.sampleAnswer")}
                           </h3>
                         </div>
                         <div className="prose prose-sm md:prose-base dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -234,7 +236,7 @@ export default function InterviewSetPage() {
                               </svg>
                             </span>
                             <h3 className="font-bold text-gray-950 dark:text-white">
-                              Mẹo trả lời tốt
+                              {t("interviewPage.goodTips")}
                             </h3>
                           </div>
                           <div className="text-[15px] text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
@@ -254,10 +256,10 @@ export default function InterviewSetPage() {
                       </svg>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                      Chưa có câu hỏi nào
+                      {t("interviewPage.noQuestions")}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Bộ câu hỏi này chưa có nội dung
+                      {t("interviewPage.emptySetDesc")}
                     </p>
                   </div>
                 </div>

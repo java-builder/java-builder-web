@@ -2,8 +2,10 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function ThemePage() {
+  const { t } = useI18n();
   const { theme, setTheme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [accentTheme, setAccentTheme] = useState("blue");
@@ -34,8 +36,8 @@ export default function ThemePage() {
   const themes = [
     {
       id: "light",
-      name: "Sáng",
-      description: "Giao diện sáng, dễ nhìn ban ngày",
+      name: t("themePage.lightName"),
+      description: t("themePage.lightDesc"),
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -46,8 +48,8 @@ export default function ThemePage() {
     },
     {
       id: "dark",
-      name: "Tối",
-      description: "Giao diện tối, bảo vệ mắt ban đêm",
+      name: t("themePage.darkName"),
+      description: t("themePage.darkDesc"),
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -58,8 +60,8 @@ export default function ThemePage() {
     },
     {
       id: "system",
-      name: "Hệ thống",
-      description: "Tự động theo cài đặt thiết bị",
+      name: t("themePage.systemName"),
+      description: t("themePage.systemDesc"),
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -73,62 +75,62 @@ export default function ThemePage() {
   const accentThemes = [
     {
       id: "blue",
-      name: "Java Blue",
-      description: "Mặc định, hiện đại và dễ nhìn",
+      name: t("themePage.blueName"),
+      description: t("themePage.blueDesc"),
       preview: "from-blue-600 to-blue-800",
     },
     {
       id: "emerald",
-      name: "Emerald",
-      description: "Xanh lá dịu, cảm giác tập trung",
+      name: t("themePage.emeraldName"),
+      description: t("themePage.emeraldDesc"),
       preview: "from-emerald-600 to-emerald-800",
     },
     {
       id: "purple",
-      name: "Purple",
-      description: "Tím công nghệ, nổi bật hơn",
+      name: t("themePage.purpleName"),
+      description: t("themePage.purpleDesc"),
       preview: "from-purple-600 to-purple-800",
     },
     {
       id: "rose",
-      name: "Rose",
-      description: "Ấm hơn, cá tính hơn",
+      name: t("themePage.roseName"),
+      description: t("themePage.roseDesc"),
       preview: "from-rose-600 to-rose-800",
     },
     {
       id: "amber",
-      name: "Amber",
-      description: "Vàng cam năng lượng",
+      name: t("themePage.amberName"),
+      description: t("themePage.amberDesc"),
       preview: "from-amber-600 to-amber-800",
     },
     {
       id: "cyan",
-      name: "Cyan",
-      description: "Mát mẻ, sáng và hiện đại",
+      name: t("themePage.cyanName"),
+      description: t("themePage.cyanDesc"),
       preview: "from-cyan-500 to-cyan-700",
     },
     {
       id: "teal",
-      name: "Teal",
-      description: "Cân bằng, dễ chịu khi học lâu",
+      name: t("themePage.tealName"),
+      description: t("themePage.tealDesc"),
       preview: "from-teal-500 to-teal-700",
     },
     {
       id: "indigo",
-      name: "Indigo",
-      description: "Sâu hơn, đậm chất developer",
+      name: t("themePage.indigoName"),
+      description: t("themePage.indigoDesc"),
       preview: "from-indigo-600 to-indigo-800",
     },
     {
       id: "pink",
-      name: "Pink",
-      description: "Tươi sáng, trẻ trung hơn",
+      name: t("themePage.pinkName"),
+      description: t("themePage.pinkDesc"),
       preview: "from-pink-600 to-pink-800",
     },
     {
       id: "slate",
-      name: "Slate",
-      description: "Trung tính, tối giản và nghiêm túc",
+      name: t("themePage.slateName"),
+      description: t("themePage.slateDesc"),
       preview: "from-slate-600 to-slate-800",
     },
   ];
@@ -139,10 +141,10 @@ export default function ThemePage() {
         {/* Minimal Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            Giao diện
+            {t("themePage.title")}
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Chọn chế độ hiển thị phù hợp với bạn
+            {t("themePage.subtitle")}
           </p>
         </div>
 
@@ -199,10 +201,10 @@ export default function ThemePage() {
         <div className="mb-6">
           <div className="mb-3">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Màu chủ đề
+              {t("themePage.accentTitle")}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Chọn màu nhấn cho nút, liên kết và trạng thái đang chọn
+              {t("themePage.accentSubtitle")}
             </p>
           </div>
 
@@ -260,10 +262,13 @@ export default function ThemePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  Đang sử dụng chế độ {currentTheme === "dark" ? "Tối" : "Sáng"}
+                  {t("themePage.currentStatus").replace(
+                    "{theme}",
+                    currentTheme === "dark" ? t("themePage.darkName") : t("themePage.lightName")
+                  )}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Tự động theo cài đặt hệ thống
+                  {t("themePage.autoDesc")}
                 </p>
               </div>
             </div>

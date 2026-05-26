@@ -11,8 +11,10 @@ import ExerciseListHeader from '@/components/exercises/ExerciseListHeader';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExerciseEmptyState from '@/components/exercises/ExerciseEmptyState';
 import { getRandomQuote } from '@/utils/motivationalQuotes';
+import { useI18n } from '@/contexts/I18nContext';
 
 export default function ExercisesPage() {
+  const { t } = useI18n();
   // Custom hooks
   const { filters, handlePageChange } = useExerciseFilters();
   const { navigateToExercise } = useExerciseNavigation();
@@ -59,7 +61,7 @@ export default function ExercisesPage() {
                     totalElements={exercisesData.totalElements}
                     pageSize={exercisesData.pageSize}
                     onPageChange={handlePageChange}
-                    itemName="bài tập"
+                    itemName={t("exercisesPage.exerciseItemName")}
                   />
                 </div>
               </div>

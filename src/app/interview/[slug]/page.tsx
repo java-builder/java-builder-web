@@ -9,10 +9,12 @@ import { InterviewTopicDetailResponse } from "@/types/interview";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 import { useQuestionSets } from "@/hooks/useQuestionSets";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function InterviewCategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { t } = useI18n();
   
   const { topics: allTopics, isLoading: isLoadingTopics } = useInterviewTopics();
   const { questionSets, isLoading: isLoadingSets } = useQuestionSets(slug);
@@ -25,10 +27,10 @@ export default function InterviewCategoryPage() {
       if (foundTopic) {
         setTopic(foundTopic);
       } else {
-        toast.error("Không tìm thấy chủ đề");
+        toast.error(t("interviewPage.noTopicFound"));
       }
     }
-  }, [slug, allTopics, isLoadingTopics]);
+  }, [slug, allTopics, isLoadingTopics, t]);
 
   const isLoading = isLoadingTopics || isLoadingSets;
 
@@ -41,7 +43,7 @@ export default function InterviewCategoryPage() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-            <span>Đang tải...</span>
+            <span>{t("common.loading")}</span>
           </div>
         </div>
       </div>
@@ -53,10 +55,10 @@ export default function InterviewCategoryPage() {
       <div className="min-h-screen bg-white dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Không tìm thấy chủ đề
+            {t("interviewPage.noTopicFound")}
           </h1>
           <Link href="/interview" className="text-accent hover:underline">
-            Quay lại trang chủ
+            {t("interviewPage.back")}
           </Link>
         </div>
       </div>
@@ -80,9 +82,9 @@ export default function InterviewCategoryPage() {
 
   const getDifficultyText = (difficulty: string) => {
     switch (difficulty) {
-      case "EASY": return "Dễ";
-      case "MEDIUM": return "Trung bình";
-      case "HARD": return "Khó";
+      case "EASY": return t("exercisesPage.filterEasy");
+      case "MEDIUM": return t("exercisesPage.filterMedium");
+      case "HARD": return t("exercisesPage.filterHard");
       default: return difficulty;
     }
   };
@@ -124,7 +126,7 @@ export default function InterviewCategoryPage() {
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                Quay lại
+                {t("interviewPage.back")}
               </Link>
 
               <Link
@@ -134,7 +136,7 @@ export default function InterviewCategoryPage() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                <span>Đóng góp câu hỏi</span>
+                <span>{t("interviewPage.contributeQuestion")}</span>
               </Link>
             </div>
 
@@ -155,7 +157,7 @@ export default function InterviewCategoryPage() {
                   {topic.name}
                 </h1>
                 <p className="text-white/90 mt-2">
-                  {questionSets.length} bộ câu hỏi • {totalQuestions} câu hỏi
+                  {questionSets.length} {t("interviewPage.questionSetsLabel")} • {totalQuestions} {t("interviewPage.questionsCount")}
                 </p>
               </div>
             </div>
@@ -180,7 +182,7 @@ export default function InterviewCategoryPage() {
                 : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
             }`}
           >
-            Tất cả
+            {t("coursesPage.filterAll")}
           </button>
           <button
             onClick={() => setSelectedLevel("INTERN")}
@@ -280,7 +282,7 @@ export default function InterviewCategoryPage() {
                         {set.totalQuestions || 0}
                       </div>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
-                        câu hỏi
+                        {t("interviewPage.questionsCount")}
                       </div>
                     </div>
                   </div>
@@ -294,10 +296,10 @@ export default function InterviewCategoryPage() {
         {filteredSets.length === 0 && (
           <div className="text-center py-16">
             <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
-              Không có bộ câu hỏi nào cho cấp độ này
+              {t("interviewPage.noQuestionSetsForLevel")}
             </p>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              Thử chọn cấp độ khác
+              {t("interviewPage.tryChooseAnotherLevel")}
             </p>
           </div>
         )}

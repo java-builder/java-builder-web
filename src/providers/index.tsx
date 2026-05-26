@@ -7,6 +7,7 @@ import ToastProvider from "@/components/providers/ToastProvider";
 import PushNotificationProvider from "@/components/providers/PushNotificationProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import { I18nProvider } from "@/contexts/I18nContext";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -42,14 +43,16 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <AuthProvider>
-          <SettingsProvider>
-            <PushNotificationProvider>
-              {children}
-              <ToastProvider />
-            </PushNotificationProvider>
-          </SettingsProvider>
-        </AuthProvider>
+        <I18nProvider>
+          <AuthProvider>
+            <SettingsProvider>
+              <PushNotificationProvider>
+                {children}
+                <ToastProvider />
+              </PushNotificationProvider>
+            </SettingsProvider>
+          </AuthProvider>
+        </I18nProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -1,8 +1,11 @@
 "use client";
 
 import FavoriteBlogsTab from "@/components/profile/FavoriteBlogsTab";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function FavoriteBlogsPage() {
+  const { t } = useI18n();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
@@ -15,10 +18,10 @@ export default function FavoriteBlogsPage() {
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-950 dark:text-slate-50">
-              Bài viết yêu thích
+              {t("favoritesPage.blogsTitle")}
             </h1>
             <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">
-              Tất cả bài viết bạn đã lưu để đọc sau
+              {t("favoritesPage.blogsSubtitle")}
             </p>
           </div>
         </div>

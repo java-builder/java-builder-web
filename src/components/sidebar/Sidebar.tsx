@@ -14,6 +14,7 @@ import { MenuItem, MenuGroup } from "./types";
 import SidebarMenuGroup from "./SidebarMenuGroup";
 import SidebarUserProfile from "./SidebarUserProfile";
 import MobileSidebar from "./MobileSidebar";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -65,8 +66,8 @@ export default function Sidebar() {
     typeof rawAppName === "string" && rawAppName.trim() !== ""
       ? rawAppName
       : clientTitle
-      ? clientTitle
-      : "Java Builder";
+        ? clientTitle
+        : "Java Builder";
 
   const handleLogout = async () => {
     queryClient.clear();
@@ -155,8 +156,7 @@ export default function Sidebar() {
             </span>
           </Link>
 
-          {/* Empty space for balance */}
-          <div className="w-8 h-8"></div>
+          <LanguageSwitcher />
         </div>
       </div>
 
@@ -168,14 +168,12 @@ export default function Sidebar() {
 
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 transition-all duration-300 z-40 ${
-          isCollapsed ? "w-20" : "w-64"
-        }`}
+        className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 transition-all duration-300 z-40 ${isCollapsed ? "w-20" : "w-64"
+          }`}
       >
         {/* Logo & Toggle */}
-        <div className={`flex items-center p-4 border-b border-gray-200 dark:border-slate-700 ${
-          isCollapsed ? "flex-col gap-3" : "justify-between"
-        }`}>
+        <div className={`flex items-center p-4 border-b border-gray-200 dark:border-slate-700 ${isCollapsed ? "flex-col gap-3" : "justify-between"
+          }`}>
           {!isCollapsed && (
             <Link href="/" className="flex items-center gap-2.5">
               <div className="relative w-9 h-9 flex-shrink-0">
@@ -249,9 +247,8 @@ export default function Sidebar() {
           })}
         </nav>
 
-        <div className={`border-t border-gray-200 dark:border-slate-700 p-4 ${
-          isCollapsed ? "flex flex-col items-center gap-3" : ""
-        }`}>
+        <div className={`border-t border-gray-200 dark:border-slate-700 p-4 ${isCollapsed ? "flex flex-col items-center gap-3" : ""
+          }`}>
           {!isAuthChecked || isLoading ? (
             isCollapsed ? (
               <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 animate-pulse"></div>
@@ -277,9 +274,8 @@ export default function Sidebar() {
       </aside>
 
       <div
-        className={`hidden lg:block transition-all duration-300 ${
-          isCollapsed ? "w-20" : "w-64"
-        }`}
+        className={`hidden lg:block transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"
+          }`}
       />
     </>
   );

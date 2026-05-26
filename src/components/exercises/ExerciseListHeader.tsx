@@ -1,3 +1,7 @@
+"use client";
+
+import { useI18n } from "@/contexts/I18nContext";
+
 interface ExerciseListHeaderProps {
   totalExercises: number;
   quote?: {
@@ -7,6 +11,8 @@ interface ExerciseListHeaderProps {
 }
 
 export default function ExerciseListHeader({ totalExercises, quote }: ExerciseListHeaderProps) {
+  const { t } = useI18n();
+
   return (
     <section className="relative overflow-hidden bg-white dark:bg-slate-950">
       <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-purple-500/5 to-blue-500/5 dark:from-blue-950 dark:via-slate-950 dark:to-purple-950" />
@@ -55,22 +61,21 @@ export default function ExerciseListHeader({ totalExercises, quote }: ExerciseLi
           </svg>
         </div>
       </div>
-
+ 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Bài tập{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-600 dark:from-cyan-300 dark:to-purple-300">
-              Thực hành
+              {t("exercisesPage.title")}
             </span>
           </h1>
-
+ 
           <p className="text-lg text-gray-600 dark:text-gray-200 mb-8 leading-relaxed">
-            Rèn luyện kỹ năng lập trình Java & Spring Boot qua các bài tập thực tế.
+            {t("exercisesPage.headerSubtitle")}
             <br />
-            Từ cơ bản đến nâng cao, mỗi bài tập đều có hệ thống chấm điểm tự động và phản hồi chi tiết giúp bạn cải thiện từng ngày.
+            {t("exercisesPage.headerDesc")}
           </p>
-
+ 
           {/* Stats */}
           <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
             <div className="text-center">
@@ -78,7 +83,7 @@ export default function ExerciseListHeader({ totalExercises, quote }: ExerciseLi
                 {totalExercises}+
               </div>
               <div className="text-xs text-gray-600 dark:text-gray-200">
-                Bài tập
+                {t("exercisesPage.exerciseItemName")}
               </div>
             </div>
             <div className="w-px h-10 bg-gray-300 dark:bg-slate-600" />
@@ -87,13 +92,13 @@ export default function ExerciseListHeader({ totalExercises, quote }: ExerciseLi
                 3
               </div>
               <div className="text-xs text-gray-600 dark:text-gray-200">
-                Độ khó
+                {t("exercisesPage.statsDifficulty")}
               </div>
             </div>
             <div className="w-px h-10 bg-gray-300 dark:bg-slate-600" />
             <div className="text-center">
               <div className="text-2xl font-bold text-accent dark:text-blue-400 mb-1">
-                Miễn phí
+                {t("exercisesPage.statsFree")}
               </div>
               <div className="text-xs text-gray-600 dark:text-gray-200">
                 100%
@@ -102,14 +107,14 @@ export default function ExerciseListHeader({ totalExercises, quote }: ExerciseLi
             <div className="w-px h-10 bg-gray-300 dark:bg-slate-600" />
             <div className="text-center">
               <div className="text-2xl font-bold text-accent dark:text-blue-400 mb-1">
-                Tự động
+                {t("exercisesPage.statsAutoGrading")}
               </div>
               <div className="text-xs text-gray-600 dark:text-gray-200">
-                Chấm điểm
+                {t("exercisesPage.statsGrading")}
               </div>
             </div>
           </div>
-
+ 
           {/* Motivational Quote - Compact in Banner */}
           {quote && (
             <div className="max-w-2xl mx-auto">

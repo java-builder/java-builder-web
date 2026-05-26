@@ -5,8 +5,10 @@ import { UserSessionDetailResponse } from "@/types/userSession";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useUserSessions, useRevokeSession } from "@/hooks/useUserSessions";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function SessionsTab() {
+  const { t } = useI18n();
   const [page, setPage] = useState(1);
   const { confirm } = useConfirm();
   
@@ -20,10 +22,10 @@ export default function SessionsTab() {
     await confirm(async () => {
       await revokeSessionMutation.mutateAsync(sessionId);
     }, {
-      title: "Thu hồi phiên đăng nhập",
-      message: "<div>Bạn có chắc muốn thu hồi phiên đăng nhập này?<br/><strong>Thiết bị này sẽ bị đăng xuất ngay lập tức.</strong></div>",
-      confirmText: "Thu hồi",
-      cancelText: "Hủy",
+      title: t("profilePage.sessionsTab.revokeConfirmTitle"),
+      message: `<div>${t("profilePage.sessionsTab.revokeConfirmMsg")}</div>`,
+      confirmText: t("profilePage.sessionsTab.revokeBtn"),
+      cancelText: t("common.cancel"),
       type: "warning",
     });
   };
@@ -55,14 +57,14 @@ export default function SessionsTab() {
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
           <span className="w-1.5 h-1.5 mr-1.5 rounded-full bg-green-500 animate-pulse"></span>
-          Đang hoạt động
+          {t("profilePage.sessionsTab.activeStatus")}
         </span>
       );
     }
     return (
       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
         <span className="w-1.5 h-1.5 mr-1.5 rounded-full bg-red-500"></span>
-        Đã thu hồi
+        {t("profilePage.sessionsTab.revokedStatus")}
       </span>
     );
   };
@@ -97,7 +99,7 @@ export default function SessionsTab() {
         )
       },
       USERNAME_PASSWORD: {
-        name: 'Mật khẩu',
+        name: t("userMenu.password"),
         icon: (
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-slate-600 dark:text-slate-400">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
@@ -112,9 +114,9 @@ export default function SessionsTab() {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
       <div className="p-6 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Lịch sử đăng nhập</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t("profilePage.sessionsTab.sessionsTitle")}</h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Quản lý các phiên đăng nhập của bạn trên các thiết bị khác nhau
+          {t("profilePage.sessionsTab.sessionsSubtitle")}
         </p>
       </div>
 
@@ -134,7 +136,7 @@ export default function SessionsTab() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <p className="text-gray-600 dark:text-gray-400">Không có phiên đăng nhập nào</p>
+            <p className="text-gray-600 dark:text-gray-400">{t("profilePage.sessionsTab.noSessions")}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -172,7 +174,12 @@ export default function SessionsTab() {
                         {session.provider && (
                           <div className="flex items-center gap-2">
                             {getProviderInfo(session.provider).icon}
-                            <span>Đăng nhập qua {getProviderInfo(session.provider).name}</span>
+                            <span>
+                              {t("profilePage.sessionsTab.loggedInVia").replace(
+                                "{provider}",
+                                getProviderInfo(session.provider).name
+                              )}
+                            </span>
                           </div>
                         )}
                         <div className="flex items-center gap-2 text-xs">
@@ -189,7 +196,7 @@ export default function SessionsTab() {
                       onClick={() => handleRevokeSession(session.sessionId)}
                       className="flex-shrink-0 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border border-red-200 dark:border-red-800"
                     >
-                      Thu hồi
+                      {t("profilePage.sessionsTab.revokeBtn")}
                     </button>
                   )}
                 </div>
@@ -205,17 +212,19 @@ export default function SessionsTab() {
               disabled={page === 1}
               className="px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Trước
+              {t("profilePage.sessionsTab.prevBtn")}
             </button>
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Trang {page} / {totalPages}
+              {t("profilePage.sessionsTab.pageInfo")
+                .replace("{current}", page.toString())
+                .replace("{total}", totalPages.toString())}
             </span>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
               className="px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sau
+              {t("profilePage.sessionsTab.nextBtn")}
             </button>
           </div>
         )}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MenuItem, MenuGroup } from "./types";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SidebarMenuGroupProps {
   group: MenuGroup;
@@ -18,6 +19,8 @@ export default function SidebarMenuGroup({
   isActive,
   shouldShowItem,
 }: SidebarMenuGroupProps) {
+  const { t } = useI18n();
+
   return (
     <div>
       {!isCollapsed && (
@@ -25,7 +28,7 @@ export default function SidebarMenuGroup({
           onClick={onToggle}
           className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
         >
-          <span>{group.title}</span>
+          <span>{group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}</span>
           <svg
             className={`w-4 h-4 transition-transform duration-200 ${
               isOpen ? "rotate-180" : ""
@@ -45,6 +48,8 @@ export default function SidebarMenuGroup({
             if (!shouldShowItem(item)) return null;
 
             const active = isActive(item.href);
+            const displayedLabel = item.labelKey ? t(item.labelKey as Parameters<typeof t>[0]) : item.label;
+
             return (
               <li key={item.href}>
                 <Link
@@ -58,7 +63,7 @@ export default function SidebarMenuGroup({
                       ? "bg-accent/10 text-accent dark:bg-accent/20"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
                   }`}
-                  title={isCollapsed ? item.label : undefined}
+                  title={isCollapsed ? displayedLabel : undefined}
                 >
                   <span
                     className={`flex-shrink-0 ${
@@ -76,7 +81,7 @@ export default function SidebarMenuGroup({
                       <span className={`flex-1 font-medium text-sm ${
                         item.highlight ? "font-semibold" : ""
                       }`}>
-                        {item.label}
+                        {displayedLabel}
                       </span>
                       {item.highlight && (
                         <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
@@ -98,7 +103,7 @@ export default function SidebarMenuGroup({
                   )}
                   {isCollapsed && (
                     <div className="absolute left-full ml-6 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg">
-                      {item.label}
+                      {displayedLabel}
                       {item.highlight && (
                         <span className="ml-2 px-1.5 py-0.5 text-xs font-bold rounded bg-gradient-to-r from-purple-500 to-blue-500 text-white">
                           NEW

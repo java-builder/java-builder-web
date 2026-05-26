@@ -13,10 +13,13 @@ import {
   AuthButtons,
 } from "./header-components";
 import { MobileSidebar } from "./sidebar";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function Header() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const { data: currentUser, isLoading } = useCurrentUser();
@@ -56,7 +59,7 @@ export default function Header() {
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
               className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Mở menu"
+              aria-label={t("header.openMenu")}
             >
               <svg
                 className="w-6 h-6 text-gray-600 dark:text-gray-400"
@@ -81,6 +84,7 @@ export default function Header() {
 
           {/* Right: Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSwitcher />
             <ThemeToggle />
 
             {/* Auth Section */}

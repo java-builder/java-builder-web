@@ -11,6 +11,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { useSettingsContext } from "@/contexts/SettingsContext";
 import { menuGroups } from "./menuData";
 import { MenuItem, MenuGroup } from "./types";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const { data: currentUser } = useCurrentUser();
   const { data: notifData } = useNotifications(1, "all");
   const { settings } = useSettingsContext();
+  const { t } = useI18n();
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
 
@@ -140,7 +142,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
           <button
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Đóng menu"
+            aria-label={t("common.close") || "Đóng"}
           >
             <svg
               className="w-6 h-6 text-gray-600 dark:text-gray-400"
@@ -186,7 +188,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   {currentUser.username || "User"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Xem hồ sơ
+                  {t("userMenu.profile") || "Thông tin cá nhân"}
                 </p>
               </div>
             </Link>
@@ -202,14 +204,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 className="w-full px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium text-center"
                 onClick={onClose}
               >
-                Đăng nhập
+                {t("auth.login") || "Đăng nhập"}
               </Link>
               <Link
                 href="/register"
                 className="w-full px-4 py-2.5 border border-accent text-accent rounded-lg hover:bg-accent/10 transition-colors text-sm font-medium text-center"
                 onClick={onClose}
               >
-                Đăng ký
+                {t("auth.register") || "Đăng ký"}
               </Link>
             </div>
           </div>
@@ -223,13 +225,15 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             return (
               <div key={group.title}>
                 <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  {group.title}
+                  {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
                 </h3>
                 <ul className="space-y-1">
                   {group.items.map((item) => {
                     if (!shouldShowItem(item)) return null;
 
                     const active = isActive(item.href);
+                    const displayedLabel = item.labelKey ? t(item.labelKey as Parameters<typeof t>[0]) : item.label;
+
                     return (
                       <li key={item.href}>
                         <Link
@@ -257,7 +261,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           <span className={`flex-1 font-medium text-sm ${
                             item.highlight ? "font-semibold" : ""
                           }`}>
-                            {item.label}
+                            {displayedLabel}
                           </span>
                           {item.highlight && (
                             <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
@@ -295,7 +299,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-              Đăng xuất
+              {t("auth.logout") || "Đăng xuất"}
             </button>
           </div>
         )}

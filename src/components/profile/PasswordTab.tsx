@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { userApi } from "@/services/user.service";
 import { PasswordStatus } from "@/types/user";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function PasswordTab() {
+  const { t } = useI18n();
   const [passwordStatus, setPasswordStatus] = useState<PasswordStatus | null>(null);
   const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [formData, setFormData] = useState({
@@ -39,14 +41,14 @@ export default function PasswordTab() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("Mật khẩu xác nhận không khớp");
+      toast.error(t("profilePage.passwordTab.matchFailed"));
       return;
     }
     setIsSubmitting(true);
     try {
       if (passwordStatus === PasswordStatus.NOT_SET) {
         await userApi.createPassword({ password: formData.newPassword });
-        toast.success("Tạo mật khẩu thành công!");
+        toast.success(t("profilePage.passwordTab.createSuccess"));
         setPasswordStatus(PasswordStatus.SET);
         setFormData({
           currentPassword: "",
@@ -55,7 +57,7 @@ export default function PasswordTab() {
         });
       } else {
         await userApi.changePassword(formData.currentPassword, formData.newPassword);
-        toast.success("Đổi mật khẩu thành công!");
+        toast.success(t("profilePage.passwordTab.changeSuccess"));
         setFormData({
           currentPassword: "",
           newPassword: "",
@@ -63,7 +65,7 @@ export default function PasswordTab() {
         });
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Thao tác thất bại.");
+      toast.error(error instanceof Error ? error.message : t("profilePage.passwordTab.actionFailed"));
       console.error("Failed to create/update password", error);
     } finally {
       setIsSubmitting(false);
@@ -92,12 +94,12 @@ export default function PasswordTab() {
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {isPasswordSet ? "Đổi mật khẩu" : "Tạo mật khẩu"}
+          {isPasswordSet ? t("profilePage.passwordTab.changePassword") : t("profilePage.passwordTab.createPassword")}
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {isPasswordSet
-            ? "Cập nhật mật khẩu để bảo vệ tài khoản của bạn"
-            : "Tạo mật khẩu để có thể đăng nhập bằng email và mật khẩu"}
+            ? t("profilePage.passwordTab.updateDesc")
+            : t("profilePage.passwordTab.createDesc")}
         </p>
       </div>
 
@@ -107,8 +109,8 @@ export default function PasswordTab() {
           {/* Current Password - Only show if password is set */}
           {isPasswordSet && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mật khẩu hiện tại
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t("profilePage.passwordTab.currentPassword")}
               </label>
               <div className="relative">
                 <input
@@ -120,14 +122,14 @@ export default function PasswordTab() {
                       currentPassword: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
-                  placeholder="Nhập mật khẩu hiện tại"
+                  className="w-full px-4 py-2.5 pr-10 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                  placeholder={t("profilePage.passwordTab.currentPasswordPlaceholder")}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("current")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   {showPasswords.current ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,8 +148,8 @@ export default function PasswordTab() {
 
           {/* New Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Mật khẩu mới
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t("profilePage.passwordTab.newPassword")}
             </label>
             <div className="relative">
               <input
@@ -156,15 +158,15 @@ export default function PasswordTab() {
                 onChange={(e) =>
                   setFormData({ ...formData, newPassword: e.target.value })
                 }
-                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
-                placeholder="Nhập mật khẩu mới"
+                className="w-full px-4 py-2.5 pr-10 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                placeholder={t("profilePage.passwordTab.newPasswordPlaceholder")}
                 minLength={8}
                 required
               />
               <button
                 type="button"
                 onClick={() => togglePasswordVisibility("new")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 {showPasswords.new ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,15 +180,15 @@ export default function PasswordTab() {
                 )}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1.5">
-              Mật khẩu phải có ít nhất 8 ký tự
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+              {t("profilePage.passwordTab.passwordLengthTip")}
             </p>
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Xác nhận mật khẩu mới
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t("profilePage.passwordTab.confirmNewPassword")}
             </label>
             <div className="relative">
               <input
@@ -198,14 +200,14 @@ export default function PasswordTab() {
                     confirmPassword: e.target.value,
                   })
                 }
-                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
-                placeholder="Nhập lại mật khẩu mới"
+                className="w-full px-4 py-2.5 pr-10 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                placeholder={t("profilePage.passwordTab.confirmNewPasswordPlaceholder")}
                 required
               />
               <button
                 type="button"
                 onClick={() => togglePasswordVisibility("confirm")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 {showPasswords.confirm ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,22 +224,22 @@ export default function PasswordTab() {
           </div>
 
           {/* Password Requirements */}
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <h4 className="text-sm font-semibold text-gray-900 mb-2.5">
-              Yêu cầu mật khẩu:
+          <div className="bg-gray-50 dark:bg-slate-900/50 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2.5">
+              {t("profilePage.passwordTab.passwordReqs")}
             </h4>
-            <ul className="space-y-1.5 text-sm text-gray-600">
+            <ul className="space-y-1.5 text-sm text-gray-600 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="text-red-500">•</span>
-                <span><strong>Ít nhất 8 ký tự</strong> (bắt buộc)</span>
+                <span><strong>{t("profilePage.passwordTab.reqLength")}</strong> {t("profilePage.passwordTab.reqRequired")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-gray-400">•</span>
-                <span>Nên bao gồm chữ hoa và chữ thường</span>
+                <span>{t("profilePage.passwordTab.reqCase")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-gray-400">•</span>
-                <span>Nên bao gồm số hoặc ký tự đặc biệt</span>
+                <span>{t("profilePage.passwordTab.reqNumber")}</span>
               </li>
             </ul>
           </div>
@@ -249,7 +251,7 @@ export default function PasswordTab() {
               disabled={isSubmitting || formData.newPassword !== formData.confirmPassword}
               className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
-              {isSubmitting ? "Đang xử lý..." : isPasswordSet ? "Cập nhật mật khẩu" : "Tạo mật khẩu"}
+              {isSubmitting ? t("profilePage.passwordTab.submitting") : isPasswordSet ? t("profilePage.passwordTab.changePassword") : t("profilePage.passwordTab.createPassword")}
             </button>
           </div>
         </form>

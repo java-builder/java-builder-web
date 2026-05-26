@@ -10,8 +10,10 @@ import MotionWrapper from "@/components/MotionWrapper";
 import SearchBar from "@/components/ui/SearchBar";
 import Link from "next/link";
 import Image from "next/image";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function BlogsPage() {
+  const { t } = useI18n();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
   const [page, setPage] = useState(1);
@@ -69,14 +71,14 @@ export default function BlogsPage() {
       setTotalPages(tp);
       setTotalElements(te);
     } catch (e: unknown) {
-      setError((e as Error)?.message || "Không thể tải danh sách bài viết");
+      setError((e as Error)?.message || (t("home.loadBlogsError") || "Không thể tải danh sách bài viết"));
       setBlogs([]);
       setTotalPages(0);
       setTotalElements(0);
     } finally {
       setIsLoading(false);
     }
-  }, [params]);
+  }, [params, t]);
 
   useEffect(() => {
     fetchData();
@@ -99,6 +101,14 @@ export default function BlogsPage() {
     setPage(clamped);
   };
 
+  const tagLabels = [
+    t("blogsPage.tagTutorial"),
+    t("blogsPage.tagExperience"),
+    t("blogsPage.tagTips"),
+    t("blogsPage.tagNews"),
+    t("blogsPage.tagDiscussion")
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       <section className="relative bg-gradient-to-r from-white to-blue-50 py-8 md:py-10 lg:py-12">
@@ -108,20 +118,16 @@ export default function BlogsPage() {
               <div className="lg:col-span-7 text-gray-900">
                 <div className="inline-block">
                   <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium">
-                    Blog & Knowledge
+                    {t("blogsPage.heroBadge")}
                   </span>
                 </div>
 
                 <h1 className="mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900">
-                  Chia sẻ <span className="text-accent">kiến thức</span>
+                  {t("blogsPage.heroTitleStart")} <span className="text-accent">{t("blogsPage.heroTitleAccent")}</span>
                 </h1>
 
-                <p className="mt-3 text-sm md:text-base text-gray-700 max-w-xl">
-                  Nơi tôi (
-                  <span className="text-accent font-semibold">
-                    JavaBuilder
-                  </span>
-                  ) chia sẻ kiến thức, cập nhật xu hướng và kinh nghiệm thực tế.
+                <p className="mt-3 text-sm md:text-base text-gray-700 max-w-xl leading-relaxed">
+                  {t("blogsPage.heroDesc")}
                 </p>
 
                 <div className="mt-5 flex flex-col sm:flex-row sm:items-center sm:gap-2 gap-3">
@@ -129,29 +135,23 @@ export default function BlogsPage() {
                     href="#list"
                     className="inline-flex items-center justify-center px-4 py-2 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg text-sm"
                   >
-                    Khám phá bài viết
+                    {t("blogsPage.exploreBtn")}
                   </Link>
                   <Link
                     href="/blogs"
                     className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 text-sm font-semibold"
                   >
-                    Xem tất cả
+                    {t("home.viewAllBlogs")}
                   </Link>
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {[
-                    "Hướng dẫn",
-                    "Kinh nghiệm",
-                    "Tips & Tricks",
-                    "Tin tức",
-                    "Thảo luận",
-                  ].map((t) => (
+                  {tagLabels.map((tLabel) => (
                     <span
-                      key={t}
+                      key={tLabel}
                       className="text-xs sm:text-sm font-medium px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-700"
                     >
-                      {t}
+                      {tLabel}
                     </span>
                   ))}
                 </div>
@@ -180,7 +180,7 @@ export default function BlogsPage() {
             {/* Search Bar */}
             <div className="mb-4">
               <SearchBar
-                placeholder="Tìm theo tiêu đề, nội dung..."
+                placeholder={t("blogsPage.searchPlaceholder")}
                 value={searchText}
                 onChange={setSearchText}
                 onSearch={handleSearch}
@@ -192,7 +192,7 @@ export default function BlogsPage() {
               {/* Category */}
               {categories.length > 0 && (
                 <div className="flex items-start gap-3 flex-1">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap pt-1.5">Danh mục:</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap pt-1.5">{t("blogsPage.categoryLabel")}</span>
                   <div className="flex-1 overflow-x-auto scrollbar-hide">
                     <div className="flex gap-2 pb-1">
                       <button
@@ -204,7 +204,7 @@ export default function BlogsPage() {
                             : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                         }`}
                       >
-                        Tất cả
+                        {t("blogsPage.filterAll")}
                       </button>
                       {categories.map((cat) => {
                         const active = categorySlug === cat.slug;
@@ -227,7 +227,7 @@ export default function BlogsPage() {
                     </div>
                   </div>
                   <div className="text-xs text-gray-400 dark:text-gray-500 pt-1.5 whitespace-nowrap">
-                    {totalElements} bài viết
+                    {totalElements} {t("blogsPage.postsCount")}
                   </div>
                 </div>
               )}
@@ -272,14 +272,14 @@ export default function BlogsPage() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Có lỗi xảy ra
+                  {t("blogsPage.errorTitle")}
                 </h3>
                 <p className="text-gray-500 mb-4">{error}</p>
                 <button
                   onClick={fetchData}
                   className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors"
                 >
-                  Thử lại
+                  {t("blogsPage.retryBtn")}
                 </button>
               </>
             ) : (
@@ -300,10 +300,10 @@ export default function BlogsPage() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Chưa có bài viết phù hợp
+                  {t("blogsPage.noBlogsTitle")}
                 </h3>
                 <p className="text-gray-500">
-                  Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
+                  {t("blogsPage.noBlogsDesc")}
                 </p>
               </>
             )}
@@ -323,7 +323,7 @@ export default function BlogsPage() {
               onClick={() => goToPage(page - 1)}
               disabled={page <= 1 || isLoading}
             >
-              Trước
+              {t("blogsPage.prevBtn")}
             </button>
             {Array.from({ length: totalPages })
               .slice(0, 7)
@@ -349,7 +349,7 @@ export default function BlogsPage() {
               onClick={() => goToPage(page + 1)}
               disabled={page >= totalPages || isLoading}
             >
-              Sau
+              {t("blogsPage.nextBtn")}
             </button>
           </div>
         )}

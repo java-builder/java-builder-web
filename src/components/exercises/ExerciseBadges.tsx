@@ -1,10 +1,15 @@
+"use client";
+
 import { ExerciseType, Difficulty } from '@/types/exercise';
+import { useI18n } from '@/contexts/I18nContext';
 
 interface ExerciseTypeBadgeProps {
   type: ExerciseType;
 }
 
 export const ExerciseTypeBadge = ({ type }: ExerciseTypeBadgeProps) => {
+  const { t } = useI18n();
+
   const colors = {
     [ExerciseType.MULTIPLE_CHOICE]: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-700',
     [ExerciseType.ESSAY]: 'bg-green-100 text-green-800 border-green-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700',
@@ -12,9 +17,9 @@ export const ExerciseTypeBadge = ({ type }: ExerciseTypeBadgeProps) => {
   };
 
   const labels = {
-    [ExerciseType.MULTIPLE_CHOICE]: 'Trắc nghiệm',
-    [ExerciseType.ESSAY]: 'Tự luận',
-    [ExerciseType.CODING]: 'Lập trình',
+    [ExerciseType.MULTIPLE_CHOICE]: t("exercisesPage.typeMultipleChoice"),
+    [ExerciseType.ESSAY]: t("exercisesPage.typeEssay"),
+    [ExerciseType.CODING]: t("exercisesPage.typeCoding"),
   };
 
   const icons = {
@@ -48,6 +53,8 @@ interface DifficultyBadgeProps {
 }
 
 export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
+  const { t } = useI18n();
+
   const colors = {
     [Difficulty.EASY]: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700',
     [Difficulty.MEDIUM]: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-700',
@@ -55,9 +62,9 @@ export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
   };
 
   const labels = {
-    [Difficulty.EASY]: 'Dễ',
-    [Difficulty.MEDIUM]: 'Trung bình',
-    [Difficulty.HARD]: 'Khó',
+    [Difficulty.EASY]: t("exercisesPage.filterEasy"),
+    [Difficulty.MEDIUM]: t("exercisesPage.filterMedium"),
+    [Difficulty.HARD]: t("exercisesPage.filterHard"),
   };
 
   return (
