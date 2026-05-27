@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { interviewService } from "@/services/interview.service";
 import { CreateInterviewTopicRequest } from "@/types/interview";
 import { fileApi } from "@/services/course.service";
@@ -10,12 +10,14 @@ interface CreateInterviewTopicModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  nextDisplayOrder?: number;
 }
 
 export default function CreateInterviewTopicModal({
   isOpen,
   onClose,
   onSuccess,
+  nextDisplayOrder = 1,
 }: CreateInterviewTopicModalProps) {
   const [formData, setFormData] = useState<CreateInterviewTopicRequest>({
     name: "",
@@ -28,6 +30,15 @@ export default function CreateInterviewTopicModal({
   const [previewIcon, setPreviewIcon] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        displayOrder: nextDisplayOrder,
+      }));
+    }
+  }, [isOpen, nextDisplayOrder]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -104,7 +115,7 @@ export default function CreateInterviewTopicModal({
       });
 
       // Reset form
-      setFormData({ name: "", description: "", key: "", displayOrder: 1 });
+      setFormData({ name: "", description: "", key: "", displayOrder: nextDisplayOrder });
       setPreviewIcon("");
       setSelectedFile(null);
       if (fileInputRef.current) {
@@ -122,7 +133,7 @@ export default function CreateInterviewTopicModal({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setFormData({ name: "", description: "", key: "", displayOrder: 1 });
+      setFormData({ name: "", description: "", key: "", displayOrder: nextDisplayOrder });
       setPreviewIcon("");
       setSelectedFile(null);
       setError("");

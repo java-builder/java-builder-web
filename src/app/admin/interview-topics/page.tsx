@@ -18,6 +18,10 @@ export default function InterviewTopicsPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState<InterviewTopicDetailResponse | null>(null);
   const { confirm } = useConfirm();
+  const nextDisplayOrder =
+    topics.length > 0
+      ? Math.max(...topics.map((topic) => topic.displayOrder || 0)) + 1
+      : 1;
 
   const fetchTopics = async () => {
     setIsLoading(true);
@@ -221,6 +225,7 @@ export default function InterviewTopicsPage() {
       <CreateInterviewTopicModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
+        nextDisplayOrder={nextDisplayOrder}
         onSuccess={() => {
           clearInterviewTopicsCache();
           fetchTopics();
