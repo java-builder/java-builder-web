@@ -19,7 +19,7 @@ export default function ContactInfo() {
     {
       icon: <MdEmail className="w-6 h-6" />,
       title: "Email",
-      details: ["lekhanhduc212003@gmail.com"],
+      details: ["javabuilder.platform@gmail.com"],
       description: t("contact.emailDescription"),
       color: "text-green-600",
     },
@@ -99,12 +99,12 @@ export default function ContactInfo() {
           </a>
 
           <a
-            href="mailto:lekhanhduc212003@gmail.com"
+            href="mailto:javabuilder.platform@gmail.com"
             className="flex items-center space-x-3 p-3 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors duration-200"
           >
             <MdEmail className="w-6 h-6" />
             <span className="font-medium text-gray-900 dark:text-white text-sm">
-              lekhanhduc212003@gmail.com
+              javabuilder.platform@gmail.com
             </span>
           </a>
 

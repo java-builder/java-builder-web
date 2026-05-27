@@ -107,25 +107,6 @@ export default function LanguagePage() {
             );
           })}
         </div>
-
-        {/* Info Banner */}
-        <div className="p-4 bg-blue-50/50 dark:bg-blue-950/20 rounded-2xl border border-blue-100 dark:border-blue-900/50">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">
-                Gợi ý
-              </p>
-              <p className="text-xs text-blue-700/80 dark:text-blue-400/80 mt-0.5 leading-relaxed">
-                Ngôn ngữ bạn chọn sẽ được lưu vào thiết bị này và tự động áp dụng cho các phiên làm việc tiếp theo. Bạn có thể nhanh chóng đổi lại từ thanh menu bất kỳ lúc nào.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

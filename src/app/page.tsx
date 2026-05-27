@@ -7,6 +7,7 @@ import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";
 import CICDPipelineSection from "@/components/home/CICDPipelineSection";
+import AboutSection from "@/components/home/AboutSection";
 import { useFeaturedCourses } from "@/hooks/useCourses";
 import { useFeaturedBlogs } from "@/hooks/useBlogs";
 import { useFeaturedDocuments } from "@/hooks/useDocuments";
@@ -448,6 +449,9 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* About JavaBuilder Section */}
+      <AboutSection />
     </>
   );
 }

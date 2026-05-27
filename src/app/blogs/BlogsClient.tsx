@@ -158,9 +158,9 @@ export default function BlogsPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <div className="w-full rounded-xl overflow-hidden shadow-xl ring-1 ring-gray-200/50">
+                <div className="w-full rounded-xl overflow-hidden">
                   <Image
-                    src="/hero-background.jpg"
+                    src="/banners/banner-blog.jpg"
                     alt="Blog hero"
                     width={600}
                     height={400}
