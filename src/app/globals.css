@@ -126,7 +126,16 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     Roboto,
+    "Twitter Color Emoji",
+    "Segoe UI Emoji",
+    "Noto Color Emoji",
     sans-serif;
+}
+
+/* Ensure emoji flags display properly */
+.emoji-flag {
+  font-family: "Twitter Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+  text-rendering: auto;
 }
 
 html.dark {

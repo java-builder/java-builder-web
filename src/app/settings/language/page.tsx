@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useI18n } from "@/contexts/I18nContext";
 import { locales, localeOptions, Locale } from "@/i18n/config";
 
@@ -83,8 +84,8 @@ export default function LanguagePage() {
 
                 <div className="relative flex items-center gap-4">
                   {/* Flag Container */}
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gray-50 dark:bg-slate-700 text-3xl shadow-inner border border-gray-100 dark:border-slate-600 transition-transform duration-300 group-hover:scale-105">
-                    {option.flag}
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gray-50 dark:bg-slate-700 shadow-inner border border-gray-100 dark:border-slate-600 transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+                    <Image src={option.flagUrl} alt={option.flag} width={40} height={28} className="object-cover rounded-sm" />
                   </div>
 
                   <div className="min-w-0 pr-6">

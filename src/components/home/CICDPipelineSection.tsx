@@ -21,7 +21,6 @@ export default function CICDPipelineSection() {
     { id: "actions", title: "GitHub Actions", description: "CI/CD", imagePath: "/sections/githubactions.svg" },
     { id: "maven", title: "Maven", description: "Build", imagePath: "/sections/maven.png" },
     { id: "sonar", title: "SonarQube", description: "Quality", imagePath: "/sections/sonarqube.svg" },
-    // Bottom row - REVERSED ORDER
     { id: "docker", title: "Docker", description: "Image", imagePath: "/sections/docker.png" },
     { id: "scan", title: "Trivy", description: "Scan", imagePath: "/sections/trivy.png" },
     { id: "registry", title: "Registry", description: "Push", imagePath: "/sections/container-registry.svg" },
