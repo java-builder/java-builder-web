@@ -31,21 +31,46 @@ const getNestedValue = (source: unknown, path: string): string | undefined => {
   return typeof value === "string" ? value : undefined;
 };
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+export function I18nProvider({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   useEffect(() => {
     const storedLocale = localStorage.getItem(localeStorageKey);
 
-    if (isLocale(storedLocale)) {
+    if (isLocale(storedLocale) && storedLocale !== initialLocale) {
       setLocaleState(storedLocale);
+      try {
+        document.cookie = `${localeStorageKey}=${storedLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      } catch (e) {
+        console.error("Failed to write cookie on mount sync:", e);
+      }
+    } else if (!storedLocale) {
+      try {
+        localStorage.setItem(localeStorageKey, initialLocale);
+        document.cookie = `${localeStorageKey}=${initialLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      } catch (error) {
+        console.error("Failed to initialize locale storage on mount:", error);
+      }
     }
-  }, []);
+  }, [initialLocale]);
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    localStorage.setItem(localeStorageKey, locale);
   }, [locale]);
+
+  const setLocale = (newLocale: Locale) => {
+    try {
+      localStorage.setItem(localeStorageKey, newLocale);
+      const verifiedLocale = localStorage.getItem(localeStorageKey);
+      if (verifiedLocale !== newLocale) {
+        console.warn(`Locale verification failed: expected "${newLocale}" in localStorage but got "${verifiedLocale}"`);
+      }
+      document.cookie = `${localeStorageKey}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    } catch (error) {
+      console.error("Failed to save locale synchronously:", error);
+    }
+    setLocaleState(newLocale);
+  };
 
   const value = useMemo<I18nContextValue>(() => {
     const t = (key: TranslationKey) => {
@@ -58,7 +83,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
     return {
       locale,
-      setLocale: setLocaleState,
+      setLocale,
       t,
     };
   }, [locale]);

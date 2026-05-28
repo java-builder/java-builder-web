@@ -8,6 +8,7 @@ import PushNotificationProvider from "@/components/providers/PushNotificationPro
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { Locale } from "@/i18n/config";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -32,7 +33,7 @@ function getQueryClient() {
   }
 }
 
-export default function Providers({ children }: { children: ReactNode }) {
+export default function Providers({ children, initialLocale = "vi" }: { children: ReactNode; initialLocale?: Locale }) {
   const [queryClient] = useState(() => getQueryClient());
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <I18nProvider>
+        <I18nProvider initialLocale={initialLocale}>
           <AuthProvider>
             <SettingsProvider>
               <PushNotificationProvider>

@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { ApiResponse, ErrorResponse } from "@/types/api";
+import { localeStorageKey } from "@/i18n/config";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/f-learning";
@@ -60,6 +61,10 @@ apiClient.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+      const locale = localStorage.getItem(localeStorageKey) || "vi";
+      config.headers["Accept-Language"] = locale;
+    } else {
+      config.headers["Accept-Language"] = "vi";
     }
     return config;
   },
@@ -109,6 +114,7 @@ apiClient.interceptors.response.use(
         try {
           if (!refreshPromise) {
             refreshPromise = (async () => {
+              const locale = typeof window !== "undefined" ? localStorage.getItem(localeStorageKey) || "vi" : "vi";
               const response = await axios.post(
                 `${BASE_URL}/api/v1/auth/refresh`,
                 {},
@@ -116,6 +122,7 @@ apiClient.interceptors.response.use(
                   withCredentials: true,
                   headers: {
                     "Content-Type": "application/json",
+                    "Accept-Language": locale,
                   },
                 },
               );

@@ -6,6 +6,8 @@ import ConditionalSidebar from "@/components/ConditionalSidebar";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData, generateEducationalOrganizationStructuredData, generateFAQStructuredData } from "@/lib/seo";
+import { cookies } from "next/headers";
+import { localeStorageKey, Locale, isLocale } from "@/i18n/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,18 +47,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const localeCookie = cookieStore.get(localeStorageKey)?.value;
+  const locale: Locale = isLocale(localeCookie) ? localeCookie : "vi";
+
   const organizationSchema = generateOrganizationStructuredData();
   const websiteSchema = generateWebsiteStructuredData();
   const educationalSchema = generateEducationalOrganizationStructuredData();
   const faqSchema = generateFAQStructuredData();
 
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/logos/java-logo.png" />
         <link rel="manifest" href="/site.webmanifest" />
@@ -99,7 +105,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <GoogleAnalytics />
-        <Providers>
+        <Providers initialLocale={locale}>
           <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
             <ConditionalSidebar />
             <ConditionalLayout>
