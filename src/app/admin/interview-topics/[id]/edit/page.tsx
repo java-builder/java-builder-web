@@ -377,6 +377,7 @@ export default function EditInterviewTopicPage() {
         }}
         topicId={topicId}
         topicName={topic?.name || ""}
+        nextDisplayOrder={questionSets.length + 1}
       />
 
       <UpdateQuestionSetModal

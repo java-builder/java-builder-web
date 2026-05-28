@@ -171,15 +171,6 @@ export default function InterviewTopicsPage() {
                       </div>
 
                       <div className="flex items-center gap-1 sm:gap-2">
-                        <Link
-                          href={`/admin/interview-topics/${topic.id}/edit`}
-                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
-                          title="Quản lý chi tiết"
-                        >
-                          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </Link>
                         <button
                           onClick={() => {
                             setSelectedTopic(topic);
@@ -192,6 +183,15 @@ export default function InterviewTopicsPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                         </button>
+                        <Link
+                          href={`/admin/interview-topics/${topic.id}/edit`}
+                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
+                          title="Quản lý chi tiết"
+                        >
+                          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </Link>
                         <button
                           onClick={() => handleDelete(topic.id, topic.name)}
                           disabled={deletingId === topic.id}

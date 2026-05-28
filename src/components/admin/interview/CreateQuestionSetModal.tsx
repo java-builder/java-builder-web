@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { questionSetService } from "@/services/question-set.service";
 import { CreateQuestionSetRequest } from "@/types/question-set";
 
@@ -10,6 +10,7 @@ interface CreateQuestionSetModalProps {
   onSuccess: () => void;
   topicId: string;
   topicName: string;
+  nextDisplayOrder: number;
 }
 
 export default function CreateQuestionSetModal({
@@ -18,14 +19,24 @@ export default function CreateQuestionSetModal({
   onSuccess,
   topicId,
   topicName,
+  nextDisplayOrder,
 }: CreateQuestionSetModalProps) {
   const [formData, setFormData] = useState<CreateQuestionSetRequest>({
     title: "",
     level: "FRESHER",
     difficulty: "EASY",
     topics: "",
-    displayOrder: 1,
+    displayOrder: nextDisplayOrder,
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        displayOrder: nextDisplayOrder,
+      }));
+    }
+  }, [isOpen, nextDisplayOrder]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -69,7 +80,7 @@ export default function CreateQuestionSetModal({
         level: "FRESHER",
         difficulty: "EASY",
         topics: "",
-        displayOrder: 1,
+        displayOrder: nextDisplayOrder,
       });
       onSuccess();
       onClose();
