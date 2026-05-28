@@ -146,9 +146,6 @@ export default function InterviewTopicsPage() {
                           <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">
                             {topic.name}
                           </h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {(topic.questionSets || []).length} bộ câu hỏi
-                          </p>
                         </div>
                       </div>
                       <span

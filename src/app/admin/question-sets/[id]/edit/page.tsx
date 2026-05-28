@@ -9,7 +9,7 @@ import { QuestionSetDetailResponse, InterviewQuestionResponse } from "@/types/qu
 import { useConfirm } from "@/hooks/useConfirm";
 import toast from "react-hot-toast";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
-import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 export default function EditQuestionSetPage() {
   const params = useParams();
@@ -72,6 +72,14 @@ export default function EditQuestionSetPage() {
     fetchQuestionSet();
   }, [fetchQuestionSet]);
 
+  const handleOpenCreateModal = () => {
+    setFormData((prev) => ({
+      ...prev,
+      displayOrder: questions.length + 1,
+    }));
+    setIsCreateOpen(true);
+  };
+
   const handleCreateQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -95,7 +103,7 @@ export default function EditQuestionSetPage() {
         answer: "",
         tips: "",
         difficulty: "EASY",
-        displayOrder: questions.length + 2,
+        displayOrder: questions.length + 1,
       });
       setIsCreateOpen(false);
       await fetchQuestionSet(true);
@@ -206,7 +214,7 @@ export default function EditQuestionSetPage() {
           </div>
         </div>
         <button
-          onClick={() => setIsCreateOpen(true)}
+          onClick={handleOpenCreateModal}
           className="w-full sm:w-auto px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-600 flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -299,13 +307,15 @@ export default function EditQuestionSetPage() {
                           <div>
                             <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Trả lời:</h4>
                             <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 prose prose-sm dark:prose-invert max-w-none">
-                              <MarkdownRenderer content={q.answer} />
+                              <PublicMarkdownRenderer content={q.answer} />
                             </div>
                           </div>
                           {q.tips && (
                             <div>
                               <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tips:</h4>
-                              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{q.tips}</p>
+                              <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 prose prose-sm dark:prose-invert max-w-none">
+                                <PublicMarkdownRenderer content={q.tips} />
+                              </div>
                             </div>
                           )}
                         </div>
@@ -373,12 +383,11 @@ export default function EditQuestionSetPage() {
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Tips (Gợi ý)
                 </label>
-                <textarea
+                <MarkdownEditor
                   value={formData.tips}
-                  onChange={(e) => setFormData({ ...formData, tips: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Gợi ý để trả lời tốt hơn..."
+                  onChange={(value) => setFormData({ ...formData, tips: value })}
+                  placeholder="Gợi ý để trả lời tốt hơn bằng Markdown..."
+                  height={300}
                 />
               </div>
 
@@ -490,12 +499,11 @@ export default function EditQuestionSetPage() {
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Tips (Gợi ý)
                 </label>
-                <textarea
+                <MarkdownEditor
                   value={editFormData.tips}
-                  onChange={(e) => setEditFormData({ ...editFormData, tips: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Gợi ý để trả lời tốt hơn..."
+                  onChange={(value) => setEditFormData({ ...editFormData, tips: value })}
+                  placeholder="Gợi ý để trả lời tốt hơn bằng Markdown..."
+                  height={300}
                 />
               </div>
 
