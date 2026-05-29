@@ -77,18 +77,8 @@ export default function PostForm({ onSubmit, categories = null, initialData }: P
 
     setUploading(true);
     try {
-      const presignedData = await fileApi.getPresignedUrl(file.name, 'public');
-      if (!presignedData.data) {
-        throw new Error("Không thể lấy URL upload");
-      }
-
-      await fetch(presignedData.data.url, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type },
-      });
-
-      setImageKey(presignedData.data.key);
+      const result = await fileApi.uploadPublicImage(file);
+      setImageKey(result.key);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
       console.error("Failed to upload image:", error);

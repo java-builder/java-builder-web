@@ -93,24 +93,8 @@ export default function UpdateInterviewTopicModal({
     try {
       let key = formData.key;
       if (selectedFile) {
-        // 1. Lấy presigned URL từ BE
-        const presignedResponse = await fileApi.getPresignedUrl(selectedFile.name, 'public');
-        
-        if (!presignedResponse.data) {
-          throw new Error("Không thể lấy URL upload");
-        }
-
-        // 2. Upload file lên S3
-        await fetch(presignedResponse.data.url, {
-          method: 'PUT',
-          body: selectedFile,
-          headers: {
-            'Content-Type': selectedFile.type,
-          },
-        });
-
-        // 3. Lấy key từ response
-        key = presignedResponse.data.key;
+        const result = await fileApi.uploadPublicImage(selectedFile);
+        key = result.key;
       }
 
       await interviewService.updateTopic(topic.id, {

@@ -50,20 +50,8 @@ export const courseEditHelpers = {
     let key = data.key;
 
     if (imageFile) {
-      const presignedResponse = await fileApi.getPresignedUrl(imageFile.name, "public");
-      if (presignedResponse.data) {
-        const { url, key: uploadKey } = presignedResponse.data;
-
-        await fetch(url, {
-          method: "PUT",
-          body: imageFile,
-          headers: {
-            "Content-Type": imageFile.type,
-          },
-        });
-
-        key = uploadKey;
-      }
+      const result = await fileApi.uploadPublicImage(imageFile);
+      key = result.key;
     }
 
     return await courseApi.update(courseId, {
@@ -118,11 +106,7 @@ export const courseEditHelpers = {
 
     // Upload video if provided
     if (videoFile && (data.lessonFormat === LessonFormat.VIDEO || data.lessonFormat === LessonFormat.MIXED)) {
-      const uploadResult = await fileApi.uploadVideoWithPresigned(
-        videoFile,
-        onProgress || (() => {}),
-        "private"
-      );
+      const uploadResult = await fileApi.uploadPrivateVideo(videoFile, onProgress);
       videoKey = uploadResult.key;
     }
 
@@ -164,11 +148,7 @@ export const courseEditHelpers = {
     let videoKey: string | undefined;
 
     if (videoFile) {
-      const uploadResult = await fileApi.uploadVideoWithPresigned(
-        videoFile,
-        onProgress || (() => {}),
-        "private"
-      );
+      const uploadResult = await fileApi.uploadPrivateVideo(videoFile, onProgress);
       videoKey = uploadResult.key;
     }
 

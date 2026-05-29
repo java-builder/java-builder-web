@@ -154,21 +154,8 @@ export default function AdminDocumentsPage() {
 
       // Upload ảnh bằng presigned URL nếu có file mới
       if (imageFile) {
-        const presignedResponse = await fileApi.getPresignedUrl(imageFile.name, 'public');
-        if (presignedResponse.data) {
-          const { url, key: uploadKey } = presignedResponse.data;
-          
-          // Upload trực tiếp lên S3
-          await fetch(url, {
-            method: 'PUT',
-            body: imageFile,
-            headers: {
-              'Content-Type': imageFile.type,
-            },
-          });
-          
-          key = uploadKey;
-        }
+        const result = await fileApi.uploadPublicImage(imageFile);
+        key = result.key;
       }
 
       const data = { ...formData, key };

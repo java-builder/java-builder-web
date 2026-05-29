@@ -89,23 +89,8 @@ export default function CreateInterviewTopicModal({
       // Upload icon bằng presigned URL nếu có file được chọn
       let key = formData.key;
       if (selectedFile) {
-        const presignedResponse = await fileApi.getPresignedUrl(selectedFile.name, 'public');
-        if (presignedResponse.data) {
-          const { url, key: uploadKey } = presignedResponse.data;
-          
-          // Upload trực tiếp lên S3
-          await fetch(url, {
-            method: 'PUT',
-            body: selectedFile,
-            headers: {
-              'Content-Type': selectedFile.type,
-            },
-          });
-          
-          key = uploadKey;
-        } else {
-          throw new Error("Upload icon thất bại");
-        }
+        const result = await fileApi.uploadPublicImage(selectedFile);
+        key = result.key;
       }
 
       // Tạo topic với key

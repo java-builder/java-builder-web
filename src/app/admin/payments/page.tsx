@@ -6,14 +6,14 @@ import { PaymentSearchBar } from "@/components/admin/payments/PaymentSearchBar";
 import { PaymentTableRow } from "@/components/admin/payments/PaymentTableRow";
 import { PaymentDetailModal } from "@/components/admin/payments/PaymentDetailModal";
 import { Pagination } from "@/components/ui/Pagination";
-import { PaymentDetailResponse } from "@/types/payment";
+import { PaymentDetailResponse, PaymentStatus } from "@/types/payment";
 
 export default function PaymentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [orderCode, setOrderCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<PaymentStatus | "">("");
   const [selectedPayment, setSelectedPayment] = useState<PaymentDetailResponse | null>(null);
 
   const { data, isLoading, refetch } = useAllPayments({
@@ -58,7 +58,7 @@ export default function PaymentsPage() {
         onOrderCodeChange={setOrderCode}
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
-        onStatusChange={setStatus}
+        onStatusChange={(value) => setStatus(value as PaymentStatus | "")}
         onRefresh={refetch}
         onClearFilters={handleClearFilters}
       />

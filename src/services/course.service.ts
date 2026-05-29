@@ -183,79 +183,62 @@ export const lessonApi = {
 };
 
 export const fileApi = {
-  // Upload ảnh đơn
+  // Upload ảnh đơn lên public folder
   uploadSingleMedia: async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-
     const response = await apiClient.post<ApiResponse<FileMetaDataResponse>>(
-      API.FILES_UPLOAD_SINGLE,
+      API.FILES_PUBLIC_UPLOAD_SINGLE,
       formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
-
     return response.data;
   },
 
-  // Lấy presigned URL để upload trực tiếp lên S3
-  getPresignedUrl: async (filename: string, folder?: string) => {
-    const params: Record<string, string> = { filename };
-    if (folder) {
-      params.folder = folder;
-    }
-
+  getPublicPresignedUrl: async (filename: string) => {
     const response = await apiClient.post<ApiResponse<PreSignedResponse>>(
-      // NOTE: In API.ts I named it FILES_PRE_SIGNED_URL (with pre-signed) but in fileApi it was pre-signed-url. 
-
-      API.FILES_PRE_SIGNED_URL,
+      API.FILES_PUBLIC_PRE_SIGNED_URL,
       null,
-      { params },
+      { params: { filename } },
     );
-
     return response.data;
   },
 
-  // Upload video trực tiếp lên S3 qua presigned URL
-  uploadVideoWithPresigned: async (
+  getPrivatePresignedUrl: async (filename: string) => {
+    const response = await apiClient.post<ApiResponse<PreSignedResponse>>(
+      API.FILES_PRIVATE_PRE_SIGNED_URL,
+      null,
+      { params: { filename } },
+    );
+    return response.data;
+  },
+
+  uploadPrivateVideo: async (
     file: File,
     onProgress?: (percent: number) => void,
-    folder?: string,
   ): Promise<{ key: string }> => {
-    // 1. Lấy presigned URL từ BE
-    const presignedResponse = await fileApi.getPresignedUrl(file.name, folder);
+    const presignedResponse = await fileApi.getPrivatePresignedUrl(file.name);
     if (!presignedResponse.data) {
       throw new Error("Không thể lấy URL upload");
     }
 
     const { url, key } = presignedResponse.data;
 
-    // 2. Upload trực tiếp lên S3 bằng PUT request
     await new Promise<void>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable && onProgress) {
-          const percent = Math.round((event.loaded * 100) / event.total);
-          onProgress(percent);
+          onProgress(Math.round((event.loaded * 100) / event.total));
         }
       });
-
       xhr.addEventListener("load", () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           resolve();
         } else {
-          reject(new Error(`Upload failed with status ${xhr.status}`));
+          reject(new Error(`Upload failed: ${xhr.status}`));
         }
       });
-
-      xhr.addEventListener("error", () => {
-        reject(new Error("Upload failed"));
-      });
-
+      xhr.addEventListener("error", () => reject(new Error("Upload failed")));
       xhr.open("PUT", url);
       xhr.setRequestHeader("Content-Type", file.type);
       xhr.send(file);
@@ -264,27 +247,17 @@ export const fileApi = {
     return { key };
   },
 
-  // Upload video (deprecated - dùng uploadVideoWithPresigned thay thế)
-  uploadVideo: async (file: File, onProgress?: (percent: number) => void) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await apiClient.post<ApiResponse<FileMetaDataResponse>>(
-      API.FILES_UPLOAD_SINGLE,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          if (onProgress && progressEvent.total) {
-            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            onProgress(percent);
-          }
-        },
-      },
-    );
-
-    return response.data;
+  uploadPublicImage: async (file: File): Promise<{ key: string }> => {
+    const presignedResponse = await fileApi.getPublicPresignedUrl(file.name);
+    if (!presignedResponse.data) {
+      throw new Error("Không thể lấy URL upload");
+    }
+    const { url, key } = presignedResponse.data;
+    await fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+    return { key };
   },
 };

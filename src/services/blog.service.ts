@@ -1,6 +1,5 @@
 import { apiClient } from "@/api/axios";
 import { CreateBlogRequest, CreateBlogResponse, Blog } from "@/types/blog";
-import { FileMetaDataResponse } from "@/types/file";
 import { API } from "@/api/api";
 import { ApiResponse, PageResponse } from "@/types/api";
 import { fileApi } from "./course.service";
@@ -67,41 +66,6 @@ export const blogService = {
 
   // Upload ảnh featured bằng presigned URL
   async uploadFeaturedImage(file: File): Promise<{ key: string }> {
-    // 1. Lấy presigned URL từ BE
-    const presignedResponse = await fileApi.getPresignedUrl(file.name, 'public');
-    if (!presignedResponse.data) {
-      throw new Error("Không thể lấy URL upload");
-    }
-
-    const { url, key } = presignedResponse.data;
-
-    // 2. Upload trực tiếp lên S3
-    await fetch(url, {
-      method: 'PUT',
-      body: file,
-      headers: {
-        'Content-Type': file.type,
-      },
-    });
-
-    // 3. Trả về key để lưu vào DB
-    return { key };
-  },
-
-  // Upload ảnh featured (old method - qua backend)
-  async uploadFeaturedImageViaBackend(file: File): Promise<FileMetaDataResponse> {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await apiClient.post(
-      API.FILES_UPLOAD_SINGLE,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
-    );
-    return (response.data as { data?: FileMetaDataResponse }).data as FileMetaDataResponse;
+    return fileApi.uploadPublicImage(file);
   },
 };

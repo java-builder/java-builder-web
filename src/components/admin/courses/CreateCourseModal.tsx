@@ -90,21 +90,8 @@ export default function CreateCourseModal({
 
       // Upload ảnh bằng presigned URL
       if (data.imageFile) {
-        const presignedResponse = await fileApi.getPresignedUrl(data.imageFile.name, 'public');
-        if (presignedResponse.data) {
-          const { url, key: uploadKey } = presignedResponse.data;
-          
-          // Upload trực tiếp lên S3
-          await fetch(url, {
-            method: 'PUT',
-            body: data.imageFile,
-            headers: {
-              'Content-Type': data.imageFile.type,
-            },
-          });
-          
-          key = uploadKey;
-        }
+        const result = await fileApi.uploadPublicImage(data.imageFile);
+        key = result.key;
       }
 
       const courseData: CreateCourseRequest = {

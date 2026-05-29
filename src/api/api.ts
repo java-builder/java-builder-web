@@ -120,10 +120,12 @@ export const API = {
     LESSON_PROGRESS: "/api/v1/lesson-progress",
 
     // FILES
-    FILES_PRESIGNED_URL: "/api/v1/files/presigned-url",
-    FILES_UPLOAD: "/api/v1/files/upload-video",
-    FILES_UPLOAD_SINGLE: "/api/v1/files/upload-single-media",
-    FILES_PRE_SIGNED_URL: "/api/v1/files/pre-signed-url",
+    FILES_PUBLIC_UPLOAD_SINGLE: "/api/v1/files/public/upload-single-media",
+    FILES_PUBLIC_UPLOAD: "/api/v1/files/public/upload-media",
+    FILES_PUBLIC_PRE_SIGNED_URL: "/api/v1/files/public/pre-signed-url",
+    FILES_PRIVATE_UPLOAD_SINGLE: "/api/v1/files/private/upload-single-media",
+    FILES_PRIVATE_UPLOAD: "/api/v1/files/private/upload-media",
+    FILES_PRIVATE_PRE_SIGNED_URL: "/api/v1/files/private/pre-signed-url",
 
     // FAVORITES
     FAVORITES_TOGGLE: "/api/v1/favorites/toggle",
