@@ -5,6 +5,7 @@ export type EmailEventType =
   | "MAINTENANCE_ALERT"
   | "RE_ENGAGEMENT"
   | "NEW_COURSE_ANNOUNCEMENT"
+  | "APPRECIATION"
   | "BROADCAST";        // free-form HTML, no SES template
 
 export interface ScheduleEmailRequest {

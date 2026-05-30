@@ -17,7 +17,7 @@ export type Priority = "HIGH" | "NORMAL" | "LOW";
 const toEmailEventType = (id: TemplateId): EmailEventType => {
   switch (id) {
     case "empty":         return "BROADCAST";
-    case "thank-you":     return "BROADCAST";
+    case "thank-you":     return "APPRECIATION";
     case "promotion":     return "PROMOTION";
     case "system-alert":  return "MAINTENANCE_ALERT";
     case "re-engage":     return "RE_ENGAGEMENT";
