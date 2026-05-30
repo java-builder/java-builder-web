@@ -2,12 +2,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { authApi } from "@/services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
 import TwoFactorModal from "@/components/auth/TwoFactorModal";
-
-let isCallbackProcessed = false;
 
 const LinkedinCallbackContent = () => {
   const router = useRouter();
@@ -18,9 +16,11 @@ const LinkedinCallbackContent = () => {
   const [error, setError] = useState<string | null>(null);
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    if (isCallbackProcessed) return;
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
 
     const handleLinkedinCallback = async () => {
       const code = searchParams.get("code");
@@ -30,8 +30,6 @@ const LinkedinCallbackContent = () => {
         setIsProcessing(false);
         return;
       }
-
-      isCallbackProcessed = true;
 
       try {
         const response = await authApi.loginWithLinkedin(code);
@@ -68,12 +66,6 @@ const LinkedinCallbackContent = () => {
     };
 
     handleLinkedinCallback();
-
-    return () => {
-      setTimeout(() => {
-        isCallbackProcessed = false;
-      }, 1000);
-    };
   }, [searchParams, router, queryClient, setAuthFromLogin]);
 
   const handleTwoFactorSuccess = async () => {

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import { userApi } from "@/services/user.service";
+import { emailSchedulerService } from "@/services/email-scheduler.service";
+import { ScheduleEmailRequest, RecipientType, EmailEventType } from "@/types/email-scheduler";
 import { UserDetailResponse } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
 import { TEMPLATE_LIST, SYSTEM_VARS, type TemplateId } from "./emailTemplates";
@@ -12,26 +14,30 @@ export type PreviewMode = "desktop" | "mobile";
 export type TargetSegment = "all" | "premium" | "inactive" | "custom";
 export type Priority = "HIGH" | "NORMAL" | "LOW";
 
+const toEmailEventType = (id: TemplateId): EmailEventType => {
+  switch (id) {
+    case "empty":         return "BROADCAST";
+    case "thank-you":     return "BROADCAST";
+    case "promotion":     return "PROMOTION";
+    case "system-alert":  return "MAINTENANCE_ALERT";
+    case "re-engage":     return "RE_ENGAGEMENT";
+    case "new-course":    return "NEW_COURSE_ANNOUNCEMENT";
+  }
+};
+
 export function useEmailCampaign() {
-  // ── UI state ──────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<ActiveTab>("config");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("desktop");
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("empty");
 
-  // ── Config tab ────────────────────────────────────────────────────────────
   const [subject, setSubject] = useState("");
   const [preheader, setPreheader] = useState("");
   const [senderName, setSenderName] = useState("JavaBuilder Support");
   const [senderEmail, setSenderEmail] = useState("noreply@javabuilder.online");
-  const [replyTo, setReplyTo] = useState("support@javabuilder.online");
+  const [replyTo, setReplyTo] = useState("javabuilder.platform@gmail.com");
 
-  // ── Content tab ───────────────────────────────────────────────────────────
   const [content, setContent] = useState("");
 
-  /**
-   * customVarValues: values admin fills for non-system variables.
-   * Merged with SYSTEM_VARS when building preview HTML.
-   */
   const [customVarValues, setCustomVarValues] = useState<Record<string, string>>({});
 
   const currentTemplateCfg = useMemo(
@@ -39,14 +45,12 @@ export function useEmailCampaign() {
     [selectedTemplate]
   );
 
-  /** System vars actually present in current content */
   const systemVarsDetected = useMemo(() => {
     const matches = content.match(/\{(\w+)\}/g) ?? [];
     const all = [...new Set(matches.map((m) => m.replace(/[{}]/g, "")))];
     return all.filter((v) => v in SYSTEM_VARS);
   }, [content]);
 
-  // ── Audience tab ──────────────────────────────────────────────────────────
   const [targetSegment, setTargetSegment] = useState<TargetSegment>("all");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [users, setUsers] = useState<UserDetailResponse[]>([]);
@@ -54,14 +58,12 @@ export function useEmailCampaign() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // ── Schedule tab ──────────────────────────────────────────────────────────
   const [scheduleType, setScheduleType] = useState<"now" | "schedule">("now");
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
   const [priority, setPriority] = useState<Priority>("NORMAL");
   const [isSending, setIsSending] = useState(false);
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
   const loadUsers = useCallback(async () => {
     if (!debouncedSearchQuery.trim()) { setUsers([]); setIsLoadingUsers(false); return; }
     setIsLoadingUsers(true);
@@ -97,18 +99,15 @@ export function useEmailCampaign() {
     setSelectedTemplate(id);
     setSubject(cfg.subject);
     setPreheader(cfg.preheader);
-    // Pre-fill custom vars with empty strings so inputs appear immediately
     const initVars: Record<string, string> = {};
     cfg.customVars.forEach((v) => { initVars[v] = ""; });
     setCustomVarValues(initVars);
-    // Build initial content with system var placeholders + empty custom vars
     setContent(cfg.build({ ...SYSTEM_VARS, ...initVars }));
   };
 
   const handleCustomVarChange = (varName: string, value: string) => {
     const next = { ...customVarValues, [varName]: value };
     setCustomVarValues(next);
-    // Rebuild content live so preview updates
     setContent(currentTemplateCfg.build({ ...SYSTEM_VARS, ...next }));
   };
 
@@ -117,7 +116,6 @@ export function useEmailCampaign() {
     toast.success(`Đã thêm thẻ ${tag}`);
   };
 
-  /** Replace system vars with sample values for live preview */
   const previewHtml = useMemo(() => {
     if (!content) return "<p style='color:#94a3b8; text-align:center; padding: 40px;'>Nội dung thư rỗng</p>";
     let html = content;
@@ -127,7 +125,7 @@ export function useEmailCampaign() {
     return html;
   }, [content]);
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!subject.trim()) { toast.error("Vui lòng nhập Tiêu đề Email"); setActiveTab("config"); return; }
     if (!content.trim()) { toast.error("Vui lòng soạn Thư nội dung"); setActiveTab("content"); return; }
@@ -139,31 +137,60 @@ export function useEmailCampaign() {
       toast.error(`Vui lòng điền đầy đủ: ${unfilledCustom.map((v) => `{${v}}`).join(", ")}`);
       setActiveTab("content"); return;
     }
+    if (scheduleType === "schedule" && (!scheduleDate || !scheduleTime)) {
+      toast.error("Vui lòng chọn ngày và giờ gửi");
+      setActiveTab("schedule"); return;
+    }
+
+    const recipientType = targetSegment.toUpperCase() as RecipientType;
+    const recipients = recipientType === "CUSTOM"
+      ? users.filter((u) => selectedUsers.includes(u.id)).map((u) => u.email)
+      : undefined;
+
+    const scheduledTime = scheduleType === "schedule"
+      ? new Date(`${scheduleDate}T${scheduleTime}`).toISOString()
+      : undefined;
+
+    const eventType = toEmailEventType(selectedTemplate);
+
+    const payload: ScheduleEmailRequest = {
+      jobLabel: (currentTemplateCfg.id || "broadcast").replace(/_/g, "-"),
+      subject: subject.trim(),
+      type: eventType,
+      htmlBody: eventType === "BROADCAST" ? content : undefined,
+      summary: preheader.trim() || subject.trim(),
+      nameSender: senderName,
+      emailSender: senderEmail,
+      recipientType,
+      variables: Object.keys(customVarValues).length > 0 ? customVarValues : undefined,
+      recipients,
+      sendImmediately: scheduleType === "now",
+      scheduledTime,
+    };
+
     setIsSending(true);
-    setTimeout(() => {
+    try {
+      const res = await emailSchedulerService.scheduleBroadcast(payload);
+      toast.success(res.message || "Chiến dịch đã được khởi chạy!");
+    } catch (err) {
+      const msg = (err as { response?: { data?: { message?: string } }; message?: string })
+        .response?.data?.message
+        ?? "Không thể gửi chiến dịch. Vui lòng thử lại.";
+      toast.error(msg);
+    } finally {
       setIsSending(false);
-      const targetText = targetSegment === "all" ? "tất cả thành viên"
-        : targetSegment === "premium" ? "thành viên Premium"
-        : targetSegment === "inactive" ? "thành viên chưa kích hoạt"
-        : `${selectedUsers.length} người nhận đã chọn`;
-      const scheduleText = scheduleType === "now" ? "Gửi ngay lập tức"
-        : `Lên lịch vào lúc ${scheduleTime} ngày ${scheduleDate}`;
-      toast.success(`Chiến dịch đã được khởi chạy!\nĐối tượng: ${targetText}\n${scheduleText}`);
-    }, 2000);
+    }
   };
 
   return {
-    // UI
     activeTab, setActiveTab,
     previewMode, setPreviewMode,
     selectedTemplate,
-    // Config
     subject, setSubject,
     preheader, setPreheader,
     senderName, setSenderName,
     senderEmail, setSenderEmail,
     replyTo, setReplyTo,
-    // Content
     content, setContent,
     customVarValues,
     currentTemplateCfg,
@@ -172,7 +199,6 @@ export function useEmailCampaign() {
     handleCustomVarChange,
     insertTag,
     previewHtml,
-    // Audience
     targetSegment, setTargetSegment,
     selectedUsers,
     users,
@@ -180,7 +206,6 @@ export function useEmailCampaign() {
     isLoadingUsers,
     handleUserSelect,
     handleSelectAll,
-    // Schedule
     scheduleType, setScheduleType,
     scheduleDate, setScheduleDate,
     scheduleTime, setScheduleTime,

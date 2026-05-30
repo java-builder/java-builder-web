@@ -207,6 +207,10 @@ export const API = {
     REGISTER_FCM_TOKEN: "/api/v1/user-fcm-tokens",
     DELETE_FCM_TOKEN: "/api/v1/user-fcm-tokens",
 
+    // EMAIL SCHEDULER
+    EMAIL_BROADCAST: "/api/v1/job-scheduler/broadcast",
+    SCHEDULED_JOBS: "/api/v1/job-scheduler",
+
     // CHATBOT
     CHATBOT_CHAT: "/api/v1/chatbot/chat",
 

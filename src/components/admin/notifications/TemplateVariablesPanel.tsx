@@ -3,24 +3,78 @@
 import { SYSTEM_VARS } from "./emailTemplates";
 
 interface Props {
-  /** Custom vars that admin must fill (e.g. discount_percent, course_name) */
   customVars: string[];
-  /** System vars detected in content (e.g. username, email) */
   systemVarsDetected: string[];
-  /** Current values for custom vars */
   customVarValues: Record<string, string>;
   onChange: (varName: string, value: string) => void;
 }
 
-const CUSTOM_VAR_META: Record<string, { label: string; placeholder: string }> = {
-  discount_percent: { label: "Phần trăm giảm giá", placeholder: "VD: 40" },
-  start_time:       { label: "Thời gian bắt đầu bảo trì", placeholder: "VD: 01:00 AM Chủ Nhật" },
-  end_time:         { label: "Thời gian kết thúc bảo trì", placeholder: "VD: 03:00 AM (dự kiến 2 tiếng)" },
-  plan_duration:    { label: "Thời hạn gói", placeholder: "VD: 1 tháng / 3 tháng / 1 năm" },
-  course_name:      { label: "Tên khóa học", placeholder: "VD: Spring Boot Microservices" },
-  course_url:       { label: "Link khóa học", placeholder: "VD: https://javabuilder.online/courses/..." },
-  days_left:        { label: "Số ngày còn lại", placeholder: "VD: 7" },
+interface VarMeta {
+  label: string;
+  placeholder: string;
+  /** Click-to-fill suggestion chips */
+  suggestions?: (() => string)[];
+}
+
+const fmt = (d: Date) => {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${p(d.getHours())}:${p(d.getMinutes())}, ${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
 };
+
+const now = () => new Date();
+const plus = (h: number) => new Date(Date.now() + h * 3600_000);
+const tomorrowAt = (hh: number) => {
+  const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(hh, 0, 0, 0); return d;
+};
+
+const CUSTOM_VAR_META: Record<string, VarMeta> = {
+  discountPercent: {
+    label: "Phần trăm giảm giá",
+    placeholder: "VD: 40",
+    suggestions: [() => "20", () => "30", () => "40", () => "50", () => "70"],
+  },
+  startTime: {
+    label: "Thời gian bắt đầu bảo trì",
+    placeholder: "HH:mm, DD/MM/YYYY",
+    suggestions: [
+      () => fmt(now()),
+      () => fmt(plus(1)),
+      () => fmt(tomorrowAt(1)),
+      () => fmt(tomorrowAt(2)),
+    ],
+  },
+  endTime: {
+    label: "Thời gian kết thúc bảo trì",
+    placeholder: "HH:mm, DD/MM/YYYY",
+    suggestions: [
+      () => fmt(plus(1)),
+      () => fmt(plus(2)),
+      () => fmt(plus(3)),
+      () => fmt(tomorrowAt(3)),
+      () => fmt(tomorrowAt(5)),
+    ],
+  },
+  courseName: {
+    label: "Tên khóa học",
+    placeholder: "VD: Spring Boot Microservices",
+    suggestions: [
+      () => "Spring Boot Microservices",
+      () => "Java Core Fundamentals",
+      () => "DevOps cho Java Developer",
+    ],
+  },
+  courseSlug: {
+    label: "Slug khóa học",
+    placeholder: "VD: spring-boot-microservices",
+    suggestions: [
+      () => "spring-boot-microservices",
+      () => "java-core-fundamentals",
+      () => "devops-for-java",
+    ],
+  },
+};
+
+const labelOf = (sug: string) => sug.length > 20 ? sug.slice(0, 18) + "…" : sug;
 
 export default function TemplateVariablesPanel({
   customVars,
@@ -35,7 +89,6 @@ export default function TemplateVariablesPanel({
 
   return (
     <div className="border-b border-gray-200 dark:border-slate-700">
-      {/* Custom vars — admin must fill */}
       {hasCustom && (
         <div className="px-4 py-3 bg-amber-50/70 dark:bg-amber-900/10 border-b border-amber-100 dark:border-amber-900/20">
           <div className="flex items-center gap-1.5 mb-2.5">
@@ -47,13 +100,14 @@ export default function TemplateVariablesPanel({
               Bắt buộc
             </span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {customVars.map((varName) => {
               const meta = CUSTOM_VAR_META[varName] ?? {
                 label: varName,
                 placeholder: `Nhập giá trị cho {${varName}}`,
               };
               const isEmpty = !customVarValues[varName]?.trim();
+              const sugs = meta.suggestions?.map((fn) => fn()) ?? [];
               return (
                 <div key={varName}>
                   <div className="flex items-center gap-1.5 mb-1">
@@ -76,6 +130,21 @@ export default function TemplateVariablesPanel({
                         : "border-gray-200 dark:border-slate-600 focus:ring-accent/50"
                     }`}
                   />
+                  {sugs.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {sugs.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => onChange(varName, s)}
+                          title={s}
+                          className="px-2 py-0.5 text-[10px] font-medium bg-white hover:bg-amber-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-slate-600 rounded transition-colors"
+                        >
+                          {labelOf(s)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -83,7 +152,6 @@ export default function TemplateVariablesPanel({
         </div>
       )}
 
-      {/* System vars — backend injects, FE shows preview only */}
       {hasSystem && (
         <div className="px-4 py-3 bg-slate-50/60 dark:bg-slate-800/40">
           <div className="flex items-center gap-1.5 mb-2">

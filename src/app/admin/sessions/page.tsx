@@ -6,7 +6,6 @@ import { userSessionApi } from "@/services/user-session.service";
 import { PageResponse } from "@/types/api";
 import toast from "react-hot-toast";
 import { SessionsHeader } from "@/components/admin/sessions/SessionsHeader";
-import { SessionsSearchBar } from "@/components/admin/sessions/SessionsSearchBar";
 import { SessionTableRow } from "@/components/admin/sessions/SessionTableRow";
 import { SessionDetailModal } from "@/components/admin/sessions/SessionDetailModal";
 import { RevokeSessionModal } from "@/components/admin/sessions/RevokeSessionModal";
@@ -110,12 +109,7 @@ export default function AdminSessionsPage() {
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      <SessionsHeader />
-
-      <SessionsSearchBar
-        query={query}
-        onSearch={handleSearch}
-      />
+      <SessionsHeader query={query} onSearch={handleSearch} />
 
       <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-4 dark:bg-slate-800 dark:ring-0 dark:border dark:border-slate-700">
         <div className="overflow-x-auto">

@@ -15,7 +15,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
+  RadialBarChart,
+  RadialBar,
 } from "recharts";
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
@@ -602,253 +603,297 @@ export default function ReportsPage() {
 
       {/* ===== Session Analytics Section ===== */}
       {sessionStats && (
-        <div className="space-y-6">
+        <div id="session-analytics" className="space-y-6 scroll-mt-24">
           {/* Section Header */}
-          <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Thống kê phiên đăng nhập</h2>
-            <p className="text-sm text-gray-600">Phân tích chi tiết về các phiên truy cập hệ thống</p>
+          <div className="flex items-center gap-3 px-1">
+            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full" />
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Thống kê phiên đăng nhập</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Phân tích chi tiết về các phiên truy cập hệ thống</p>
+            </div>
           </div>
 
           {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Tổng phiên</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{sessionStats.totalSessions}</p>
-                </div>
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-              </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white overflow-hidden shadow-lg shadow-blue-500/20">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
+              <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/10 rounded-full" />
+              <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-2">Tổng phiên</p>
+              <p className="text-4xl font-bold">{sessionStats.totalSessions.toLocaleString()}</p>
+              <p className="text-blue-200 text-xs mt-2">Tất cả phiên đăng nhập</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Đang hoạt động</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{sessionStats.activeSessions}</p>
-                </div>
-                <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
+            <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white overflow-hidden shadow-lg shadow-emerald-500/20">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
+              <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/10 rounded-full" />
+              <p className="text-emerald-100 text-xs font-medium uppercase tracking-wider mb-2">Đang hoạt động</p>
+              <p className="text-4xl font-bold">{sessionStats.activeSessions.toLocaleString()}</p>
+              <p className="text-emerald-200 text-xs mt-2">Phiên đang online</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Đã thu hồi</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{sessionStats.revokedSessions}</p>
-                </div>
-                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                  <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                  </svg>
-                </div>
-              </div>
+            <div className="relative bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl p-5 text-white overflow-hidden shadow-lg shadow-rose-500/20">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
+              <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/10 rounded-full" />
+              <p className="text-rose-100 text-xs font-medium uppercase tracking-wider mb-2">Đã thu hồi</p>
+              <p className="text-4xl font-bold">{sessionStats.revokedSessions.toLocaleString()}</p>
+              <p className="text-rose-200 text-xs mt-2">Phiên bị vô hiệu hóa</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <div className="flex items-center justify-between">
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+              <p className="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider mb-3">Tỷ lệ hoạt động</p>
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 flex-shrink-0">
+                  <svg className="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke={isDark ? "#374151" : "#f3f4f6"} strokeWidth="3" />
+                    <circle
+                      cx="18" cy="18" r="15.9" fill="none"
+                      stroke="#10b981" strokeWidth="3"
+                      strokeDasharray={`${sessionStats.totalSessions > 0 ? (sessionStats.activeSessions / sessionStats.totalSessions) * 100 : 0} 100`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-900 dark:text-white">
+                    {sessionStats.totalSessions > 0 ? Math.round((sessionStats.activeSessions / sessionStats.totalSessions) * 100) : 0}%
+                  </span>
+                </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Tỷ lệ hoạt động</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
-                    {sessionStats.totalSessions > 0
-                      ? Math.round((sessionStats.activeSessions / sessionStats.totalSessions) * 100)
-                      : 0}%
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {sessionStats.totalSessions > 0 ? Math.round((sessionStats.activeSessions / sessionStats.totalSessions) * 100) : 0}%
                   </p>
-                </div>
-                <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">phiên đang dùng</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Session Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Status Distribution - Donut */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Tình trạng phiên</h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
-                  <Pie data={sessionStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={5} dataKey="value">
-                    {sessionStatusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", color: chartColors.tooltipText }} />
-                  <Legend
-                    verticalAlign="bottom"
-                    height={36}
-                    formatter={(value, entry) => (
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
-                        {value}: {(entry as { payload?: { value: number } }).payload?.value}
-                      </span>
-                    )}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Provider Distribution - Bar Chart */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Nguồn đăng nhập</h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={sessionProviderData} layout="horizontal" margin={{ top: 5, right: 30, left: 20, bottom: 40 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} opacity={0.3} />
-                  <XAxis dataKey="name" stroke={chartColors.text} tick={{ fill: chartColors.text, fontSize: 12 }} />
-                  <YAxis stroke={chartColors.text} />
-                  <Tooltip contentStyle={{ backgroundColor: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", color: chartColors.tooltipText }} cursor={{ fill: "rgba(59,130,246,0.05)" }} />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    {sessionProviderData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={SESSION_COLORS[index % SESSION_COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Device Distribution - Donut */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Thiết bị truy cập</h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
-                  <Pie data={sessionDeviceData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={5} dataKey="value">
-                    {sessionDeviceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={SESSION_COLORS[index % SESSION_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", color: chartColors.tooltipText }} />
-                  <Legend
-                    verticalAlign="bottom"
-                    height={36}
-                    formatter={(value, entry) => (
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
-                        {value}: {(entry as { payload?: { value: number } }).payload?.value}
-                      </span>
-                    )}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Browser Distribution - Bar Chart */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Trình duyệt (Top 8)</h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={sessionBrowserData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} opacity={0.5} />
-                  <XAxis dataKey="name" stroke={chartColors.text} angle={-45} textAnchor="end" height={100} tick={{ fontSize: 12 }} />
-                  <YAxis stroke={chartColors.text} />
-                  <Tooltip contentStyle={{ backgroundColor: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", color: chartColors.tooltipText }} cursor={{ fill: "rgba(139,92,246,0.1)" }} />
-                  <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Providers Summary */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+          {/* Charts Row 1: Status Donut + Provider Bar */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+            {/* Status Donut - 2 cols */}
+            <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white">Tình trạng phiên</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Phân bổ trạng thái hoạt động</p>
                 </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white">Nguồn đăng nhập</h4>
               </div>
-              <div className="space-y-2.5">
-                {Object.entries(sessionStats.sessionsByProvider)
-                  .sort((a, b) => b[1] - a[1])
-                  .map(([key, value]) => {
-                    const providerNames: Record<string, string> = {
-                      GOOGLE: "Google",
-                      GITHUB: "GitHub",
-                      LINKEDIN: "LinkedIn",
-                      USERNAME_PASSWORD: "Mật khẩu",
-                    };
-                    const name = providerNames[key] || key;
+              <div className="relative">
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart>
+                    <defs>
+                      <linearGradient id="activeGradient" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#34d399" />
+                        <stop offset="100%" stopColor="#059669" />
+                      </linearGradient>
+                      <linearGradient id="revokedGradient" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#fb7185" />
+                        <stop offset="100%" stopColor="#e11d48" />
+                      </linearGradient>
+                    </defs>
+                    <Pie
+                      data={sessionStatusData}
+                      cx="50%" cy="50%"
+                      innerRadius={70} outerRadius={100}
+                      paddingAngle={3}
+                      dataKey="value"
+                      startAngle={90} endAngle={-270}
+                      stroke="none"
+                    >
+                      {sessionStatusData.map((entry, index) => (
+                        <Cell key={index} fill={index === 0 ? "url(#activeGradient)" : "url(#revokedGradient)"} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: chartColors.tooltipBg, border: "none", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)", color: chartColors.tooltipText, padding: "10px 14px" }}
+                      formatter={(value: number | string | (number | string)[] | undefined, name) => [`${value} phiên`, name]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-3xl font-bold text-gray-900 dark:text-white">{sessionStats.totalSessions}</span>
+                  <span className="text-xs text-gray-400 mt-1">tổng phiên</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                {sessionStatusData.map((item) => (
+                  <div key={item.name} className="text-center">
+                    <div className="flex items-center justify-center gap-1.5 mb-1">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.fill }} />
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{item.name}</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900 dark:text-white">{item.value}</p>
+                    <p className="text-xs text-gray-400">
+                      {sessionStats.totalSessions > 0 ? Math.round((item.value / sessionStats.totalSessions) * 100) : 0}%
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Provider Donut + Legend - 3 cols */}
+            <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white">Nguồn đăng nhập</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Phân bổ theo phương thức xác thực</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-6 items-center">
+                <div className="relative">
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart>
+                      <Pie
+                        data={[...sessionProviderData].sort((a, b) => b.value - a.value)}
+                        cx="50%" cy="50%"
+                        innerRadius={60} outerRadius={95}
+                        paddingAngle={2}
+                        dataKey="value"
+                        startAngle={90} endAngle={-270}
+                        stroke="none"
+                      >
+                        {sessionProviderData.map((_, index) => {
+                          const colors = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
+                          return <Cell key={index} fill={colors[index % colors.length]} />;
+                        })}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{ backgroundColor: chartColors.tooltipBg, border: "none", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)", color: chartColors.tooltipText, padding: "10px 14px" }}
+                        formatter={(value: number | string | (number | string)[] | undefined, name) => [`${value} phiên`, name]}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">{sessionProviderData.length}</span>
+                    <span className="text-xs text-gray-400 mt-0.5">nguồn</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {[...sessionProviderData].sort((a, b) => b.value - a.value).map((item, index) => {
+                    const colors = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
+                    const pct = sessionStats.totalSessions > 0 ? (item.value / sessionStats.totalSessions) * 100 : 0;
                     return (
-                      <div key={key} className="flex items-center justify-between group">
-                        <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate">
-                          {name}
-                        </span>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden w-16">
-                            <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${(value / sessionStats.totalSessions) * 100}%` }} />
-                          </div>
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white min-w-[2rem] text-right">{value}</span>
+                      <div key={item.name} className="flex items-center justify-between group">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: colors[index % colors.length] }} />
+                          <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{item.name}</span>
+                        </div>
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-white tabular-nums">{item.value.toLocaleString()}</span>
+                          <span className="text-xs text-gray-400 tabular-nums w-9 text-right">{Math.round(pct)}%</span>
                         </div>
                       </div>
                     );
                   })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Charts Row 2: Device Radial + Browser Bar */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+            {/* Device Radial Chart - 2 cols */}
+            <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white">Thiết bị truy cập</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Phân bổ theo loại thiết bị</p>
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={260}>
+                <RadialBarChart
+                  cx="50%" cy="50%"
+                  innerRadius="30%" outerRadius="100%"
+                  data={[...sessionDeviceData].sort((a, b) => b.value - a.value).map((d, i) => ({
+                    ...d,
+                    fill: SESSION_COLORS[i % SESSION_COLORS.length],
+                    pct: sessionStats.totalSessions > 0 ? Math.round((d.value / sessionStats.totalSessions) * 100) : 0,
+                  }))}
+                  startAngle={90} endAngle={-270}
+                >
+                  <RadialBar background={{ fill: isDark ? "#374151" : "#f3f4f6" }} dataKey="value" cornerRadius={10} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: chartColors.tooltipBg, border: "none", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)", color: chartColors.tooltipText, padding: "10px 14px" }}
+                    formatter={(value: number | string | (number | string)[] | undefined) => [`${value} phiên`, "Số lượng"]}
+                  />
+                </RadialBarChart>
+              </ResponsiveContainer>
+              <div className="space-y-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                {[...sessionDeviceData].sort((a, b) => b.value - a.value).map((item, index) => (
+                  <div key={item.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SESSION_COLORS[index % SESSION_COLORS.length] }} />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{item.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">{item.value}</span>
+                      <span className="text-xs text-gray-400 w-9 text-right">
+                        {sessionStats.totalSessions > 0 ? Math.round((item.value / sessionStats.totalSessions) * 100) : 0}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Devices Summary */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
+            {/* Browser Bar Chart - 3 cols */}
+            <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white">Trình duyệt</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Top 8 trình duyệt phổ biến nhất</p>
                 </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white">Thiết bị</h4>
+                <span className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2.5 py-1 rounded-full font-medium">
+                  Top 8
+                </span>
               </div>
-              <div className="space-y-2.5">
-                {Object.entries(sessionStats.sessionsByDevice)
-                  .sort((a, b) => b[1] - a[1])
-                  .map(([key, value]) => (
-                    <div key={key} className="flex items-center justify-between group">
-                      <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{key}</span>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden w-16">
-                          <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${(value / sessionStats.totalSessions) * 100}%` }} />
-                        </div>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white min-w-[2rem] text-right">{value}</span>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={sessionBrowserData} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
+                  <defs>
+                    <linearGradient id="browserGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#a78bfa" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.85} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false} tickLine={false}
+                    tick={{ fill: chartColors.text, fontSize: 11 }}
+                    angle={-25}
+                    textAnchor="end"
+                    height={50}
+                    interval={0}
+                  />
+                  <YAxis
+                    axisLine={false} tickLine={false}
+                    tick={{ fill: chartColors.text, fontSize: 11 }}
+                  />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: chartColors.tooltipBg, border: "none", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)", color: chartColors.tooltipText, padding: "10px 14px" }}
+                    cursor={{ fill: "rgba(139,92,246,0.06)" }}
+                    formatter={(value: number | string | (number | string)[] | undefined) => [`${value} phiên`, "Số lượng"]}
+                  />
+                  <Bar dataKey="value" fill="url(#browserGradient)" radius={[8, 8, 0, 0]} maxBarSize={48} animationDuration={800} />
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                {sessionBrowserData.map((item) => {
+                  const pct = sessionStats.totalSessions > 0 ? (item.value / sessionStats.totalSessions) * 100 : 0;
+                  return (
+                    <div key={item.name} className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full bg-purple-500 flex-shrink-0" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300 truncate" title={item.name}>{item.name}</span>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white tabular-nums">{item.value.toLocaleString()}</span>
+                        <span className="text-xs text-gray-400 tabular-nums w-9 text-right">{Math.round(pct)}%</span>
                       </div>
                     </div>
-                  ))}
-              </div>
-            </div>
-
-            {/* Browsers Summary */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                  </svg>
-                </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white">Trình duyệt</h4>
-              </div>
-              <div className="space-y-2.5">
-                {Object.entries(sessionStats.sessionsByBrowser)
-                  .sort((a, b) => b[1] - a[1])
-                  .slice(0, 5)
-                  .map(([key, value]) => (
-                    <div key={key} className="flex items-center justify-between group">
-                      <span className="text-sm text-gray-600 dark:text-gray-400 truncate max-w-[100px] group-hover:text-gray-900 dark:group-hover:text-white transition-colors" title={key}>{key}</span>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden w-16">
-                          <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: `${(value / sessionStats.totalSessions) * 100}%` }} />
-                        </div>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white min-w-[2rem] text-right">{value}</span>
-                      </div>
-                    </div>
-                  ))}
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
