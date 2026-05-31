@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
 
@@ -86,7 +86,7 @@ export default function ContributionCard({
 
   return (
     <div 
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-5 hover:shadow-md transition-all duration-200"
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-5 hover:shadow-md transition-all duration-200"
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-start gap-3">
@@ -112,7 +112,7 @@ export default function ContributionCard({
                 {difficultyConfig.label}
               </span>
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">
+            <div className="text-xs text-gray-600 dark:text-gray-300">
               {formatApiDate(contribution.createdAt)}
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function ContributionCard({
           <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
             {contribution.question}
           </h3>
-          <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
             <span className="inline-flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
@@ -137,7 +137,7 @@ export default function ContributionCard({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-200 dark:border-slate-700">
           <button
             onClick={onViewDetail}
             className="inline-flex items-center px-3 py-1.5 text-xs sm:text-sm font-semibold text-sky-700 dark:text-sky-300 bg-accent-100 dark:bg-accent-900/30 hover:bg-accent-200 dark:hover:bg-accent-800/40 rounded-md transition-colors duration-200"

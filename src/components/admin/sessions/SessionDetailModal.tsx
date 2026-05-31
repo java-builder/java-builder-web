@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { UserSession } from "@/types/session";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { getProviderBadge, getStatusBadge } from "./SessionBadges";
@@ -54,42 +54,42 @@ export const SessionDetailModal = ({
             )}
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-gray-900 dark:text-white">{session.username}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{session.email}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-300 truncate">{session.email}</div>
             </div>
           </div>
         </div>
 
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Session ID</div>
+            <div className="text-gray-500 dark:text-gray-300">Session ID</div>
             <div className="font-medium text-gray-800 dark:text-gray-200 font-mono text-xs">{session.sessionId}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Nguồn</div>
+            <div className="text-gray-500 dark:text-gray-300">Nguồn</div>
             <div className="font-medium text-gray-800 dark:text-gray-200">{getProviderBadge(session.provider)}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Trạng thái</div>
+            <div className="text-gray-500 dark:text-gray-300">Trạng thái</div>
             <div className="font-medium">{getStatusBadge(session.status)}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Trình duyệt</div>
+            <div className="text-gray-500 dark:text-gray-300">Trình duyệt</div>
             <div className="font-medium text-gray-800 dark:text-gray-200">{session.browser} {session.browserVersion}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Hệ điều hành</div>
+            <div className="text-gray-500 dark:text-gray-300">Hệ điều hành</div>
             <div className="font-medium text-gray-800 dark:text-gray-200">{session.os}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Thiết bị</div>
+            <div className="text-gray-500 dark:text-gray-300">Thiết bị</div>
             <div className="font-medium text-gray-800 dark:text-gray-200">{session.device}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">IP</div>
+            <div className="text-gray-500 dark:text-gray-300">IP</div>
             <div className="font-medium text-gray-800 dark:text-gray-200">{session.ipAddress}</div>
           </div>
           <div className="flex justify-between">
-            <div className="text-gray-500 dark:text-gray-400">Thời gian</div>
+            <div className="text-gray-500 dark:text-gray-300">Thời gian</div>
             <div className="font-medium text-gray-800 dark:text-gray-200">{formatReadableDate(session.createdAt)}</div>
           </div>
         </div>

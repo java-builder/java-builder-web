@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { questionContributionService } from "@/services/question-contribution.service";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
+import { pickTopicTranslation } from "@/types/interview";
+import { useI18n } from "@/contexts/I18nContext";
 import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
 
 type DifficultyType = "EASY" | "MEDIUM" | "HARD";
@@ -19,6 +21,7 @@ function ContributeQuestionForm() {
   const topicName = searchParams.get("topicName");
 
   const { topics } = useInterviewTopics();
+  const { locale } = useI18n();
   const [contributeType, setContributeType] = useState<"existing" | "new">(
     questionSetId ? "existing" : "new"
   );
@@ -211,11 +214,14 @@ function ContributeQuestionForm() {
                   className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
                 >
                   <option value="">Chọn chủ đề</option>
-                  {topics.map((topic) => (
-                    <option key={topic.id} value={topic.id}>
-                      {topic.name}
-                    </option>
-                  ))}
+                  {topics.map((topic) => {
+                    const tr = pickTopicTranslation(topic.translations, locale);
+                    return (
+                      <option key={topic.id} value={topic.id}>
+                        {tr?.name || topic.slug}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
 

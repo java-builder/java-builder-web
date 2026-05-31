@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
 
@@ -22,8 +22,8 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 py-6">
         <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={onClose} />
-        <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
-          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
+        <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-slate-700">
+          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between z-10">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Duyệt câu hỏi đóng góp
             </h3>
@@ -51,16 +51,16 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Câu hỏi
               </label>
-              <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700">
                 {contribution.question}
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Câu trả lời
               </label>
               <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
@@ -71,7 +71,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                     className={`px-4 py-2 text-xs font-medium transition-colors ${
                       answerTab === "write"
                         ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                     }`}
                   >
                     Viết
@@ -82,7 +82,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                     className={`px-4 py-2 text-xs font-medium transition-colors ${
                       answerTab === "preview"
                         ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                     }`}
                   >
                     Xem trước
@@ -103,7 +103,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                         <MarkdownRenderer content={answer} />
                       </div>
                     ) : (
-                      <div className="text-sm text-gray-400 dark:text-gray-500 italic">
+                      <div className="text-sm text-gray-400 dark:text-gray-300 italic">
                         Chưa có nội dung để xem trước
                       </div>
                     )}
@@ -113,7 +113,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Gợi ý (không bắt buộc)
               </label>
               <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
@@ -124,7 +124,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                     className={`px-4 py-2 text-xs font-medium transition-colors ${
                       tipsTab === "write"
                         ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                     }`}
                   >
                     Viết
@@ -135,7 +135,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                     className={`px-4 py-2 text-xs font-medium transition-colors ${
                       tipsTab === "preview"
                         ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                     }`}
                   >
                     Xem trước
@@ -156,7 +156,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                         <MarkdownRenderer content={tips} />
                       </div>
                     ) : (
-                      <div className="text-sm text-gray-400 dark:text-gray-500 italic">
+                      <div className="text-sm text-gray-400 dark:text-gray-300 italic">
                         Chưa có nội dung để xem trước
                       </div>
                     )}
@@ -166,7 +166,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
             </div>
           </div>
 
-          <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-end gap-3">
+          <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-end gap-3">
             <button
               onClick={onClose}
               className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
@@ -73,13 +73,13 @@ export default function MarkdownEditor({
       <div className="flex flex-col border-b border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
 
         {/* View Mode Tabs */}
-        <div className="flex items-center px-1 pt-1 space-x-1 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center px-1 pt-1 space-x-1 border-b border-gray-200 dark:border-slate-700">
           <button
             type="button"
             onClick={() => setViewMode("edit")}
             className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${viewMode === "edit"
               ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-x border-t border-gray-300 dark:border-gray-600 -mb-px relative z-10"
-              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
           >
             Viết
@@ -89,7 +89,7 @@ export default function MarkdownEditor({
             onClick={() => setViewMode("preview")}
             className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${viewMode === "preview"
               ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-x border-t border-gray-300 dark:border-gray-600 -mb-px relative z-10"
-              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
           >
             Xem trước
@@ -99,7 +99,7 @@ export default function MarkdownEditor({
             onClick={() => setViewMode("split")}
             className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${viewMode === "split"
               ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-x border-t border-gray-300 dark:border-gray-600 -mb-px relative z-10"
-              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
           >
             Chia đôi
@@ -228,7 +228,7 @@ export default function MarkdownEditor({
             {value ? (
               <PublicMarkdownRenderer content={value} />
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 italic">
+              <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-300 italic">
                 Chưa có nội dung để hiển thị
               </div>
             )}
@@ -249,7 +249,7 @@ export default function MarkdownEditor({
               {value ? (
                 <PublicMarkdownRenderer content={value} />
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 italic text-sm">
+                <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-300 italic text-sm">
                   Preview sẽ hiển thị ở đây...
                 </div>
               )}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -121,11 +121,11 @@ export default function AdminNotificationsPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Thông báo</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Đang tải thông báo...</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Đang tải thông báo...</p>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="p-8 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+            <div className="p-8 text-center text-gray-600 dark:text-gray-300">Đang tải...</div>
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function AdminNotificationsPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Thông báo</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
               {unreadCount > 0 ? `Có ${unreadCount} thông báo chưa đọc` : "Không có thông báo mới"}
             </p>
           </div>

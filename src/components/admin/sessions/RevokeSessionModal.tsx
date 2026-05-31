@@ -1,4 +1,4 @@
-import { UserSession } from "@/types/session";
+﻿import { UserSession } from "@/types/session";
 
 interface RevokeSessionModalProps {
   session: UserSession;
@@ -19,21 +19,21 @@ export const RevokeSessionModal = ({ session, isRevoking, onConfirm, onClose }: 
         </div>
         
         <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white mb-1">Xác nhận thu hồi phiên</h3>
-        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-sm text-center text-gray-500 dark:text-gray-300 mb-4">
           Người dùng sẽ bị đăng xuất khỏi thiết bị này
         </p>
         
         <div className="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg mb-4 space-y-1.5 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500 dark:text-gray-400">Session:</span>
+            <span className="text-gray-500 dark:text-gray-300">Session:</span>
             <span className="font-mono text-xs text-gray-800 dark:text-gray-200">{session.sessionId.slice(0, 8)}...</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500 dark:text-gray-400">IP:</span>
+            <span className="text-gray-500 dark:text-gray-300">IP:</span>
             <span className="font-medium text-gray-800 dark:text-gray-200">{session.ipAddress}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500 dark:text-gray-400">Thiết bị:</span>
+            <span className="text-gray-500 dark:text-gray-300">Thiết bị:</span>
             <span className="font-medium text-gray-800 dark:text-gray-200">{session.device}</span>
           </div>
         </div>

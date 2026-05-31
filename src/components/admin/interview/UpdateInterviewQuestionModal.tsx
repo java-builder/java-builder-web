@@ -1,22 +1,27 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
-import { questionSetService } from "@/services/question-set.service";
+import { interviewQuestionService } from "@/services/interview-question.service";
 import {
-  CreateQuestionSetRequest,
-  QuestionSetTranslation,
+  UpdateInterviewQuestionRequest,
+  InterviewQuestionResponse,
+  InterviewQuestionTranslation,
   Locale,
-} from "@/types/question-set";
+  Difficulty,
+} from "@/types/interview-question";
+import {
+  useAdminInterviewQuestion,
+  clearAdminInterviewQuestionCache,
+} from "@/hooks/useInterviewQuestions";
 import { useI18n } from "@/contexts/I18nContext";
 import Swal from "sweetalert2";
+import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 
-interface CreateQuestionSetModalProps {
+interface UpdateInterviewQuestionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  topicId: string;
-  topicName: string;
-  nextDisplayOrder: number;
+  question: InterviewQuestionResponse | null;
 }
 
 const LOCALES: { code: Locale; label: string; flag: string }[] = [
@@ -26,54 +31,73 @@ const LOCALES: { code: Locale; label: string; flag: string }[] = [
   { code: "KO", label: "한국어", flag: "🇰🇷" },
 ];
 
-const initialTranslations: QuestionSetTranslation[] = LOCALES.map((l) => ({
+const emptyTranslations: InterviewQuestionTranslation[] = LOCALES.map((l) => ({
   locale: l.code,
-  title: "",
-  description: "",
+  question: "",
+  answer: "",
+  tips: "",
 }));
 
-const AVAILABLE_TAGS = [
-  "OOP", "Inheritance", "Polymorphism", "Encapsulation", "Abstraction",
-  "Collections", "Stream API", "Lambda", "Generics", "Exception Handling",
-  "Multithreading", "Concurrency", "JDBC", "JPA", "Hibernate",
-  "Spring Core", "Spring Boot", "Spring MVC", "Spring Security", "Spring Data",
-  "REST API", "Microservices", "Docker", "Kubernetes", "Cloud",
-  "AWS", "Azure", "Design Patterns", "SOLID", "Testing",
-];
-
-export default function CreateQuestionSetModal({
+export default function UpdateInterviewQuestionModal({
   isOpen,
   onClose,
   onSuccess,
-  topicId,
-  topicName,
-  nextDisplayOrder,
-}: CreateQuestionSetModalProps) {
+  question,
+}: UpdateInterviewQuestionModalProps) {
   const { t } = useI18n();
-  const [formData, setFormData] = useState<CreateQuestionSetRequest>({
-    level: "FRESHER",
+  const [formData, setFormData] = useState<
+    UpdateInterviewQuestionRequest & { translations: InterviewQuestionTranslation[] }
+  >({
     difficulty: "EASY",
-    topics: "",
-    displayOrder: nextDisplayOrder,
-    translations: initialTranslations,
+    displayOrder: 1,
+    active: true,
+    translations: emptyTranslations,
   });
   const [activeLocale, setActiveLocale] = useState<Locale>("VI");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const { question: fullQuestion, isLoading: isLoadingData, error: loadError } =
+    useAdminInterviewQuestion(question?.id, isOpen);
+
+  // Khi data về thì fill form
+  useEffect(() => {
+    if (!fullQuestion) return;
+    const existing = fullQuestion.translations ?? [];
+    const merged = LOCALES.map((l) => {
+      const found = existing.find((tr) => tr.locale === l.code);
+      return found ?? { locale: l.code, question: "", answer: "", tips: "" };
+    });
+    setFormData({
+      difficulty: fullQuestion.difficulty,
+      displayOrder: fullQuestion.displayOrder,
+      active: fullQuestion.active,
+      translations: merged,
+    });
+  }, [fullQuestion]);
+
+  // Reset UI state mỗi lần mở
   useEffect(() => {
     if (isOpen) {
-      setFormData((prev) => ({ ...prev, displayOrder: nextDisplayOrder }));
+      setActiveLocale("VI");
+      setError("");
     }
-  }, [isOpen, nextDisplayOrder]);
+  }, [isOpen]);
+
+  // Hiển thị lỗi load
+  useEffect(() => {
+    if (loadError) setError(t("admin.common.loadError"));
+  }, [loadError, t]);
 
   const missingLocales = LOCALES.filter(
-    (l) => !formData.translations.find((tr) => tr.locale === l.code)?.title?.trim()
+    (l) =>
+      !formData.translations.find((tr) => tr.locale === l.code)?.question?.trim() ||
+      !formData.translations.find((tr) => tr.locale === l.code)?.answer?.trim()
   );
 
   const updateTranslation = (
     locale: Locale,
-    field: "title" | "description",
+    field: "question" | "answer" | "tips",
     value: string
   ) => {
     setFormData((prev) => ({
@@ -89,38 +113,21 @@ export default function CreateQuestionSetModal({
 
   const isLocaleFilled = (locale: Locale) => {
     const tr = getTranslation(locale);
-    return !!tr?.title?.trim();
-  };
-
-  const toggleTag = (tag: string) => {
-    const currentTags = formData.topics ? formData.topics.split(", ").filter((x) => x.trim()) : [];
-    const idx = currentTags.indexOf(tag);
-    if (idx > -1) currentTags.splice(idx, 1);
-    else currentTags.push(tag);
-    setFormData({ ...formData, topics: currentTags.join(", ") });
-  };
-
-  const isTagSelected = (tag: string) => {
-    const currentTags = formData.topics ? formData.topics.split(", ").filter((x) => x.trim()) : [];
-    return currentTags.includes(tag);
+    return !!tr?.question?.trim() && !!tr?.answer?.trim();
   };
 
   const submitForm = async () => {
+    if (!question) return;
     setIsSubmitting(true);
     try {
-      const filledTranslations = formData.translations.filter((tr) => tr.title?.trim());
-      await questionSetService.createQuestionSet(topicId, {
+      const filledTranslations = formData.translations.filter(
+        (tr) => tr.question?.trim() && tr.answer?.trim()
+      );
+      await interviewQuestionService.updateInterviewQuestion(question.id, {
         ...formData,
         translations: filledTranslations,
       });
-      setFormData({
-        level: "FRESHER",
-        difficulty: "EASY",
-        topics: "",
-        displayOrder: nextDisplayOrder,
-        translations: initialTranslations,
-      });
-      setActiveLocale("VI");
+      clearAdminInterviewQuestionCache(question.id);
       onSuccess();
       onClose();
     } catch (err) {
@@ -177,23 +184,18 @@ export default function CreateQuestionSetModal({
     await submitForm();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !question) return null;
 
   const currentTrans = getTranslation(activeLocale);
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-5xl w-full max-h-[95vh] overflow-y-auto">
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 z-10">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Tạo bộ câu hỏi mới
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                Chủ đề: {topicName}
-              </p>
-            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              Chỉnh sửa câu hỏi
+            </h2>
             <button
               onClick={onClose}
               disabled={isSubmitting}
@@ -206,7 +208,29 @@ export default function CreateQuestionSetModal({
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="relative p-6 space-y-5 min-h-[400px]">
+          {/* Skeleton overlay */}
+          {isLoadingData && (
+            <div className="absolute inset-0 z-20 bg-white dark:bg-gray-800 rounded-b-xl p-6 space-y-5">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="flex gap-2">
+                  {LOCALES.map((l) => (
+                    <div key={l.code} className="h-10 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="h-20 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="h-64 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm">
               {error}
@@ -222,7 +246,7 @@ export default function CreateQuestionSetModal({
               </span>
             </label>
 
-            <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700">
+            <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
               {LOCALES.map((l) => {
                 const filled = isLocaleFilled(l.code);
                 const isActive = activeLocale === l.code;
@@ -232,7 +256,7 @@ export default function CreateQuestionSetModal({
                     type="button"
                     onClick={() => setActiveLocale(l.code)}
                     disabled={isSubmitting}
-                    className={`relative px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                    className={`relative px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
                       isActive
                         ? "border-accent text-accent"
                         : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
@@ -252,70 +276,51 @@ export default function CreateQuestionSetModal({
             </div>
           </div>
 
-          {/* Title + Description */}
+          {/* Question + Answer + Tips */}
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Tiêu đề ({LOCALES.find((l) => l.code === activeLocale)?.label})
+                Câu hỏi ({LOCALES.find((l) => l.code === activeLocale)?.label}){" "}
+                <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                value={currentTrans?.title || ""}
-                onChange={(e) => updateTranslation(activeLocale, "title", e.target.value)}
-                placeholder={
-                  activeLocale === "VI"
-                    ? "Ví dụ: Cơ bản về OOP"
-                    : activeLocale === "EN"
-                    ? "Example: OOP Fundamentals"
-                    : activeLocale === "JA"
-                    ? "例: OOPの基礎"
-                    : "예: OOP 기초"
-                }
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
+              <textarea
+                value={currentTrans?.question || ""}
+                onChange={(e) => updateTranslation(activeLocale, "question", e.target.value)}
+                rows={3}
+                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none"
+                placeholder="Nhập câu hỏi..."
                 disabled={isSubmitting}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Mô tả ({LOCALES.find((l) => l.code === activeLocale)?.label})
+                Câu trả lời ({LOCALES.find((l) => l.code === activeLocale)?.label}){" "}
+                <span className="text-red-500">*</span>
               </label>
-              <textarea
-                value={currentTrans?.description || ""}
-                onChange={(e) => updateTranslation(activeLocale, "description", e.target.value)}
-                placeholder="Mô tả ngắn về bộ câu hỏi..."
-                rows={3}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none"
-                disabled={isSubmitting}
+              <MarkdownEditor
+                value={currentTrans?.answer || ""}
+                onChange={(value) => updateTranslation(activeLocale, "answer", value)}
+                placeholder="Nhập câu trả lời chi tiết..."
+                height={500}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Tips - Gợi ý ({LOCALES.find((l) => l.code === activeLocale)?.label})
+              </label>
+              <MarkdownEditor
+                value={currentTrans?.tips || ""}
+                onChange={(value) => updateTranslation(activeLocale, "tips", value)}
+                placeholder="Gợi ý để trả lời tốt hơn..."
+                height={250}
               />
             </div>
           </div>
 
-          {/* Level + Difficulty */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Cấp độ <span className="text-red-500">*</span>
-              </label>
-              <select
-                required
-                value={formData.level}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    level: e.target.value as "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR",
-                  })
-                }
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
-              >
-                <option value="INTERN">Intern</option>
-                <option value="FRESHER">Fresher</option>
-                <option value="JUNIOR">Junior</option>
-                <option value="MIDDLE">Middle</option>
-                <option value="SENIOR">Senior</option>
-              </select>
-            </div>
-
+          {/* Difficulty + Display order + Active */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Độ khó <span className="text-red-500">*</span>
@@ -324,10 +329,7 @@ export default function CreateQuestionSetModal({
                 required
                 value={formData.difficulty}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    difficulty: e.target.value as "EASY" | "MEDIUM" | "HARD",
-                  })
+                  setFormData({ ...formData, difficulty: e.target.value as Difficulty })
                 }
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
@@ -335,38 +337,6 @@ export default function CreateQuestionSetModal({
                 <option value="MEDIUM">Trung bình</option>
                 <option value="HARD">Khó</option>
               </select>
-            </div>
-          </div>
-
-          {/* Topics + Display order */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Chủ đề liên quan
-              </label>
-              <input
-                type="text"
-                value={formData.topics}
-                onChange={(e) => setFormData({ ...formData, topics: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Hoặc nhập thủ công"
-              />
-              <div className="mt-2 flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-                {AVAILABLE_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTag(tag)}
-                    className={`px-2 py-1 text-xs rounded-md transition-colors ${
-                      isTagSelected(tag)
-                        ? "bg-accent text-white"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
             </div>
 
             <div>
@@ -377,9 +347,25 @@ export default function CreateQuestionSetModal({
                 type="number"
                 min="1"
                 value={formData.displayOrder}
-                onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
+                onChange={(e) =>
+                  setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })
+                }
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Trạng thái
+              </label>
+              <select
+                value={formData.active ? "true" : "false"}
+                onChange={(e) => setFormData({ ...formData, active: e.target.value === "true" })}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+              >
+                <option value="true">Hoạt động</option>
+                <option value="false">Ẩn</option>
+              </select>
             </div>
           </div>
 
@@ -398,7 +384,7 @@ export default function CreateQuestionSetModal({
               disabled={isSubmitting}
               className="flex-1 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Đang tạo..." : "Tạo bộ câu hỏi"}
+              {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
           </div>
         </form>

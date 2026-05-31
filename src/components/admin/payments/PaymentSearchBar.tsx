@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { PaymentStatus } from "@/types/payment";
 
@@ -32,7 +32,7 @@ export const PaymentSearchBar = ({
   const hasFilters = orderCode || startDate || endDate || status;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-100 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-100 dark:border-slate-700">
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="w-full">

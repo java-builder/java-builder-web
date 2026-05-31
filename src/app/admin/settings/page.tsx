@@ -1,169 +1,104 @@
-"use client";
+﻿"use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { settingsConfig } from "@/lib/settings-config";
-import { settingsService } from "@/services/settings.service";
-import { SettingsData, SettingTab as SettingTabType } from "@/types/settings";
-import SettingTab from "@/components/admin/settings/SettingTab";
-import SettingsManager from "@/components/admin/settings/SettingsManager";
+import { useUser } from "@/hooks/useUser";
+import { useI18n } from "@/contexts/I18nContext";
+import SecurityTab from "@/components/profile/SecurityTab";
+import AppearanceTab from "@/components/admin/settings/AppearanceTab";
+import LanguageTab from "@/components/admin/settings/LanguageTab";
 
-export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState("system");
-  const [settings, setSettings] = useState<SettingsData>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
-  const [configTabs, setConfigTabs] = useState<SettingTabType[]>(
-    settingsConfig.tabs,
-  );
+type Tab = "security" | "appearance" | "language";
 
-  const tabs = configTabs;
+export default function AdminSettingsPage() {
+  const { t } = useI18n();
+  const { user, loading, error, updateUser } = useUser();
+  const [activeTab, setActiveTab] = useState<Tab>("security");
 
-  // Load settings on component mount
-  useEffect(() => {
-    loadSettings();
-  }, []);
+  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    {
+      id: "security",
+      label: t("admin.settings.tabSecurity"),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      ),
+    },
+    {
+      id: "appearance",
+      label: t("admin.settings.tabAppearance"),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      ),
+    },
+    {
+      id: "language",
+      label: t("admin.settings.tabLanguage"),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5c-.347 2.225-1.512 4.417-3.239 6.275zM8.5 13H5m3.5-3.5a18.022 18.022 0 01-2.088-3.5" />
+        </svg>
+      ),
+    },
+  ];
 
-  const loadSettings = async () => {
-    try {
-      setIsLoading(true);
-      const loadedSettings = await settingsService.loadSettings();
-      setSettings(loadedSettings);
-    } catch (error) {
-      console.error("Error loading settings:", error);
-      setMessage({ type: "error", text: "Không thể tải cài đặt" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSettingChange = (
-    tabId: string,
-    sectionId: string,
-    fieldId: string,
-    value: string | number | boolean,
-  ) => {
-    const newSettings = settingsService.setSetting(
-      settings,
-      tabId,
-      sectionId,
-      fieldId,
-      value,
-    );
-    setSettings(newSettings);
-  };
-
-  const handleSave = async () => {
-    try {
-      setIsSaving(true);
-      setMessage(null);
-
-      // Validate settings
-      const validation = settingsService.validateSettings(settings);
-      if (!validation.isValid) {
-        setMessage({ type: "error", text: validation.errors.join(", ") });
-        return;
-      }
-
-      // Save settings
-      await settingsService.saveSettings(settings);
-      setMessage({ type: "success", text: "Cài đặt đã được lưu thành công!" });
-
-      // Clear message after 3 seconds
-      setTimeout(() => setMessage(null), 3000);
-    } catch (error) {
-      console.error("Error saving settings:", error);
-      setMessage({ type: "error", text: "Không thể lưu cài đặt" });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleExport = () => {
-    try {
-      const exportData = settingsService.exportSettings(settings);
-      const blob = new Blob([exportData], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `JavaBuilder-settings-${new Date().toISOString().split("T")[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch {
-      setMessage({ type: "error", text: "Không thể export cài đặt" });
-    }
-  };
-
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const content = e.target?.result as string;
-        const importedSettings = settingsService.importSettings(content);
-        setSettings(importedSettings);
-        setMessage({ type: "success", text: "Import cài đặt thành công!" });
-      } catch (error) {
-        setMessage({ type: "error", text: (error as Error).message });
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải cài đặt...</p>
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
+      </div>
+    );
+  }
+
+  if (error || !user) {
+    return (
+      <div className="p-6 max-w-7xl mx-auto">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-8 text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            {t("admin.settings.loadUserError")}
+          </h2>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors"
+          >
+            {t("admin.settings.retryBtn")}
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-6">
       {/* Breadcrumb */}
       <nav className="flex" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
           <li className="inline-flex items-center">
             <Link
               href="/admin"
-              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+              className="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-accent"
             >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
-              Dashboard
+              {t("admin.settings.breadcrumbDashboard")}
             </Link>
           </li>
           <li aria-current="page">
             <div className="flex items-center">
-              <svg
-                className="w-6 h-6 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                ></path>
+              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
               <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
-                Cài đặt
+                {t("admin.settings.breadcrumbSettings")}
               </span>
             </div>
           </li>
@@ -171,126 +106,78 @@ export default function SettingsPage() {
       </nav>
 
       {/* Header */}
-      <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              ⚙️ Cài đặt Hệ thống
-            </h1>
-            <p className="text-gray-600">
-              Quản lý và cấu hình các thiết lập cho hệ thống JavaBuilder
-            </p>
-          </div>
-          <div className="flex gap-3 mt-4 lg:mt-0">
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-              id="import-settings"
-            />
-            <label
-              htmlFor="import-settings"
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-            >
-              📥 Import
-            </label>
-            <button
-              onClick={handleExport}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-            >
-              📤 Export
-            </button>
-          </div>
-        </div>
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 border border-gray-200 dark:border-slate-700 shadow-sm">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          {t("admin.settings.pageTitle")}
+        </h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          {t("admin.settings.pageSubtitle")}
+        </p>
       </div>
 
-      {/* Message */}
-      {message && (
-        <div
-          className={`p-4 rounded-lg ${
-            message.type === "success"
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-red-50 text-red-800 border border-red-200"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
-
-      {/* Main Content */}
+      {/* Tabs + Content */}
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar Navigation - Desktop */}
+        {/* Sidebar - Desktop */}
         <div className="hidden lg:block w-64 flex-shrink-0">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-            <div className="p-4">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
-                Danh mục cài đặt
-              </h3>
-              <nav className="space-y-1">
-                {tabs.map((tab) => (
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-3 sticky top-6">
+            <nav className="space-y-1">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`${
-                      activeTab === tab.id
-                        ? "bg-blue-50 text-blue-700 border-blue-200"
-                        : "text-gray-700 hover:bg-gray-50 border-transparent"
-                    } w-full text-left px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 flex items-center gap-3`}
+                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-3 ${
+                      isActive
+                        ? "bg-accent text-white shadow-sm"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/70"
+                    }`}
                   >
-                    <span className="text-lg">{tab.icon}</span>
-                    {tab.name}
+                    <span className={isActive ? "text-white" : "text-gray-500 dark:text-gray-300"}>
+                      {tab.icon}
+                    </span>
+                    {tab.label}
                   </button>
-                ))}
-              </nav>
-            </div>
+                );
+              })}
+            </nav>
           </div>
         </div>
 
-        {/* Mobile Tab Navigation */}
+        {/* Mobile Tab Selector */}
         <div className="lg:hidden">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            <select
-              value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              {tabs.map((tab) => (
-                <option key={tab.id} value={tab.id}>
-                  {tab.icon} {tab.name}
-                </option>
-              ))}
-            </select>
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-2">
+            <div className="flex gap-1">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                      isActive
+                        ? "bg-accent text-white shadow-sm"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/70"
+                    }`}
+                  >
+                    {tab.icon}
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-            <div className="p-6">
-              {tabs.map(
-                (tab) =>
-                  activeTab === tab.id && (
-                    <SettingTab
-                      key={tab.id}
-                      tab={tab}
-                      settings={settings}
-                      onSettingChange={handleSettingChange}
-                      onSave={handleSave}
-                      isSaving={isSaving}
-                    />
-                  ),
-              )}
-            </div>
-          </div>
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          {activeTab === "security" && (
+            <SecurityTab user={user} onUserUpdate={updateUser} />
+          )}
+          {activeTab === "appearance" && <AppearanceTab />}
+          {activeTab === "language" && <LanguageTab />}
         </div>
       </div>
-
-      {/* Settings Manager */}
-      <SettingsManager
-        currentConfig={configTabs}
-        onConfigChange={setConfigTabs}
-      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -219,7 +219,7 @@ export default function AdminDocumentsPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div className="mb-6 lg:mb-0">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Quản lý Tài liệu</h1>
-            <p className="text-gray-600 dark:text-gray-400">Quản lý sách và tài liệu học tập</p>
+            <p className="text-gray-600 dark:text-gray-300">Quản lý sách và tài liệu học tập</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
@@ -292,10 +292,10 @@ export default function AdminDocumentsPage() {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700">
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Tài liệu</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Loại</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Ngày tạo</th>
-                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Thao tác</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Tài liệu</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Loại</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Ngày tạo</th>
+                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
@@ -332,7 +332,7 @@ export default function AdminDocumentsPage() {
                         <div className="min-w-0">
                           <h3 className="font-semibold text-gray-900 dark:text-white truncate max-w-xs">{doc.title}</h3>
                           {doc.description && (
-                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">{doc.description}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-300 truncate max-w-xs">{doc.description}</p>
                           )}
                         </div>
                       </div>

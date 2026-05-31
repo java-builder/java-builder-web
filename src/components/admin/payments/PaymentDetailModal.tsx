@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { PaymentDetailResponse, PaymentStatus, TransactionType, PaymentMethod, PaymentGateWay } from "@/types/payment";
 import { formatApiDate } from "@/utils/dateUtils";
@@ -82,10 +82,10 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
           <div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Chi tiết thanh toán</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Mã đơn hàng: #{payment.paymentCode}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Mã đơn hàng: #{payment.paymentCode}</p>
           </div>
           <button
             onClick={onClose}
@@ -103,13 +103,13 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
             {/* Status and Amount */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</label>
+                <label className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Trạng thái</label>
                 <div className="mt-2">
                   <StatusBadge status={payment.paymentStatus} />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Số tiền</label>
+                <label className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Số tiền</label>
                 <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">
                   {new Intl.NumberFormat("vi-VN", {
                     style: "currency",
@@ -119,43 +119,43 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
               </div>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-gray-700"></div>
+            <div className="border-t border-gray-200 dark:border-slate-700"></div>
 
             {/* User Info */}
             <div>
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Thông tin người dùng</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Tên người dùng</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Tên người dùng</label>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">{payment.userName}</p>
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Email</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Email</label>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mt-1 break-all">{payment.userEmail}</p>
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-gray-700"></div>
+            <div className="border-t border-gray-200 dark:border-slate-700"></div>
 
             {/* Transaction Info */}
             <div>
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Thông tin giao dịch</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Loại giao dịch</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Loại giao dịch</label>
                   <div className="mt-1">
                     <TransactionTypeBadge type={payment.transactionType} />
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Phương thức</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Phương thức</label>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                     {getPaymentMethodText(payment.paymentMethod)}
                   </p>
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Cổng thanh toán</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Cổng thanh toán</label>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                     {getPaymentGatewayText(payment.paymentGateway)}
                   </p>
@@ -166,11 +166,11 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
             {/* Product Info */}
             {(payment.courseTitle || payment.subscriptionPlanName) && (
               <>
-                <div className="border-t border-gray-200 dark:border-gray-700"></div>
+                <div className="border-t border-gray-200 dark:border-slate-700"></div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Sản phẩm</h3>
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400">
+                    <label className="text-xs text-gray-500 dark:text-gray-300">
                       {payment.courseTitle ? "Khóa học" : "Gói đăng ký"}
                     </label>
                     <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
@@ -184,7 +184,7 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
             {/* Description */}
             {payment.description && (
               <>
-                <div className="border-t border-gray-200 dark:border-gray-700"></div>
+                <div className="border-t border-gray-200 dark:border-slate-700"></div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Mô tả</h3>
                   <p className="text-sm text-gray-700 dark:text-gray-300">{payment.description}</p>
@@ -193,18 +193,18 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
             )}
 
             {/* Timestamps */}
-            <div className="border-t border-gray-200 dark:border-gray-700"></div>
+            <div className="border-t border-gray-200 dark:border-slate-700"></div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Thời gian</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Ngày tạo</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Ngày tạo</label>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                     {formatApiDate(payment.createdAt)}
                   </p>
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-400">Cập nhật lần cuối</label>
+                  <label className="text-xs text-gray-500 dark:text-gray-300">Cập nhật lần cuối</label>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                     {formatApiDate(payment.updatedAt)}
                   </p>

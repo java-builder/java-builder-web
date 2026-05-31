@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEmailCampaign } from "@/components/admin/notifications/useEmailCampaign";
 import { TEMPLATE_LIST } from "@/components/admin/notifications/emailTemplates";
@@ -11,12 +11,12 @@ export default function SendNotificationPage() {
     <div className="p-3 sm:p-6 max-w-[1600px] mx-auto space-y-6">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-700 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-700 pb-5">
         <div>
           <h1 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
             Gửi Chiến Dịch Email Marketing
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-300">
             Thiết kế mẫu, lựa chọn phân khúc người dùng và lập lịch gửi email chuyên nghiệp
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function SendNotificationPage() {
                 className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 ${
                   c.activeTab === tab.id
                     ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-md font-bold"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 }`}
               >
                 <span className="text-base sm:text-sm">{tab.icon}</span>
@@ -182,7 +182,7 @@ export default function SendNotificationPage() {
 
                 {/* Template picker */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-300 mb-2">
                     Chọn Mẫu Gửi Nhanh
                   </label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -255,7 +255,7 @@ export default function SendNotificationPage() {
                         }`}
                       >
                         <span className="font-bold text-sm text-gray-900 dark:text-white">{seg.title}</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{seg.desc}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-300">{seg.desc}</span>
                       </button>
                     ))}
                   </div>
@@ -278,7 +278,7 @@ export default function SendNotificationPage() {
                       </button>
                     </div>
                     {c.selectedUsers.length > 0 && (
-                      <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                      <div className="text-xs font-semibold text-gray-500 dark:text-gray-300">
                         Đã chọn: <span className="text-accent">{c.selectedUsers.length}</span> người nhận
                       </div>
                     )}
@@ -351,12 +351,12 @@ export default function SendNotificationPage() {
                 {c.scheduleType === "schedule" && (
                   <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-slate-800/40 rounded-xl border border-gray-200/50 dark:border-slate-700/50 animate-slideDown">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Chọn Ngày Gửi</label>
+                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-300 uppercase mb-1.5">Chọn Ngày Gửi</label>
                       <input type="date" value={c.scheduleDate} onChange={(e) => c.setScheduleDate(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-accent text-sm" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Chọn Giờ Gửi</label>
+                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-300 uppercase mb-1.5">Chọn Giờ Gửi</label>
                       <input type="time" value={c.scheduleTime} onChange={(e) => c.setScheduleTime(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-accent text-sm" />
                     </div>

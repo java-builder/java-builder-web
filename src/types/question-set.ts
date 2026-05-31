@@ -1,25 +1,23 @@
+import { Locale, QuestionSetTranslation } from "@/types/interview";
+
+export type { Locale, QuestionSetTranslation };
+
 export interface QuestionSetDetailResponse {
   id: string;
   slug: string;
-  title: string;
   level: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
   difficulty: "EASY" | "MEDIUM" | "HARD";
   topics?: string;
   displayOrder: number;
   active: boolean;
   totalQuestions?: number;
+  /**
+   * List endpoint: 1 entry resolved theo locale.
+   * Admin endpoint: full translations.
+   */
+  translations: QuestionSetTranslation[];
   createdAt: string;
-}
-
-export interface InterviewQuestionResponse {
-  id: string;
-  slug: string;
-  question: string;
-  answer: string;
-  tips?: string;
-  difficulty: "EASY" | "MEDIUM" | "HARD";
-  displayOrder: number;
-  active: boolean;
+  updatedAt?: string;
 }
 
 export interface ListQuestionSetResponse {
@@ -27,18 +25,18 @@ export interface ListQuestionSetResponse {
 }
 
 export interface CreateQuestionSetRequest {
-  title: string;
   level: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
   difficulty: "EASY" | "MEDIUM" | "HARD";
   topics?: string;
   displayOrder?: number;
+  translations: QuestionSetTranslation[];
 }
 
 export interface UpdateQuestionSetRequest {
-  title?: string;
   level?: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
   difficulty?: "EASY" | "MEDIUM" | "HARD";
   topics?: string;
   displayOrder?: number;
   active?: boolean;
+  translations?: QuestionSetTranslation[];
 }

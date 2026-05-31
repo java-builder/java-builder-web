@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { UserSession } from "@/types/session";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { getProviderBadge, getStatusBadge } from "./SessionBadges";
@@ -33,7 +33,7 @@ export const SessionTableRow = ({ session, imageErrors, onImageError, onViewDeta
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]" title={session.username}>{session.username}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[150px]" title={session.email}>{session.email}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-300 truncate max-w-[150px]" title={session.email}>{session.email}</div>
           </div>
         </div>
       </td>
@@ -47,11 +47,11 @@ export const SessionTableRow = ({ session, imageErrors, onImageError, onViewDeta
       <td className="px-4 py-3 text-gray-700 dark:text-gray-200 align-top">
         <div className="max-w-[120px]">
           <div className="truncate" title={session.device}>{session.device}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 truncate" title={session.os}>{session.os}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-300 truncate" title={session.os}>{session.os}</div>
         </div>
       </td>
       <td className="px-4 py-3 text-gray-700 dark:text-gray-200 align-top whitespace-nowrap">{session.ipAddress}</td>
-      <td className="px-4 py-3 text-gray-600 dark:text-gray-400 align-top whitespace-nowrap text-xs">{formatReadableDate(session.createdAt)}</td>
+      <td className="px-4 py-3 text-gray-600 dark:text-gray-300 align-top whitespace-nowrap text-xs">{formatReadableDate(session.createdAt)}</td>
       <td className="px-4 py-3 text-center align-top">
         <button
           onClick={() => onViewDetails(session)}

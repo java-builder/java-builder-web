@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { categoryService } from "@/services/category.service";
@@ -60,7 +60,7 @@ export default function CategoriesPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Quản lý danh mục</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Tạo, xem và xóa các danh mục</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Tạo, xem và xóa các danh mục</p>
         </div>
         <div>
           <button
@@ -74,7 +74,7 @@ export default function CategoriesPage() {
 
       {/* Tabs */}
       <div className="mb-6">
-        <div className="border-b border-gray-200 dark:border-gray-700">
+        <div className="border-b border-gray-200 dark:border-slate-700">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab(CategoryType.POST)}
@@ -100,21 +100,21 @@ export default function CategoriesPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="p-8 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            <div className="p-8 text-center text-gray-600 dark:text-gray-300">Đang tải...</div>
           ) : categories.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">Chưa có danh mục nào</div>
+            <div className="p-8 text-center text-gray-500 dark:text-gray-300">Chưa có danh mục nào</div>
           ) : (
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">TÊN</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">LOẠI</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">MÔ TẢ</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">TẠO LÚC</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">THAO TÁC</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TÊN</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">LOẠI</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">MÔ TẢ</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TẠO LÚC</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">THAO TÁC</th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -130,8 +130,8 @@ export default function CategoriesPage() {
                         {c.categoryType === CategoryType.BLOG ? "Blog" : "Bài viết"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{c.description || "-"}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatReadableDate(c.createdAt)}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{c.description || "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-300">{formatReadableDate(c.createdAt)}</td>
                     <td className="px-6 py-4 text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
                         <button

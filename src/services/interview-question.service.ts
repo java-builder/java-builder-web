@@ -1,93 +1,60 @@
 import { apiClient } from "@/api/axios";
 import { API } from "@/api/api";
 import { ApiResponse } from "@/types/api";
-
-export interface CreateInterviewQuestionRequest {
-  question: string;
-  answer: string;
-  tips?: string;
-  difficulty: "EASY" | "MEDIUM" | "HARD";
-  displayOrder: number;
-}
-
-export interface UpdateInterviewQuestionRequest {
-  question?: string;
-  answer?: string;
-  tips?: string;
-  difficulty?: "EASY" | "MEDIUM" | "HARD";
-  displayOrder?: number;
-  active?: boolean;
-}
-
-export interface InterviewQuestionResponse {
-  id: string;
-  slug: string;
-  question: string;
-  answer: string;
-  tips?: string;
-  difficulty: "EASY" | "MEDIUM" | "HARD";
-  displayOrder: number;
-  active: boolean;
-}
-
-export interface CreateInterviewQuestionResponse {
-  id: string;
-  slug: string;
-  question: string;
-  answer: string;
-  tips?: string;
-  difficulty: "EASY" | "MEDIUM" | "HARD";
-  displayOrder: number;
-  active: boolean;
-}
-
-export interface ListInterviewQuestionResponse {
-  questions: InterviewQuestionResponse[];
-}
+import {
+  CreateInterviewQuestionRequest,
+  UpdateInterviewQuestionRequest,
+  ListInterviewQuestionResponse,
+  InterviewQuestionResponse,
+} from "@/types/interview-question";
 
 export const interviewQuestionService = {
-  async createQuestion(
+  createInterviewQuestion: async (
     questionSetId: string,
-    request: CreateInterviewQuestionRequest
-  ): Promise<ApiResponse<CreateInterviewQuestionResponse>> {
-    const response = await apiClient.post(
+    data: CreateInterviewQuestionRequest
+  ) => {
+    const response = await apiClient.post<ApiResponse<InterviewQuestionResponse>>(
       `${API.CREATE_INTERVIEW_QUESTION}/${questionSetId}`,
-      request
+      data
     );
     return response.data;
   },
 
-  async getQuestions(
-    questionSetId: string
-  ): Promise<ApiResponse<ListInterviewQuestionResponse>> {
-    const response = await apiClient.get(
+  getInterviewQuestionsByQuestionSetId: async (questionSetId: string) => {
+    const response = await apiClient.get<ApiResponse<ListInterviewQuestionResponse>>(
       `${API.GET_INTERVIEW_QUESTIONS}/${questionSetId}`
     );
     return response.data;
   },
 
-  async getQuestionsBySlug(
-    questionSetSlug: string
-  ): Promise<ApiResponse<ListInterviewQuestionResponse>> {
-    const response = await apiClient.get(
+  getInterviewQuestionsByQuestionSetSlug: async (questionSetSlug: string) => {
+    const response = await apiClient.get<ApiResponse<ListInterviewQuestionResponse>>(
       `${API.GET_INTERVIEW_QUESTIONS_BY_SLUG}/${questionSetSlug}`
     );
     return response.data;
   },
 
-  async updateQuestion(
-    questionId: string,
-    request: UpdateInterviewQuestionRequest
-  ): Promise<ApiResponse<InterviewQuestionResponse>> {
-    const response = await apiClient.put(
-      `${API.UPDATE_INTERVIEW_QUESTION}/${questionId}`,
-      request
+  // Lấy full translations cho admin edit
+  getInterviewQuestionForAdmin: async (questionId: string) => {
+    const response = await apiClient.get<ApiResponse<InterviewQuestionResponse>>(
+      `${API.GET_INTERVIEW_QUESTION_FOR_ADMIN}/${questionId}`
     );
     return response.data;
   },
 
-  async deleteQuestion(questionId: string): Promise<ApiResponse<void>> {
-    const response = await apiClient.delete(
+  updateInterviewQuestion: async (
+    questionId: string,
+    data: UpdateInterviewQuestionRequest
+  ) => {
+    const response = await apiClient.put<ApiResponse<InterviewQuestionResponse>>(
+      `${API.UPDATE_INTERVIEW_QUESTION}/${questionId}`,
+      data
+    );
+    return response.data;
+  },
+
+  deleteInterviewQuestion: async (questionId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
       `${API.DELETE_INTERVIEW_QUESTION}/${questionId}`
     );
     return response.data;

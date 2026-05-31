@@ -1,4 +1,4 @@
-import { PaymentDetailResponse, PaymentStatus, TransactionType } from "@/types/payment";
+﻿import { PaymentDetailResponse, PaymentStatus, TransactionType } from "@/types/payment";
 import { formatReadableDate } from "@/utils/dateUtils";
 
 const StatusBadge = ({ status }: { status: PaymentStatus }) => {
@@ -67,7 +67,7 @@ export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
         <div className="text-xs sm:text-sm text-gray-900 dark:text-gray-100 font-medium truncate max-w-[120px] sm:max-w-none">
           {payment.userName}
         </div>
-        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate max-w-[120px] sm:max-w-none">
+        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-300 truncate max-w-[120px] sm:max-w-none">
           {payment.userEmail}
         </div>
       </td>
@@ -98,7 +98,7 @@ export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
         <StatusBadge status={payment.paymentStatus} />
       </td>
-      <td className="hidden xl:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+      <td className="hidden xl:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-300">
         {formatReadableDate(payment.createdAt)}
       </td>
     </tr>

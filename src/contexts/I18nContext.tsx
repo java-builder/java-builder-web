@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { defaultLocale, isLocale, Locale, localeStorageKey } from "@/i18n/config";
 import { messages } from "@/i18n/messages";
 
@@ -16,6 +16,8 @@ interface I18nContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   t: (key: TranslationKey) => string;
+  /** True trong 1s sau khi đổi locale — dùng để hiển thị skeleton trên data UI */
+  isSwitching: boolean;
 }
 
 const I18nContext = createContext<I18nContextValue | undefined>(undefined);
@@ -33,6 +35,7 @@ const getNestedValue = (source: unknown, path: string): string | undefined => {
 
 export function I18nProvider({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
     const storedLocale = localStorage.getItem(localeStorageKey);
@@ -58,19 +61,25 @@ export function I18nProvider({ children, initialLocale }: { children: ReactNode;
     document.documentElement.lang = locale;
   }, [locale]);
 
-  const setLocale = (newLocale: Locale) => {
-    try {
-      localStorage.setItem(localeStorageKey, newLocale);
-      const verifiedLocale = localStorage.getItem(localeStorageKey);
-      if (verifiedLocale !== newLocale) {
-        console.warn(`Locale verification failed: expected "${newLocale}" in localStorage but got "${verifiedLocale}"`);
+  const setLocale = useCallback((newLocale: Locale) => {
+    setLocaleState((prev) => {
+      if (newLocale === prev) return prev;
+      try {
+        localStorage.setItem(localeStorageKey, newLocale);
+        const verifiedLocale = localStorage.getItem(localeStorageKey);
+        if (verifiedLocale !== newLocale) {
+          console.warn(`Locale verification failed: expected "${newLocale}" in localStorage but got "${verifiedLocale}"`);
+        }
+        document.cookie = `${localeStorageKey}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      } catch (error) {
+        console.error("Failed to save locale synchronously:", error);
       }
-      document.cookie = `${localeStorageKey}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    } catch (error) {
-      console.error("Failed to save locale synchronously:", error);
-    }
-    setLocaleState(newLocale);
-  };
+      // Bật cờ switching → UI hiện skeleton 1s rồi tắt
+      setIsSwitching(true);
+      setTimeout(() => setIsSwitching(false), 1000);
+      return newLocale;
+    });
+  }, []);
 
   const value = useMemo<I18nContextValue>(() => {
     const t = (key: TranslationKey) => {
@@ -85,8 +94,9 @@ export function I18nProvider({ children, initialLocale }: { children: ReactNode;
       locale,
       setLocale,
       t,
+      isSwitching,
     };
-  }, [locale]);
+  }, [locale, isSwitching, setLocale]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

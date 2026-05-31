@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { questionContributionService } from "@/services/question-contribution.service";
@@ -105,7 +105,7 @@ export default function QuestionContributionsPage() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Quản lý đóng góp câu hỏi
             </h1>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
               Duyệt và quản lý câu hỏi do người dùng đóng góp
             </p>
           </div>
@@ -113,10 +113,10 @@ export default function QuestionContributionsPage() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Tổng số</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Tổng số</p>
               <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-1">{stats.total}</p>
             </div>
             <div className="p-2 bg-accent-100 dark:bg-accent-900/30 rounded-lg">
@@ -127,10 +127,10 @@ export default function QuestionContributionsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Chờ duyệt</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Chờ duyệt</p>
               <p className="text-xl sm:text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">{stats.pending}</p>
             </div>
             <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
@@ -141,10 +141,10 @@ export default function QuestionContributionsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Đã duyệt</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Đã duyệt</p>
               <p className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{stats.approved}</p>
             </div>
             <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
@@ -155,10 +155,10 @@ export default function QuestionContributionsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Đã từ chối</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Đã từ chối</p>
               <p className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{stats.rejected}</p>
             </div>
             <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
@@ -170,7 +170,7 @@ export default function QuestionContributionsPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-slate-700">
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => {
@@ -246,12 +246,12 @@ export default function QuestionContributionsPage() {
       </div>
 
       {filteredContributions.length === 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-12 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-12 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
           </svg>
-          <div className="text-gray-500 dark:text-gray-400 font-medium">Không có đóng góp nào</div>
-          <div className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+          <div className="text-gray-500 dark:text-gray-300 font-medium">Không có đóng góp nào</div>
+          <div className="text-sm text-gray-400 dark:text-gray-300 mt-1">
             {filterStatus !== "ALL" ? "Thử thay đổi bộ lọc" : "Chưa có người dùng nào đóng góp câu hỏi"}
           </div>
         </div>

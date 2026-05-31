@@ -1,4 +1,4 @@
-interface UserSearchBarProps {
+﻿interface UserSearchBarProps {
   search: string;
   debouncedSearch: string;
   isLoading: boolean;
@@ -14,7 +14,7 @@ export const UserSearchBar = ({
   onRefresh,
 }: UserSearchBarProps) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6 border border-gray-100 dark:border-slate-700">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
         <div className="flex-1 max-w-lg">
           <div className="relative">

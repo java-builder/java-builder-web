@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -7,8 +7,10 @@ import { notificationApi } from "@/services/notification.service";
 import { NotificationDetailResponse } from "@/types/notification";
 import { formatRelativeTime, formatApiDate } from "@/utils/dateUtils";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function AdminNotificationDropdown() {
+  const { t } = useI18n();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationDetailResponse[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
@@ -115,30 +117,30 @@ export default function AdminNotificationDropdown() {
       </button>
 
       {isNotifOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-50">
           {/* Header with tabs */}
-          <div className="border-b border-gray-200">
-            <div className="px-3 py-2 text-xs font-medium text-gray-500">
-              Thông báo
+          <div className="border-b border-gray-200 dark:border-slate-700">
+            <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300">
+              {t("admin.notificationDropdown.title")}
             </div>
-            <div className="flex border-t border-gray-100">
+            <div className="flex border-t border-gray-100 dark:border-slate-700">
               <button
                 onClick={() => handleTabChange("all")}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${activeTab === "all"
                   ? "text-accent border-b-2 border-accent"
-                  : "text-gray-600 hover:text-gray-800"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
                   }`}
               >
-                Tất cả
+                {t("admin.notificationDropdown.tabAll")}
               </button>
               <button
                 onClick={() => handleTabChange("unread")}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors relative ${activeTab === "unread"
                   ? "text-accent border-b-2 border-accent"
-                  : "text-gray-600 hover:text-gray-800"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
                   }`}
               >
-                Chưa đọc
+                {t("admin.notificationDropdown.tabUnread")}
                 {unreadCount > 0 && (
                   <span className="absolute top-1.5 right-2 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] leading-[18px] rounded-full text-center font-semibold">
                     {unreadCount > 9 ? "9+" : unreadCount}
@@ -150,9 +152,9 @@ export default function AdminNotificationDropdown() {
           <div className="max-h-80 overflow-auto">
             {filteredNotifications.length === 0 ? (
               <div className="px-4 py-6 text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center mb-3">
                   <svg
-                    className="w-6 h-6 text-gray-400"
+                    className="w-6 h-6 text-gray-400 dark:text-gray-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -165,15 +167,15 @@ export default function AdminNotificationDropdown() {
                     />
                   </svg>
                 </div>
-                <div className="text-sm font-medium text-gray-700">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
                   {activeTab === "unread"
-                    ? "Không có thông báo chưa đọc"
-                    : "Chưa có thông báo"}
+                    ? t("admin.notificationDropdown.emptyUnreadTitle")
+                    : t("admin.notificationDropdown.emptyAllTitle")}
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
+                <div className="text-xs text-gray-500 dark:text-gray-300 mt-1">
                   {activeTab === "unread"
-                    ? "Tất cả thông báo của bạn đã được đọc."
-                    : "Khi có hoạt động mới, chúng tôi sẽ hiển thị tại đây."}
+                    ? t("admin.notificationDropdown.emptyUnreadDesc")
+                    : t("admin.notificationDropdown.emptyAllDesc")}
                 </div>
               </div>
             ) : (
@@ -181,10 +183,10 @@ export default function AdminNotificationDropdown() {
                 <Link
                   key={n.id}
                   href={n.link || "#"}
-                  className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-blue-50 ${!n.isRead ? "bg-blue-50/50" : "hover:bg-gray-50"}`}
+                  className={`flex items-start gap-3 px-4 py-3 transition-colors ${!n.isRead ? "bg-blue-50/50 dark:bg-accent/10 hover:bg-blue-50 dark:hover:bg-accent/20" : "hover:bg-gray-50 dark:hover:bg-slate-700/50"}`}
                   onClick={() => setIsNotifOpen(false)}
                 >
-                  <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
                     {n.avatar ? (
                       <Image
                         src={n.avatar}
@@ -195,19 +197,19 @@ export default function AdminNotificationDropdown() {
                         unoptimized
                       />
                     ) : (
-                      <span className="text-xs text-gray-600">
+                      <span className="text-xs text-gray-600 dark:text-gray-300">
                         {(n.senderName || "U")[0]?.toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm text-gray-900 line-clamp-2 mb-1">
+                    <div className="text-sm text-gray-900 dark:text-gray-100 line-clamp-2 mb-1">
                       <span className="font-medium">
-                        {n.title || "Thông báo"}
+                        {n.title || t("admin.notificationDropdown.defaultTitle")}
                       </span>
                     </div>
                     <div
-                      className="text-xs text-gray-400"
+                      className="text-xs text-gray-400 dark:text-gray-300"
                       title={n.createdAt ? formatApiDate(n.createdAt) : ""}
                     >
                       {n.createdAt ? formatRelativeTime(n.createdAt) : ""}
@@ -221,7 +223,7 @@ export default function AdminNotificationDropdown() {
 
           {/* Load More Button */}
           {currentPage < totalPages && (
-            <div className="px-4 py-2.5 border-t border-gray-100">
+            <div className="px-4 py-2.5 border-t border-gray-100 dark:border-slate-700">
               <button
                 onClick={handleLoadMore}
                 disabled={isFetching}
@@ -248,11 +250,11 @@ export default function AdminNotificationDropdown() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    <span>Đang tải...</span>
+                    <span>{t("admin.notificationDropdown.loading")}</span>
                   </>
                 ) : (
                   <>
-                    <span>Xem thêm</span>
+                    <span>{t("admin.notificationDropdown.viewMore")}</span>
                     <svg
                       className="w-4 h-4"
                       fill="none"

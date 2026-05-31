@@ -4,14 +4,17 @@ export interface InterviewTopicsResponse {
 
 export interface InterviewTopicDetailResponse {
   id: string;
-  name: string;
   slug: string;
-  description?: string;
   thumbnailUrl?: string;
   displayOrder: number;
   active?: boolean;
   totalQuestionSets?: number;
   totalQuestions?: number;
+  /**
+   * List endpoint: chứa 1 entry resolved theo locale hiện tại.
+   * Admin endpoint: chứa toàn bộ translations của các locale.
+   */
+  translations: TopicTranslation[];
   createdAt: string;
   updatedAt?: string;
   questionSets?: QuestionSetResponse[];
@@ -19,41 +22,118 @@ export interface InterviewTopicDetailResponse {
 
 export interface QuestionSetResponse {
   id: string;
-  name: string;
   slug?: string;
-  description?: string;
   level?: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
   difficulty?: "EASY" | "MEDIUM" | "HARD";
   topics?: string;
   displayOrder: number;
   active: boolean;
   totalQuestions?: number;
-  questions?: InterviewQuestionResponse[];
+  translations: QuestionSetTranslation[];
+  questions?: InterviewQuestionItem[];
 }
 
-export interface InterviewQuestionResponse {
+export interface InterviewQuestionItem {
   id: string;
-  question: string;
-  answer: string;
-  tips?: string;
+  slug: string;
   difficulty: "EASY" | "MEDIUM" | "HARD";
   displayOrder: number;
   active: boolean;
+  translations: InterviewQuestionTranslation[];
 }
 
-export interface CreateInterviewTopicRequest {
+// ─── Locale ───────────────────────────────────────────────────────────────────
+export type Locale = "VI" | "EN" | "JA" | "KO";
+
+/** Convert FE locale (lowercase: vi, en, ja, ko) to BE locale (uppercase: VI, EN, JA, KO). */
+export function toBackendLocale(locale: string): Locale {
+  return locale.toUpperCase() as Locale;
+}
+
+// ─── Translation ──────────────────────────────────────────────────────────────
+export interface TopicTranslation {
+  id?: string;
+  locale: Locale;
   name: string;
   description?: string;
+}
+
+export interface QuestionSetTranslation {
+  id?: string;
+  locale: Locale;
+  title: string;
+  description?: string;
+}
+
+export interface InterviewQuestionTranslation {
+  id?: string;
+  locale: Locale;
+  question: string;
+  answer: string;
+  tips?: string;
+}
+
+// ─── Helpers: pick translation theo locale, fallback VI/EN/first ──────────────
+// Locale arg có thể là FE locale (lowercase) hoặc BE locale (uppercase).
+export function pickTopicTranslation(
+  translations: TopicTranslation[] | undefined,
+  locale: string
+): TopicTranslation | null {
+  if (!translations || translations.length === 0) return null;
+  const code = locale.toUpperCase() as Locale;
+  return (
+    translations.find((t) => t.locale === code) ||
+    translations.find((t) => t.locale === "VI") ||
+    translations.find((t) => t.locale === "EN") ||
+    translations[0]
+  );
+}
+
+export function pickQuestionSetTranslation(
+  translations: QuestionSetTranslation[] | undefined,
+  locale: string
+): QuestionSetTranslation | null {
+  if (!translations || translations.length === 0) return null;
+  const code = locale.toUpperCase() as Locale;
+  return (
+    translations.find((t) => t.locale === code) ||
+    translations.find((t) => t.locale === "VI") ||
+    translations.find((t) => t.locale === "EN") ||
+    translations[0]
+  );
+}
+
+export function pickInterviewQuestionTranslation(
+  translations: InterviewQuestionTranslation[] | undefined,
+  locale: string
+): InterviewQuestionTranslation | null {
+  if (!translations || translations.length === 0) return null;
+  const code = locale.toUpperCase() as Locale;
+  return (
+    translations.find((t) => t.locale === code) ||
+    translations.find((t) => t.locale === "VI") ||
+    translations.find((t) => t.locale === "EN") ||
+    translations[0]
+  );
+}
+
+// ─── Create / Update Topic ────────────────────────────────────────────────────
+export interface CreateInterviewTopicRequest {
   key?: string;
   displayOrder?: number;
+  translations: TopicTranslation[];
 }
 
 export interface UpdateInterviewTopicRequest {
-  name?: string;
-  description?: string;
   key?: string;
   displayOrder?: number;
   active?: boolean;
+  translations?: TopicTranslation[];
+}
+
+export interface UpdateTopicTranslationRequest {
+  name: string;
+  description?: string;
 }
 
 export interface QuestionContributionRequest {
@@ -91,7 +171,6 @@ export interface QuestionContributionDetail {
   createdAt: string;
 }
 
-// Question Contribution Types
 export interface QuestionItemRequest {
   question: string;
   answer?: string;

@@ -23,8 +23,16 @@ export const interviewService = {
     return response.data;
   },
 
+  // Lấy đầy đủ translations cho admin edit
+  getTopicForAdmin: async (topicId: string) => {
+    const response = await apiClient.get<ApiResponse<InterviewTopicDetailResponse>>(
+      `${API.GET_INTERVIEW_TOPIC_FOR_ADMIN}/${topicId}`
+    );
+    return response.data;
+  },
+
   createTopic: async (data: CreateInterviewTopicRequest) => {
-    const response = await apiClient.post<ApiResponse<string>>(
+    const response = await apiClient.post<ApiResponse<InterviewTopicDetailResponse>>(
       API.CREATE_INTERVIEW_TOPIC,
       data
     );

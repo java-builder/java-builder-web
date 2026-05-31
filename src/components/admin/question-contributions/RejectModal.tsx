@@ -1,4 +1,4 @@
-interface RejectModalProps {
+﻿interface RejectModalProps {
   onClose: () => void;
   onConfirm: () => void;
   rejectReason: string;
@@ -41,7 +41,7 @@ export default function RejectModal({
                 placeholder="Nhập lý do từ chối câu hỏi này..."
                 className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200 resize-none"
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
                 Lý do này sẽ được gửi cho người đóng góp
               </p>
             </div>

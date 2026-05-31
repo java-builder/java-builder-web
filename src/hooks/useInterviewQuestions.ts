@@ -1,43 +1,160 @@
-import { useState, useEffect, useRef } from "react";
-import { interviewQuestionService, InterviewQuestionResponse } from "@/services/interview-question.service";
-import { questionSetService } from "@/services/question-set.service";
-import { QuestionSetDetailResponse } from "@/types/question-set";
+import { useState, useEffect, useCallback } from "react";
+import { interviewQuestionService } from "@/services/interview-question.service";
+import { InterviewQuestionResponse } from "@/types/interview-question";
+import { useI18n } from "@/contexts/I18nContext";
 import toast from "react-hot-toast";
 
-export function useInterviewQuestions(setSlug: string | null) {
-  const [questionSet, setQuestionSet] = useState<QuestionSetDetailResponse | null>(null);
+// Cache list theo (key + locale)
+const listCache = new Map<string, InterviewQuestionResponse[]>();
+
+type FetchMode = "id" | "slug";
+
+function useInterviewQuestionsBy(
+  identifier: string | null | undefined,
+  mode: FetchMode
+) {
+  const { locale } = useI18n();
   const [questions, setQuestions] = useState<InterviewQuestionResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const hasFetched = useRef(false);
+
+  const fetchQuestions = useCallback(async () => {
+    if (!identifier) return;
+    const key = `${mode}:${identifier}:${locale}`;
+    if (listCache.has(key)) {
+      setQuestions(listCache.get(key)!);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res =
+        mode === "id"
+          ? await interviewQuestionService.getInterviewQuestionsByQuestionSetId(identifier)
+          : await interviewQuestionService.getInterviewQuestionsByQuestionSetSlug(identifier);
+      const data = res.data?.questions || [];
+      listCache.set(key, data);
+      setQuestions(data);
+    } catch (error) {
+      console.error("Failed to fetch interview questions:", error);
+      toast.error("Không thể tải danh sách câu hỏi");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [identifier, mode, locale]);
 
   useEffect(() => {
-    if (!setSlug || hasFetched.current) return;
+    fetchQuestions();
+  }, [fetchQuestions]);
 
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        hasFetched.current = true;
+  const refetch = useCallback(async () => {
+    if (!identifier) return;
+    listCache.delete(`${mode}:${identifier}:${locale}`);
+    await fetchQuestions();
+  }, [identifier, mode, locale, fetchQuestions]);
 
-        const [setRes, questionsRes] = await Promise.all([
-          questionSetService.getQuestionSetBySlug(setSlug),
-          interviewQuestionService.getQuestionsBySlug(setSlug)
-        ]);
+  return { questions, isLoading, refetch };
+}
 
-        if (setRes.data) {
-          setQuestionSet(setRes.data);
-        }
+/**
+ * Lấy questions theo questionSetId (admin).
+ */
+export function useInterviewQuestionsByQuestionSetId(
+  questionSetId: string | null | undefined
+) {
+  return useInterviewQuestionsBy(questionSetId, "id");
+}
 
-        setQuestions(questionsRes.data?.questions || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Không thể tải dữ liệu");
-      } finally {
-        setIsLoading(false);
-      }
+/**
+ * Lấy questions theo questionSetSlug (user-facing).
+ * Trả thêm questionSet display data nếu cần dùng kèm `useQuestionSet`.
+ */
+export function useInterviewQuestionsByQuestionSetSlug(
+  questionSetSlug: string | null | undefined
+) {
+  return useInterviewQuestionsBy(questionSetSlug, "slug");
+}
+
+export function clearInterviewQuestionsCache(identifier?: string) {
+  if (!identifier) {
+    listCache.clear();
+    return;
+  }
+  for (const key of listCache.keys()) {
+    if (key.includes(`:${identifier}:`)) {
+      listCache.delete(key);
+    }
+  }
+}
+
+// ─── Admin: lấy 1 question kèm full translations để edit ──────────────────
+const adminCache = new Map<string, InterviewQuestionResponse>();
+const adminInFlight = new Map<string, Promise<InterviewQuestionResponse>>();
+
+export function useAdminInterviewQuestion(
+  questionId: string | null | undefined,
+  enabled: boolean = true
+) {
+  const hasCached = !!(questionId && adminCache.has(questionId));
+
+  const [question, setQuestion] = useState<InterviewQuestionResponse | null>(
+    hasCached ? adminCache.get(questionId!)! : null
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    enabled && !!questionId && !hasCached
+  );
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!enabled || !questionId) return;
+
+    if (adminCache.has(questionId)) {
+      setQuestion(adminCache.get(questionId)!);
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoading(true);
+    setError(null);
+
+    let promise = adminInFlight.get(questionId);
+    if (!promise) {
+      promise = interviewQuestionService.getInterviewQuestionForAdmin(questionId).then((res) => {
+        const data = res.data;
+        if (data) adminCache.set(questionId, data);
+        return data!;
+      });
+      adminInFlight.set(questionId, promise);
+    }
+
+    promise
+      .then((data) => {
+        if (cancelled) return;
+        setQuestion(data);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err as Error);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+        adminInFlight.delete(questionId);
+      });
+
+    return () => {
+      cancelled = true;
     };
+  }, [questionId, enabled]);
 
-    fetchData();
-  }, [setSlug]);
+  return { question, isLoading, error };
+}
 
-  return { questionSet, questions, isLoading };
+export function clearAdminInterviewQuestionCache(questionId?: string) {
+  if (questionId) {
+    adminCache.delete(questionId);
+  } else {
+    adminCache.clear();
+  }
 }

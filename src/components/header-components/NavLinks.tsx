@@ -5,6 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef } from "react";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
+import { pickTopicTranslation } from "@/types/interview";
+import { useI18n } from "@/contexts/I18nContext";
 
 const NAV_ITEMS_STATIC: { href: string; label: string; isPremium?: boolean; hasDropdown?: boolean; isDynamic?: boolean; icon?: string; dropdownItems?: { href: string; label: string; iconPath?: string; icon?: string }[] }[] = [
   { href: "/", label: "Trang chủ" },
@@ -40,16 +42,20 @@ export default function NavLinks({ mobile, onItemClick }: NavLinksProps) {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { topics: interviewTopics, isLoading: isLoadingTopics } = useInterviewTopics();
+  const { locale } = useI18n();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const getDropdownItems = (item: typeof NAV_ITEMS_STATIC[0]) => {
     if (item.isDynamic && item.href === "/interview") {
-      return interviewTopics.map(topic => ({
-        href: `/interview/${topic.slug}`,
-        label: topic.name,
-        iconPath: topic.thumbnailUrl || "/logos/logo-java.png",
-      }));
+      return interviewTopics.map((topic) => {
+        const tr = pickTopicTranslation(topic.translations, locale);
+        return {
+          href: `/interview/${topic.slug}`,
+          label: tr?.name || topic.slug,
+          iconPath: topic.thumbnailUrl || "/logos/logo-java.png",
+        };
+      });
     }
     if (item.dropdownItems) {
       return item.dropdownItems;

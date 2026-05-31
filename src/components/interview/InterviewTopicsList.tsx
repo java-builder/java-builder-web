@@ -1,6 +1,6 @@
 "use client";
 
-import { InterviewTopicDetailResponse } from "@/types/interview";
+import { InterviewTopicDetailResponse, pickTopicTranslation } from "@/types/interview";
 import InterviewCategoryCard from "./InterviewCategoryCard";
 import InterviewEmptyState from "./InterviewEmptyState";
 import { useI18n } from "@/contexts/I18nContext";
@@ -14,7 +14,7 @@ export default function InterviewTopicsList({
   topics,
   isLoading,
 }: InterviewTopicsListProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   if (isLoading) {
     return (
@@ -32,13 +32,14 @@ export default function InterviewTopicsList({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {topics.map((topic) => {
+        const tr = pickTopicTranslation(topic.translations, locale);
         return (
           <InterviewCategoryCard
             key={topic.id}
             slug={topic.slug}
-            name={topic.name}
+            name={tr?.name || topic.slug}
             iconPath={topic.thumbnailUrl || "/logos/logo-java.png"}
-            description={topic.description || ""}
+            description={tr?.description || ""}
             totalQuestions={topic.totalQuestions || 0}
             levels={["Junior", "Middle", "Senior"]}
             color="text-orange-600 dark:text-orange-400"

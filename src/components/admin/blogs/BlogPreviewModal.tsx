@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -76,7 +76,7 @@ export default function BlogPreviewModal({
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                       Preview Bài viết
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       {BlogTypeDisplayNames[blog.blogType]} •{" "}
                       {formatApiDate(blog.createdAt)}
                     </p>
@@ -115,12 +115,12 @@ export default function BlogPreviewModal({
               <div className="p-6 flex items-center justify-center min-h-[400px]">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
-                  <p className="text-gray-600 dark:text-gray-400">Đang tải bài viết...</p>
+                  <p className="text-gray-600 dark:text-gray-300">Đang tải bài viết...</p>
                 </div>
               </div>
             ) : !blog ? (
               <div className="p-6 flex items-center justify-center min-h-[400px]">
-                <p className="text-gray-600 dark:text-gray-400">Không tìm thấy bài viết</p>
+                <p className="text-gray-600 dark:text-gray-300">Không tìm thấy bài viết</p>
               </div>
             ) : (
               <article className="p-6 text-gray-700 dark:text-gray-200">
@@ -143,7 +143,7 @@ export default function BlogPreviewModal({
               </h1>
 
               {/* Meta */}
-              <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 dark:text-gray-400 pb-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 dark:text-gray-300 pb-4 border-b border-gray-200 dark:border-slate-700">
                 {blog.author && (
                   <>
                     <span>Tác giả: {blog.author}</span>
@@ -243,7 +243,7 @@ export default function BlogPreviewModal({
           {/* Footer */}
           <div className="p-6 border-t border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-sm text-gray-500 dark:text-gray-300">
                 Bài viết này sẽ hiển thị như thế này khi được xuất bản
               </div>
               <button

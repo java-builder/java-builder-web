@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { SYSTEM_VARS } from "./emailTemplates";
 
@@ -114,7 +114,7 @@ export default function TemplateVariablesPanel({
                     <code className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded">
                       {`{${varName}}`}
                     </code>
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400">{meta.label}</span>
+                    <span className="text-[11px] text-gray-500 dark:text-gray-300">{meta.label}</span>
                     {isEmpty && (
                       <span className="ml-auto text-[10px] text-red-500 font-medium">Chưa điền</span>
                     )}

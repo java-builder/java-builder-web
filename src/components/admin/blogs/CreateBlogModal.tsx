@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
@@ -243,7 +243,7 @@ export default function CreateBlogModal({
         {/* Modal */}
         <div className="relative w-full max-w-7xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
                 Tạo bài viết mới

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import Image from "next/image";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
@@ -93,8 +93,8 @@ export default function ContributionDetailModal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 py-6">
         <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={onClose} />
-        <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
-          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
+        <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-slate-700">
+          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between z-10">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Chi tiết đóng góp
             </h3>
@@ -109,7 +109,7 @@ export default function ContributionDetailModal({
           </div>
 
           <div className="p-6 space-y-5">
-            <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-slate-700">
               {contribution.contributorAvatar && (
                 <Image
                   src={contribution.contributorAvatar}
@@ -123,10 +123,10 @@ export default function ContributionDetailModal({
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {contribution.contributorName}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
+                <div className="text-xs text-gray-500 dark:text-gray-300">
                   {contribution.contributorEmail}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <div className="text-xs text-gray-500 dark:text-gray-300 mt-1">
                   {formatApiDate(contribution.createdAt)}
                 </div>
               </div>
@@ -142,13 +142,13 @@ export default function ContributionDetailModal({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Bộ câu hỏi
               </label>
-              <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700">
                 {contribution.questionSetTitle || "Chưa có"}
                 {contribution.level && (
-                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-300">
                     ({contribution.level})
                   </span>
                 )}
@@ -156,17 +156,17 @@ export default function ContributionDetailModal({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Câu hỏi
               </label>
-              <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700">
                 {contribution.question}
               </div>
             </div>
 
             {contribution.answer && (
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                   Câu trả lời
                 </label>
                 <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
@@ -177,7 +177,7 @@ export default function ContributionDetailModal({
                       className={`px-4 py-2 text-xs font-medium transition-colors ${
                         answerTab === "write"
                           ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                          : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                       }`}
                     >
                       Markdown
@@ -188,7 +188,7 @@ export default function ContributionDetailModal({
                       className={`px-4 py-2 text-xs font-medium transition-colors ${
                         answerTab === "preview"
                           ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                          : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                       }`}
                     >
                       Xem trước
@@ -211,7 +211,7 @@ export default function ContributionDetailModal({
 
             {contribution.tips && (
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
                   Gợi ý
                 </label>
                 <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
@@ -222,7 +222,7 @@ export default function ContributionDetailModal({
                       className={`px-4 py-2 text-xs font-medium transition-colors ${
                         tipsTab === "write"
                           ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                          : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                       }`}
                     >
                       Markdown
@@ -233,7 +233,7 @@ export default function ContributionDetailModal({
                       className={`px-4 py-2 text-xs font-medium transition-colors ${
                         tipsTab === "preview"
                           ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400"
-                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                          : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-200"
                       }`}
                     >
                       Xem trước
@@ -266,14 +266,14 @@ export default function ContributionDetailModal({
             )}
 
             {contribution.reviewedBy && contribution.reviewedAt && (
-              <div className="text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="text-xs text-gray-500 dark:text-gray-300 pt-3 border-t border-gray-200 dark:border-slate-700">
                 Đã duyệt bởi {contribution.reviewedBy} vào {formatApiDate(contribution.reviewedAt)}
               </div>
             )}
           </div>
 
           {contribution.status === "PENDING" && (
-            <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-end gap-3">
+            <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-end gap-3">
               <button
                 onClick={onReject}
                 className="inline-flex items-center px-4 py-2 text-sm font-semibold text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/40 rounded-md transition-colors duration-200"

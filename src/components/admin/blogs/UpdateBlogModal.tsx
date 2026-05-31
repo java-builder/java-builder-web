@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
@@ -312,12 +312,12 @@ export default function UpdateBlogModal({
         />
 
         <div className="relative w-full max-w-7xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Cập nhật bài viết
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                 Chỉnh sửa nội dung bài viết của bạn
               </p>
             </div>
@@ -326,7 +326,7 @@ export default function UpdateBlogModal({
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
             >
               <svg
-                className="w-6 h-6 text-gray-400 dark:text-gray-500"
+                className="w-6 h-6 text-gray-400 dark:text-gray-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

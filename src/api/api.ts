@@ -178,6 +178,7 @@ export const API = {
     CREATE_INTERVIEW_TOPIC: "/api/v1/interview-topics",
     GET_INTERVIEW_TOPICS: "/api/v1/interview-topics",
     GET_INTERVIEW_TOPIC_BY_SLUG: "/api/v1/interview-topics/slug", // + /:slug
+    GET_INTERVIEW_TOPIC_FOR_ADMIN: "/api/v1/interview-topics/admin", // + /:topicId
     UPDATE_INTERVIEW_TOPIC: "/api/v1/interview-topics", // + /:topicId
     DELETE_INTERVIEW_TOPIC: "/api/v1/interview-topics", // + /:topicId
 
@@ -185,6 +186,7 @@ export const API = {
     CREATE_QUESTION_SET: "/api/v1/question-sets/topic", // + /:interviewTopicId
     GET_QUESTION_SETS: "/api/v1/question-sets",
     GET_QUESTION_SET_BY_SLUG: "/api/v1/question-sets/slug", // + /:slug
+    GET_QUESTION_SET_FOR_ADMIN: "/api/v1/question-sets/admin", // + /:questionSetId
     UPDATE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
     DELETE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
 
@@ -192,6 +194,7 @@ export const API = {
     CREATE_INTERVIEW_QUESTION: "/api/v1/interview-questions/question-set", // + /:questionSetId
     GET_INTERVIEW_QUESTIONS: "/api/v1/interview-questions/question-set", // + /:questionSetId
     GET_INTERVIEW_QUESTIONS_BY_SLUG: "/api/v1/interview-questions/question-set/slug", // + /:questionSetSlug
+    GET_INTERVIEW_QUESTION_FOR_ADMIN: "/api/v1/interview-questions/admin", // + /:questionId
     UPDATE_INTERVIEW_QUESTION: "/api/v1/interview-questions", // + /:questionId
     DELETE_INTERVIEW_QUESTION: "/api/v1/interview-questions", // + /:questionId
 

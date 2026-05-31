@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
@@ -26,14 +26,14 @@ export default function SimpleMarkdownEditor({
         className={`border rounded-lg overflow-hidden ${error ? "border-red-300 dark:border-red-700" : "border-gray-300 dark:border-gray-600"} bg-white dark:bg-gray-800`}
       >
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <div className="flex border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-gray-800">
           <button
             type="button"
             onClick={() => setActiveTab("write")}
             className={`px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               activeTab === "write"
                 ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-white dark:bg-gray-800"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200"
             }`}
           >
             ✏️ Viết
@@ -44,7 +44,7 @@ export default function SimpleMarkdownEditor({
             className={`px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               activeTab === "preview"
                 ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-white dark:bg-gray-800"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200"
             }`}
           >
             👁️ Xem trước
@@ -71,7 +71,7 @@ export default function SimpleMarkdownEditor({
               {value ? (
                 <PublicMarkdownRenderer content={value} />
               ) : (
-                <p className="text-gray-400 dark:text-gray-500">Không có nội dung để xem trước</p>
+                <p className="text-gray-400 dark:text-gray-300">Không có nội dung để xem trước</p>
               )}
             </div>
           )}
@@ -81,7 +81,7 @@ export default function SimpleMarkdownEditor({
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {/* Hướng dẫn sử dụng */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+      <div className="text-xs text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
         <div className="font-medium mb-2">💡 Hướng dẫn sử dụng Markdown:</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>

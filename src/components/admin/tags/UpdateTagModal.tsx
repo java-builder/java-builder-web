@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { tagService } from "@/services/tag.service";
@@ -72,10 +72,10 @@ export default function UpdateTagModal({ isOpen, onClose, onSuccess, tag }: Upda
         {/* Modal */}
         <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Cập nhật tag</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Chỉnh sửa thông tin tag</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Chỉnh sửa thông tin tag</p>
             </div>
             <button
               onClick={handleClose}
@@ -97,7 +97,7 @@ export default function UpdateTagModal({ isOpen, onClose, onSuccess, tag }: Upda
                 type="text"
                 value={tag.slug}
                 disabled
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400 font-mono cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-300 font-mono cursor-not-allowed"
               />
             </div>
 
@@ -132,7 +132,7 @@ export default function UpdateTagModal({ isOpen, onClose, onSuccess, tag }: Upda
             {/* Preview */}
             {name.trim() && (
               <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Xem trước:</p>
+                <p className="text-xs text-gray-600 dark:text-gray-300 mb-2">Xem trước:</p>
                 <span className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-700">
                   <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />

@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { UserDetailResponse, UserStatus } from "@/types/user";
 import { formatReadableDate } from "@/utils/dateUtils";
 
@@ -113,7 +113,7 @@ export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRo
           {user.mftEnable ? "ON" : "OFF"}
         </span>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
         {user.createdAt ? formatReadableDate(user.createdAt) : "N/A"}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -110,7 +110,7 @@ export default function CommentCard({
                   </span>
                 )}
               </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap flex-shrink-0">
+              <span className="text-xs text-gray-500 dark:text-gray-300 whitespace-nowrap flex-shrink-0">
                 {formatRelativeTime(comment.createdAt)}
               </span>
             </div>
@@ -195,7 +195,7 @@ export default function CommentCard({
                       <span className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                         {reply.username}
                       </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="text-xs text-gray-500 dark:text-gray-300">
                         {formatRelativeTime(reply.createdAt)}
                       </span>
                     </div>

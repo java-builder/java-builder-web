@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -609,7 +609,7 @@ export default function ReportsPage() {
             <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full" />
             <div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">Thống kê phiên đăng nhập</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Phân tích chi tiết về các phiên truy cập hệ thống</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300">Phân tích chi tiết về các phiên truy cập hệ thống</p>
             </div>
           </div>
 
@@ -636,8 +636,8 @@ export default function ReportsPage() {
               <p className="text-4xl font-bold">{sessionStats.revokedSessions.toLocaleString()}</p>
               <p className="text-rose-200 text-xs mt-2">Phiên bị vô hiệu hóa</p>
             </div>
-            <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-              <p className="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider mb-3">Tỷ lệ hoạt động</p>
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden">
+              <p className="text-gray-500 dark:text-gray-300 text-xs font-medium uppercase tracking-wider mb-3">Tỷ lệ hoạt động</p>
               <div className="flex items-center gap-4">
                 <div className="relative w-16 h-16 flex-shrink-0">
                   <svg className="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
@@ -657,7 +657,7 @@ export default function ReportsPage() {
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {sessionStats.totalSessions > 0 ? Math.round((sessionStats.activeSessions / sessionStats.totalSessions) * 100) : 0}%
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">phiên đang dùng</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">phiên đang dùng</p>
                 </div>
               </div>
             </div>
@@ -666,11 +666,11 @@ export default function ReportsPage() {
           {/* Charts Row 1: Status Donut + Provider Bar */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
             {/* Status Donut - 2 cols */}
-            <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+            <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm p-6">
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white">Tình trạng phiên</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Phân bổ trạng thái hoạt động</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">Phân bổ trạng thái hoạt động</p>
                 </div>
               </div>
               <div className="relative">
@@ -710,12 +710,12 @@ export default function ReportsPage() {
                   <span className="text-xs text-gray-400 mt-1">tổng phiên</span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
                 {sessionStatusData.map((item) => (
                   <div key={item.name} className="text-center">
                     <div className="flex items-center justify-center gap-1.5 mb-1">
                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.fill }} />
-                      <span className="text-xs text-gray-500 dark:text-gray-400">{item.name}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-300">{item.name}</span>
                     </div>
                     <p className="text-lg font-bold text-gray-900 dark:text-white">{item.value}</p>
                     <p className="text-xs text-gray-400">
@@ -727,11 +727,11 @@ export default function ReportsPage() {
             </div>
 
             {/* Provider Donut + Legend - 3 cols */}
-            <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+            <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm p-6">
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white">Nguồn đăng nhập</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Phân bổ theo phương thức xác thực</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">Phân bổ theo phương thức xác thực</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-6 items-center">
@@ -788,11 +788,11 @@ export default function ReportsPage() {
           {/* Charts Row 2: Device Radial + Browser Bar */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
             {/* Device Radial Chart - 2 cols */}
-            <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+            <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm p-6">
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white">Thiết bị truy cập</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Phân bổ theo loại thiết bị</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">Phân bổ theo loại thiết bị</p>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={260}>
@@ -813,7 +813,7 @@ export default function ReportsPage() {
                   />
                 </RadialBarChart>
               </ResponsiveContainer>
-              <div className="space-y-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <div className="space-y-2 mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
                 {[...sessionDeviceData].sort((a, b) => b.value - a.value).map((item, index) => (
                   <div key={item.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -832,11 +832,11 @@ export default function ReportsPage() {
             </div>
 
             {/* Browser Bar Chart - 3 cols */}
-            <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+            <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white">Trình duyệt</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Top 8 trình duyệt phổ biến nhất</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">Top 8 trình duyệt phổ biến nhất</p>
                 </div>
                 <span className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2.5 py-1 rounded-full font-medium">
                   Top 8
@@ -872,7 +872,7 @@ export default function ReportsPage() {
                   <Bar dataKey="value" fill="url(#browserGradient)" radius={[8, 8, 0, 0]} maxBarSize={48} animationDuration={800} />
                 </BarChart>
               </ResponsiveContainer>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
                 {sessionBrowserData.map((item) => {
                   const pct = sessionStats.totalSessions > 0 ? (item.value / sessionStats.totalSessions) * 100 : 0;
                   return (

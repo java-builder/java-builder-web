@@ -1,16 +1,21 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { interviewService } from "@/services/interview.service";
-import { InterviewTopicDetailResponse } from "@/types/interview";
+import {
+  InterviewTopicDetailResponse,
+  pickTopicTranslation,
+} from "@/types/interview";
 import { useConfirm } from "@/hooks/useConfirm";
 import { clearInterviewTopicsCache } from "@/hooks/useInterviewTopics";
 import CreateInterviewTopicModal from "@/components/admin/interview/CreateInterviewTopicModal";
 import UpdateInterviewTopicModal from "@/components/admin/interview/UpdateInterviewTopicModal";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function InterviewTopicsPage() {
+  const { t, locale } = useI18n();
   const [topics, setTopics] = useState<InterviewTopicDetailResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -36,11 +41,13 @@ export default function InterviewTopicsPage() {
     }
   };
 
+  // Refetch khi locale đổi → BE trả data theo Accept-Language header
   useEffect(() => {
     fetchTopics();
-  }, []);
+  }, [locale]);
 
   const handleDelete = async (id: string, name: string) => {
+    const message = t("admin.interviewTopics.deleteConfirmMessage").replace("{name}", name);
     await confirm(
       async () => {
         setDeletingId(id);
@@ -55,10 +62,10 @@ export default function InterviewTopicsPage() {
         }
       },
       {
-        title: "Xác nhận xóa chủ đề",
-        message: `<div>Bạn có chắc muốn xóa chủ đề <strong>${name}</strong>?</div><div class="text-sm text-gray-500 mt-2">Tất cả câu hỏi trong chủ đề này cũng sẽ bị xóa.</div>`,
-        confirmText: "Xóa",
-        cancelText: "Hủy",
+        title: t("admin.interviewTopics.deleteConfirmTitle"),
+        message,
+        confirmText: t("admin.interviewTopics.deleteConfirmBtn"),
+        cancelText: t("admin.interviewTopics.cancelBtn"),
         type: "error",
       }
     );
@@ -69,10 +76,10 @@ export default function InterviewTopicsPage() {
       <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-            Quản lý câu hỏi phỏng vấn
+            {t("admin.interviewTopics.pageTitle")}
           </h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-            Tạo và quản lý các chủ đề phỏng vấn với câu hỏi
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+            {t("admin.interviewTopics.pageSubtitle")}
           </p>
         </div>
         <div>
@@ -83,16 +90,16 @@ export default function InterviewTopicsPage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            <span className="hidden sm:inline">Tạo chủ đề mới</span>
-            <span className="sm:hidden">Tạo mới</span>
+            <span className="hidden sm:inline">{t("admin.interviewTopics.createButton")}</span>
+            <span className="sm:hidden">{t("admin.interviewTopics.createButtonShort")}</span>
           </button>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-gray-600 dark:text-gray-400">
-            Đang tải...
+          <div className="p-8 text-center text-gray-600 dark:text-gray-300">
+            {t("admin.interviewTopics.loading")}
           </div>
         ) : topics.length === 0 ? (
           <div className="p-12 text-center">
@@ -102,10 +109,10 @@ export default function InterviewTopicsPage() {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Chưa có chủ đề nào
+              {t("admin.interviewTopics.emptyTitle")}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Bắt đầu bằng cách tạo chủ đề phỏng vấn đầu tiên
+            <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">
+              {t("admin.interviewTopics.emptyDesc")}
             </p>
             <button
               onClick={() => setIsCreateOpen(true)}
@@ -114,16 +121,19 @@ export default function InterviewTopicsPage() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Tạo chủ đề mới
+              {t("admin.interviewTopics.createButton")}
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-6">
             {topics.map((topic) => {
+              const tr = pickTopicTranslation(topic.translations, locale);
+              const topicName = tr?.name || topic.slug;
+              const topicDescription = tr?.description;
               return (
                 <div
                   key={topic.id}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-lg transition-all duration-200 hover:border-accent/50"
+                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-lg transition-all duration-200 hover:border-accent/50"
                 >
                   <div className="p-4 sm:p-5">
                     <div className="flex items-start justify-between mb-3">
@@ -132,19 +142,19 @@ export default function InterviewTopicsPage() {
                           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
                             <Image
                               src={topic.thumbnailUrl}
-                              alt={topic.name}
+                              alt={topicName}
                               width={32}
                               height={32}
                               className="object-contain"
                               onError={(e) => {
-                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.style.display = "none";
                               }}
                             />
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
                           <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">
-                            {topic.name}
+                            {topicName}
                           </h3>
                         </div>
                       </div>
@@ -155,18 +165,20 @@ export default function InterviewTopicsPage() {
                             : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400"
                         }`}
                       >
-                        {topic.active ? "Hoạt động" : "Ẩn"}
+                        {topic.active
+                          ? t("admin.interviewTopics.statusActive" as Parameters<typeof t>[0])
+                          : t("admin.interviewTopics.statusInactive" as Parameters<typeof t>[0])}
                       </span>
                     </div>
 
-                    {topic.description && (
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                        {topic.description}
+                    {topicDescription && (
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+                        {topicDescription}
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100 dark:border-gray-700">
-                      <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100 dark:border-slate-700">
+                      <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-300">
                         {/* Empty space for alignment */}
                       </div>
 
@@ -176,8 +188,8 @@ export default function InterviewTopicsPage() {
                             setSelectedTopic(topic);
                             setIsEditOpen(true);
                           }}
-                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
-                          title="Chỉnh sửa nhanh"
+                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-300 hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
+                          title={t("admin.interviewTopics.editBtn")}
                         >
                           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -185,18 +197,18 @@ export default function InterviewTopicsPage() {
                         </button>
                         <Link
                           href={`/admin/interview-topics/${topic.id}/edit`}
-                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
-                          title="Quản lý chi tiết"
+                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-300 hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
+                          title={t("admin.interviewTopics.viewBtn")}
                         >
                           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
                         </Link>
                         <button
-                          onClick={() => handleDelete(topic.id, topic.name)}
+                          onClick={() => handleDelete(topic.id, topicName)}
                           disabled={deletingId === topic.id}
                           className="p-1.5 sm:p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          title="Xóa"
+                          title={t("admin.interviewTopics.deleteBtn")}
                         >
                           {deletingId === topic.id ? (
                             <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" fill="none" viewBox="0 0 24 24">

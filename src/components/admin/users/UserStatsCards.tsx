@@ -1,4 +1,4 @@
-import { UserStatisticsResponse, UserDetailResponse } from "@/types/user";
+﻿import { UserStatisticsResponse, UserDetailResponse } from "@/types/user";
 import { PageResponse } from "@/types/api";
 
 interface UserStatsCardsProps {
@@ -9,7 +9,7 @@ interface UserStatsCardsProps {
 export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
         <div className="flex items-center">
           <div className="p-2 bg-accent-100 dark:bg-accent-900/30 rounded-lg">
             <svg
@@ -33,7 +33,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
             </svg>
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
               Tổng người dùng
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -42,7 +42,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
           </div>
         </div>
       </div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
         <div className="flex items-center">
           <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
             <svg
@@ -66,7 +66,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
             </svg>
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
               Đang hoạt động
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -77,7 +77,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
           </div>
         </div>
       </div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
         <div className="flex items-center">
           <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
             <svg
@@ -101,7 +101,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
             </svg>
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
               Không hoạt động
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -112,7 +112,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
           </div>
         </div>
       </div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
         <div className="flex items-center">
           <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
             <svg
@@ -126,7 +126,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
             </svg>
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Đã xoá</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Đã xoá</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {stats?.deletedUsers ?? (response?.data?.filter(
                 (user: UserDetailResponse) => user.userStatus === "DELETED",

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
@@ -93,7 +93,7 @@ export default function AITrainingClient() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
             AI Training - Huấn luyện AI Chatbot
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             Upload file markdown chứa kiến thức về Java để AI Chatbot có thể trả lời câu hỏi chính xác hơn.
             Dữ liệu sẽ được xử lý và lưu vào vector store để AI có thể tìm kiếm và trích xuất thông tin phù hợp.
           </p>
@@ -142,7 +142,7 @@ export default function AITrainingClient() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   Kéo thả file markdown vào đây
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   hoặc
                 </p>
                 
@@ -153,7 +153,7 @@ export default function AITrainingClient() {
                   Chọn file
                 </button>
                 
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
+                <p className="text-xs text-gray-500 dark:text-gray-300 mt-4">
                   Hỗ trợ: .md, .markdown
                 </p>
               </div>
@@ -183,7 +183,7 @@ export default function AITrainingClient() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {selectedFile.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
                         {formatFileSize(selectedFile.size)}
                       </p>
                     </div>

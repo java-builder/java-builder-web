@@ -1,4 +1,4 @@
-interface RevokeAllSessionsModalProps {
+﻿interface RevokeAllSessionsModalProps {
   userId: string;
   username: string;
   isRevoking: boolean;
@@ -18,7 +18,7 @@ export const RevokeAllSessionsModal = ({ userId, username, isRevoking, onConfirm
         </div>
         
         <h3 className="text-lg font-semibold text-center text-orange-600 dark:text-orange-400 mb-1">Thu hồi tất cả phiên</h3>
-        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-sm text-center text-gray-500 dark:text-gray-300 mb-4">
           Đăng xuất khỏi tất cả thiết bị
         </p>
         
@@ -29,12 +29,12 @@ export const RevokeAllSessionsModal = ({ userId, username, isRevoking, onConfirm
             </div>
             <div className="min-w-0">
               <div className="text-sm font-semibold text-gray-900 dark:text-white truncate">{username}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400 truncate">ID: {userId}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-300 truncate">ID: {userId}</div>
             </div>
           </div>
         </div>
         
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 text-center">
+        <p className="text-xs text-gray-600 dark:text-gray-300 mb-4 text-center">
           Tất cả phiên đăng nhập sẽ bị thu hồi
         </p>
         

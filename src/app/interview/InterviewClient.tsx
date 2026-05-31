@@ -1,19 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import MotionWrapper from "@/components/MotionWrapper";
 import { InterviewHero, InterviewTopicsList } from "@/components/interview";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
+import { useI18n } from "@/contexts/I18nContext";
+import { pickTopicTranslation } from "@/types/interview";
 
 export default function InterviewClient() {
   const [searchText, setSearchText] = useState("");
   const { topics, isLoading, totalQuestions } = useInterviewTopics();
+  const { locale } = useI18n();
 
-  const filteredTopics = topics.filter(
-    (topic) =>
-      topic.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      (topic.description?.toLowerCase() || "").includes(searchText.toLowerCase())
-  );
+  const filteredTopics = useMemo(() => {
+    const q = searchText.toLowerCase();
+    return topics.filter((topic) => {
+      const tr = pickTopicTranslation(topic.translations, locale);
+      const name = (tr?.name || "").toLowerCase();
+      const description = (tr?.description || "").toLowerCase();
+      return name.includes(q) || description.includes(q);
+    });
+  }, [topics, searchText, locale]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-800">

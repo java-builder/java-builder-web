@@ -10,7 +10,7 @@ import {
 
 export const questionSetService = {
   createQuestionSet: async (topicId: string, data: CreateQuestionSetRequest) => {
-    const response = await apiClient.post<ApiResponse<string>>(
+    const response = await apiClient.post<ApiResponse<QuestionSetDetailResponse>>(
       `${API.CREATE_QUESTION_SET}/${topicId}`,
       data
     );
@@ -38,8 +38,16 @@ export const questionSetService = {
     return response.data;
   },
 
+  // Lấy đầy đủ translations cho admin edit
+  getQuestionSetForAdmin: async (questionSetId: string) => {
+    const response = await apiClient.get<ApiResponse<QuestionSetDetailResponse>>(
+      `${API.GET_QUESTION_SET_FOR_ADMIN}/${questionSetId}`
+    );
+    return response.data;
+  },
+
   updateQuestionSet: async (questionSetId: string, data: UpdateQuestionSetRequest) => {
-    const response = await apiClient.put<ApiResponse<void>>(
+    const response = await apiClient.put<ApiResponse<QuestionSetDetailResponse>>(
       `${API.UPDATE_QUESTION_SET}/${questionSetId}`,
       data
     );

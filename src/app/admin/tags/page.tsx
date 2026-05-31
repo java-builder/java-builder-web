@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { tagService } from "@/services/tag.service";
@@ -63,7 +63,7 @@ export default function TagsPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Quản lý Tags</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Tạo, xem và quản lý các tags cho bài viết</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Tạo, xem và quản lý các tags cho bài viết</p>
         </div>
         <button
           onClick={() => setIsCreateOpen(true)}
@@ -97,7 +97,7 @@ export default function TagsPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           {isLoading ? (
             <div className="p-8 text-center">
@@ -105,14 +105,14 @@ export default function TagsPage() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">Đang tải...</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Đang tải...</p>
             </div>
           ) : tags.length === 0 ? (
             <div className="p-8 text-center">
               <svg className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
               </svg>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-gray-500 dark:text-gray-300">
                 {searchQuery ? "Không tìm thấy tag nào" : "Chưa có tag nào"}
               </p>
             </div>
@@ -120,10 +120,10 @@ export default function TagsPage() {
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">TÊN TAG</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">SLUG</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">TẠO LÚC</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">THAO TÁC</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TÊN TAG</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SLUG</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TẠO LÚC</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">THAO TÁC</th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -139,8 +139,8 @@ export default function TagsPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 font-mono">{tag.slug}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatReadableDate(tag.createdAt)}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-mono">{tag.slug}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-300">{formatReadableDate(tag.createdAt)}</td>
                     <td className="px-6 py-4 text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
                         <button

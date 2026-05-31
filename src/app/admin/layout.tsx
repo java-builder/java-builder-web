@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { ReactNode, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,17 +6,26 @@ import { usePathname, useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminNotificationDropdown from "@/components/admin/AdminNotificationDropdown";
 import ThemeToggle from "@/components/header-components/ThemeToggle";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useI18n } from "@/contexts/I18nContext";
 import Logo from "@/components/header-components/Logo";
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
-const navigation = [
+interface NavItem {
+  nameKey: string;
+  href: string;
+  color: string;
+  icon: ReactNode;
+}
+
+const navigation: NavItem[] = [
   {
-    name: "Trang chủ",
+    nameKey: "admin.layout.home",
     href: "/admin",
     color: "text-blue-600",
     icon: (
@@ -27,7 +36,7 @@ const navigation = [
     ),
   },
   {
-    name: "Về trang người dùng",
+    nameKey: "admin.layout.backToUser",
     href: "/",
     color: "text-indigo-600",
     icon: (
@@ -38,7 +47,7 @@ const navigation = [
   },
 
   {
-    name: "Quản lý người dùng",
+    nameKey: "admin.layout.users",
     href: "/admin/users",
     color: "text-teal-600",
     icon: (
@@ -48,7 +57,7 @@ const navigation = [
     ),
   },
   {
-    name: "Quản lý đăng nhập",
+    nameKey: "admin.layout.sessions",
     href: "/admin/sessions",
     color: "text-emerald-600",
     icon: (
@@ -57,9 +66,8 @@ const navigation = [
       </svg>
     ),
   },
-  // === NỘI DUNG & GIÁO DỤC ===
   {
-    name: "Khóa học",
+    nameKey: "admin.layout.courses",
     href: "/admin/courses",
     color: "text-orange-600",
     icon: (
@@ -69,7 +77,7 @@ const navigation = [
     ),
   },
   {
-    name: "Bài tập",
+    nameKey: "admin.layout.exercises",
     href: "/admin/exercises",
     color: "text-indigo-600",
     icon: (
@@ -79,7 +87,7 @@ const navigation = [
     ),
   },
   {
-    name: "Quản lý bài viết",
+    nameKey: "admin.layout.blogs",
     href: "/admin/blogs",
     color: "text-violet-600",
     icon: (
@@ -89,7 +97,7 @@ const navigation = [
     ),
   },
   {
-    name: "Quản lý tài liệu",
+    nameKey: "admin.layout.documents",
     href: "/admin/documents",
     color: "text-amber-600",
     icon: (
@@ -99,7 +107,7 @@ const navigation = [
     ),
   },
   {
-    name: "Câu hỏi phỏng vấn",
+    nameKey: "admin.layout.interviewTopics",
     href: "/admin/interview-topics",
     color: "text-red-600",
     icon: (
@@ -109,7 +117,7 @@ const navigation = [
     ),
   },
   {
-    name: "Đóng góp câu hỏi",
+    nameKey: "admin.layout.questionContributions",
     href: "/admin/question-contributions",
     color: "text-fuchsia-600",
     icon: (
@@ -119,7 +127,7 @@ const navigation = [
     ),
   },
   {
-    name: "Danh mục",
+    nameKey: "admin.layout.categories",
     href: "/admin/categories",
     color: "text-emerald-600",
     icon: (
@@ -129,7 +137,7 @@ const navigation = [
     ),
   },
   {
-    name: "Tags",
+    nameKey: "admin.layout.tags",
     href: "/admin/tags",
     color: "text-blue-600",
     icon: (
@@ -140,7 +148,7 @@ const navigation = [
   },
 
   {
-    name: "Bình luận",
+    nameKey: "admin.layout.comments",
     href: "/admin/comments",
     color: "text-purple-600",
     icon: (
@@ -150,7 +158,7 @@ const navigation = [
     ),
   },
   {
-    name: "Quản lý thông báo",
+    nameKey: "admin.layout.notifications",
     href: "/admin/notifications",
     color: "text-pink-600",
     icon: (
@@ -160,7 +168,7 @@ const navigation = [
     ),
   },
   {
-    name: "Gửi Email Marketing",
+    nameKey: "admin.layout.emailMarketing",
     href: "/admin/notifications/send",
     color: "text-rose-600",
     icon: (
@@ -170,7 +178,7 @@ const navigation = [
     ),
   },
   {
-    name: "Scheduled Jobs",
+    nameKey: "admin.layout.scheduledJobs",
     href: "/admin/scheduled-jobs",
     color: "text-sky-600",
     icon: (
@@ -180,7 +188,7 @@ const navigation = [
     ),
   },
   {
-    name: "Gói Premium",
+    nameKey: "admin.layout.subscriptions",
     href: "/admin/subscriptions",
     color: "text-yellow-600",
     icon: (
@@ -190,7 +198,7 @@ const navigation = [
     ),
   },
   {
-    name: "Quản lý Subscriptions",
+    nameKey: "admin.layout.userSubscriptions",
     href: "/admin/user-subscriptions",
     color: "text-purple-600",
     icon: (
@@ -200,7 +208,7 @@ const navigation = [
     ),
   },
   {
-    name: "Thanh toán",
+    nameKey: "admin.layout.payments",
     href: "/admin/payments",
     color: "text-green-600",
     icon: (
@@ -211,7 +219,7 @@ const navigation = [
   },
 
   {
-    name: "AI Training",
+    nameKey: "admin.layout.aiTraining",
     href: "/admin/ai-training",
     color: "text-purple-600",
     icon: (
@@ -221,7 +229,7 @@ const navigation = [
     ),
   },
   {
-    name: "Báo cáo",
+    nameKey: "admin.layout.reports",
     href: "/admin/reports",
     color: "text-cyan-600",
     icon: (
@@ -231,7 +239,7 @@ const navigation = [
     ),
   },
   {
-    name: "Cài đặt",
+    nameKey: "admin.layout.settings",
     href: "/admin/settings",
     color: "text-slate-500",
     icon: (
@@ -243,11 +251,13 @@ const navigation = [
   },
 ];
 
+
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: currentUser } = useCurrentUser();
+  const { t, isSwitching } = useI18n();
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -339,7 +349,81 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2) !important;
             }
           `}</style>
-        <div className="h-screen flex bg-gray-50 overflow-hidden" suppressHydrationWarning>
+        <div className="h-screen flex bg-gray-50 dark:bg-slate-900 overflow-hidden" suppressHydrationWarning>
+          {/* Fullscreen skeleton overlay khi đổi locale */}
+          {isSwitching && (
+            <div className="fixed inset-0 z-[60] bg-gray-50 dark:bg-slate-900 flex">
+              {/* Sidebar skeleton */}
+              <div className="hidden lg:flex w-64 flex-shrink-0 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex-col">
+                <div className="h-16 px-6 border-b border-gray-100 dark:border-slate-700 flex items-center">
+                  <div className="h-6 w-28 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                </div>
+                <div className="flex-1 px-4 py-6 space-y-2">
+                  {Array.from({ length: 12 }).map((_, idx) => (
+                    <div key={idx} className="flex items-center px-4 py-3 rounded-lg">
+                      <div className="mr-3 w-5 h-5 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                      <div className="h-4 flex-1 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                    </div>
+                  ))}
+                </div>
+                <div className="p-4 border-t border-gray-200 dark:border-slate-700">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-3 w-20 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                      <div className="h-3 w-32 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main area skeleton */}
+              <div className="flex-1 flex flex-col">
+                {/* Header skeleton */}
+                <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 h-16 px-6 flex items-center justify-between flex-shrink-0">
+                  <div className="h-5 w-40 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-24 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse" />
+                    <div className="h-8 w-8 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                    <div className="h-8 w-8 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                  </div>
+                </div>
+
+                {/* Content skeleton */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                  <div className="space-y-2">
+                    <div className="h-7 w-64 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                    <div className="h-4 w-96 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Array.from({ length: 6 }).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-5 space-y-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse flex-shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 w-3/4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                            <div className="h-3 w-1/2 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                          </div>
+                        </div>
+                        <div className="h-3 w-full bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                        <div className="h-3 w-5/6 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                        <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-slate-700">
+                          <div className="h-7 w-7 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                          <div className="h-7 w-7 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                          <div className="h-7 w-7 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Mobile sidebar overlay */}
           {sidebarOpen && (
             <div className="fixed inset-0 z-40 lg:hidden">
@@ -352,16 +436,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* Sidebar - Fixed */}
           <div
-            className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}
+            className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 shadow-xl transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}
           >
             <div className="flex flex-col h-full">
               {/* Logo */}
-              <div className="relative flex items-center justify-between h-16 px-6 bg-white border-b border-gray-100 flex-shrink-0">
+              <div className="relative flex items-center justify-between h-16 px-6 bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 flex-shrink-0">
                 <Logo />
 
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                  className="lg:hidden p-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200"
                 >
                   <svg
                     className="w-5 h-5"
@@ -383,13 +467,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                 {navigation.map((item) => {
                   const isActive = pathname === item.href;
+                  const label = t(item.nameKey as Parameters<typeof t>[0]);
                   return (
                     <Link
-                      key={item.name}
+                      key={item.href}
                       href={item.href}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
-                        ? `bg-blue-50 border-r-2 ${item.color.replace('text-', 'border-').replace('500', '600').replace('600', '600')} ${item.color}`
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        ? `bg-blue-50 dark:bg-slate-700 border-r-2 ${item.color.replace('text-', 'border-').replace('500', '600').replace('600', '600')} ${item.color} dark:text-white`
+                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/50 hover:text-gray-900 dark:hover:text-white"
                         }`}
                     >
                       <span
@@ -397,13 +482,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       >
                         {item.icon}
                       </span>
-                      {item.name}
+                      {label}
                     </Link>
                   );
                 })}
               </nav>
               {/* User profile - Fixed at bottom */}
-              <div className="p-4 border-t border-gray-200 flex-shrink-0">
+              <div className="p-4 border-t border-gray-200 dark:border-slate-700 flex-shrink-0">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
                     {currentUser?.avatar ? (
@@ -422,17 +507,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {currentUser?.username || "Admin User"}
+                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {currentUser?.username || t("admin.common.adminUser")}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-gray-500 dark:text-gray-300 truncate">
                       {currentUser?.email || "admin@JavaBuilder.com"}
                     </p>
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="text-gray-400 hover:text-red-600 transition-colors"
-                    title="Đăng xuất"
+                    className="text-gray-400 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                    title={t("admin.common.logoutTooltip")}
                   >
                     <svg
                       className="w-5 h-5"
@@ -455,12 +540,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Main content area */}
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Top header - Fixed */}
-            <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
+            <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
               <div className="flex items-center justify-between h-16 px-6">
                 <div className="flex items-center">
                   <button
                     onClick={() => setSidebarOpen(true)}
-                    className="lg:hidden text-gray-500 hover:text-gray-700"
+                    className="lg:hidden text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
                   >
                     <svg
                       className="w-6 h-6"
@@ -476,13 +561,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       />
                     </svg>
                   </button>
-                  <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900">
-                    {navigation.find((item) => item.href === pathname)
-                      ?.name || "Dashboard"}
+                  <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900 dark:text-white">
+                    {(() => {
+                      const current = navigation.find((item) => item.href === pathname);
+                      return current
+                        ? t(current.nameKey as Parameters<typeof t>[0])
+                        : t("admin.layout.dashboard");
+                    })()}
                   </h1>
                 </div>
 
                 <div className="flex items-center space-x-4">
+                  <LanguageSwitcher />
                   <ThemeToggle />
                   <AdminNotificationDropdown />
                 </div>
@@ -490,7 +580,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </header>
 
             {/* Page content - Scrollable */}
-            <main className="flex-1 overflow-y-auto bg-gray-50">
+            <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-slate-900">
               {children}
             </main>
           </div>

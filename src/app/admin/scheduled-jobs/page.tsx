@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { emailSchedulerService } from "@/services/email-scheduler.service";
@@ -69,7 +69,7 @@ export default function ScheduledJobsPage() {
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Scheduled Jobs</h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
             Theo dõi tất cả các job đã chạy, đang chạy và sắp chạy trong hệ thống
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function ScheduledJobsPage() {
                 statusFilter === s ? "ring-accent" : "ring-gray-100 dark:ring-slate-700"
               }`}
             >
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{STATUS_LABELS[s]}</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{STATUS_LABELS[s]}</p>
               <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{count}</p>
               <div className={`mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[s]}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[s]}`} />
@@ -130,7 +130,7 @@ export default function ScheduledJobsPage() {
           </button>
         )}
         {data && (
-          <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
+          <span className="ml-auto text-sm text-gray-500 dark:text-gray-300">
             {data.totalElements} jobs
           </span>
         )}
@@ -154,7 +154,7 @@ export default function ScheduledJobsPage() {
             <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 dark:text-gray-300">
                     <div className="flex items-center justify-center gap-2">
                       <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -166,7 +166,7 @@ export default function ScheduledJobsPage() {
                 </tr>
               ) : !data?.data?.length ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 dark:text-gray-300">
                     Không có job nào
                   </td>
                 </tr>
@@ -199,13 +199,13 @@ export default function ScheduledJobsPage() {
                         ? <>{job.totalRecipients.toLocaleString()} <span className="text-gray-400 text-xs">người</span></>
                         : <span className="text-gray-400">—</span>}
                     </td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-xs text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 hidden lg:table-cell text-xs text-gray-500 dark:text-gray-300">
                       {fmtDate(job.scheduledTime)}
                     </td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-xs text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 hidden lg:table-cell text-xs text-gray-500 dark:text-gray-300">
                       {fmtDate(job.executedAt)}
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-300">
                       {fmtDate(job.createdAt)}
                     </td>
                   </tr>
