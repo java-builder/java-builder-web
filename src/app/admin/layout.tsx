@@ -572,7 +572,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <LanguageSwitcher />
+                  <LanguageSwitcher variant="minimal" />
                   <ThemeToggle />
                   <AdminNotificationDropdown />
                 </div>

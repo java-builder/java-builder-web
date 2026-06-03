@@ -156,7 +156,7 @@ export default function Sidebar() {
             </span>
           </Link>
 
-          <LanguageSwitcher />
+          <LanguageSwitcher variant="minimal" />
         </div>
       </div>
 

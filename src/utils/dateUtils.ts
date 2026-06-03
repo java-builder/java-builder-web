@@ -105,3 +105,33 @@ export const formatLocaleStringWithOptions = (
   const date = parseDate(dateString);
   return date ? date.toLocaleString(locale, options) : "";
 };
+
+export const formatReadableDateTime = (
+  dateString: string | null | undefined,
+  locale: string = "vi-VN"
+): string => {
+  if (!dateString) {
+    return "-";
+  }
+
+  let date = parseDate(dateString);
+
+  if (!date || isNaN(date.getTime())) {
+    const isoDate = new Date(dateString);
+    if (!isNaN(isoDate.getTime())) {
+      date = isoDate;
+    }
+  }
+
+  if (!date) {
+    return "-";
+  }
+
+  return date.toLocaleString(locale, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};

@@ -53,9 +53,7 @@ export default function Header() {
     <>
       <nav className="w-full bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 relative z-30">
         <div className="max-w-full mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
-          {/* Left: Mobile Menu Button + Logo */}
           <div className="flex items-center gap-3">
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
               className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
@@ -76,18 +74,15 @@ export default function Header() {
               </svg>
             </button>
             
-            {/* Logo - visible on mobile only */}
             <div className="lg:hidden">
               <Logo />
             </div>
           </div>
 
-          {/* Right: Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageSwitcher />
+            <LanguageSwitcher variant="minimal" />
             <ThemeToggle />
 
-            {/* Auth Section */}
             {showAuthLoading ? (
               <div className="w-9 h-9 rounded-full bg-gray-200 animate-pulse" />
             ) : isLoggedIn ? (
@@ -102,7 +97,6 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile Sidebar */}
       <MobileSidebar
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}

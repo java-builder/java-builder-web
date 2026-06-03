@@ -402,7 +402,7 @@ export default function InterviewSetPage() {
             </Link>
 
             <div className="hidden sm:block">
-              <LanguageSwitcher variant="ghost" />
+              <LanguageSwitcher variant="minimal" />
             </div>
 
             {/* Mobile: open list drawer */}
