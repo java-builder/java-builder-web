@@ -62,6 +62,20 @@ export const menuGroups: MenuGroup[] = [
         color: "text-indigo-600 dark:text-indigo-400",
       },
       {
+        href: "/personalized-roadmap",
+        label: "Lộ trình cá nhân hóa",
+        labelKey: "sidebar.personalizedRoadmap",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z" />
+            <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z" />
+            <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z" />
+          </svg>
+        ),
+        color: "text-emerald-600 dark:text-emerald-400",
+        requireAuth: true,
+      },
+      {
         href: "/qna",
         label: "Hỏi đáp",
         labelKey: "sidebar.qna",
@@ -141,8 +155,6 @@ export const menuGroups: MenuGroup[] = [
         href: "/exercises",
         label: "Bài tập",
         labelKey: "sidebar.exercises",
-        badge: "Mới",
-        badgeColor: "bg-gradient-to-r from-red-500 to-rose-500",
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -245,7 +257,6 @@ export const menuGroups: MenuGroup[] = [
       },
     ],
   },
-
   {
     title: "Cài đặt",
     titleKey: "sidebar.settings",

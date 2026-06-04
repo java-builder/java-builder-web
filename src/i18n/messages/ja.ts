@@ -129,6 +129,7 @@ export const ja = {
     exercises: "演習問題",
     doneExercises: "回答済みの演習",
     studyProgress: "学習ログ",
+    personalizedRoadmap: "パーソナル学習ロードマップ",
     contributedQuestions: "投稿した質問",
     favoriteBlogs: "お気に入りブログ",
     favoriteCourses: "お気に入りコース",

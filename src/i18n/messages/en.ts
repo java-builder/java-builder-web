@@ -129,6 +129,7 @@ export const en = {
     exercises: "Exercises",
     doneExercises: "My Exercises",
     studyProgress: "Study Journal",
+    personalizedRoadmap: "Personalized Roadmap",
     contributedQuestions: "Contributions",
     favoriteBlogs: "Favorite Blogs",
     favoriteCourses: "Favorite Courses",

@@ -1,0 +1,155 @@
+import { Roadmap } from "../types";
+
+export const mockRoadmapsInitial: Roadmap[] = [
+  {
+    id: "roadmap-1",
+    title: "Backend Java Developer",
+    currentLevel: "Mới học cơ bản",
+    dailyHours: "2 giờ / ngày",
+    computedTargetMonths: "2 tháng (8 tuần)",
+    focusSkills: [
+      "Java Core & OOP thực chiến",
+      "RESTful API & Spring Boot",
+      "Cơ sở dữ liệu & JPA",
+    ],
+    weaknessesInput: "Chưa thiết kế REST API tốt, query JPA còn chậm.",
+    createdAt: "15/05/2026",
+    progress: 38,
+    confidence: 35,
+    selectedPace: "Cân bằng",
+    activeStage: 0,
+    completedItems: [
+      "0-topic-OOP thực chiến",
+      "0-topic-Collections API",
+      "0-topic-Exception handling",
+      "0-exercise-Refactor class quản lý học viên",
+      "0-exercise-Bài tập Map/List xử lý dữ liệu",
+      "1-topic-REST API",
+      "1-topic-Validation",
+      "1-exercise-CRUD khóa học có phân trang",
+      "2-topic-JPA mapping",
+      "2-exercise-Thiết kế schema mini LMS",
+    ],
+    stages: [
+      {
+        week: "Tuần 1-2",
+        title: "Củng cố nền tảng Java Core",
+        status: "Đang học",
+        progress: 80,
+        outcome: "Viết code rõ ràng, xử lý collection, exception và OOP chắc hơn.",
+        topics: ["OOP thực chiến", "Collections API", "Exception handling"],
+        exercises: [
+          "Refactor class quản lý học viên",
+          "Bài tập Map/List xử lý dữ liệu",
+          "Viết custom exception cho service",
+        ],
+      },
+      {
+        week: "Tuần 3-5",
+        title: "Spring Boot API thực chiến",
+        status: "Kế tiếp",
+        progress: 50,
+        outcome: "Xây dựng REST API có validation, DTO, service layer và response chuẩn.",
+        topics: ["REST API", "Validation", "Layered architecture"],
+        exercises: [
+          "CRUD khóa học có phân trang",
+          "Chuẩn hóa error response",
+          "Viết unit test cho service",
+        ],
+      },
+      {
+        week: "Tuần 6-8",
+        title: "Database, JPA và tối ưu query",
+        status: "Sắp tới",
+        progress: 20,
+        outcome: "Nắm entity relationship, transaction và biết phát hiện query kém hiệu quả.",
+        topics: ["JPA mapping", "Transaction", "Query optimization"],
+        exercises: [
+          "Thiết kế schema mini LMS",
+          "Sửa lỗi N+1 query",
+          "Viết report bằng JPQL",
+        ],
+      },
+      {
+        week: "Tuần 9-12",
+        title: "Dự án tổng hợp và phỏng vấn",
+        status: "Sắp tới",
+        progress: 0,
+        outcome:
+          "Hoàn thiện project portfolio và luyện giải thích quyết định kỹ thuật.",
+        topics: ["Project review", "Security căn bản", "Interview drill"],
+        exercises: [
+          "Hoàn thiện API quản lý lộ trình",
+          "Thêm JWT authentication",
+          "Mock interview 20 câu Java/Spring",
+        ],
+      },
+    ],
+  },
+  {
+    id: "roadmap-2",
+    title: "Fullstack Developer (Java & React)",
+    currentLevel: "Sinh viên năm 1-2",
+    dailyHours: "4 giờ / ngày",
+    computedTargetMonths: "1 tháng (4 tuần)",
+    focusSkills: [
+      "Java Core & OOP thực chiến",
+      "RESTful API & Spring Boot",
+      "Docker, CI/CD & Deploy Cloud",
+    ],
+    weaknessesInput: "Chưa rành cấu hình Docker và các kỹ năng Deployment.",
+    createdAt: "28/05/2026",
+    progress: 13,
+    confidence: 22,
+    selectedPace: "Tăng tốc",
+    activeStage: 0,
+    completedItems: [
+      "0-topic-React hooks & state",
+      "0-exercise-Cấu trúc trang dashboard người dùng",
+    ],
+    stages: [
+      {
+        week: "Tuần 1-2",
+        title: "Giao diện React & Next.js hiện đại",
+        status: "Đang học",
+        progress: 30,
+        outcome:
+          "Xây dựng giao diện responsive bằng React hooks, Tailwind CSS và routing Next.js.",
+        topics: ["React hooks & state", "Next.js routing", "Tailwind CSS"],
+        exercises: [
+          "Cấu trúc trang dashboard người dùng",
+          "Call API hiển thị danh sách khóa học",
+          "Xử lý state form đăng ký học viên",
+        ],
+      },
+      {
+        week: "Tuần 3-5",
+        title: "Spring Boot Backend API",
+        status: "Kế tiếp",
+        progress: 10,
+        outcome:
+          "Xây dựng hệ thống API backend bảo mật và chuẩn Restful phục vụ Frontend.",
+        topics: ["RESTful Controllers", "Spring Data JPA", "Spring Security"],
+        exercises: [
+          "Viết API CRUD khóa học và đăng ký",
+          "Cấu hình JWT authentication",
+          "Tích hợp CORS với React app",
+        ],
+      },
+      {
+        week: "Tuần 6-8",
+        title: "Tích hợp & Dockerize ứng dụng",
+        status: "Sắp tới",
+        progress: 0,
+        outcome:
+          "Đóng gói container Docker, cấu hình docker-compose và deploy lên VPS.",
+        topics: ["Docker", "Docker Compose", "CI/CD căn bản"],
+        exercises: [
+          "Viết Dockerfile cho React & Spring Boot",
+          "Cấu hình Database container trong compose",
+          "Deploy thử nghiệm lên server staging",
+        ],
+      },
+    ],
+  },
+];

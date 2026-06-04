@@ -129,6 +129,7 @@ export const vi = {
     exercises: "Bài tập",
     doneExercises: "Bài tập đã làm",
     studyProgress: "Nhật ký học tập",
+    personalizedRoadmap: "Lộ trình cá nhân hóa",
     contributedQuestions: "Câu hỏi đóng góp",
     favoriteBlogs: "Bài viết yêu thích",
     favoriteCourses: "Khóa học yêu thích",

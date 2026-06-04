@@ -129,6 +129,7 @@ export const ko = {
     exercises: "연습 문제",
     doneExercises: "푼 연습 문제",
     studyProgress: "학습 일지",
+    personalizedRoadmap: "맞춤 학습 로드맵",
     contributedQuestions: "기여한 질문",
     favoriteBlogs: "관심 블로그",
     favoriteCourses: "관심 강의",
