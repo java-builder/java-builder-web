@@ -158,13 +158,13 @@ export default function BlogsPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <div className="w-full rounded-xl overflow-hidden">
+                <div className="w-full rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800">
                   <Image
                     src="/banners/banner-blog.jpg"
                     alt="Blog hero"
                     width={600}
                     height={400}
-                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover"
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-contain"
                     priority
                   />
                 </div>

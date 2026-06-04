@@ -67,7 +67,6 @@ export const formatRelativeTime = (
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
-  const diffWeeks = Math.floor(diffDays / 7);
   const diffMonths = Math.floor(diffDays / 30);
   const diffYears = Math.floor(diffDays / 365);
   
@@ -76,8 +75,7 @@ export const formatRelativeTime = (
     if (diffSeconds < 60) return t("time.secondsAgo").replace("{count}", String(diffSeconds));
     if (diffMins < 60) return t("time.minutesAgo").replace("{count}", String(diffMins));
     if (diffHours < 24) return t("time.hoursAgo").replace("{count}", String(diffHours));
-    if (diffDays < 7) return t("time.daysAgo").replace("{count}", String(diffDays));
-    if (diffWeeks < 4) return t("time.weeksAgo").replace("{count}", String(diffWeeks));
+    if (diffDays < 30) return t("time.daysAgo").replace("{count}", String(diffDays));
     if (diffMonths < 12) return t("time.monthsAgo").replace("{count}", String(diffMonths));
     return t("time.yearsAgo").replace("{count}", String(diffYears));
   }
@@ -86,8 +84,7 @@ export const formatRelativeTime = (
   if (diffSeconds < 60) return `${diffSeconds} giây trước`;
   if (diffMins < 60) return `${diffMins} phút trước`;
   if (diffHours < 24) return `${diffHours} giờ trước`;
-  if (diffDays < 7) return `${diffDays} ngày trước`;
-  if (diffWeeks < 4) return `${diffWeeks} tuần trước`;
+  if (diffDays < 30) return `${diffDays} ngày trước`;
   if (diffMonths < 12) return `${diffMonths} tháng trước`;
   return `${diffYears} năm trước`;
 };

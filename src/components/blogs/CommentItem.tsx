@@ -130,20 +130,22 @@ export default function CommentItem({
 
   return (
     <div id={`comment-${comment.id}`} className="group scroll-mt-24">
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         {/* Avatar */}
-        <div className={`w-8 h-8 ${getAvatarGradient(comment.username)} rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
-          {comment.avatar ? (
-            <Image
-              src={comment.avatar}
-              alt={comment.username}
-              width={32}
-              height={32}
-              className="w-full h-full rounded-full object-cover"
-            />
-          ) : (
-            comment.username.charAt(0).toUpperCase()
-          )}
+        <div className="flex-shrink-0">
+          <div className={`w-10 h-10 aspect-square ${getAvatarGradient(comment.username)} rounded-full flex items-center justify-center text-white font-bold text-sm overflow-hidden`}>
+            {comment.avatar ? (
+              <Image
+                src={comment.avatar}
+                alt={comment.username}
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              comment.username.charAt(0).toUpperCase()
+            )}
+          </div>
         </div>
 
         {/* Content */}
@@ -248,12 +250,14 @@ export default function CommentItem({
                   {/* Horizontal connecting line */}
                   <div className="absolute left-[-24px] top-4 w-6 h-0.5 bg-gray-300 dark:bg-slate-600" />
                   
-                  <div className={`w-7 h-7 ${getAvatarGradient(reply.username)} rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0`}>
-                    {reply.avatar ? (
-                      <Image src={reply.avatar} alt={reply.username} width={28} height={28} className="w-full h-full rounded-full object-cover" />
-                    ) : (
-                      reply.username.charAt(0).toUpperCase()
-                    )}
+                  <div className="flex-shrink-0">
+                    <div className={`w-8 h-8 aspect-square ${getAvatarGradient(reply.username)} rounded-full flex items-center justify-center text-white font-bold text-xs overflow-hidden`}>
+                      {reply.avatar ? (
+                        <Image src={reply.avatar} alt={reply.username} width={32} height={32} className="w-full h-full object-cover" />
+                      ) : (
+                        reply.username.charAt(0).toUpperCase()
+                      )}
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="bg-gray-100 dark:bg-slate-700 rounded-2xl px-3 py-2 inline-block max-w-full">

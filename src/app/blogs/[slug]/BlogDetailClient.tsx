@@ -221,13 +221,13 @@ export default function BlogDetailPage() {
             <article className="bg-white dark:bg-slate-800 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 {/* Featured Image */}
                 {blog.thumbnailUrl && (
-                  <div className="aspect-[16/9] w-full overflow-hidden relative bg-gray-100 rounded-lg">
+                  <div className="aspect-[16/9] w-full overflow-hidden relative bg-gray-100 dark:bg-slate-800 rounded-lg">
                     <Image
                       src={blog.thumbnailUrl}
                       alt={blog.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 60vw"
-                      className="object-cover"
+                      className="object-contain"
                       priority
                     />
                   </div>
