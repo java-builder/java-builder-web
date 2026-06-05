@@ -1,4 +1,8 @@
-﻿interface UserSearchBarProps {
+﻿"use client";
+
+import { Loader2, RotateCw, Search, SlidersHorizontal } from "lucide-react";
+
+interface UserSearchBarProps {
   search: string;
   debouncedSearch: string;
   isLoading: boolean;
@@ -13,80 +17,46 @@ export const UserSearchBar = ({
   onSearch,
   onRefresh,
 }: UserSearchBarProps) => {
+  const isDebouncing = search !== debouncedSearch;
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6 border border-gray-100 dark:border-slate-700">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
-        <div className="flex-1 max-w-lg">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo tên, email..."
-              value={search}
-              onChange={(e) => onSearch(e.target.value)}
-              className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700"
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg
-                className="h-5 w-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-            {search && search !== debouncedSearch && (
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg
-                  className="animate-spin h-4 w-4 text-accent"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              </div>
-            )}
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-slate-700">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
           </div>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+            Bộ lọc
+          </h3>
         </div>
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={onRefresh}
-            disabled={isLoading}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-          >
-            <svg
-              className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            Làm mới
-          </button>
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={isLoading}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+        >
+          <RotateCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
+          Làm mới
+        </button>
+      </div>
+
+      <div className="p-4 lg:p-5">
+        <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          Tìm kiếm người dùng
+        </label>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => onSearch(e.target.value)}
+            placeholder="Nhập tên, email hoặc username..."
+            className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-9 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500"
+          />
+          {isDebouncing && (
+            <Loader2 className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 animate-spin text-accent" />
+          )}
         </div>
       </div>
     </div>

@@ -31,15 +31,23 @@ export default function RoadmapTabs() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 min-w-[110px] flex flex-col items-center justify-center gap-1 px-3 py-2.5 rounded-xl transition-all duration-300 border-2 ${
                   activeTab === tab.id
-                    ? 'border-accent bg-blue-50 dark:bg-accent/10 shadow-md'
-                    : 'border-transparent bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-500 hover:text-gray-900 dark:hover:text-white shadow-sm hover:shadow-md'
+                    ? 'border-accent bg-accent/10 dark:bg-accent/15 shadow-md'
+                    : 'border-transparent bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm hover:shadow-md'
                 }`}
               >
                 <span className="text-2xl">{tab.icon}</span>
-                <span className={`font-bold text-xs ${activeTab === tab.id ? 'text-accent' : 'text-gray-700 dark:text-gray-200'}`}>
+                <span className={`font-bold text-xs ${
+                  activeTab === tab.id
+                    ? 'text-accent'
+                    : 'text-gray-700 dark:text-gray-200'
+                }`}>
                   {tab.label}
                 </span>
-                <span className={`text-[10px] ${activeTab === tab.id ? 'text-accent-600 dark:text-accent-400 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>
+                <span className={`text-[10px] ${
+                  activeTab === tab.id
+                    ? 'text-accent-600 font-medium'
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}>
                   {t(tab.descKey)}
                 </span>
               </button>

@@ -6,12 +6,13 @@ import { userSessionApi } from "@/services/user-session.service";
 import { PageResponse } from "@/types/api";
 import toast from "react-hot-toast";
 import { SessionsHeader } from "@/components/admin/sessions/SessionsHeader";
-import { SessionTableRow } from "@/components/admin/sessions/SessionTableRow";
+import { SessionsSearchBar } from "@/components/admin/sessions/SessionsSearchBar";
+import { SessionsTable } from "@/components/admin/sessions/SessionsTable";
 import { SessionDetailModal } from "@/components/admin/sessions/SessionDetailModal";
 import { RevokeSessionModal } from "@/components/admin/sessions/RevokeSessionModal";
 import { RevokeAllSessionsModal } from "@/components/admin/sessions/RevokeAllSessionsModal";
 import { Pagination } from "@/components/ui/Pagination";
-  
+
 export default function AdminSessionsPage() {
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [pagination, setPagination] = useState<PageResponse<UserSession> | null>(null);
@@ -103,63 +104,35 @@ export default function AdminSessionsPage() {
     setCurrentPage(1);
   };
 
+  const handleClearSearch = () => {
+    setQuery("");
+    setFilters("");
+    setCurrentPage(1);
+  };
+
   const handleImageError = (sessionId: string) => {
-    setImageErrors(prev => new Set(prev).add(sessionId));
+    setImageErrors((prev) => new Set(prev).add(sessionId));
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <SessionsHeader query={query} onSearch={handleSearch} />
+    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
+      <SessionsHeader totalCount={pagination?.totalElements ?? 0} />
 
-      <div className="bg-white rounded-lg shadow-sm ring-1 ring-gray-100 p-4 dark:bg-slate-800 dark:ring-0 dark:border dark:border-slate-700">
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700 dark:text-gray-300">
-                <th className="px-4 py-3 min-w-[200px]">Người dùng</th>
-                <th className="px-4 py-3">Nguồn</th>
-                <th className="px-4 py-3">Trạng thái</th>
-                <th className="px-4 py-3 min-w-[140px]">Trình duyệt</th>
-                <th className="px-4 py-3 min-w-[120px]">Thiết bị</th>
-                <th className="px-4 py-3">IP</th>
-                <th className="px-4 py-3 min-w-[140px]">Thời gian</th>
-                <th className="px-4 py-3 text-center min-w-[80px]">Chi tiết</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500 dark:text-gray-300">
-                    <div className="flex items-center justify-center gap-2">
-                      <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Đang tải...
-                    </div>
-                  </td>
-                </tr>
-              ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500 dark:text-gray-300">
-                    {query ? "Không tìm thấy phiên đăng nhập phù hợp" : "Không có phiên đăng nhập nào"}
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((s) => (
-                  <SessionTableRow
-                    key={s.sessionId}
-                    session={s}
-                    imageErrors={imageErrors}
-                    onImageError={handleImageError}
-                    onViewDetails={setViewSession}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <SessionsSearchBar
+        query={query}
+        onChange={handleSearch}
+        onClear={handleClearSearch}
+      />
+
+      <SessionsTable
+        sessions={filtered}
+        isLoading={isLoading}
+        totalElements={pagination?.totalElements ?? 0}
+        hasFilter={query.length > 0}
+        imageErrors={imageErrors}
+        onImageError={handleImageError}
+        onViewDetails={setViewSession}
+      />
 
       {pagination && (
         <Pagination

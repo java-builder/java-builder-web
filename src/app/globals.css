@@ -111,6 +111,42 @@ html[data-accent-theme="slate"] {
   --card-border: #334155;
 }
 
+/* Dark mode accent overrides — brighten the on-text/on-icon accent so it
+   remains readable on slate-800/900 surfaces. The base accent (used for
+   button backgrounds) stays the same so contrast against the white text
+   stays correct. */
+.dark[data-accent-theme="blue"],
+.dark:not([data-accent-theme]) {
+  --accent-on-dark: #38bdf8; /* sky-400 */
+}
+.dark[data-accent-theme="emerald"] {
+  --accent-on-dark: #34d399; /* emerald-400 */
+}
+.dark[data-accent-theme="purple"] {
+  --accent-on-dark: #a78bfa; /* violet-400 */
+}
+.dark[data-accent-theme="rose"] {
+  --accent-on-dark: #fb7185; /* rose-400 */
+}
+.dark[data-accent-theme="amber"] {
+  --accent-on-dark: #fbbf24; /* amber-400 */
+}
+.dark[data-accent-theme="cyan"] {
+  --accent-on-dark: #22d3ee; /* cyan-400 */
+}
+.dark[data-accent-theme="teal"] {
+  --accent-on-dark: #2dd4bf; /* teal-400 */
+}
+.dark[data-accent-theme="indigo"] {
+  --accent-on-dark: #818cf8; /* indigo-400 */
+}
+.dark[data-accent-theme="pink"] {
+  --accent-on-dark: #f472b6; /* pink-400 */
+}
+.dark[data-accent-theme="slate"] {
+  --accent-on-dark: #94a3b8; /* slate-400 */
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     --background: #0f172a;
@@ -155,16 +191,42 @@ html:not(.dark) {
   color-scheme: light;
 }
 
-/* Smooth theme switching transitions */
-html.theme-switching,
-html.theme-switching *,
-html.theme-switching *:before,
-html.theme-switching *:after {
-  transition: background-color 0.25s ease-out, 
-              color 0.25s ease-out, 
-              border-color 0.25s ease-out,
-              fill 0.25s ease-out,
-              stroke 0.25s ease-out !important;
+/* Smooth theme switching transitions - target specific properties to avoid icon blur */
+html.theme-switching body,
+html.theme-switching main,
+html.theme-switching section,
+html.theme-switching article,
+html.theme-switching aside,
+html.theme-switching header,
+html.theme-switching footer,
+html.theme-switching nav,
+html.theme-switching div,
+html.theme-switching span,
+html.theme-switching p,
+html.theme-switching h1,
+html.theme-switching h2,
+html.theme-switching h3,
+html.theme-switching h4,
+html.theme-switching h5,
+html.theme-switching h6,
+html.theme-switching button,
+html.theme-switching a,
+html.theme-switching input,
+html.theme-switching textarea,
+html.theme-switching select,
+html.theme-switching label,
+html.theme-switching li,
+html.theme-switching ul,
+html.theme-switching ol,
+html.theme-switching table,
+html.theme-switching thead,
+html.theme-switching tbody,
+html.theme-switching tr,
+html.theme-switching td,
+html.theme-switching th {
+  transition: background-color 0.2s ease-out,
+              color 0.2s ease-out,
+              border-color 0.2s ease-out !important;
 }
 
 /* Prevent flash during theme switch */
@@ -206,19 +268,27 @@ html.theme-switching .not-prose span {
 }
 
 .dark .text-gray-700 {
-  color: #cbd5e1 !important;
+  color: #e2e8f0 !important;
 }
 
 .dark .text-gray-600 {
-  color: #94a3b8 !important;
+  color: #cbd5e1 !important;
 }
 
 .dark .text-gray-500 {
-  color: #64748b !important;
+  color: #94a3b8 !important;
 }
 
 .dark .text-gray-400 {
-  color: #94a3b8 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-300 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-gray-200 {
+  color: #f1f5f9 !important;
 }
 
 .dark .text-black {
@@ -391,8 +461,56 @@ html.theme-switching .not-prose span {
   color: #fca5a5 !important;
 }
 
+.dark .text-red-700 {
+  color: #fca5a5 !important;
+}
+
 .dark .text-red-400 {
   color: #f87171 !important;
+}
+
+.dark .text-rose-600 {
+  color: #fda4af !important;
+}
+
+.dark .text-rose-700 {
+  color: #fda4af !important;
+}
+
+.dark .text-rose-400 {
+  color: #fb7185 !important;
+}
+
+.dark .text-emerald-600 {
+  color: #6ee7b7 !important;
+}
+
+.dark .text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+
+.dark .text-emerald-400 {
+  color: #34d399 !important;
+}
+
+.dark .text-amber-600 {
+  color: #fcd34d !important;
+}
+
+.dark .text-amber-700 {
+  color: #fcd34d !important;
+}
+
+.dark .text-amber-400 {
+  color: #fbbf24 !important;
+}
+
+.dark .text-yellow-600 {
+  color: #fcd34d !important;
+}
+
+.dark .text-yellow-700 {
+  color: #fde68a !important;
 }
 
 /* Red 900 variants for favorite button */
@@ -409,6 +527,26 @@ html.theme-switching .not-prose span {
 
 .dark .bg-amber-100 {
   background-color: rgba(120, 53, 15, 0.3) !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(120, 53, 15, 0.18) !important;
+}
+
+.dark .bg-emerald-50 {
+  background-color: rgba(6, 78, 59, 0.25) !important;
+}
+
+.dark .bg-emerald-100 {
+  background-color: rgba(6, 95, 70, 0.35) !important;
+}
+
+.dark .bg-rose-50 {
+  background-color: rgba(159, 18, 57, 0.18) !important;
+}
+
+.dark .bg-rose-100 {
+  background-color: rgba(190, 18, 60, 0.3) !important;
 }
 
 .dark .text-amber-700 {
@@ -467,30 +605,7 @@ html.theme-switching .not-prose span {
   background-color: #1e3a5f !important;
 }
 
-/* Text colors for colored backgrounds */
-.dark .text-blue-600 {
-  color: #60a5fa !important;
-}
-
-.dark .text-blue-700 {
-  color: #3b82f6 !important;
-}
-
-.dark .text-green-600 {
-  color: #4ade80 !important;
-}
-
-.dark .text-green-700 {
-  color: #22c55e !important;
-}
-
-.dark .text-red-600 {
-  color: #f87171 !important;
-}
-
-.dark .text-red-700 {
-  color: #ef4444 !important;
-}
+/* Text colors for colored backgrounds (consolidated above) */
 
 /* Form elements */
 .dark input,
@@ -585,11 +700,10 @@ input:-moz-autofill-preview {
   opacity: 0.9;
 }
 
-/* Tags/badges in dark mode */
-.dark .border-gray-200.text-gray-700 {
+/* Tags/badges in dark mode - subtle override only when explicit pair */
+.dark .border-gray-200.text-gray-700:not([class*="bg-"]) {
   border-color: #475569 !important;
-  color: #cbd5e1 !important;
-  background-color: #334155 !important;
+  color: #e2e8f0 !important;
 }
 
 /* Tables */
@@ -708,23 +822,21 @@ input:-moz-autofill-preview {
 }
 
 /* Icon colors */
+.dark .text-gray-400 svg.lucide,
+.dark .text-gray-500 svg.lucide {
+  color: inherit;
+}
+
+/* Empty states icons - keep muted */
 .dark .text-gray-400 svg,
 .dark .text-gray-500 svg {
-  /* Keep a muted icon color in dark mode but avoid using !important so
-     explicit icon color classes (e.g. text-accent-600) can override this. */
   color: #94a3b8;
 }
 
-/* Empty states */
-.dark .text-gray-400 {
-  color: #64748b !important;
-}
-
-/* Specific fix for document/course cards with gradient headers */
-/* Exclude bg-clip-text elements (gradient text) from brightness filter */
-.dark [class*="from-"][class*="to-"]:not([class*="bg-clip-text"]):not(.cicd-gradient-text) {
-  filter: brightness(0.85);
-}
+/* Removed the global brightness filter on gradients because it was dimming
+   page content under any wrapper that used `bg-gradient-to-b from-white to-gray-50`
+   etc. If a specific card needs a softer header in dark mode, apply the filter
+   inline on that element only. */
 
 /* Fix white borders */
 .dark .border-white {
@@ -1023,6 +1135,21 @@ input[type="text"] {
 }
 .text-brand {
   color: var(--accent) !important;
+}
+
+/* Dark mode: lighten accent text/icons so they're readable on dark surfaces.
+   Background and border tokens stay the same to preserve button contrast. */
+.dark .text-accent {
+  color: var(--accent-on-dark, #38bdf8) !important;
+}
+.dark .text-accent-600 {
+  color: var(--accent-on-dark, #38bdf8) !important;
+}
+.dark .text-brand {
+  color: var(--accent-on-dark, #38bdf8) !important;
+}
+.dark .hover\:text-accent:hover {
+  color: var(--accent-on-dark, #38bdf8) !important;
 }
 .from-accent {
   --tw-gradient-from: var(--accent) !important;

@@ -1,14 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff, KeyRound, Loader2, ShieldAlert } from "lucide-react";
+import toast from "react-hot-toast";
 import { userApi } from "@/services/user.service";
 import { PasswordStatus } from "@/types/user";
-import toast from "react-hot-toast";
 import { useI18n } from "@/contexts/I18nContext";
+import SectionCard from "./SectionCard";
+
+type PwField = "current" | "new" | "confirm";
 
 export default function PasswordTab() {
   const { t } = useI18n();
-  const [passwordStatus, setPasswordStatus] = useState<PasswordStatus | null>(null);
+  const [passwordStatus, setPasswordStatus] = useState<PasswordStatus | null>(
+    null
+  );
   const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [formData, setFormData] = useState({
     currentPassword: "",
@@ -16,7 +22,7 @@ export default function PasswordTab() {
     confirmPassword: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPasswords, setShowPasswords] = useState({
+  const [showPasswords, setShowPasswords] = useState<Record<PwField, boolean>>({
     current: false,
     new: false,
     confirm: false,
@@ -50,39 +56,38 @@ export default function PasswordTab() {
         await userApi.createPassword({ password: formData.newPassword });
         toast.success(t("profilePage.passwordTab.createSuccess"));
         setPasswordStatus(PasswordStatus.SET);
-        setFormData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
       } else {
-        await userApi.changePassword(formData.currentPassword, formData.newPassword);
+        await userApi.changePassword(
+          formData.currentPassword,
+          formData.newPassword
+        );
         toast.success(t("profilePage.passwordTab.changeSuccess"));
-        setFormData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
       }
+      setFormData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("profilePage.passwordTab.actionFailed"));
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t("profilePage.passwordTab.actionFailed")
+      );
       console.error("Failed to create/update password", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const togglePasswordVisibility = (field: "current" | "new" | "confirm") => {
-    setShowPasswords((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
+  const togglePasswordVisibility = (field: PwField) => {
+    setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
   if (isLoadingStatus) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <Loader2 className="h-7 w-7 animate-spin text-accent" />
       </div>
     );
   }
@@ -90,172 +95,164 @@ export default function PasswordTab() {
   const isPasswordSet = passwordStatus === PasswordStatus.SET;
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {isPasswordSet ? t("profilePage.passwordTab.changePassword") : t("profilePage.passwordTab.createPassword")}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {isPasswordSet
-            ? t("profilePage.passwordTab.updateDesc")
-            : t("profilePage.passwordTab.createDesc")}
-        </p>
-      </div>
+    <SectionCard
+      icon={KeyRound}
+      title={
+        isPasswordSet
+          ? t("profilePage.passwordTab.changePassword")
+          : t("profilePage.passwordTab.createPassword")
+      }
+      subtitle={
+        isPasswordSet
+          ? t("profilePage.passwordTab.updateDesc")
+          : t("profilePage.passwordTab.createDesc")
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {isPasswordSet && (
+          <PasswordField
+            label={t("profilePage.passwordTab.currentPassword")}
+            placeholder={t("profilePage.passwordTab.currentPasswordPlaceholder")}
+            value={formData.currentPassword}
+            visible={showPasswords.current}
+            onToggle={() => togglePasswordVisibility("current")}
+            onChange={(v) =>
+              setFormData({ ...formData, currentPassword: v })
+            }
+            required
+          />
+        )}
 
-      {/* Content */}
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Current Password - Only show if password is set */}
-          {isPasswordSet && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t("profilePage.passwordTab.currentPassword")}
-              </label>
-              <div className="relative">
-                <input
-                  type={showPasswords.current ? "text" : "password"}
-                  value={formData.currentPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      currentPassword: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-2.5 pr-10 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
-                  placeholder={t("profilePage.passwordTab.currentPasswordPlaceholder")}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility("current")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                >
-                  {showPasswords.current ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
+        <PasswordField
+          label={t("profilePage.passwordTab.newPassword")}
+          placeholder={t("profilePage.passwordTab.newPasswordPlaceholder")}
+          value={formData.newPassword}
+          visible={showPasswords.new}
+          onToggle={() => togglePasswordVisibility("new")}
+          onChange={(v) => setFormData({ ...formData, newPassword: v })}
+          required
+          minLength={8}
+          hint={t("profilePage.passwordTab.passwordLengthTip")}
+        />
 
-          {/* New Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t("profilePage.passwordTab.newPassword")}
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.new ? "text" : "password"}
-                value={formData.newPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, newPassword: e.target.value })
-                }
-                className="w-full px-4 py-2.5 pr-10 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
-                placeholder={t("profilePage.passwordTab.newPasswordPlaceholder")}
-                minLength={8}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("new")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              >
-                {showPasswords.new ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                )}
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-              {t("profilePage.passwordTab.passwordLengthTip")}
-            </p>
-          </div>
+        <PasswordField
+          label={t("profilePage.passwordTab.confirmNewPassword")}
+          placeholder={t("profilePage.passwordTab.confirmNewPasswordPlaceholder")}
+          value={formData.confirmPassword}
+          visible={showPasswords.confirm}
+          onToggle={() => togglePasswordVisibility("confirm")}
+          onChange={(v) =>
+            setFormData({ ...formData, confirmPassword: v })
+          }
+          required
+        />
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t("profilePage.passwordTab.confirmNewPassword")}
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.confirm ? "text" : "password"}
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    confirmPassword: e.target.value,
-                  })
-                }
-                className="w-full px-4 py-2.5 pr-10 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-slate-700 focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
-                placeholder={t("profilePage.passwordTab.confirmNewPasswordPlaceholder")}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("confirm")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              >
-                {showPasswords.confirm ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Password Requirements */}
-          <div className="bg-gray-50 dark:bg-slate-900/50 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2.5">
+        {/* Requirements */}
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+          <div className="mb-2 flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-amber-500" />
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
               {t("profilePage.passwordTab.passwordReqs")}
             </h4>
-            <ul className="space-y-1.5 text-sm text-gray-600 dark:text-gray-300">
-              <li className="flex items-start gap-2">
-                <span className="text-red-500">•</span>
-                <span><strong>{t("profilePage.passwordTab.reqLength")}</strong> {t("profilePage.passwordTab.reqRequired")}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-gray-400">•</span>
-                <span>{t("profilePage.passwordTab.reqCase")}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-gray-400">•</span>
-                <span>{t("profilePage.passwordTab.reqNumber")}</span>
-              </li>
-            </ul>
           </div>
+          <ul className="space-y-1.5 text-sm text-gray-600 dark:text-gray-300">
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-rose-500" />
+              <span>
+                <strong>{t("profilePage.passwordTab.reqLength")}</strong>{" "}
+                {t("profilePage.passwordTab.reqRequired")}
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-slate-600" />
+              <span>{t("profilePage.passwordTab.reqCase")}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-slate-600" />
+              <span>{t("profilePage.passwordTab.reqNumber")}</span>
+            </li>
+          </ul>
+        </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting || formData.newPassword !== formData.confirmPassword}
-              className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-            >
-              {isSubmitting ? t("profilePage.passwordTab.submitting") : isPasswordSet ? t("profilePage.passwordTab.changePassword") : t("profilePage.passwordTab.createPassword")}
-            </button>
-          </div>
-        </form>
+        <div className="flex justify-end pt-1">
+          <button
+            type="submit"
+            disabled={
+              isSubmitting ||
+              formData.newPassword !== formData.confirmPassword ||
+              !formData.newPassword
+            }
+            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {isSubmitting
+              ? t("profilePage.passwordTab.submitting")
+              : isPasswordSet
+                ? t("profilePage.passwordTab.changePassword")
+                : t("profilePage.passwordTab.createPassword")}
+          </button>
+        </div>
+      </form>
+    </SectionCard>
+  );
+}
+
+interface PasswordFieldProps {
+  label: string;
+  placeholder: string;
+  value: string;
+  visible: boolean;
+  onToggle: () => void;
+  onChange: (v: string) => void;
+  required?: boolean;
+  minLength?: number;
+  hint?: string;
+}
+
+function PasswordField({
+  label,
+  placeholder,
+  value,
+  visible,
+  onToggle,
+  onChange,
+  required,
+  minLength,
+  hint,
+}: PasswordFieldProps) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type={visible ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          required={required}
+          minLength={minLength}
+          className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm text-gray-900 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+        />
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={visible ? "Hide password" : "Show password"}
+          className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-600 dark:hover:text-gray-200"
+        >
+          {visible ? (
+            <EyeOff className="h-3.5 w-3.5" />
+          ) : (
+            <Eye className="h-3.5 w-3.5" />
+          )}
+        </button>
       </div>
+      {hint && (
+        <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }

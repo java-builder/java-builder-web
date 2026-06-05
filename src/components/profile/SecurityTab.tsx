@@ -1,19 +1,30 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Info,
+  ShieldCheck,
+  XCircle,
+} from "lucide-react";
+import toast from "react-hot-toast";
 import { UserDetailResponse } from "@/types/user";
 import { twoFactorApi } from "@/services/two-factor.service";
+import { useI18n } from "@/contexts/I18nContext";
 import TwoFactorModal from "./TwoFactorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import toast from "react-hot-toast";
-import { useI18n } from "@/contexts/I18nContext";
+import SectionCard from "./SectionCard";
 
 interface SecurityTabProps {
   user: UserDetailResponse;
   onUserUpdate?: (user: Partial<UserDetailResponse>) => void;
 }
 
-export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
+export default function SecurityTab({
+  user,
+  onUserUpdate,
+}: SecurityTabProps) {
   const { t } = useI18n();
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(user.mftEnable);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,9 +34,12 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
   const [error, setError] = useState("");
   const initialUserMftEnable = useRef(user.mftEnable);
 
-  const handleUserUpdate = useCallback((updates: Partial<UserDetailResponse>) => {
-    onUserUpdate?.(updates);
-  }, [onUserUpdate]);
+  const handleUserUpdate = useCallback(
+    (updates: Partial<UserDetailResponse>) => {
+      onUserUpdate?.(updates);
+    },
+    [onUserUpdate]
+  );
 
   useEffect(() => {
     const checkMfaStatus = async () => {
@@ -37,14 +51,13 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
             handleUserUpdate({ mftEnable: response.data });
           }
         }
-      } catch (error) {
-        console.error("Failed to check MFA status:", error);
+      } catch (err) {
+        console.error("Failed to check MFA status:", err);
         setTwoFactorEnabled(false);
       } finally {
         setIsInitialLoading(false);
       }
     };
-
     checkMfaStatus();
   }, [handleUserUpdate]);
 
@@ -56,6 +69,7 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
       setShowTwoFactorModal(true);
     }
   };
+
   const handleDisableTwoFactor = async () => {
     try {
       setIsLoading(true);
@@ -64,14 +78,11 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
       setTwoFactorEnabled(false);
       setShowDisableConfirm(false);
       toast.success(t("profilePage.securityTab.disableSuccess"));
-      
-      if (onUserUpdate) {
-        onUserUpdate({ mftEnable: false });
-      }
-    } catch (error: unknown) {
+      onUserUpdate?.({ mftEnable: false });
+    } catch (err: unknown) {
       let errorMessage = t("profilePage.securityTab.disableFailed");
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as {
           response?: { data?: { message?: string } };
         };
         errorMessage = axiosError.response?.data?.message || errorMessage;
@@ -86,172 +97,181 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
     setTwoFactorEnabled(true);
     setShowTwoFactorModal(false);
     toast.success(t("profilePage.securityTab.enableSuccess"));
-    
-    if (onUserUpdate) {
-      onUserUpdate({ mftEnable: true });
-    }
-  };
-
-  const formattedSecurityNote = () => {
-    const noteText = t("profilePage.securityTab.securityActivatedNote");
-    const colonIndex = noteText.indexOf(":");
-    if (colonIndex !== -1) {
-      return (
-        <>
-          <strong>{noteText.slice(0, colonIndex + 1)}</strong>
-          {noteText.slice(colonIndex + 1)}
-        </>
-      );
-    }
-    return noteText;
+    onUserUpdate?.({ mftEnable: true });
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("profilePage.securityTab.security")}</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("profilePage.securityTab.securityDesc")}</p>
-      </div>
-
-      {/* Content */}
-      <div className="p-6 space-y-6">
-        {/* Two-Factor Authentication Card */}
-        <div className="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-6 border border-gray-200 dark:border-slate-600">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-4 flex-1">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-green-200 dark:border-green-800/50">
-                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+    <>
+      <SectionCard
+        icon={ShieldCheck}
+        title={t("profilePage.securityTab.security")}
+        subtitle={t("profilePage.securityTab.securityDesc")}
+      >
+        <div className="space-y-5">
+          {/* 2FA Toggle Row */}
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40 sm:p-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex items-start gap-3 min-w-0">
+                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                  <ShieldCheck className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                    {t("profilePage.securityTab.twoFactor")}
+                  </h4>
+                  <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                    {isInitialLoading
+                      ? t("profilePage.securityTab.checkingStatus")
+                      : twoFactorEnabled
+                        ? t("profilePage.securityTab.twoFactorProtected")
+                        : t("profilePage.securityTab.twoFactorAddLyr")}
+                  </p>
+                  {!isInitialLoading && twoFactorEnabled && (
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800/40">
+                      <CheckCircle2 className="h-3 w-3" />
+                      {t("profilePage.securityTab.activated")}
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
-                  {t("profilePage.securityTab.twoFactor")}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {isInitialLoading 
-                    ? t("profilePage.securityTab.checkingStatus") 
-                    : twoFactorEnabled 
-                      ? t("profilePage.securityTab.twoFactorProtected") 
-                      : t("profilePage.securityTab.twoFactorAddLyr")
-                  }
-                </p>
-                {!isInitialLoading && twoFactorEnabled && (
-                  <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    {t("profilePage.securityTab.activated")}
-                  </div>
+
+              <div className="flex flex-shrink-0 items-center gap-3">
+                {isInitialLoading ? (
+                  <div className="h-6 w-11 animate-pulse rounded-full bg-gray-200 dark:bg-slate-700" />
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleToggleTwoFactor}
+                      disabled={isLoading}
+                      role="switch"
+                      aria-checked={twoFactorEnabled}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
+                        twoFactorEnabled
+                          ? "bg-accent"
+                          : "bg-gray-300 dark:bg-slate-600"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${
+                          twoFactorEnabled ? "translate-x-6" : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                    <span
+                      className={`text-xs font-semibold ${
+                        twoFactorEnabled
+                          ? "text-accent"
+                          : "text-gray-500 dark:text-gray-400"
+                      }`}
+                    >
+                      {twoFactorEnabled
+                        ? t("profilePage.securityTab.enabled")
+                        : t("profilePage.securityTab.disabled")}
+                    </span>
+                  </>
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              {isInitialLoading ? (
-                <div className="flex items-center gap-3">
-                  <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse">
-                    <div className="inline-block h-4 w-4 transform rounded-full bg-gray-300 dark:bg-gray-600 translate-x-1"></div>
-                  </div>
-                  <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                </div>
-              ) : (
-                <>
-                  <button
-                    onClick={handleToggleTwoFactor}
-                    disabled={isLoading}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
-                      twoFactorEnabled ? "bg-accent" : "bg-gray-300 dark:bg-gray-600"
-                    }`}
+          </div>
+
+          {/* Status alerts */}
+          {!isInitialLoading && twoFactorEnabled && (
+            <SecurityAlert
+              tone="success"
+              icon={CheckCircle2}
+              title={t("profilePage.securityTab.securityActivated")}
+              description={t("profilePage.securityTab.securityActivatedDesc")}
+              footer={
+                <p className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-300">
+                  {t("profilePage.securityTab.securityActivatedNote")}
+                </p>
+              }
+            />
+          )}
+
+          {!isInitialLoading && !twoFactorEnabled && (
+            <SecurityAlert
+              tone="info"
+              icon={Info}
+              title={t("profilePage.securityTab.twoFactorGuide")}
+              description={t("profilePage.securityTab.downloadAuthenticatorDesc")}
+            >
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-800 shadow-sm transition hover:border-accent hover:bg-accent/5 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:hover:border-accent dark:hover:bg-slate-700"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 512 512"
+                    fill="none"
+                    aria-hidden
                   >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-                        twoFactorEnabled ? "translate-x-6" : "translate-x-1"
-                      }`}
+                    <path
+                      d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1z"
+                      fill="#3BCCFF"
                     />
-                  </button>
-                  <span className={`text-sm font-medium transition-colors duration-300 ${twoFactorEnabled ? "text-accent" : "text-gray-500 dark:text-gray-400"}`}>
-                    {twoFactorEnabled ? t("profilePage.securityTab.enabled") : t("profilePage.securityTab.disabled")}
-                  </span>
-                </>
-              )}
-            </div>
-          </div>
+                    <path
+                      d="m104.6 13 220.7 221.3-220.7 220.7c-3.4-1.3-6.4-3.7-8.4-7C93.7 444 92 439.6 92 435V31c0-4.6 1.7-9 4.2-12.3 2-3.3 5-5.7 8.4-7Z"
+                      fill="#22DA6E"
+                    />
+                    <path
+                      d="m385.4 174.2-60.1 60.1-60.1 60.1L96.2 461.3c2.2 2.5 5 4.5 8.3 5.7L385.4 174.2Z"
+                      fill="#FF3F4D"
+                    />
+                    <path
+                      d="m467.4 224-82.1-50 60.2 60.2-60.1 60.1 82-49.7c25.3-15.4 25.3-55.2 0-70.6Z"
+                      fill="#FFD109"
+                    />
+                  </svg>
+                  <div className="text-left leading-tight">
+                    <div className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      {t("profilePage.securityTab.downloadGetItOn")}
+                    </div>
+                    <div>Google Play</div>
+                  </div>
+                </a>
+                <a
+                  href="https://apps.apple.com/us/app/google-authenticator/id388497605"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-800 shadow-sm transition hover:border-accent hover:bg-accent/5 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:hover:border-accent dark:hover:bg-slate-700"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 384 512"
+                    fill="currentColor"
+                    aria-hidden
+                  >
+                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
+                  </svg>
+                  <div className="text-left leading-tight">
+                    <div className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      {t("profilePage.securityTab.downloadOn")}
+                    </div>
+                    <div>App Store</div>
+                  </div>
+                </a>
+              </div>
+            </SecurityAlert>
+          )}
+
+          {error && (
+            <SecurityAlert
+              tone="error"
+              icon={XCircle}
+              title={t("profilePage.securityTab.error")}
+              description={error}
+            />
+          )}
         </div>
-        {/* Two-Factor Authentication Details - Only show when enabled */}
-        {!isInitialLoading && twoFactorEnabled && (
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-5 border border-green-200 dark:border-green-800/50">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-800/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold text-green-900 dark:text-green-300 mb-2">{t("profilePage.securityTab.securityActivated")}</h4>
-                <p className="text-sm text-green-800 dark:text-green-200 mb-3">
-                  {t("profilePage.securityTab.securityActivatedDesc")}
-                </p>
-                <p className="text-xs text-green-700 dark:text-green-300">
-                  {formattedSecurityNote()}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+      </SectionCard>
 
-        {/* Security Tips - Only show when 2FA is not enabled */}
-        {!isInitialLoading && !twoFactorEnabled && (
-          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800/50">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-800/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-2">{t("profilePage.securityTab.twoFactorGuide")}</h4>
-                <ul className="space-y-1.5 text-sm text-amber-800 dark:text-amber-200">
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 dark:text-amber-400 mt-0.5">1.</span>
-                    <span>{t("profilePage.securityTab.guideStep1")}</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 dark:text-amber-400 mt-0.5">2.</span>
-                    <span>{t("profilePage.securityTab.guideStep2")}</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 dark:text-amber-400 mt-0.5">3.</span>
-                    <span>{t("profilePage.securityTab.guideStep3")}</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 dark:text-amber-400 mt-0.5">4.</span>
-                    <span>{t("profilePage.securityTab.guideStep4")}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 rounded-xl p-5 border border-red-200">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-red-900 mb-1">{t("profilePage.securityTab.error")}</h4>
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Modals */}
       <TwoFactorModal
         isOpen={showTwoFactorModal}
         onClose={() => setShowTwoFactorModal(false)}
@@ -268,6 +288,77 @@ export default function SecurityTab({ user, onUserUpdate }: SecurityTabProps) {
         cancelText={t("profilePage.securityTab.cancelBtn")}
         type="danger"
       />
+    </>
+  );
+}
+
+interface SecurityAlertProps {
+  tone: "success" | "warning" | "error" | "info";
+  icon: typeof AlertTriangle;
+  title: string;
+  description?: string;
+  footer?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+function SecurityAlert({
+  tone,
+  icon: Icon,
+  title,
+  description,
+  footer,
+  children,
+}: SecurityAlertProps) {
+  const palette = {
+    success: {
+      bg: "bg-emerald-50 dark:bg-emerald-900/20",
+      ring: "border-emerald-200 dark:border-emerald-800/40",
+      iconBg: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400",
+      title: "text-emerald-900 dark:text-emerald-200",
+      desc: "text-emerald-800 dark:text-emerald-200",
+    },
+    warning: {
+      bg: "bg-amber-50 dark:bg-amber-900/20",
+      ring: "border-amber-200 dark:border-amber-800/40",
+      iconBg: "bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400",
+      title: "text-amber-900 dark:text-amber-200",
+      desc: "text-amber-800 dark:text-amber-200",
+    },
+    error: {
+      bg: "bg-rose-50 dark:bg-rose-900/20",
+      ring: "border-rose-200 dark:border-rose-900/40",
+      iconBg: "bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400",
+      title: "text-rose-900 dark:text-rose-200",
+      desc: "text-rose-800 dark:text-rose-300",
+    },
+    info: {
+      bg: "bg-gray-50 dark:bg-slate-900/40",
+      ring: "border-gray-200 dark:border-slate-700",
+      iconBg: "bg-accent/10 text-accent",
+      title: "text-gray-900 dark:text-white",
+      desc: "text-gray-600 dark:text-gray-300",
+    },
+  }[tone];
+
+  return (
+    <div className={`rounded-xl border p-4 ${palette.bg} ${palette.ring}`}>
+      <div className="flex items-start gap-3">
+        <span
+          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${palette.iconBg}`}
+        >
+          <Icon className="h-4 w-4" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h5 className={`text-sm font-semibold ${palette.title}`}>{title}</h5>
+          {description && (
+            <p className={`mt-1 text-xs sm:text-sm ${palette.desc}`}>
+              {description}
+            </p>
+          )}
+          {children}
+          {footer}
+        </div>
+      </div>
     </div>
   );
 }

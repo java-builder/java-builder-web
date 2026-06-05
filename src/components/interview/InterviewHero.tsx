@@ -95,7 +95,7 @@ export default function InterviewHero({
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-5">
               {t("interviewPage.heroTitleStart")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-600">
+              <span className="bg-gradient-to-r from-accent to-purple-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-purple-400">
                 {t("interviewPage.heroTitleAccent")}
               </span>
             </h1>
@@ -107,26 +107,26 @@ export default function InterviewHero({
             {/* Stats */}
             <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
               <div className="text-center">
-                <div className="text-2xl font-bold text-accent mb-1">
+                <div className="text-2xl font-bold text-accent dark:text-sky-400 mb-1">
                   {totalQuestions}+
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs text-gray-600 dark:text-gray-300">
                   {t("interviewPage.statQuestions")}
                 </div>
               </div>
               <div className="w-px h-10 bg-gray-300 dark:bg-slate-700" />
               <div className="text-center">
-                <div className="text-2xl font-bold text-accent mb-1">
+                <div className="text-2xl font-bold text-accent dark:text-sky-400 mb-1">
                   {totalCategories}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs text-gray-600 dark:text-gray-300">
                   {t("interviewPage.statTopics")}
                 </div>
               </div>
               <div className="w-px h-10 bg-gray-300 dark:bg-slate-700" />
               <div className="text-center">
-                <div className="text-2xl font-bold text-accent mb-1">3</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-2xl font-bold text-accent dark:text-sky-400 mb-1">3</div>
+                <div className="text-xs text-gray-600 dark:text-gray-300">
                   {t("interviewPage.statLevels")}
                 </div>
               </div>

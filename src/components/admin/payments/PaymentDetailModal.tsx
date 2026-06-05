@@ -1,6 +1,24 @@
 ﻿"use client";
 
-import { PaymentDetailResponse, PaymentStatus, TransactionType, PaymentMethod, PaymentGateWay } from "@/types/payment";
+import { ReactNode, useEffect } from "react";
+import {
+  Calendar,
+  CreditCard,
+  Hash,
+  Mail,
+  Package,
+  ScrollText,
+  User,
+  Wallet,
+  X,
+} from "lucide-react";
+import {
+  PaymentDetailResponse,
+  PaymentGateWay,
+  PaymentMethod,
+  PaymentStatus,
+  TransactionType,
+} from "@/types/payment";
 import { formatApiDate } from "@/utils/dateUtils";
 
 interface PaymentDetailModalProps {
@@ -8,52 +26,49 @@ interface PaymentDetailModalProps {
   onClose: () => void;
 }
 
-const StatusBadge = ({ status }: { status: PaymentStatus }) => {
-  const getStatusConfig = (status: PaymentStatus) => {
-    switch (status) {
-      case PaymentStatus.SUCCESS:
-        return { color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", text: "Thành công" };
-      case PaymentStatus.PENDING:
-        return { color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", text: "Đang xử lý" };
-      case PaymentStatus.FAILED:
-        return { color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", text: "Thất bại" };
-      case PaymentStatus.CANCELLED:
-        return { color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300", text: "Đã hủy" };
-      case PaymentStatus.EXPIRED:
-        return { color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", text: "Hết hạn" };
-      default:
-        return { color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300", text: status };
-    }
-  };
-
-  const config = getStatusConfig(status);
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
-      {config.text}
-    </span>
-  );
+const STATUS_CONFIG: Record<
+  PaymentStatus,
+  { label: string; tone: "emerald" | "amber" | "rose" | "gray" | "orange" }
+> = {
+  [PaymentStatus.SUCCESS]: { label: "Thành công", tone: "emerald" },
+  [PaymentStatus.PENDING]: { label: "Đang xử lý", tone: "amber" },
+  [PaymentStatus.FAILED]: { label: "Thất bại", tone: "rose" },
+  [PaymentStatus.CANCELLED]: { label: "Đã hủy", tone: "gray" },
+  [PaymentStatus.EXPIRED]: { label: "Hết hạn", tone: "orange" },
 };
 
-const TransactionTypeBadge = ({ type }: { type: TransactionType }) => {
-  const getTypeConfig = (type: TransactionType) => {
-    switch (type) {
-      case TransactionType.PAYIN:
-        return { color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", text: "Thanh toán" };
-      case TransactionType.PAYOUT:
-        return { color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400", text: "Rút tiền" };
-      case TransactionType.SUBSCRIPTION:
-        return { color: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400", text: "Đăng ký" };
-      default:
-        return { color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300", text: type };
-    }
-  };
+const STATUS_TONE: Record<"emerald" | "amber" | "rose" | "gray" | "orange", string> = {
+  emerald:
+    "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400",
+  amber:
+    "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-400",
+  rose: "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-400",
+  gray: "bg-gray-100 text-gray-700 ring-gray-200 dark:bg-gray-700 dark:text-gray-300",
+  orange:
+    "bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-400",
+};
 
-  const config = getTypeConfig(type);
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
-      {config.text}
-    </span>
-  );
+const STATUS_DOT: Record<"emerald" | "amber" | "rose" | "gray" | "orange", string> = {
+  emerald: "bg-emerald-500",
+  amber: "bg-amber-500",
+  rose: "bg-rose-500",
+  gray: "bg-gray-400",
+  orange: "bg-orange-500",
+};
+
+const TYPE_LABEL: Record<TransactionType, string> = {
+  [TransactionType.PAYIN]: "Thanh toán",
+  [TransactionType.PAYOUT]: "Rút tiền",
+  [TransactionType.SUBSCRIPTION]: "Đăng ký",
+};
+
+const TYPE_TONE: Record<TransactionType, string> = {
+  [TransactionType.PAYIN]:
+    "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-900/30 dark:text-blue-400",
+  [TransactionType.PAYOUT]:
+    "bg-purple-50 text-purple-700 ring-purple-200 dark:bg-purple-900/30 dark:text-purple-400",
+  [TransactionType.SUBSCRIPTION]:
+    "bg-indigo-50 text-indigo-700 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400",
 };
 
 const getPaymentMethodText = (method: PaymentMethod) => {
@@ -75,141 +90,174 @@ const getPaymentGatewayText = (gateway: PaymentGateWay) => {
 };
 
 export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps) => {
+  // Lock body scroll while open
+  useEffect(() => {
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, []);
+
+  // Close on ESC
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
+  const statusCfg = STATUS_CONFIG[payment.paymentStatus] ?? STATUS_CONFIG.PENDING;
+  const productName = payment.courseTitle || payment.subscriptionPlanName;
+  const productLabel = payment.courseTitle ? "Khóa học" : "Gói đăng ký";
+  const formattedAmount = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(payment.totalPrice);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-gray-900/40 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
+        className="relative my-6 w-full max-w-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Chi tiết thanh toán</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Mã đơn hàng: #{payment.paymentCode}</p>
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+          {/* Header */}
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-gray-200 bg-white px-5 py-4 dark:border-slate-700 dark:bg-slate-800">
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+                Chi tiết thanh toán
+              </h2>
+              <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                <Hash className="h-3 w-3" />
+                <span className="font-mono tabular-nums">{payment.paymentCode}</span>
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Đóng"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
 
-        {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-88px)] p-6">
-          <div className="space-y-6">
-            {/* Status and Amount */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Trạng thái</label>
-                <div className="mt-2">
-                  <StatusBadge status={payment.paymentStatus} />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Số tiền</label>
-                <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(payment.totalPrice)}
-                </p>
-              </div>
-            </div>
-
-            <div className="border-t border-gray-200 dark:border-slate-700"></div>
-
-            {/* User Info */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Thông tin người dùng</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Body */}
+          <div className="max-h-[calc(100vh-180px)] overflow-y-auto">
+            {/* Hero amount */}
+            <div className="border-b border-gray-200 bg-gradient-to-br from-accent/5 to-transparent px-5 py-5 dark:border-slate-700">
+              <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Tên người dùng</label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">{payment.userName}</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Số tiền giao dịch
+                  </p>
+                  <p className="mt-1 text-3xl font-bold tabular-nums text-gray-900 dark:text-white">
+                    {formattedAmount}
+                  </p>
                 </div>
-                <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Email</label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-1 break-all">{payment.userEmail}</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${STATUS_TONE[statusCfg.tone]}`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[statusCfg.tone]}`}
+                    />
+                    {statusCfg.label}
+                  </span>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${TYPE_TONE[payment.transactionType]}`}
+                  >
+                    {TYPE_LABEL[payment.transactionType] ?? payment.transactionType}
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-slate-700"></div>
+            {/* Sections */}
+            <div className="divide-y divide-gray-200 dark:divide-slate-700">
+              {/* User */}
+              <Section
+                icon={<User className="h-3.5 w-3.5" />}
+                title="Thông tin người dùng"
+              >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field label="Tên người dùng" value={payment.userName} />
+                  <Field
+                    label="Email"
+                    value={payment.userEmail}
+                    icon={<Mail className="h-3.5 w-3.5 text-gray-400" />}
+                    breakAll
+                  />
+                </div>
+              </Section>
 
-            {/* Transaction Info */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Thông tin giao dịch</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Loại giao dịch</label>
-                  <div className="mt-1">
-                    <TransactionTypeBadge type={payment.transactionType} />
-                  </div>
+              {/* Transaction info */}
+              <Section
+                icon={<CreditCard className="h-3.5 w-3.5" />}
+                title="Thông tin giao dịch"
+              >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <Field
+                    label="Phương thức"
+                    value={getPaymentMethodText(payment.paymentMethod)}
+                    icon={<Wallet className="h-3.5 w-3.5 text-gray-400" />}
+                  />
+                  <Field
+                    label="Cổng thanh toán"
+                    value={getPaymentGatewayText(payment.paymentGateway)}
+                  />
+                  <Field
+                    label="Loại giao dịch"
+                    value={TYPE_LABEL[payment.transactionType] ?? payment.transactionType}
+                  />
                 </div>
-                <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Phương thức</label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
-                    {getPaymentMethodText(payment.paymentMethod)}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Cổng thanh toán</label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
-                    {getPaymentGatewayText(payment.paymentGateway)}
-                  </p>
-                </div>
-              </div>
-            </div>
+              </Section>
 
-            {/* Product Info */}
-            {(payment.courseTitle || payment.subscriptionPlanName) && (
-              <>
-                <div className="border-t border-gray-200 dark:border-slate-700"></div>
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Sản phẩm</h3>
-                  <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-300">
-                      {payment.courseTitle ? "Khóa học" : "Gói đăng ký"}
-                    </label>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
-                      {payment.courseTitle || payment.subscriptionPlanName}
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
+              {/* Product */}
+              {productName && (
+                <Section
+                  icon={<Package className="h-3.5 w-3.5" />}
+                  title="Sản phẩm"
+                >
+                  <Field label={productLabel} value={productName} />
+                </Section>
+              )}
 
-            {/* Description */}
-            {payment.description && (
-              <>
-                <div className="border-t border-gray-200 dark:border-slate-700"></div>
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Mô tả</h3>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">{payment.description}</p>
-                </div>
-              </>
-            )}
+              {/* Description */}
+              {payment.description && (
+                <Section
+                  icon={<ScrollText className="h-3.5 w-3.5" />}
+                  title="Mô tả"
+                >
+                  <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                    {payment.description}
+                  </p>
+                </Section>
+              )}
 
-            {/* Timestamps */}
-            <div className="border-t border-gray-200 dark:border-slate-700"></div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Thời gian</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Ngày tạo</label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
-                    {formatApiDate(payment.createdAt)}
-                  </p>
+              {/* Timeline */}
+              <Section
+                icon={<Calendar className="h-3.5 w-3.5" />}
+                title="Thời gian"
+              >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field
+                    label="Ngày tạo"
+                    value={formatApiDate(payment.createdAt)}
+                    mono
+                  />
+                  <Field
+                    label="Cập nhật lần cuối"
+                    value={formatApiDate(payment.updatedAt)}
+                    mono
+                  />
                 </div>
-                <div>
-                  <label className="text-xs text-gray-500 dark:text-gray-300">Cập nhật lần cuối</label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
-                    {formatApiDate(payment.updatedAt)}
-                  </p>
-                </div>
-              </div>
+              </Section>
             </div>
           </div>
         </div>
@@ -217,3 +265,57 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
     </div>
   );
 };
+
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: ReactNode;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="px-5 py-4">
+      <div className="mb-3 flex items-center gap-2">
+        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10 text-accent">
+          {icon}
+        </span>
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h3>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Field({
+  label,
+  value,
+  icon,
+  breakAll,
+  mono,
+}: {
+  label: string;
+  value: string;
+  icon?: ReactNode;
+  breakAll?: boolean;
+  mono?: boolean;
+}) {
+  return (
+    <div>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        {label}
+      </p>
+      <div className="mt-1 flex items-center gap-1.5">
+        {icon}
+        <p
+          className={`text-sm font-medium text-gray-900 dark:text-white ${
+            breakAll ? "break-all" : ""
+          } ${mono ? "font-mono tabular-nums" : ""}`}
+        >
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}

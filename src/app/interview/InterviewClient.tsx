@@ -1,19 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import MotionWrapper from "@/components/MotionWrapper";
-import { InterviewHero, InterviewTopicsList } from "@/components/interview";
+import { useMemo, useState } from "react";
+import {
+  InterviewHeroNew,
+  InterviewTopicsGrid,
+} from "@/components/interview/page";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 import { useI18n } from "@/contexts/I18nContext";
 import { pickTopicTranslation } from "@/types/interview";
 
 export default function InterviewClient() {
+  const { t, locale } = useI18n();
   const [searchText, setSearchText] = useState("");
   const { topics, isLoading, totalQuestions } = useInterviewTopics();
-  const { locale } = useI18n();
 
   const filteredTopics = useMemo(() => {
-    const q = searchText.toLowerCase();
+    const q = searchText.trim().toLowerCase();
+    if (!q) return topics;
     return topics.filter((topic) => {
       const tr = pickTopicTranslation(topic.translations, locale);
       const name = (tr?.name || "").toLowerCase();
@@ -23,20 +26,32 @@ export default function InterviewClient() {
   }, [topics, searchText, locale]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-800">
-      <InterviewHero
-        totalQuestions={totalQuestions}
-        totalCategories={topics.length}
+    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <InterviewHeroNew
+        badgeLabel={t("interviewPage.heroBadge")}
+        titleStart={t("interviewPage.heroTitleStart")}
+        titleAccent={t("interviewPage.heroTitleAccent")}
+        description={t("interviewPage.heroDesc")}
+        searchPlaceholder={t("interviewPage.searchPlaceholder")}
         searchText={searchText}
         onSearchChange={setSearchText}
+        totalQuestions={totalQuestions}
+        totalCategories={topics.length}
+        statQuestionsLabel={t("interviewPage.statQuestions")}
+        statTopicsLabel={t("interviewPage.statTopics")}
+        statLevelsLabel={t("interviewPage.statLevels")}
       />
 
-      {/* Categories Section */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-12 pb-20">
-        <MotionWrapper animation="fadeInUp" duration={0.6} mode="mount">
-          <InterviewTopicsList topics={filteredTopics} isLoading={isLoading} />
-        </MotionWrapper>
-      </div>
-    </div>
+      <section className="mx-auto max-w-7xl space-y-4 p-4 sm:space-y-6 sm:p-6 lg:px-8">
+        <InterviewTopicsGrid
+          topics={filteredTopics}
+          isLoading={isLoading}
+          questionsLabel={t("interviewPage.questionsCount")}
+          viewDetailsLabel={t("interviewPage.viewDetails")}
+          emptyTitle={t("interviewPage.noTopicsTitle")}
+          emptyDescription={t("interviewPage.noTopicsDesc")}
+        />
+      </section>
+    </main>
   );
 }

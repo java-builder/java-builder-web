@@ -312,12 +312,6 @@ export default function EditInterviewTopicPage() {
                 <div className="space-y-3">
                   {questionSets.map((set) => {
                     const activeLocale = getSetActiveLocale(set);
-                    const localeFlag: Record<string, string> = {
-                      VI: "🇻🇳",
-                      EN: "🇬🇧",
-                      JA: "🇯🇵",
-                      KO: "🇰🇷",
-                    };
                     const description = getSetDescription(set);
                     const topicTags = set.topics
                       ? set.topics.split(",").map((s) => s.trim()).filter(Boolean)
@@ -336,13 +330,10 @@ export default function EditInterviewTopicPage() {
                               </h4>
                               {activeLocale && (
                                 <span
-                                  className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500 dark:text-gray-400 flex-shrink-0"
+                                  className="inline-flex items-center rounded-md border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 flex-shrink-0"
                                   title={`Đang hiển thị bản dịch: ${activeLocale}`}
                                 >
-                                  <span className="text-sm leading-none">
-                                    {localeFlag[activeLocale]}
-                                  </span>
-                                  <span className="uppercase tracking-wide">{activeLocale}</span>
+                                  {activeLocale}
                                 </span>
                               )}
                             </div>

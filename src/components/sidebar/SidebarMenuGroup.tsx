@@ -58,20 +58,20 @@ export default function SidebarMenuGroup({
                     isCollapsed ? "justify-center" : ""
                   } ${
                     item.highlight
-                      ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-400 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
+                      ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
                       : active
-                      ? "bg-accent/10 text-accent dark:bg-accent/20"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                      ? "bg-accent text-white font-semibold shadow-sm shadow-accent/30"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
                   }`}
                   title={isCollapsed ? displayedLabel : undefined}
                 >
                   <span
                     className={`flex-shrink-0 ${
                       item.highlight
-                        ? "text-purple-600 dark:text-purple-400"
+                        ? "text-purple-600 dark:text-purple-300"
                         : active
-                        ? "text-accent"
-                        : item.color || "text-gray-500 dark:text-gray-400"
+                        ? "[&_svg]:text-white"
+                        : item.color || "text-gray-500 dark:text-gray-300"
                     }`}
                   >
                     {item.icon}

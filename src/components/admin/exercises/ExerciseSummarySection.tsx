@@ -1,5 +1,3 @@
-import { StatCard } from "@/components/admin/dashboard/StatCard";
-
 interface ExerciseSummarySectionProps {
   summary: {
     total: number;
@@ -9,55 +7,64 @@ interface ExerciseSummarySectionProps {
   };
 }
 
+interface SummaryItem {
+  name: string;
+  value: number;
+  description: string;
+  accent?: "default" | "emerald" | "amber" | "gray";
+}
+
+const ACCENT_CLASSES = {
+  default: "text-gray-900",
+  emerald: "text-emerald-600",
+  amber: "text-amber-600",
+  gray: "text-gray-500",
+} as const;
+
 export const ExerciseSummarySection = ({ summary }: ExerciseSummarySectionProps) => {
-  const stats = [
+  const items: SummaryItem[] = [
     {
       name: "Tổng bài tập",
-      value: `${summary.total}`,
-      description: "Số lượng bài tập hiện có trong hệ thống",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h10" />
-        </svg>
-      ),
+      value: summary.total,
+      description: "Số lượng bài tập trong hệ thống",
     },
     {
       name: "Đã xuất bản",
-      value: `${summary.published}`,
-      description: "Sẵn sàng cho học viên trên /exercises",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-        </svg>
-      ),
+      value: summary.published,
+      description: "Sẵn sàng cho học viên",
+      accent: "emerald",
     },
     {
       name: "Bản nháp",
-      value: `${summary.draft}`,
-      description: "Đang chờ soạn thảo hoàn chỉnh",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2" />
-        </svg>
-      ),
+      value: summary.draft,
+      description: "Đang chờ hoàn thiện",
+      accent: "amber",
     },
     {
       name: "Đã lưu trữ",
-      value: `${summary.archived}`,
-      description: "Không còn hiển thị cho học viên",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      ),
+      value: summary.archived,
+      description: "Không hiển thị cho học viên",
+      accent: "gray",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat) => (
-        <StatCard key={stat.name} {...stat} />
-      ))}
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="grid grid-cols-1 divide-y divide-gray-200 sm:grid-cols-2 sm:divide-y-0 sm:divide-x lg:grid-cols-4">
+        {items.map((item) => (
+          <div key={item.name} className="px-5 py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              {item.name}
+            </p>
+            <p
+              className={`mt-2 text-2xl font-bold tabular-nums ${ACCENT_CLASSES[item.accent ?? "default"]}`}
+            >
+              {item.value}
+            </p>
+            <p className="mt-1 text-xs text-gray-500">{item.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

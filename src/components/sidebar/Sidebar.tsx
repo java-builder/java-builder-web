@@ -91,10 +91,11 @@ export default function Sidebar() {
   };
 
   const isActive = (href: string) => {
+    if (!pathname) return false;
     if (href === "/") {
       return pathname === "/";
     }
-    return pathname?.startsWith(href);
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const shouldShowGroup = (group: MenuGroup) => {

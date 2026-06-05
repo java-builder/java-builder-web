@@ -1,8 +1,7 @@
 ﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { questionSetService } from "@/services/question-set.service";
 import { interviewQuestionService } from "@/services/interview-question.service";
 import { QuestionSetDetailResponse } from "@/types/question-set";
@@ -20,6 +19,7 @@ import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 export default function EditQuestionSetPage() {
   const params = useParams();
+  const router = useRouter();
   const questionSetId = params.id as string;
   const { locale } = useI18n();
 
@@ -134,14 +134,16 @@ export default function EditQuestionSetPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-          <Link
-            href="/admin/interview-topics"
+          <button
+            type="button"
+            onClick={() => router.back()}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors flex-shrink-0"
+            aria-label="Quay lại"
           >
             <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-          </Link>
+          </button>
           <div className="min-w-0 flex-1">
             <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
               Quản lý câu hỏi

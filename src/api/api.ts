@@ -230,4 +230,7 @@ export const API = {
     SUBMIT_EXERCISE: "/api/v1/exercise-submission",
     MY_EXERCISES: "/api/v1/exercise-submission/my-exercises",
     MY_STATISTICS: "/api/v1/exercise-submission/my-statistics",
+    GET_EXERCISE_SUBMISSIONS: "/api/v1/exercise-submission", // Admin - get all submissions with filters
+    GET_SUBMISSION_BY_ID: "/api/v1/exercise-submission", // + /:submissionId
+    GET_USER_EXERCISE_SUBMISSIONS: "/api/v1/exercise-submission/users", // + /:userId/exercise/:exerciseId
 }

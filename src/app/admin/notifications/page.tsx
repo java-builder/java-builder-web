@@ -1,63 +1,82 @@
 ﻿"use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { NotificationDetailResponse } from "@/types/notification";
 import { NotificationItem } from "@/types/notification";
 import { useNotifications } from "@/hooks/useNotifications";
 import { notificationApi } from "@/services/notification.service";
-import NotificationTabs from "@/components/notifications/NotificationTabs";
 import AdminNotificationList from "@/components/notifications/AdminNotificationList";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import {
+  NotificationListHeader,
+  NotificationsToolbar,
+} from "@/components/admin/notifications/list";
 import toast from "react-hot-toast";
 
 export default function AdminNotificationsPage() {
   const router = useRouter();
-  const [filter, setFilter] = useState<"all" | "unread">("all");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") === "unread" ? "unread" : "all";
+  const [filter, setFilter] = useState<"all" | "unread">(initialTab);
   const [allNotifications, setAllNotifications] = useState<NotificationItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const previousFilterRef = useRef<"all" | "unread">("all");
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; title: string }>({
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    id: string;
+    title: string;
+  }>({
     isOpen: false,
     id: "",
     title: "",
   });
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data: notifPageData, isFetching, isLoading } = useNotifications(currentPage, filter === "unread" ? "unread" : "all");
+  const { data: notifPageData, isFetching, isLoading } = useNotifications(
+    currentPage,
+    filter === "unread" ? "unread" : "all"
+  );
+
+  // Tổng count dựa trên metadata trả về từ server, không phụ thuộc tab đang xem
+  const { data: allCountData } = useNotifications(1, "all");
+  const { data: unreadCountData } = useNotifications(1, "unread");
+  const totalCount = allCountData?.totalElements ?? 0;
+  const unreadCount = unreadCountData?.totalElements ?? 0;
 
   useEffect(() => {
-    if (notifPageData) {
-      const list = notifPageData.data || [];
-      const mapped = list.map((it: NotificationDetailResponse) => ({
-        id: it.id,
-        title: it.title || it.senderName || "Thông báo",
-        content: it.content || "",
-        createdAt: it.createdAt ? it.createdAt : "",
-        avatar: it.avatar,
-        senderName: it.senderName,
-        isRead: it.isRead ?? false,
-        link: it.link || "#",
-      }));
+    if (!notifPageData) return;
 
-      setTotalPages(notifPageData.totalPages || 1);
-      
-      const filterChanged = previousFilterRef.current !== filter;
-      previousFilterRef.current = filter;
-      
-      if (currentPage === 1 && filterChanged) {
-        setAllNotifications(mapped);
-      } else if (currentPage === 1) {
-        setAllNotifications(mapped);
-      } else {
-        setAllNotifications((prev) => {
-          const existingIds = new Set(prev.map(n => n.id));
-          const newItems = mapped.filter((n: NotificationItem) => !existingIds.has(n.id));
-          return [...prev, ...newItems];
-        });
-      }
+    const list = notifPageData.data || [];
+    const mapped = list.map((it: NotificationDetailResponse) => ({
+      id: it.id,
+      title: it.title || it.senderName || "Thông báo",
+      content: it.content || "",
+      createdAt: it.createdAt ? it.createdAt : "",
+      avatar: it.avatar,
+      senderName: it.senderName,
+      isRead: it.isRead ?? false,
+      link: it.link || "#",
+    }));
+
+    setTotalPages(notifPageData.totalPages || 1);
+
+    const filterChanged = previousFilterRef.current !== filter;
+    previousFilterRef.current = filter;
+
+    if (currentPage === 1 && filterChanged) {
+      setAllNotifications(mapped);
+    } else if (currentPage === 1) {
+      setAllNotifications(mapped);
+    } else {
+      setAllNotifications((prev) => {
+        const existingIds = new Set(prev.map((n) => n.id));
+        const newItems = mapped.filter(
+          (n: NotificationItem) => !existingIds.has(n.id)
+        );
+        return [...prev, ...newItems];
+      });
     }
   }, [notifPageData, currentPage, filter]);
 
@@ -65,11 +84,26 @@ export default function AdminNotificationsPage() {
     setCurrentPage(1);
   }, [filter]);
 
+  const handleTabChange = (tab: "all" | "unread") => {
+    setFilter(tab);
+    // Persist filter in URL so navigating away and back keeps the tab
+    const params = new URLSearchParams(searchParams.toString());
+    if (tab === "all") {
+      params.delete("tab");
+    } else {
+      params.set("tab", tab);
+    }
+    const query = params.toString();
+    router.replace(query ? `/admin/notifications?${query}` : "/admin/notifications", {
+      scroll: false,
+    });
+  };
+
   const handleNotificationClick = (notification: NotificationItem) => {
     setAllNotifications((prev) =>
       prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
     );
-    
+
     if (notification.link && notification.link !== "#") {
       router.push(notification.link);
     }
@@ -109,72 +143,77 @@ export default function AdminNotificationsPage() {
     }
   };
 
-  const filtered = allNotifications.filter((n) => (filter === "all" ? true : !n.isRead));
-  const unreadCount = allNotifications.filter((n) => !n.isRead).length;
-  const totalCount = allNotifications.length;
-
-  // Show loading spinner on initial load
-  if (isLoading && allNotifications.length === 0) {
-    return (
-      <div className="p-4 md:p-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Thông báo</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Đang tải thông báo...</p>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
-            <div className="p-8 text-center text-gray-600 dark:text-gray-300">Đang tải...</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const filtered = allNotifications.filter((n) =>
+    filter === "all" ? true : !n.isRead
+  );
 
   return (
-    <div className="p-4 md:p-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+    <div className="space-y-4 p-4 sm:space-y-5 sm:p-6">
+      <div className="mx-auto w-full max-w-5xl space-y-4 sm:space-y-5">
+        {/* Header */}
+        {isLoading && allNotifications.length === 0 ? (
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Thông báo</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-              {unreadCount > 0 ? `Có ${unreadCount} thông báo chưa đọc` : "Không có thông báo mới"}
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+              Trung tâm thông báo
+            </h1>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+              Đang tải thông báo...
             </p>
           </div>
-          <Link
-            href="/admin/notifications/send"
-            className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors text-sm font-medium shadow-sm"
-          >
-            Gửi thông báo
-          </Link>
-        </div>
-
-        <div className="flex items-center justify-between mb-6">
-          <NotificationTabs
-            activeTab={filter}
+        ) : (
+          <NotificationListHeader
             totalCount={totalCount}
             unreadCount={unreadCount}
-            onTabChange={setFilter}
           />
-          {unreadCount > 0 && (
-            <button
-              onClick={markAllRead}
-              className="text-sm text-accent hover:underline"
-            >
-              Đánh dấu tất cả đã đọc
-            </button>
+        )}
+
+        {/* Toolbar */}
+        <NotificationsToolbar
+          activeTab={filter}
+          totalCount={totalCount}
+          unreadCount={unreadCount}
+          onTabChange={handleTabChange}
+          onMarkAllRead={markAllRead}
+        />
+
+        {/* List card */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-5">
+          {isLoading && allNotifications.length === 0 ? (
+            <div className="flex items-center justify-center py-12 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2">
+                <svg
+                  className="h-4 w-4 animate-spin text-accent"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Đang tải thông báo...
+              </div>
+            </div>
+          ) : (
+            <AdminNotificationList
+              notifications={filtered}
+              onNotificationClick={handleNotificationClick}
+              onDelete={handleDelete}
+              isLoading={isFetching}
+              hasMore={currentPage < totalPages}
+              onLoadMore={handleLoadMore}
+            />
           )}
         </div>
-
-        <AdminNotificationList
-          notifications={filtered}
-          onNotificationClick={handleNotificationClick}
-          onDelete={handleDelete}
-          isLoading={isFetching}
-          hasMore={currentPage < totalPages}
-          onLoadMore={handleLoadMore}
-        />
       </div>
 
       <ConfirmModal

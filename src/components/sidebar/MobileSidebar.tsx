@@ -79,10 +79,11 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   }, [isOpen]);
 
   const isActive = (href: string) => {
+    if (!pathname) return false;
     if (href === "/") {
       return pathname === "/";
     }
-    return pathname?.startsWith(href);
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const shouldShowGroup = (group: MenuGroup) => {
@@ -240,20 +241,20 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           href={item.href}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                             item.highlight
-                              ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-400 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
+                              ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
                               : active
-                              ? "bg-accent/10 text-accent dark:bg-accent/20"
-                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                              ? "bg-accent/10 dark:bg-accent/20 text-accent font-semibold ring-1 ring-inset ring-accent/30 dark:ring-accent/40"
+                              : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
                           }`}
                           onClick={onClose}
                         >
                           <span
                             className={`flex-shrink-0 ${
                               item.highlight
-                                ? "text-purple-600 dark:text-purple-400"
+                                ? "text-purple-600 dark:text-purple-300"
                                 : active
                                 ? "text-accent"
-                                : item.color || "text-gray-500 dark:text-gray-400"
+                                : item.color || "text-gray-500 dark:text-gray-300"
                             }`}
                           >
                             {item.icon}

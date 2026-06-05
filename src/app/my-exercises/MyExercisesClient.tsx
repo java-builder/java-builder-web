@@ -508,8 +508,8 @@ export default function MyExercisesClient() {
                     {/* Action Button */}
                     <div className="flex-shrink-0 w-full sm:w-auto text-right mt-2 sm:mt-0">
                       <Link
-                        href={`/exercises/${submission.exerciseSlug}`}
-                        className="inline-flex items-center gap-1 w-full sm:w-auto justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-sm rounded-lg transition-colors font-medium"
+                        href={`/my-exercises/review/${submission.submissionId}`}
+                        className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 sm:w-auto"
                       >
                         <span>{t("myExercisesPage.btnView")}</span>
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

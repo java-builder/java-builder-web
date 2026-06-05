@@ -1,12 +1,15 @@
+import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 import { formatReadableDateTime } from "@/utils/dateUtils";
 import { Difficulty } from "@/types/exercise";
-import { AttemptStatusBadge } from "@/components/admin/exercises/LearnerStatusBadge";
+import { SubmissionStatus } from "@/types/exercise-submission";
 import { DifficultyBadge } from "./ExerciseBadges";
 
 export interface LearnerPerformanceRecord {
   id: string;
   learnerName: string;
   email: string;
+  avatar?: string | null;
   exerciseKey: string;
   exerciseTitle: string;
   exerciseCategory: string;
@@ -17,7 +20,7 @@ export interface LearnerPerformanceRecord {
   completionRate: number;
   accuracy: number;
   lastAttempt: string;
-  status: "PASSED" | "IN_PROGRESS" | "FAILED";
+  status: SubmissionStatus;
   timeSpent: string;
   incorrectTopics: string[];
 }
@@ -32,6 +35,12 @@ const getAccuracyColor = (accuracy: number) => {
   return "bg-rose-500";
 };
 
+const getAccuracyText = (accuracy: number) => {
+  if (accuracy >= 80) return "text-emerald-600";
+  if (accuracy >= 60) return "text-amber-600";
+  return "text-rose-600";
+};
+
 const getInitials = (name: string) =>
   name
     .split(" ")
@@ -42,111 +51,147 @@ const getInitials = (name: string) =>
 
 export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProps) => {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3">
         <div>
-          <h3 className="text-base font-semibold text-gray-900">Hiệu suất học viên</h3>
-          <p className="text-sm text-gray-500">Theo dõi kết quả làm bài từ /my-exercises để kịp thời hỗ trợ.</p>
+          <h3 className="text-sm font-semibold text-gray-900">Hiệu suất học viên</h3>
+          <p className="mt-0.5 text-xs text-gray-500">
+            Theo dõi kết quả làm bài để kịp thời hỗ trợ học viên
+          </p>
         </div>
-        <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">
+        <span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600">
           {records.length} học viên
         </span>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Học viên</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Bài tập</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Điểm cao nhất</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Lần làm</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Độ chính xác</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Hoàn thành</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Lần cuối</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Trạng thái</th>
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Học viên
+              </th>
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Bài tập
+              </th>
+              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Điểm
+              </th>
+              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Lần làm
+              </th>
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Độ chính xác
+              </th>
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Lần gần nhất
+              </th>
+              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                <span className="sr-only">Hành động</span>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {records.map((record) => (
-              <tr key={record.id} className="transition hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent/20 to-accent text-sm font-semibold text-white">
-                      {getInitials(record.learnerName)}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">{record.learnerName}</div>
-                      <div className="text-xs text-gray-500">{record.email}</div>
+            {records.map((record, index) => (
+              <tr key={`${record.id}-${index}`} className="transition hover:bg-gray-50">
+                {/* Học viên */}
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2.5">
+                    {record.avatar ? (
+                      <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
+                        <Image
+                          src={record.avatar}
+                          alt={record.learnerName}
+                          fill
+                          className="object-cover"
+                          sizes="32px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent/20 to-accent text-xs font-semibold text-white">
+                        {getInitials(record.learnerName)}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold text-gray-900">
+                        {record.learnerName}
+                      </div>
+                      <div className="truncate text-xs text-gray-500">{record.email}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <div className="text-sm font-semibold text-gray-900">{record.exerciseTitle}</div>
-                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                    <span className="rounded-full bg-gray-100 px-2 py-1 text-[11px] font-medium">
-                      {record.exerciseCategory}
-                    </span>
+
+                {/* Bài tập */}
+                <td className="px-4 py-3">
+                  <div className="text-sm font-medium text-gray-900 line-clamp-1">
+                    {record.exerciseTitle}
+                  </div>
+                  <div className="mt-1 flex items-center gap-1.5">
                     <DifficultyBadge difficulty={record.difficulty} />
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <div className="text-sm font-semibold text-gray-900">{record.bestScore}/100</div>
-                  <div className="text-xs text-gray-500">Trung bình {record.averageScore}/100</div>
+
+                {/* Điểm */}
+                <td className="whitespace-nowrap px-4 py-3 text-right">
+                  <div className="text-sm font-bold tabular-nums text-gray-900">
+                    {record.bestScore}
+                    <span className="text-xs font-normal text-gray-400">/100</span>
+                  </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  <div className="font-semibold">{record.attempts} lần</div>
-                  <div className="text-xs text-gray-500">Thời gian {record.timeSpent}</div>
+
+                {/* Lần làm */}
+                <td className="whitespace-nowrap px-4 py-3 text-right">
+                  <div className="text-sm font-semibold tabular-nums text-gray-900">
+                    {record.attempts} <span className="text-xs font-normal text-gray-500">lần</span>
+                  </div>
+                  <div className="text-xs tabular-nums text-gray-500">
+                    TB {record.timeSpent}/lần
+                  </div>
                 </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-full rounded-full bg-gray-100">
+
+                {/* Độ chính xác */}
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 w-20 overflow-hidden rounded-full bg-gray-100">
                       <div
-                        className={`h-2 rounded-full ${getAccuracyColor(record.accuracy)}`}
+                        className={`h-full rounded-full ${getAccuracyColor(record.accuracy)}`}
                         style={{ width: `${record.accuracy}%` }}
                       />
                     </div>
-                    <span className="text-sm font-semibold text-gray-900">{record.accuracy}%</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-full rounded-full bg-gray-100">
-                      <div
-                        className="h-2 rounded-full bg-accent"
-                        style={{ width: `${record.completionRate}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-900">{record.completionRate}%</span>
-                  </div>
-                  <div className="mt-1 text-xs text-gray-500">
-                    {record.completionRate === 100 ? "Đã hoàn thành toàn bộ bài tập" : "Còn câu hỏi chưa hoàn thành"}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  <div className="font-semibold">{formatReadableDateTime(record.lastAttempt)}</div>
-                  <div className="text-xs text-gray-500">Cập nhật gần nhất</div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="space-y-2">
-                    <AttemptStatusBadge status={record.status} />
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent"
+                    <span
+                      className={`text-sm font-semibold tabular-nums ${getAccuracyText(record.accuracy)}`}
                     >
-                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                      Xem chi tiết
-                    </button>
+                      {record.accuracy}%
+                    </span>
                   </div>
+                </td>
+
+                {/* Lần gần nhất */}
+                <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-700">
+                  {formatReadableDateTime(record.lastAttempt)}
+                </td>
+
+                {/* Action */}
+                <td className="whitespace-nowrap px-4 py-3 text-right">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        window.location.href = `/admin/exercises/submissions/${record.id}/${record.exerciseKey}`;
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent"
+                  >
+                    Xem
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
                 </td>
               </tr>
             ))}
 
             {records.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-6 py-10 text-center text-sm text-gray-500">
+                <td colSpan={7} className="px-4 py-10 text-center text-sm text-gray-500">
                   Không có học viên nào phù hợp với bộ lọc. Thử thay đổi điều kiện để xem dữ liệu khác.
                 </td>
               </tr>

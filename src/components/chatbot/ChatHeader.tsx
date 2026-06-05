@@ -34,10 +34,6 @@ export default function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
             {t("chatbotPage.chatSubtitle")}
           </p>
         </div>
-        <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-green-50 dark:bg-green-800/30 border border-green-200 dark:border-green-700 rounded-full flex-shrink-0">
-          <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-xs font-medium text-green-700 dark:text-green-300">Online</span>
-        </div>
       </div>
     </div>
   );

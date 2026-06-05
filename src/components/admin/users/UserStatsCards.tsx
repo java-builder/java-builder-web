@@ -7,133 +7,61 @@ interface UserStatsCardsProps {
 }
 
 export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
+  const total = stats?.totalUsers ?? response?.totalElements ?? 0;
+  const active =
+    stats?.activeUsers ??
+    response?.data?.filter((u) => u.userStatus === "ACTIVE").length ??
+    0;
+  const inactive =
+    stats?.inactiveUsers ??
+    response?.data?.filter((u) => u.userStatus === "INACTIVE").length ??
+    0;
+  const deleted =
+    stats?.deletedUsers ??
+    response?.data?.filter((u) => u.userStatus === "DELETED").length ??
+    0;
+
+  const items = [
+    {
+      label: "Tổng người dùng",
+      value: total,
+      dot: "bg-gray-400",
+      valueClass: "text-gray-900 dark:text-white",
+    },
+    {
+      label: "Đang hoạt động",
+      value: active,
+      dot: "bg-emerald-500",
+      valueClass: "text-emerald-600 dark:text-emerald-400",
+    },
+    {
+      label: "Không hoạt động",
+      value: inactive,
+      dot: "bg-amber-500",
+      valueClass: "text-amber-600 dark:text-amber-400",
+    },
+    {
+      label: "Đã xoá",
+      value: deleted,
+      dot: "bg-rose-500",
+      valueClass: "text-rose-600 dark:text-rose-400",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
-        <div className="flex items-center">
-          <div className="p-2 bg-accent-100 dark:bg-accent-900/30 rounded-lg">
-            <svg
-              className="w-6 h-6 text-accent-600 dark:text-accent-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 11a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M2 20v-1c0-2.761 3.134-5 7-5h6c3.866 0 7 2.239 7 5v1"
-              />
-            </svg>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              Tổng người dùng
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="grid grid-cols-2 divide-y divide-gray-200 dark:divide-slate-700 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+        {items.map((item) => (
+          <div key={item.label} className="px-5 py-4">
+            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <span className={`h-1.5 w-1.5 rounded-full ${item.dot}`} />
+              {item.label}
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats?.totalUsers ?? (response?.totalElements || 0)}
+            <p className={`mt-1 text-2xl font-bold tabular-nums ${item.valueClass}`}>
+              {item.value.toLocaleString("vi-VN")}
             </p>
           </div>
-        </div>
-      </div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
-        <div className="flex items-center">
-          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-            <svg
-              className="w-6 h-6 text-green-600 dark:text-green-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              Đang hoạt động
-            </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats?.activeUsers ?? (response?.data?.filter(
-                (user: UserDetailResponse) => user.userStatus === "ACTIVE",
-              ).length || 0)}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
-        <div className="flex items-center">
-          <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-            <svg
-              className="w-6 h-6 text-yellow-600 dark:text-yellow-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.29 3.86l-6.36 11.64A2 2 0 004 18h16a2 2 0 001.77-2.5L17.71 3.86a2 2 0 00-3.42 0L10.29 3.86z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v4"
-              />
-            </svg>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              Không hoạt động
-            </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats?.inactiveUsers ?? (response?.data?.filter(
-                (user: UserDetailResponse) => user.userStatus === "INACTIVE",
-              ).length || 0)}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
-        <div className="flex items-center">
-          <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-            <svg
-              className="w-6 h-6 text-red-600 dark:text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
-              <path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Đã xoá</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats?.deletedUsers ?? (response?.data?.filter(
-                (user: UserDetailResponse) => user.userStatus === "DELETED",
-              ).length || 0)}
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -4,7 +4,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { notificationApi } from "@/services/notification.service";
 import { authApi } from "@/services/auth.service";
 
-export const useNotifications = (page = 1, type: "all" | "unread" = "all", enabled = true) => {
+export const useNotifications = (
+  page = 1,
+  type: "all" | "unread" = "all",
+  enabled = true
+) => {
   const isAuthenticated = authApi.isAuthenticated();
 
   return useQuery({
