@@ -32,19 +32,28 @@ export const authApi = {
   },
 
   logout: async () => {
-    const hasToken = typeof window !== "undefined" && !!localStorage.getItem("access_token");
-    
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user_id");
-    }
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
-    if (hasToken) {
+    if (token) {
       try {
-        await apiClient.post<ApiResponse<LogoutResponse>>(API.LOGOUT);
+        await apiClient.post<ApiResponse<LogoutResponse>>(
+          API.LOGOUT,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
       } catch (error) {
         console.error("Logout API error (ignored):", error);
       }
+    }
+
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user_id");
     }
   },
 
