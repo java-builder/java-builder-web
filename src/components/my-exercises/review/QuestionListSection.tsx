@@ -15,10 +15,8 @@ interface QuestionListSectionProps {
   counts: QuestionCounts;
   activeFilter: QuestionFilter;
   expandedQuestions: Set<string>;
-  chatbotOpen: Record<string, boolean>;
   onChangeFilter: (filter: QuestionFilter) => void;
   onToggleQuestion: (questionId: string) => void;
-  onToggleChatbot: (questionId: string) => void;
   onExpandAll: () => void;
   onCollapseAll: () => void;
 }
@@ -29,10 +27,8 @@ export default function QuestionListSection({
   counts,
   activeFilter,
   expandedQuestions,
-  chatbotOpen,
   onChangeFilter,
   onToggleQuestion,
-  onToggleChatbot,
   onExpandAll,
   onCollapseAll,
 }: QuestionListSectionProps) {
@@ -110,9 +106,7 @@ export default function QuestionListSection({
               questionResult={questionResult}
               questionNumber={originalIndex + 1}
               isExpanded={expandedQuestions.has(questionResult.questionId)}
-              isAiOpen={!!chatbotOpen[questionResult.questionId]}
               onToggleExpand={onToggleQuestion}
-              onToggleAi={onToggleChatbot}
             />
           );
         })}

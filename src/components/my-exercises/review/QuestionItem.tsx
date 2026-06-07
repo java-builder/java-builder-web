@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   CheckCircle2,
   ChevronDown,
@@ -9,24 +10,23 @@ import {
   XCircle,
 } from "lucide-react";
 import type { QuestionResultResponse } from "@/types/exercise-submission";
+import ExplainQuestionModal from "./ExplainQuestionModal";
 
 interface QuestionItemProps {
   questionResult: QuestionResultResponse;
   questionNumber: number;
   isExpanded: boolean;
-  isAiOpen: boolean;
   onToggleExpand: (questionId: string) => void;
-  onToggleAi: (questionId: string) => void;
 }
 
 export default function QuestionItem({
   questionResult,
   questionNumber,
   isExpanded,
-  isAiOpen,
   onToggleExpand,
-  onToggleAi,
 }: QuestionItemProps) {
+  const [isExplainOpen, setIsExplainOpen] = useState(false);
+
   const isCorrect = questionResult.isCorrect;
   const userSelectedIds = questionResult.userSelectedOptionIds || [];
   const hasAnswer = userSelectedIds.length > 0;
@@ -123,13 +123,31 @@ export default function QuestionItem({
           )}
 
           {!isCorrect && (
-            <AiExplanation
-              isOpen={isAiOpen}
-              onToggle={() => onToggleAi(questionResult.questionId)}
-            />
+            <div className="mt-4 border-t border-gray-200 dark:border-slate-700 pt-4">
+              <button
+                onClick={() => setIsExplainOpen(true)}
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-accent to-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-white/10 transition hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-accent/40"
+              >
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+                <span className="relative flex h-5 w-5 items-center justify-center">
+                  <Sparkles className="h-4 w-4" />
+                  <span className="absolute -right-0.5 -top-0.5 flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                  </span>
+                </span>
+                <span className="relative">Giải thích với AI</span>
+              </button>
+            </div>
           )}
         </div>
       )}
+
+      <ExplainQuestionModal
+        isOpen={isExplainOpen}
+        questionResult={questionResult}
+        onClose={() => setIsExplainOpen(false)}
+      />
     </div>
   );
 }
@@ -201,56 +219,6 @@ function OptionRow({
           )}
           {badge.label}
         </span>
-      )}
-    </div>
-  );
-}
-
-function AiExplanation({
-  isOpen,
-  onToggle,
-}: {
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <div className="mt-4 border-t border-gray-200 dark:border-slate-700 pt-4">
-      <button
-        onClick={onToggle}
-        className="group relative inline-flex items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-accent to-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-white/10 transition hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-accent/40"
-      >
-        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-        <span className="relative flex h-5 w-5 items-center justify-center">
-          <Sparkles className="h-4 w-4" />
-          <span className="absolute -right-0.5 -top-0.5 flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
-          </span>
-        </span>
-        <span className="relative">{isOpen ? "Ẩn giải thích" : "Giải thích với AI"}</span>
-        {isOpen ? (
-          <ChevronUp className="relative h-3.5 w-3.5 opacity-80" />
-        ) : (
-          <ChevronDown className="relative h-3.5 w-3.5 opacity-80" />
-        )}
-      </button>
-
-      {isOpen && (
-        <div className="mt-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
-          <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
-              <Sparkles className="h-4 w-4 text-accent" />
-            </div>
-            <div className="flex-1">
-              <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                AI Coach
-              </span>
-              <p className="mt-2 text-sm italic text-gray-500 dark:text-gray-400">
-                Đang tích hợp dịch vụ giải thích bằng AI. Tính năng sẽ phân tích lý do đáp án bạn chọn chưa chính xác và đưa ra hướng dẫn để ghi nhớ kiến thức.
-              </p>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

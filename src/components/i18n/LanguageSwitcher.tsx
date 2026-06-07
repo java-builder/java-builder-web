@@ -6,11 +6,6 @@ import { useI18n } from "@/contexts/I18nContext";
 import { locales, localeOptions } from "@/i18n/config";
 
 interface LanguageSwitcherProps {
-  /**
-   * - "default": pill viền tròn shadow (dùng trên header trang chính)
-   * - "ghost": không viền, hover bg nhẹ (dùng trong custom toolbars)
-   * - "minimal": không viền, nền phẳng (dùng khu vực thu gọn/mobile)
-   */
   variant?: "default" | "ghost" | "minimal";
   showLabel?: boolean;
 }

@@ -25,7 +25,6 @@ export default function SubmissionReviewPage() {
   const { data: result, isLoading } = useSubmissionById(submissionId);
 
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
-  const [chatbotOpen, setChatbotOpen] = useState<Record<string, boolean>>({});
   const [activeFilter, setActiveFilter] = useState<QuestionFilter>("all");
   const [aiAnalysisStatus, setAiAnalysisStatus] = useState<AiAnalysisStatus>("idle");
 
@@ -68,10 +67,6 @@ export default function SubmissionReviewPage() {
       else next.add(questionId);
       return next;
     });
-  };
-
-  const handleToggleChatbot = (questionId: string) => {
-    setChatbotOpen((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
   };
 
   const handleExpandAll = () => {
@@ -143,10 +138,8 @@ export default function SubmissionReviewPage() {
           counts={counts}
           activeFilter={activeFilter}
           expandedQuestions={expandedQuestions}
-          chatbotOpen={chatbotOpen}
           onChangeFilter={setActiveFilter}
           onToggleQuestion={handleToggleQuestion}
-          onToggleChatbot={handleToggleChatbot}
           onExpandAll={handleExpandAll}
           onCollapseAll={handleCollapseAll}
         />
