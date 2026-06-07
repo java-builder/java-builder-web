@@ -4,6 +4,8 @@ import {
   ChatbotRequest,
   ExplainQuestionRequest,
   ExplainQuestionResponse,
+  QuizAnalysisRequest,
+  QuizAnalysisResponse,
 } from "@/types/chatbot";
 import { API } from "@/api/api";
 
@@ -19,6 +21,14 @@ export const chatbotApi = {
   explainQuestion: async (data: ExplainQuestionRequest) => {
     const response = await apiClient.post<ApiResponse<ExplainQuestionResponse>>(
       API.CHATBOT_EXPLAIN_QUESTION,
+      data,
+    );
+    return response.data;
+  },
+
+  analysisQuiz: async (data: QuizAnalysisRequest) => {
+    const response = await apiClient.post<ApiResponse<QuizAnalysisResponse>>(
+      API.CHATBOT_ANALYSIS_QUIZ,
       data,
     );
     return response.data;

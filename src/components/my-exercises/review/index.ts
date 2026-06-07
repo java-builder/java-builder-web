@@ -1,6 +1,7 @@
 export { default as ReviewHeader } from "./ReviewHeader";
 export { default as SubmissionScoreCard } from "./SubmissionScoreCard";
 export { default as AiCoachPanel } from "./AiCoachPanel";
+export { default as QuizAnalysisModal } from "./QuizAnalysisModal";
 export { default as QuestionNavigator } from "./QuestionNavigator";
 export { default as QuestionListSection } from "./QuestionListSection";
 export { default as QuestionItem } from "./QuestionItem";

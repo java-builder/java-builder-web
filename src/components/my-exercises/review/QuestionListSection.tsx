@@ -14,11 +14,7 @@ interface QuestionListSectionProps {
   filteredQuestions: QuestionResultResponse[];
   counts: QuestionCounts;
   activeFilter: QuestionFilter;
-  expandedQuestions: Set<string>;
   onChangeFilter: (filter: QuestionFilter) => void;
-  onToggleQuestion: (questionId: string) => void;
-  onExpandAll: () => void;
-  onCollapseAll: () => void;
 }
 
 export default function QuestionListSection({
@@ -26,17 +22,13 @@ export default function QuestionListSection({
   filteredQuestions,
   counts,
   activeFilter,
-  expandedQuestions,
   onChangeFilter,
-  onToggleQuestion,
-  onExpandAll,
-  onCollapseAll,
 }: QuestionListSectionProps) {
   return (
     <div className="rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 dark:border-slate-700 px-4 py-3 sm:px-5">
-        <div className="-mx-1 flex flex-1 items-center gap-1 overflow-x-auto px-1">
+      <div className="border-b border-gray-200 dark:border-slate-700 px-4 py-3 sm:px-5">
+        <div className="-mx-1 flex items-center gap-1 overflow-x-auto px-1">
           {(Object.keys(QUESTION_FILTER_LABELS) as QuestionFilter[]).map((key) => {
             const isActive = activeFilter === key;
             const count = counts[key];
@@ -65,22 +57,6 @@ export default function QuestionListSection({
             );
           })}
         </div>
-
-        <div className="hidden md:flex items-center gap-1 text-xs">
-          <button
-            onClick={onExpandAll}
-            className="rounded-md px-2 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700"
-          >
-            Mở rộng tất cả
-          </button>
-          <span className="text-gray-300 dark:text-slate-600">|</span>
-          <button
-            onClick={onCollapseAll}
-            className="rounded-md px-2 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700"
-          >
-            Thu gọn
-          </button>
-        </div>
       </div>
 
       {/* List */}
@@ -105,8 +81,6 @@ export default function QuestionListSection({
               key={questionResult.questionId}
               questionResult={questionResult}
               questionNumber={originalIndex + 1}
-              isExpanded={expandedQuestions.has(questionResult.questionId)}
-              onToggleExpand={onToggleQuestion}
             />
           );
         })}

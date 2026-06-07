@@ -7,7 +7,7 @@ export const QUESTION_FILTER_LABELS: Record<QuestionFilter, string> = {
   skipped: "Bỏ qua",
 };
 
-export type AiAnalysisStatus = "idle" | "loading" | "done";
+export type AiAnalysisStatus = "idle" | "loading" | "done" | "error";
 
 export interface QuestionCounts {
   all: number;

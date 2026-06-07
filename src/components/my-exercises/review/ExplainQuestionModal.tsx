@@ -212,7 +212,6 @@ export default function ExplainQuestionModal({
     }
   }, [questionResult]);
 
-  // Fetch only when modal opens for a question whose explanation isn't cached yet
   useEffect(() => {
     if (!isOpen || !questionResult) return;
 
@@ -220,19 +219,16 @@ export default function ExplainQuestionModal({
       cachedQuestionId === questionResult.questionId && data !== null;
 
     if (isSameQuestion) {
-      // Already have explanation for this question — reuse it
       setStatus("success");
       setError(null);
       return;
     }
 
-    // Different question or no cached data — fetch fresh
     setData(null);
     setError(null);
     fetchExplanation();
   }, [isOpen, questionResult, cachedQuestionId, data, fetchExplanation]);
 
-  // Lock body scroll
   useEffect(() => {
     if (!isOpen) return;
     const original = document.body.style.overflow;
@@ -242,7 +238,6 @@ export default function ExplainQuestionModal({
     };
   }, [isOpen]);
 
-  // ESC to close
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -259,7 +254,7 @@ export default function ExplainQuestionModal({
       {isOpen && (
         <motion.div
           key="explain-modal"
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-3 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -267,7 +262,7 @@ export default function ExplainQuestionModal({
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -279,62 +274,63 @@ export default function ExplainQuestionModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="explain-modal-title"
-            className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800"
-            initial={{ opacity: 0, scale: 0.96, y: 16 }}
+            className="relative my-4 w-full max-w-3xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800 sm:my-8"
+            initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 16 }}
+            exit={{ opacity: 0, scale: 0.96, y: 20 }}
             transition={{ type: "spring", damping: 24, stiffness: 280 }}
           >
             {/* Header */}
-            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-200 dark:border-slate-700 bg-gradient-to-r from-accent/5 via-transparent to-transparent px-4 py-3 sm:px-5 sm:py-4">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10 sm:h-10 sm:w-10">
-                  <Sparkles className="h-5 w-5 text-accent" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2
-                      id="explain-modal-title"
-                      className="text-sm font-semibold text-gray-900 dark:text-white sm:text-base"
-                    >
-                      AI Coach giải thích câu hỏi
-                    </h2>
-                    {status === "success" && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        Đã phân tích
-                      </span>
-                    )}
+            <div className="sticky top-0 z-10 border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+              <div className="flex items-start justify-between gap-3 px-5 py-4 sm:px-6 sm:py-5">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 sm:h-12 sm:w-12">
+                    <Sparkles className="h-5 w-5 text-accent sm:h-6 sm:w-6" />
                   </div>
-                  <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                    Phân tích chi tiết đáp án đúng, sai và mẹo ghi nhớ kiến thức
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2
+                        id="explain-modal-title"
+                        className="text-base font-bold text-gray-900 dark:text-white sm:text-lg"
+                      >
+                        AI Coach — Giải thích câu hỏi
+                      </h2>
+                      {status === "success" && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          Hoàn tất
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
+                      Phân tích chi tiết đáp án đúng, sai và mẹo ghi nhớ kiến thức
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={onClose}
+                  aria-label="Đóng"
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-slate-700 dark:hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Question summary bar */}
+              {questionResult && (
+                <div className="border-t border-gray-100 bg-gray-50/60 px-5 py-3 sm:px-6 dark:border-slate-700/50 dark:bg-slate-900/30">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Câu hỏi
+                  </p>
+                  <p className="mt-1 text-sm font-medium leading-relaxed text-gray-800 dark:text-gray-200">
+                    {questionResult.content}
                   </p>
                 </div>
-              </div>
-
-              <button
-                onClick={onClose}
-                aria-label="Đóng"
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-slate-700 dark:hover:text-white"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              )}
             </div>
 
-            {/* Question summary */}
-            {questionResult && (
-              <div className="border-b border-gray-200 bg-gray-50/60 px-4 py-3 sm:px-5 dark:border-slate-700 dark:bg-slate-900/30">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Câu hỏi
-                </p>
-                <p className="mt-1 text-sm font-medium leading-relaxed text-gray-800 dark:text-gray-200">
-                  {questionResult.content}
-                </p>
-              </div>
-            )}
-
             {/* Body */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-5">
+            <div className="px-5 py-5 sm:px-6 sm:py-6">
               {status === "loading" && <LoadingState />}
 
               {status === "error" && (
@@ -343,16 +339,16 @@ export default function ExplainQuestionModal({
 
               {status === "success" && data && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="grid grid-cols-1 gap-3 sm:gap-4"
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4"
                 >
-                  <Section
-                    icon={<BookOpen className="h-3.5 w-3.5" />}
-                    title="Giải thích"
+                  <SectionCard
+                    icon={<BookOpen className="h-4 w-4" />}
                     iconBg="bg-accent/10"
                     iconColor="text-accent"
+                    title="Giải thích"
                   >
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
@@ -360,13 +356,13 @@ export default function ExplainQuestionModal({
                     >
                       {data.explanation}
                     </ReactMarkdown>
-                  </Section>
+                  </SectionCard>
 
-                  <Section
-                    icon={<XCircle className="h-3.5 w-3.5" />}
-                    title="Vì sao đáp án bạn chọn chưa đúng"
-                    iconBg="bg-rose-50 dark:bg-rose-900/20"
+                  <SectionCard
+                    icon={<XCircle className="h-4 w-4" />}
+                    iconBg="bg-rose-100 dark:bg-rose-900/30"
                     iconColor="text-rose-600 dark:text-rose-400"
+                    title="Vì sao đáp án bạn chọn chưa đúng"
                   >
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
@@ -374,13 +370,13 @@ export default function ExplainQuestionModal({
                     >
                       {data.whyWrong}
                     </ReactMarkdown>
-                  </Section>
+                  </SectionCard>
 
-                  <Section
-                    icon={<CheckCircle2 className="h-3.5 w-3.5" />}
-                    title="Vì sao đáp án này mới đúng"
-                    iconBg="bg-emerald-50 dark:bg-emerald-900/20"
+                  <SectionCard
+                    icon={<CheckCircle2 className="h-4 w-4" />}
+                    iconBg="bg-emerald-100 dark:bg-emerald-900/30"
                     iconColor="text-emerald-600 dark:text-emerald-400"
+                    title="Vì sao đáp án này mới đúng"
                   >
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
@@ -388,40 +384,41 @@ export default function ExplainQuestionModal({
                     >
                       {data.whyCorrect}
                     </ReactMarkdown>
-                  </Section>
+                  </SectionCard>
 
-                  <Section
-                    icon={<Lightbulb className="h-3.5 w-3.5" />}
-                    title="Mẹo ghi nhớ"
-                    iconBg="bg-amber-50 dark:bg-amber-900/20"
-                    iconColor="text-amber-600 dark:text-amber-400"
-                    highlight
-                  >
+                  <div className="rounded-xl bg-gradient-to-br from-amber-50/60 via-amber-50/30 to-transparent p-4 dark:from-amber-900/15 dark:via-amber-900/5 sm:p-5">
+                    <div className="mb-3 flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+                        <Lightbulb className="h-4 w-4" />
+                      </span>
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+                        Mẹo ghi nhớ
+                      </h4>
+                    </div>
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       components={markdownComponents}
                     >
                       {data.tip}
                     </ReactMarkdown>
-                  </Section>
+                  </div>
                 </motion.div>
               )}
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between gap-3 border-t border-gray-200 bg-gray-50/60 px-4 py-3 sm:px-5 dark:border-slate-700 dark:bg-slate-900/30">
-              <p className="hidden text-[11px] text-gray-500 sm:block dark:text-gray-400">
-                Phản hồi do AI tạo, có thể không chính xác tuyệt đối.
-              </p>
-              <div className="ml-auto flex items-center gap-2">
-                <button
-                  onClick={onClose}
-                  className="rounded-lg bg-accent px-4 py-1.5 text-xs font-semibold text-white transition hover:brightness-110"
-                >
-                  Đóng
-                </button>
+            {status === "success" && (
+              <div className="sticky bottom-0 border-t border-gray-200 bg-white px-5 py-3 sm:px-6 dark:border-slate-700 dark:bg-slate-800">
+                <div className="flex items-center justify-end">
+                  <button
+                    onClick={onClose}
+                    className="ml-auto w-full sm:w-auto rounded-lg border border-gray-200 bg-white px-6 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700"
+                  >
+                    Đóng
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </motion.div>
       )}
@@ -431,66 +428,61 @@ export default function ExplainQuestionModal({
   return createPortal(content, document.body);
 }
 
-function Section({
+/* ─── Shared Section Card ─────────────────────────────────────────────────── */
+
+function SectionCard({
   icon,
-  title,
   iconBg,
   iconColor,
-  highlight = false,
+  title,
   children,
 }: {
   icon: ReactNode;
-  title: string;
   iconBg: string;
   iconColor: string;
-  highlight?: boolean;
+  title: string;
   children: ReactNode;
 }) {
   return (
-    <div
-      className={`rounded-xl border border-gray-200 dark:border-slate-700 ${
-        highlight
-          ? "bg-amber-50/30 dark:bg-amber-900/10"
-          : "bg-white dark:bg-slate-800"
-      } p-4`}
-    >
-      <div className="mb-3 flex items-center gap-2">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800/60 sm:p-5">
+      <div className="mb-3 flex items-center gap-2.5">
         <span
-          className={`flex h-6 w-6 items-center justify-center rounded-md ${iconBg} ${iconColor}`}
+          className={`flex h-7 w-7 items-center justify-center rounded-lg ${iconBg} ${iconColor}`}
         >
           {icon}
         </span>
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white">
           {title}
         </h4>
       </div>
-      <div>{children}</div>
+      {children}
     </div>
   );
 }
 
+/* ─── Loading & Error ─────────────────────────────────────────────────────── */
+
 function LoadingState() {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12 text-center sm:py-14">
-      <div className="relative mb-4 flex h-14 w-14 items-center justify-center">
-        <span className="absolute inset-0 animate-ping rounded-full bg-accent/30 opacity-75" />
-        <span className="absolute inset-0 rounded-full bg-accent/15" />
-        <Sparkles className="relative h-6 w-6 animate-pulse text-accent" />
+    <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="relative mb-5 flex h-16 w-16 items-center justify-center">
+        <span className="absolute inset-0 animate-ping rounded-full bg-accent/20 opacity-75" />
+        <span className="absolute inset-0 rounded-full bg-accent/10" />
+        <Sparkles className="relative h-7 w-7 animate-pulse text-accent" />
       </div>
-      <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
-        AI đang phân tích câu hỏi
+      <h4 className="text-base font-semibold text-gray-900 dark:text-white">
+        AI đang phân tích câu hỏi...
       </h4>
-      <p className="mt-1 max-w-md text-xs text-gray-500 dark:text-gray-400">
-        Đang đối chiếu đáp án và xây dựng phần giải thích phù hợp...
+      <p className="mt-1.5 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+        Đang đối chiếu đáp án và xây dựng phần giải thích phù hợp.
       </p>
-      <div className="mt-5 w-full max-w-xs space-y-2">
+      <div className="mt-6 w-full max-w-xs">
         <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
-          <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-accent to-accent-600" />
+          <div className="h-full w-3/5 animate-pulse rounded-full bg-gradient-to-r from-accent to-accent-600" />
         </div>
-        <div className="flex justify-between text-[11px] text-gray-400 dark:text-gray-500">
-          <span>Đang xử lý</span>
-          <span>Vài giây</span>
-        </div>
+        <p className="mt-2 text-[11px] text-gray-400 dark:text-gray-500">
+          Thường mất vài giây...
+        </p>
       </div>
     </div>
   );
@@ -504,21 +496,21 @@ function ErrorState({
   onRetry: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-900/20">
-        <AlertTriangle className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+    <div className="flex flex-col items-center justify-center px-4 py-14 text-center">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-900/20">
+        <AlertTriangle className="h-7 w-7 text-rose-500 dark:text-rose-400" />
       </div>
-      <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+      <h4 className="text-base font-semibold text-gray-900 dark:text-white">
         Không thể lấy giải thích
       </h4>
-      <p className="mt-1 max-w-md text-xs text-gray-500 dark:text-gray-400">
+      <p className="mt-1.5 max-w-sm text-sm text-gray-500 dark:text-gray-400">
         {message || "Đã xảy ra lỗi. Vui lòng thử lại sau."}
       </p>
       <button
         onClick={onRetry}
-        className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300"
+        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
       >
-        <RotateCcw className="h-3.5 w-3.5" />
+        <RotateCcw className="h-4 w-4" />
         Thử lại
       </button>
     </div>

@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSubmissionById } from "@/hooks/useExerciseSubmissions";
+import { chatbotApi } from "@/services/chatbot.service";
+import type { QuizAnalysisRequest, QuizAnalysisResponse } from "@/types/chatbot";
 import {
   AiCoachPanel,
+  QuizAnalysisModal,
   QuestionListSection,
   QuestionNavigator,
   ReviewHeader,
@@ -24,16 +27,11 @@ export default function SubmissionReviewPage() {
   const submissionId = params.submissionId as string;
   const { data: result, isLoading } = useSubmissionById(submissionId);
 
-  const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
   const [activeFilter, setActiveFilter] = useState<QuestionFilter>("all");
   const [aiAnalysisStatus, setAiAnalysisStatus] = useState<AiAnalysisStatus>("idle");
-
-  // Auto-expand all questions when data loads
-  useEffect(() => {
-    if (result) {
-      setExpandedQuestions(new Set(result.results.map((q) => q.questionId)));
-    }
-  }, [result]);
+  const [analysis, setAnalysis] = useState<QuizAnalysisResponse | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
   const counts = useMemo(() => {
     if (!result) return { all: 0, correct: 0, incorrect: 0, skipped: 0 };
@@ -60,29 +58,8 @@ export default function SubmissionReviewPage() {
     });
   }, [result, activeFilter]);
 
-  const handleToggleQuestion = (questionId: string) => {
-    setExpandedQuestions((prev) => {
-      const next = new Set(prev);
-      if (next.has(questionId)) next.delete(questionId);
-      else next.add(questionId);
-      return next;
-    });
-  };
-
-  const handleExpandAll = () => {
-    if (!result) return;
-    setExpandedQuestions(new Set(result.results.map((q) => q.questionId)));
-  };
-
-  const handleCollapseAll = () => setExpandedQuestions(new Set());
-
   const handleSelectQuestion = (questionId: string) => {
     setActiveFilter("all");
-    setExpandedQuestions((prev) => {
-      const next = new Set(prev);
-      next.add(questionId);
-      return next;
-    });
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const el = document.getElementById(`question-${questionId}`);
@@ -91,11 +68,64 @@ export default function SubmissionReviewPage() {
     });
   };
 
-  const handleRunAiAnalysis = () => {
+  const handleRunAiAnalysis = useCallback(async () => {
+    if (!result) return;
     if (aiAnalysisStatus === "loading") return;
+
+    const wrongCount = result.results.filter((q) => !q.isCorrect).length;
+    const answers: QuizAnalysisRequest["answers"] = result.results.map((q) => {
+      const sortedOptions = [...q.options].sort(
+        (a, b) => a.orderIndex - b.orderIndex,
+      );
+      const letterById = new Map<string, string>();
+      sortedOptions.forEach((opt, idx) => {
+        letterById.set(opt.id, String.fromCharCode(65 + idx));
+      });
+      const userSelectedIds = q.userSelectedOptionIds || [];
+      return {
+        questionContent: q.content,
+        userAnswers: sortedOptions
+          .filter((o) => userSelectedIds.includes(o.id))
+          .map((o) => letterById.get(o.id) || ""),
+        correctAnswers: sortedOptions
+          .filter((o) => o.isCorrect)
+          .map((o) => letterById.get(o.id) || ""),
+      };
+    });
+
+    const payload: QuizAnalysisRequest = {
+      totalQuestions: result.totalQuestions,
+      correctCount: result.correctCount,
+      wrongCount,
+      answers,
+    };
+
     setAiAnalysisStatus("loading");
-    // TODO: replace with real API call
-    setTimeout(() => setAiAnalysisStatus("done"), 1600);
+    setAnalysisError(null);
+    try {
+      const res = await chatbotApi.analysisQuiz(payload);
+      if (res.data) {
+        setAnalysis(res.data);
+        setAiAnalysisStatus("done");
+      } else {
+        throw new Error("Không nhận được dữ liệu phân tích.");
+      }
+    } catch (e) {
+      const message =
+        e instanceof Error
+          ? e.message
+          : "Có lỗi xảy ra khi gọi AI. Vui lòng thử lại.";
+      setAnalysisError(message);
+      setAiAnalysisStatus("error");
+    }
+  }, [result, aiAnalysisStatus]);
+
+  const handleOpenAnalysisModal = () => {
+    setIsAnalysisModalOpen(true);
+    // Auto-start analysis if idle
+    if (aiAnalysisStatus === "idle") {
+      handleRunAiAnalysis();
+    }
   };
 
   const handleRetry = () => {
@@ -137,17 +167,21 @@ export default function SubmissionReviewPage() {
           filteredQuestions={filteredQuestions}
           counts={counts}
           activeFilter={activeFilter}
-          expandedQuestions={expandedQuestions}
           onChangeFilter={setActiveFilter}
-          onToggleQuestion={handleToggleQuestion}
-          onExpandAll={handleExpandAll}
-          onCollapseAll={handleCollapseAll}
         />
 
         <AiCoachPanel
           status={aiAnalysisStatus}
+          onOpen={handleOpenAnalysisModal}
+        />
+
+        <QuizAnalysisModal
+          isOpen={isAnalysisModalOpen}
+          onClose={() => setIsAnalysisModalOpen(false)}
+          status={aiAnalysisStatus}
+          analysis={analysis}
+          errorMessage={analysisError}
           scorePercentage={scorePercentage}
-          accuracyPercentage={accuracyPercentage}
           counts={counts}
           tone={tone}
           onRunAnalysis={handleRunAiAnalysis}

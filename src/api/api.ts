@@ -217,6 +217,7 @@ export const API = {
     // CHATBOT
     CHATBOT_CHAT: "/api/v1/chatbot/chat",
     CHATBOT_EXPLAIN_QUESTION: "/api/v1/chatbot/explain-question",
+    CHATBOT_ANALYSIS_QUIZ: "/api/v1/chatbot/analysis-quiz",
 
     // AI TRAINING
     AI_TRAINING_INGEST_MARKDOWN: "/api/v1/ingestion/markdown",
