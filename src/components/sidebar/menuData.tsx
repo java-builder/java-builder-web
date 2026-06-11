@@ -61,20 +61,21 @@ export const menuGroups: MenuGroup[] = [
         ),
         color: "text-indigo-600 dark:text-indigo-400",
       },
-      {
-        href: "/personalized-roadmap",
-        label: "Lộ trình cá nhân hóa",
-        labelKey: "sidebar.personalizedRoadmap",
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z" />
-            <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z" />
-            <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z" />
-          </svg>
-        ),
-        color: "text-emerald-600 dark:text-emerald-400",
-        requireAuth: true,
-      },
+      // Temporarily hidden - Lộ trình cá nhân hóa
+      // {
+      //   href: "/personalized-roadmap",
+      //   label: "Lộ trình cá nhân hóa",
+      //   labelKey: "sidebar.personalizedRoadmap",
+      //   icon: (
+      //     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+      //       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z" />
+      //       <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z" />
+      //       <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z" />
+      //     </svg>
+      //   ),
+      //   color: "text-emerald-600 dark:text-emerald-400",
+      //   requireAuth: true,
+      // },
       {
         href: "/qna",
         label: "Hỏi đáp",
