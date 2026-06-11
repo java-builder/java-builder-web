@@ -40,6 +40,7 @@ export interface RecentActivityResponse {
 
 export interface OverviewStatsResponse {
     totalUsers: number;
+    totalUsersNewToday: number;
     totalCourses: number;
     monthlyRevenue: number;
     newEnrollments: number;
