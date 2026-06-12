@@ -1,118 +1,68 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { ShieldX, RotateCcw, LogIn, Home } from "lucide-react";
 
 export default function UnauthorizedModal() {
-  const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  const {} = useAuth();
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(() => {
-      router.push("/");
-    }, 300);
+  const handleReload = () => {
+    window.location.reload();
   };
 
   const handleLogin = () => {
     router.push("/login");
   };
 
-  if (!isVisible) return null;
+  const handleHome = () => {
+    router.push("/");
+  };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity"
-        onClick={handleClose}
-      ></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="w-full max-w-sm mx-4 bg-white rounded-2xl shadow-xl p-8 text-center">
+        {/* Icon */}
+        <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-50 mb-5">
+          <ShieldX className="h-7 w-7 text-red-500" />
+        </div>
 
-      {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md border border-gray-100">
-          {/* Close button */}
+        {/* Title */}
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          Không đủ quyền truy cập
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 mb-6">
+          Phiên đăng nhập đã hết hạn hoặc bạn không có quyền truy cập trang này.
+        </p>
+
+        {/* Actions */}
+        <div className="flex flex-col gap-2.5">
           <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 z-10 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+            onClick={handleReload}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-accent rounded-lg hover:bg-accent/90 transition-colors"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <RotateCcw className="h-4 w-4" />
+            Tải lại trang
           </button>
 
-          {/* Body */}
-          <div className="px-8 py-12">
-            <div className="text-center">
-              {/* Icon */}
-              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-accent-50 to-accent-100 mb-6 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-100 to-accent-200 animate-pulse"></div>
-                <svg
-                  className="h-10 w-10 text-accent relative z-10"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              </div>
+          <div className="flex gap-2.5">
+            <button
+              onClick={handleLogin}
+              className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <LogIn className="h-4 w-4" />
+              Đăng nhập
+            </button>
 
-              {/* Title */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                Không đủ quyền truy cập
-              </h3>
-
-              {/* Description */}
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Bạn không có quyền truy cập vào trang này. Vui lòng đăng nhập
-                với tài khoản có quyền ADMIN hoặc liên hệ quản trị viên.
-              </p>
-
-              {/* Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="flex-1 px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  Về trang chủ
-                </button>
-                <button
-                  type="button"
-                  onClick={handleLogin}
-                  className="flex-1 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-accent to-accent-600 border border-transparent rounded-xl hover:from-accent-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
-                >
-                  Đăng nhập
-                </button>
-              </div>
-            </div>
+            <button
+              onClick={handleHome}
+              className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <Home className="h-4 w-4" />
+              Trang chủ
+            </button>
           </div>
-
-          {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-400 via-accent to-accent-600"></div>
-          <div className="absolute -top-2 -right-2 w-24 h-24 bg-gradient-to-br from-accent-100 to-accent-200 rounded-full opacity-20"></div>
-          <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-tr from-accent-100 to-accent-200 rounded-full opacity-20"></div>
         </div>
       </div>
     </div>

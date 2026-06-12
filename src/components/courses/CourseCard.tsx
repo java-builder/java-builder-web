@@ -15,7 +15,77 @@ interface CourseCardProps {
   initialFavorite?: boolean;
 }
 
-export default function CourseCard({ course, index = 0, initialFavorite }: CourseCardProps) {
+const LEVEL_STYLES: Record<
+  CourseLevel,
+  { label: string; className: string; dot: string }
+> = {
+  [CourseLevel.BEGINNER]: {
+    label: "Cơ bản",
+    className:
+      "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-900/40",
+    dot: "bg-emerald-500",
+  },
+  [CourseLevel.INTERMEDIATE]: {
+    label: "Trung cấp",
+    className:
+      "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-900/40",
+    dot: "bg-amber-500",
+  },
+  [CourseLevel.ADVANCED]: {
+    label: "Nâng cao",
+    className:
+      "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-900/40",
+    dot: "bg-rose-500",
+  },
+  [CourseLevel.EXPERT]: {
+    label: "Chuyên sâu",
+    className:
+      "bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border-violet-100 dark:border-violet-900/40",
+    dot: "bg-violet-500",
+  },
+};
+
+const FORMAT_STYLES: Record<
+  CourseFormat,
+  { label: string; className: string }
+> = {
+  [CourseFormat.VIDEO]: {
+    label: "Video",
+    className: "bg-rose-500/95 text-white",
+  },
+  [CourseFormat.TEXT]: {
+    label: "Text",
+    className: "bg-emerald-500/95 text-white",
+  },
+  [CourseFormat.MIXED]: {
+    label: "Mixed",
+    className: "bg-indigo-500/95 text-white",
+  },
+};
+
+const FALLBACK_GRADIENTS = [
+  "from-blue-500 via-indigo-500 to-purple-600",
+  "from-emerald-500 via-teal-500 to-cyan-600",
+  "from-rose-500 via-pink-500 to-fuchsia-600",
+  "from-amber-500 via-orange-500 to-red-500",
+  "from-sky-500 via-blue-500 to-indigo-600",
+  "from-violet-500 via-purple-500 to-fuchsia-600",
+];
+
+const formatPrice = (price: number) => {
+  if (!price || price === 0) return "Miễn phí";
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
+export default function CourseCard({
+  course,
+  index = 0,
+  initialFavorite,
+}: CourseCardProps) {
   const [isFavorite, setIsFavorite] = useState(initialFavorite ?? false);
   const [isLoading, setIsLoading] = useState(false);
   const hasCheckedFavorite = useRef(false);
@@ -28,11 +98,15 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
     const checkFavorite = async () => {
       try {
-        const result = await favoriteService.check(course.id, FavoriteTargetType.COURSE);
+        const result = await favoriteService.check(
+          course.id,
+          FavoriteTargetType.COURSE
+        );
         if (result && result.data !== undefined) {
           setIsFavorite(result.data);
         }
       } catch {
+        /* silent */
       }
     };
     checkFavorite();
@@ -49,13 +123,15 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
 
     setIsLoading(true);
     try {
-      const result = await favoriteService.toggle({ 
-        targetId: course.id, 
-        targetType: FavoriteTargetType.COURSE 
+      const result = await favoriteService.toggle({
+        targetId: course.id,
+        targetType: FavoriteTargetType.COURSE,
       });
       if (result.code === 200) {
         setIsFavorite(result.data ?? false);
-        toast.success(result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích");
+        toast.success(
+          result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích"
+        );
       }
     } catch {
       toast.error("Có lỗi xảy ra");
@@ -64,222 +140,256 @@ export default function CourseCard({ course, index = 0, initialFavorite }: Cours
     }
   };
 
-  const getCourseCategory = (index: number) => {
-    const categories = [
-      {
-        name: "Frontend Developer",
-        gradient: "from-purple-500 to-blue-500",
-        icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
-      },
-      {
-        name: "Backend Developer",
-        gradient: "from-green-400 to-green-600",
-        icon: "M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4a2 2 0 11-4 0 2 2 0 014 0z",
-      },
-      {
-        name: "AI & Machine Learning",
-        gradient: "from-pink-500 to-purple-500",
-        icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
-      },
-    ];
-    return categories[index] || categories[0];
-  };
+  const detailHref =
+    course.courseFormat === CourseFormat.TEXT
+      ? `/docs/${course.slug}`
+      : `/courses/${course.slug}`;
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
+  const levelStyle = course.level ? LEVEL_STYLES[course.level] : null;
+  const formatStyle = course.courseFormat
+    ? FORMAT_STYLES[course.courseFormat]
+    : null;
+  const fallbackGradient =
+    FALLBACK_GRADIENTS[index % FALLBACK_GRADIENTS.length];
 
-  const category = getCourseCategory(index);
+  const isFree = !course.price || course.price === 0;
+  const showDuration =
+    course.courseFormat !== CourseFormat.TEXT &&
+    course.duration &&
+    course.duration > 0;
 
   return (
-    <div className="bg-white dark:bg-slate-800/50 rounded-xl shadow-sm border border-gray-200/80 dark:border-slate-700/60 hover:shadow-lg hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300 h-full flex flex-col group">
-      {/* Course Image */}
-      <div className="relative h-40 sm:h-48 lg:h-52 overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-slate-900/50 rounded-t-xl">
-        {course.thumbnailUrl ? (
-          <Image
-            src={course.thumbnailUrl}
-            alt={course.title}
-            width={400}
-            height={192}
-            className={`w-full h-full transition-transform duration-300 group-hover:scale-105 bg-gray-100 dark:bg-slate-700 ${
-              course.courseFormat === CourseFormat.TEXT
-                ? "object-contain"
-                : "object-cover"
-            }`}
-          />
-        ) : (
-          <div
-            className={`h-full bg-gradient-to-r ${category.gradient} flex items-center justify-center`}
-          >
-            <div className="text-center p-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-2">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-300 hover:shadow-xl hover:shadow-accent/10 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:border-slate-600 dark:hover:shadow-black/40">
+      {/* Thumbnail */}
+      <Link href={detailHref} className="relative block flex-shrink-0">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-50 dark:bg-slate-900/50">
+          {course.thumbnailUrl ? (
+            <Image
+              src={course.thumbnailUrl}
+              alt={course.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={`transition-transform duration-500 group-hover:scale-105 ${
+                course.courseFormat === CourseFormat.TEXT
+                  ? "object-contain bg-gray-50 dark:bg-slate-900/50"
+                  : "object-cover"
+              }`}
+            />
+          ) : (
+            <div
+              className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${fallbackGradient} p-6`}
+            >
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+                  <svg
+                    className="h-7 w-7 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.8}
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                </div>
+                <p className="line-clamp-2 text-sm font-semibold text-white/95">
+                  {course.title}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+          {formatStyle && (
+            <span
+              className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide shadow-sm backdrop-blur-sm ${formatStyle.className}`}
+            >
+              {course.courseFormat === CourseFormat.VIDEO && (
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  className="h-3 w-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                </svg>
+              )}
+              {course.courseFormat === CourseFormat.TEXT && (
+                <svg
+                  className="h-3 w-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={category.icon}
+                    fillRule="evenodd"
+                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                    clipRule="evenodd"
                   />
                 </svg>
-              </div>
-              <h3 className="text-white font-semibold text-sm sm:text-base lg:text-lg">
-                {category.name}
-              </h3>
-            </div>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
+              )}
+              {course.courseFormat === CourseFormat.MIXED && (
+                <svg
+                  className="h-3 w-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                </svg>
+              )}
+              {formatStyle.label}
+            </span>
+          )}
 
-      {/* Course Content */}
-      <div className="p-4 sm:p-5 lg:p-6 flex-1 flex flex-col">
+          {/* Free badge - top right when free */}
+          {isFree && (
+            <span className="absolute right-14 top-3 inline-flex items-center rounded-full bg-emerald-500/95 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm">
+              Free
+            </span>
+          )}
+        </div>
+
+        {/* Favorite button - floating top right */}
+        <button
+          onClick={handleToggleFavorite}
+          disabled={isLoading}
+          className={`absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full shadow-md transition-all duration-200 disabled:opacity-60 ${
+            isFavorite
+              ? "bg-rose-500 text-white hover:bg-rose-600"
+              : "bg-white/90 text-gray-700 backdrop-blur-sm hover:bg-white hover:text-rose-500 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-rose-400"
+          }`}
+          aria-label={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
+          title={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
+        >
+          {isLoading ? (
+            <svg
+              className="h-4 w-4 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="h-[18px] w-[18px]"
+              fill={isFavorite ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          )}
+        </button>
+      </Link>
+
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-5">
+        {/* Meta row: level + duration */}
+        <div className="mb-3 flex items-center gap-2 text-xs">
+          {levelStyle && (
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-medium ${levelStyle.className}`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${levelStyle.dot}`} />
+              {levelStyle.label}
+            </span>
+          )}
+          {showDuration && (
+            <span className="inline-flex items-center gap-1 text-gray-500 dark:text-slate-400">
+              <svg
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="font-medium">{course.duration} giờ</span>
+            </span>
+          )}
+        </div>
+
         {/* Title */}
-        <Link href={course.courseFormat === CourseFormat.TEXT ? `/docs/${course.slug}` : `/courses/${course.slug}`}>
-          <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-2 sm:mb-2.5 group-hover:text-accent dark:group-hover:text-sky-400 transition-colors duration-200 leading-snug line-clamp-2">
+        <Link href={detailHref} className="block">
+          <h3 className="mb-2 line-clamp-2 text-lg font-bold leading-snug text-gray-900 transition-colors duration-200 group-hover:text-accent dark:text-white dark:group-hover:text-sky-400">
             {course.title}
-          </h4>
+          </h3>
         </Link>
 
         {/* Description */}
-        <p className="text-gray-600 dark:text-slate-300 mb-3 sm:mb-4 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3 flex-grow">
+        <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-slate-300">
           {course.description}
         </p>
 
-        {/* Course Info Badges */}
-        <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4 mt-auto">
-          {course.level && (
-            <span
-              className={`px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium border whitespace-nowrap ${
-                course.level === CourseLevel.BEGINNER
-                  ? "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border-sky-100 dark:border-sky-900/30"
-                  : course.level === CourseLevel.INTERMEDIATE
-                  ? "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-900/30"
-                  : "bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border-violet-100 dark:border-violet-900/30"
-              }`}
-            >
-              {course.level === CourseLevel.BEGINNER
-                ? "Cơ bản"
-                : course.level === CourseLevel.INTERMEDIATE
-                ? "Trung cấp"
-                : "Nâng cao"}
-            </span>
-          )}
-          {course.courseFormat && (
-            <span
-              className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium border whitespace-nowrap ${
-                course.courseFormat === CourseFormat.VIDEO
-                  ? "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-900/30"
-                  : course.courseFormat === CourseFormat.TEXT
-                  ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-900/30"
-                  : "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-900/30"
-              }`}
-            >
-              {course.courseFormat === CourseFormat.VIDEO ? (
-                <>
-                  <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                  </svg>
-                  <span className="hidden xs:inline">Video</span>
-                </>
-              ) : course.courseFormat === CourseFormat.TEXT ? (
-                <>
-                  <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                  </svg>
-                  <span className="hidden xs:inline">Text</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                  </svg>
-                  <span className="hidden xs:inline">Mixed</span>
-                </>
-              )}
-            </span>
-          )}
-          {course.courseFormat !== CourseFormat.TEXT && course.duration && course.duration > 0 && (
-            <span className="px-1.5 sm:px-2 py-0.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-[10px] sm:text-xs font-medium border border-slate-100 dark:border-slate-700 whitespace-nowrap">
-              {course.duration} giờ
-            </span>
-          )}
-        </div>
-
-        {/* Price & Actions */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-2 mt-2 sm:mt-2.5">
-          <span className="text-xl sm:text-2xl font-bold text-accent dark:text-sky-400 whitespace-nowrap">
-            {formatPrice(course.price)}
-          </span>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Link
-              href={course.courseFormat === CourseFormat.TEXT ? `/docs/${course.slug}` : `/courses/${course.slug}`}
-              className="flex-1 sm:flex-none group/cta inline-flex items-center justify-center gap-1.5 rounded-lg border-2 border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-1.5 text-sm font-semibold text-gray-700 dark:text-slate-200 transition-all duration-200 hover:border-accent dark:hover:border-sky-500 hover:bg-accent/5 dark:hover:bg-sky-500/10 hover:text-accent dark:hover:text-sky-400 hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <span>Chi tiết</span>
-              <svg className="w-4 h-4 transform group-hover/cta:translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-
-            <button
-              onClick={handleToggleFavorite}
-              disabled={isLoading}
-              className={`flex-shrink-0 inline-flex items-center justify-center w-9 h-9 p-2 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 ${isFavorite
-                ? "bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-700 hover:border-rose-400 dark:hover:border-rose-600 hover:-translate-y-0.5 active:translate-y-0"
-                : "bg-white dark:bg-slate-800 text-gray-400 dark:text-slate-400 border-gray-200 dark:border-slate-600 hover:border-rose-300 dark:hover:border-rose-700 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:-translate-y-0.5 active:translate-y-0"
-                }`}
-              aria-label={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
-              title={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
-            >
-              {isLoading ? (
-                <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-              ) : (
-                <svg
-                  className="w-5 h-5"
-                  fill={isFavorite ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              )}
-            </button>
+        {/* Footer */}
+        <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4 dark:border-slate-700/60">
+          {/* Author */}
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-red-500 p-1 shadow-sm">
+              <Image
+                src="/logos/java-logo.png"
+                alt="JavaBuilder"
+                width={20}
+                height={20}
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-gray-700 dark:text-slate-200">
+                JavaBuilder
+              </p>
+              <p className="truncate text-[10px] text-gray-500 dark:text-slate-400">
+                Tác giả
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Author */}
-        <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-gray-200/80 dark:border-slate-700/40 flex items-center justify-between">
-          <div className="flex items-center space-x-1.5 sm:space-x-2">
-            <Image
-              src="/logos/java-logo.png"
-              alt="JavaBuilder"
-              width={16}
-              height={16}
-              className="rounded-sm w-4 h-4 sm:w-[18px] sm:h-[18px]"
-            />
-            <span className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400">
-              Tác giả: <span className="font-semibold text-gray-700 dark:text-slate-300">JavaBuilder</span>
-            </span>
-          </div>
+          {/* Price + CTA */}
+          <Link
+            href={detailHref}
+            className="inline-flex items-center gap-1.5 text-base font-bold text-accent transition-transform duration-200 group-hover:translate-x-0.5"
+          >
+            <span className="whitespace-nowrap">{formatPrice(course.price)}</span>
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

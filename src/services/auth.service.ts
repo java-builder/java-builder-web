@@ -1,5 +1,6 @@
 import { API } from "@/api/api";
 import { apiClient } from "@/api/axios";
+import axios from "axios";
 import { ApiResponse } from "@/types/api";
 import {
   LoginRequest,
@@ -9,6 +10,9 @@ import {
   IntrospectResponse,
   TwoFactorAuthenticationRequest,
 } from "@/types/auth";
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/java-builder";
 
 export const authApi = {
   login: async (data: LoginRequest) => {
@@ -33,19 +37,15 @@ export const authApi = {
 
   logout: async () => {
     const token =
-      typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
 
     if (token) {
       try {
-        await apiClient.post<ApiResponse<LogoutResponse>>(
-          API.LOGOUT,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await apiClient.post<ApiResponse<LogoutResponse>>(API.LOGOUT, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
       } catch (error) {
         console.error("Logout API error (ignored):", error);
       }
@@ -78,19 +78,68 @@ export const authApi = {
     localStorage.removeItem("user_id");
   },
 
+  /**
+   * Gọi introspect bằng axios raw (không qua apiClient) để tránh gắn
+   * Authorization header — Spring Security reject expired token ở header
+   * dù endpoint là permitAll.
+   *
+   * Nếu token hết hạn (isValid: false) → tự refresh rồi introspect lại.
+   */
   introspect: async (): Promise<IntrospectResponse | null> => {
+    const token = authApi.getAccessToken();
+    if (!token) return null;
+
     try {
-      const token = authApi.getAccessToken();
-      if (!token) {
-        return null;
+      const request: IntrospectRequest = { token };
+      const response = await axios.post<ApiResponse<IntrospectResponse>>(
+        `${BASE_URL}/api/v1/auth/introspect`,
+        request,
+        { headers: { "Content-Type": "application/json" } },
+      );
+      const data = response.data.data;
+
+      // Token hết hạn → refresh → introspect lại với token mới
+      if (data && !data.isValid) {
+        const newToken = await authApi.refreshToken();
+        if (!newToken) return null;
+
+        const retry = await axios.post<ApiResponse<IntrospectResponse>>(
+          `${BASE_URL}/api/v1/auth/introspect`,
+          { token: newToken } as IntrospectRequest,
+          { headers: { "Content-Type": "application/json" } },
+        );
+        return retry.data.data || null;
       }
 
-      const request: IntrospectRequest = { token };
-      const response = await apiClient.post<ApiResponse<IntrospectResponse>>(
-        API.INTROSPECT,
-        request,
+      return data || null;
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * Gọi refresh bằng axios raw — refresh token nằm trong cookie (withCredentials).
+   * Không cần Authorization header.
+   */
+  refreshToken: async (): Promise<string | null> => {
+    try {
+      const response = await axios.post<ApiResponse<LoginResponse>>(
+        `${BASE_URL}/api/v1/auth/refresh`,
+        {},
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        },
       );
-      return response.data.data || null;
+      const newToken = response.data.data?.accessToken;
+      if (newToken && typeof window !== "undefined") {
+        localStorage.setItem("access_token", newToken);
+        const userId = response.data.data?.userId;
+        if (userId) {
+          localStorage.setItem("user_id", userId);
+        }
+      }
+      return newToken || null;
     } catch {
       return null;
     }
@@ -105,7 +154,6 @@ export const authApi = {
 
     if (response.data.code === 200) {
       if (response.data.data?.mftEnable) {
-        // Return response with MFA flag, no tokens stored
         return response.data;
       } else if (
         response.data.data?.accessToken &&
@@ -128,7 +176,6 @@ export const authApi = {
 
     if (response.data.code === 200) {
       if (response.data.data?.mftEnable) {
-        // Return response with MFA flag, no tokens stored
         return response.data;
       } else if (
         response.data.data?.accessToken &&
@@ -169,7 +216,6 @@ export const authApi = {
 
     if (response.data.code === 200) {
       if (response.data.data?.mftEnable) {
-        // Return response with MFA flag, no tokens stored
         return response.data;
       } else if (
         response.data.data?.accessToken &&

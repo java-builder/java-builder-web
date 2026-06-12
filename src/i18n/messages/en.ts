@@ -173,7 +173,30 @@ export const en = {
     loadDocsError: "An error occurred while loading documents",
     cicdTitle: "From Code to Production",
     cicdSubtitle: "Professional CI/CD Pipeline",
-    cicdDesc: "Automate the entire workflow: Build → Test → Security Scan → Deploy. Learn how to deploy applications like top tech companies."
+    cicdDesc: "Automate the entire workflow: Build → Test → Security Scan → Deploy. Learn how to deploy applications like top tech companies.",
+    about: {
+      badge: "About us",
+      title: "What is JavaBuilder?",
+      descPart1: "JavaBuilder is a leading online Java learning platform in Vietnam, offering structured learning paths, diverse practical exercises, and an enthusiastic support community. We help you go from ",
+      descBeginner: "complete beginner",
+      descPart2: " to ",
+      descPro: "professional developer",
+      descPart3: ".",
+      feature1Title: "Structured roadmap",
+      feature1Desc: "A roadmap from Java Core to Spring Boot, Microservices and Cloud. Each level comes with goals, assessments and sample projects so you can clearly measure progress.",
+      feature2Title: "Hands-on exercises",
+      feature2Desc: "Hundreds of exercises across algorithms, OOP, Collections, concurrency and design patterns. Solutions include complexity analysis and optimal approaches.",
+      feature3Title: "Real-world interviews",
+      feature3Desc: "An updated bank of Java Developer interview questions following hiring trends: Core, JVM, Spring, Database, System Design — sorted from Junior to Senior level.",
+      feature4Title: "Supportive community",
+      feature4Desc: "Over 1,000 members on Facebook and Discord. 24/7 Q&A, code reviews, interview tips and trustworthy job opportunities.",
+      feature5Title: "AI study assistant",
+      feature5Desc: "An AI assistant fine-tuned for Java and Spring Boot: explains concepts, debugs code, suggests refactors and generates exercises personalized to your level.",
+      feature6Title: "In-depth resources",
+      feature6Desc: "A curated library of ebooks, cheatsheets and case studies on Spring, Kafka, Redis and CI/CD — selected from real production system experience.",
+      ctaCourses: "Explore courses",
+      ctaRoadmap: "View roadmap"
+    }
   },
   coursesPage: {
     heroBadge: "Course & Training",

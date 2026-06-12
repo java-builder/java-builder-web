@@ -173,7 +173,30 @@ export const ja = {
     loadDocsError: "ドキュメントの読み込み中にエラーが発生しました",
     cicdTitle: "コードから本番環境まで",
     cicdSubtitle: "プロフェッショナルなCI/CDパイプライン",
-    cicdDesc: "ワークフロー全体を自動化：ビルド → テスト → セキュリティスキャン → デプロイ。トップテック企業のようなアプリケーションのデプロイ方法を学びます。"
+    cicdDesc: "ワークフロー全体を自動化：ビルド → テスト → セキュリティスキャン → デプロイ。トップテック企業のようなアプリケーションのデプロイ方法を学びます。",
+    about: {
+      badge: "私たちについて",
+      title: "JavaBuilderとは？",
+      descPart1: "JavaBuilderはベトナム随一のオンラインJava学習プラットフォームで、体系的な学習ロードマップ、豊富な実践演習、熱心なサポートコミュニティを提供します。あなたを",
+      descBeginner: "初心者",
+      descPart2: "から",
+      descPro: "プロのデベロッパー",
+      descPart3: "へと導きます。",
+      feature1Title: "体系的なロードマップ",
+      feature1Desc: "Java CoreからSpring Boot、マイクロサービス、クラウドまでのロードマップ。各レベルに目標、テスト、サンプルプロジェクトを用意し、進捗を明確に測定できます。",
+      feature2Title: "実践演習",
+      feature2Desc: "アルゴリズム、OOP、Collection、並行処理、デザインパターンなど数百の演習問題。解答には計算量の分析と最適なアプローチが含まれます。",
+      feature3Title: "実戦的な面接対策",
+      feature3Desc: "採用トレンドに合わせて更新されるJavaデベロッパー面接問題集：Core、JVM、Spring、データベース、システム設計をJuniorからSeniorまでレベル別に整理。",
+      feature4Title: "サポートコミュニティ",
+      feature4Desc: "FacebookとDiscordで1,000人以上のメンバー。24時間質問対応、コードレビュー、面接のコツや信頼できる求人情報を共有。",
+      feature5Title: "AI学習アシスタント",
+      feature5Desc: "JavaとSpring Bootに最適化されたAIアシスタント：概念解説、コードデバッグ、リファクタ提案、レベルに合わせた個別演習を生成します。",
+      feature6Title: "深い知識のリソース",
+      feature6Desc: "Spring、Kafka、Redis、CI/CDに関するEブック、チートシート、ケーススタディの厳選コレクション — 実際の本番システム経験から選定。",
+      ctaCourses: "コースを探す",
+      ctaRoadmap: "ロードマップを見る"
+    }
   },
   coursesPage: {
     heroBadge: "コースとトレーニング",

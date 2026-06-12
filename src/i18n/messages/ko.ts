@@ -173,7 +173,30 @@ export const ko = {
     loadDocsError: "자료를 불러오는 중 오류가 발생했습니다",
     cicdTitle: "코드부터 배포까지",
     cicdSubtitle: "프로페셔널 CI/CD 파이프라인",
-    cicdDesc: "전체 워크플로우 자동화: 빌드 → 테스트 → 보안 스캔 → 배포. 글로벌 기술 기업들처럼 애플리케이션을 배포하는 방법을 학습합니다."
+    cicdDesc: "전체 워크플로우 자동화: 빌드 → 테스트 → 보안 스캔 → 배포. 글로벌 기술 기업들처럼 애플리케이션을 배포하는 방법을 학습합니다.",
+    about: {
+      badge: "회사 소개",
+      title: "JavaBuilder란?",
+      descPart1: "JavaBuilder는 베트남 최고의 온라인 Java 학습 플랫폼으로, 체계적인 학습 로드맵, 다양한 실습 문제, 열정적인 커뮤니티 지원을 제공합니다. 여러분을 ",
+      descBeginner: "완전 초보자",
+      descPart2: "에서 ",
+      descPro: "전문 개발자",
+      descPart3: "로 이끌어드립니다.",
+      feature1Title: "체계적인 로드맵",
+      feature1Desc: "Java Core부터 Spring Boot, 마이크로서비스, 클라우드까지의 로드맵. 각 단계마다 목표, 평가, 샘플 프로젝트로 진척도를 명확히 측정할 수 있습니다.",
+      feature2Title: "실습 문제",
+      feature2Desc: "알고리즘, OOP, Collection, 동시성, 디자인 패턴 등 수백 개의 문제. 해답에는 시간복잡도 분석과 최적 접근법이 포함됩니다.",
+      feature3Title: "실전 면접 대비",
+      feature3Desc: "채용 트렌드에 맞춰 업데이트되는 Java 개발자 면접 문제집: Core, JVM, Spring, 데이터베이스, 시스템 디자인을 Junior부터 Senior까지 레벨별로 정리.",
+      feature4Title: "지원 커뮤니티",
+      feature4Desc: "Facebook과 Discord의 1,000명 이상 커뮤니티. 24/7 Q&A, 코드 리뷰, 면접 팁, 신뢰할 수 있는 채용 정보 공유.",
+      feature5Title: "AI 학습 도우미",
+      feature5Desc: "Java와 Spring Boot에 특화된 AI 어시스턴트: 개념 설명, 코드 디버그, 리팩토링 제안, 레벨별 맞춤 연습 문제 생성.",
+      feature6Title: "심화 자료",
+      feature6Desc: "Spring, Kafka, Redis, CI/CD 관련 ebook, 치트시트, 사례 모음 — 실제 프로덕션 시스템 경험에서 선별.",
+      ctaCourses: "강의 살펴보기",
+      ctaRoadmap: "로드맵 보기"
+    }
   },
   coursesPage: {
     heroBadge: "코스 및 트레이닝",

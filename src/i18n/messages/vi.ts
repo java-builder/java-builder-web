@@ -173,7 +173,30 @@ export const vi = {
     loadDocsError: "Có lỗi xảy ra khi tải tài liệu",
     cicdTitle: "Từ Code Đến Production",
     cicdSubtitle: "Quy Trình CI/CD Chuyên Nghiệp",
-    cicdDesc: "Tự động hóa toàn bộ quy trình: Build → Test → Security Scan → Deploy. Học cách triển khai ứng dụng như các công ty công nghệ hàng đầu."
+    cicdDesc: "Tự động hóa toàn bộ quy trình: Build → Test → Security Scan → Deploy. Học cách triển khai ứng dụng như các công ty công nghệ hàng đầu.",
+    about: {
+      badge: "Về chúng tôi",
+      title: "JavaBuilder là gì?",
+      descPart1: "JavaBuilder là nền tảng học tập Java trực tuyến hàng đầu Việt Nam, cung cấp lộ trình học tập bài bản, bài tập thực hành đa dạng và cộng đồng hỗ trợ nhiệt tình. Chúng tôi giúp bạn từ ",
+      descBeginner: "người mới bắt đầu",
+      descPart2: " tiến đến ",
+      descPro: "lập trình viên chuyên nghiệp",
+      descPart3: ".",
+      feature1Title: "Lộ trình học có hệ thống",
+      feature1Desc: "Roadmap từ Java Core đến Spring Boot, Microservices và Cloud. Mỗi cấp độ có mục tiêu, bài kiểm tra và dự án mẫu giúp bạn đo lường tiến bộ rõ ràng.",
+      feature2Title: "Bài tập thực hành",
+      feature2Desc: "Hàng trăm bài tập đa dạng: thuật toán, OOP, Collection, đa luồng, design pattern. Lời giải kèm phân tích độ phức tạp và cách tiếp cận tối ưu.",
+      feature3Title: "Phỏng vấn thực tế",
+      feature3Desc: "Ngân hàng câu hỏi phỏng vấn Java cập nhật theo trend tuyển dụng: Core, JVM, Spring, Database, System Design - phân loại từ Junior đến Senior.",
+      feature4Title: "Cộng đồng hỗ trợ",
+      feature4Desc: "Hơn 1.000 thành viên trên Facebook và Discord. Hỏi đáp 24/7, review code, chia sẻ tip phỏng vấn và cơ hội việc làm đáng tin cậy.",
+      feature5Title: "AI hỗ trợ học tập",
+      feature5Desc: "Trợ lý AI tinh chỉnh cho Java và Spring Boot: giải thích khái niệm, debug code, gợi ý refactor và sinh bài tập cá nhân hóa theo trình độ.",
+      feature6Title: "Tài liệu chuyên sâu",
+      feature6Desc: "Bộ sưu tập ebook, cheatsheet và case study về Spring, Kafka, Redis, CI/CD - chọn lọc từ kinh nghiệm xây dựng hệ thống production thực tế.",
+      ctaCourses: "Khám phá khóa học",
+      ctaRoadmap: "Xem lộ trình học"
+    }
   },
   coursesPage: {
     heroBadge: "Course & Training",
