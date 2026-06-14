@@ -1,8 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { questionContributionService } from "@/services/question-contribution.service";
-import { QuestionContributionDetailResponse } from "@/types/interview";
+import { QuestionContributionDetailResponse, InterviewQuestionTranslation } from "@/types/interview";
 import toast from "react-hot-toast";
 import ContributionCard from "@/components/admin/question-contributions/ContributionCard";
 import ContributionDetailModal from "@/components/admin/question-contributions/ContributionDetailModal";
@@ -46,11 +46,11 @@ export default function QuestionContributionsPage() {
     }
   };
 
-  const handleApproveSubmit = async (answer?: string, tips?: string) => {
+  const handleApproveSubmit = async (translations: InterviewQuestionTranslation[]) => {
     if (!selectedContribution) return;
 
     try {
-      await questionContributionService.approveContribution(selectedContribution.id, answer, tips);
+      await questionContributionService.approveContribution(selectedContribution.id, translations);
       toast.success("Đã duyệt câu hỏi thành công");
       setShowApproveModal(false);
       setSelectedContribution(null);

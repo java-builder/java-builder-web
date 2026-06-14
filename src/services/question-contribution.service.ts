@@ -4,6 +4,7 @@ import {
   CreateQuestionContributionRequest,
   CreateQuestionContributionResponse,
   QuestionContributionDetailResponse,
+  InterviewQuestionTranslation,
 } from "@/types/interview";
 
 export const questionContributionService = {
@@ -32,10 +33,9 @@ export const questionContributionService = {
     );
   },
 
-  async approveContribution(id: string, answer?: string, tips?: string) {
+  async approveContribution(id: string, translations: InterviewQuestionTranslation[]) {
     return apiClient.put(`${API.APPROVE_CONTRIBUTION}/${id}/approve`, {
-      answer,
-      tips
+      translations,
     });
   },
 

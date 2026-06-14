@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { questionSetService } from "@/services/question-set.service";
@@ -222,7 +222,7 @@ export default function CreateQuestionSetModal({
               </span>
             </label>
 
-            <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700">
+            <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
               {LOCALES.map((l) => {
                 const filled = isLocaleFilled(l.code);
                 const isActive = activeLocale === l.code;
@@ -232,17 +232,19 @@ export default function CreateQuestionSetModal({
                     type="button"
                     onClick={() => setActiveLocale(l.code)}
                     disabled={isSubmitting}
-                    className={`relative px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                    className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
                       isActive
                         ? "border-accent text-accent"
                         : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
                     }`}
                   >
-                    <span className="mr-1.5">{l.flag}</span>
-                    {l.label}
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                      {l.flag}
+                    </span>
+                    <span>{l.label}</span>
                     {filled && (
                       <span
-                        className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"
+                        className="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block"
                         title="Đã điền"
                       />
                     )}
