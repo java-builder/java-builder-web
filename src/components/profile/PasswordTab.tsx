@@ -86,7 +86,7 @@ export default function PasswordTab() {
 
   if (isLoadingStatus) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
         <Loader2 className="h-7 w-7 animate-spin text-accent" />
       </div>
     );

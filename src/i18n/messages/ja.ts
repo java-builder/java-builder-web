@@ -717,6 +717,12 @@ export const ja = {
       enableSuccess: "2段階認証を有効化しました！",
       disableFailed: "2FAの無効化に失敗しました",
       cancelBtn: "キャンセル",
+      passkeys: "Passkey",
+      passkeysDesc: "指紋、顔認証、またはデバイスPINで認証します。",
+      addPasskeyBtn: "Passkey を追加",
+      registerPasskeySuccess: "セキュリティキーが正常に登録されました！",
+      registerPasskeyFailed: "セキュリティキーの登録に失敗しました。もう一度お試しください。",
+      passkeyNotSupported: "お使いのデバイスまたはブラウザはPasskeyをサポートしていません。",
     },
     twoFactorModal: {
       modalTitle: "2FAの設定",

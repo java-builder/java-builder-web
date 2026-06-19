@@ -7,6 +7,7 @@ import {
   Info,
   ShieldCheck,
   XCircle,
+  Key,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { UserDetailResponse } from "@/types/user";
@@ -15,6 +16,8 @@ import { useI18n } from "@/contexts/I18nContext";
 import TwoFactorModal from "./TwoFactorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import SectionCard from "./SectionCard";
+import { passkeyApi } from "@/services/passkey.service";
+import { registerPasskeyCredential } from "@/services/webauthn";
 
 interface SecurityTabProps {
   user: UserDetailResponse;
@@ -32,7 +35,40 @@ export default function SecurityTab({
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
   const [error, setError] = useState("");
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
   const initialUserMftEnable = useRef(user.mftEnable);
+
+  const handleRegisterPasskey = async () => {
+    if (typeof window === "undefined" || !window.PublicKeyCredential) {
+      toast.error(t("profilePage.securityTab.passkeyNotSupported"));
+      return;
+    }
+
+    try {
+      setIsPasskeyLoading(true);
+      const optionsResponse = await passkeyApi.getRegistrationOptions();
+      if (optionsResponse.code !== 200 || !optionsResponse.data) {
+        throw new Error(optionsResponse.message || t("profilePage.securityTab.registerPasskeyFailed"));
+      }
+
+      const credential = await registerPasskeyCredential(optionsResponse.data);
+
+      const registerResponse = await passkeyApi.registerPasskey(credential);
+      if (registerResponse.code !== 200) {
+        throw new Error(registerResponse.message || t("profilePage.securityTab.registerPasskeyFailed"));
+      }
+
+      toast.success(t("profilePage.securityTab.registerPasskeySuccess"));
+    } catch (err) {
+      const errorObj = err as Error;
+      console.error("Passkey registration failed:", errorObj);
+      if (errorObj.name !== "NotAllowedError" && errorObj.name !== "AbortError") {
+        toast.error(errorObj.message || t("profilePage.securityTab.registerPasskeyFailed"));
+      }
+    } finally {
+      setIsPasskeyLoading(false);
+    }
+  };
 
   const handleUserUpdate = useCallback(
     (updates: Partial<UserDetailResponse>) => {
@@ -108,69 +144,112 @@ export default function SecurityTab({
         subtitle={t("profilePage.securityTab.securityDesc")}
       >
         <div className="space-y-5">
-          {/* 2FA Toggle Row */}
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40 sm:p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="flex items-start gap-3 min-w-0">
-                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
-                  <ShieldCheck className="h-5 w-5" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {t("profilePage.securityTab.twoFactor")}
-                  </h4>
-                  <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
-                    {isInitialLoading
-                      ? t("profilePage.securityTab.checkingStatus")
-                      : twoFactorEnabled
-                        ? t("profilePage.securityTab.twoFactorProtected")
-                        : t("profilePage.securityTab.twoFactorAddLyr")}
-                  </p>
-                  {!isInitialLoading && twoFactorEnabled && (
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800/40">
-                      <CheckCircle2 className="h-3 w-3" />
-                      {t("profilePage.securityTab.activated")}
-                    </span>
+          {/* Security Settings Box */}
+          <div className="rounded-xl border border-gray-200 bg-gray-50 dark:border-slate-700 dark:bg-slate-900/40 divide-y divide-gray-200 dark:divide-slate-800 overflow-hidden">
+            {/* 2FA Toggle Row */}
+            <div className="p-4 sm:p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start gap-3 min-w-0">
+                  <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                    <ShieldCheck className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {t("profilePage.securityTab.twoFactor")}
+                    </h4>
+                    <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      {isInitialLoading
+                        ? t("profilePage.securityTab.checkingStatus")
+                        : twoFactorEnabled
+                          ? t("profilePage.securityTab.twoFactorProtected")
+                          : t("profilePage.securityTab.twoFactorAddLyr")}
+                    </p>
+                    {!isInitialLoading && twoFactorEnabled && (
+                      <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800/40">
+                        <CheckCircle2 className="h-3 w-3" />
+                        {t("profilePage.securityTab.activated")}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-shrink-0 items-center gap-3">
+                  {isInitialLoading ? (
+                    <div className="h-6 w-11 animate-pulse rounded-full bg-gray-200 dark:bg-slate-700" />
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleToggleTwoFactor}
+                        disabled={isLoading}
+                        role="switch"
+                        aria-checked={twoFactorEnabled}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
+                          twoFactorEnabled
+                            ? "bg-accent"
+                            : "bg-gray-300 dark:bg-slate-600"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${
+                            twoFactorEnabled ? "translate-x-6" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                      <span
+                        className={`text-xs font-semibold ${
+                          twoFactorEnabled
+                            ? "text-accent"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                      >
+                        {twoFactorEnabled
+                          ? t("profilePage.securityTab.enabled")
+                          : t("profilePage.securityTab.disabled")}
+                      </span>
+                    </>
                   )}
                 </div>
               </div>
+            </div>
 
-              <div className="flex flex-shrink-0 items-center gap-3">
-                {isInitialLoading ? (
-                  <div className="h-6 w-11 animate-pulse rounded-full bg-gray-200 dark:bg-slate-700" />
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleToggleTwoFactor}
-                      disabled={isLoading}
-                      role="switch"
-                      aria-checked={twoFactorEnabled}
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
-                        twoFactorEnabled
-                          ? "bg-accent"
-                          : "bg-gray-300 dark:bg-slate-600"
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${
-                          twoFactorEnabled ? "translate-x-6" : "translate-x-1"
-                        }`}
-                      />
-                    </button>
-                    <span
-                      className={`text-xs font-semibold ${
-                        twoFactorEnabled
-                          ? "text-accent"
-                          : "text-gray-500 dark:text-gray-400"
-                      }`}
-                    >
-                      {twoFactorEnabled
-                        ? t("profilePage.securityTab.enabled")
-                        : t("profilePage.securityTab.disabled")}
-                    </span>
-                  </>
-                )}
+            {/* Passkeys Row */}
+            <div className="p-4 sm:p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start gap-3 min-w-0">
+                  <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                    <Key className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {t("profilePage.securityTab.passkeys")}
+                    </h4>
+                    <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      {t("profilePage.securityTab.passkeysDesc")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-shrink-0 items-center">
+                  <button
+                    type="button"
+                    onClick={handleRegisterPasskey}
+                    disabled={isPasskeyLoading}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isPasskeyLoading ? (
+                      <>
+                        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                        <span>{t("profilePage.profileTab.savingBtn")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Key className="h-3.5 w-3.5" />
+                        <span>{t("profilePage.securityTab.addPasskeyBtn")}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -191,74 +270,49 @@ export default function SecurityTab({
           )}
 
           {!isInitialLoading && !twoFactorEnabled && (
-            <SecurityAlert
-              tone="info"
-              icon={Info}
-              title={t("profilePage.securityTab.twoFactorGuide")}
-              description={t("profilePage.securityTab.downloadAuthenticatorDesc")}
-            >
-              <div className="mt-3 flex flex-wrap gap-2">
-                <a
-                  href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-800 shadow-sm transition hover:border-accent hover:bg-accent/5 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:hover:border-accent dark:hover:bg-slate-700"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 512 512"
-                    fill="none"
-                    aria-hidden
-                  >
-                    <path
-                      d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1z"
-                      fill="#3BCCFF"
-                    />
-                    <path
-                      d="m104.6 13 220.7 221.3-220.7 220.7c-3.4-1.3-6.4-3.7-8.4-7C93.7 444 92 439.6 92 435V31c0-4.6 1.7-9 4.2-12.3 2-3.3 5-5.7 8.4-7Z"
-                      fill="#22DA6E"
-                    />
-                    <path
-                      d="m385.4 174.2-60.1 60.1-60.1 60.1L96.2 461.3c2.2 2.5 5 4.5 8.3 5.7L385.4 174.2Z"
-                      fill="#FF3F4D"
-                    />
-                    <path
-                      d="m467.4 224-82.1-50 60.2 60.2-60.1 60.1 82-49.7c25.3-15.4 25.3-55.2 0-70.6Z"
-                      fill="#FFD109"
-                    />
-                  </svg>
-                  <div className="text-left leading-tight">
-                    <div className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                      {t("profilePage.securityTab.downloadGetItOn")}
-                    </div>
-                    <div>Google Play</div>
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                  <Info className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h5 className="text-sm font-semibold text-gray-900 dark:text-white">
+                    {t("profilePage.securityTab.twoFactorGuide")}
+                  </h5>
+                  <p className="mt-1 text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
+                    {t("profilePage.securityTab.downloadAuthenticatorDesc")}
+                  </p>
+                  <div className="mt-2.5 flex items-center gap-3 text-xs font-medium">
+                    <a
+                      href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-accent transition hover:underline"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 512 512" fill="none" aria-hidden>
+                        <path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1z" fill="#3BCCFF" />
+                        <path d="m104.6 13 220.7 221.3-220.7 220.7c-3.4-1.3-6.4-3.7-8.4-7C93.7 444 92 439.6 92 435V31c0-4.6 1.7-9 4.2-12.3 2-3.3 5-5.7 8.4-7Z" fill="#22DA6E" />
+                        <path d="m385.4 174.2-60.1 60.1-60.1 60.1L96.2 461.3c2.2 2.5 5 4.5 8.3 5.7L385.4 174.2Z" fill="#FF3F4D" />
+                        <path d="m467.4 224-82.1-50 60.2 60.2-60.1 60.1 82-49.7c25.3-15.4 25.3-55.2 0-70.6Z" fill="#FFD109" />
+                      </svg>
+                      Google Play
+                    </a>
+                    <span className="text-gray-300 dark:text-slate-600">|</span>
+                    <a
+                      href="https://apps.apple.com/us/app/google-authenticator/id388497605"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-accent transition hover:underline"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor" aria-hidden>
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
+                      </svg>
+                      App Store
+                    </a>
                   </div>
-                </a>
-                <a
-                  href="https://apps.apple.com/us/app/google-authenticator/id388497605"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-800 shadow-sm transition hover:border-accent hover:bg-accent/5 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:hover:border-accent dark:hover:bg-slate-700"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 384 512"
-                    fill="currentColor"
-                    aria-hidden
-                  >
-                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
-                  </svg>
-                  <div className="text-left leading-tight">
-                    <div className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                      {t("profilePage.securityTab.downloadOn")}
-                    </div>
-                    <div>App Store</div>
-                  </div>
-                </a>
+                </div>
               </div>
-            </SecurityAlert>
+            </div>
           )}
 
           {error && (

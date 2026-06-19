@@ -13,6 +13,9 @@ import {
 } from "@/utils/oauthUtils";
 import TwoFactorModal from "@/components/auth/TwoFactorModal";
 import { useAuth } from "@/contexts/AuthContext";
+import { passkeyApi } from "@/services/passkey.service";
+import { authenticatePasskey } from "@/services/webauthn";
+import { Key } from "lucide-react";
 
 type LoginFormData = LoginRequest;
 
@@ -21,6 +24,7 @@ export default function LoginClient() {
   const queryClient = useQueryClient();
   const { setAuthFromLogin, hasAdminAccess } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
@@ -31,6 +35,7 @@ export default function LoginClient() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isValid },
   } = useForm<LoginFormData>({
     mode: "onChange",
@@ -39,6 +44,39 @@ export default function LoginClient() {
       password: "",
     },
   });
+
+  const handlePasskeyLogin = async () => {
+    setError("");
+    setIsPasskeyLoading(true);
+
+    try {
+      const email = getValues("email");
+      const optionsResponse = await passkeyApi.getLoginOptions(email || null);
+      if (optionsResponse.code !== 200 || !optionsResponse.data) {
+        throw new Error(optionsResponse.message || "Không thể lấy thông tin đăng nhập bằng Passkey.");
+      }
+
+      const credential = await authenticatePasskey(optionsResponse.data);
+
+      const loginResult = await passkeyApi.loginPasskey(credential);
+      if (loginResult.code === 200 && loginResult.data?.accessToken) {
+        setAuthFromLogin(loginResult.data);
+        await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+        const isAdmin = loginResult.data?.authorities?.includes("ADMIN");
+        router.push(isAdmin ? "/admin" : "/");
+      } else {
+        throw new Error(loginResult.message || "Đăng nhập bằng Passkey thất bại.");
+      }
+    } catch (err) {
+      const errorObj = err as Error;
+      console.error("Passkey login failed:", errorObj);
+      if (errorObj.name !== "NotAllowedError" && errorObj.name !== "AbortError") {
+        setError(errorObj.message || "Đăng nhập bằng Passkey thất bại. Vui lòng thử lại.");
+      }
+    } finally {
+      setIsPasskeyLoading(false);
+    }
+  };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -245,10 +283,29 @@ export default function LoginClient() {
 
             <button
               type="submit"
-              disabled={!isValid || isLoading}
+              disabled={!isValid || isLoading || isPasskeyLoading}
               className="w-full py-2.5 sm:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
             >
               {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </button>
+
+            <button
+              type="button"
+              disabled={isLoading || isPasskeyLoading}
+              onClick={handlePasskeyLogin}
+              className="w-full py-2.5 sm:py-3 border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm flex items-center justify-center gap-2 shadow-sm"
+            >
+              {isPasskeyLoading ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
+                  Đang xác thực...
+                </>
+              ) : (
+                <>
+                  <Key className="w-4 h-4 text-gray-400" />
+                  Đăng nhập bằng Passkey
+                </>
+              )}
             </button>
 
             {/* Social Login */}

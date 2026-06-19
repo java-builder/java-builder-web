@@ -7,6 +7,10 @@ export const API = {
     LOGIN_TWO_FACTOR: "/api/v1/auth/login-two-factor",
     LOGOUT: "/api/v1/auth/logout",
     INTROSPECT: "/api/v1/auth/introspect",
+    PASSKEY_REG_OPTIONS: "/api/v1/passkey/register/options",
+    PASSKEY_REGISTER: "/api/v1/passkey/register",
+    PASSKEY_AUTH_OPTIONS: "/api/v1/passkey/login/options",
+    PASSKEY_AUTH_LOGIN: "/api/v1/passkey/login",
 
     // USER
     CREATE_USER: "/api/v1/users",
@@ -152,7 +156,7 @@ export const API = {
     GET_BLOGS: "/api/v1/blogs",
     INCREMENT_VIEW: "/api/v1/blogs", // + /:slug/increment-view
     INCREMENT_LIKE: "/api/v1/blogs", // + /:slug/increment-like
-    
+
     // POST (Q&A / forum posts)
     CREATE_POST: "/api/v1/posts",
     GET_POSTS: "/api/v1/posts",
@@ -226,7 +230,7 @@ export const API = {
     CREATE_EXERCISE: "/api/v1/exercises",
     GET_EXERCISES: "/api/v1/exercises",
     GET_EXERCISE_BY_SLUG: "/api/v1/exercises",
-    
+
     // EXERCISE SUBMISSIONS
     START_EXERCISE: "/api/v1/exercise-submission",
     SUBMIT_EXERCISE: "/api/v1/exercise-submission",

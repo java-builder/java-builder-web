@@ -717,6 +717,12 @@ export const vi = {
       enableSuccess: "Đã bật xác thực hai yếu tố!",
       disableFailed: "Không thể tắt 2FA",
       cancelBtn: "Hủy",
+      passkeys: "Passkey",
+      passkeysDesc: "Xác thực bằng vân tay, khuôn mặt hoặc mã PIN thiết bị.",
+      addPasskeyBtn: "Thêm Passkey",
+      registerPasskeySuccess: "Đăng ký khóa bảo mật thành công!",
+      registerPasskeyFailed: "Không thể đăng ký khóa bảo mật. Vui lòng thử lại.",
+      passkeyNotSupported: "Thiết bị hoặc trình duyệt của bạn không hỗ trợ Passkey.",
     },
     twoFactorModal: {
       modalTitle: "Thiết lập 2FA",

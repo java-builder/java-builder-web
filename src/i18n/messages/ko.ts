@@ -717,6 +717,12 @@ export const ko = {
       enableSuccess: "2단계 인증이 활성화되었습니다!",
       disableFailed: "2FA 비활성화에 실패했습니다",
       cancelBtn: "취소",
+      passkeys: "Passkey",
+      passkeysDesc: "지문, 얼굴 인식 또는 기기 PIN으로 인증합니다.",
+      addPasskeyBtn: "Passkey 추가",
+      registerPasskeySuccess: "보안 키가 성공적으로 등록되었습니다!",
+      registerPasskeyFailed: "보안 키 등록에 실패했습니다. 다시 시도해 주세요.",
+      passkeyNotSupported: "기기 또는 브라우저가 Passkey를 지원하지 않습니다.",
     },
     twoFactorModal: {
       modalTitle: "2FA 설정",

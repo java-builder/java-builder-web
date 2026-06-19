@@ -66,7 +66,7 @@ export default function Sidebar({
   ];
 
   return (
-    <aside className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <aside className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
       {/* User Card */}
       <button
         type="button"

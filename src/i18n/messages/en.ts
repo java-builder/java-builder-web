@@ -717,6 +717,12 @@ export const en = {
       enableSuccess: "Two-factor authentication enabled!",
       disableFailed: "Failed to disable 2FA",
       cancelBtn: "Cancel",
+      passkeys: "Passkey",
+      passkeysDesc: "Authenticate with fingerprint, face recognition, or device PIN.",
+      addPasskeyBtn: "Add Passkey",
+      registerPasskeySuccess: "Security key registered successfully!",
+      registerPasskeyFailed: "Failed to register security key. Please try again.",
+      passkeyNotSupported: "Your device or browser does not support Passkeys.",
     },
     twoFactorModal: {
       modalTitle: "2FA Setup",

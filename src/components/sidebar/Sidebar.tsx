@@ -90,12 +90,28 @@ export default function Sidebar() {
     }));
   };
 
+  const allHrefs = useMemo(() => {
+    const hrefs: string[] = [];
+    menuGroupsWithBadge.forEach((group) =>
+      group.items.forEach((item) => hrefs.push(item.href))
+    );
+    return hrefs;
+  }, [menuGroupsWithBadge]);
+
   const isActive = (href: string) => {
     if (!pathname) return false;
     if (href === "/") {
       return pathname === "/";
     }
-    return pathname === href || pathname.startsWith(`${href}/`);
+    if (pathname === href) return true;
+    // Only match startsWith if no other more-specific menu href matches
+    if (pathname.startsWith(`${href}/`)) {
+      const hasMoreSpecific = allHrefs.some(
+        (h) => h !== href && h.startsWith(`${href}/`) && pathname.startsWith(h)
+      );
+      return !hasMoreSpecific;
+    }
+    return false;
   };
 
   const shouldShowGroup = (group: MenuGroup) => {

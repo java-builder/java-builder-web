@@ -20,6 +20,8 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/auth/refresh",
     "/api/v1/users/send-link-reset-password",
     "/api/v1/users/reset-password",
+    "/api/v1/passkey/login",
+    "/api/v1/passkey/login/options",
   ];
 
   const publicGetPatterns = [
