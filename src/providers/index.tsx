@@ -7,6 +7,7 @@ import ToastProvider from "@/components/providers/ToastProvider";
 import PushNotificationProvider from "@/components/providers/PushNotificationProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { Locale } from "@/i18n/config";
 
@@ -33,7 +34,7 @@ function getQueryClient() {
   }
 }
 
-export default function Providers({ children, initialLocale = "vi" }: { children: ReactNode; initialLocale?: Locale }) {
+export default function Providers({ children, initialLocale = "en" }: { children: ReactNode; initialLocale?: Locale }) {
   const [queryClient] = useState(() => getQueryClient());
 
   useEffect(() => {
@@ -47,10 +48,12 @@ export default function Providers({ children, initialLocale = "vi" }: { children
         <I18nProvider initialLocale={initialLocale}>
           <AuthProvider>
             <SettingsProvider>
-              <PushNotificationProvider>
-                {children}
-                <ToastProvider />
-              </PushNotificationProvider>
+              <SidebarProvider>
+                <PushNotificationProvider>
+                  {children}
+                  <ToastProvider />
+                </PushNotificationProvider>
+              </SidebarProvider>
             </SettingsProvider>
           </AuthProvider>
         </I18nProvider>

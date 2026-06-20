@@ -8,6 +8,7 @@ import ContributionCard from "@/components/admin/question-contributions/Contribu
 import ContributionDetailModal from "@/components/admin/question-contributions/ContributionDetailModal";
 import RejectModal from "@/components/admin/question-contributions/RejectModal";
 import ApproveModal from "@/components/admin/question-contributions/ApproveModal";
+import { Button } from "@/components/ui/button";
 
 export default function QuestionContributionsPage() {
   const [contributions, setContributions] = useState<QuestionContributionDetailResponse[]>([]);
@@ -91,78 +92,80 @@ export default function QuestionContributionsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Đang tải...</div>
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <svg className="animate-spin w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          <span className="text-sm">Đang tải...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6">
-      <div className="mb-6 sm:mb-8">
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Quản lý đóng góp câu hỏi
-            </h1>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-              Duyệt và quản lý câu hỏi do người dùng đóng góp
-            </p>
-          </div>
-        </div>
+    <div className="p-4 sm:p-6 space-y-6">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">
+          Quản lý đóng góp câu hỏi
+        </h1>
+        <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
+          Duyệt và quản lý câu hỏi do người dùng đóng góp
+        </p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
+        <div className="bg-card rounded-xl shadow-sm p-4 border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Tổng số</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-1">{stats.total}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Tổng số</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">{stats.total}</p>
             </div>
-            <div className="p-2 bg-accent-100 dark:bg-accent-900/30 rounded-lg">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-accent-600 dark:text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-accent/10 border border-accent/20 rounded-lg">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
+        <div className="bg-card rounded-xl shadow-sm p-4 border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Chờ duyệt</p>
-              <p className="text-xl sm:text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">{stats.pending}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Chờ duyệt</p>
+              <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">{stats.pending}</p>
             </div>
-            <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
+        <div className="bg-card rounded-xl shadow-sm p-4 border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Đã duyệt</p>
-              <p className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{stats.approved}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Đã duyệt</p>
+              <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{stats.approved}</p>
             </div>
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-slate-700">
+        <div className="bg-card rounded-xl shadow-sm p-4 border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Đã từ chối</p>
-              <p className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{stats.rejected}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Đã từ chối</p>
+              <p className="text-xl sm:text-2xl font-bold text-destructive mt-1">{stats.rejected}</p>
             </div>
-            <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-destructive/10 border border-destructive/25 rounded-lg">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -170,60 +173,64 @@ export default function QuestionContributionsPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-slate-700">
+      <div className="bg-card rounded-xl shadow-sm p-4 border border-border">
         <div className="flex flex-wrap gap-2">
-          <button
+          <Button
+            variant={filterStatus === "ALL" ? "accent" : "ghost"}
+            size="sm"
             onClick={() => {
               setFilterStatus("ALL");
               setPage(1);
             }}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-              filterStatus === "ALL"
-                ? "bg-accent text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-            }`}
+            className="text-xs sm:text-sm font-medium"
           >
             Tất cả
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filterStatus === "PENDING" ? "outline" : "ghost"}
+            size="sm"
             onClick={() => {
               setFilterStatus("PENDING");
               setPage(1);
             }}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            className={`text-xs sm:text-sm font-medium ${
               filterStatus === "PENDING"
-                ? "bg-yellow-600 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20"
+                : "text-muted-foreground"
             }`}
           >
             Chờ duyệt
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filterStatus === "APPROVED" ? "outline" : "ghost"}
+            size="sm"
             onClick={() => {
               setFilterStatus("APPROVED");
               setPage(1);
             }}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            className={`text-xs sm:text-sm font-medium ${
               filterStatus === "APPROVED"
-                ? "bg-green-600 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20"
+                : "text-muted-foreground"
             }`}
           >
             Đã duyệt
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filterStatus === "REJECTED" ? "outline" : "ghost"}
+            size="sm"
             onClick={() => {
               setFilterStatus("REJECTED");
               setPage(1);
             }}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            className={`text-xs sm:text-sm font-medium ${
               filterStatus === "REJECTED"
-                ? "bg-red-600 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                ? "bg-destructive/10 text-destructive border-destructive/25 hover:bg-destructive/20"
+                : "text-muted-foreground"
             }`}
           >
             Đã từ chối
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -246,12 +253,12 @@ export default function QuestionContributionsPage() {
       </div>
 
       {filteredContributions.length === 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-12 text-center">
-          <svg className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-card rounded-xl shadow-sm border border-border p-12 text-center">
+          <svg className="w-16 h-16 mx-auto text-muted-foreground/60 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
           </svg>
-          <div className="text-gray-500 dark:text-gray-300 font-medium">Không có đóng góp nào</div>
-          <div className="text-sm text-gray-400 dark:text-gray-300 mt-1">
+          <div className="text-foreground font-medium">Không có đóng góp nào</div>
+          <div className="text-xs sm:text-sm text-muted-foreground mt-1">
             {filterStatus !== "ALL" ? "Thử thay đổi bộ lọc" : "Chưa có người dùng nào đóng góp câu hỏi"}
           </div>
         </div>
@@ -259,23 +266,25 @@ export default function QuestionContributionsPage() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-6">
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           >
             Trước
-          </button>
-          <span className="text-sm text-gray-700 dark:text-gray-300 px-4">
+          </Button>
+          <span className="text-sm text-muted-foreground px-4">
             Trang {page} / {totalPages}
           </span>
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           >
             Sau
-          </button>
+          </Button>
         </div>
       )}
 

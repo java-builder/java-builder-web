@@ -4,6 +4,8 @@ import { useState } from "react";
 import { userApi } from "@/services/user.service";
 import { CreateUserRequest } from "@/types/user";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Plus, Loader2, X, ShieldAlert } from "lucide-react";
 
 interface CreateUserModalProps {
   isOpen: boolean;
@@ -66,123 +68,102 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Backdrop */}
         <div
-          className={`fixed inset-0 transition-all duration-300 ${isOpen ? 'backdrop-blur-sm bg-black/20' : ''
-            }`}
+          className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300`}
           onClick={handleClose}
         />
 
         {/* Modal */}
-        <div className={`relative w-full max-w-lg bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}>
+        <div className={`relative w-full max-w-lg bg-card border border-border text-foreground rounded-2xl shadow-2xl transform transition-all duration-300 ease-out`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-6 border-b border-border">
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-accent to-accent-600">
-                <svg
-                  className="h-5 w-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+                <Plus className="h-5 w-5 text-accent dark:text-accent-on-dark" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-foreground">
                   Thêm người dùng mới
                 </h2>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Tạo tài khoản mới cho người dùng hệ thống
                 </p>
               </div>
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground"
             >
-              <svg
-                className="w-6 h-6 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <X className="w-5 h-5" />
+            </Button>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6">
             <div className="space-y-6">
               {/* Username */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tên người dùng <span className="text-red-500">*</span>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">
+                  Tên người dùng <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
                   value={form.username}
                   onChange={(e) => handleChange("username", e.target.value)}
                   placeholder="Nhập tên người dùng..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.username
-                      ? "border-red-300 bg-red-50"
-                      : "border-gray-300"
-                    }`}
+                  className={`flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
+                    errors.username
+                      ? "border-destructive focus-visible:ring-destructive/30"
+                      : "border-input"
+                  }`}
                 />
                 {errors.username && (
-                  <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+                  <p className="text-xs text-destructive">{errors.username}</p>
                 )}
               </div>
 
               {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email <span className="text-red-500">*</span>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">
+                  Email <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   placeholder="Nhập địa chỉ email..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.email
-                      ? "border-red-300 bg-red-50"
-                      : "border-gray-300"
-                    }`}
+                  className={`flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
+                    errors.email
+                      ? "border-destructive focus-visible:ring-destructive/30"
+                      : "border-input"
+                  }`}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  <p className="text-xs text-destructive">{errors.email}</p>
                 )}
               </div>
 
               {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mật khẩu <span className="text-red-500">*</span>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">
+                  Mật khẩu <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="password"
                   value={form.password}
                   onChange={(e) => handleChange("password", e.target.value)}
                   placeholder="Nhập mật khẩu..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.password
-                      ? "border-red-300 bg-red-50"
-                      : "border-gray-300"
-                    }`}
+                  className={`flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
+                    errors.password
+                      ? "border-destructive focus-visible:ring-destructive/30"
+                      : "border-input"
+                  }`}
                 />
                 {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  <p className="text-xs text-destructive">{errors.password}</p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="text-[11px] text-muted-foreground">
                   Mật khẩu phải có ít nhất 6 ký tự
                 </p>
               </div>
@@ -190,82 +171,34 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
 
             {/* Error Message */}
             {errors.submit && (
-              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 text-red-500 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="text-sm text-red-700">{errors.submit}</span>
-                </div>
+              <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-2.5">
+                <ShieldAlert className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                <span className="text-sm text-destructive font-medium">{errors.submit}</span>
               </div>
             )}
 
             {/* Actions */}
-            <div className="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
-              <button
+            <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-border">
+              <Button
                 type="button"
+                variant="outline"
                 onClick={handleClose}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200 text-sm"
               >
                 Hủy
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
+                variant="accent"
                 disabled={isLoading}
-                className="px-4 py-2 bg-gradient-to-r from-accent to-accent-600 text-white rounded-lg hover:from-accent-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center text-sm"
+                className="gap-1.5"
               >
                 {isLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin w-3 h-3 mr-1.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Tạo
-                  </>
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <>
-                    <svg
-                      className="w-3 h-3 mr-1.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                    Tạo
-                  </>
+                  <Plus className="h-4 w-4" />
                 )}
-              </button>
+                Tạo
+              </Button>
             </div>
           </form>
         </div>
@@ -273,5 +206,3 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
     </div>
   );
 }
-
-

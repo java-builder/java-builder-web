@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useAllPayments } from "@/hooks/usePayment";
@@ -108,8 +108,8 @@ export default function PaymentsPage() {
 
       {/* Initial loading */}
       {isLoading && !data && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-12 dark:border-slate-700 dark:bg-slate-800">
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="rounded-xl border border-border bg-card p-12">
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <svg className="h-5 w-5 animate-spin text-accent" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
@@ -132,10 +132,10 @@ export default function PaymentsPage() {
 
       {/* Empty state */}
       {!isLoading && !hasData && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-800">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
+        <div className="rounded-xl border border-border bg-card p-10 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
             <svg
-              className="h-6 w-6 text-gray-400"
+              className="h-6 w-6 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -148,10 +148,10 @@ export default function PaymentsPage() {
               />
             </svg>
           </div>
-          <p className="text-base font-semibold text-gray-900 dark:text-white">
+          <p className="text-base font-semibold text-foreground">
             Không có giao dịch nào
           </p>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             Chưa có giao dịch thanh toán phù hợp với bộ lọc
           </p>
         </div>
@@ -172,23 +172,23 @@ export default function PaymentsPage() {
 
       {/* Desktop table (hiển thị >= md) */}
       {hasData && (
-        <div className="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 md:block">
-          <table className="w-full table-fixed divide-y divide-gray-200 dark:divide-slate-700">
+        <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
+          <table className="w-full table-fixed divide-y divide-border">
             <colgroup>
-              <col className="w-[12%]" />
+              <col className="w-[10%]" />
+              <col className="w-[18%]" />
               <col className="w-[20%]" />
-              <col className="w-[22%]" />
               <col className="w-[10%]" />
-              <col className="w-[14%]" />
-              <col className="w-[10%]" />
-              <col className="hidden xl:table-column xl:w-[12%]" />
+              <col className="w-[12%]" />
+              <col className="w-[12%]" />
+              <col className="hidden xl:table-column xl:w-[18%]" />
             </colgroup>
-            <thead className="bg-gray-50 dark:bg-slate-900/40">
+            <thead className="bg-muted/40">
               <tr>
                 {COLUMN_HEADERS.map((col) => (
                   <th
                     key={col.label}
-                    className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300 ${
+                    className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ${
                       col.align === "right" ? "text-right" : "text-left"
                     } ${col.hiddenUntilXl ? "hidden xl:table-cell" : ""}`}
                   >
@@ -197,7 +197,7 @@ export default function PaymentsPage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white dark:divide-slate-700 dark:bg-slate-800">
+            <tbody className="divide-y divide-border bg-transparent">
               {payments.map((payment) => (
                 <PaymentTableRow
                   key={payment.id}

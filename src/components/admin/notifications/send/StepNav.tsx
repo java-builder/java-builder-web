@@ -14,7 +14,7 @@ export default function StepNav({ activeTab, onChange }: StepNavProps) {
   const activeStep = STEPS[activeIndex];
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:px-5">
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:px-5">
       <nav aria-label="Tiến trình" className="flex items-center">
         {STEPS.map((step, idx) => {
           const isActive = activeTab === step.id;
@@ -34,7 +34,7 @@ export default function StepNav({ activeTab, onChange }: StepNavProps) {
                       ? "bg-accent text-white shadow-sm"
                       : isCompleted
                       ? "bg-emerald-500 text-white"
-                      : "bg-gray-100 text-gray-500 ring-1 ring-gray-200 dark:bg-slate-700 dark:text-gray-400 dark:ring-slate-600"
+                      : "bg-muted text-muted-foreground ring-1 ring-border"
                   }`}
                 >
                   {isCompleted ? (
@@ -48,8 +48,8 @@ export default function StepNav({ activeTab, onChange }: StepNavProps) {
                     isActive
                       ? "text-accent"
                       : isCompleted
-                      ? "text-gray-700 dark:text-gray-200"
-                      : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200"
+                      ? "text-foreground"
+                      : "text-muted-foreground group-hover:text-foreground"
                   }`}
                 >
                   {step.label}
@@ -61,8 +61,8 @@ export default function StepNav({ activeTab, onChange }: StepNavProps) {
                   aria-hidden
                   className={`mx-3 h-px flex-1 transition ${
                     isCompleted
-                      ? "bg-emerald-300 dark:bg-emerald-800"
-                      : "bg-gray-200 dark:bg-slate-700"
+                      ? "bg-emerald-500/50"
+                      : "bg-border"
                   }`}
                 />
               )}
@@ -73,19 +73,19 @@ export default function StepNav({ activeTab, onChange }: StepNavProps) {
 
       {/* Active step description */}
       {activeStep && (
-        <div className="mt-3 flex items-center gap-1.5 border-t border-gray-100 pt-3 text-xs dark:border-slate-700 sm:hidden">
-          <span className="font-semibold text-gray-900 dark:text-white">
+        <div className="mt-3 flex items-center gap-1.5 border-t border-border pt-3 text-xs sm:hidden">
+          <span className="font-semibold text-foreground">
             {activeStep.label}
           </span>
-          <span className="text-gray-300 dark:text-slate-600">·</span>
-          <span className="text-gray-500 dark:text-gray-400">
+          <span className="text-muted-foreground/35">·</span>
+          <span className="text-muted-foreground">
             {activeStep.description}
           </span>
         </div>
       )}
       {activeStep && (
-        <p className="mt-2 hidden text-xs text-gray-500 dark:text-gray-400 sm:block">
-          <span className="font-medium text-gray-700 dark:text-gray-200">
+        <p className="mt-2 hidden text-xs text-muted-foreground sm:block">
+          <span className="font-medium text-foreground">
             Bước {activeIndex + 1}/{STEPS.length}:
           </span>{" "}
           {activeStep.description}

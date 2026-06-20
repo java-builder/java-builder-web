@@ -42,22 +42,22 @@ export default function ModalShell({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-gray-900/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
         className="relative my-6 w-full max-w-4xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
           {/* Header */}
-          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-gray-200 bg-white px-5 py-4 dark:border-slate-700 dark:bg-slate-800">
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-5 py-4">
             <div className="min-w-0">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-base font-semibold text-foreground">
                 {title}
               </h2>
               {subtitle && (
-                <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   {subtitle}
                 </p>
               )}
@@ -66,7 +66,7 @@ export default function ModalShell({
               type="button"
               onClick={onClose}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>

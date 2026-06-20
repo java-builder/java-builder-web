@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -77,14 +77,14 @@ export default function AdminSettingsPage() {
   }
 
   return (
-    <div className="p-3 sm:p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-6 text-foreground">
       {/* Breadcrumb */}
-      <nav className="flex" aria-label="Breadcrumb">
+      <nav className="flex text-muted-foreground" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
           <li className="inline-flex items-center">
             <Link
               href="/admin"
-              className="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-accent"
+              className="inline-flex items-center text-sm font-medium hover:text-accent"
             >
               <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -94,10 +94,10 @@ export default function AdminSettingsPage() {
           </li>
           <li aria-current="page">
             <div className="flex items-center">
-              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-6 h-6 text-muted-foreground/60" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
-              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+              <span className="ml-1 text-sm font-medium text-muted-foreground/80 md:ml-2">
                 {t("admin.settings.breadcrumbSettings")}
               </span>
             </div>
@@ -106,11 +106,11 @@ export default function AdminSettingsPage() {
       </nav>
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 border border-gray-200 dark:border-slate-700 shadow-sm">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="bg-card rounded-xl p-6 sm:p-8 border border-border shadow-sm">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
           {t("admin.settings.pageTitle")}
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
+        <p className="text-sm text-muted-foreground">
           {t("admin.settings.pageSubtitle")}
         </p>
       </div>
@@ -119,7 +119,7 @@ export default function AdminSettingsPage() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar - Desktop */}
         <div className="hidden lg:block w-64 flex-shrink-0">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-3 sticky top-6">
+          <div className="bg-card rounded-xl border border-border shadow-sm p-3 sticky top-6">
             <nav className="space-y-1">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
@@ -130,10 +130,10 @@ export default function AdminSettingsPage() {
                     className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-3 ${
                       isActive
                         ? "bg-accent text-white shadow-sm"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/70"
+                        : "text-foreground/90 hover:bg-muted"
                     }`}
                   >
-                    <span className={isActive ? "text-white" : "text-gray-500 dark:text-gray-300"}>
+                    <span className={isActive ? "text-white" : "text-muted-foreground"}>
                       {tab.icon}
                     </span>
                     {tab.label}
@@ -146,7 +146,7 @@ export default function AdminSettingsPage() {
 
         {/* Mobile Tab Selector */}
         <div className="lg:hidden">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-2">
+          <div className="bg-card rounded-xl border border-border shadow-sm p-2">
             <div className="flex gap-1">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
@@ -157,7 +157,7 @@ export default function AdminSettingsPage() {
                     className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                       isActive
                         ? "bg-accent text-white shadow-sm"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/70"
+                        : "text-foreground/90 hover:bg-muted"
                     }`}
                   >
                     {tab.icon}

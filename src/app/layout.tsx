@@ -61,7 +61,7 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const localeCookie = cookieStore.get(localeStorageKey)?.value;
-  const locale: Locale = isLocale(localeCookie) ? localeCookie : "vi";
+  const locale: Locale = isLocale(localeCookie) ? localeCookie : "en";
 
   const organizationSchema = generateOrganizationStructuredData();
   const websiteSchema = generateWebsiteStructuredData();

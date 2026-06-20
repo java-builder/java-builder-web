@@ -53,7 +53,7 @@ export const settingsConfig: SettingsConfig = {
               id: "default-language",
               type: "select",
               label: "Ngôn ngữ mặc định",
-              defaultValue: "vi",
+              defaultValue: "en",
               options: [
                 { value: "vi", label: "Tiếng Việt" },
                 { value: "en", label: "English" },

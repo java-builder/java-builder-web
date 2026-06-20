@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
-import { formatReadableDateTime } from "@/utils/dateUtils";
+import { formatLocaleString } from "@/utils/dateUtils";
 import { Difficulty } from "@/types/exercise";
 import { SubmissionStatus } from "@/types/exercise-submission";
 import { DifficultyBadge } from "./ExerciseBadges";
+import { Button } from "@/components/ui/button";
 
 export interface LearnerPerformanceRecord {
   id: string;
@@ -36,9 +37,9 @@ const getAccuracyColor = (accuracy: number) => {
 };
 
 const getAccuracyText = (accuracy: number) => {
-  if (accuracy >= 80) return "text-emerald-600";
-  if (accuracy >= 60) return "text-amber-600";
-  return "text-rose-600";
+  if (accuracy >= 80) return "text-emerald-600 dark:text-emerald-400";
+  if (accuracy >= 60) return "text-amber-600 dark:text-amber-400";
+  return "text-rose-600 dark:text-rose-400";
 };
 
 const getInitials = (name: string) =>
@@ -51,49 +52,49 @@ const getInitials = (name: string) =>
 
 export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProps) => {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">Hiệu suất học viên</h3>
-          <p className="mt-0.5 text-xs text-gray-500">
+          <h3 className="text-sm font-semibold text-foreground">Hiệu suất học viên</h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">
             Theo dõi kết quả làm bài để kịp thời hỗ trợ học viên
           </p>
         </div>
-        <span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600">
+        <span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
           {records.length} học viên
         </span>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="w-full divide-y divide-border">
+          <thead className="bg-muted/40">
             <tr>
-              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                 Học viên
               </th>
-              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                 Bài tập
               </th>
-              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                 Điểm
               </th>
-              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                 Lần làm
               </th>
-              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                 Độ chính xác
               </th>
-              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                 Lần gần nhất
               </th>
-              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 <span className="sr-only">Hành động</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className="divide-y divide-border bg-transparent">
             {records.map((record, index) => (
-              <tr key={`${record.id}-${index}`} className="transition hover:bg-gray-50">
+              <tr key={`${record.id}-${index}`} className="transition hover:bg-muted/25">
                 {/* Học viên */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2.5">
@@ -113,17 +114,17 @@ export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProp
                       </div>
                     )}
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold text-gray-900">
+                      <div className="truncate text-sm font-semibold text-foreground">
                         {record.learnerName}
                       </div>
-                      <div className="truncate text-xs text-gray-500">{record.email}</div>
+                      <div className="truncate text-xs text-muted-foreground">{record.email}</div>
                     </div>
                   </div>
                 </td>
 
                 {/* Bài tập */}
                 <td className="px-4 py-3">
-                  <div className="text-sm font-medium text-gray-900 line-clamp-1">
+                  <div className="text-sm font-medium text-foreground line-clamp-1">
                     {record.exerciseTitle}
                   </div>
                   <div className="mt-1 flex items-center gap-1.5">
@@ -133,18 +134,18 @@ export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProp
 
                 {/* Điểm */}
                 <td className="whitespace-nowrap px-4 py-3 text-right">
-                  <div className="text-sm font-bold tabular-nums text-gray-900">
+                  <div className="text-sm font-bold tabular-nums text-foreground">
                     {record.bestScore}
-                    <span className="text-xs font-normal text-gray-400">/100</span>
+                    <span className="text-xs font-normal text-muted-foreground">/100</span>
                   </div>
                 </td>
 
                 {/* Lần làm */}
                 <td className="whitespace-nowrap px-4 py-3 text-right">
-                  <div className="text-sm font-semibold tabular-nums text-gray-900">
-                    {record.attempts} <span className="text-xs font-normal text-gray-500">lần</span>
+                  <div className="text-sm font-semibold tabular-nums text-foreground">
+                    {record.attempts} <span className="text-xs font-normal text-muted-foreground">lần</span>
                   </div>
-                  <div className="text-xs tabular-nums text-gray-500">
+                  <div className="text-xs tabular-nums text-muted-foreground">
                     TB {record.timeSpent}/lần
                   </div>
                 </td>
@@ -152,7 +153,7 @@ export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProp
                 {/* Độ chính xác */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-20 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
                       <div
                         className={`h-full rounded-full ${getAccuracyColor(record.accuracy)}`}
                         style={{ width: `${record.accuracy}%` }}
@@ -167,31 +168,33 @@ export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProp
                 </td>
 
                 {/* Lần gần nhất */}
-                <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-700">
-                  {formatReadableDateTime(record.lastAttempt)}
+                <td className="whitespace-nowrap px-4 py-3 text-xs tabular-nums text-muted-foreground">
+                  {formatLocaleString(record.lastAttempt)}
                 </td>
 
                 {/* Action */}
                 <td className="whitespace-nowrap px-4 py-3 text-right">
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs px-2.5 gap-1"
                     onClick={() => {
                       if (typeof window !== "undefined") {
                         window.location.href = `/admin/exercises/submissions/${record.id}/${record.exerciseKey}`;
                       }
                     }}
-                    className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent"
                   >
                     Xem
                     <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
 
             {records.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-sm text-gray-500">
+                <td colSpan={7} className="px-4 py-10 text-center text-sm text-muted-foreground">
                   Không có học viên nào phù hợp với bộ lọc. Thử thay đổi điều kiện để xem dữ liệu khác.
                 </td>
               </tr>

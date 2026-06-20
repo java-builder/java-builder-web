@@ -54,7 +54,7 @@ export default function ConfigStep({
                 className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition ${
                   isActive
                     ? "border-accent bg-accent/5 ring-1 ring-accent/30"
-                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-900/40"
+                    : "border-border bg-card hover:border-accent/50 hover:bg-muted"
                 }`}
               >
                 <span
@@ -66,7 +66,7 @@ export default function ConfigStep({
                 </span>
                 <span
                   className={`min-w-0 flex-1 truncate text-xs font-semibold ${
-                    isActive ? "text-accent" : "text-gray-900 dark:text-white"
+                    isActive ? "text-accent" : "text-foreground"
                   }`}
                 >
                   {preset.label}
@@ -92,7 +92,7 @@ export default function ConfigStep({
               value={subject}
               onChange={(e) => onSubjectChange(e.target.value)}
               placeholder="VD: Cập nhật tài khoản Premium của bạn ngay hôm nay..."
-              className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500"
+              className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             />
           </Field>
 
@@ -105,7 +105,7 @@ export default function ConfigStep({
               value={preheader}
               onChange={(e) => onPreheaderChange(e.target.value)}
               placeholder="VD: Nhận ưu đãi lớn nhất trong năm từ cộng đồng JavaBuilder"
-              className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500"
+              className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             />
           </Field>
 
@@ -115,7 +115,7 @@ export default function ConfigStep({
                 type="text"
                 value={senderName}
                 onChange={(e) => onSenderNameChange(e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               />
             </Field>
             <Field label="Email người gửi">
@@ -123,7 +123,7 @@ export default function ConfigStep({
                 type="email"
                 value={senderEmail}
                 onChange={(e) => onSenderEmailChange(e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               />
             </Field>
           </div>
@@ -136,7 +136,7 @@ export default function ConfigStep({
               type="email"
               value={replyTo}
               onChange={(e) => onReplyToChange(e.target.value)}
-              className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+              className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             />
           </Field>
         </div>
@@ -161,12 +161,12 @@ function Field({
   return (
     <div>
       <div className="mb-1.5 flex items-baseline justify-between gap-3">
-        <label className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           {label}
           {required && <span className="ml-0.5 text-rose-500">*</span>}
         </label>
         {hint && (
-          <span className="text-[11px] text-gray-400 dark:text-gray-500">{hint}</span>
+          <span className="text-[11px] text-muted-foreground/60">{hint}</span>
         )}
       </div>
       {children}

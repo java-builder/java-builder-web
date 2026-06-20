@@ -31,7 +31,7 @@ export default function SubmissionDetailModal({
           <Loader2 className="h-6 w-6 animate-spin text-accent" />
         </div>
       ) : !result ? (
-        <div className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="py-12 text-center text-sm text-muted-foreground">
           Không tìm thấy dữ liệu bài làm.
         </div>
       ) : (
@@ -45,10 +45,10 @@ export default function SubmissionDetailModal({
 
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold text-foreground">
                 Chi tiết câu hỏi
               </h3>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="text-xs text-muted-foreground">
                 {result.results.length} câu
               </span>
             </div>

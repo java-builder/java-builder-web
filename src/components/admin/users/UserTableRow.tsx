@@ -1,28 +1,40 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import { UserDetailResponse, UserStatus } from "@/types/user";
 import { formatReadableDate } from "@/utils/dateUtils";
+import { TableRow, TableCell } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash2, Loader2 } from "lucide-react";
 
 const StatusBadge = ({ status }: { status: UserStatus | string }) => {
   const getStatusConfig = (status: UserStatus | string) => {
     switch (status) {
       case "ACTIVE":
-        return { color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", text: "Hoạt động" };
+        return {
+          color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+          text: "Hoạt động"
+        };
       case "INACTIVE":
         return {
-          color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+          color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
           text: "Không hoạt động",
         };
       case "BANNED":
-        return { color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", text: "Bị cấm" };
+        return {
+          color: "bg-destructive/10 text-destructive border-destructive/25",
+          text: "Bị cấm"
+        };
       default:
-        return { color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300", text: status };
+        return {
+          color: "bg-muted text-muted-foreground border-border",
+          text: status
+        };
     }
   };
 
   const config = getStatusConfig(status);
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${config.color}`}
     >
       {config.text}
     </span>
@@ -33,21 +45,21 @@ const getRoleClass = (role: string) => {
   switch ((role || "").toUpperCase()) {
     case "ADMIN":
     case "ROLE_ADMIN":
-      return "bg-indigo-100 text-indigo-800";
+      return "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/25";
     case "MODERATOR":
     case "ROLE_MODERATOR":
-      return "bg-blue-100 text-blue-800";
+      return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25";
     case "TEACHER":
     case "INSTRUCTOR":
-      return "bg-emerald-100 text-emerald-800";
+      return "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25";
     case "OWNER":
     case "SUPERADMIN":
     case "ROLE_SUPERADMIN":
-      return "bg-red-100 text-red-800";
+      return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25";
     case "USER":
-      return "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200";
+      return "bg-muted text-muted-foreground border-border";
     default:
-      return "bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300";
+      return "bg-muted text-muted-foreground border-border";
   }
 };
 
@@ -60,132 +72,90 @@ interface UserTableRowProps {
 
 export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRowProps) => {
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10">
+    <TableRow className="transition-colors duration-200">
+      <TableCell className="px-4 py-3 max-w-[200px] truncate">
+        <div className="flex items-center min-w-0">
+          <div className="flex-shrink-0 h-9 w-9">
             {user.avatar ? (
-              <div className="relative h-10 w-10">
+              <div className="relative h-9 w-9">
                 <Image
                   src={user.avatar}
                   alt={user.username || user.email || "User avatar"}
                   fill
-                  sizes="40px"
+                  sizes="36px"
                   className="rounded-full object-cover"
                 />
               </div>
-            ) : null}
-            <div
-              className={`h-10 w-10 rounded-full bg-gradient-to-r from-accent to-accent-600 flex items-center justify-center ${user.avatar ? "hidden" : ""}`}
-            >
-              <span className="text-sm font-medium text-white">
-                {user.username?.charAt(0)?.toUpperCase() || "U"}
-              </span>
-            </div>
+            ) : (
+              <div
+                className="h-9 w-9 rounded-full bg-gradient-to-r from-accent to-accent-600 flex items-center justify-center"
+              >
+                <span className="text-xs font-medium text-white">
+                  {user.username?.charAt(0)?.toUpperCase() || "U"}
+                </span>
+              </div>
+            )}
           </div>
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900 dark:text-white">
+          <div className="ml-3 min-w-0 flex-1">
+            <div className="text-sm font-semibold text-foreground truncate" title={user.username}>
               {user.username}
             </div>
           </div>
         </div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900 dark:text-gray-200 max-w-[180px] truncate" title={user.email}>{user.email}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      </TableCell>
+      <TableCell className="px-4 py-3 max-w-[180px] truncate" title={user.email}>
+        {user.email}
+      </TableCell>
+      <TableCell className="px-4 py-3">
         <StatusBadge status={user.userStatus} />
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center gap-2">
+      </TableCell>
+      <TableCell className="px-4 py-3 max-w-[200px]">
+        <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           {(user.authorities || []).map((role) => (
             <span
               key={role}
-              className={`inline-flex items-center px-2 py-0.5 text-xs rounded-md whitespace-nowrap ${getRoleClass(role)}`}
+              className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-md border ${getRoleClass(role)}`}
             >
               {role}
             </span>
           ))}
         </div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.mftEnable ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}>
-          {user.mftEnable ? "ON" : "OFF"}
+      </TableCell>
+      <TableCell className="px-4 py-3">
+        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${user.mftEnable ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20" : "bg-muted text-muted-foreground border-border"}`}>
+          {user.mftEnable ? "Bật" : "Tắt"}
         </span>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+      </TableCell>
+      <TableCell className="px-4 py-3 text-sm text-muted-foreground">
         {user.createdAt ? formatReadableDate(user.createdAt) : "N/A"}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <div className="flex items-center justify-end space-x-2">
-          <button
+      </TableCell>
+      <TableCell className="px-4 py-3 text-right">
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => onEdit(user)}
-            className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors duration-200"
+            className="h-8 gap-1 px-2.5 text-xs font-medium"
           >
-            <svg
-              className="w-4 h-4 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
+            <Pencil className="h-3.5 w-3.5" />
             Sửa
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
             onClick={() => onDelete(user.id, user.username)}
             disabled={isDeleting}
-            className="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-800 text-xs font-medium rounded-md text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            className="h-8 gap-1 px-2.5 text-xs font-medium"
           >
             {isDeleting ? (
-              <>
-                <svg
-                  className="animate-spin w-4 h-4 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Đang xóa...
-              </>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <>
-                <svg
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-                Xóa
-              </>
+              <Trash2 className="h-3.5 w-3.5" />
             )}
-          </button>
+            Xóa
+          </Button>
         </div>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 };

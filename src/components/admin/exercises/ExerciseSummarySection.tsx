@@ -15,10 +15,10 @@ interface SummaryItem {
 }
 
 const ACCENT_CLASSES = {
-  default: "text-gray-900",
-  emerald: "text-emerald-600",
-  amber: "text-amber-600",
-  gray: "text-gray-500",
+  default: "text-foreground",
+  emerald: "text-emerald-600 dark:text-emerald-400",
+  amber: "text-amber-600 dark:text-amber-400",
+  gray: "text-muted-foreground",
 } as const;
 
 export const ExerciseSummarySection = ({ summary }: ExerciseSummarySectionProps) => {
@@ -49,11 +49,11 @@ export const ExerciseSummarySection = ({ summary }: ExerciseSummarySectionProps)
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="grid grid-cols-1 divide-y divide-gray-200 sm:grid-cols-2 sm:divide-y-0 sm:divide-x lg:grid-cols-4">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-y-0 sm:divide-x sm:divide-border lg:grid-cols-4">
         {items.map((item) => (
           <div key={item.name} className="px-5 py-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               {item.name}
             </p>
             <p
@@ -61,7 +61,7 @@ export const ExerciseSummarySection = ({ summary }: ExerciseSummarySectionProps)
             >
               {item.value}
             </p>
-            <p className="mt-1 text-xs text-gray-500">{item.description}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{item.description}</p>
           </div>
         ))}
       </div>

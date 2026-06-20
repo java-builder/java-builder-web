@@ -349,12 +349,12 @@ export default function CourseCard({
         <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4 dark:border-slate-700/60">
           {/* Author */}
           <div className="flex items-center gap-2 min-w-0">
-            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-red-500 p-1 shadow-sm">
+            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center">
               <Image
                 src="/logos/java-logo.png"
                 alt="JavaBuilder"
-                width={20}
-                height={20}
+                width={28}
+                height={28}
                 className="h-full w-full object-contain"
               />
             </div>

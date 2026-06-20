@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 const quickActions = [
   {
@@ -50,31 +51,32 @@ const quickActions = [
 
 export const QuickActions = () => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">Thao tác nhanh</h2>
-        <p className="text-sm text-gray-600">Các tác vụ thường dùng trong hệ thống</p>
-      </div>
-      <div className="p-6">
+    <Card>
+      <CardHeader className="border-b border-border">
+        <CardTitle className="text-lg font-semibold text-foreground">Thao tác nhanh</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">Các tác vụ thường dùng trong hệ thống</CardDescription>
+      </CardHeader>
+      <CardContent className="pt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quickActions.map((action) => (
-            <Link key={action.name} href={action.href} className="group relative bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            <Link key={action.name} href={action.href} className="group relative bg-muted/50 p-6 rounded-lg hover:bg-muted transition-colors duration-200">
               <div className="flex items-center">
                 <div className={`p-3 rounded-lg ${action.color} text-white`}>{action.icon}</div>
                 <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900 group-hover:text-gray-700">{action.name}</h3>
-                  <p className="text-xs text-gray-500 mt-1">{action.description}</p>
+                  <h3 className="text-sm font-medium text-foreground group-hover:text-foreground/80">{action.name}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{action.description}</p>
                 </div>
               </div>
               <div className="absolute top-4 right-4">
-                <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-muted-foreground group-hover:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
             </Link>
           ))}
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
+

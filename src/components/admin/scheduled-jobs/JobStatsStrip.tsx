@@ -25,14 +25,14 @@ export default function JobStatsStrip({
   onStatusToggle,
 }: JobStatsStripProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="grid grid-cols-2 divide-y divide-gray-200 dark:divide-slate-700 sm:grid-cols-3 sm:divide-x lg:grid-cols-6 lg:divide-y-0">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+      <div className="grid grid-cols-2 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-border lg:grid-cols-6 lg:divide-y-0">
         {/* Total */}
         <div className="px-5 py-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Tổng job
           </p>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-gray-900 dark:text-white">
+          <p className="mt-1 text-2xl font-bold tabular-nums text-foreground">
             {totalElements.toLocaleString("vi-VN")}
           </p>
         </div>
@@ -49,13 +49,13 @@ export default function JobStatsStrip({
               className={`group relative px-5 py-4 text-left transition focus:outline-none ${
                 isActive
                   ? "bg-accent/5"
-                  : "hover:bg-gray-50 dark:hover:bg-slate-900/30"
+                  : "hover:bg-muted/50"
               }`}
             >
               {isActive && (
                 <span className="absolute inset-x-0 top-0 h-0.5 bg-accent" />
               )}
-              <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 <span className={`h-1.5 w-1.5 rounded-full ${TONE_DOT[tone]}`} />
                 {STATUS_LABELS[status]}
               </p>

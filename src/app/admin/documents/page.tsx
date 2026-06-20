@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -8,6 +8,17 @@ import { documentApi } from "@/services/document.service";
 import { fileApi } from "@/services/course.service";
 import toast from "react-hot-toast";
 import { formatReadableDate } from "@/utils/dateUtils";
+import { Button } from "@/components/ui/button";
+import {
+  Plus,
+  RotateCw,
+  Search,
+  Pencil,
+  Trash2,
+  X,
+  Upload,
+  Loader2,
+} from "lucide-react";
 
 const documentTypes = [
   { type: DocumentType.BOOK, label: "Sách", icon: "📚" },
@@ -21,16 +32,17 @@ const documentTypes = [
 const TypeBadge = ({ type }: { type: DocumentType }) => {
   const config = documentTypes.find((t) => t.type === type) || documentTypes[5];
   const colorMap: Record<DocumentType, string> = {
-    [DocumentType.BOOK]: "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-white",
-    [DocumentType.PDF]: "bg-orange-100 text-orange-800 dark:bg-orange-700 dark:text-white",
-    [DocumentType.ARTICLE]: "bg-green-100 text-green-800 dark:bg-green-800 dark:text-white",
-    [DocumentType.VIDEO]: "bg-red-100 text-red-800 dark:bg-red-700 dark:text-white",
-    [DocumentType.TUTORIAL]: "bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-white",
-    [DocumentType.OTHER]: "bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-100",
+    [DocumentType.BOOK]: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/50 dark:border-blue-500/20",
+    [DocumentType.PDF]: "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400 border border-orange-200/50 dark:border-orange-500/20",
+    [DocumentType.ARTICLE]: "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 border border-green-200/50 dark:border-green-500/20",
+    [DocumentType.VIDEO]: "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 border border-red-200/50 dark:border-red-500/20",
+    [DocumentType.TUTORIAL]: "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400 border border-yellow-200/50 dark:border-yellow-500/20",
+    [DocumentType.OTHER]: "bg-muted text-muted-foreground border border-border",
   };
   return (
-    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${colorMap[type]}`}>
-      {config.icon} {config.label}
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${colorMap[type]}`}>
+      <span>{config.icon}</span>
+      <span>{config.label}</span>
     </span>
   );
 };
@@ -213,48 +225,50 @@ export default function AdminDocumentsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-          <div className="mb-6 lg:mb-0">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Quản lý Tài liệu</h1>
-            <p className="text-gray-600 dark:text-gray-300">Quản lý sách và tài liệu học tập</p>
+      <div className="mb-6">
+        <div className="sm:flex sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Quản lý Tài liệu</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Quản lý sách và tài liệu học tập
+            </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <button
+          <div className="mt-4 sm:mt-0 flex gap-3">
+            <Button
               onClick={() => handleOpenModal()}
-              className="inline-flex items-center px-4 py-2 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors"
+              variant="accent"
+              className="gap-2 h-9.5"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+              <Plus className="h-4 w-4" />
               Thêm tài liệu
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={fetchDocuments}
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 dark:bg-slate-700 dark:text-gray-200 dark:hover:bg-slate-600"
+              variant="outline"
+              className="gap-2 h-9.5"
             >
-              <svg className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
+              <RotateCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
               Làm mới
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200 dark:bg-slate-800 dark:border-slate-700">
-          <p className="text-sm text-gray-600">Tổng</p>
-          <p className="text-2xl font-bold text-gray-900">{documents.length}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tổng</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{documents.length}</p>
         </div>
         {documentTypes.map((t) => (
-          <div key={t.type} className="bg-white rounded-lg p-4 border border-gray-200">
-            <p className="text-sm text-gray-600">{t.icon} {t.label}</p>
-            <p className="text-2xl font-bold text-gray-900">
+          <div key={t.type} className="bg-card rounded-xl p-4 border border-border shadow-sm">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
+              {t.icon} {t.label}
+            </p>
+            <p className="text-2xl font-bold text-foreground mt-1">
               {documents.filter((d) => d.type === t.type).length}
             </p>
           </div>
@@ -262,21 +276,24 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200 dark:bg-slate-800 dark:border-slate-700">
+      <div className="bg-muted/30 rounded-xl p-6 border border-border">
         <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
+          <div className="flex-1 relative">
             <input
               type="text"
               placeholder="Tìm kiếm tài liệu..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-gray-700 placeholder-gray-400"
+              className="block w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm transition-colors duration-200"
             />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </div>
           </div>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as DocumentType | "")}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-gray-700"
+            className="px-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground text-sm"
           >
             <option value="">Tất cả loại</option>
             {documentTypes.map((t) => (
@@ -287,52 +304,49 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden dark:bg-slate-800 dark:border-slate-700">
+      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700">
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Tài liệu</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Loại</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Ngày tạo</th>
-                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Thao tác</th>
+              <tr className="bg-muted/50 border-b border-border">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Tài liệu</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Loại</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Ngày tạo</th>
+                <th className="text-right px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+            <tbody className="divide-y divide-border">
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                    <svg className="animate-spin h-8 w-8 mx-auto mb-2 text-accent" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
+                  <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground">
+                    <Loader2 className="animate-spin h-8 w-8 mx-auto mb-2 text-accent" />
                     Đang tải...
                   </td>
                 </tr>
               ) : filteredDocuments.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground">
                     Không có tài liệu nào
                   </td>
                 </tr>
               ) : (
                 filteredDocuments.map((doc) => (
-                  <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
+                  <tr key={doc.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="relative w-16 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                        <div className="relative w-16 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0 border border-border">
                           {doc.thumbnailUrl ? (
                             <Image src={doc.thumbnailUrl} alt={doc.title} fill className="object-contain" />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
+                            <div className="w-full h-full bg-accent/10 flex items-center justify-center">
                               <span className="text-2xl">📚</span>
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-semibold text-gray-900 dark:text-white truncate max-w-xs">{doc.title}</h3>
+                          <h3 className="font-semibold text-foreground truncate max-w-xs">{doc.title}</h3>
                           {doc.description && (
-                            <p className="text-sm text-gray-500 dark:text-gray-300 truncate max-w-xs">{doc.description}</p>
+                            <p className="text-sm text-muted-foreground truncate max-w-xs mt-0.5">{doc.description}</p>
                           )}
                         </div>
                       </div>
@@ -341,36 +355,33 @@ export default function AdminDocumentsPage() {
                       <TypeBadge type={doc.type} />
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-500">{formatDate(doc.createdAt)}</span>
+                      <span className="text-sm text-muted-foreground">{formatDate(doc.createdAt)}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
                           onClick={() => handleOpenModal(doc)}
-                          className="p-2 text-gray-400 hover:text-accent hover:bg-accent-50 rounded-lg transition-colors"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="hover:text-accent text-muted-foreground"
                           title="Chỉnh sửa"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                        </button>
-                        <button
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
                           onClick={() => handleDelete(doc.id, doc.title)}
                           disabled={isDeleting === doc.id}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="hover:text-destructive hover:bg-destructive/10 text-muted-foreground"
                           title="Xóa"
                         >
                           {isDeleting === doc.id ? (
-                            <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
+                            <Loader2 className="animate-spin w-4 h-4" />
                           ) : (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            <Trash2 className="w-4 h-4" />
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -385,37 +396,37 @@ export default function AdminDocumentsPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-start sm:items-center justify-center p-4 pt-16 sm:pt-4">
-            <div className="fixed inset-0 bg-black/50" onClick={() => setIsModalOpen(false)} />
-            <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
+            <div className="relative bg-card border border-border rounded-xl shadow-xl w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+              <h2 className="text-xl font-bold text-foreground mb-6">
                 {editingDoc ? "Chỉnh sửa tài liệu" : "Thêm tài liệu mới"}
               </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Tiêu đề *</label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Mô tả</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent resize-y"
+                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm resize-y"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Loại tài liệu *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Loại tài liệu *</label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value as DocumentType })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm"
                   >
                     {documentTypes.map((t) => (
                       <option key={t.type} value={t.type}>{t.icon} {t.label}</option>
@@ -423,17 +434,17 @@ export default function AdminDocumentsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Link tài liệu</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Link tài liệu</label>
                   <input
                     type="url"
                     value={formData.url}
                     onChange={(e) => setFormData({ ...formData, url: e.target.value })}
                     placeholder="https://example.com/document.pdf"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm placeholder:text-muted-foreground"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Ảnh bìa</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Ảnh bìa</label>
                   {imagePreview ? (
                     <div className="relative w-full">
                       <Image
@@ -441,28 +452,26 @@ export default function AdminDocumentsPage() {
                         alt="Preview"
                         width={400}
                         height={200}
-                        className="w-full h-48 object-contain rounded-lg border border-gray-300 bg-gray-50"
+                        className="w-full h-48 object-contain rounded-lg border border-border bg-muted/30"
                       />
-                      <button
+                      <Button
                         type="button"
+                        variant="destructive"
+                        size="icon-xs"
                         onClick={removeImage}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
+                        className="absolute top-2 right-2 rounded-full shadow-sm"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
                   ) : (
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-accent hover:bg-accent-50 transition-all"
+                      className="w-full h-48 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-accent hover:bg-accent/5 transition-all"
                     >
-                      <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <p className="text-gray-600 text-sm font-medium">Nhấn để chọn ảnh</p>
-                      <p className="text-gray-400 text-xs mt-1">JPG, PNG, GIF. Tối đa 5MB</p>
+                      <Upload className="w-10 h-10 text-muted-foreground mb-2" />
+                      <p className="text-foreground text-sm font-medium">Nhấn để chọn ảnh</p>
+                      <p className="text-muted-foreground text-xs mt-1">JPG, PNG, GIF. Tối đa 5MB</p>
                     </div>
                   )}
                   <input
@@ -474,32 +483,30 @@ export default function AdminDocumentsPage() {
                     disabled={isSubmitting}
                   />
                 </div>
-                <div className="flex justify-end gap-3 pt-4">
-                  <button
+                <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                  <Button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
                     disabled={isSubmitting}
-                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+                    variant="outline"
                   >
                     Hủy
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+                    variant="accent"
+                    className="gap-2"
                   >
                     {isSubmitting ? (
                       <>
-                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
+                        <Loader2 className="animate-spin w-4 h-4" />
                         Đang lưu...
                       </>
                     ) : (
                       editingDoc ? "Cập nhật" : "Thêm mới"
                     )}
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

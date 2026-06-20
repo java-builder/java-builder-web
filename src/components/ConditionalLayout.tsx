@@ -2,9 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function ConditionalLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { isCollapsed } = useSidebar();
   
   const noMarginRoutes = [
     "/admin",
@@ -22,7 +24,7 @@ export default function ConditionalLayout({ children }: { children: ReactNode })
   const shouldRemoveMargin = noMarginRoutes.some(route => pathname?.startsWith(route));
   
   return (
-    <div className={shouldRemoveMargin ? "" : "lg:ml-64"}>
+    <div className={`transition-all duration-300 ${shouldRemoveMargin ? "" : isCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>
       {children}
     </div>
   );

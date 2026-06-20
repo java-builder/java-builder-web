@@ -9,12 +9,16 @@ import { API } from "@/api/api";
 export const twoFactorApi = {
   async activate(): Promise<ApiResponse<TwoFactorSetupResponse>> {
     const response = await apiClient.post(API.TWO_FACTOR_ACTIVATE);
+    const responseData = response.data.data;
     return {
       code: response.data.code,
       message: response.data.message,
-      data: {
-        qrCodeData: response.data.data,
-      },
+      data: typeof responseData === "string"
+        ? { qrCodeData: responseData, secret: "" }
+        : {
+            qrCodeData: responseData?.qrCodeData || "",
+            secret: responseData?.secret || "",
+          },
     };
   },
 

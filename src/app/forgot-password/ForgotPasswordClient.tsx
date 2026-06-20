@@ -5,12 +5,14 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { userApi } from "@/services/user.service";
 import toast from "react-hot-toast";
+import { useI18n } from "@/contexts/I18nContext";
 
 type ForgotPasswordFormData = {
   email: string;
 };
 
 export default function ForgotPasswordClient() {
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
@@ -31,9 +33,9 @@ export default function ForgotPasswordClient() {
       setIsLoading(true);
       await userApi.sendResetPasswordLink(data.email);
       setEmailSent(true);
-      toast.success("Đã gửi link đặt lại mật khẩu đến email của bạn!");
+      toast.success(t("auth.emailSentSuccess"));
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Không tìm thấy email này trong hệ thống";
+      const errorMessage = error instanceof Error ? error.message : t("auth.emailNotFound");
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -41,15 +43,15 @@ export default function ForgotPasswordClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-3 sm:px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 md:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
               <Link
                 href="/login"
-                className="flex items-center space-x-1 text-gray-500 hover:text-accent transition-colors text-xs sm:text-sm"
+                className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-on-dark transition-colors text-xs sm:text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -64,7 +66,7 @@ export default function ForgotPasswordClient() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                <span className="hidden sm:inline">Đăng nhập</span>
+                <span className="hidden sm:inline">{t("auth.login")}</span>
               </Link>
               <Link href="/" className="inline-flex flex-col items-center">
                 <Image
@@ -88,18 +90,18 @@ export default function ForgotPasswordClient() {
 
             {!emailSent ? (
               <>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                  Quên mật khẩu?
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t("auth.forgotPasswordTitle")}
                 </h2>
-                <p className="text-gray-600 text-xs sm:text-sm">
-                  Nhập email của bạn để nhận link đặt lại mật khẩu
+                <p className="text-gray-600 dark:text-slate-400 text-xs sm:text-sm">
+                  {t("auth.forgotPasswordSubtitle")}
                 </p>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-950/40 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg
-                    className="w-8 h-8 text-green-600"
+                    className="w-8 h-8 text-green-600 dark:text-green-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -112,11 +114,11 @@ export default function ForgotPasswordClient() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                  Kiểm tra email của bạn
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t("auth.checkEmailTitle")}
                 </h2>
-                <p className="text-gray-600 text-xs sm:text-sm">
-                  Chúng tôi đã gửi link đặt lại mật khẩu đến email của bạn. Vui lòng kiểm tra hộp thư.
+                <p className="text-gray-600 dark:text-slate-400 text-xs sm:text-sm">
+                  {t("auth.checkEmailSubtitle")}
                 </p>
               </>
             )}
@@ -134,13 +136,13 @@ export default function ForgotPasswordClient() {
                   type="email"
                   autoComplete="email"
                   disabled={isLoading}
-                  placeholder="Email"
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                  placeholder={t("profilePage.profileTab.email")}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                   {...register("email", {
-                    required: "Email là bắt buộc",
+                    required: t("auth.emailRequired"),
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email không hợp lệ",
+                      message: t("auth.emailInvalid"),
                     },
                   })}
                 />
@@ -154,16 +156,16 @@ export default function ForgotPasswordClient() {
               <button
                 type="submit"
                 disabled={!isValid || isLoading}
-                className="w-full py-2.5 sm:py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
+                className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm cursor-pointer"
               >
-                {isLoading ? "Đang gửi..." : "Gửi link đặt lại mật khẩu"}
+                {isLoading ? t("auth.sending") : t("auth.sendResetLinkBtn")}
               </button>
             </form>
           ) : (
             <div className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-700 text-center">
-                  Link có hiệu lực trong <strong>5 phút</strong>
+              <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 rounded-lg p-4">
+                <p className="text-sm text-blue-700 dark:text-blue-400 text-center">
+                  {t("auth.linkExpiryNotice5Min")}
                 </p>
               </div>
 
@@ -172,21 +174,21 @@ export default function ForgotPasswordClient() {
                   setEmailSent(false);
                   reset();
                 }}
-                className="w-full py-2.5 sm:py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 text-sm"
+                className="w-full py-2.5 sm:py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600 text-gray-700 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 text-sm cursor-pointer"
               >
-                Gửi lại email
+                {t("auth.resendEmailBtn")}
               </button>
             </div>
           )}
 
           {/* Back to Login */}
-          <p className="text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-6">
-            Nhớ mật khẩu?{" "}
+          <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-slate-400 mt-4 sm:mt-6">
+            {t("auth.rememberPassword")}{" "}
             <Link
               href="/login"
-              className="font-semibold text-accent hover:text-blue-600"
+              className="font-semibold text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
-              Đăng nhập ngay
+              {t("auth.loginNow")}
             </Link>
           </p>
         </div>

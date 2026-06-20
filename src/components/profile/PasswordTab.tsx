@@ -94,6 +94,11 @@ export default function PasswordTab() {
 
   const isPasswordSet = passwordStatus === PasswordStatus.SET;
 
+  const newPasswordVal = formData.newPassword || "";
+  const isLengthValid = newPasswordVal.length >= 8;
+  const isCaseValid = /[a-z]/.test(newPasswordVal) && /[A-Z]/.test(newPasswordVal);
+  const isSpecialValid = /[0-9]/.test(newPasswordVal) || /[^a-zA-Z0-9]/.test(newPasswordVal);
+
   return (
     <SectionCard
       icon={KeyRound}
@@ -147,7 +152,7 @@ export default function PasswordTab() {
           required
         />
 
-        {/* Requirements */}
+         {/* Requirements */}
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
           <div className="mb-2 flex items-center gap-2">
             <ShieldAlert className="h-4 w-4 text-amber-500" />
@@ -155,21 +160,25 @@ export default function PasswordTab() {
               {t("profilePage.passwordTab.passwordReqs")}
             </h4>
           </div>
-          <ul className="space-y-1.5 text-sm text-gray-600 dark:text-gray-300">
-            <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-rose-500" />
-              <span>
+          <ul className="space-y-1.5 text-sm">
+            <li className="flex items-center gap-2">
+              <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors duration-200 ${isLengthValid ? "bg-green-500" : "bg-rose-500"}`} />
+              <span className={`transition-colors duration-200 ${isLengthValid ? "text-green-600 dark:text-green-400 font-medium" : "text-gray-900 dark:text-gray-300 font-medium"}`}>
                 <strong>{t("profilePage.passwordTab.reqLength")}</strong>{" "}
                 {t("profilePage.passwordTab.reqRequired")}
               </span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-slate-600" />
-              <span>{t("profilePage.passwordTab.reqCase")}</span>
+            <li className="flex items-center gap-2">
+              <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors duration-200 ${isCaseValid ? "bg-green-500" : "bg-gray-300 dark:bg-slate-600"}`} />
+              <span className={`transition-colors duration-200 ${isCaseValid ? "text-green-600 dark:text-green-400 font-medium" : "text-gray-600 dark:text-gray-300"}`}>
+                {t("profilePage.passwordTab.reqCase")}
+              </span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-slate-600" />
-              <span>{t("profilePage.passwordTab.reqNumber")}</span>
+            <li className="flex items-center gap-2">
+              <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors duration-200 ${isSpecialValid ? "bg-green-500" : "bg-gray-300 dark:bg-slate-600"}`} />
+              <span className={`transition-colors duration-200 ${isSpecialValid ? "text-green-600 dark:text-green-400 font-medium" : "text-gray-600 dark:text-gray-300"}`}>
+                {t("profilePage.passwordTab.reqNumber")}
+              </span>
             </li>
           </ul>
         </div>

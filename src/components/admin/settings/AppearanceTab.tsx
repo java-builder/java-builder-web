@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
@@ -83,13 +83,13 @@ export default function AppearanceTab() {
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+    <div className="bg-card rounded-xl border border-border shadow-sm text-foreground">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="px-6 py-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("themePage.title")}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           {t("themePage.subtitle")}
         </p>
       </div>
@@ -104,7 +104,7 @@ export default function AppearanceTab() {
               className={`relative p-4 rounded-xl border transition-all duration-200 text-left group ${
                 theme === themeOption.id
                   ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-sm"
-                  : "border-gray-200 dark:border-slate-700 hover:border-accent/50 bg-white dark:bg-slate-800/50 hover:shadow-sm"
+                  : "border-border hover:border-accent/50 bg-card hover:shadow-sm"
               }`}
             >
               {theme === themeOption.id && (
@@ -119,20 +119,20 @@ export default function AppearanceTab() {
 
               <div className="flex flex-col items-center text-center">
                 <div className={`mb-3 transition-colors ${
-                  theme === themeOption.id ? "text-accent" : "text-gray-400 dark:text-gray-300 group-hover:text-accent"
+                  theme === themeOption.id ? "text-accent" : "text-muted-foreground group-hover:text-accent"
                 }`}>
                   {themeOption.icon}
                 </div>
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+                <h3 className="text-base font-semibold text-foreground mb-1">
                   {themeOption.name}
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-300">
+                <p className="text-xs text-muted-foreground">
                   {themeOption.description}
                 </p>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-slate-700">
-                <div className={`h-12 rounded-lg ${themeOption.preview} border transition-all`} />
+              <div className="mt-3 pt-3 border-t border-border">
+                <div className={`h-12 rounded-lg ${themeOption.preview} border border-border transition-all`} />
               </div>
             </button>
           ))}
@@ -148,13 +148,13 @@ export default function AppearanceTab() {
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                <p className="text-sm font-medium text-foreground">
                   {t("themePage.currentStatus").replace(
                     "{theme}",
                     currentTheme === "dark" ? t("themePage.darkName") : t("themePage.lightName")
                   )}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-300">
+                <p className="text-xs text-muted-foreground">
                   {t("themePage.autoDesc")}
                 </p>
               </div>
@@ -165,10 +165,10 @@ export default function AppearanceTab() {
         {/* Accent Color */}
         <div>
           <div className="mb-4">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-base font-semibold text-foreground">
               {t("themePage.accentTitle")}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {t("themePage.accentSubtitle")}
             </p>
           </div>
@@ -178,10 +178,10 @@ export default function AppearanceTab() {
               <button
                 key={item.id}
                 onClick={() => setAccent(item.id)}
-                className={`relative overflow-hidden p-4 rounded-xl border transition-all duration-200 text-left group bg-white dark:bg-slate-800/50 ${
+                className={`relative overflow-hidden p-4 rounded-xl border transition-all duration-200 text-left group bg-card ${
                   accentTheme === item.id
                     ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-sm"
-                    : "border-gray-200 dark:border-slate-700 hover:border-accent/50 hover:shadow-sm"
+                    : "border-border hover:border-accent/50 hover:shadow-sm"
                 }`}
               >
                 <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br ${item.preview} opacity-10 transition-opacity duration-300 group-hover:opacity-20`} />
@@ -198,10 +198,10 @@ export default function AppearanceTab() {
                 <div className="relative flex items-center gap-4">
                   <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${item.preview} shadow-sm ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-105 flex-shrink-0`} />
                   <div className="min-w-0 pr-8">
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    <h4 className="text-sm font-semibold text-foreground truncate">
                       {item.name}
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5 line-clamp-2">
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                       {item.description}
                     </p>
                   </div>

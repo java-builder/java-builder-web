@@ -7,6 +7,7 @@ import { fileApi } from "@/services/course.service";
 import { useI18n } from "@/contexts/I18nContext";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface CreateInterviewTopicModalProps {
   isOpen: boolean;
@@ -213,21 +214,21 @@ export default function CreateInterviewTopicModal({
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-xl shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
+        <div className="relative w-full max-w-2xl bg-card border border-border rounded-xl shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+          <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-foreground">
                 {t("admin.interviewTopics.createModalTitle")}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {t("admin.interviewTopics.createModalSubtitle")}
               </p>
             </div>
             <button
               onClick={handleClose}
               disabled={isSubmitting}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors disabled:opacity-50"
+              className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -238,26 +239,26 @@ export default function CreateInterviewTopicModal({
           {/* Body */}
           <form onSubmit={handleSubmit} className="p-6 space-y-5">
             {error && (
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+                  <p className="text-sm text-red-500">{error}</p>
                 </div>
               </div>
             )}
 
             {/* Locale Tabs */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {t("admin.interviewTopics.languageLabel")} <span className="text-red-500">*</span>
-                <span className="text-xs text-gray-500 dark:text-gray-300 ml-2 font-normal">
+                <span className="text-xs text-muted-foreground ml-2 font-normal">
                   ({t("admin.interviewTopics.languageHintOptional")})
                 </span>
               </label>
 
-              <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
+              <div className="flex gap-2 border-b border-border overflow-x-auto">
                 {LOCALES.map((l) => {
                   const filled = isLocaleFilled(l.code);
                   const isActive = activeLocale === l.code;
@@ -270,10 +271,10 @@ export default function CreateInterviewTopicModal({
                       className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
                         isActive
                           ? "border-accent text-accent"
-                          : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
+                          : "border-transparent text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-muted text-muted-foreground rounded">
                         {l.flag}
                       </span>
                       <span>{l.label}</span>
@@ -286,12 +287,13 @@ export default function CreateInterviewTopicModal({
                     </button>
                   );
                 })}
-              </div>            </div>
+              </div>
+            </div>
 
             {/* Name + Description */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   {t("admin.interviewTopics.nameLabel")} ({LOCALES.find((l) => l.code === activeLocale)?.label})
                 </label>
                 <input
@@ -307,13 +309,13 @@ export default function CreateInterviewTopicModal({
                       ? "例: データベース"
                       : "예: 데이터베이스"
                   }
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
                   disabled={isSubmitting}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   {t("admin.interviewTopics.descriptionLabel")} ({LOCALES.find((l) => l.code === activeLocale)?.label})
                 </label>
                 <textarea
@@ -321,7 +323,7 @@ export default function CreateInterviewTopicModal({
                   onChange={(e) => updateTranslation(activeLocale, "description", e.target.value)}
                   placeholder={t("admin.interviewTopics.descriptionPlaceholder")}
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
                   disabled={isSubmitting}
                 />
               </div>
@@ -329,14 +331,14 @@ export default function CreateInterviewTopicModal({
 
             {/* Icon */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {t("admin.interviewTopics.iconLabel")}
               </label>
 
               {previewIcon ? (
                 <div className="relative w-full">
-                  <div className="flex items-center gap-4 p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-                    <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-600">
+                  <div className="flex items-center gap-4 p-4 border-2 border-dashed border-border rounded-lg bg-muted/30">
+                    <div className="w-16 h-16 bg-background rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 border border-border">
                       <Image
                         src={previewIcon}
                         alt="Icon preview"
@@ -347,10 +349,10 @@ export default function CreateInterviewTopicModal({
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {selectedFile?.name || t("admin.interviewTopics.iconCurrent")}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                      <p className="text-xs text-muted-foreground">
                         {selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB` : t("admin.interviewTopics.iconReady")}
                       </p>
                     </div>
@@ -358,7 +360,7 @@ export default function CreateInterviewTopicModal({
                       type="button"
                       onClick={handleRemoveIcon}
                       disabled={isSubmitting}
-                      className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
+                      className="p-2 text-red-500 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
                       title={t("admin.interviewTopics.iconRemoveTitle")}
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -382,18 +384,18 @@ export default function CreateInterviewTopicModal({
                     htmlFor="icon-upload"
                     className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
                       isSubmitting
-                        ? "border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
-                        : "border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        ? "border-border bg-muted/10 cursor-not-allowed"
+                        : "border-border bg-muted/30 hover:bg-muted/50"
                     }`}
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-8 h-8 mb-3 text-muted-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
-                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
+                      <p className="mb-2 text-sm text-muted-foreground">
                         <span className="font-semibold">{t("admin.interviewTopics.iconUploadClick")}</span> {t("admin.interviewTopics.iconUploadOrDrag")}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                      <p className="text-xs text-muted-foreground">
                         {t("admin.interviewTopics.iconAccept")}
                       </p>
                     </div>
@@ -404,7 +406,7 @@ export default function CreateInterviewTopicModal({
 
             {/* Display Order */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {t("admin.interviewTopics.displayOrderLabel")}
               </label>
               <input
@@ -414,25 +416,26 @@ export default function CreateInterviewTopicModal({
                   setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })
                 }
                 min={1}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground transition-colors"
                 disabled={isSubmitting}
               />
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
-              <button
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <Button
                 type="button"
+                variant="outline"
                 onClick={handleClose}
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t("admin.interviewTopics.cancelBtn2")}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-accent hover:bg-accent/90 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                variant="accent"
+                className="gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -450,7 +453,7 @@ export default function CreateInterviewTopicModal({
                     {t("admin.interviewTopics.createBtn")}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

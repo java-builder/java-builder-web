@@ -31,9 +31,9 @@ export default function CommentTable({
 }: CommentTableProps) {
   if (comments.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
+      <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
         <svg
-          className="w-16 h-16 text-gray-300 mx-auto mb-4"
+          className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -45,47 +45,47 @@ export default function CommentTable({
             d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
           />
         </svg>
-        <p className="text-gray-500 text-lg">Không có bình luận nào</p>
+        <p className="text-muted-foreground text-base">Không có bình luận nào</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-muted/40">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Nội dung
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Tác giả
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 {type === "blog" ? "Bài viết" : "Khóa học / Bài học"}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Thời gian
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Trạng thái
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Thao tác
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-transparent divide-y divide-border">
             {comments.map((comment) => (
-              <tr key={comment.id} className="hover:bg-gray-50">
+              <tr key={comment.id} className="transition hover:bg-muted/25">
                 <td className="px-6 py-4">
                   <div className="max-w-md">
-                    <p className="text-sm text-gray-900 line-clamp-2">
+                    <p className="text-sm text-foreground line-clamp-2">
                       {comment.content}
                     </p>
                     <div className="flex items-center mt-2 space-x-4">
-                      <span className="flex items-center text-xs text-gray-500">
+                      <span className="flex items-center text-xs text-muted-foreground">
                         <svg
                           className="w-4 h-4 mr-1"
                           fill="currentColor"
@@ -100,10 +100,10 @@ export default function CommentTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-semibold text-foreground">
                       {comment.author}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       {comment.authorEmail}
                     </div>
                   </div>
@@ -111,15 +111,15 @@ export default function CommentTable({
                 <td className="px-6 py-4">
                   <div className="max-w-xs">
                     {type === "blog" ? (
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-foreground">
                         {comment.blogTitle}
                       </div>
                     ) : (
                       <>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-semibold text-foreground">
                           {comment.courseTitle}
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-muted-foreground mt-1">
                           📚 {comment.lessonTitle}
                         </div>
                       </>
@@ -127,13 +127,13 @@ export default function CommentTable({
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     {formatRelativeTime(comment.createdAt)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {comment.status === "ACTIVE" ? (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-950/30 text-green-800 dark:text-green-400">
                       <svg
                         className="w-3 h-3 mr-1"
                         fill="currentColor"
@@ -148,7 +148,7 @@ export default function CommentTable({
                       Hiển thị
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-950/30 text-red-800 dark:text-red-400">
                       <svg
                         className="w-3 h-3 mr-1"
                         fill="currentColor"
@@ -169,7 +169,7 @@ export default function CommentTable({
                     {comment.status === "ACTIVE" ? (
                       <button
                         onClick={() => onDelete(comment.id)}
-                        className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                        className="text-destructive hover:text-destructive/90 p-2 hover:bg-destructive/10 rounded-lg transition-colors"
                         title="Xóa bình luận"
                       >
                         <svg
@@ -189,7 +189,7 @@ export default function CommentTable({
                     ) : (
                       <button
                         onClick={() => onRestore(comment.id)}
-                        className="text-green-600 hover:text-green-900 p-2 hover:bg-green-50 rounded-lg transition-colors"
+                        className="text-green-600 hover:text-green-700 p-2 hover:bg-green-50/50 rounded-lg transition-colors"
                         title="Khôi phục bình luận"
                       >
                         <svg

@@ -14,22 +14,22 @@ export default function CommentsPage() {
     <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Quản lý bình luận</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Quản lý bình luận</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Xem và quản lý tất cả bình luận trong hệ thống
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-        <div className="border-b border-gray-200 overflow-x-auto">
+      <div className="bg-card rounded-xl shadow-sm border border-border mb-6">
+        <div className="border-b border-border overflow-x-auto">
           <nav className="flex -mb-px">
             <button
               onClick={() => setActiveTab("blogs")}
               className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === "blogs"
                   ? "border-accent text-accent"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
               }`}
             >
               <div className="flex items-center justify-center sm:justify-start space-x-1 sm:space-x-2">
@@ -56,7 +56,7 @@ export default function CommentsPage() {
               className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === "courses"
                   ? "border-accent text-accent"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
               }`}
             >
               <div className="flex items-center justify-center sm:justify-start space-x-1 sm:space-x-2">
@@ -83,7 +83,7 @@ export default function CommentsPage() {
               className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === "docs"
                   ? "border-accent text-accent"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
               }`}
             >
               <div className="flex items-center justify-center sm:justify-start space-x-1 sm:space-x-2">

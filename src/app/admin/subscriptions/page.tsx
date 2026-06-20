@@ -117,8 +117,8 @@ export default function AdminSubscriptionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gói Premium</h1>
-          <p className="text-sm text-gray-500 mt-1">Quản lý các gói đăng ký</p>
+          <h1 className="text-2xl font-bold text-foreground">Gói Premium</h1>
+          <p className="text-sm text-muted-foreground mt-1">Quản lý các gói đăng ký</p>
         </div>
         <button
           onClick={() => { setEditingPlan(null); setFormData({ name: "", price: "", durationDays: "", description: "", features: "" }); setShowModal(true); }}
@@ -140,7 +140,7 @@ export default function AdminSubscriptionsPage() {
           return (
             <div
               key={plan.id}
-              className={`relative bg-white rounded-xl p-5 transition-all ${isPopular ? "ring-2 ring-accent shadow-lg" : "border border-gray-200 hover:shadow-md"
+              className={`relative bg-card rounded-xl p-5 transition-all ${isPopular ? "ring-2 ring-accent shadow-lg" : "border border-border hover:shadow-md"
                 }`}
             >
               {isPopular && (
@@ -150,15 +150,15 @@ export default function AdminSubscriptionsPage() {
               )}
 
               <div className="text-center mb-4">
-                <h3 className="font-semibold text-gray-900 text-center">{plan.name}</h3>
-                <p className="text-xs text-gray-500 mt-1">{plan.description}</p>
+                <h3 className="font-semibold text-foreground text-center">{plan.name}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{plan.description}</p>
                 <div className="mt-3">
-                  <span className="text-2xl font-bold text-gray-900">
+                  <span className="text-2xl font-bold text-foreground">
                     {plan.price === 0 ? "0" : formatNumber(plan.price)}
                   </span>
-                  <span className="text-gray-500 text-sm">đ</span>
+                  <span className="text-muted-foreground text-sm ml-0.5">đ</span>
                   {plan.durationDays > 0 && (
-                    <span className="text-gray-400 text-sm">/{plan.durationDays} ngày</span>
+                    <span className="text-muted-foreground/60 text-sm ml-1">/{plan.durationDays} ngày</span>
                   )}
                 </div>
               </div>
@@ -169,13 +169,13 @@ export default function AdminSubscriptionsPage() {
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-gray-600">{f.trim()}</span>
+                    <span className="text-foreground/80">{f.trim()}</span>
                   </li>
                 ))}
               </ul>
 
               {isFree ? (
-                <div className="py-2 text-center text-sm text-gray-400 bg-gray-50 rounded-lg">
+                <div className="py-2 text-center text-sm text-muted-foreground/80 bg-muted/50 rounded-lg border border-border/40 font-medium">
                   Mặc định
                 </div>
               ) : (
@@ -184,14 +184,14 @@ export default function AdminSubscriptionsPage() {
                     onClick={() => handleEdit(plan as SubscriptionPlan)}
                     className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${isPopular
                         ? "bg-accent text-white hover:bg-accent/90"
-                        : "bg-gray-900 text-white hover:bg-gray-800"
+                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border"
                       }`}
                   >
                     Sửa
                   </button>
                   <button
                     onClick={() => handleDelete(plan.id, plan.name)}
-                    className="px-3 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                    className="px-3 py-2 text-sm text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500/10 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -207,13 +207,13 @@ export default function AdminSubscriptionsPage() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setShowModal(false)} />
-          <div className="relative bg-white rounded-xl w-full max-w-md shadow-xl">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="font-semibold text-gray-900">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+          <div className="relative bg-card rounded-xl w-full max-w-md shadow-xl border border-border text-foreground">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="font-semibold text-foreground">
                 {editingPlan ? "Sửa gói" : "Thêm gói mới"}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -222,57 +222,57 @@ export default function AdminSubscriptionsPage() {
 
             <form onSubmit={handleSubmit} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tên gói *</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Tên gói *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Giá (VNĐ) *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Giá (VNĐ) *</label>
                   <input
                     type="text"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: formatPriceInput(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                    className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Số ngày *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Số ngày *</label>
                   <input
                     type="number"
                     value={formData.durationDays}
                     onChange={(e) => setFormData({ ...formData, durationDays: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                    className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Mô tả</label>
                 <input
                   type="text"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tính năng <span className="text-gray-400 font-normal">(phân cách bằng |)</span>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Tính năng <span className="text-muted-foreground font-normal">(phân cách bằng |)</span>
                 </label>
                 <textarea
                   value={formData.features}
                   onChange={(e) => setFormData({ ...formData, features: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm resize-none"
+                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm resize-none"
                   rows={3}
                 />
               </div>
@@ -281,7 +281,7 @@ export default function AdminSubscriptionsPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-secondary-foreground bg-secondary rounded-lg hover:bg-secondary/80 transition-colors border border-border"
                 >
                   Hủy
                 </button>

@@ -1,5 +1,5 @@
-﻿"use client";
-import { ReactNode, useState } from "react";
+"use client";
+import { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -19,235 +19,454 @@ interface AdminLayoutProps {
 interface NavItem {
   nameKey: string;
   href: string;
-  color: string;
+  colorKey: string;
   icon: ReactNode;
 }
 
-const navigation: NavItem[] = [
-  {
-    nameKey: "admin.layout.home",
-    href: "/admin",
-    color: "text-blue-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.backToUser",
-    href: "/",
-    color: "text-indigo-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-  },
+interface NavGroup {
+  titleKey: string;
+  borderColor: string;
+  icon: ReactNode;
+  items: NavItem[];
+}
 
-  {
-    nameKey: "admin.layout.users",
-    href: "/admin/users",
-    color: "text-teal-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 11a4 4 0 11-8 0 4 4 0 018 0zM7 11a3 3 0 100-6 3 3 0 000 6zM2 20v-1c0-2.761 3.134-5 7-5h6c3.866 0 7 2.239 7 5v1" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.sessions",
-    href: "/admin/sessions",
-    color: "text-emerald-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.courses",
-    href: "/admin/courses",
-    color: "text-orange-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.exercises",
-    href: "/admin/exercises",
-    color: "text-indigo-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.blogs",
-    href: "/admin/blogs",
-    color: "text-violet-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.documents",
-    href: "/admin/documents",
-    color: "text-amber-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.interviewTopics",
-    href: "/admin/interview-topics",
-    color: "text-red-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.questionContributions",
-    href: "/admin/question-contributions",
-    color: "text-fuchsia-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.categories",
-    href: "/admin/categories",
-    color: "text-emerald-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    ),
-  },
-  {
-    nameKey: "admin.layout.tags",
-    href: "/admin/tags",
-    color: "text-blue-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-      </svg>
-    ),
-  },
+interface ColorTheme {
+  iconActive: string;
+  itemActiveText: string;
+  itemActiveBg: string;
+  itemHoverText: string;
+  itemHoverBg: string;
+  borderClass: string;
+}
 
-  {
-    nameKey: "admin.layout.comments",
-    href: "/admin/comments",
-    color: "text-purple-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-      </svg>
-    ),
+const colorThemes: Record<string, ColorTheme> = {
+  blue: {
+    iconActive: "text-blue-600 dark:text-blue-400",
+    itemActiveText: "text-blue-700 dark:text-blue-300 font-semibold",
+    itemActiveBg: "bg-blue-50 dark:bg-blue-950/30 border-r-2 border-blue-500",
+    itemHoverText: "hover:text-blue-700 dark:hover:text-blue-300",
+    itemHoverBg: "hover:bg-blue-50/50 dark:hover:bg-blue-950/10",
+    borderClass: "border-blue-500",
   },
-  {
-    nameKey: "admin.layout.notifications",
-    href: "/admin/notifications",
-    color: "text-pink-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1" />
-      </svg>
-    ),
+  indigo: {
+    iconActive: "text-indigo-600 dark:text-indigo-400",
+    itemActiveText: "text-indigo-700 dark:text-indigo-300 font-semibold",
+    itemActiveBg: "bg-indigo-50 dark:bg-indigo-950/30 border-r-2 border-indigo-500",
+    itemHoverText: "hover:text-indigo-700 dark:hover:text-indigo-300",
+    itemHoverBg: "hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10",
+    borderClass: "border-indigo-500",
   },
-  {
-    nameKey: "admin.layout.emailMarketing",
-    href: "/admin/notifications/send",
-    color: "text-rose-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
+  teal: {
+    iconActive: "text-teal-600 dark:text-teal-400",
+    itemActiveText: "text-teal-700 dark:text-teal-300 font-semibold",
+    itemActiveBg: "bg-teal-50 dark:bg-teal-950/30 border-r-2 border-teal-500",
+    itemHoverText: "hover:text-teal-700 dark:hover:text-teal-300",
+    itemHoverBg: "hover:bg-teal-50/50 dark:hover:bg-teal-950/10",
+    borderClass: "border-teal-500",
   },
-  {
-    nameKey: "admin.layout.scheduledJobs",
-    href: "/admin/scheduled-jobs",
-    color: "text-sky-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    ),
+  emerald: {
+    iconActive: "text-emerald-600 dark:text-emerald-400",
+    itemActiveText: "text-emerald-700 dark:text-emerald-300 font-semibold",
+    itemActiveBg: "bg-emerald-50 dark:bg-emerald-950/30 border-r-2 border-emerald-500",
+    itemHoverText: "hover:text-emerald-700 dark:hover:text-emerald-300",
+    itemHoverBg: "hover:bg-emerald-50/50 dark:hover:bg-emerald-950/10",
+    borderClass: "border-emerald-500",
   },
-  {
-    nameKey: "admin.layout.subscriptions",
-    href: "/admin/subscriptions",
-    color: "text-yellow-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      </svg>
-    ),
+  purple: {
+    iconActive: "text-purple-600 dark:text-purple-400",
+    itemActiveText: "text-purple-700 dark:text-purple-300 font-semibold",
+    itemActiveBg: "bg-purple-50 dark:bg-purple-950/30 border-r-2 border-purple-500",
+    itemHoverText: "hover:text-purple-700 dark:hover:text-purple-300",
+    itemHoverBg: "hover:bg-purple-50/50 dark:hover:bg-purple-950/10",
+    borderClass: "border-purple-500",
   },
-  {
-    nameKey: "admin.layout.userSubscriptions",
-    href: "/admin/user-subscriptions",
-    color: "text-purple-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-      </svg>
-    ),
+  green: {
+    iconActive: "text-green-600 dark:text-green-400",
+    itemActiveText: "text-green-700 dark:text-green-300 font-semibold",
+    itemActiveBg: "bg-green-50 dark:bg-green-950/30 border-r-2 border-green-500",
+    itemHoverText: "hover:text-green-700 dark:hover:text-green-300",
+    itemHoverBg: "hover:bg-green-50/50 dark:hover:bg-green-950/10",
+    borderClass: "border-green-500",
   },
-  {
-    nameKey: "admin.layout.payments",
-    href: "/admin/payments",
-    color: "text-green-600",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-      </svg>
-    ),
+  orange: {
+    iconActive: "text-orange-600 dark:text-orange-400",
+    itemActiveText: "text-orange-700 dark:text-orange-300 font-semibold",
+    itemActiveBg: "bg-orange-50 dark:bg-orange-950/30 border-r-2 border-orange-500",
+    itemHoverText: "hover:text-orange-700 dark:hover:text-orange-300",
+    itemHoverBg: "hover:bg-orange-50/50 dark:hover:bg-orange-950/10",
+    borderClass: "border-orange-500",
   },
+  red: {
+    iconActive: "text-red-600 dark:text-red-400",
+    itemActiveText: "text-red-700 dark:text-red-300 font-semibold",
+    itemActiveBg: "bg-red-50 dark:bg-red-950/30 border-r-2 border-red-500",
+    itemHoverText: "hover:text-red-700 dark:hover:text-red-300",
+    itemHoverBg: "hover:bg-red-50/50 dark:hover:bg-red-950/10",
+    borderClass: "border-red-500",
+  },
+  fuchsia: {
+    iconActive: "text-fuchsia-600 dark:text-fuchsia-400",
+    itemActiveText: "text-fuchsia-700 dark:text-fuchsia-300 font-semibold",
+    itemActiveBg: "bg-fuchsia-50 dark:bg-fuchsia-950/30 border-r-2 border-fuchsia-500",
+    itemHoverText: "hover:text-fuchsia-700 dark:hover:text-fuchsia-300",
+    itemHoverBg: "hover:bg-fuchsia-50/50 dark:hover:bg-fuchsia-950/10",
+    borderClass: "border-fuchsia-500",
+  },
+  violet: {
+    iconActive: "text-violet-600 dark:text-violet-400",
+    itemActiveText: "text-violet-700 dark:text-violet-300 font-semibold",
+    itemActiveBg: "bg-violet-50 dark:bg-violet-950/30 border-r-2 border-violet-500",
+    itemHoverText: "hover:text-violet-700 dark:hover:text-violet-300",
+    itemHoverBg: "hover:bg-violet-50/50 dark:hover:bg-violet-950/10",
+    borderClass: "border-violet-500",
+  },
+  amber: {
+    iconActive: "text-amber-600 dark:text-amber-400",
+    itemActiveText: "text-amber-700 dark:text-amber-300 font-semibold",
+    itemActiveBg: "bg-amber-50 dark:bg-amber-950/30 border-r-2 border-amber-500",
+    itemHoverText: "hover:text-amber-700 dark:hover:text-amber-300",
+    itemHoverBg: "hover:bg-amber-50/50 dark:hover:bg-amber-950/10",
+    borderClass: "border-amber-500",
+  },
+  pink: {
+    iconActive: "text-pink-600 dark:text-pink-400",
+    itemActiveText: "text-pink-700 dark:text-pink-300 font-semibold",
+    itemActiveBg: "bg-pink-50 dark:bg-pink-950/30 border-r-2 border-pink-500",
+    itemHoverText: "hover:text-pink-700 dark:hover:text-pink-300",
+    itemHoverBg: "hover:bg-pink-50/50 dark:hover:bg-pink-950/10",
+    borderClass: "border-pink-500",
+  },
+  rose: {
+    iconActive: "text-rose-600 dark:text-rose-400",
+    itemActiveText: "text-rose-700 dark:text-rose-300 font-semibold",
+    itemActiveBg: "bg-rose-50 dark:bg-rose-950/30 border-r-2 border-rose-500",
+    itemHoverText: "hover:text-rose-700 dark:hover:text-rose-300",
+    itemHoverBg: "hover:bg-rose-50/50 dark:hover:bg-rose-950/10",
+    borderClass: "border-rose-500",
+  },
+  cyan: {
+    iconActive: "text-cyan-600 dark:text-cyan-400",
+    itemActiveText: "text-cyan-700 dark:text-cyan-300 font-semibold",
+    itemActiveBg: "bg-cyan-50 dark:bg-cyan-950/30 border-r-2 border-cyan-500",
+    itemHoverText: "hover:text-cyan-700 dark:hover:text-cyan-300",
+    itemHoverBg: "hover:bg-cyan-50/50 dark:hover:bg-cyan-950/10",
+    borderClass: "border-cyan-500",
+  },
+  yellow: {
+    iconActive: "text-yellow-600 dark:text-yellow-400",
+    itemActiveText: "text-yellow-700 dark:text-yellow-300 font-semibold",
+    itemActiveBg: "bg-yellow-50 dark:bg-yellow-950/30 border-r-2 border-yellow-500",
+    itemHoverText: "hover:text-yellow-700 dark:hover:text-yellow-300",
+    itemHoverBg: "hover:bg-yellow-50/50 dark:hover:bg-yellow-950/10",
+    borderClass: "border-yellow-500",
+  },
+  sky: {
+    iconActive: "text-sky-600 dark:text-sky-400",
+    itemActiveText: "text-sky-700 dark:text-sky-300 font-semibold",
+    itemActiveBg: "bg-sky-50 dark:bg-sky-950/30 border-r-2 border-sky-500",
+    itemHoverText: "hover:text-sky-700 dark:hover:text-sky-300",
+    itemHoverBg: "hover:bg-sky-50/50 dark:hover:bg-sky-950/10",
+    borderClass: "border-sky-500",
+  },
+  slate: {
+    iconActive: "text-slate-500 dark:text-slate-400",
+    itemActiveText: "text-slate-700 dark:text-slate-300 font-semibold",
+    itemActiveBg: "bg-slate-100 dark:bg-slate-700/60 border-r-2 border-slate-500",
+    itemHoverText: "hover:text-slate-700 dark:hover:text-slate-300",
+    itemHoverBg: "hover:bg-slate-50 dark:hover:bg-slate-700/30",
+    borderClass: "border-slate-500",
+  },
+};
 
+const navGroups: NavGroup[] = [
   {
-    nameKey: "admin.layout.aiTraining",
-    href: "/admin/ai-training",
-    color: "text-purple-600",
+    titleKey: "admin.layout.groupOverview",
+    borderColor: "border-blue-500",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
       </svg>
     ),
+    items: [
+      {
+        nameKey: "admin.layout.home",
+        href: "/admin",
+        colorKey: "blue",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.backToUser",
+        href: "/",
+        colorKey: "indigo",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        ),
+      },
+    ],
   },
   {
-    nameKey: "admin.layout.reports",
-    href: "/admin/reports",
-    color: "text-cyan-600",
+    titleKey: "admin.layout.groupUsers",
+    borderColor: "border-teal-500",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     ),
+    items: [
+      {
+        nameKey: "admin.layout.users",
+        href: "/admin/users",
+        colorKey: "teal",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 11a4 4 0 11-8 0 4 4 0 018 0zM7 11a3 3 0 100-6 3 3 0 000 6zM2 20v-1c0-2.761 3.134-5 7-5h6c3.866 0 7 2.239 7 5v1" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.sessions",
+        href: "/admin/sessions",
+        colorKey: "emerald",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.userSubscriptions",
+        href: "/admin/user-subscriptions",
+        colorKey: "purple",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.payments",
+        href: "/admin/payments",
+        colorKey: "green",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+        ),
+      },
+    ],
   },
   {
-    nameKey: "admin.layout.settings",
-    href: "/admin/settings",
-    color: "text-slate-500",
+    titleKey: "admin.layout.groupCourses",
+    borderColor: "border-orange-500",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
     ),
+    items: [
+      {
+        nameKey: "admin.layout.courses",
+        href: "/admin/courses",
+        colorKey: "orange",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.exercises",
+        href: "/admin/exercises",
+        colorKey: "indigo",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.interviewTopics",
+        href: "/admin/interview-topics",
+        colorKey: "red",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.questionContributions",
+        href: "/admin/question-contributions",
+        colorKey: "fuchsia",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.comments",
+        href: "/admin/comments",
+        colorKey: "purple",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.categories",
+        href: "/admin/categories",
+        colorKey: "emerald",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.tags",
+        href: "/admin/tags",
+        colorKey: "blue",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    titleKey: "admin.layout.groupBlogs",
+    borderColor: "border-violet-500",
+    icon: (
+      <svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+      </svg>
+    ),
+    items: [
+      {
+        nameKey: "admin.layout.blogs",
+        href: "/admin/blogs",
+        colorKey: "violet",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.documents",
+        href: "/admin/documents",
+        colorKey: "amber",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    titleKey: "admin.layout.groupNotifications",
+    borderColor: "border-pink-500",
+    icon: (
+      <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1" />
+      </svg>
+    ),
+    items: [
+      {
+        nameKey: "admin.layout.notifications",
+        href: "/admin/notifications",
+        colorKey: "pink",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.emailMarketing",
+        href: "/admin/notifications/send",
+        colorKey: "rose",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    titleKey: "admin.layout.groupSystem",
+    borderColor: "border-indigo-500",
+    icon: (
+      <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+    items: [
+      {
+        nameKey: "admin.layout.reports",
+        href: "/admin/reports",
+        colorKey: "cyan",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.subscriptions",
+        href: "/admin/subscriptions",
+        colorKey: "yellow",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.aiTraining",
+        href: "/admin/ai-training",
+        colorKey: "purple",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.scheduledJobs",
+        href: "/admin/scheduled-jobs",
+        colorKey: "sky",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        ),
+      },
+      {
+        nameKey: "admin.layout.settings",
+        href: "/admin/settings",
+        colorKey: "slate",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        ),
+      },
+    ],
   },
 ];
 
@@ -258,6 +477,31 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: currentUser } = useCurrentUser();
   const { t, isSwitching } = useI18n();
+
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
+  // Initialize group states and auto-expand active group
+  useEffect(() => {
+    const initialState: Record<string, boolean> = {};
+    navGroups.forEach((group) => {
+      // Auto-expand if any item in the group is active
+      const hasActiveChild = group.items.some((item) => {
+        if (item.href === "/admin") {
+          return pathname === "/admin";
+        }
+        return pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`));
+      });
+      initialState[group.titleKey] = hasActiveChild || true;
+    });
+    setOpenGroups(initialState);
+  }, [pathname]);
+
+  const toggleGroup = (groupTitleKey: string) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [groupTitleKey]: !prev[groupTitleKey],
+    }));
+  };
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -464,26 +708,101 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </div>
 
               {/* Navigation - Scrollable */}
-              <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                {navigation.map((item) => {
-                  const isActive = pathname === item.href;
-                  const label = t(item.nameKey as Parameters<typeof t>[0]);
+              <nav className="flex-1 px-2.5 py-4 space-y-3.5 overflow-y-auto">
+                {navGroups.map((group) => {
+                  const isOpen = !!openGroups[group.titleKey];
+                  const hasActiveChild = group.items.some((item) => {
+                    if (item.href === "/admin") {
+                      return pathname === "/admin";
+                    }
+                    return (
+                      pathname === item.href ||
+                      (item.href !== "/" &&
+                        pathname.startsWith(`${item.href}/`) &&
+                        !navGroups.some((g) =>
+                          g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
+                        ))
+                    );
+                  });
+
                   return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
-                        ? `bg-blue-50 dark:bg-slate-700 border-r-2 ${item.color.replace('text-', 'border-').replace('500', '600').replace('600', '600')} ${item.color} dark:text-white`
-                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/50 hover:text-gray-900 dark:hover:text-white"
+                    <div key={group.titleKey} className="space-y-1">
+                      {/* Group Header Button */}
+                      <button
+                        type="button"
+                        onClick={() => toggleGroup(group.titleKey)}
+                        className={`group w-full flex items-center justify-between px-2 py-1.5 text-[10.5px] font-bold text-left uppercase tracking-wider transition-all duration-200 select-none rounded-lg ${
+                          hasActiveChild
+                            ? "bg-slate-50 dark:bg-slate-800/40 text-blue-600 dark:text-blue-400"
+                            : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/20"
                         }`}
-                    >
-                      <span
-                        className={`mr-3 ${isActive ? item.color : item.color || "text-gray-400"}`}
                       >
-                        {item.icon}
-                      </span>
-                      {label}
-                    </Link>
+                        <div className="flex items-center space-x-2 min-w-0">
+                          <div className={`w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center transition-all duration-200 ${
+                            hasActiveChild
+                              ? `${group.borderColor.replace('border-', 'bg-')}/10 dark:${group.borderColor.replace('border-', 'bg-')}/20`
+                              : "bg-gray-100/70 dark:bg-slate-700/40 group-hover:bg-gray-200/80 dark:group-hover:bg-slate-700/60"
+                          }`}>
+                            {group.icon}
+                          </div>
+                          <span className="truncate pr-1">{t(group.titleKey as Parameters<typeof t>[0])}</span>
+                        </div>
+                        <svg
+                          className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform duration-200 flex-shrink-0 ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+
+                      {/* Group Items */}
+                      {isOpen && (
+                        <div className={`space-y-1 pl-2.5 ml-3 mt-1 border-l border-dashed ${group.borderColor} dark:border-opacity-35 border-opacity-25`}>
+                          {group.items.map((item) => {
+                            const theme = colorThemes[item.colorKey] || colorThemes.blue;
+                            const isActive =
+                              item.href === "/admin"
+                                ? pathname === "/admin"
+                                : pathname === item.href ||
+                                  (item.href !== "/" &&
+                                    pathname.startsWith(`${item.href}/`) &&
+                                    !navGroups.some((g) =>
+                                      g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
+                                    ));
+
+                            const label = t(item.nameKey as Parameters<typeof t>[0]);
+                            return (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`group flex items-center px-2 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200 ${
+                                  isActive
+                                    ? `${theme.itemActiveBg} ${theme.itemActiveText}`
+                                    : `text-gray-600 dark:text-gray-300 ${theme.itemHoverBg} ${theme.itemHoverText}`
+                                }`}
+                              >
+                                <span
+                                  className={`mr-2 flex-shrink-0 transition-all duration-200 ${
+                                    isActive
+                                      ? theme.iconActive
+                                      : `${theme.iconActive} opacity-40 group-hover:opacity-100`
+                                  }`}
+                                >
+                                  <div className="w-4 h-4 flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4">
+                                    {item.icon}
+                                  </div>
+                                </span>
+                                <span className="truncate flex-1">{label}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </nav>
@@ -563,9 +882,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   </button>
                   <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900 dark:text-white">
                     {(() => {
-                      const current = navigation.find((item) => item.href === pathname);
-                      return current
-                        ? t(current.nameKey as Parameters<typeof t>[0])
+                      let currentItem: NavItem | undefined;
+                      for (const group of navGroups) {
+                        const found = group.items.find((item) => item.href === pathname);
+                        if (found) {
+                          currentItem = found;
+                          break;
+                        }
+                      }
+                      return currentItem
+                        ? t(currentItem.nameKey as Parameters<typeof t>[0])
                         : t("admin.layout.dashboard");
                     })()}
                   </h1>

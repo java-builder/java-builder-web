@@ -15,6 +15,7 @@ import SidebarMenuGroup from "./SidebarMenuGroup";
 import SidebarUserProfile from "./SidebarUserProfile";
 import MobileSidebar from "./MobileSidebar";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -22,7 +23,7 @@ export default function Sidebar() {
   const queryClient = useQueryClient();
   const { data: currentUser, isLoading } = useCurrentUser();
   const { data: notifData } = useNotifications(1, "all");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isCollapsed, setIsCollapsed } = useSidebar();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const { settings } = useSettingsContext();

@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { passkeyApi } from "@/services/passkey.service";
 import { authenticatePasskey } from "@/services/webauthn";
 import { Key } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 type LoginFormData = LoginRequest;
 
@@ -23,6 +24,7 @@ export default function LoginClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { setAuthFromLogin, hasAdminAccess } = useAuth();
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -53,7 +55,7 @@ export default function LoginClient() {
       const email = getValues("email");
       const optionsResponse = await passkeyApi.getLoginOptions(email || null);
       if (optionsResponse.code !== 200 || !optionsResponse.data) {
-        throw new Error(optionsResponse.message || "Không thể lấy thông tin đăng nhập bằng Passkey.");
+        throw new Error(optionsResponse.message || t("auth.passkeyFetchFailed"));
       }
 
       const credential = await authenticatePasskey(optionsResponse.data);
@@ -65,13 +67,13 @@ export default function LoginClient() {
         const isAdmin = loginResult.data?.authorities?.includes("ADMIN");
         router.push(isAdmin ? "/admin" : "/");
       } else {
-        throw new Error(loginResult.message || "Đăng nhập bằng Passkey thất bại.");
+        throw new Error(loginResult.message || t("auth.passkeyLoginFailed"));
       }
     } catch (err) {
       const errorObj = err as Error;
       console.error("Passkey login failed:", errorObj);
       if (errorObj.name !== "NotAllowedError" && errorObj.name !== "AbortError") {
-        setError(errorObj.message || "Đăng nhập bằng Passkey thất bại. Vui lòng thử lại.");
+        setError(errorObj.message || t("auth.passkeyLoginFailedTryAgain"));
       }
     } finally {
       setIsPasskeyLoading(false);
@@ -82,9 +84,11 @@ export default function LoginClient() {
     const urlParams = new URLSearchParams(window.location.search);
     const message = urlParams.get("message");
     if (message === "registration-success") {
-      setSuccessMessage("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
+      setSuccessMessage(t("auth.registrationSuccess"));
+    } else if (message === "password-reset-success") {
+      setSuccessMessage(t("auth.resetPasswordSuccess"));
     }
-  }, []);
+  }, [t]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -109,7 +113,7 @@ export default function LoginClient() {
         }
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+      setError(error instanceof Error ? error.message : t("auth.loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -126,16 +130,16 @@ export default function LoginClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-3 sm:px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Login Card */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 md:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
               <Link
                 href="/"
-                className="flex items-center space-x-1 text-gray-500 hover:text-accent transition-colors text-xs sm:text-sm"
+                className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-on-dark transition-colors text-xs sm:text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -150,7 +154,7 @@ export default function LoginClient() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                <span className="hidden sm:inline">Trang chủ</span>
+                <span className="hidden sm:inline">{t("auth.home")}</span>
               </Link>
               <Link href="/" className="inline-flex flex-col items-center">
                 <Image
@@ -172,20 +176,20 @@ export default function LoginClient() {
               <div className="w-10 sm:w-16"></div> {/* Spacer for balance */}
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-              Chào mừng trở lại!
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {t("auth.welcomeBack")}
             </h2>
-            <p className="text-gray-600 text-xs sm:text-sm">
-              Đăng nhập để tiếp tục học tập
+            <p className="text-gray-600 dark:text-slate-400 text-xs sm:text-sm">
+              {t("auth.loginSubtitle")}
             </p>
           </div>
 
           {/* Success Message */}
           {successMessage && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50 rounded-lg">
               <div className="flex items-center">
                 <svg
-                  className="w-4 h-4 text-green-400 mr-2"
+                  className="w-4 h-4 text-green-500 mr-2"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -195,7 +199,7 @@ export default function LoginClient() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <p className="text-sm text-green-600">{successMessage}</p>
+                <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
               </div>
             </div>
           )}
@@ -216,13 +220,13 @@ export default function LoginClient() {
                 type="email"
                 autoComplete="email"
                 disabled={isLoading}
-                placeholder="Email"
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                placeholder={t("profilePage.profileTab.email")}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("email", {
-                  required: "Email là bắt buộc",
+                  required: t("auth.emailRequired"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Email không hợp lệ",
+                    message: t("auth.emailInvalid"),
                   },
                 })}
               />
@@ -239,20 +243,20 @@ export default function LoginClient() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 disabled={isLoading}
-                placeholder="Mật khẩu"
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                placeholder={t("userMenu.password")}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("password", {
-                  required: "Mật khẩu là bắt buộc",
+                  required: t("auth.passwordRequired"),
                   minLength: {
                     value: 6,
-                    message: "Mật khẩu phải có ít nhất 6 ký tự",
+                    message: t("auth.passwordMinLength"),
                   },
                 })}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 flex items-center justify-center"
+                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 flex items-center justify-center"
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,35 +279,35 @@ export default function LoginClient() {
             <div className="flex items-center justify-start text-sm">
               <Link
                 href="/forgot-password"
-                className="text-accent hover:text-blue-600 font-medium"
+                className="text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
               >
-                Quên mật khẩu?
+                {t("auth.forgotPasswordLink")}
               </Link>
             </div>
 
             <button
               type="submit"
               disabled={!isValid || isLoading || isPasskeyLoading}
-              className="w-full py-2.5 sm:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
+              className="w-full py-2.5 sm:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm cursor-pointer"
             >
-              {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+              {isLoading ? t("auth.loggingIn") : t("auth.loginBtn")}
             </button>
 
             <button
               type="button"
               disabled={isLoading || isPasskeyLoading}
               onClick={handlePasskeyLogin}
-              className="w-full py-2.5 sm:py-3 border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-2.5 sm:py-3 border border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >
               {isPasskeyLoading ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
-                  Đang xác thực...
+                  {t("auth.authenticating")}
                 </>
               ) : (
                 <>
-                  <Key className="w-4 h-4 text-gray-400" />
-                  Đăng nhập bằng Passkey
+                  <Key className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                  {t("auth.loginWithPasskey")}
                 </>
               )}
             </button>
@@ -311,10 +315,10 @@ export default function LoginClient() {
             {/* Social Login */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-gray-200 dark:border-slate-700"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-white text-gray-500">Hoặc</span>
+                <span className="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-400">{t("auth.or")}</span>
               </div>
             </div>
 
@@ -323,29 +327,29 @@ export default function LoginClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={handleGoogleLogin}
-                className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Image src="/google.svg" alt="Google" width={16} height={16} className="social-icon" />
-                <span className="ml-2 text-sm text-gray-700">Google</span>
+                <span className="ml-2 text-sm">Google</span>
               </button>
               <button
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateLinkedinAuthUrl())}
-                className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Image src="/linkedin.svg" alt="LinkedIn" width={16} height={16} className="social-icon" />
-                <span className="ml-2 text-sm text-gray-700">LinkedIn</span>
+                <span className="ml-2 text-sm">LinkedIn</span>
               </button>
             </div>
 
-            <p className="text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-6">
-              Chưa có tài khoản?{" "}
+            <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-slate-400 mt-4 sm:mt-6">
+              {t("auth.dontHaveAccount")}{" "}
               <Link
                 href="/register"
-                className="font-semibold text-accent hover:text-blue-600"
+                className="font-semibold text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
-                Đăng ký ngay
+                {t("auth.registerNow")}
               </Link>
             </p>
           </form>

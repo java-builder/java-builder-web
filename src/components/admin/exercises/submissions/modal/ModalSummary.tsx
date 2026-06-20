@@ -38,10 +38,10 @@ export default function ModalSummary({
   const incorrect = totalQuestions - correctCount;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-slate-700">
+    <div className="overflow-hidden rounded-xl border border-border">
       {/* Verdict bar */}
-      <div className="flex items-center justify-between gap-3 border-b border-gray-200 bg-gray-50/60 px-4 py-2.5 dark:border-slate-700 dark:bg-slate-900/30">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+      <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-2.5">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           Kết quả tổng quan
         </span>
         <span
@@ -52,7 +52,7 @@ export default function ModalSummary({
       </div>
 
       {/* KPI strip */}
-      <div className="grid grid-cols-2 divide-y divide-gray-200 bg-white dark:divide-slate-700 dark:bg-slate-800 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+      <div className="grid grid-cols-2 divide-y divide-border bg-card sm:grid-cols-4 sm:divide-x sm:divide-y-0">
         <KpiCell label="Điểm số" mainClass={getScoreTone(scorePct)} mainValue={`${totalScore}`} suffix={`/${maxScore}`} sub={`${scorePct}%`} />
         <KpiCell label="Độ chính xác" mainValue={`${accuracy}%`} />
         <KpiCell
@@ -77,7 +77,7 @@ function KpiCell({
   mainValue,
   suffix,
   sub,
-  mainClass = "text-gray-900 dark:text-white",
+  mainClass = "text-foreground",
 }: {
   label: string;
   mainValue: string;
@@ -87,17 +87,17 @@ function KpiCell({
 }) {
   return (
     <div className="px-4 py-3">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </p>
       <p className={`mt-1 text-xl font-bold tabular-nums ${mainClass}`}>
         {mainValue}
         {suffix && (
-          <span className="text-xs font-normal text-gray-400">{suffix}</span>
+          <span className="text-xs font-normal text-muted-foreground">{suffix}</span>
         )}
       </p>
       {sub && (
-        <p className="mt-0.5 text-[11px] tabular-nums text-gray-500 dark:text-gray-400">
+        <p className="mt-0.5 text-[11px] tabular-nums text-muted-foreground">
           {sub}
         </p>
       )}

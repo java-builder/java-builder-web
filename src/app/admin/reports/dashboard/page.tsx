@@ -19,6 +19,8 @@ import {
 import DateRangePicker from "@/components/admin/DateRangePicker";
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Button } from "@/components/ui/button";
 
 ChartJS.register(
   CategoryScale,
@@ -37,6 +39,8 @@ export default function ReportsDashboard() {
   const [timeRange, setTimeRange] = useState("30days");
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   // Mock data
   const [dashboardData] = useState({
@@ -91,10 +95,15 @@ export default function ReportsDashboard() {
       {
         label: "Doanh thu (VNĐ)",
         data: dashboardData.trends.revenue,
-        borderColor: "rgb(59, 130, 246)",
-        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        borderColor: "rgb(99, 102, 241)",
+        backgroundColor: "rgba(99, 102, 241, 0.06)",
         tension: 0.4,
         fill: true,
+        pointRadius: 2,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "rgb(99, 102, 241)",
+        pointBorderColor: "#fff",
+        borderWidth: 2.5,
       },
     ],
   };
@@ -105,9 +114,11 @@ export default function ReportsDashboard() {
       {
         label: "Người dùng mới",
         data: dashboardData.trends.users,
-        backgroundColor: "rgba(34, 197, 94, 0.8)",
-        borderColor: "rgb(34, 197, 94)",
-        borderWidth: 1,
+        backgroundColor: "rgba(16, 185, 129, 0.85)",
+        hoverBackgroundColor: "rgba(16, 185, 129, 1)",
+        borderColor: "rgb(16, 185, 129)",
+        borderWidth: 0,
+        borderRadius: 6,
       },
     ],
   };
@@ -118,13 +129,15 @@ export default function ReportsDashboard() {
       {
         label: "Điểm số",
         data: dashboardData.performance.data,
-        backgroundColor: "rgba(139, 92, 246, 0.2)",
+        backgroundColor: "rgba(139, 92, 246, 0.15)",
         borderColor: "rgb(139, 92, 246)",
         borderWidth: 2,
         pointBackgroundColor: "rgb(139, 92, 246)",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
         pointHoverBorderColor: "rgb(139, 92, 246)",
+        pointRadius: 3,
+        pointHoverRadius: 6,
       },
     ],
   };
@@ -142,25 +155,21 @@ export default function ReportsDashboard() {
       {
         data: [32, 28, 15, 18, 12, 8],
         backgroundColor: [
-          "#3B82F6",
-          "#10B981",
-          "#F59E0B",
-          "#EF4444",
-          "#8B5CF6",
-          "#06B6D4",
+          "#4f46e5", // Indigo
+          "#10b981", // Emerald
+          "#f59e0b", // Amber
+          "#ec4899", // Pink
+          "#8b5cf6", // Purple
+          "#06b6d4", // Cyan
         ],
-        borderColor: [
-          "#2563EB",
-          "#059669",
-          "#D97706",
-          "#DC2626",
-          "#7C3AED",
-          "#0891B2",
-        ],
-        borderWidth: 2,
+        borderWidth: 0,
+        hoverOffset: 4,
       },
     ],
   };
+
+  const textColor = isDark ? "#9ca3af" : "#4b5563";
+  const gridColor = isDark ? "rgba(255,255,255,0.06)" : "#f3f4f6";
 
   const chartOptions = {
     responsive: true,
@@ -168,11 +177,39 @@ export default function ReportsDashboard() {
     plugins: {
       legend: {
         position: "top" as const,
+        labels: {
+          color: textColor,
+          boxWidth: 12,
+          font: {
+            size: 11,
+          },
+        },
       },
     },
     scales: {
+      x: {
+        grid: {
+          display: false, // Clean look: hide vertical lines
+        },
+        ticks: {
+          color: textColor,
+          font: {
+            size: 11,
+          },
+        },
+      },
       y: {
         beginAtZero: true,
+        grid: {
+          color: gridColor,
+          drawBorder: false,
+        },
+        ticks: {
+          color: textColor,
+          font: {
+            size: 11,
+          },
+        },
       },
     },
   };
@@ -183,12 +220,35 @@ export default function ReportsDashboard() {
     plugins: {
       legend: {
         position: "top" as const,
+        labels: {
+          color: textColor,
+          boxWidth: 12,
+        },
       },
     },
     scales: {
       r: {
         beginAtZero: true,
         max: 100,
+        grid: {
+          color: gridColor,
+        },
+        angleLines: {
+          color: gridColor,
+        },
+        pointLabels: {
+          color: textColor,
+          font: {
+            size: 11,
+          },
+        },
+        ticks: {
+          color: textColor,
+          backdropColor: "transparent",
+          font: {
+            size: 9,
+          },
+        },
       },
     },
   };
@@ -196,9 +256,18 @@ export default function ReportsDashboard() {
   const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    cutout: "78%", // Sleek thin ring donut
     plugins: {
       legend: {
         position: "right" as const,
+        labels: {
+          color: textColor,
+          boxWidth: 10,
+          padding: 15,
+          font: {
+            size: 11,
+          },
+        },
       },
     },
   };
@@ -232,12 +301,12 @@ export default function ReportsDashboard() {
   return (
     <div className="p-6 space-y-6">
       {/* Breadcrumb */}
-      <nav className="flex" aria-label="Breadcrumb">
+      <nav className="flex text-muted-foreground" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
           <li className="inline-flex items-center">
             <Link
               href="/admin"
-              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+              className="inline-flex items-center text-sm font-medium hover:text-foreground"
             >
               <svg
                 className="w-4 h-4 mr-2"
@@ -252,7 +321,7 @@ export default function ReportsDashboard() {
           <li>
             <div className="flex items-center">
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="w-6 h-6 text-muted-foreground/60"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -264,7 +333,7 @@ export default function ReportsDashboard() {
               </svg>
               <Link
                 href="/admin/reports"
-                className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
+                className="ml-1 text-sm font-medium hover:text-foreground md:ml-2"
               >
                 Báo cáo
               </Link>
@@ -273,7 +342,7 @@ export default function ReportsDashboard() {
           <li aria-current="page">
             <div className="flex items-center">
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="w-6 h-6 text-muted-foreground/60"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -283,7 +352,7 @@ export default function ReportsDashboard() {
                   clipRule="evenodd"
                 ></path>
               </svg>
-              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+              <span className="ml-1 text-sm font-medium text-foreground md:ml-2">
                 Dashboard Báo cáo
               </span>
             </div>
@@ -292,13 +361,13 @@ export default function ReportsDashboard() {
       </nav>
 
       {/* Header */}
-      <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+      <div className="bg-card rounded-xl p-8 border border-border shadow-sm text-foreground">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div className="mb-6 lg:mb-0">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               📈 Dashboard Báo cáo Tương tác
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Phân tích toàn diện và theo dõi hiệu suất hệ thống JavaBuilder
             </p>
           </div>
@@ -309,13 +378,14 @@ export default function ReportsDashboard() {
               disabled={isLoading}
             />
             <ExportButton onExport={handleExport} disabled={isLoading} />
-            <button
+            <Button
+              variant="accent"
               onClick={fetchData}
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50"
+              className="gap-2"
             >
               <svg
-                className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+                className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -327,15 +397,15 @@ export default function ReportsDashboard() {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              {isLoading ? "Đang tải..." : "Làm mới"}
-            </button>
+              Làm mới
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
+      <div className="bg-card rounded-xl border border-border shadow-sm text-foreground">
+        <div className="border-b border-border">
           <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
             {tabs.map((tab) => (
               <button
@@ -343,8 +413,8 @@ export default function ReportsDashboard() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`${
                   activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
               >
                 <span>{tab.icon}</span>
@@ -474,13 +544,13 @@ export default function ReportsDashboard() {
 
               {/* Additional KPIs */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="bg-card border border-border rounded-xl p-6 text-foreground">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-600 text-sm font-medium">
+                      <p className="text-muted-foreground text-sm font-medium">
                         Tỷ lệ chuyển đổi
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold text-foreground">
                         {dashboardData.kpis.conversionRate}%
                       </p>
                     </div>
@@ -502,13 +572,13 @@ export default function ReportsDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="bg-card border border-border rounded-xl p-6 text-foreground">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-600 text-sm font-medium">
+                      <p className="text-muted-foreground text-sm font-medium">
                         Thời gian phiên TB
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold text-foreground">
                         {formatDuration(dashboardData.kpis.avgSessionDuration)}
                       </p>
                     </div>
@@ -530,13 +600,13 @@ export default function ReportsDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="bg-card border border-border rounded-xl p-6 text-foreground">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-600 text-sm font-medium">
+                      <p className="text-muted-foreground text-sm font-medium">
                         Tỷ lệ thoát
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold text-foreground">
                         {dashboardData.kpis.bounceRate}%
                       </p>
                     </div>
@@ -558,13 +628,13 @@ export default function ReportsDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="bg-card border border-border rounded-xl p-6 text-foreground">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-600 text-sm font-medium">
+                      <p className="text-muted-foreground text-sm font-medium">
                         Hài lòng khách hàng
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold text-foreground">
                         {dashboardData.kpis.customerSatisfaction}/5
                       </p>
                     </div>
@@ -582,9 +652,9 @@ export default function ReportsDashboard() {
               </div>
 
               {/* Charts Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-foreground">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     Xu hướng doanh thu
                   </h3>
                   <div className="h-80">
@@ -592,8 +662,8 @@ export default function ReportsDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     Phân bố đăng ký theo danh mục
                   </h3>
                   <div className="h-80">
@@ -608,9 +678,9 @@ export default function ReportsDashboard() {
           )}
 
           {activeTab === "revenue" && (
-            <div className="space-y-6">
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="space-y-6 text-foreground">
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Biểu đồ doanh thu theo thời gian
                 </h3>
                 <div className="h-96">
@@ -619,38 +689,38 @@ export default function ReportsDashboard() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-2">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h4 className="text-md font-medium text-foreground mb-2">
                     Doanh thu hôm nay
                   </h4>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-green-500">
                     {formatPrice(2500000)}
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     +12% so với hôm qua
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-2">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h4 className="text-md font-medium text-foreground mb-2">
                     Doanh thu tuần này
                   </h4>
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-2xl font-bold text-blue-500">
                     {formatPrice(18500000)}
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     +8% so với tuần trước
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-2">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h4 className="text-md font-medium text-foreground mb-2">
                     Doanh thu tháng này
                   </h4>
-                  <p className="text-2xl font-bold text-purple-600">
+                  <p className="text-2xl font-bold text-purple-500">
                     {formatPrice(75200000)}
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     +15% so với tháng trước
                   </p>
                 </div>
@@ -659,9 +729,9 @@ export default function ReportsDashboard() {
           )}
 
           {activeTab === "users" && (
-            <div className="space-y-6">
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="space-y-6 text-foreground">
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Người dùng mới theo ngày
                 </h3>
                 <div className="h-96">
@@ -670,39 +740,39 @@ export default function ReportsDashboard() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-2">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h4 className="text-md font-medium text-foreground mb-2">
                     Người dùng hoạt động
                   </h4>
-                  <p className="text-2xl font-bold text-green-600">1,847</p>
-                  <p className="text-sm text-gray-500 mt-1">Trong 24h qua</p>
+                  <p className="text-2xl font-bold text-green-500">1,847</p>
+                  <p className="text-sm text-muted-foreground mt-1">Trong 24h qua</p>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-2">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h4 className="text-md font-medium text-foreground mb-2">
                     Người dùng mới hôm nay
                   </h4>
                   <p className="text-2xl font-bold text-blue-600">56</p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     +23% so với hôm qua
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-2">
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h4 className="text-md font-medium text-foreground mb-2">
                     Tỷ lệ giữ chân
                   </h4>
-                  <p className="text-2xl font-bold text-purple-600">78.5%</p>
-                  <p className="text-sm text-gray-500 mt-1">Trong 30 ngày</p>
+                  <p className="text-2xl font-bold text-purple-500">78.5%</p>
+                  <p className="text-sm text-muted-foreground mt-1">Trong 30 ngày</p>
                 </div>
               </div>
             </div>
           )}
 
           {activeTab === "performance" && (
-            <div className="space-y-6">
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="space-y-6 text-foreground">
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Radar hiệu suất tổng thể
                 </h3>
                 <div className="h-96">
@@ -714,9 +784,9 @@ export default function ReportsDashboard() {
                 {dashboardData.performance.labels.map((label, index) => (
                   <div
                     key={label}
-                    className="bg-white border border-gray-200 rounded-xl p-6 text-center"
+                    className="bg-card border border-border rounded-xl p-6 text-center text-foreground"
                   >
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">
+                    <h4 className="text-sm font-medium text-foreground mb-2">
                       {label}
                     </h4>
                     <div className="relative w-16 h-16 mx-auto mb-2">
@@ -725,7 +795,7 @@ export default function ReportsDashboard() {
                         viewBox="0 0 36 36"
                       >
                         <path
-                          className="text-gray-200"
+                          className="text-muted"
                           stroke="currentColor"
                           strokeWidth="3"
                           fill="none"
@@ -742,12 +812,12 @@ export default function ReportsDashboard() {
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-lg font-bold text-foreground">
                           {dashboardData.performance.data[index]}
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500">Điểm số</p>
+                    <p className="text-xs text-muted-foreground">Điểm số</p>
                   </div>
                 ))}
               </div>

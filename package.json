@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@base-ui/react": "^1.6.0",
     "@heroicons/react": "^2.2.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
@@ -38,11 +39,13 @@
     "@uiw/react-md-editor": "^4.0.8",
     "axios": "^1.11.0",
     "chart.js": "^4.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "^12.10.0",
     "framer-motion": "^12.23.18",
     "lowlight": "^3.3.0",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.21.0",
     "marked": "^17.0.1",
     "next": "^15.5.9",
     "next-themes": "^0.4.6",
@@ -61,9 +64,12 @@
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "resize-observer-polyfill": "^1.5.1",
+    "shadcn": "^4.11.0",
     "sweetalert2": "^11.23.0",
+    "tailwind-merge": "^3.6.0",
     "three": "^0.182.0",
     "turndown": "^7.2.2",
+    "tw-animate-css": "^1.4.0",
     "video.js": "^8.23.4"
   },
   "devDependencies": {

@@ -11,6 +11,7 @@ import {
   generateGoogleAuthUrl,
   generateLinkedinAuthUrl,
 } from "@/utils/oauthUtils";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface RegisterFormData extends CreateUserRequest {
   confirmPassword: string;
@@ -18,6 +19,7 @@ interface RegisterFormData extends CreateUserRequest {
 
 export default function RegisterClient() {
   const router = useRouter();
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
@@ -52,12 +54,12 @@ export default function RegisterClient() {
       });
 
       if (result.code === 201) {
-        toast.success("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
+        toast.success(t("auth.registrationSuccess"));
         // Redirect to login page after successful registration
         router.push("/login?message=registration-success");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Đăng ký thất bại. Vui lòng thử lại.";
+      const errorMessage = err instanceof Error ? err.message : t("auth.registerFailed");
       toast.error(errorMessage);
       setError(errorMessage);
     } finally {
@@ -66,16 +68,16 @@ export default function RegisterClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-3 sm:px-4 py-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 py-4 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Register Card */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 md:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-4 sm:mb-6">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <Link
                 href="/"
-                className="flex items-center space-x-1 text-gray-500 hover:text-accent transition-colors text-xs sm:text-sm"
+                className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-on-dark transition-colors text-xs sm:text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -90,7 +92,7 @@ export default function RegisterClient() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                <span className="hidden sm:inline">Trang chủ</span>
+                <span className="hidden sm:inline">{t("auth.home")}</span>
               </Link>
               <Link href="/" className="inline-flex flex-col items-center">
                 <Image
@@ -112,20 +114,20 @@ export default function RegisterClient() {
               <div className="w-10 sm:w-16"></div> {/* Spacer for balance */}
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-              Tạo tài khoản
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {t("auth.createAccount")}
             </h2>
-            <p className="text-gray-600 text-xs sm:text-sm">
-              Bắt đầu hành trình học tập của bạn
+            <p className="text-gray-600 dark:text-slate-400 text-xs sm:text-sm">
+              {t("auth.registerSubtitle")}
             </p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-lg">
               <div className="flex items-center">
                 <svg
-                  className="w-4 h-4 text-red-400 mr-2"
+                  className="w-4 h-4 text-red-500 mr-2"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -135,7 +137,7 @@ export default function RegisterClient() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
               </div>
             </div>
           )}
@@ -147,18 +149,17 @@ export default function RegisterClient() {
                 id="username"
                 type="text"
                 disabled={isLoading}
-                placeholder="Tên đăng nhập"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                placeholder={t("auth.username")}
+                className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("username", {
-                  required: "Tên đăng nhập là bắt buộc",
+                  required: t("auth.usernameRequired"),
                   minLength: {
                     value: 3,
-                    message: "Tên đăng nhập phải có ít nhất 3 ký tự",
+                    message: t("auth.usernameMinLength"),
                   },
                   pattern: {
                     value: /^[a-zA-Z0-9_]+$/,
-                    message:
-                      "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới",
+                    message: t("auth.usernamePattern"),
                   },
                 })}
               />
@@ -175,13 +176,13 @@ export default function RegisterClient() {
                 type="email"
                 autoComplete="email"
                 disabled={isLoading}
-                placeholder="Email"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                placeholder={t("profilePage.profileTab.email")}
+                className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("email", {
-                  required: "Email là bắt buộc",
+                  required: t("auth.emailRequired"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Email không hợp lệ",
+                    message: t("auth.emailInvalid"),
                   },
                 })}
               />
@@ -198,20 +199,20 @@ export default function RegisterClient() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 disabled={isLoading}
-                placeholder="Mật khẩu"
-                className="w-full px-3 py-2.5 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                placeholder={t("userMenu.password")}
+                className="w-full px-3 py-2.5 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("password", {
-                  required: "Mật khẩu là bắt buộc",
+                  required: t("auth.passwordRequired"),
                   minLength: {
                     value: 8,
-                    message: "Mật khẩu phải có ít nhất 8 ký tự",
+                    message: t("auth.passwordRegisterMinLength"),
                   },
                 })}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 flex items-center justify-center"
+                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 flex items-center justify-center"
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,18 +238,18 @@ export default function RegisterClient() {
                 type={showConfirmPassword ? "text" : "password"}
                 autoComplete="new-password"
                 disabled={isLoading}
-                placeholder="Xác nhận mật khẩu"
-                className="w-full px-3 py-2.5 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 text-sm"
+                placeholder={t("auth.confirmPassword")}
+                className="w-full px-3 py-2.5 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
                 {...register("confirmPassword", {
-                  required: "Vui lòng xác nhận mật khẩu",
+                  required: t("auth.confirmPasswordRequired"),
                   validate: (value) =>
-                    value === password || "Mật khẩu không khớp",
+                    value === password || t("auth.passwordsMustMatch"),
                 })}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 flex items-center justify-center"
+                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 flex items-center justify-center"
               >
                 {showConfirmPassword ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,38 +272,38 @@ export default function RegisterClient() {
             <button
               type="submit"
               disabled={!isValid || isLoading}
-              className="w-full py-2.5 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
+              className="w-full py-2.5 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm cursor-pointer"
             >
-              {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+              {isLoading ? t("auth.creatingAccount") : t("auth.createAccount")}
             </button>
 
             {/* Terms and Privacy Policy Notice */}
-            <p className="text-center text-xs text-gray-500">
-              Bằng việc đăng ký, bạn đồng ý với{" "}
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400">
+              {t("auth.registerAgreeText")}{" "}
               <Link
                 href="/terms"
-                className="text-accent hover:underline"
+                className="text-accent dark:text-accent-on-dark hover:underline"
                 target="_blank"
               >
-                Điều khoản sử dụng
+                {t("auth.termsOfUse")}
               </Link>
-              {" "}và{" "}
+              {" "}{t("auth.and")}{" "}
               <Link
                 href="/privacy-policy"
-                className="text-accent hover:underline"
+                className="text-accent dark:text-accent-on-dark hover:underline"
                 target="_blank"
               >
-                Chính sách bảo mật
+                {t("auth.privacyPolicy")}
               </Link>
             </p>
 
             {/* Social Login */}
             <div className="relative my-3">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-gray-200 dark:border-slate-700"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-white text-gray-500">Hoặc</span>
+                <span className="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-400">{t("auth.or")}</span>
               </div>
             </div>
 
@@ -311,29 +312,29 @@ export default function RegisterClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateGoogleAuthUrl())}
-                className="flex items-center justify-center px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Image src="/google.svg" alt="Google" width={14} height={14} />
-                <span className="ml-2 text-xs text-gray-700">Google</span>
+                <span className="ml-2 text-xs">Google</span>
               </button>
               <button
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateLinkedinAuthUrl())}
-                className="flex items-center justify-center px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Image src="/linkedin.svg" alt="LinkedIn" width={14} height={14} />
-                <span className="ml-2 text-xs text-gray-700">LinkedIn</span>
+                <span className="ml-2 text-xs">LinkedIn</span>
               </button>
             </div>
 
-            <p className="text-center text-xs sm:text-sm text-gray-600 mt-3 sm:mt-4">
-              Đã có tài khoản?{" "}
+            <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-slate-400 mt-3 sm:mt-4">
+              {t("auth.alreadyHaveAccount")}{" "}
               <Link
                 href="/login"
-                className="font-semibold text-accent hover:text-blue-600"
+                className="font-semibold text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
-                Đăng nhập ngay
+                {t("auth.loginNow")}
               </Link>
             </p>
           </form>

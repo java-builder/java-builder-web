@@ -1,5 +1,5 @@
-﻿import { PaymentDetailResponse, PaymentStatus, TransactionType } from "@/types/payment";
-import { formatReadableDate } from "@/utils/dateUtils";
+import { PaymentDetailResponse, PaymentStatus, TransactionType } from "@/types/payment";
+import { formatLocaleString } from "@/utils/dateUtils";
 
 const StatusBadge = ({ status }: { status: PaymentStatus }) => {
   const getStatusConfig = (status: PaymentStatus) => {
@@ -70,7 +70,7 @@ const TransactionTypeBadge = ({ type }: { type: TransactionType }) => {
       case TransactionType.SUBSCRIPTION:
         return {
           color:
-            "bg-indigo-50 text-indigo-700 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400",
+            "bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-400",
           text: "Đăng ký",
         };
       default:
@@ -99,29 +99,29 @@ interface PaymentTableRowProps {
 export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
   return (
     <tr
-      className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
+      className="cursor-pointer transition-colors hover:bg-muted/25"
       onClick={() => onClick(payment)}
     >
-      <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold tabular-nums text-gray-700 dark:text-gray-200">
+      <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold tabular-nums text-foreground">
         #{payment.paymentCode}
       </td>
       <td className="px-4 py-3">
-        <div className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
+        <div className="truncate text-sm font-medium text-foreground">
           {payment.userName}
         </div>
-        <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+        <div className="truncate text-xs text-muted-foreground">
           {payment.userEmail}
         </div>
       </td>
       <td className="px-4 py-3">
-        <div className="line-clamp-1 text-sm text-gray-700 dark:text-gray-200">
+        <div className="line-clamp-1 text-sm text-foreground">
           {payment.courseTitle || payment.subscriptionPlanName || "—"}
         </div>
       </td>
       <td className="whitespace-nowrap px-4 py-3">
         <TransactionTypeBadge type={payment.transactionType} />
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold tabular-nums text-gray-900 dark:text-gray-100">
+      <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold tabular-nums text-foreground">
         {new Intl.NumberFormat("vi-VN", {
           style: "currency",
           currency: "VND",
@@ -130,8 +130,8 @@ export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
       <td className="whitespace-nowrap px-4 py-3">
         <StatusBadge status={payment.paymentStatus} />
       </td>
-      <td className="hidden whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-500 dark:text-gray-300 xl:table-cell">
-        {formatReadableDate(payment.createdAt)}
+      <td className="hidden whitespace-nowrap px-4 py-3 text-xs tabular-nums text-muted-foreground xl:table-cell">
+        {formatLocaleString(payment.createdAt)}
       </td>
     </tr>
   );

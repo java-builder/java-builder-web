@@ -11,7 +11,7 @@ interface TagRowProps {
 
 export default function TagRow({ tag, isDeleting, onEdit, onDelete }: TagRowProps) {
   return (
-    <tr className="transition hover:bg-gray-50 dark:hover:bg-slate-700/40">
+    <tr className="transition hover:bg-muted/25">
       {/* Name */}
       <td className="px-4 py-3">
         <span className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2 py-0.5 text-sm font-semibold text-accent">
@@ -21,12 +21,12 @@ export default function TagRow({ tag, isDeleting, onEdit, onDelete }: TagRowProp
       </td>
 
       {/* Slug */}
-      <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300">
+      <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-muted-foreground">
         {tag.slug}
       </td>
 
       {/* Created at */}
-      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-600 dark:text-gray-300">
+      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-muted-foreground">
         {formatReadableDate(tag.createdAt)}
       </td>
 
@@ -36,7 +36,7 @@ export default function TagRow({ tag, isDeleting, onEdit, onDelete }: TagRowProp
           <button
             type="button"
             onClick={() => onEdit(tag)}
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200"
+            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground transition hover:border-accent hover:text-accent cursor-pointer"
           >
             <Pencil className="h-3.5 w-3.5" />
             Sửa
@@ -45,7 +45,7 @@ export default function TagRow({ tag, isDeleting, onEdit, onDelete }: TagRowProp
             type="button"
             onClick={() => onDelete(tag.id, tag.name)}
             disabled={isDeleting}
-            className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-rose-900/40 dark:bg-slate-800 dark:text-rose-400 dark:hover:bg-rose-900/20"
+            className="inline-flex items-center gap-1 rounded-lg border border-destructive/20 bg-card px-2.5 py-1 text-xs font-semibold text-destructive transition hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             {isDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />

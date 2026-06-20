@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -153,10 +153,10 @@ export default function AdminNotificationsPage() {
         {/* Header */}
         {isLoading && allNotifications.length === 0 ? (
           <div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+            <h1 className="text-xl font-bold text-foreground sm:text-2xl">
               Trung tâm thông báo
             </h1>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+            <p className="mt-1 text-sm text-muted-foreground">
               Đang tải thông báo...
             </p>
           </div>
@@ -177,9 +177,9 @@ export default function AdminNotificationsPage() {
         />
 
         {/* List card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-5">
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
           {isLoading && allNotifications.length === 0 ? (
-            <div className="flex items-center justify-center py-12 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <svg
                   className="h-4 w-4 animate-spin text-accent"

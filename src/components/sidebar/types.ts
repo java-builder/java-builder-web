@@ -16,4 +16,6 @@ export interface MenuGroup {
   items: MenuItem[];
   requireAuth?: boolean;
   defaultOpen?: boolean;
+  icon?: React.ReactNode;
+  borderColor?: string;
 }

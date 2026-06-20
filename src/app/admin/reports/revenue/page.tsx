@@ -17,6 +17,8 @@ import {
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
 import { parseDate } from "@/utils/dateUtils";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Button } from "@/components/ui/button";
 
 ChartJS.register(
   CategoryScale,
@@ -49,6 +51,8 @@ interface TopCourse {
 export default function RevenueReportPage() {
   const [timeRange, setTimeRange] = useState("30days");
   const [isLoading, setIsLoading] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   // Mock data
   const [revenueDetails] = useState<RevenueDetail[]>([
@@ -157,15 +161,27 @@ export default function RevenueReportPage() {
         label: "Doanh thu (VNĐ)",
         data: revenueDetails.map((item) => item.revenue),
         borderColor: "rgb(59, 130, 246)",
-        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        backgroundColor: "rgba(59, 130, 246, 0.06)",
         tension: 0.4,
+        fill: true,
+        pointRadius: 2,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "rgb(59, 130, 246)",
+        pointBorderColor: "#fff",
+        borderWidth: 2.5,
       },
       {
         label: "Hoàn tiền (VNĐ)",
         data: revenueDetails.map((item) => item.refunds),
         borderColor: "rgb(239, 68, 68)",
-        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        backgroundColor: "rgba(239, 68, 68, 0.04)",
         tension: 0.4,
+        fill: true,
+        pointRadius: 2,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "rgb(239, 68, 68)",
+        pointBorderColor: "#fff",
+        borderWidth: 2,
       },
     ],
   };
@@ -179,9 +195,11 @@ export default function RevenueReportPage() {
       {
         label: "Số đơn hàng",
         data: revenueDetails.map((item) => item.orders),
-        backgroundColor: "rgba(34, 197, 94, 0.8)",
-        borderColor: "rgb(34, 197, 94)",
-        borderWidth: 1,
+        backgroundColor: "rgba(16, 185, 129, 0.85)",
+        hoverBackgroundColor: "rgba(16, 185, 129, 1)",
+        borderColor: "rgb(16, 185, 129)",
+        borderWidth: 0,
+        borderRadius: 6,
       },
     ],
   };
@@ -219,17 +237,48 @@ export default function RevenueReportPage() {
     fetchData();
   }, [timeRange]);
 
+  const textColor = isDark ? "#9ca3af" : "#4b5563";
+  const gridColor = isDark ? "rgba(255,255,255,0.06)" : "#f3f4f6";
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top" as const,
+        labels: {
+          color: textColor,
+          boxWidth: 12,
+          font: {
+            size: 11,
+          },
+        },
       },
     },
     scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: textColor,
+          font: {
+            size: 11,
+          },
+        },
+      },
       y: {
         beginAtZero: true,
+        grid: {
+          color: gridColor,
+          drawBorder: false,
+        },
+        ticks: {
+          color: textColor,
+          font: {
+            size: 11,
+          },
+        },
       },
     },
   };
@@ -237,12 +286,12 @@ export default function RevenueReportPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Breadcrumb */}
-      <nav className="flex" aria-label="Breadcrumb">
+      <nav className="flex text-muted-foreground" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
           <li className="inline-flex items-center">
             <Link
               href="/admin"
-              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+              className="inline-flex items-center text-sm font-medium hover:text-foreground"
             >
               <svg
                 className="w-4 h-4 mr-2"
@@ -257,7 +306,7 @@ export default function RevenueReportPage() {
           <li>
             <div className="flex items-center">
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="w-6 h-6 text-muted-foreground/60"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -269,7 +318,7 @@ export default function RevenueReportPage() {
               </svg>
               <Link
                 href="/admin/reports"
-                className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
+                className="ml-1 text-sm font-medium hover:text-foreground md:ml-2"
               >
                 Báo cáo
               </Link>
@@ -278,7 +327,7 @@ export default function RevenueReportPage() {
           <li aria-current="page">
             <div className="flex items-center">
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="w-6 h-6 text-muted-foreground/60"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -288,7 +337,7 @@ export default function RevenueReportPage() {
                   clipRule="evenodd"
                 ></path>
               </svg>
-              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+              <span className="ml-1 text-sm font-medium text-foreground md:ml-2">
                 Báo cáo doanh thu
               </span>
             </div>
@@ -297,21 +346,21 @@ export default function RevenueReportPage() {
       </nav>
 
       {/* Header */}
-      <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+      <div className="bg-card rounded-xl p-8 border border-border shadow-sm text-foreground">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div className="mb-6 lg:mb-0">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               💰 Báo cáo Doanh thu Chi tiết
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Phân tích chi tiết doanh thu và hiệu suất bán hàng
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
+               value={timeRange}
+               onChange={(e) => setTimeRange(e.target.value)}
+               className="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm bg-background text-foreground"
             >
               <option value="7days">7 ngày qua</option>
               <option value="30days">30 ngày qua</option>
@@ -320,13 +369,14 @@ export default function RevenueReportPage() {
               <option value="1year">1 năm qua</option>
             </select>
             <ExportButton onExport={handleExport} disabled={isLoading} />
-            <button
+            <Button
+              variant="accent"
               onClick={fetchData}
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50"
+              className="gap-2"
             >
               <svg
-                className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+                className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -339,26 +389,26 @@ export default function RevenueReportPage() {
                 />
               </svg>
               Làm mới
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-foreground">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-muted-foreground mb-1">
                 Tổng doanh thu
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-foreground">
                 {formatPrice(totalRevenue)}
               </p>
             </div>
-            <div className="p-3 bg-green-100 rounded-lg">
+            <div className="p-3 bg-green-500/10 text-green-500 rounded-lg">
               <svg
-                className="w-6 h-6 text-green-600"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -374,19 +424,19 @@ export default function RevenueReportPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-muted-foreground mb-1">
                 Tổng đơn hàng
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-foreground">
                 {totalOrders.toLocaleString()}
               </p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
+            <div className="p-3 bg-blue-500/10 text-blue-500 rounded-lg">
               <svg
-                className="w-6 h-6 text-blue-600"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -402,19 +452,19 @@ export default function RevenueReportPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-muted-foreground mb-1">
                 Giá trị đơn hàng TB
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-foreground">
                 {formatPrice(avgOrderValue)}
               </p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-lg">
+            <div className="p-3 bg-purple-500/10 text-purple-500 rounded-lg">
               <svg
-                className="w-6 h-6 text-purple-600"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -430,19 +480,19 @@ export default function RevenueReportPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-muted-foreground mb-1">
                 Tổng hoàn tiền
               </p>
               <p className="text-2xl font-bold text-red-600">
                 {formatPrice(totalRefunds)}
               </p>
             </div>
-            <div className="p-3 bg-red-100 rounded-lg">
+            <div className="p-3 bg-red-500/10 text-red-500 rounded-lg">
               <svg
-                className="w-6 h-6 text-red-600"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -460,9 +510,9 @@ export default function RevenueReportPage() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-foreground">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             Doanh thu & Hoàn tiền theo thời gian
           </h3>
           <div className="h-80">
@@ -470,8 +520,8 @@ export default function RevenueReportPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             Số đơn hàng theo thời gian
           </h3>
           <div className="h-80">
@@ -481,63 +531,63 @@ export default function RevenueReportPage() {
       </div>
 
       {/* Top Courses Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">
+      <div className="bg-card rounded-xl border border-border shadow-sm text-foreground">
+        <div className="p-6 border-b border-border">
+          <h3 className="text-lg font-semibold text-foreground">
             Top khóa học theo doanh thu
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Các khóa học có doanh thu cao nhất trong kỳ
           </p>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Khóa học
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Doanh thu
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Đăng ký
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Giá TB
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Tăng trưởng
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-border">
               {topCourses.map((course, index) => (
-                <tr key={course.id} className="hover:bg-gray-50">
+                <tr key={course.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-600 rounded-full font-bold text-sm mr-3">
+                      <div className="flex items-center justify-center w-8 h-8 bg-blue-500/10 text-blue-500 rounded-full font-bold text-sm mr-3">
                         {index + 1}
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {course.name}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-sm font-semibold text-foreground">
                       {formatPrice(course.revenue)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-foreground">
                       {course.enrollments.toLocaleString()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-foreground">
                       {formatPrice(course.avgPrice)}
                     </div>
                   </td>

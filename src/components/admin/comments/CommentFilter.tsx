@@ -12,7 +12,7 @@ export default function CommentFilter({
   onSearchChange,
 }: CommentFilterProps) {
   return (
-    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+    <div className="bg-muted/30 rounded-xl p-4 border border-border">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         {/* Search */}
         <div className="flex-1 max-w-md">
@@ -22,11 +22,11 @@ export default function CommentFilter({
               placeholder="Tìm kiếm bình luận, tác giả..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
-                className="h-5 w-5 text-gray-400"
+                className="h-5 w-5 text-muted-foreground"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -44,14 +44,14 @@ export default function CommentFilter({
 
         {/* Status Filter */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-sm text-gray-600 font-medium whitespace-nowrap">Trạng thái:</span>
+          <span className="text-sm text-muted-foreground font-medium whitespace-nowrap">Trạng thái:</span>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => onStatusChange("ALL")}
               className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === "ALL"
                   ? "bg-accent text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-card text-foreground border border-border hover:bg-muted/40"
               }`}
             >
               Tất cả
@@ -61,7 +61,7 @@ export default function CommentFilter({
               className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === "ACTIVE"
                   ? "bg-green-600 text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-card text-foreground border border-border hover:bg-muted/40"
               }`}
             >
               Hiển thị
@@ -71,7 +71,7 @@ export default function CommentFilter({
               className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === "DELETED"
                   ? "bg-red-600 text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  : "bg-card text-foreground border border-border hover:bg-muted/40"
               }`}
             >
               Đã xóa

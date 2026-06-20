@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
@@ -14,6 +14,16 @@ import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { Tag } from "@/types/tag";
 import MarkdownEditor from "./MarkdownEditor";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import {
+  X,
+  Upload,
+  Loader2,
+  FolderOpen,
+  Tag as TagIcon,
+  Image as ImageIcon,
+  Check,
+} from "lucide-react";
 
 interface UpdateBlogModalProps {
   isOpen: boolean;
@@ -307,96 +317,68 @@ export default function UpdateBlogModal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
           onClick={handleClose}
         />
 
-        <div className="relative w-full max-w-7xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
+        <div className="relative w-full max-w-7xl bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b border-border">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-2xl font-bold text-foreground">
                 Cập nhật bài viết
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Chỉnh sửa nội dung bài viết của bạn
               </p>
             </div>
-            <button
+            <Button
               onClick={handleClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+              variant="ghost"
+              size="icon-sm"
+              className="hover:bg-muted text-muted-foreground"
             >
-              <svg
-                className="w-6 h-6 text-gray-400 dark:text-gray-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <X className="w-5 h-5" />
+            </Button>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6">
             {isLoadingBlog ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <svg
-                    className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <p className="text-sm text-gray-600">Đang tải nội dung bài viết...</p>
+                  <Loader2 className="animate-spin h-8 w-8 text-accent mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">Đang tải nội dung bài viết...</p>
                 </div>
               </div>
             ) : (
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Tiêu đề bài viết <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Tiêu đề bài viết <span className="text-destructive">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Nhập tiêu đề hấp dẫn cho bài viết..."
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${errors.title ? "border-red-300 bg-red-50" : "border-gray-300"
+                    className={`w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm transition-colors duration-200 ${errors.title ? "border-destructive bg-destructive/10" : "border-input"
                       }`}
                   />
                   {errors.title && (
-                    <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+                    <p className="mt-1.5 text-xs text-destructive">{errors.title}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Loại bài viết <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Loại bài viết <span className="text-destructive">*</span>
                   </label>
                   <select
                     value={formData.blogType}
                     onChange={(e) =>
                       handleInputChange("blogType", e.target.value as BlogType)
                     }
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${errors.blogType ? "border-red-300 bg-red-50" : "border-gray-300"
+                    className={`w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm transition-colors duration-200 ${errors.blogType ? "border-destructive bg-destructive/10" : "border-input"
                       }`}
                   >
                     {Object.entries(BlogTypeDisplayNames).map(
@@ -408,7 +390,7 @@ export default function UpdateBlogModal({
                     )}
                   </select>
                   {errors.blogType && (
-                    <p className="mt-1 text-sm text-red-600">{errors.blogType}</p>
+                    <p className="mt-1.5 text-xs text-destructive">{errors.blogType}</p>
                   )}
                 </div>
               </div>
@@ -417,10 +399,8 @@ export default function UpdateBlogModal({
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Category */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    <svg className="w-4 h-4 inline mr-1.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
+                  <label className="block text-sm font-medium text-foreground mb-2 flex items-center">
+                    <FolderOpen className="w-4 h-4 mr-1.5 text-accent" />
                     Danh mục
                   </label>
                   <div className="relative">
@@ -429,32 +409,28 @@ export default function UpdateBlogModal({
                       onChange={(e) =>
                         handleInputChange("categoryId", e.target.value || undefined)
                       }
-                      className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-200 bg-white appearance-none cursor-pointer hover:border-purple-400"
+                      className="w-full px-4 py-3 pr-10 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm appearance-none cursor-pointer hover:border-accent/50"
                     >
-                      <option value="" className="text-gray-400">-- Chọn danh mục --</option>
+                      <option value="" className="text-muted-foreground">-- Chọn danh mục --</option>
                       {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id} className="text-gray-900">
+                        <option key={cat.id} value={cat.id} className="text-foreground">
                           {cat.name}
                         </option>
                       ))}
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
+                      <FolderOpen className="w-4 h-4" />
                     </div>
                   </div>
-                  <p className="mt-1.5 text-xs text-gray-500">
+                  <p className="mt-1.5 text-xs text-muted-foreground">
                     Chọn danh mục phù hợp cho bài viết
                   </p>
                 </div>
 
                 {/* Tags */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    <svg className="w-4 h-4 inline mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                    </svg>
+                  <label className="block text-sm font-medium text-foreground mb-2 flex items-center">
+                    <TagIcon className="w-4 h-4 mr-1.5 text-accent" />
                     Tags
                   </label>
                   <div className="relative">
@@ -469,35 +445,30 @@ export default function UpdateBlogModal({
                         }
                       }}
                       placeholder="Nhập tag và nhấn Enter..."
-                      className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                      className="w-full px-4 py-3 pr-10 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm"
                     />
                     {isLoadingTags && (
                       <div className="absolute right-3 top-3.5">
-                        <svg className="animate-spin w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <Loader2 className="animate-spin w-4 h-4 text-accent" />
                       </div>
                     )}
                     {tagSuggestions.length > 0 && (
-                      <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      <div className="absolute z-10 w-full mt-2 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {tagSuggestions.map((tag) => (
                           <button
                             key={tag.id}
                             type="button"
                             onClick={() => handleAddTag(tag.name)}
-                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center space-x-2 border-b border-gray-100 dark:border-gray-600 last:border-b-0"
+                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-muted text-foreground transition-colors duration-200 flex items-center space-x-2 border-b border-border last:border-b-0"
                           >
-                            <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                            </svg>
-                            <span className="text-gray-700 dark:text-gray-300">{tag.name}</span>
+                            <TagIcon className="w-4 h-4 text-accent" />
+                            <span>{tag.name}</span>
                           </button>
                         ))}
                       </div>
                     )}
                   </div>
-                  <p className="mt-1.5 text-xs text-gray-500">
+                  <p className="mt-1.5 text-xs text-muted-foreground">
                     Thêm tags để dễ tìm kiếm (nhấn Enter để thêm)
                   </p>
                   {formData.tags && formData.tags.length > 0 && (
@@ -505,20 +476,16 @@ export default function UpdateBlogModal({
                       {formData.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white dark:text-white rounded-lg text-sm font-medium border border-blue-600 dark:border-blue-500 shadow-sm hover:bg-blue-700 dark:hover:bg-blue-400 transition-colors duration-200"
+                          className="inline-flex items-center px-3 py-1 bg-accent/15 border border-accent/20 text-accent rounded-lg text-xs font-semibold shadow-sm hover:bg-accent/20 transition-colors duration-200"
                         >
-                          <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                          </svg>
+                          <TagIcon className="w-3 h-3 mr-1.5" />
                           {tag}
                           <button
                             type="button"
                             onClick={() => handleRemoveTag(tag)}
-                            className="ml-2 text-white/80 hover:text-white hover:bg-white/20 dark:hover:bg-white/30 rounded-full p-0.5 transition-colors duration-200"
+                            className="ml-2 text-accent/80 hover:text-accent hover:bg-accent/20 rounded-full p-0.5 transition-colors duration-200"
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X className="w-3 h-3" />
                           </button>
                         </span>
                       ))}
@@ -531,32 +498,30 @@ export default function UpdateBlogModal({
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Summary */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Tóm tắt
                   </label>
                   <textarea
                     value={formData.summary}
                     onChange={(e) => handleInputChange("summary", e.target.value)}
                     placeholder="Viết tóm tắt ngắn gọn về nội dung bài viết..."
-                    className="w-full h-[200px] px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
+                    className="w-full h-[200px] px-4 py-3 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm resize-none"
                   />
                 </div>
 
                 {/* Featured Image */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    <svg className="w-4 h-4 inline mr-1.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+                  <label className="block text-sm font-medium text-foreground mb-2 flex items-center">
+                    <ImageIcon className="w-4 h-4 mr-1.5 text-accent" />
                     Ảnh đại diện
                   </label>
                   
                   <div
                     onClick={() => !isUploadingImage && !isLoading && fileInputRef.current?.click()}
-                    className={`relative w-full h-[200px] rounded-lg border-2 border-dashed transition-all duration-200 overflow-hidden bg-gray-50 ${
+                    className={`relative w-full h-[200px] rounded-lg border-2 border-dashed transition-all duration-200 overflow-hidden bg-muted/30 ${
                       isUploadingImage || isLoading
-                        ? 'border-gray-300 cursor-not-allowed opacity-50'
-                        : 'border-gray-300 hover:border-green-400 hover:bg-green-50 cursor-pointer'
+                        ? 'border-border cursor-not-allowed opacity-50'
+                        : 'border-border hover:border-accent hover:bg-accent/5 cursor-pointer'
                     }`}
                   >
                     {imagePreview ? (
@@ -570,46 +535,16 @@ export default function UpdateBlogModal({
                       />
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <svg
-                          className="w-12 h-12 text-gray-400 mb-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <span className="text-sm text-gray-600">Click để chọn ảnh</span>
-                        <span className="text-xs text-gray-400 mt-1">PNG, JPG, GIF tối đa 5MB</span>
+                        <Upload className="w-10 h-10 text-muted-foreground mb-2" />
+                        <span className="text-sm font-medium text-foreground">Click để chọn ảnh</span>
+                        <span className="text-xs text-muted-foreground mt-1">PNG, JPG, GIF tối đa 5MB</span>
                       </div>
                     )}
                     
                     {isUploadingImage && (
-                      <div className="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center">
-                        <svg
-                          className="animate-spin w-8 h-8 text-green-500 mb-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        <span className="text-sm text-green-600">Đang tải ảnh lên...</span>
+                      <div className="absolute inset-0 bg-background/90 flex flex-col items-center justify-center">
+                        <Loader2 className="animate-spin w-8 h-8 text-accent mb-2" />
+                        <span className="text-sm text-accent">Đang tải ảnh lên...</span>
                       </div>
                     )}
                   </div>
@@ -626,10 +561,8 @@ export default function UpdateBlogModal({
                   />
 
                   {errors.key && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                    <p className="mt-2 text-sm text-destructive flex items-center">
+                      <X className="w-4 h-4 mr-1" />
                       {errors.key}
                     </p>
                   )}
@@ -637,8 +570,8 @@ export default function UpdateBlogModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Nội dung bài viết <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Nội dung bài viết <span className="text-destructive">*</span>
                 </label>
                 <MarkdownEditor
                   value={formData.content}
@@ -650,28 +583,16 @@ export default function UpdateBlogModal({
               </div>
 
               {errors.submit && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-center">
-                    <svg
-                      className="w-5 h-5 text-red-500 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span className="text-sm text-red-700">{errors.submit}</span>
+                <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <div className="flex items-center text-destructive">
+                    <X className="w-5 h-5 mr-2" />
+                    <span className="text-sm">{errors.submit}</span>
                   </div>
                 </div>
               )}
 
               {/* Premium Checkbox */}
-              <div className="flex items-center gap-3 mt-6 pt-6 border-t border-gray-200">
+              <div className="flex items-center gap-3 mt-6 pt-6 border-t border-border">
                 <input
                   type="checkbox"
                   id="isPremium"
@@ -679,69 +600,41 @@ export default function UpdateBlogModal({
                   onChange={(e) =>
                     handleInputChange("isPremium", e.target.checked)
                   }
-                  className="w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                  className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background"
                   disabled={isLoading}
                 />
-                <label htmlFor="isPremium" className="text-sm text-gray-700 dark:text-gray-300">
+                <label htmlFor="isPremium" className="text-sm text-foreground">
                   Chỉ dành cho Premium (yêu cầu subscription để đọc)
                 </label>
               </div>
 
-              <div className="flex items-center justify-end space-x-4 mt-6 pt-6 border-t border-gray-200">
-                <button
+              <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-border">
+                <Button
                   type="button"
                   onClick={handleClose}
-                  className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+                  variant="outline"
+                  disabled={isLoading}
                 >
                   Hủy bỏ
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={isLoading}
-                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center"
+                  variant="accent"
+                  className="gap-2"
                 >
                   {isLoading ? (
                     <>
-                      <svg
-                        className="animate-spin w-4 h-4 mr-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
+                      <Loader2 className="animate-spin w-4 h-4" />
                       {isUploadingImage ? "Đang tải ảnh..." : "Đang cập nhật..."}
                     </>
                   ) : (
                     <>
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                      <Check className="w-4 h-4" />
                       Cập nhật
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
             )}
@@ -750,4 +643,5 @@ export default function UpdateBlogModal({
       </div>
     </div>
   );
+
 }

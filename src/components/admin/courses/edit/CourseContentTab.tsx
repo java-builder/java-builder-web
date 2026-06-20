@@ -1,6 +1,8 @@
 "use client";
 
 import { ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
+import { Plus, ChevronRight, Edit, Trash2, Loader2, Play, BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CourseContentTabProps {
   chapters: ChapterDetailResponse[];
@@ -33,160 +35,146 @@ export default function CourseContentTab({
 }: CourseContentTabProps) {
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="font-medium text-gray-900">Danh sách chương ({chapters.length})</h3>
-        <button
+      <div className="flex justify-between items-center bg-card border border-border p-4 rounded-xl shadow-sm">
+        <h3 className="font-bold text-foreground">Danh sách chương ({chapters.length})</h3>
+        <Button
+          variant="accent"
           onClick={onAddChapter}
-          className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-600 flex items-center gap-2 transition-colors"
+          className="gap-2 font-medium"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          <Plus className="w-4.5 h-4.5" />
           Thêm chương
-        </button>
+        </Button>
       </div>
 
       {chapters.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <p>Chưa có chương nào</p>
-          <p className="text-sm">Nhấn &quot;Thêm chương&quot; để bắt đầu</p>
+        <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl bg-card">
+          <BookOpen className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" />
+          <p className="font-semibold text-foreground">Chưa có chương nào</p>
+          <p className="text-sm">Nhấn &quot;Thêm chương&quot; để thiết lập bài giảng khóa học</p>
         </div>
       ) : (
         <div className="space-y-3">
           {chapters.map((chapter, index) => (
-            <div key={chapter.id} className="border border-gray-200 rounded-lg overflow-hidden">
+            <div key={chapter.id} className="border border-border rounded-xl overflow-hidden bg-card">
               <div
-                className="flex items-center justify-between px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between px-4 py-3.5 bg-muted/20 cursor-pointer hover:bg-muted/40 transition-colors"
                 onClick={() => onToggleChapter(chapter.id)}
               >
-                <div className="flex items-center gap-3">
-                  <svg
-                    className={`w-4 h-4 text-gray-500 transition-transform ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                  <span className="text-sm font-medium text-gray-500">Chương {index + 1}</span>
-                  <span className="font-medium text-gray-900">{chapter.chapterName}</span>
-                  <span className="text-xs text-gray-400">({chapterLessons[chapter.id]?.length || 0} bài học)</span>
+                <div className="flex items-center gap-3 min-w-0">
+                  <ChevronRight
+                    className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
+                  />
+                  <span className="text-xs font-bold text-accent dark:text-accent-on-dark uppercase tracking-wider whitespace-nowrap bg-accent/10 px-2 py-0.5 rounded">
+                    Chương {index + 1}
+                  </span>
+                  <span className="font-semibold text-foreground truncate" title={chapter.chapterName}>
+                    {chapter.chapterName}
+                  </span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    ({chapterLessons[chapter.id]?.length || 0} bài học)
+                  </span>
                 </div>
-                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => onAddLesson(chapter.id)}
-                    className="p-1.5 text-gray-500 hover:bg-green-50 hover:text-green-600 rounded transition-colors"
+                    className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10 rounded-lg transition-colors border border-border/40"
                     title="Thêm bài học"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
+                    <Plus className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => onEditChapter(chapter)}
-                    className="p-1.5 text-gray-500 hover:bg-gray-200 rounded transition-colors"
+                    className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors border border-border/40"
                     title="Sửa chương"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
+                    <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => onDeleteChapter(chapter.id, chapter.chapterName)}
-                    className="p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded transition-colors"
+                    className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors border border-border/40"
                     title="Xóa chương"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
               {expandedChapters.has(chapter.id) && (
-                <div className="border-t border-gray-200">
+                <div className="border-t border-border">
                   {chapter.description && (
-                    <p className="text-sm text-gray-600 px-4 py-2 bg-gray-50/50">{chapter.description}</p>
+                    <p className="text-sm text-muted-foreground px-5 py-3 bg-muted/10 border-b border-border/60">
+                      {chapter.description}
+                    </p>
                   )}
                   {/* Lessons list */}
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-border/60">
                     {loadingLessons.has(chapter.id) ? (
-                      <div className="px-4 py-6 text-center text-gray-400 text-sm flex items-center justify-center gap-2">
-                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
+                      <div className="px-4 py-6 text-center text-muted-foreground text-sm flex items-center justify-center gap-2">
+                        <Loader2 className="animate-spin w-4 h-4 text-accent" />
                         Đang tải...
                       </div>
                     ) : chapterLessons[chapter.id] && chapterLessons[chapter.id].length > 0 ? (
                       chapterLessons[chapter.id].map((lesson, lessonIndex) => (
                         <div
                           key={lesson.id}
-                          className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-all duration-200 group"
+                           className="flex items-center justify-between px-5 py-3 hover:bg-muted/30 transition-all duration-200 group"
                         >
                           <div 
-                            className="flex items-center gap-3 flex-1 cursor-pointer"
+                            className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer"
                             onClick={() => onPreviewLesson(lesson)}
                           >
-                            <span className="w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold bg-accent/10 text-accent transition-all duration-200">
+                            <span className="w-6 h-6 flex items-center justify-center rounded-md text-xs font-semibold bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-all duration-200 flex-shrink-0">
                               {lessonIndex + 1}
                             </span>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-900 group-hover:text-accent transition-colors">{lesson.lessonName}</span>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-sm font-medium text-foreground group-hover:text-accent transition-colors truncate">
+                                  {lesson.lessonName}
+                                </span>
                                 {lesson.isFreePreview && (
-                                  <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-700 rounded">
+                                  <span className="px-1.5 py-0.5 text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded font-semibold whitespace-nowrap">
                                     Miễn phí
                                   </span>
                                 )}
                                 {lesson.videoUrl && (
-                                  <svg className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z" />
-                                  </svg>
+                                  <Play className="w-3.5 h-3.5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 )}
                               </div>
                               {lesson.videoUrl && (
-                                <span className="text-xs text-gray-400 flex items-center gap-1">
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                  </svg>
-                                  Có video
+                                <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                                  <Play className="w-3 h-3 text-muted-foreground/80" />
+                                  Có bài giảng video
                                 </span>
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1.5">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onEditLesson(lesson, chapter.id);
                               }}
-                              className="p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 rounded transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors border border-border/40"
                               title="Sửa bài học"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
+                              <Edit className="w-4 h-4" />
                             </button>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onDeleteLesson(lesson.id, lesson.lessonName, chapter.id);
                               }}
-                              className="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors border border-border/40"
                               title="Xóa bài học"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="px-4 py-6 text-center text-gray-400 text-sm">
-                        Chưa có bài học nào
+                      <div className="px-4 py-6 text-center text-muted-foreground text-sm">
+                        Chưa có bài học nào trong chương này
                       </div>
                     )}
                   </div>

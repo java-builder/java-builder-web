@@ -2,6 +2,8 @@
 
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 interface TagsSearchBarProps {
   searchQuery: string;
   onChange: (value: string) => void;
@@ -27,14 +29,15 @@ export default function TagsSearchBar({
           </h3>
         </div>
         {hasQuery && (
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onClear}
-            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700"
+            className="gap-1 text-muted-foreground hover:text-foreground h-8"
           >
             <X className="h-3.5 w-3.5" />
             Xóa lọc
-          </button>
+          </Button>
         )}
       </div>
 

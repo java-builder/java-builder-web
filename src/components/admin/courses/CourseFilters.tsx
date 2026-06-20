@@ -1,3 +1,5 @@
+import { Search } from "lucide-react";
+
 interface CourseFiltersProps {
   search: string;
   levelFilter: string;
@@ -20,40 +22,37 @@ export const CourseFilters = ({
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Tìm kiếm khóa học..."
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 text-sm text-gray-900 placeholder-gray-400"
-          />
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-card border border-border p-4 rounded-xl shadow-sm">
+      {/* Search Input */}
+      <div className="relative flex-1 max-w-md w-full">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Tìm kiếm khóa học..."
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-9 pr-3 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
+        />
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex divide-x divide-gray-200">
-          {levels.map((level) => (
+      {/* Level Tabs (Filter) */}
+      <div className="flex flex-wrap items-center gap-1.5 bg-muted/50 p-1 rounded-lg border border-border">
+        {levels.map((level) => {
+          const isActive = levelFilter === level.value;
+          return (
             <button
               key={level.value}
               onClick={() => onLevelChange(level.value)}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                levelFilter === level.value
-                  ? "bg-accent text-white"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${
+                isActive
+                  ? "bg-background text-foreground shadow-sm ring-1 ring-black/5"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {level.label}
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </div>
   );

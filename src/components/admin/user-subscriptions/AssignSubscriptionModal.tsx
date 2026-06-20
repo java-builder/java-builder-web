@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Mail, Package, X } from "lucide-react";
 import type { SubscriptionPlan } from "@/types/subscription";
+import { Button } from "@/components/ui/button";
 
 interface AssignSubscriptionModalProps {
   isOpen: boolean;
@@ -58,14 +59,14 @@ export default function AssignSubscriptionModal({
         className="relative w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
           {/* Header */}
-          <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-slate-700">
+          <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
             <div>
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-base font-semibold text-foreground">
                 Gán gói Premium
               </h2>
-              <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 Cấp quyền truy cập gói cho người dùng theo email
               </p>
             </div>
@@ -74,7 +75,7 @@ export default function AssignSubscriptionModal({
               onClick={onClose}
               disabled={isAssigning}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:opacity-50"
             >
               <X className="h-4 w-4" />
             </button>
@@ -83,7 +84,7 @@ export default function AssignSubscriptionModal({
           {/* Body */}
           <div className="space-y-4 px-5 py-5">
             <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Email người dùng
               </label>
               <div className="relative">
@@ -93,13 +94,13 @@ export default function AssignSubscriptionModal({
                   value={email}
                   onChange={(e) => onEmailChange(e.target.value)}
                   placeholder="user@example.com"
-                  className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500"
+                  className="block w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Gói Premium
               </label>
               <div className="relative">
@@ -107,7 +108,7 @@ export default function AssignSubscriptionModal({
                 <select
                   value={subscriptionPlanId}
                   onChange={(e) => onPlanChange(e.target.value)}
-                  className="block w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-8 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                  className="block w-full appearance-none rounded-lg border border-border bg-background py-2 pl-8 pr-8 text-sm text-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 >
                   <option value="">Chọn gói</option>
                   {plans.map((plan) => (
@@ -134,23 +135,23 @@ export default function AssignSubscriptionModal({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50/50 px-5 py-3 dark:border-slate-700 dark:bg-slate-900/30">
-            <button
+          <div className="flex items-center justify-end gap-2 border-t border-border bg-muted/20 px-5 py-3">
+            <Button
               type="button"
+              variant="outline"
               onClick={onClose}
               disabled={isAssigning}
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
             >
               Hủy
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="accent"
               onClick={onSubmit}
               disabled={isDisabled}
-              className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isAssigning ? "Đang xử lý..." : "Gán gói"}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -50,7 +50,7 @@ export default function ScheduleStep({
                 className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${
                   isActive
                     ? "border-accent bg-accent/5 ring-1 ring-accent/30"
-                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-900/40"
+                    : "border-border bg-card hover:border-accent/50 hover:bg-muted"
                 }`}
               >
                 <span
@@ -63,12 +63,12 @@ export default function ScheduleStep({
                 <div className="min-w-0">
                   <div
                     className={`text-sm font-semibold ${
-                      isActive ? "text-accent" : "text-gray-900 dark:text-white"
+                      isActive ? "text-accent" : "text-foreground"
                     }`}
                   >
                     {opt.title}
                   </div>
-                  <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="mt-0.5 text-xs text-muted-foreground">
                     {opt.desc}
                   </div>
                 </div>
@@ -78,27 +78,27 @@ export default function ScheduleStep({
         </div>
 
         {scheduleType === "schedule" && (
-          <div className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-gray-50/50 p-4 dark:border-slate-700 dark:bg-slate-900/30 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-border bg-muted/40 p-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Ngày gửi
               </label>
               <input
                 type="date"
                 value={scheduleDate}
                 onChange={(e) => onScheduleDateChange(e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Giờ gửi
               </label>
               <input
                 type="time"
                 value={scheduleTime}
                 onChange={(e) => onScheduleTimeChange(e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               />
             </div>
           </div>
@@ -118,7 +118,7 @@ export default function ScheduleStep({
                 className={`flex items-start gap-3 rounded-xl border p-3 text-left transition ${
                   isActive
                     ? "border-accent bg-accent/5 ring-1 ring-accent/30"
-                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-900/40"
+                    : "border-border bg-card hover:border-accent/50 hover:bg-muted"
                 }`}
               >
                 <span
@@ -131,12 +131,12 @@ export default function ScheduleStep({
                 <div className="min-w-0">
                   <div
                     className={`text-sm font-semibold ${
-                      isActive ? "text-accent" : "text-gray-900 dark:text-white"
+                      isActive ? "text-accent" : "text-foreground"
                     }`}
                   >
                     {p.label}
                   </div>
-                  <div className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
+                  <div className="mt-0.5 text-[11px] text-muted-foreground">
                     {p.desc}
                   </div>
                 </div>

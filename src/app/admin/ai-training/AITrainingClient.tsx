@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
@@ -86,21 +86,21 @@ export default function AITrainingClient() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 text-foreground">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+          <h1 className="text-3xl font-bold text-foreground mb-3">
             AI Training - Huấn luyện AI Chatbot
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-lg">
+          <p className="text-muted-foreground text-lg">
             Upload file markdown chứa kiến thức về Java để AI Chatbot có thể trả lời câu hỏi chính xác hơn.
             Dữ liệu sẽ được xử lý và lưu vào vector store để AI có thể tìm kiếm và trích xuất thông tin phù hợp.
           </p>
         </div>
 
         {/* Upload Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
           <div className="space-y-6">
             {/* Drag & Drop Area */}
             <div
@@ -111,7 +111,7 @@ export default function AITrainingClient() {
               className={`relative border-2 border-dashed rounded-xl p-8 transition-all ${
                 dragActive
                   ? "border-accent bg-accent/5 dark:bg-accent/10"
-                  : "border-gray-300 dark:border-slate-600 hover:border-accent/50 dark:hover:border-accent/50"
+                  : "border-border hover:border-accent/50"
               }`}
             >
               <input
@@ -139,10 +139,10 @@ export default function AITrainingClient() {
                   </svg>
                 </div>
                 
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-foreground mb-2">
                   Kéo thả file markdown vào đây
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   hoặc
                 </p>
                 
@@ -153,7 +153,7 @@ export default function AITrainingClient() {
                   Chọn file
                 </button>
                 
-                <p className="text-xs text-gray-500 dark:text-gray-300 mt-4">
+                <p className="text-xs text-muted-foreground mt-4">
                   Hỗ trợ: .md, .markdown
                 </p>
               </div>
@@ -161,7 +161,7 @@ export default function AITrainingClient() {
 
             {/* Selected File Info */}
             {selectedFile && (
-              <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-4 border border-gray-200 dark:border-slate-600">
+              <div className="bg-muted rounded-lg p-4 border border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-10 h-10 bg-accent/10 dark:bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -180,17 +180,17 @@ export default function AITrainingClient() {
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {selectedFile.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                      <p className="text-xs text-muted-foreground">
                         {formatFileSize(selectedFile.size)}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleRemoveFile}
-                    className="ml-4 p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                    className="ml-4 p-2 text-muted-foreground hover:text-red-500 transition-colors"
                   >
                     <svg
                       className="w-5 h-5"
@@ -215,7 +215,7 @@ export default function AITrainingClient() {
               <button
                 onClick={handleRemoveFile}
                 disabled={!selectedFile || isUploading}
-                className="px-6 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 border border-input text-foreground rounded-lg font-medium hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-transparent"
               >
                 Hủy
               </button>
@@ -253,10 +253,10 @@ export default function AITrainingClient() {
         </div>
 
         {/* Info Card */}
-        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <div className="mt-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
           <div className="flex gap-3">
             <svg
-              className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
+              className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -269,10 +269,10 @@ export default function AITrainingClient() {
               />
             </svg>
             <div className="flex-1">
-              <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
+              <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-1">
                 Lưu ý
               </h4>
-              <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
+              <ul className="text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1">
                 <li>• File markdown sẽ được xử lý và lưu vào vector store</li>
                 <li>• AI Chatbot sẽ sử dụng dữ liệu này để trả lời câu hỏi</li>
                 <li>• Nội dung file nên có cấu trúc rõ ràng và chính xác</li>

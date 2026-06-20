@@ -3,6 +3,8 @@ import { Trash2 } from "lucide-react";
 import type { CourseEnrollmentResponse } from "@/types/enrollment";
 import EnrollmentStatusPill from "./EnrollmentStatusPill";
 import { formatEnrollmentDate, getProgressTone } from "./helpers";
+import { TableRow, TableCell } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 interface EnrollmentRowProps {
   enrollment: CourseEnrollmentResponse;
@@ -21,75 +23,77 @@ export default function EnrollmentRow({ enrollment, onRemove }: EnrollmentRowPro
   const progressTone = getProgressTone(enrollment.progress);
 
   return (
-    <tr className="transition hover:bg-gray-50 dark:hover:bg-slate-700/40">
+    <TableRow className="transition-colors duration-200">
       {/* Student */}
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-3">
+      <TableCell className="px-4 py-3 align-middle max-w-[220px] truncate">
+        <div className="flex items-center gap-3 min-w-0">
           {enrollment.avatar ? (
-            <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
+            <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-full border border-border">
               <Image
                 src={enrollment.avatar}
                 alt={enrollment.username}
                 fill
                 sizes="36px"
                 className="object-cover"
+                unoptimized
               />
             </div>
           ) : (
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent/20 to-accent text-xs font-semibold text-white">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-accent to-accent-600 text-xs font-bold text-white">
               {getInitials(enrollment.username)}
             </div>
           )}
-          <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold text-foreground" title={enrollment.username}>
               {enrollment.username}
             </div>
-            <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+            <div className="truncate text-xs text-muted-foreground" title={enrollment.email}>
               {enrollment.email}
             </div>
           </div>
         </div>
-      </td>
+      </TableCell>
 
       {/* Progress */}
-      <td className="px-4 py-3">
+      <TableCell className="px-4 py-3 align-middle">
         <div className="flex items-center gap-2">
-          <div className="h-1.5 w-24 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
+          <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted border border-border/80">
             <div
               className={`h-full rounded-full transition-all ${progressTone.bar}`}
               style={{ width: `${enrollment.progress}%` }}
             />
           </div>
-          <span className={`text-sm font-semibold tabular-nums ${progressTone.text}`}>
+          <span className={`text-xs font-bold tabular-nums ${progressTone.text}`}>
             {enrollment.progress}%
           </span>
         </div>
-      </td>
+      </TableCell>
 
       {/* Status */}
-      <td className="whitespace-nowrap px-4 py-3">
+      <TableCell className="px-4 py-3 align-middle">
         <EnrollmentStatusPill
           completed={enrollment.completed}
           progress={enrollment.progress}
         />
-      </td>
+      </TableCell>
 
       {/* Enrolled at */}
-      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-600 dark:text-gray-300">
+      <TableCell className="px-4 py-3 align-middle text-sm tabular-nums text-muted-foreground">
         {formatEnrollmentDate(enrollment.enrolledAt)}
-      </td>
+      </TableCell>
 
       {/* Action */}
-      <td className="whitespace-nowrap px-4 py-3 text-right">
-        <button
-          type="button"
+      <TableCell className="px-4 py-3 align-middle text-right">
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => onRemove(enrollment.enrollmentId, enrollment.username)}
-          className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-900/40 dark:bg-slate-800 dark:text-rose-400 dark:hover:bg-rose-900/20"
+          className="h-8 text-xs font-semibold border-destructive/25 text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
         >
-          <Trash2 className="h-3.5 w-3.5" />
-          Xoá
-        </button>
-      </td>
-    </tr>
+          <Trash2 className="h-3.5 w-3.5 mr-1" />
+          Xóa
+        </Button>
+      </TableCell>
+    </TableRow>
   );
 }

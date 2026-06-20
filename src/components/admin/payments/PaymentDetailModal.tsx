@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ReactNode, useEffect } from "react";
 import {
@@ -68,7 +68,7 @@ const TYPE_TONE: Record<TransactionType, string> = {
   [TransactionType.PAYOUT]:
     "bg-purple-50 text-purple-700 ring-purple-200 dark:bg-purple-900/30 dark:text-purple-400",
   [TransactionType.SUBSCRIPTION]:
-    "bg-indigo-50 text-indigo-700 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400",
+    "bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-400",
 };
 
 const getPaymentMethodText = (method: PaymentMethod) => {
@@ -118,21 +118,21 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-gray-900/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-gray-950/40 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
         className="relative my-6 w-full max-w-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
           {/* Header */}
-          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-gray-200 bg-white px-5 py-4 dark:border-slate-700 dark:bg-slate-800">
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-5 py-4">
             <div className="min-w-0">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-base font-semibold text-foreground">
                 Chi tiết thanh toán
               </h2>
-              <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                 <Hash className="h-3 w-3" />
                 <span className="font-mono tabular-nums">{payment.paymentCode}</span>
               </p>
@@ -141,7 +141,7 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
               type="button"
               onClick={onClose}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -150,13 +150,13 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
           {/* Body */}
           <div className="max-h-[calc(100vh-180px)] overflow-y-auto">
             {/* Hero amount */}
-            <div className="border-b border-gray-200 bg-gradient-to-br from-accent/5 to-transparent px-5 py-5 dark:border-slate-700">
+            <div className="border-b border-border bg-gradient-to-br from-accent/5 to-transparent px-5 py-5">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Số tiền giao dịch
                   </p>
-                  <p className="mt-1 text-3xl font-bold tabular-nums text-gray-900 dark:text-white">
+                  <p className="mt-1 text-3xl font-bold tabular-nums text-foreground">
                     {formattedAmount}
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
             </div>
 
             {/* Sections */}
-            <div className="divide-y divide-gray-200 dark:divide-slate-700">
+            <div className="divide-y divide-border">
               {/* User */}
               <Section
                 icon={<User className="h-3.5 w-3.5" />}
@@ -190,7 +190,7 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
                   <Field
                     label="Email"
                     value={payment.userEmail}
-                    icon={<Mail className="h-3.5 w-3.5 text-gray-400" />}
+                    icon={<Mail className="h-3.5 w-3.5 text-muted-foreground" />}
                     breakAll
                   />
                 </div>
@@ -205,7 +205,7 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
                   <Field
                     label="Phương thức"
                     value={getPaymentMethodText(payment.paymentMethod)}
-                    icon={<Wallet className="h-3.5 w-3.5 text-gray-400" />}
+                    icon={<Wallet className="h-3.5 w-3.5 text-muted-foreground" />}
                   />
                   <Field
                     label="Cổng thanh toán"
@@ -234,7 +234,7 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
                   icon={<ScrollText className="h-3.5 w-3.5" />}
                   title="Mô tả"
                 >
-                  <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                  <p className="text-sm leading-relaxed text-foreground">
                     {payment.description}
                   </p>
                 </Section>
@@ -281,7 +281,7 @@ function Section({
         <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10 text-accent">
           {icon}
         </span>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       </div>
       {children}
     </section>
@@ -303,13 +303,13 @@ function Field({
 }) {
   return (
     <div>
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </p>
       <div className="mt-1 flex items-center gap-1.5">
         {icon}
         <p
-          className={`text-sm font-medium text-gray-900 dark:text-white ${
+          className={`text-sm font-medium text-foreground ${
             breakAll ? "break-all" : ""
           } ${mono ? "font-mono tabular-nums" : ""}`}
         >

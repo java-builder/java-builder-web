@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { emailSchedulerService } from "@/services/email-scheduler.service";
@@ -69,10 +69,10 @@ export default function ScheduledJobsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
             Scheduled Jobs
           </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+          <p className="mt-1 text-sm text-muted-foreground">
             Theo dõi tất cả các job đã chạy, đang chạy và sắp chạy trong hệ thống
           </p>
         </div>

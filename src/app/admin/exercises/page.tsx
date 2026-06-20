@@ -17,6 +17,7 @@ import { ExerciseSummarySection } from "@/components/admin/exercises/ExerciseSum
 import { ExerciseTable } from "@/components/admin/exercises/ExerciseTable";
 import { LearnerPerformanceTable } from "@/components/admin/exercises/LearnerPerformanceTable";
 import { Pagination } from "@/components/ui/Pagination";
+import { Button } from "@/components/ui/button";
 
 interface TabButtonProps {
   label: string;
@@ -32,14 +33,14 @@ const TabButton = ({ label, icon, isActive, onClick }: TabButtonProps) => (
     className={`relative inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold transition focus:outline-none ${
       isActive
         ? "text-accent"
-        : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+        : "text-muted-foreground hover:text-foreground"
     }`}
   >
     <span
       className={`flex h-6 w-6 items-center justify-center rounded-md transition ${
         isActive
           ? "bg-accent/10 text-accent"
-          : "bg-gray-100 text-gray-500 dark:bg-slate-700 dark:text-gray-400"
+          : "bg-muted text-muted-foreground"
       }`}
     >
       {icon}
@@ -167,27 +168,28 @@ export default function ExercisesPage() {
     <div className="p-6 space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Trung tâm quản lý bài tập</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-foreground">Trung tâm quản lý bài tập</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Tạo và quản lý kho bài tập, đồng thời theo dõi tiến độ làm bài của học viên
           </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button
+          <Button
             onClick={() => router.push("/admin/exercises/create")}
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-accent to-accent-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition hover:shadow-lg hover:brightness-105"
+            variant="accent"
+            className="h-10 gap-2 shadow-sm"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Tạo bài tập mới
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center gap-1 border-b border-gray-200 bg-white px-4 pt-2">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="flex items-center gap-1 border-b border-border bg-card px-4 pt-2">
           <TabButton
             label="Kho bài tập"
             icon={<BookCopy className="h-3.5 w-3.5" />}
@@ -215,19 +217,19 @@ export default function ExercisesPage() {
             </>
           ) : (
             <>
-              <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3">
+              <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <div className="flex items-center justify-between border-b border-border px-5 py-3">
                   <div className="flex items-center gap-2">
                     <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
                       <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-900">Bộ lọc</h3>
+                    <h3 className="text-sm font-semibold text-foreground">Bộ lọc</h3>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 sm:gap-4 lg:p-5">
                   <div>
-                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                       Tiêu đề bài tập
                     </label>
                     <div className="relative">
@@ -243,13 +245,13 @@ export default function ExercisesPage() {
                         }
                         onKeyDown={(e) => e.key === "Enter" && handleSearchSubmissions()}
                         placeholder="Nhập tên bài tập..."
-                        className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="block w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                       Username hoặc email
                     </label>
                     <div className="relative">
@@ -265,28 +267,30 @@ export default function ExercisesPage() {
                         }
                         onKeyDown={(e) => e.key === "Enter" && handleSearchSubmissions()}
                         placeholder="Nhập username hoặc email..."
-                        className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="block w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                       />
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 sm:col-span-2 sm:justify-end">
-                    <button
+                    <Button
                       type="button"
+                      variant="outline"
                       onClick={resetLearnerFilters}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                      className="gap-1.5 h-9"
                     >
                       <RotateCcw className="h-4 w-4" />
                       Đặt lại
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="accent"
                       onClick={handleSearchSubmissions}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600"
+                      className="gap-1.5 h-9"
                     >
                       <Search className="h-4 w-4" />
                       Tìm kiếm
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -314,7 +318,7 @@ export default function ExercisesPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    <span className="text-gray-600">Đang tải dữ liệu...</span>
+                    <span className="text-sm text-muted-foreground">Đang tải dữ liệu...</span>
                   </div>
                 </div>
               ) : (

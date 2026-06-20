@@ -63,10 +63,10 @@ apiClient.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      const locale = localStorage.getItem(localeStorageKey) || "vi";
+      const locale = localStorage.getItem(localeStorageKey) || "en";
       config.headers["Accept-Language"] = locale;
     } else {
-      config.headers["Accept-Language"] = "vi";
+      config.headers["Accept-Language"] = "en";
     }
     return config;
   },
@@ -116,7 +116,7 @@ apiClient.interceptors.response.use(
         try {
           if (!refreshPromise) {
             refreshPromise = (async () => {
-              const locale = typeof window !== "undefined" ? localStorage.getItem(localeStorageKey) || "vi" : "vi";
+              const locale = typeof window !== "undefined" ? localStorage.getItem(localeStorageKey) || "en" : "en";
               const response = await axios.post(
                 `${BASE_URL}/api/v1/auth/refresh`,
                 {},

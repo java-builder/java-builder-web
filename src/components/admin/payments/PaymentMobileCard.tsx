@@ -5,7 +5,7 @@ import {
   PaymentStatus,
   TransactionType,
 } from "@/types/payment";
-import { formatReadableDate } from "@/utils/dateUtils";
+import { formatLocaleString } from "@/utils/dateUtils";
 
 const STATUS_TONE: Record<PaymentStatus | "DEFAULT", string> = {
   [PaymentStatus.SUCCESS]:
@@ -41,7 +41,7 @@ const TYPE_TONE: Record<TransactionType, string> = {
   [TransactionType.PAYOUT]:
     "bg-purple-50 text-purple-700 ring-purple-200 dark:bg-purple-900/30 dark:text-purple-400",
   [TransactionType.SUBSCRIPTION]:
-    "bg-indigo-50 text-indigo-700 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400",
+    "bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-400",
 };
 
 interface PaymentMobileCardProps {
@@ -61,18 +61,18 @@ export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) 
     <button
       type="button"
       onClick={() => onClick(payment)}
-      className="block w-full rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-accent hover:shadow-sm dark:border-slate-700 dark:bg-slate-800"
+      className="block w-full rounded-xl border border-border bg-card p-4 text-left transition hover:border-accent hover:shadow-sm"
     >
       {/* Top row: order code + status */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="font-mono text-xs font-semibold tabular-nums text-gray-500 dark:text-gray-400">
+          <div className="font-mono text-xs font-semibold tabular-nums text-muted-foreground">
             #{payment.paymentCode}
           </div>
-          <div className="mt-1 truncate text-sm font-semibold text-gray-900 dark:text-white">
+          <div className="mt-1 truncate text-sm font-semibold text-foreground">
             {payment.userName}
           </div>
-          <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+          <div className="truncate text-xs text-muted-foreground">
             {payment.userEmail}
           </div>
         </div>
@@ -84,15 +84,15 @@ export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) 
       </div>
 
       {/* Detail rows */}
-      <dl className="mt-3 grid grid-cols-1 gap-y-1.5 border-t border-gray-100 pt-3 text-xs dark:border-slate-700">
+      <dl className="mt-3 grid grid-cols-1 gap-y-1.5 border-t border-border pt-3 text-xs">
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="flex-shrink-0 text-gray-500 dark:text-gray-400">Sản phẩm</dt>
-          <dd className="min-w-0 flex-1 truncate text-right font-medium text-gray-900 dark:text-gray-200">
+          <dt className="flex-shrink-0 text-muted-foreground">Sản phẩm</dt>
+          <dd className="min-w-0 flex-1 truncate text-right font-medium text-foreground">
             {productName}
           </dd>
         </div>
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="flex-shrink-0 text-gray-500 dark:text-gray-400">Loại</dt>
+          <dt className="flex-shrink-0 text-muted-foreground">Loại</dt>
           <dd className="text-right">
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ${TYPE_TONE[payment.transactionType]}`}
@@ -102,15 +102,15 @@ export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) 
           </dd>
         </div>
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="flex-shrink-0 text-gray-500 dark:text-gray-400">Số tiền</dt>
-          <dd className="text-right text-sm font-semibold tabular-nums text-gray-900 dark:text-white">
+          <dt className="flex-shrink-0 text-muted-foreground">Số tiền</dt>
+          <dd className="text-right text-sm font-semibold tabular-nums text-foreground">
             {formattedAmount}
           </dd>
         </div>
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="flex-shrink-0 text-gray-500 dark:text-gray-400">Ngày tạo</dt>
-          <dd className="text-right tabular-nums text-gray-700 dark:text-gray-300">
-            {formatReadableDate(payment.createdAt)}
+          <dt className="flex-shrink-0 text-muted-foreground">Ngày tạo</dt>
+          <dd className="text-right tabular-nums text-muted-foreground">
+            {formatLocaleString(payment.createdAt)}
           </dd>
         </div>
       </dl>

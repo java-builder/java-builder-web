@@ -20,30 +20,74 @@ export default function SidebarMenuGroup({
   shouldShowItem,
 }: SidebarMenuGroupProps) {
   const { t } = useI18n();
+  const hasActiveChild = group.items.some((item) => isActive(item.href));
+
+  const themeMap: Record<string, { activeText: string; activeBg: string; activeIconBg: string }> = {
+    "border-blue-500": {
+      activeText: "text-blue-600 dark:text-blue-400",
+      activeBg: "bg-slate-50 dark:bg-slate-800/40",
+      activeIconBg: "bg-blue-500/10 dark:bg-blue-500/20",
+    },
+    "border-teal-500": {
+      activeText: "text-teal-600 dark:text-teal-400",
+      activeBg: "bg-slate-50 dark:bg-slate-800/40",
+      activeIconBg: "bg-teal-500/10 dark:bg-teal-500/20",
+    },
+    "border-yellow-500": {
+      activeText: "text-yellow-600 dark:text-yellow-400",
+      activeBg: "bg-slate-50 dark:bg-slate-800/40",
+      activeIconBg: "bg-yellow-500/10 dark:bg-yellow-500/20",
+    },
+    "border-purple-500": {
+      activeText: "text-purple-600 dark:text-purple-400",
+      activeBg: "bg-slate-50 dark:bg-slate-800/40",
+      activeIconBg: "bg-purple-500/10 dark:bg-purple-500/20",
+    },
+  };
+
+  const currentTheme = themeMap[group.borderColor || ""] || themeMap["border-blue-500"];
 
   return (
-    <div>
+    <div className="space-y-1">
       {!isCollapsed && (
         <button
+          type="button"
           onClick={onToggle}
-          className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          className={`group w-full flex items-center justify-between px-2 py-1.5 text-[10.5px] font-bold text-left uppercase tracking-wider transition-all duration-200 select-none rounded-lg ${
+            hasActiveChild
+              ? `${currentTheme.activeBg} ${currentTheme.activeText}`
+              : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/20"
+          }`}
         >
-          <span>{group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}</span>
+          <div className="flex items-center space-x-2 min-w-0">
+            {group.icon && (
+              <div className={`w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center transition-all duration-200 ${
+                hasActiveChild
+                  ? currentTheme.activeIconBg
+                  : "bg-gray-100/70 dark:bg-slate-700/40 group-hover:bg-gray-200/80 dark:group-hover:bg-slate-700/60"
+              }`}>
+                {group.icon}
+              </div>
+            )}
+            <span className="truncate pr-1">
+              {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
+            </span>
+          </div>
           <svg
-            className={`w-4 h-4 transition-transform duration-200 ${
+            className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform duration-200 flex-shrink-0 ${
               isOpen ? "rotate-180" : ""
             }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
       )}
       
       {(isCollapsed || isOpen) && (
-        <ul className="space-y-1 mt-1">
+        <ul className={`space-y-1 mt-1 ${!isCollapsed ? `pl-2.5 ml-3.5 border-l border-dashed ${group.borderColor || "border-gray-200 dark:border-slate-700"} dark:border-opacity-35 border-opacity-25` : ""}`}>
           {group.items.map((item) => {
             if (!shouldShowItem(item)) return null;
 

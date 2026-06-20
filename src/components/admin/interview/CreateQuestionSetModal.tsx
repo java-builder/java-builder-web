@@ -9,6 +9,7 @@ import {
 } from "@/types/question-set";
 import { useI18n } from "@/contexts/I18nContext";
 import Swal from "sweetalert2";
+import { Button } from "@/components/ui/button";
 
 interface CreateQuestionSetModalProps {
   isOpen: boolean;
@@ -183,21 +184,21 @@ export default function CreateQuestionSetModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 z-10">
+      <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border">
+        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 z-10">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-bold text-foreground">
                 Tạo bộ câu hỏi mới
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Chủ đề: {topicName}
               </p>
             </div>
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -208,21 +209,21 @@ export default function CreateQuestionSetModal({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm">
+            <div className="bg-destructive/10 text-destructive p-3 rounded-lg text-sm font-medium">
               {error}
             </div>
           )}
 
           {/* Locale Tabs */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t("admin.interviewTopics.languageLabel")} <span className="text-red-500">*</span>
-              <span className="text-xs text-gray-500 dark:text-gray-300 ml-2 font-normal">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              {t("admin.interviewTopics.languageLabel")} <span className="text-destructive">*</span>
+              <span className="text-xs text-muted-foreground ml-2 font-normal">
                 ({t("admin.interviewTopics.languageHintOptional")})
               </span>
             </label>
 
-            <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
+            <div className="flex gap-2 border-b border-border overflow-x-auto">
               {LOCALES.map((l) => {
                 const filled = isLocaleFilled(l.code);
                 const isActive = activeLocale === l.code;
@@ -232,13 +233,12 @@ export default function CreateQuestionSetModal({
                     type="button"
                     onClick={() => setActiveLocale(l.code)}
                     disabled={isSubmitting}
-                    className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
-                      isActive
-                        ? "border-accent text-accent"
-                        : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
-                    }`}
+                    className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${isActive
+                      ? "border-accent text-accent"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                      }`}
                   >
-                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-muted text-muted-foreground rounded">
                       {l.flag}
                     </span>
                     <span>{l.label}</span>
@@ -257,7 +257,7 @@ export default function CreateQuestionSetModal({
           {/* Title + Description */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Tiêu đề ({LOCALES.find((l) => l.code === activeLocale)?.label})
               </label>
               <input
@@ -268,18 +268,18 @@ export default function CreateQuestionSetModal({
                   activeLocale === "VI"
                     ? "Ví dụ: Cơ bản về OOP"
                     : activeLocale === "EN"
-                    ? "Example: OOP Fundamentals"
-                    : activeLocale === "JA"
-                    ? "例: OOPの基礎"
-                    : "예: OOP 기초"
+                      ? "Example: OOP Fundamentals"
+                      : activeLocale === "JA"
+                        ? "例: OOPの基礎"
+                        : "예: OOP 기초"
                 }
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
                 disabled={isSubmitting}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Mô tả ({LOCALES.find((l) => l.code === activeLocale)?.label})
               </label>
               <textarea
@@ -287,7 +287,7 @@ export default function CreateQuestionSetModal({
                 onChange={(e) => updateTranslation(activeLocale, "description", e.target.value)}
                 placeholder="Mô tả ngắn về bộ câu hỏi..."
                 rows={3}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
                 disabled={isSubmitting}
               />
             </div>
@@ -296,8 +296,8 @@ export default function CreateQuestionSetModal({
           {/* Level + Difficulty */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Cấp độ <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Cấp độ <span className="text-destructive">*</span>
               </label>
               <select
                 required
@@ -308,7 +308,7 @@ export default function CreateQuestionSetModal({
                     level: e.target.value as "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR",
                   })
                 }
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
               >
                 <option value="INTERN">Intern</option>
                 <option value="FRESHER">Fresher</option>
@@ -319,8 +319,8 @@ export default function CreateQuestionSetModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Độ khó <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Độ khó <span className="text-destructive">*</span>
               </label>
               <select
                 required
@@ -331,7 +331,7 @@ export default function CreateQuestionSetModal({
                     difficulty: e.target.value as "EASY" | "MEDIUM" | "HARD",
                   })
                 }
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
               >
                 <option value="EASY">Dễ</option>
                 <option value="MEDIUM">Trung bình</option>
@@ -343,14 +343,14 @@ export default function CreateQuestionSetModal({
           {/* Topics + Display order */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Chủ đề liên quan
               </label>
               <input
                 type="text"
                 value={formData.topics}
                 onChange={(e) => setFormData({ ...formData, topics: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
                 placeholder="Hoặc nhập thủ công"
               />
               <div className="mt-2 flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
@@ -359,11 +359,10 @@ export default function CreateQuestionSetModal({
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`px-2 py-1 text-xs rounded-md transition-colors ${
-                      isTagSelected(tag)
-                        ? "bg-accent text-white"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}
+                    className={`px-2 py-1 text-xs rounded-md transition-colors ${isTagSelected(tag)
+                      ? "bg-accent text-white"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      }`}
                   >
                     {tag}
                   </button>
@@ -372,7 +371,7 @@ export default function CreateQuestionSetModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Thứ tự hiển thị
               </label>
               <input
@@ -380,28 +379,30 @@ export default function CreateQuestionSetModal({
                 min="1"
                 value={formData.displayOrder}
                 onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
               />
             </div>
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
-            <button
+          <div className="flex gap-3 pt-4 border-t border-border">
+            <Button
               type="button"
+              variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+              className="flex-1"
             >
               Hủy
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="accent"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1"
             >
               {isSubmitting ? "Đang tạo..." : "Tạo bộ câu hỏi"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

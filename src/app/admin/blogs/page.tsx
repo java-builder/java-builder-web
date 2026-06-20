@@ -10,6 +10,8 @@ import BlogPreviewModal from "@/components/admin/blogs/BlogPreviewModal";
 import { Blog } from "@/types/blog";
 import { blogService } from "@/services/blog.service";
 import { Pagination } from "@/components/ui/Pagination";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function BlogsPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -107,46 +109,35 @@ export default function BlogsPage() {
   // years/filter removed
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="mb-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Quản lý Blog</h1>
-            <p className="mt-2 text-sm text-gray-600">
+            <h1 className="text-2xl font-bold text-foreground">Quản lý Blog</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
               Thống kê và quản lý tất cả bài viết blog trong hệ thống
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <button
+            <Button
               onClick={() => setIsCreateModalOpen(true)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-accent to-accent-600 hover:from-accent-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-all duration-200"
+              variant="accent"
+              className="gap-2 h-9 shadow-sm"
             >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <Plus className="h-4 w-4" />
               Tạo bài viết mới
-            </button>
+            </Button>
           </div>
         </div>
       </div>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center">
-            <div className="p-2 bg-accent-100 rounded-lg">
+            <div className="p-2 bg-accent/10 rounded-lg">
               <svg
-                className="w-6 h-6 text-accent-600"
+                className="w-6 h-6 text-accent"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -160,18 +151,18 @@ export default function BlogsPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Tổng bài viết</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Tổng bài viết</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {filteredStats.total}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-100 dark:bg-green-950/20 rounded-lg">
               <svg
-                className="w-6 h-6 text-green-600"
+                className="w-6 h-6 text-green-600 dark:text-green-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -185,18 +176,18 @@ export default function BlogsPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Đã xuất bản</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Đã xuất bản</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {filteredStats.published}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
+            <div className="p-2 bg-yellow-100 dark:bg-yellow-950/20 rounded-lg">
               <svg
-                className="w-6 h-6 text-yellow-600"
+                className="w-6 h-6 text-yellow-600 dark:text-yellow-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -210,18 +201,18 @@ export default function BlogsPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Bản nháp</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Bản nháp</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {filteredStats.draft}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
           <div className="flex items-center">
-            <div className="p-2 bg-gray-100 rounded-lg">
+            <div className="p-2 bg-muted rounded-lg">
               <svg
-                className="w-6 h-6 text-gray-600"
+                className="w-6 h-6 text-muted-foreground"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -235,8 +226,8 @@ export default function BlogsPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Lưu trữ</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Lưu trữ</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {filteredStats.archived}
               </p>
             </div>
@@ -245,7 +236,7 @@ export default function BlogsPage() {
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+      <div className="bg-muted/30 rounded-xl p-6 mb-6 border border-border">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="flex-1 max-w-lg">
             <div className="relative">
@@ -254,11 +245,11 @@ export default function BlogsPage() {
                 placeholder="Tìm kiếm bài viết theo tiêu đề, tác giả..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200"
+                className="block w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm transition-colors duration-200"
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
-                  className="h-5 w-5 text-gray-400"
+                  className="h-5 w-5 text-muted-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -278,10 +269,10 @@ export default function BlogsPage() {
 
       {/* Loading overlay */}
       {isLoading && (
-        <div className="mb-4 p-3 bg-accent-50 border border-accent-200 rounded-lg">
+        <div className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
           <div className="flex items-center">
             <svg
-              className="animate-spin h-4 w-4 text-accent-600 mr-2"
+              className="animate-spin h-4 w-4 text-accent mr-2"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -300,7 +291,7 @@ export default function BlogsPage() {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-sm text-accent-700">
+            <span className="text-sm text-accent">
               Đang cập nhật dữ liệu...
             </span>
           </div>

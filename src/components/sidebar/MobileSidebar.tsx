@@ -239,11 +239,16 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             if (!shouldShowGroup(group)) return null;
 
             return (
-              <div key={group.title}>
-                <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
-                </h3>
-                <ul className="space-y-1">
+              <div key={group.title} className="space-y-1">
+                <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  {group.icon && (
+                    <div className="w-5.5 h-5.5 rounded bg-gray-100/70 dark:bg-slate-700/40 flex items-center justify-center text-gray-500 dark:text-gray-400 [&_svg]:w-3.5 [&_svg]:h-3.5 flex-shrink-0">
+                      {group.icon}
+                    </div>
+                  )}
+                  <span>{group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}</span>
+                </div>
+                <ul className={`space-y-1 pl-2.5 ml-5.5 border-l border-dashed ${group.borderColor || "border-gray-200 dark:border-slate-700"} dark:border-opacity-35 border-opacity-25`}>
                   {group.items.map((item) => {
                     if (!shouldShowItem(item)) return null;
 

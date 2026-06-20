@@ -8,6 +8,7 @@ import { userSubscriptionService } from "@/services/user-subscription.service";
 import { subscriptionPlanService } from "@/services/subscription-plan.service";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { Pagination } from "@/components/ui/Pagination";
+import { Button } from "@/components/ui/button";
 import {
   AssignSubscriptionModal,
   SubscriptionFilters,
@@ -93,9 +94,9 @@ export default function AdminUserSubscriptionsPage() {
 
   if (isLoading && subscriptions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-        <div className="rounded-2xl border border-gray-200 bg-white p-12">
-          <div className="flex items-center justify-center gap-2">
+      <div className="p-4 sm:p-6">
+        <div className="rounded-xl border border-border bg-card p-12">
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <svg
               className="h-5 w-5 animate-spin text-accent"
               xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +117,7 @@ export default function AdminUserSubscriptionsPage() {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            <span className="text-sm text-gray-600">Đang tải dữ liệu...</span>
+            <span>Đang tải dữ liệu...</span>
           </div>
         </div>
       </div>
@@ -128,10 +129,10 @@ export default function AdminUserSubscriptionsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
             Quản lý Subscriptions
           </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+          <p className="mt-1 text-sm text-muted-foreground">
             Danh sách người dùng đã đăng ký gói Premium
           </p>
         </div>
@@ -143,14 +144,15 @@ export default function AdminUserSubscriptionsPage() {
             </span>{" "}
             subscription
           </span>
-          <button
+          <Button
             type="button"
+            variant="accent"
             onClick={() => setShowAssignModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600"
+            className="h-9 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Gán gói
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -179,11 +181,11 @@ export default function AdminUserSubscriptionsPage() {
 
       {/* Mobile empty */}
       {subscriptions.length === 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-800 md:hidden">
-          <p className="text-sm font-medium text-gray-900 dark:text-white">
+        <div className="rounded-xl border border-border bg-card p-10 text-center md:hidden">
+          <p className="text-sm font-medium text-foreground">
             Chưa có dữ liệu
           </p>
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-xs text-muted-foreground">
             Không có subscription nào phù hợp với bộ lọc
           </p>
         </div>

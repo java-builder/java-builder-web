@@ -149,19 +149,19 @@ export default function CourseCommentsTab() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <p className="text-xs text-gray-500 font-medium">Tổng bình luận</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Tổng bình luận</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
         </div>
 
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <p className="text-xs text-gray-500 font-medium">Đang hiển thị</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{stats.active}</p>
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Đang hiển thị</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{stats.active}</p>
         </div>
 
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <p className="text-xs text-gray-500 font-medium">Đã xóa</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{stats.deleted}</p>
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Đã xóa</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{stats.deleted}</p>
         </div>
       </div>
 
@@ -176,14 +176,14 @@ export default function CourseCommentsTab() {
       {/* Comments List */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent border-t-transparent"></div>
         </div>
       ) : (
         <div className="space-y-4">
           {filteredComments.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+            <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
               <svg
-                className="w-20 h-20 text-gray-300 mx-auto mb-4"
+                className="w-20 h-20 text-muted-foreground/40 mx-auto mb-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -195,8 +195,8 @@ export default function CourseCommentsTab() {
                   d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
                 />
               </svg>
-              <p className="text-gray-500 text-lg font-medium">Không có bình luận nào</p>
-              <p className="text-gray-400 text-sm mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm</p>
+              <p className="text-muted-foreground text-base font-semibold">Không có bình luận nào</p>
+              <p className="text-muted-foreground/80 text-xs mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm</p>
             </div>
           ) : (
             filteredComments.map((comment) => (

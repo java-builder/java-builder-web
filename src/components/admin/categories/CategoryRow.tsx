@@ -32,7 +32,7 @@ export default function CategoryRow({
     (iconValue || category.name || "?").trim().charAt(0).toUpperCase();
 
   return (
-    <tr className="transition hover:bg-gray-50 dark:hover:bg-slate-700/40">
+    <tr className="transition hover:bg-muted/25">
       {/* Name + icon */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2.5">
@@ -46,10 +46,10 @@ export default function CategoryRow({
             {isEmoji ? iconValue : initialChar}
           </span>
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+            <div className="truncate text-sm font-semibold text-foreground">
               {category.name}
             </div>
-            <div className="truncate font-mono text-[11px] text-gray-500 dark:text-gray-400">
+            <div className="truncate font-mono text-[11px] text-muted-foreground">
               {category.slug}
             </div>
           </div>
@@ -75,18 +75,18 @@ export default function CategoryRow({
       </td>
 
       {/* Description */}
-      <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+      <td className="px-4 py-3 text-sm text-muted-foreground">
         {category.description ? (
           <span className="line-clamp-1" title={category.description}>
             {category.description}
           </span>
         ) : (
-          <span className="text-gray-400">—</span>
+          <span className="text-muted-foreground/50">—</span>
         )}
       </td>
 
       {/* Created at */}
-      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-600 dark:text-gray-300">
+      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-muted-foreground">
         {formatReadableDate(category.createdAt)}
       </td>
 
@@ -96,7 +96,7 @@ export default function CategoryRow({
           <button
             type="button"
             onClick={() => onEdit(category)}
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200"
+            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground transition hover:border-accent hover:text-accent cursor-pointer"
           >
             <Pencil className="h-3.5 w-3.5" />
             Sửa
@@ -105,7 +105,7 @@ export default function CategoryRow({
             type="button"
             onClick={() => onDelete(category.id, category.name)}
             disabled={isDeleting}
-            className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-rose-900/40 dark:bg-slate-800 dark:text-rose-400 dark:hover:bg-rose-900/20"
+            className="inline-flex items-center gap-1 rounded-lg border border-destructive/20 bg-card px-2.5 py-1 text-xs font-semibold text-destructive transition hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             {isDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />

@@ -1,5 +1,7 @@
-﻿import { UserStatisticsResponse, UserDetailResponse } from "@/types/user";
+import { UserStatisticsResponse, UserDetailResponse } from "@/types/user";
 import { PageResponse } from "@/types/api";
+import { Card, CardContent } from "@/components/ui/card";
+import { Users, CheckCircle2, AlertTriangle, Trash2 } from "lucide-react";
 
 interface UserStatsCardsProps {
   stats: UserStatisticsResponse | null;
@@ -25,44 +27,56 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
     {
       label: "Tổng người dùng",
       value: total,
-      dot: "bg-gray-400",
-      valueClass: "text-gray-900 dark:text-white",
+      icon: <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+      bg: "bg-blue-50 dark:bg-blue-950/30",
+      accent: "border-blue-100 dark:border-blue-900/30",
+      valueClass: "text-foreground",
     },
     {
       label: "Đang hoạt động",
       value: active,
-      dot: "bg-emerald-500",
+      icon: <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
+      bg: "bg-emerald-50 dark:bg-emerald-950/30",
+      accent: "border-emerald-100 dark:border-emerald-900/30",
       valueClass: "text-emerald-600 dark:text-emerald-400",
     },
     {
       label: "Không hoạt động",
       value: inactive,
-      dot: "bg-amber-500",
+      icon: <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />,
+      bg: "bg-amber-50 dark:bg-amber-950/30",
+      accent: "border-amber-100 dark:border-amber-900/30",
       valueClass: "text-amber-600 dark:text-amber-400",
     },
     {
       label: "Đã xoá",
       value: deleted,
-      dot: "bg-rose-500",
+      icon: <Trash2 className="h-5 w-5 text-rose-600 dark:text-rose-400" />,
+      bg: "bg-rose-50 dark:bg-rose-950/30",
+      accent: "border-rose-100 dark:border-rose-900/30",
       valueClass: "text-rose-600 dark:text-rose-400",
     },
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="grid grid-cols-2 divide-y divide-gray-200 dark:divide-slate-700 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
-        {items.map((item) => (
-          <div key={item.label} className="px-5 py-4">
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-              <span className={`h-1.5 w-1.5 rounded-full ${item.dot}`} />
-              {item.label}
-            </p>
-            <p className={`mt-1 text-2xl font-bold tabular-nums ${item.valueClass}`}>
-              {item.value.toLocaleString("vi-VN")}
-            </p>
-          </div>
-        ))}
-      </div>
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {items.map((item) => (
+        <Card key={item.label} className={`border ${item.accent} hover:shadow-md transition-all duration-200`}>
+          <CardContent className="flex items-center justify-between p-4 sm:p-5">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {item.label}
+              </p>
+              <p className={`text-2xl font-bold tracking-tight tabular-nums ${item.valueClass}`}>
+                {item.value.toLocaleString("vi-VN")}
+              </p>
+            </div>
+            <div className={`p-3 rounded-xl ${item.bg}`}>
+              {item.icon}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };

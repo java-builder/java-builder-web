@@ -1,11 +1,12 @@
 import { ChevronRight, Lock } from "lucide-react";
-import { formatReadableDateTime } from "@/utils/dateUtils";
+import { formatLocaleString } from "@/utils/dateUtils";
 import {
   SubmissionStatus,
   type ExerciseSubmissionSummaryResponse,
 } from "@/types/exercise-submission";
 import StatusPill from "./StatusPill";
 import { getScoreTone } from "./helpers";
+import { Button } from "@/components/ui/button";
 
 interface SubmissionRowProps {
   attemptNumber: number;
@@ -25,14 +26,14 @@ export default function SubmissionRow({
       : 0;
 
   return (
-    <tr className="transition hover:bg-gray-50">
+    <tr className="transition hover:bg-muted/25">
       {/* Attempt # */}
       <td className="whitespace-nowrap px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-semibold tabular-nums text-gray-400">
+          <span className="font-mono text-xs font-semibold tabular-nums text-muted-foreground">
             #{String(attemptNumber).padStart(2, "0")}
           </span>
-          <span className="text-sm font-semibold text-gray-900">
+          <span className="text-sm font-semibold text-foreground">
             Lần {attemptNumber}
           </span>
         </div>
@@ -46,7 +47,7 @@ export default function SubmissionRow({
       {/* Score */}
       <td className="whitespace-nowrap px-4 py-3 text-right">
         {isInProgress ? (
-          <span className="text-sm text-gray-400">—</span>
+          <span className="text-sm text-muted-foreground">—</span>
         ) : (
           <div className="inline-flex items-baseline gap-1">
             <span
@@ -54,8 +55,8 @@ export default function SubmissionRow({
             >
               {submission.score ?? 0}
             </span>
-            <span className="text-xs text-gray-400">/{submission.maxScore}</span>
-            <span className="ml-1 text-xs tabular-nums text-gray-500">
+            <span className="text-xs text-muted-foreground">/{submission.maxScore}</span>
+            <span className="ml-1 text-xs tabular-nums text-muted-foreground">
               ({Math.round(scorePct)}%)
             </span>
           </div>
@@ -67,39 +68,41 @@ export default function SubmissionRow({
         {isInProgress ||
         submission.correctCount === undefined ||
         submission.correctCount === null ? (
-          <span className="text-sm text-gray-400">—</span>
+          <span className="text-sm text-muted-foreground">—</span>
         ) : (
-          <span className="text-sm font-semibold tabular-nums text-emerald-600">
+          <span className="text-sm font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
             {submission.correctCount}
           </span>
         )}
       </td>
 
       {/* Submitted at */}
-      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-gray-700">
+      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-muted-foreground">
         {submission.submittedAt ? (
-          formatReadableDateTime(submission.submittedAt)
+          formatLocaleString(submission.submittedAt)
         ) : (
-          <span className="text-gray-400">Chưa nộp</span>
+          <span className="text-muted-foreground">Chưa nộp</span>
         )}
       </td>
 
       {/* Action */}
       <td className="whitespace-nowrap px-4 py-3 text-right">
         {isInProgress ? (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-400">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
             <Lock className="h-3 w-3" />
             Đang làm
           </span>
         ) : (
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onView(submission.submissionId)}
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent"
+            className="h-8 gap-1"
           >
             Xem chi tiết
             <ChevronRight className="h-3.5 w-3.5" />
-          </button>
+          </Button>
         )}
       </td>
     </tr>

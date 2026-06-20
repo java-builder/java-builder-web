@@ -28,9 +28,7 @@ export default function LanguageSwitcher({
   return (
     <div className="relative">
       <button type="button" onClick={() => setIsOpen(!isOpen)} className={triggerClass}>
-        <span className="flex h-6 w-8 items-center justify-center overflow-hidden rounded-sm bg-gray-100 dark:bg-slate-700">
-          <Image src={currentLocale.flagUrl} alt={currentLocale.flag} width={24} height={16} className="object-cover rounded-sm" />
-        </span>
+        <Image src={currentLocale.flagUrl} alt={currentLocale.flag} width={24} height={16} className="object-cover rounded shadow-sm flex-shrink-0" />
         {showLabel && <span className="hidden sm:inline">{currentLocale.nativeLabel}</span>}
         <svg className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -62,9 +60,7 @@ export default function LanguageSwitcher({
                     : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
                 }`}
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 overflow-hidden">
-                  <Image src={option.flagUrl} alt={option.flag} width={28} height={20} className="object-cover rounded-sm" />
-                </span>
+                <Image src={option.flagUrl} alt={option.flag} width={28} height={18} className="object-cover rounded shadow-sm flex-shrink-0" />
                 <span className="flex-1 min-w-0">
                   <span className="block text-sm font-semibold">{option.nativeLabel}</span>
                   <span className="block text-xs text-gray-500 dark:text-gray-400">{option.label}</span>

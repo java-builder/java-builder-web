@@ -1,6 +1,7 @@
 "use client";
 
 import type { CourseEnrollmentResponse } from "@/types/enrollment";
+import { Card } from "@/components/ui/card";
 
 interface EnrollmentsStatsProps {
   totalElements: number;
@@ -19,8 +20,8 @@ export default function EnrollmentsStats({
     {
       label: "Tổng học viên",
       value: totalElements,
-      valueClass: "text-gray-900 dark:text-white",
-      dot: "bg-gray-400",
+      valueClass: "text-foreground",
+      dot: "bg-blue-500",
     },
     {
       label: "Đã hoàn thành",
@@ -31,8 +32,8 @@ export default function EnrollmentsStats({
     {
       label: "Đang học",
       value: inProgress,
-      valueClass: "text-blue-600 dark:text-blue-400",
-      dot: "bg-blue-500",
+      valueClass: "text-accent dark:text-accent-on-dark",
+      dot: "bg-accent",
     },
     {
       label: "Chưa bắt đầu",
@@ -43,20 +44,20 @@ export default function EnrollmentsStats({
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="grid grid-cols-2 divide-y divide-gray-200 dark:divide-slate-700 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+    <Card className="overflow-hidden border border-border bg-card shadow-sm rounded-xl">
+      <div className="grid grid-cols-2 divide-y divide-border sm:grid-cols-4 sm:divide-x sm:divide-y-0">
         {items.map((item) => (
           <div key={item.label} className="px-5 py-4">
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               <span className={`h-1.5 w-1.5 rounded-full ${item.dot}`} />
               {item.label}
             </p>
-            <p className={`mt-1 text-2xl font-bold tabular-nums ${item.valueClass}`}>
+            <p className={`mt-1 text-2xl font-bold tracking-tight tabular-nums ${item.valueClass}`}>
               {item.value.toLocaleString("vi-VN")}
             </p>
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }

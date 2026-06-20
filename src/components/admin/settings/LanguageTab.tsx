@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -37,13 +37,13 @@ export default function LanguageTab() {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+    <div className="bg-card rounded-xl border border-border shadow-sm text-foreground">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="px-6 py-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("common.language")}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           {t("admin.settings.languageSubtitle")}
         </p>
       </div>
@@ -59,10 +59,10 @@ export default function LanguageTab() {
               <button
                 key={loc}
                 onClick={() => setLocale(loc)}
-                className={`relative overflow-hidden p-5 rounded-2xl border transition-all duration-300 text-left group bg-white dark:bg-slate-800/50 ${
+                className={`relative overflow-hidden p-5 rounded-2xl border transition-all duration-300 text-left group bg-card ${
                   isSelected
                     ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-sm"
-                    : "border-gray-200 dark:border-slate-700 hover:border-accent/50 hover:shadow-sm"
+                    : "border-border hover:border-accent/50 hover:shadow-sm"
                 }`}
               >
                 <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-accent opacity-5 transition-opacity duration-300 group-hover:opacity-10" />
@@ -78,27 +78,25 @@ export default function LanguageTab() {
                 )}
 
                 <div className="relative flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gray-50 dark:bg-slate-700 shadow-inner border border-gray-100 dark:border-slate-600 transition-transform duration-300 group-hover:scale-105 overflow-hidden flex-shrink-0">
-                    <Image
-                      src={option.flagUrl}
-                      alt={option.flag}
-                      width={40}
-                      height={28}
-                      className="object-cover rounded-sm"
-                    />
-                  </div>
+                  <Image
+                    src={option.flagUrl}
+                    alt={option.flag}
+                    width={48}
+                    height={32}
+                    className="object-cover rounded-md border border-border/40 shadow-sm transition-transform duration-300 group-hover:scale-105 flex-shrink-0"
+                  />
 
                   <div className="min-w-0 pr-6">
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                       {option.nativeLabel}
-                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200/50 dark:border-slate-600">
+                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/40">
                         {loc}
                       </span>
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-300 font-medium">
+                    <p className="text-xs text-muted-foreground font-medium">
                       {option.label}
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-2 font-light line-clamp-1">
+                    <p className="text-xs text-muted-foreground/80 mt-2 font-light line-clamp-1">
                       {getLanguageDesc(loc)}
                     </p>
                   </div>

@@ -11,6 +11,7 @@ import {
   SubmissionDetailModal,
   SubmissionsTable,
 } from "@/components/admin/exercises/submissions";
+import { Button } from "@/components/ui/button";
 
 export default function UserExerciseSubmissionsPage() {
   const params = useParams();
@@ -54,8 +55,8 @@ export default function UserExerciseSubmissionsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-        <div className="rounded-2xl border border-gray-200 bg-white p-12">
+      <div className="p-6 space-y-6">
+        <div className="rounded-xl border border-border bg-card p-12">
           <div className="flex items-center justify-center gap-2">
             <svg
               className="h-5 w-5 animate-spin text-accent"
@@ -77,7 +78,7 @@ export default function UserExerciseSubmissionsPage() {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            <span className="text-sm text-gray-600">Đang tải dữ liệu...</span>
+            <span className="text-sm text-muted-foreground">Đang tải dữ liệu...</span>
           </div>
         </div>
       </div>
@@ -85,18 +86,20 @@ export default function UserExerciseSubmissionsPage() {
   }
 
   return (
-    <div className="min-h-screen space-y-5 bg-gray-50 p-4 sm:p-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => router.back()}
-          className="mb-3 inline-flex items-center gap-1.5 text-sm text-gray-600 transition hover:text-gray-900"
+          className="mb-3 gap-1.5 h-8 px-2 -ml-2 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
           Quay lại
-        </button>
-        <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">Lịch sử làm bài</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        </Button>
+        <h1 className="text-xl font-bold text-foreground sm:text-2xl">Lịch sử làm bài</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Chi tiết tất cả các lần làm bài của học viên
         </p>
       </div>

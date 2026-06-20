@@ -6,9 +6,9 @@ interface ExerciseTypeBadgeProps {
 
 export const ExerciseTypeBadge = ({ type }: ExerciseTypeBadgeProps) => {
   const colors: Record<ExerciseType, string> = {
-    [ExerciseType.MULTIPLE_CHOICE]: "bg-blue-100 text-blue-800",
-    [ExerciseType.ESSAY]: "bg-green-100 text-green-800",
-    [ExerciseType.CODING]: "bg-purple-100 text-purple-800",
+    [ExerciseType.MULTIPLE_CHOICE]: "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    [ExerciseType.ESSAY]: "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+    [ExerciseType.CODING]: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
   };
 
   const labels: Record<ExerciseType, string> = {
@@ -30,9 +30,9 @@ interface DifficultyBadgeProps {
 
 export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
   const colors: Record<Difficulty, string> = {
-    [Difficulty.EASY]: "bg-green-100 text-green-800",
-    [Difficulty.MEDIUM]: "bg-yellow-100 text-yellow-800",
-    [Difficulty.HARD]: "bg-red-100 text-red-800",
+    [Difficulty.EASY]: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+    [Difficulty.MEDIUM]: "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    [Difficulty.HARD]: "bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
   };
 
   const labels: Record<Difficulty, string> = {
@@ -54,9 +54,9 @@ interface ExerciseStatusBadgeProps {
 
 export const ExerciseStatusBadge = ({ status }: ExerciseStatusBadgeProps) => {
   const colors: Record<ExerciseStatus, string> = {
-    [ExerciseStatus.DRAFT]: "bg-gray-100 text-gray-800",
-    [ExerciseStatus.PUBLISHED]: "bg-green-100 text-green-800",
-    [ExerciseStatus.ARCHIVED]: "bg-red-100 text-red-800",
+    [ExerciseStatus.DRAFT]: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
+    [ExerciseStatus.PUBLISHED]: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+    [ExerciseStatus.ARCHIVED]: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
   };
 
   const labels: Record<ExerciseStatus, string> = {

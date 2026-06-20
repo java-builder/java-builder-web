@@ -5,6 +5,8 @@ import Image from "next/image";
 import { UpdateProfileRequest, UserDetailResponse, UserStatus } from "@/types/user";
 import { userApi } from "@/services/user.service";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Loader2, X, ShieldAlert, Check } from "lucide-react";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -122,123 +124,109 @@ export default function EditUserModal({
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Backdrop */}
         <div
-          className={`fixed inset-0 transition-all duration-300 ${isOpen ? 'backdrop-blur-sm' : ''
-            }`}
+          className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300`}
           onClick={handleClose}
         />
 
         {/* Modal */}
-        <div className={`relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}>
+        <div className={`relative w-full max-w-2xl bg-card border border-border text-foreground rounded-2xl shadow-2xl transform transition-all duration-300 ease-out`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-6 border-b border-border">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-foreground">
                 Chỉnh sửa người dùng
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Cập nhật thông tin người dùng
               </p>
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground"
             >
-              <svg
-                className="w-6 h-6 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <X className="w-5 h-5" />
+            </Button>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6">
             <div className="space-y-6">
               {/* Avatar Section - Read Only for Admin */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">
                   Ảnh đại diện
                 </label>
 
                 {/* Avatar Preview - Read Only */}
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="relative h-20 w-20">
+                <div className="flex items-center space-x-4 p-3 rounded-lg border border-border bg-muted/40">
+                  <div className="relative h-16 w-16">
                     {imagePreview ? (
                       <Image
                         src={imagePreview}
                         alt="Avatar"
                         fill
-                        sizes="80px"
-                        className="rounded-full object-cover border border-gray-200"
+                        sizes="64px"
+                        className="rounded-full object-cover border border-border"
                         unoptimized
                       />
                     ) : (
-                      <div className="h-20 w-20 rounded-full bg-gradient-to-r from-accent to-accent-600 flex items-center justify-center">
+                      <div className="h-16 w-16 rounded-full bg-gradient-to-r from-accent to-accent-600 flex items-center justify-center">
                         <span className="text-lg font-medium text-white">
                           {formData.username?.charAt(0)?.toUpperCase() || "U"}
                         </span>
                       </div>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500">
-                    Admin không thể thay đổi avatar của người dùng
-                  </p>
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-medium text-foreground">Ảnh đại diện người dùng</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      Quản trị viên không thể thay đổi avatar của người dùng
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Username */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tên người dùng <span className="text-red-500">*</span>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground">
+                    Tên người dùng <span className="text-destructive">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.username || ""}
                     onChange={(e) => handleInputChange("username", e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.username
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
-                      }`}
+                    className={`flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
+                      errors.username
+                        ? "border-destructive focus-visible:ring-destructive/30"
+                        : "border-input"
+                    }`}
                   />
                   {errors.username && (
-                    <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+                    <p className="text-xs text-destructive">{errors.username}</p>
                   )}
                 </div>
 
                 {/* Email */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email <span className="text-red-500">*</span>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground">
+                    Email <span className="text-destructive">*</span>
                   </label>
                   <input
                     type="email"
                     value={formData.email || ""}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200 ${errors.email
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
-                      }`}
+                    disabled
+                    className="flex h-10 w-full rounded-md border border-input bg-muted/60 px-3 py-2 text-sm text-muted-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-not-allowed"
                   />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                  )}
                 </div>
               </div>
 
               {/* University */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">
                   Trường đại học
                 </label>
                 <input
@@ -246,21 +234,21 @@ export default function EditUserModal({
                   value={formData.university || ""}
                   onChange={(e) => handleInputChange("university", e.target.value)}
                   placeholder="Nhập tên trường đại học..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
 
               {/* User Status */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Trạng thái tài khoản <span className="text-red-500">*</span>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">
+                  Trạng thái tài khoản <span className="text-destructive">*</span>
                 </label>
                 <select
                   value={formData.userStatus || UserStatus.ACTIVE}
                   onChange={(e) =>
                     handleInputChange("userStatus", e.target.value as UserStatus)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors duration-200"
+                  className="flex h-10 w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   <option value={UserStatus.ACTIVE}>Hoạt động</option>
                   <option value={UserStatus.INACTIVE}>Không hoạt động</option>
@@ -268,102 +256,60 @@ export default function EditUserModal({
               </div>
 
               {/* Two-Factor Authentication */}
-              <div>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.mftEnable || false}
-                    onChange={(e) => handleInputChange("mftEnable", e.target.checked)}
-                    className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
-                  />
-                  <span className="ml-2 text-sm font-medium text-gray-700">
-                    Bật xác thực hai yếu tố (2FA)
-                  </span>
-                </label>
-                <p className="mt-1 text-xs text-gray-500">
-                  Khi bật, người dùng sẽ cần xác thực bổ sung khi đăng nhập
-                </p>
+              <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-muted/20">
+                <input
+                  type="checkbox"
+                  id="mftEnable"
+                  disabled
+                  checked={formData.mftEnable || false}
+                  className="h-4 w-4 rounded border-input text-accent focus:ring-accent dark:bg-slate-800 disabled:opacity-50 mt-1 cursor-not-allowed"
+                />
+                <div className="space-y-0.5">
+                  <label htmlFor="mftEnable" className="text-sm font-semibold text-foreground cursor-not-allowed">
+                    Xác thực hai yếu tố (2FA)
+                  </label>
+                  <p className="text-[11px] text-muted-foreground">
+                    Admin không thể bật/tắt trực tiếp xác thực 2FA của người dùng.
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Error Message */}
             {errors.submit && (
-              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 text-red-500 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="text-sm text-red-700">{errors.submit}</span>
-                </div>
+              <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-2.5">
+                <ShieldAlert className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                <span className="text-sm text-destructive font-medium">{errors.submit}</span>
               </div>
             )}
 
             {/* Actions */}
-            <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-              <button
+            <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-border">
+              <Button
                 type="button"
+                variant="outline"
                 onClick={handleClose}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
               >
                 Hủy bỏ
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
+                variant="accent"
                 disabled={isLoading}
-                className="px-6 py-2.5 bg-gradient-to-r from-accent to-accent-600 text-white rounded-lg hover:from-accent-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center"
+                className="gap-1.5"
               >
                 {isLoading ? (
                   <>
-                    <svg
-                      className="animate-spin w-4 h-4 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Đang cập nhật...
                   </>
                 ) : (
                   <>
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check className="h-4 w-4" />
                     Cập nhật
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

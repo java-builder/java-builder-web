@@ -9,22 +9,27 @@ export const LevelBadge = ({ level }: LevelBadgeProps) => {
     switch (level) {
       case CourseLevel.BEGINNER:
         return {
-          color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+          color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
           text: "Cơ bản",
         };
       case CourseLevel.INTERMEDIATE:
         return {
-          color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+          color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
           text: "Trung cấp",
         };
       case CourseLevel.ADVANCED:
         return {
-          color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+          color: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
           text: "Nâng cao",
+        };
+      case CourseLevel.EXPERT:
+        return {
+          color: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+          text: "Chuyên gia",
         };
       default:
         return {
-          color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+          color: "bg-muted text-muted-foreground border-border",
           text: level,
         };
     }
@@ -33,7 +38,7 @@ export const LevelBadge = ({ level }: LevelBadgeProps) => {
   const config = getLevelConfig(level);
   return (
     <span
-      className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${config.color}`}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${config.color}`}
     >
       {config.text}
     </span>

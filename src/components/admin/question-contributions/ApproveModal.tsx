@@ -6,8 +6,8 @@ import {
 } from "@/types/interview";
 import { useI18n } from "@/contexts/I18nContext";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
-import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
 import Swal from "sweetalert2";
+import { Button } from "@/components/ui/button";
 
 interface ApproveModalProps {
   contribution: QuestionContributionDetailResponse;
@@ -27,7 +27,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
   const [translations, setTranslations] = useState<InterviewQuestionTranslation[]>([]);
   const [activeLocale, setActiveLocale] = useState<Locale>("VI");
   const [error, setError] = useState("");
-  const [showOriginal, setShowOriginal] = useState(true);
+  const [modalTab, setModalTab] = useState<"original" | "translate">("translate");
 
   useEffect(() => {
     setTranslations(
@@ -121,212 +121,214 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 py-6">
-        <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={onClose} />
-        <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-slate-700">
+        <div className="fixed inset-0 bg-black/60 transition-opacity animate-in fade-in" onClick={onClose} />
+        <div className="relative bg-card rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-border animate-in zoom-in-95 duration-200">
           
           {/* Header */}
-          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between z-10">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
+            <h3 className="text-lg font-semibold text-foreground">
               Duyệt câu hỏi đóng góp
             </h3>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </button>
+            </Button>
           </div>
 
           <div className="p-6 space-y-5">
-            {/* Info Box */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <div className="flex items-start gap-2">
-                <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div className="text-sm text-blue-900 dark:text-blue-200">
-                  <p className="font-medium mb-1">Bạn có thể bổ sung hoặc chỉnh sửa câu hỏi, câu trả lời và gợi ý cho cả 4 ngôn ngữ trước khi duyệt</p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300">Thông tin gốc từ người đóng góp được điền sẵn trong tab Tiếng Việt</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Original Contributed Content (Collapsible) */}
-            <div className="border border-gray-100 dark:border-slate-700/80 rounded-xl overflow-hidden shadow-sm bg-gray-50/30 dark:bg-slate-900/10">
+            {/* Main Tabs: Original vs Translation */}
+            <div className="flex gap-2 border-b border-border">
               <button
                 type="button"
-                onClick={() => setShowOriginal(!showOriginal)}
-                className="w-full flex items-center justify-between px-5 py-3.5 bg-gray-50/80 dark:bg-slate-800/40 hover:bg-gray-100/80 dark:hover:bg-slate-800/60 transition-all border-b border-gray-100 dark:border-slate-700/50"
+                onClick={() => setModalTab("original")}
+                className={`px-4 py-2.5 text-sm font-semibold transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
+                  modalTab === "original"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <span className="text-sm font-semibold text-gray-800 dark:text-slate-200 flex items-center gap-2">
-                  <svg className="w-4.5 h-4.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Nội dung đóng góp gốc từ người dùng
-                </span>
-                <svg
-                  className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${showOriginal ? "rotate-180" : ""}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
+                <span>Nội dung đóng góp gốc</span>
               </button>
-              
-              {showOriginal && (
-                <div className="p-5 bg-white dark:bg-slate-800/20 space-y-4">
-                  <div>
-                    <span className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">
-                      Câu hỏi gốc
-                    </span>
-                    <div className="text-sm text-gray-900 dark:text-slate-100 bg-gray-50/50 dark:bg-slate-900/30 px-4 py-3 rounded-lg border border-gray-100 dark:border-slate-700/80 leading-relaxed font-medium">
-                      {contribution.question}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <span className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">
-                        Câu trả lời gốc
-                      </span>
-                      <div className="p-4 bg-gray-50/50 dark:bg-slate-900/30 border border-gray-100 dark:border-slate-700/80 rounded-lg max-h-[200px] overflow-y-auto">
-                        {contribution.answer ? (
-                          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:my-2">
-                            <MarkdownRenderer content={contribution.answer} />
-                          </div>
-                        ) : (
-                          <span className="text-xs italic text-gray-400 dark:text-slate-500">
-                            Không có câu trả lời
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">
-                        Gợi ý gốc
-                      </span>
-                      <div className="p-4 bg-gray-50/50 dark:bg-slate-900/30 border border-gray-100 dark:border-slate-700/80 rounded-lg max-h-[200px] overflow-y-auto">
-                        {contribution.tips ? (
-                          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:my-2">
-                            <MarkdownRenderer content={contribution.tips} />
-                          </div>
-                        ) : (
-                          <span className="text-xs italic text-gray-400 dark:text-slate-500">
-                            Không có gợi ý
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => setModalTab("translate")}
+                className={`px-4 py-2.5 text-sm font-semibold transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
+                  modalTab === "translate"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span>Duyệt & Dịch ngôn ngữ</span>
+              </button>
             </div>
 
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm">
+              <div className="bg-destructive/10 text-destructive p-3 rounded-lg text-sm border border-destructive/20 font-medium">
                 {error}
               </div>
             )}
 
-            {/* Locale Tabs */}
-            <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
-                Ngôn ngữ câu hỏi phỏng vấn <span className="text-red-500">*</span>
-              </label>
+            {modalTab === "original" ? (
+              <div className="space-y-4 animate-in fade-in duration-200">
+                <div>
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                    Câu hỏi gốc
+                  </span>
+                  <div className="text-sm text-foreground bg-muted/10 px-4 py-3 rounded-lg border border-border leading-relaxed font-semibold">
+                    {contribution.question}
+                  </div>
+                </div>
 
-              <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
-                {LOCALES.map((l) => {
-                  const filled = isLocaleFilled(l.code);
-                  const isActive = activeLocale === l.code;
-                  return (
-                    <button
-                      key={l.code}
-                      type="button"
-                      onClick={() => setActiveLocale(l.code)}
-                      className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
-                        isActive
-                          ? "border-accent text-accent"
-                          : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
-                      }`}
-                    >
-                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
-                        {l.flag}
-                      </span>
-                      <span>{l.label}</span>
-                      {filled && (
-                        <span
-                          className="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block"
-                          title="Đã điền"
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                      Câu trả lời gốc
+                    </span>
+                    <MarkdownEditor
+                      value={contribution.answer || ""}
+                      readOnly={true}
+                      height={600}
+                    />
+                  </div>
 
-            {/* Input fields based on Active Locale */}
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
-                  Câu hỏi ({LOCALES.find((l) => l.code === activeLocale)?.label}) <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  value={currentTrans?.question || ""}
-                  onChange={(e) => updateTranslation(activeLocale, "question", e.target.value)}
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none text-sm"
-                  placeholder="Nhập câu hỏi..."
-                />
+                  <div>
+                    <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                      Gợi ý gốc
+                    </span>
+                    <MarkdownEditor
+                      value={contribution.tips || ""}
+                      readOnly={true}
+                      height={120}
+                    />
+                  </div>
+                </div>
               </div>
+            ) : (
+              <div className="space-y-5 animate-in fade-in duration-200">
+                {/* Info Box */}
+                <div className="bg-accent/5 border border-accent/20 rounded-lg p-4">
+                  <div className="flex items-start gap-2">
+                    <svg className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="text-sm text-foreground">
+                      <p className="font-semibold mb-1">Bạn có thể bổ sung hoặc chỉnh sửa câu hỏi, câu trả lời và gợi ý cho cả 4 ngôn ngữ trước khi duyệt</p>
+                      <p className="text-xs text-muted-foreground">Thông tin gốc từ người đóng góp được điền sẵn trong tab Tiếng Việt</p>
+                    </div>
+                  </div>
+                </div>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
-                  Câu trả lời ({LOCALES.find((l) => l.code === activeLocale)?.label}) <span className="text-red-500">*</span>
-                </label>
-                <MarkdownEditor
-                  value={currentTrans?.answer || ""}
-                  onChange={(value) => updateTranslation(activeLocale, "answer", value)}
-                  placeholder="Nhập câu trả lời chi tiết... Hỗ trợ Markdown để định dạng code."
-                  height={300}
-                />
-              </div>
+                {/* Locale Tabs */}
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                    Ngôn ngữ câu hỏi phỏng vấn <span className="text-red-500">*</span>
+                  </label>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
-                  Tips - Gợi ý ({LOCALES.find((l) => l.code === activeLocale)?.label})
-                </label>
-                <MarkdownEditor
-                  value={currentTrans?.tips || ""}
-                  onChange={(value) => updateTranslation(activeLocale, "tips", value)}
-                  placeholder="Gợi ý để trả lời tốt hơn..."
-                  height={180}
-                />
+                  <div className="flex gap-2 border-b border-border overflow-x-auto">
+                    {LOCALES.map((l) => {
+                      const filled = isLocaleFilled(l.code);
+                      const isActive = activeLocale === l.code;
+                      return (
+                        <button
+                          key={l.code}
+                          type="button"
+                          onClick={() => setActiveLocale(l.code)}
+                          className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap flex items-center gap-1.5 ${
+                            isActive
+                              ? "border-accent text-accent"
+                              : "border-transparent text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-muted text-muted-foreground rounded">
+                            {l.flag}
+                          </span>
+                          <span>{l.label}</span>
+                          {filled && (
+                            <span
+                              className="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block"
+                              title="Đã điền"
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Input fields based on Active Locale */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Câu hỏi ({LOCALES.find((l) => l.code === activeLocale)?.label}) <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      value={currentTrans?.question || ""}
+                      onChange={(e) => updateTranslation(activeLocale, "question", e.target.value)}
+                      rows={3}
+                      className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none text-sm leading-relaxed"
+                      placeholder="Nhập câu hỏi..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Câu trả lời ({LOCALES.find((l) => l.code === activeLocale)?.label}) <span className="text-red-500">*</span>
+                    </label>
+                    <MarkdownEditor
+                      value={currentTrans?.answer || ""}
+                      onChange={(value) => updateTranslation(activeLocale, "answer", value)}
+                      placeholder="Nhập câu trả lời chi tiết... Hỗ trợ Markdown để định dạng code."
+                      height={500}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Tips - Gợi ý ({LOCALES.find((l) => l.code === activeLocale)?.label})
+                    </label>
+                    <MarkdownEditor
+                      value={currentTrans?.tips || ""}
+                      onChange={(value) => updateTranslation(activeLocale, "tips", value)}
+                      placeholder="Gợi ý để trả lời tốt hơn..."
+                      height={180}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Footer */}
-          <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-end gap-3 z-10">
-            <button
+          <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex items-center justify-end gap-3 z-10">
+            <Button
+              variant="ghost"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="text-muted-foreground hover:text-foreground"
             >
               Hủy
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
               onClick={handleSubmit}
-              className="inline-flex items-center px-4 py-2 text-sm font-semibold text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-800/40 rounded-lg transition-colors"
+              className="text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-600 hover:border-emerald-500/20"
             >
               <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Duyệt câu hỏi
-            </button>
+            </Button>
           </div>
         </div>
       </div>

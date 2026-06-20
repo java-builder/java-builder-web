@@ -35,6 +35,11 @@ export default function ProtectedRoute({
     );
   }
 
+  // Nếu chưa đăng nhập hoặc có lỗi thông tin user, hiển thị luôn UnauthorizedModal mà không cần chờ checkAdmin
+  if (!isAuthenticated || userError) {
+    return <UnauthorizedModal />;
+  }
+
   if (requireAdmin && !adminChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -46,8 +51,7 @@ export default function ProtectedRoute({
     );
   }
 
-  // Nếu /me fail hoặc không có token → unauthorized
-  if (!isAuthenticated || userError || (requireAdmin && !hasAdminAccess)) {
+  if (requireAdmin && !hasAdminAccess) {
     return <UnauthorizedModal />;
   }
 

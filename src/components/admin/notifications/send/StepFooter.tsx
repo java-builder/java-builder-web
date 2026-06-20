@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface StepFooterProps {
   onBack?: () => void;
@@ -20,29 +21,31 @@ export default function StepFooter({
   return (
     <div className="flex items-center justify-between gap-3">
       {onBack ? (
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
+          className="gap-1.5"
         >
           <ArrowLeft className="h-4 w-4" />
           Quay lại
-        </button>
+        </Button>
       ) : (
         <span />
       )}
 
       {onNext && (
-        <button
+        <Button
           type="button"
+          variant="accent"
           onClick={onNext}
           disabled={isSubmitting}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="gap-1.5 font-semibold"
         >
           {isFinal ? <Send className="h-4 w-4" /> : null}
           {nextLabel}
           {!isFinal && <ArrowRight className="h-4 w-4" />}
-        </button>
+        </Button>
       )}
     </div>
   );

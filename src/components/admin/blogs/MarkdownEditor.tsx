@@ -1,14 +1,13 @@
-﻿"use client";
-
 import { useState, useRef } from "react";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 interface MarkdownEditorProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   placeholder?: string;
   error?: string;
   height?: number;
+  readOnly?: boolean;
 }
 
 type ViewMode = "edit" | "preview" | "split";
@@ -19,12 +18,13 @@ export default function MarkdownEditor({
   placeholder = "Viết nội dung bài viết của bạn bằng Markdown...",
   error,
   height = 500,
+  readOnly = false,
 }: MarkdownEditorProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>("split");
+  const [viewMode, setViewMode] = useState<ViewMode>(readOnly ? "preview" : "split");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Helper function to insert markdown syntax at cursor position
   const insertMarkdown = (prefix: string, suffix: string = "") => {
+    if (readOnly) return;
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -37,7 +37,7 @@ export default function MarkdownEditor({
     const after = text.substring(end, text.length);
 
     const newText = `${before}${prefix}${selectedText}${suffix}${after}`;
-    onChange(newText);
+    onChange?.(newText);
 
     setTimeout(() => {
       textarea.focus();
@@ -106,8 +106,8 @@ export default function MarkdownEditor({
           </button>
         </div>
 
-        {/* Toolbar - Only show in Edit/Split modes */}
-        {viewMode !== "preview" && (
+        {/* Toolbar - Only show in Edit/Split modes and if not readOnly */}
+        {viewMode !== "preview" && !readOnly && (
           <div className="flex flex-wrap items-center gap-1 p-2">
             {/* Headers */}
             <div className="flex items-center space-x-0.5 border-r border-gray-300 dark:border-gray-600 pr-2 mr-2">
@@ -194,7 +194,7 @@ export default function MarkdownEditor({
               />
               <ToolbarButton
                 onClick={() => insertMarkdown("![Alt text](url)", "")}
-                icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>}
+                icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>}
                 tooltip="Hình ảnh (Image)"
               />
               <ToolbarButton
@@ -216,10 +216,11 @@ export default function MarkdownEditor({
           <textarea
             ref={textareaRef}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => onChange?.(e.target.value)}
             placeholder={placeholder}
             className="w-full h-full p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none focus:outline-none font-mono text-sm leading-relaxed"
             spellCheck={false}
+            readOnly={readOnly}
           />
         )}
 
@@ -240,10 +241,11 @@ export default function MarkdownEditor({
             <textarea
               ref={textareaRef}
               value={value}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={(e) => onChange?.(e.target.value)}
               placeholder={placeholder}
               className="w-full h-full p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none focus:outline-none font-mono text-sm leading-relaxed"
               spellCheck={false}
+              readOnly={readOnly}
             />
             <div className="h-full overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900/50">
               {value ? (
@@ -257,7 +259,6 @@ export default function MarkdownEditor({
           </div>
         )}
       </div>
-
       {error && <p className="mt-1 text-sm text-red-600 px-1">{error}</p>}
     </div>
   );

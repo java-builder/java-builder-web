@@ -84,8 +84,14 @@ export default function LanguagePage() {
 
                 <div className="relative flex items-center gap-4">
                   {/* Flag Container */}
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gray-50 dark:bg-slate-700 shadow-inner border border-gray-100 dark:border-slate-600 transition-transform duration-300 group-hover:scale-105 overflow-hidden">
-                    <Image src={option.flagUrl} alt={option.flag} width={40} height={28} className="object-cover rounded-sm" />
+                  <div className="flex h-14 w-14 items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                    <Image 
+                      src={option.flagUrl} 
+                      alt={option.flag} 
+                      width={48} 
+                      height={32} 
+                      className="object-cover rounded-md shadow-sm border border-gray-200/60 dark:border-slate-700" 
+                    />
                   </div>
 
                   <div className="min-w-0 pr-6">

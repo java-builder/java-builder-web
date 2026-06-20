@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { enrollmentApi } from "@/services/enrollment.service";
 import toast from "react-hot-toast";
+import { UserPlus, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface EnrollUserModalProps {
   isOpen: boolean;
@@ -65,41 +67,42 @@ export default function EnrollUserModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div
-          className="fixed inset-0 backdrop-blur-sm bg-black/20 transition-all duration-300"
-          onClick={handleClose}
-        />
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 backdrop-blur-sm bg-black/40 dark:bg-black/60 transition-opacity"
+        onClick={handleClose}
+      />
 
-        <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all duration-300">
+      <div className="flex min-h-screen items-center justify-center p-4">
+        {/* Modal content */}
+        <div className="relative w-full max-w-md bg-card text-card-foreground border border-border rounded-xl shadow-2xl overflow-hidden z-10">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-xl">
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-accent to-accent-600">
-                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+                <UserPlus className="h-5 w-5 text-accent dark:text-accent-on-dark" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Thêm học viên</h3>
-                <p className="text-sm text-gray-500 truncate max-w-[200px]">{courseTitle}</p>
+              <div className="min-w-0">
+                <h3 className="text-lg font-bold text-foreground">Thêm học viên</h3>
+                <p className="text-xs text-muted-foreground truncate max-w-[200px]" title={courseTitle}>
+                  {courseTitle}
+                </p>
               </div>
             </div>
             <button
               onClick={handleClose}
-              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              disabled={isLoading}
+              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 p-1.5 rounded-lg"
             >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="h-5 w-5" />
             </button>
           </div>
 
-          {/* Body */}
-          <form onSubmit={handleSubmit} className="p-6">
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          {/* Form Body */}
+          <form onSubmit={handleSubmit}>
+            <div className="p-6 space-y-4">
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="text-sm font-semibold text-foreground">
                   Email học viên
                 </label>
                 <input
@@ -111,45 +114,39 @@ export default function EnrollUserModal({
                     if (error) setError("");
                   }}
                   placeholder="example@email.com"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${error
-                      ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                      : "border-gray-300 focus:ring-accent focus:border-accent"
-                    }`}
+                  className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
                   disabled={isLoading}
                 />
                 {error && (
-                  <p className="mt-2 text-sm text-red-600">{error}</p>
+                  <p className="text-xs text-destructive">{error}</p>
                 )}
               </div>
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end space-x-3 mt-6">
-              <button
+            <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-xl">
+              <Button
                 type="button"
+                variant="outline"
                 onClick={handleClose}
                 disabled={isLoading}
-                className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50"
               >
                 Hủy
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
+                variant="accent"
                 disabled={isLoading}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-accent to-accent-600 rounded-xl hover:from-accent-600 hover:to-accent-700 transition-all disabled:opacity-50 flex items-center space-x-2"
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    <span>Đang xử lý...</span>
+                    <span className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
+                    Đang xử lý...
                   </>
                 ) : (
                   <span>Thêm học viên</span>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

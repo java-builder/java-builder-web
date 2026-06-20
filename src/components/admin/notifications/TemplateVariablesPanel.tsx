@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { SYSTEM_VARS } from "./emailTemplates";
 
@@ -88,15 +88,15 @@ export default function TemplateVariablesPanel({
   if (!hasCustom && !hasSystem) return null;
 
   return (
-    <div className="border-b border-gray-200 dark:border-slate-700">
+    <div className="border-b border-border">
       {hasCustom && (
-        <div className="px-4 py-3 bg-amber-50/70 dark:bg-amber-900/10 border-b border-amber-100 dark:border-amber-900/20">
+        <div className="px-4 py-3 bg-amber-500/5 border-b border-amber-500/10">
           <div className="flex items-center gap-1.5 mb-2.5">
-            <span className="text-amber-600 dark:text-amber-400 text-sm">✏️</span>
-            <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
+            <span className="text-amber-500 text-sm">✏️</span>
+            <span className="text-xs font-bold text-amber-500">
               Biến cần điền trước khi gửi
             </span>
-            <span className="ml-auto text-[10px] font-medium text-amber-500/80 bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
+            <span className="ml-auto text-[10px] font-medium text-amber-500 bg-amber-500/15 px-1.5 py-0.5 rounded-full">
               Bắt buộc
             </span>
           </div>
@@ -111,12 +111,12 @@ export default function TemplateVariablesPanel({
               return (
                 <div key={varName}>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <code className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded">
+                    <code className="text-[10px] font-mono font-bold text-amber-500 bg-amber-500/15 px-1.5 py-0.5 rounded">
                       {`{${varName}}`}
                     </code>
-                    <span className="text-[11px] text-gray-500 dark:text-gray-300">{meta.label}</span>
+                    <span className="text-[11px] text-muted-foreground">{meta.label}</span>
                     {isEmpty && (
-                      <span className="ml-auto text-[10px] text-red-500 font-medium">Chưa điền</span>
+                      <span className="ml-auto text-[10px] text-destructive font-medium">Chưa điền</span>
                     )}
                   </div>
                   <input
@@ -124,10 +124,10 @@ export default function TemplateVariablesPanel({
                     value={customVarValues[varName] ?? ""}
                     onChange={(e) => onChange(varName, e.target.value)}
                     placeholder={meta.placeholder}
-                    className={`w-full px-2.5 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-1 transition-all dark:bg-slate-800 dark:text-white ${
+                    className={`w-full px-2.5 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-1 transition-all bg-background text-foreground ${
                       isEmpty
-                        ? "border-amber-300 dark:border-amber-700 focus:ring-amber-400/50"
-                        : "border-gray-200 dark:border-slate-600 focus:ring-accent/50"
+                        ? "border-amber-500 focus:ring-amber-500/50"
+                        : "border-input focus:ring-accent/50"
                     }`}
                   />
                   {sugs.length > 0 && (
@@ -138,7 +138,7 @@ export default function TemplateVariablesPanel({
                           type="button"
                           onClick={() => onChange(varName, s)}
                           title={s}
-                          className="px-2 py-0.5 text-[10px] font-medium bg-white hover:bg-amber-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-slate-600 rounded transition-colors"
+                          className="px-2 py-0.5 text-[10px] font-medium bg-background hover:bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:border-amber-500/40 rounded transition-colors"
                         >
                           {labelOf(s)}
                         </button>
@@ -153,13 +153,13 @@ export default function TemplateVariablesPanel({
       )}
 
       {hasSystem && (
-        <div className="px-4 py-3 bg-slate-50/60 dark:bg-slate-800/40">
+        <div className="px-4 py-3 bg-muted/40">
           <div className="flex items-center gap-1.5 mb-2">
-            <span className="text-slate-400 text-sm">⚙️</span>
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+            <span className="text-muted-foreground text-sm">⚙️</span>
+            <span className="text-xs font-bold text-muted-foreground">
               Biến hệ thống
             </span>
-            <span className="ml-auto text-[10px] font-medium text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full">
+            <span className="ml-auto text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
               Backend tự inject
             </span>
           </div>
@@ -167,20 +167,20 @@ export default function TemplateVariablesPanel({
             {systemVarsDetected.map((varName) => (
               <div
                 key={varName}
-                className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg"
+                className="flex items-center gap-1 px-2 py-1 bg-background border border-border rounded-lg"
                 title={`Giá trị mẫu: ${SYSTEM_VARS[varName] ?? varName}`}
               >
-                <code className="text-[10px] font-mono font-semibold text-slate-600 dark:text-slate-300">
+                <code className="text-[10px] font-mono font-semibold text-foreground">
                   {`{${varName}}`}
                 </code>
-                <span className="text-[10px] text-slate-400">→</span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 italic">
+                <span className="text-[10px] text-muted-foreground">→</span>
+                <span className="text-[10px] text-muted-foreground italic">
                   {SYSTEM_VARS[varName] ?? "auto"}
                 </span>
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-slate-400 mt-2 leading-relaxed">
+          <p className="text-[10px] text-muted-foreground mt-2 leading-relaxed">
             Các biến này được backend thay thế tự động khi gửi thật. Giá trị hiển thị ở trên chỉ dùng để xem trước.
           </p>
         </div>

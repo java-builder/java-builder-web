@@ -13,6 +13,7 @@ import { Blog, BlogTypeDisplayNames } from "@/types/blog";
 import BlogTypeIcon from "./BlogTypeIcon";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { formatApiDate } from "@/utils/dateUtils";
+import { Button } from "@/components/ui/button";
 
 interface BlogCardProps {
   blog: Blog;
@@ -32,9 +33,9 @@ export default function BlogCard({
   const tags = blog.tags ?? [];
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:shadow-md">
       {/* Thumbnail */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-slate-700">
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
         {blog.thumbnailUrl ? (
           <Image
             src={blog.thumbnailUrl}
@@ -45,14 +46,14 @@ export default function BlogCard({
             className="object-cover transition duration-300 group-hover:scale-[1.02]"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-gray-400">
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
             <ImageOff className="h-8 w-8" />
           </div>
         )}
 
         {/* Type chip */}
         <div className="absolute left-3 top-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm dark:bg-slate-900/90 dark:text-gray-200 dark:ring-slate-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-background/95 px-2.5 py-0.5 text-[11px] font-semibold text-foreground shadow-sm ring-1 ring-border backdrop-blur-sm dark:bg-background/90">
             <BlogTypeIcon
               blogType={blog.blogType}
               className="h-3 w-3 text-accent"
@@ -65,13 +66,13 @@ export default function BlogCard({
       {/* Body */}
       <div className="flex flex-1 flex-col p-4">
         {/* Title */}
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900 transition-colors dark:text-white">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">
           {blog.title}
         </h3>
 
         {/* Summary */}
         {blog.summary && (
-          <div className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+          <div className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
             <MarkdownRenderer content={blog.summary} className="line-clamp-2" />
           </div>
         )}
@@ -98,7 +99,7 @@ export default function BlogCard({
               );
             })}
             {tags.length > 3 && (
-              <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-slate-700 dark:text-gray-300">
+              <span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                 +{tags.length - 3}
               </span>
             )}
@@ -109,7 +110,7 @@ export default function BlogCard({
         <div className="flex-1" />
 
         {/* Stats */}
-        <div className="mt-3 flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400">
+        <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1 tabular-nums">
             <Eye className="h-3.5 w-3.5" />
             {blog.viewCount}
@@ -122,36 +123,42 @@ export default function BlogCard({
             <MessageSquare className="h-3.5 w-3.5" />
             {blog.commentCount}
           </span>
-          <span className="ml-auto truncate text-gray-400 dark:text-gray-500">
+          <span className="ml-auto truncate text-muted-foreground/80">
             {formatApiDate(blog.createdAt)}
           </span>
         </div>
 
         {/* Actions */}
-        <div className="mt-3 flex items-center gap-1.5 border-t border-gray-100 pt-3 dark:border-slate-700">
+        <div className="mt-3 flex items-center gap-1.5 border-t border-border pt-3">
           {onPreview && (
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={() => onPreview(blog)}
-              className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200"
+              className="flex-1"
             >
               <Eye className="h-3.5 w-3.5" />
               Xem
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onEdit(blog)}
-            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200"
+            className="flex-1"
           >
             <Pencil className="h-3.5 w-3.5" />
             Sửa
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="destructive"
+            size="sm"
             onClick={() => onDelete(blog.id, blog.title)}
             disabled={isDeleting}
-            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-rose-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-rose-900/40 dark:bg-slate-800 dark:text-rose-400 dark:hover:bg-rose-900/20"
+            className="flex-1"
           >
             {isDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -159,7 +166,7 @@ export default function BlogCard({
               <Trash2 className="h-3.5 w-3.5" />
             )}
             {isDeleting ? "Đang xoá..." : "Xoá"}
-          </button>
+          </Button>
         </div>
       </div>
     </article>

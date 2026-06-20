@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import NotificationFilterTabs from "./NotificationFilterTabs";
 
 interface NotificationsToolbarProps {
@@ -19,7 +20,7 @@ export default function NotificationsToolbar({
   onMarkAllRead,
 }: NotificationsToolbarProps) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-2.5 shadow-sm">
       <NotificationFilterTabs
         activeTab={activeTab}
         totalCount={totalCount}
@@ -27,14 +28,16 @@ export default function NotificationsToolbar({
         onTabChange={onTabChange}
       />
       {unreadCount > 0 && onMarkAllRead && (
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={onMarkAllRead}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+          className="gap-1.5 text-xs font-semibold"
         >
           <CheckCheck className="h-3.5 w-3.5" />
           Đánh dấu tất cả đã đọc
-        </button>
+        </Button>
       )}
     </div>
   );

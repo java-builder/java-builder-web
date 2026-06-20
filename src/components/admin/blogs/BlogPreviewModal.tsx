@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -7,6 +7,14 @@ import BlogTypeIcon from "./BlogTypeIcon";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { formatApiDate } from "@/utils/dateUtils";
 import { blogService } from "@/services/blog.service";
+import { Button } from "@/components/ui/button";
+import {
+  X,
+  Loader2,
+  Eye,
+  Heart,
+  MessageSquare,
+} from "lucide-react";
 
 interface BlogPreviewModalProps {
   isOpen: boolean;
@@ -55,28 +63,28 @@ export default function BlogPreviewModal({
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Backdrop */}
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden dark:bg-slate-900 dark:border-slate-700">
+        <div className="relative flex flex-col w-full max-w-4xl bg-card border border-border text-foreground rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/20">
             <div className="flex items-center space-x-3">
               {blog && (
                 <>
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <div className="p-2 bg-accent/10 rounded-lg">
                     <BlogTypeIcon
                       blogType={blog.blogType}
-                      className="w-5 h-5 text-blue-600"
+                      className="w-5 h-5 text-accent"
                     />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-xl font-bold text-foreground">
                       Preview Bài viết
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {BlogTypeDisplayNames[blog.blogType]} •{" "}
                       {formatApiDate(blog.createdAt)}
                     </p>
@@ -84,174 +92,122 @@ export default function BlogPreviewModal({
                 </>
               )}
               {!blog && (
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-bold text-foreground">
                   Preview Bài viết
                 </h2>
               )}
             </div>
-            <button
+            <Button
               onClick={onClose}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-slate-800"
+              variant="ghost"
+              size="icon-sm"
+              className="hover:bg-muted text-muted-foreground"
             >
-              <svg
-                className="w-6 h-6 text-gray-400 dark:text-gray-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <X className="w-5 h-5" />
+            </Button>
           </div>
 
           {/* Content */}
-          <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className="flex-1 overflow-y-auto bg-background">
             {isLoading ? (
               <div className="p-6 flex items-center justify-center min-h-[400px]">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
-                  <p className="text-gray-600 dark:text-gray-300">Đang tải bài viết...</p>
+                  <Loader2 className="animate-spin h-10 w-10 text-accent mx-auto mb-4" />
+                  <p className="text-muted-foreground text-sm">Đang tải bài viết...</p>
                 </div>
               </div>
             ) : !blog ? (
               <div className="p-6 flex items-center justify-center min-h-[400px]">
-                <p className="text-gray-600 dark:text-gray-300">Không tìm thấy bài viết</p>
+                <p className="text-muted-foreground text-sm">Không tìm thấy bài viết</p>
               </div>
             ) : (
-              <article className="p-6 text-gray-700 dark:text-gray-200">
-              {/* Featured Image */}
-              {blog.thumbnailUrl && (
-                <div className="mb-6 relative w-full h-64">
-                  <Image
-                    src={blog.thumbnailUrl}
-                    alt={blog.title}
-                    fill
-                    sizes="100vw"
-                  className="object-contain rounded-lg"
-                  />
-                </div>
-              )}
-
-              {/* Title */}
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                {blog.title}
-              </h1>
-
-              {/* Meta */}
-              <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 dark:text-gray-300 pb-4 border-b border-gray-200 dark:border-slate-700">
-                {blog.author && (
-                  <>
-                    <span>Tác giả: {blog.author}</span>
-                    <span>•</span>
-                  </>
-                )}
-                <span>{formatApiDate(blog.createdAt)}</span>
-                <span>•</span>
-                <div className="flex items-center space-x-3">
-                  <span className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                    {blog.viewCount}
-                  </span>
-                  <span className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                    {blog.likeCount}
-                  </span>
-                  <span className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      />
-                    </svg>
-                    {blog.commentCount}
-                  </span>
-                </div>
-              </div>
-
-              {/* Summary */}
-              {blog.summary && (
-                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-500 rounded-r-lg">
-                  <h3 className="font-medium text-blue-900 dark:text-blue-300 mb-2">Tóm tắt</h3>
-                  {mounted ? (
-                    <PublicMarkdownRenderer
-                      content={blog.summary}
-                      className="text-blue-800 dark:text-blue-200"
+              <article className="p-6 text-foreground">
+                {/* Featured Image */}
+                {blog.thumbnailUrl && (
+                  <div className="mb-6 relative w-full h-64 bg-muted rounded-lg overflow-hidden border border-border">
+                    <Image
+                      src={blog.thumbnailUrl}
+                      alt={blog.title}
+                      fill
+                      sizes="100vw"
+                      className="object-contain"
                     />
-                  ) : (
-                    <p className="text-blue-800 dark:text-blue-200">{blog.summary}</p>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
 
-              {/* Content */}
-              {mounted ? (
-                <PublicMarkdownRenderer content={blog.content} className="text-gray-700 dark:text-gray-200" />
-              ) : (
-                <div className="animate-pulse space-y-4">
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                  <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-                  <div className="h-32 bg-gray-200 rounded"></div>
+                {/* Title */}
+                <h1 className="text-3xl font-bold text-foreground mb-4">
+                  {blog.title}
+                </h1>
+
+                {/* Meta */}
+                <div className="flex items-center space-x-4 mb-6 text-sm text-muted-foreground pb-4 border-b border-border">
+                  {blog.author && (
+                    <>
+                      <span>Tác giả: {blog.author}</span>
+                      <span>•</span>
+                    </>
+                  )}
+                  <span>{formatApiDate(blog.createdAt)}</span>
+                  <span>•</span>
+                  <div className="flex items-center space-x-3 text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-4 h-4" />
+                      {blog.viewCount}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      {blog.likeCount}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageSquare className="w-4 h-4" />
+                      {blog.commentCount}
+                    </span>
+                  </div>
                 </div>
-              )}
-            </article>
+
+                {/* Summary */}
+                {blog.summary && (
+                  <div className="mb-6 p-4 bg-accent/5 border-l-4 border-accent rounded-r-lg">
+                    <h3 className="font-semibold text-accent mb-2">Tóm tắt</h3>
+                    {mounted ? (
+                      <PublicMarkdownRenderer
+                        content={blog.summary}
+                        className="text-foreground"
+                      />
+                    ) : (
+                      <p className="text-foreground">{blog.summary}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Content */}
+                {mounted ? (
+                  <PublicMarkdownRenderer content={blog.content} className="text-foreground leading-relaxed" />
+                ) : (
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-4 bg-muted rounded w-full"></div>
+                    <div className="h-4 bg-muted rounded w-5/6"></div>
+                    <div className="h-4 bg-muted rounded w-4/6"></div>
+                    <div className="h-32 bg-muted rounded"></div>
+                  </div>
+                )}
+              </article>
             )}
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-700">
+          <div className="p-6 border-t border-border bg-muted/20">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500 dark:text-gray-300">
+              <div className="text-sm text-muted-foreground">
                 Bài viết này sẽ hiển thị như thế này khi được xuất bản
               </div>
-              <button
+              <Button
                 onClick={onClose}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                variant="outline"
               >
                 Đóng
-              </button>
+              </Button>
             </div>
           </div>
         </div>

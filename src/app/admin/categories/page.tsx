@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { categoryService } from "@/services/category.service";
@@ -26,7 +26,7 @@ export default function CategoriesPage() {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<CategoryType>(CategoryType.POST);
+  const [activeTab, setActiveTab] = useState<CategoryType>(CategoryType.BLOG);
   const { confirm } = useConfirm();
 
   const fetchAll = async () => {

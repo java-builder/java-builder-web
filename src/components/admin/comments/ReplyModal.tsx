@@ -46,26 +46,26 @@ export default function ReplyModal({
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Backdrop - Blur effect */}
         <div
-          className="fixed inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
           onClick={handleClose}
         />
 
         {/* Modal - Clean & Professional */}
-        <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-xl">
+        <div className="relative w-full max-w-2xl bg-card rounded-xl border border-border shadow-xl">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Trả lời bình luận</h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <h3 className="text-lg font-semibold text-foreground">Trả lời bình luận</h3>
+              <p className="text-sm text-muted-foreground mt-1">
                 Phản hồi cho <span className="font-medium">{commentAuthor}</span>
               </p>
             </div>
             <button
               onClick={handleClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
             >
               <svg
-                className="w-5 h-5 text-gray-500"
+                className="w-5 h-5 text-muted-foreground"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -81,19 +81,19 @@ export default function ReplyModal({
           </div>
 
           {/* Original Comment */}
-          <div className="px-6 py-4 bg-gray-50">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+          <div className="px-6 py-4 bg-muted/30">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
               Bình luận gốc
             </p>
-            <div className="bg-white rounded-lg px-4 py-3 border border-gray-200">
-              <p className="text-sm text-gray-700 leading-relaxed">{commentContent}</p>
+            <div className="bg-background rounded-lg px-4 py-3 border border-border">
+              <p className="text-sm text-foreground/90 leading-relaxed">{commentContent}</p>
             </div>
           </div>
 
           {/* Reply Form */}
           <form onSubmit={handleSubmit} className="p-6">
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/90 mb-2">
                 Nội dung phản hồi <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -101,10 +101,10 @@ export default function ReplyModal({
                 onChange={(e) => setReplyContent(e.target.value)}
                 placeholder="Nhập nội dung phản hồi..."
                 rows={5}
-                className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors resize-none"
+                className="w-full px-4 py-3 text-sm bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors resize-none text-foreground placeholder-muted-foreground"
                 required
               />
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 {replyContent.length} ký tự
               </p>
             </div>
@@ -114,7 +114,7 @@ export default function ReplyModal({
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-sm font-medium border border-border text-foreground rounded-md hover:bg-muted transition-colors"
               >
                 Hủy bỏ
               </button>

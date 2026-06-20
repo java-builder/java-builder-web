@@ -28,31 +28,31 @@ export default function CategoryTable({
   onDelete,
 }: CategoryTableProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-slate-700">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-sm font-semibold text-foreground">
             Danh sách danh mục
           </h3>
-          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             Sắp xếp theo thứ tự hiển thị mới nhất
           </p>
         </div>
         {categories.length > 0 && (
-          <span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+          <span className="whitespace-nowrap rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
             {categories.length} danh mục
           </span>
         )}
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full divide-y divide-gray-200 dark:divide-slate-700">
-          <thead className="bg-gray-50 dark:bg-slate-900/40">
+        <table className="w-full divide-y divide-border">
+          <thead className="bg-muted/40">
             <tr>
               {COLUMN_HEADERS.map((col) => (
                 <th
                   key={col.label}
-                  className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300 ${
+                  className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ${
                     col.align === "right" ? "text-right" : "text-left"
                   }`}
                 >
@@ -61,12 +61,12 @@ export default function CategoryTable({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white dark:divide-slate-700 dark:bg-slate-800">
+          <tbody className="divide-y divide-border bg-transparent">
             {isLoading && categories.length === 0 ? (
               <tr>
                 <td
                   colSpan={COLUMN_HEADERS.length}
-                  className="px-4 py-12 text-center text-sm text-gray-500 dark:text-gray-300"
+                  className="px-4 py-12 text-center text-sm text-muted-foreground"
                 >
                   <div className="flex items-center justify-center gap-2">
                     <svg
@@ -98,13 +98,13 @@ export default function CategoryTable({
                   colSpan={COLUMN_HEADERS.length}
                   className="px-4 py-12 text-center"
                 >
-                  <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
-                    <Folder className="h-5 w-5 text-gray-400" />
+                  <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                    <Folder className="h-5 w-5 text-muted-foreground" />
                   </div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-foreground">
                     Chưa có danh mục nào
                   </p>
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Bấm &quot;Tạo danh mục&quot; để thêm danh mục mới
                   </p>
                 </td>

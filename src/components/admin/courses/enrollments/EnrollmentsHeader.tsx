@@ -13,22 +13,24 @@ export default function EnrollmentsHeader({
   backHref = "/admin/courses",
 }: EnrollmentsHeaderProps) {
   return (
-    <div>
-      <Link
-        href={backHref}
-        className="mb-3 inline-flex items-center gap-1.5 text-sm text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Quay lại danh sách khoá học
-      </Link>
-      <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
-        Học viên đã đăng ký
-      </h1>
-      <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-        {courseTitle
-          ? `Khoá học: ${courseTitle}`
-          : "Đang tải thông tin khoá học..."}
-      </p>
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
+      <div className="flex items-center gap-4">
+        <Link
+          href={backHref}
+          className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors border border-border/40"
+          title="Quay lại danh sách khóa học"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
+            Học viên đã đăng ký
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {courseTitle ? `Khóa học: ${courseTitle}` : "Đang tải thông tin khóa học..."}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

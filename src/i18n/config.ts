@@ -2,7 +2,7 @@ export const locales = ["vi", "en", "ja", "ko"] as const;
 
 export type Locale = (typeof locales)[number];
 
-export const defaultLocale: Locale = "vi";
+export const defaultLocale: Locale = "en";
 
 export const localeOptions: Record<Locale, { label: string; nativeLabel: string; flag: string; flagUrl: string }> = {
   vi: { label: "Vietnamese", nativeLabel: "Tiếng Việt", flag: "VN", flagUrl: "/languages/vn.png" },
