@@ -241,6 +241,16 @@ const navGroups: NavGroup[] = [
         ),
       },
       {
+        nameKey: "admin.layout.activeUsers",
+        href: "/admin/active-users",
+        colorKey: "cyan",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        ),
+      },
+      {
         nameKey: "admin.layout.userSubscriptions",
         href: "/admin/user-subscriptions",
         colorKey: "purple",
@@ -731,26 +741,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       <button
                         type="button"
                         onClick={() => toggleGroup(group.titleKey)}
-                        className={`group w-full flex items-center justify-between px-2 py-1.5 text-[10.5px] font-bold text-left uppercase tracking-wider transition-all duration-200 select-none rounded-lg ${
-                          hasActiveChild
-                            ? "bg-slate-50 dark:bg-slate-800/40 text-blue-600 dark:text-blue-400"
-                            : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/20"
-                        }`}
+                        className={`group w-full flex items-center justify-between px-2 py-1.5 text-[10.5px] font-bold text-left uppercase tracking-wider transition-all duration-200 select-none rounded-lg ${hasActiveChild
+                          ? "bg-slate-50 dark:bg-slate-800/40 text-blue-600 dark:text-blue-400"
+                          : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/20"
+                          }`}
                       >
                         <div className="flex items-center space-x-2 min-w-0">
-                          <div className={`w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center transition-all duration-200 ${
-                            hasActiveChild
-                              ? `${group.borderColor.replace('border-', 'bg-')}/10 dark:${group.borderColor.replace('border-', 'bg-')}/20`
-                              : "bg-gray-100/70 dark:bg-slate-700/40 group-hover:bg-gray-200/80 dark:group-hover:bg-slate-700/60"
-                          }`}>
+                          <div className={`w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center transition-all duration-200 ${hasActiveChild
+                            ? `${group.borderColor.replace('border-', 'bg-')}/10 dark:${group.borderColor.replace('border-', 'bg-')}/20`
+                            : "bg-gray-100/70 dark:bg-slate-700/40 group-hover:bg-gray-200/80 dark:group-hover:bg-slate-700/60"
+                            }`}>
                             {group.icon}
                           </div>
                           <span className="truncate pr-1">{t(group.titleKey as Parameters<typeof t>[0])}</span>
                         </div>
                         <svg
-                          className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform duration-200 flex-shrink-0 ${
-                            isOpen ? "rotate-180" : ""
-                          }`}
+                          className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
+                            }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -768,29 +775,27 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                               item.href === "/admin"
                                 ? pathname === "/admin"
                                 : pathname === item.href ||
-                                  (item.href !== "/" &&
-                                    pathname.startsWith(`${item.href}/`) &&
-                                    !navGroups.some((g) =>
-                                      g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
-                                    ));
+                                (item.href !== "/" &&
+                                  pathname.startsWith(`${item.href}/`) &&
+                                  !navGroups.some((g) =>
+                                    g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
+                                  ));
 
                             const label = t(item.nameKey as Parameters<typeof t>[0]);
                             return (
                               <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`group flex items-center px-2 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200 ${
-                                  isActive
-                                    ? `${theme.itemActiveBg} ${theme.itemActiveText}`
-                                    : `text-gray-600 dark:text-gray-300 ${theme.itemHoverBg} ${theme.itemHoverText}`
-                                }`}
+                                className={`group flex items-center px-2 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200 ${isActive
+                                  ? `${theme.itemActiveBg} ${theme.itemActiveText}`
+                                  : `text-gray-600 dark:text-gray-300 ${theme.itemHoverBg} ${theme.itemHoverText}`
+                                  }`}
                               >
                                 <span
-                                  className={`mr-2 flex-shrink-0 transition-all duration-200 ${
-                                    isActive
-                                      ? theme.iconActive
-                                      : `${theme.iconActive} opacity-40 group-hover:opacity-100`
-                                  }`}
+                                  className={`mr-2 flex-shrink-0 transition-all duration-200 ${isActive
+                                    ? theme.iconActive
+                                    : `${theme.iconActive} opacity-40 group-hover:opacity-100`
+                                    }`}
                                 >
                                   <div className="w-4 h-4 flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4">
                                     {item.icon}

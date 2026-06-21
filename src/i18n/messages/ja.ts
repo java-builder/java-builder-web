@@ -963,6 +963,7 @@ export const ja = {
       backToUser: "ユーザー画面へ戻る",
       users: "ユーザー管理",
       sessions: "セッション管理",
+      activeUsers: "アクティブユーザー",
       courses: "コース",
       exercises: "練習問題",
       blogs: "記事管理",

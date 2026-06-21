@@ -24,3 +24,19 @@ export interface SubscribeResponse {
   totalPrice: number;
   paymentGateway: string;
 }
+
+export interface SubscriptionChartData {
+  label: string;
+  count: number;
+  revenue: number;
+}
+
+export interface SubscriptionStatsResponse {
+  totalSubscriptions: number;
+  actualRevenue: number;
+  freeUsersCount: number;
+  premiumUsersCount: number;
+  conversionRate: number;
+  subscriptionChart: SubscriptionChartData[];
+}
+

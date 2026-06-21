@@ -5,6 +5,7 @@ import {
   UserSubscription,
   SubscribeRequest,
   SubscribeResponse,
+  SubscriptionStatsResponse,
 } from "@/types/user-subscription";
 
 export const userSubscriptionService = {
@@ -83,6 +84,14 @@ export const userSubscriptionService = {
     const response = await apiClient.post<ApiResponse<void>>(
       API.USER_SUBSCRIPTION_ADMIN_ASSIGN,
       { email, subscriptionPlanId }
+    );
+    return response.data;
+  },
+
+  // Admin: Lấy thống kê đăng ký dịch vụ
+  getSubscriptionStats: async (timeRange: string = "30days") => {
+    const response = await apiClient.get<ApiResponse<SubscriptionStatsResponse>>(
+      `${API.USER_SUBSCRIPTION_ADMIN_STATS}?timeRange=${timeRange}`
     );
     return response.data;
   },

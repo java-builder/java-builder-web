@@ -54,6 +54,7 @@ export const API = {
     USER_SUBSCRIPTION_CANCEL: "/api/v1/user-subscriptions/cancel",
     USER_SUBSCRIPTION_ADMIN_ASSIGN: "/api/v1/user-subscriptions/admin/assign",
     USER_SUBSCRIPTION_ADMIN_ALL: "/api/v1/user-subscriptions/admin/all",
+    USER_SUBSCRIPTION_ADMIN_STATS: "/api/v1/user-subscriptions/admin/stats",
 
     // REVIEW
     CREATE_REVIEW: "/api/v1/reviews",

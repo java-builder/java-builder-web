@@ -969,6 +969,7 @@ export const en = {
       backToUser: "Back to user site",
       users: "User management",
       sessions: "Session management",
+      activeUsers: "Active users",
       courses: "Courses",
       exercises: "Exercises",
       blogs: "Blog management",

@@ -22,17 +22,24 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
   const { data: notifData } = useNotifications(1, "all");
   const { settings } = useSettingsContext();
   const { t } = useI18n();
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAuthChecked(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const notifications = notifData?.data || [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // Update menu groups with notification badge
   const menuGroupsWithBadge = useMemo(() => {
     return menuGroups.map((group) => ({
       ...group,
@@ -58,8 +65,8 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     typeof rawAppName === "string" && rawAppName.trim() !== ""
       ? rawAppName
       : clientTitle
-      ? clientTitle
-      : "Java Builder";
+        ? clientTitle
+        : "Java Builder";
 
   // Close sidebar when route changes
   useEffect(() => {
@@ -131,9 +138,8 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-50 lg:hidden transform transition-transform duration-300 flex flex-col ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-screen w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-50 lg:hidden transform transition-transform duration-300 flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
@@ -176,12 +182,22 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
           </button>
         </div>
 
-        {/* User Section (if logged in) */}
-        {currentUser && (
+        {/* User / Auth Section */}
+        {!isAuthChecked || isLoading ? (
           <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
+            <div className="flex items-center gap-3 p-3">
+              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 animate-pulse flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse w-24" />
+                <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded animate-pulse w-32" />
+              </div>
+            </div>
+          </div>
+        ) : currentUser ? (
+          <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0 flex items-center justify-between gap-3">
             <Link
               href="/profile"
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex-1 flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors min-w-0"
               onClick={onClose}
             >
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -208,11 +224,19 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 </p>
               </div>
             </Link>
-          </div>
-        )}
 
-        {/* Login/Register Buttons (if not logged in) */}
-        {!currentUser && (
+            <button
+              onClick={handleLogout}
+              className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors flex-shrink-0"
+              title={t("auth.logout") || "Đăng xuất"}
+              aria-label={t("auth.logout") || "Đăng xuất"}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+        ) : (
           <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
             <div className="flex flex-col gap-2">
               <Link
@@ -259,29 +283,26 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                            item.highlight
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${item.highlight
                               ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
                               : active
-                              ? "bg-accent/10 dark:bg-accent/20 text-accent font-semibold ring-1 ring-inset ring-accent/30 dark:ring-accent/40"
-                              : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
-                          }`}
+                                ? "bg-accent/10 dark:bg-accent/20 text-accent font-semibold ring-1 ring-inset ring-accent/30 dark:ring-accent/40"
+                                : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
+                            }`}
                           onClick={onClose}
                         >
                           <span
-                            className={`flex-shrink-0 ${
-                              item.highlight
+                            className={`flex-shrink-0 ${item.highlight
                                 ? "text-purple-600 dark:text-purple-300"
                                 : active
-                                ? "text-accent"
-                                : item.color || "text-gray-500 dark:text-gray-300"
-                            }`}
+                                  ? "text-accent"
+                                  : item.color || "text-gray-500 dark:text-gray-300"
+                              }`}
                           >
                             {item.icon}
                           </span>
-                          <span className={`flex-1 font-medium text-sm ${
-                            item.highlight ? "font-semibold" : ""
-                          }`}>
+                          <span className={`flex-1 font-medium text-sm ${item.highlight ? "font-semibold" : ""
+                            }`}>
                             {displayedLabel}
                           </span>
                           {item.highlight && (
@@ -290,13 +311,12 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                             </span>
                           )}
                           {item.badge && (
-                            <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${
-                              item.href === "/notifications" 
-                                ? "bg-red-600 text-white" 
+                            <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${item.href === "/notifications"
+                                ? "bg-red-600 text-white"
                                 : item.badgeColor
-                                ? `${item.badgeColor} text-white animate-pulse`
-                                : "bg-accent/20 text-accent"
-                            }`}>
+                                  ? `${item.badgeColor} text-white animate-pulse`
+                                  : "bg-accent/20 text-accent"
+                              }`}>
                               {item.badge}
                             </span>
                           )}
@@ -311,7 +331,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         </nav>
 
         {/* Logout Button - Only show if logged in */}
-        {currentUser && (
+        {isAuthChecked && currentUser && (
           <div className="border-t border-gray-200 dark:border-slate-700 p-3 flex-shrink-0">
             <button
               onClick={handleLogout}

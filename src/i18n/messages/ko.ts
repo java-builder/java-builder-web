@@ -963,6 +963,7 @@ export const ko = {
       backToUser: "사용자 페이지로",
       users: "사용자 관리",
       sessions: "세션 관리",
+      activeUsers: "활성 사용자",
       courses: "강의",
       exercises: "연습 문제",
       blogs: "블로그 관리",
