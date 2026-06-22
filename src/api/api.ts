@@ -32,6 +32,7 @@ export const API = {
     // USER SESSION
     GET_USER_SESSIONS: "/api/v1/user-sessions",
     REVOKE_SESSION: "/api/v1/tokens/session", // + /:sessionId
+    ACTIVE_USERS: "/api/v1/active-users",
 
     // TWO FACTOR
     TWO_FACTOR_ACTIVATE: "/api/v1/two-factor/activate",

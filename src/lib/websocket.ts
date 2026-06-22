@@ -10,26 +10,26 @@ export interface PaymentSuccessNotification {
 }
 
 export const connectWebSocket = () => {
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/f-learning/ws';
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/java-builder/ws';
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-  
+
   const client = new Client({
     brokerURL: wsUrl,
     connectHeaders: token ? {
       Authorization: `Bearer ${token}`,
     } : {},
-    
+
     onConnect: () => {
-      console.log('✅ WebSocket connected');
+      console.log('WebSocket connected');
     },
-    
+
     onStompError: (frame) => {
-      console.error('❌ WebSocket error:', frame.headers['message']);
+      console.error('WebSocket error:', frame.headers['message']);
     },
   });
 
   client.activate();
-  
+
   return client;
 };
 

@@ -1,65 +1,58 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Client } from '@stomp/stompjs';
-import { connectWebSocket, subscribeToPaymentSuccess, PaymentSuccessNotification } from '@/lib/websocket';
+import { useWebSocket } from '@/components/providers/PresenceProvider';
+import { subscribeToPaymentSuccess, PaymentSuccessNotification } from '@/lib/websocket';
 import toast from 'react-hot-toast';
 
 export const usePaymentWebSocket = (courseId?: string) => {
   const router = useRouter();
-  const clientRef = useRef<Client | null>(null);
+  const { client, isConnected } = useWebSocket();
 
   useEffect(() => {
-    const client = connectWebSocket();
-    clientRef.current = client;
+    if (!client || !isConnected) {
+      return;
+    }
 
-    const originalOnConnect = client.onConnect;
-    client.onConnect = (frame) => {
-      if (originalOnConnect) {
-        originalOnConnect(frame);
-      }
+    const subscription = subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
+      console.log("Payment notification received:", notification);
       
-      subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
-        console.log(notification)
-        if (notification.transactionType === 'SUBSCRIPTION') {
-          toast.success('🎉 Đăng ký Premium thành công!', {
-            duration: 5000,
-            position: 'top-center',
-            style: {
-              background: 'linear-gradient(to right, #fbbf24, #f97316)',
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '16px',
-              padding: '16px 24px',
-            },
-          });
-          
-          setTimeout(() => {
-            router.push('/profile/subscription');
-            router.refresh();
-            client.deactivate();
-          }, 2000);
-          
-        } else if (notification.transactionType === 'PAYIN') {
-          toast.success('🎉 Thanh toán khóa học thành công!', {
-            duration: 4000,
-            position: 'top-center',
-          });
-          
-          setTimeout(() => {
-            router.push('/my-courses');
-            router.refresh();
-            client.deactivate();
-          }, 2000);
-        }
-      });
-    };
+      if (notification.transactionType === 'SUBSCRIPTION') {
+        toast.success('🎉 Đăng ký Premium thành công!', {
+          duration: 5000,
+          position: 'top-center',
+          style: {
+            background: 'linear-gradient(to right, #fbbf24, #f97316)',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            padding: '16px 24px',
+          },
+        });
+        
+        setTimeout(() => {
+          router.push('/profile/subscription');
+          router.refresh();
+        }, 2000);
+        
+      } else if (notification.transactionType === 'PAYIN') {
+        toast.success('🎉 Thanh toán khóa học thành công!', {
+          duration: 4000,
+          position: 'top-center',
+        });
+        
+        setTimeout(() => {
+          router.push('/my-courses');
+          router.refresh();
+        }, 2000);
+      }
+    });
 
     return () => {
-      if (clientRef.current) {
-        clientRef.current.deactivate();
+      if (subscription) {
+        subscription.unsubscribe();
       }
     };
-  }, [router, courseId]);
+  }, [client, isConnected, router, courseId]);
 
-  return clientRef.current;
+  return client;
 };
