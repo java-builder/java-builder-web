@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/services/auth.service";
+import { clearInterviewQuestionsCache } from "@/hooks/useInterviewQuestions";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -71,11 +72,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isLoading: false,
       hasAdminAccess: authorities.includes("ADMIN"),
     });
+    // Xóa cache câu hỏi phỏng vấn để cập nhật quyền truy cập mới
+    clearInterviewQuestionsCache();
   };
 
   const logout = async () => {
     setState({ isAuthenticated: false, isLoading: false, hasAdminAccess: false });
     queryClient.clear();
+    // Xóa cache câu hỏi phỏng vấn
+    clearInterviewQuestionsCache();
     try {
       await authApi.logout();
     } catch (error) {

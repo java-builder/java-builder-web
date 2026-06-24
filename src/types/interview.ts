@@ -40,6 +40,8 @@ export interface InterviewQuestionItem {
   displayOrder: number;
   active: boolean;
   translations: InterviewQuestionTranslation[];
+  isPremium?: boolean;
+  isAccess?: boolean;
 }
 
 // ─── Locale ───────────────────────────────────────────────────────────────────

@@ -198,6 +198,15 @@ export default function EditQuestionSetPage() {
                           </p>
                           <div className="flex items-center gap-2 mt-1">
                             {getDifficultyBadge(q.difficulty)}
+                            {q.isPremium ? (
+                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full border border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400">
+                                Premium 💎
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/30 text-gray-500 dark:text-gray-400">
+                                Miễn phí
+                              </span>
+                            )}
                             {!q.active && (
                               <span className="px-2 py-0.5 text-xs font-semibold rounded-full border border-border bg-muted text-muted-foreground">
                                 Ẩn

@@ -46,6 +46,7 @@ export default function CreateInterviewQuestionModal({
     difficulty: "EASY",
     displayOrder: nextDisplayOrder,
     translations: initialTranslations,
+    isPremium: false,
   });
   const [activeLocale, setActiveLocale] = useState<Locale>("VI");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,6 +99,7 @@ export default function CreateInterviewQuestionModal({
         difficulty: "EASY",
         displayOrder: nextDisplayOrder,
         translations: initialTranslations,
+        isPremium: false,
       });
       setActiveLocale("VI");
       onSuccess();
@@ -308,20 +310,34 @@ export default function CreateInterviewQuestionModal({
             </div>
           </div>
 
+          {/* Premium Checkbox */}
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isPremiumQuestionCreate"
+              checked={formData.isPremium || false}
+              onChange={(e) => setFormData({ ...formData, isPremium: e.target.checked })}
+              className="w-4 h-4 text-accent border-gray-300 dark:border-gray-600 rounded focus:ring-accent bg-white dark:bg-gray-700 cursor-pointer"
+            />
+            <label htmlFor="isPremiumQuestionCreate" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer select-none">
+              Câu hỏi Premium (yêu cầu tài khoản Premium để xem đáp án)
+            </label>
+          </div>
+
           {/* Footer */}
-          <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+              className="px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm font-medium"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-5 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             >
               {isSubmitting ? "Đang tạo..." : "Thêm câu hỏi"}
             </button>

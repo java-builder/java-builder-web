@@ -483,6 +483,11 @@ export const vi = {
     tryChooseAnotherLevel: "Thử chọn cấp độ khác",
     questionSetsLabel: "bộ câu hỏi",
     noTopicFound: "Không tìm thấy chủ đề",
+    premiumRequiredTitle: "Nội dung dành cho tài khoản Premium 🔒",
+    premiumRequiredDesc: "Nội dung này dành riêng cho tài khoản Premium. Vui lòng nâng cấp tài khoản để xem.",
+    upgradeNowBtn: "Nâng cấp ngay",
+    premiumBadge: "Premium",
+    lockedBadge: "Bị khóa",
   },
   myCoursesPage: {
     title: "Khóa học của tôi",

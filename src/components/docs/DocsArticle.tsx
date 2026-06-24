@@ -151,9 +151,9 @@ export default function DocsArticle({
         </div>
       </header>
 
-      <PublicMarkdownRenderer 
-        content={content} 
-        className="prose prose-lg dark:prose-invert max-w-none" 
+      <PublicMarkdownRenderer
+        content={content}
+        className="prose prose-lg dark:prose-invert max-w-none"
       />
 
       {!isFreePreview && canAccess === false && (

@@ -28,12 +28,12 @@ export default function PaymentModal({
       />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-accent to-accent-600 px-6 py-5">
+        <div className="px-6 py-5 border-b border-gray-150 dark:border-slate-700/50 bg-white dark:bg-slate-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-white"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -47,10 +47,10 @@ export default function PaymentModal({
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white leading-snug">
                   Thanh toán khóa học
                 </h3>
-                <p className="text-white/70 text-sm">
+                <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
                   Quét mã QR hoặc chuyển khoản
                 </p>
               </div>
@@ -58,10 +58,10 @@ export default function PaymentModal({
             {!isLoading && (
               <button
                 onClick={onClose}
-                className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700/50 rounded-xl transition-colors"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-5.5 h-5.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

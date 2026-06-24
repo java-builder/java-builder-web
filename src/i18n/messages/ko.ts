@@ -483,6 +483,11 @@ export const ko = {
     tryChooseAnotherLevel: "다른 레벨을 선택해 보세요",
     questionSetsLabel: "개의 질문 세트",
     noTopicFound: "주제를 찾을 수 없습니다",
+    premiumRequiredTitle: "프리미엄 회원 전용 콘텐츠 🔒",
+    premiumRequiredDesc: "이 콘텐츠는 프리미엄 회원 전용입니다. 모든 내용을 확인하려면 프리미엄으로 업그레이드하세요.",
+    upgradeNowBtn: "지금 업그레이드",
+    premiumBadge: "프리미엄",
+    lockedBadge: "잠금",
   },
   myCoursesPage: {
     title: "내 강의",

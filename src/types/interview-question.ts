@@ -10,13 +10,11 @@ export interface InterviewQuestionResponse {
   difficulty: Difficulty;
   displayOrder: number;
   active: boolean;
-  /**
-   * List endpoint: 1 entry resolved theo locale.
-   * Admin endpoint: full translations.
-   */
   translations: InterviewQuestionTranslation[];
   createdAt?: string;
   updatedAt?: string;
+  isPremium?: boolean;
+  isAccess?: boolean;
 }
 
 export interface ListInterviewQuestionResponse {
@@ -27,6 +25,7 @@ export interface CreateInterviewQuestionRequest {
   difficulty: Difficulty;
   displayOrder: number;
   translations: InterviewQuestionTranslation[];
+  isPremium?: boolean;
 }
 
 export interface UpdateInterviewQuestionRequest {
@@ -34,4 +33,5 @@ export interface UpdateInterviewQuestionRequest {
   displayOrder?: number;
   active?: boolean;
   translations?: InterviewQuestionTranslation[];
+  isPremium?: boolean;
 }

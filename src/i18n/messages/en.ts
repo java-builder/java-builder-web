@@ -483,6 +483,11 @@ export const en = {
     tryChooseAnotherLevel: "Try choosing another level",
     questionSetsLabel: "question sets",
     noTopicFound: "Topic not found",
+    premiumRequiredTitle: "Premium Account Content 🔒",
+    premiumRequiredDesc: "This content is exclusive to Premium accounts. Please upgrade your account to view it.",
+    upgradeNowBtn: "Upgrade Now",
+    premiumBadge: "Premium",
+    lockedBadge: "Locked",
   },
   myCoursesPage: {
     title: "My Courses",

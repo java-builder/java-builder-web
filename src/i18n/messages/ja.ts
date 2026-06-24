@@ -483,6 +483,11 @@ export const ja = {
     tryChooseAnotherLevel: "他のレベルを選択してみてください",
     questionSetsLabel: "件の質問セット",
     noTopicFound: "トピックが見つかりません",
+    premiumRequiredTitle: "プレミアムアカウント限定コンテンツ 🔒",
+    premiumRequiredDesc: "このコンテンツはプレミアムアカウント専用です。閲覧するにはアカウントをアップグレードしてください。",
+    upgradeNowBtn: "今すぐアップグレード",
+    premiumBadge: "プレミアム",
+    lockedBadge: "ロック中",
   },
   myCoursesPage: {
     title: "マイコース",

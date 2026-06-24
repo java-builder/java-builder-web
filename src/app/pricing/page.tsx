@@ -33,7 +33,7 @@ export default function PricingPage() {
   const { t, locale } = useI18n();
   const { data: currentUser } = useCurrentUser();
   usePaymentWebSocket();
-  
+
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [apiPlans, setApiPlans] = useState<PlanDisplay[]>([]);
@@ -87,10 +87,10 @@ export default function PricingPage() {
         id: plan.id,
         name: plan.name,
         price: plan.price,
-        period: isMonthly 
-          ? t("pricingPage.periodMonthly") 
-          : isYearly 
-            ? t("pricingPage.periodYearly") 
+        period: isMonthly
+          ? t("pricingPage.periodMonthly")
+          : isYearly
+            ? t("pricingPage.periodYearly")
             : t("pricingPage.periodDays").replace("{days}", plan.durationDays.toString()),
         description: plan.description || "",
         features,
@@ -99,7 +99,7 @@ export default function PricingPage() {
         disabled: false,
         apiPlanId: plan.id,
         originalPrice: isYearly ? 499000 * 12 : undefined,
-        monthlyEquivalent: isYearly 
+        monthlyEquivalent: isYearly
           ? t("pricingPage.monthlyEquivalent").replace("{price}", new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(Math.round(plan.price / 12)))
           : undefined,
       };
@@ -297,26 +297,30 @@ export default function PricingPage() {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 flex items-center justify-center p-4">
           <div className="relative bg-white dark:bg-slate-800 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-md sm:w-full border border-gray-100 dark:border-slate-700">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-accent to-blue-600 px-6 py-4">
+            <div className="px-6 py-5 border-b border-gray-150 dark:border-slate-700/50 bg-white dark:bg-slate-800">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">{t("pricingPage.paymentModalTitle")}</h3>
-                    <p className="text-white/80 text-sm">{paymentModal.planName}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white leading-snug">
+                      {t("pricingPage.paymentModalTitle")}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
+                      {paymentModal.planName}
+                    </p>
                   </div>
                 </div>
                 {!paymentModal.isLoading && (
                   <button
                     data-modal-close
                     onClick={() => setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
-                    className="text-white/80 hover:text-white transition-colors"
+                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700/50 rounded-xl transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
