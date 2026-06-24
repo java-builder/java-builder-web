@@ -186,9 +186,7 @@ export default function InterviewSetPage() {
     }
     return (
       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50">
-        <svg className="w-2.5 h-2.5 flex-shrink-0 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 11-2 0V6H3a1 1 0 110-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1z" clipRule="evenodd" />
-        </svg>
+        <Gem className="w-2.5 h-2.5 flex-shrink-0 text-amber-500" />
         {t("interviewPage.premiumBadge") || "Premium"}
       </span>
     );
@@ -468,7 +466,17 @@ export default function InterviewSetPage() {
                         ? "bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50"
                         : "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50"
                         }`}>
-                        {selectedQuestion.isAccess === false ? "🔒 " + (t("interviewPage.lockedBadge") || "Locked") : "✨ " + (t("interviewPage.premiumBadge") || "Premium")}
+                        {selectedQuestion.isAccess === false ? (
+                          <>
+                            <span>🔒</span>
+                            <span>{t("interviewPage.lockedBadge") || "Locked"}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Gem className="w-3 h-3 text-amber-500 mr-0.5" />
+                            <span>{t("interviewPage.premiumBadge") || "Premium"}</span>
+                          </>
+                        )}
                       </span>
                     )}
                     <button
