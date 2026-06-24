@@ -12,7 +12,7 @@ import {
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { useI18n } from "@/contexts/I18nContext";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
-import { Crown, Sparkles } from "lucide-react";
+import { Crown, Sparkles, Gem } from "lucide-react";
 
 const COMPLETED_STORAGE_KEY = "interview_completed_questions";
 
