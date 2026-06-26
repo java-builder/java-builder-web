@@ -3,12 +3,13 @@ import { courseApi } from "@/services/course.service";
 import CourseDetailClient from "./CourseDetailClient";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const response = await courseApi.getBySlug(params.slug);
+    const resolvedParams = await params;
+    const response = await courseApi.getBySlug(resolvedParams.slug);
     const course = response.data;
 
     if (course) {

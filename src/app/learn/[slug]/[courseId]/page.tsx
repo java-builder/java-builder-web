@@ -7,6 +7,7 @@ import Image from "next/image";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { CourseDetailResponse, LessonDetailResponse, ChapterDetailResponse } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useAuth } from "@/contexts/AuthContext";
 import { LearnSidebar, LearnHeader, LessonContent } from "@/components/learn";
 
 export default function LearnCoursePage() {
@@ -14,6 +15,7 @@ export default function LearnCoursePage() {
   const router = useRouter();
   const courseId = params?.courseId as string;
   const slug = params?.slug as string;
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
@@ -70,8 +72,13 @@ export default function LearnCoursePage() {
   }, [chapterLessons]);
 
   const initializeCourse = useCallback(async () => {
-    if (!courseId || userLoading) return;
-    if (!currentUser) { router.push(`/courses/${slug}`); return; }
+    if (!courseId || authLoading || (isAuthenticated && userLoading)) return;
+    
+    if (!isAuthenticated || !currentUser) {
+      router.push(`/courses/${slug}`);
+      return;
+    }
+    
     if (fetchedCourseIdRef.current === courseId) return;
     fetchedCourseIdRef.current = courseId;
 
@@ -98,12 +105,13 @@ export default function LearnCoursePage() {
         setCurrentChapter(firstChapter);
         await loadChapterLessons(firstChapter.id, true);
       }
-    } catch {
+    } catch (error) {
+      console.error("Failed to initialize course:", error);
       router.push(`/courses/${slug}`);
     } finally {
       setIsLoading(false);
     }
-  }, [courseId, slug, currentUser, userLoading, router, loadChapterLessons]);
+  }, [courseId, slug, currentUser, userLoading, isAuthenticated, authLoading, router, loadChapterLessons]);
 
   useEffect(() => { initializeCourse(); }, [initializeCourse]);
 
