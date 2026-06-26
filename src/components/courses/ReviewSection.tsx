@@ -146,7 +146,7 @@ export default function ReviewSection({ courseId, isEnrolled }: ReviewSectionPro
         {filter !== "all" && (
           <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between">
             <span className="text-sm text-gray-600 dark:text-gray-400">Đang lọc: <span className="font-medium">{ filter} sao</span> ({filteredReviews.length})</span>
-            <button onClick={() => setFilter("all")} className="text-sm text-accent hover:text-accent-600 dark:text-accent-400 dark:hover:text-accent-300 font-medium">Xóa bộ lọc</button>
+            <button onClick={() => setFilter("all")} className="text-sm text-accent hover:text-accent/80 transition-colors font-bold cursor-pointer">Xóa bộ lọc</button>
           </div>
         )}
       </div>
@@ -176,7 +176,7 @@ export default function ReviewSection({ courseId, isEnrolled }: ReviewSectionPro
               </div>
               <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="Chia sẻ trải nghiệm của bạn..." className="w-full px-3 py-2.5 border border-gray-200 dark:border-slate-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500" rows={3} />
               <div className="flex justify-end mt-3">
-                <button onClick={handleSubmit} disabled={!rating || isSubmitting} className="px-5 py-2 bg-accent hover:bg-accent-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+                <button onClick={handleSubmit} disabled={!rating || isSubmitting} className="px-5 py-2.5 bg-accent hover:bg-accent/90 disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:text-gray-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-all shadow-xs hover:shadow active:scale-98 cursor-pointer flex items-center gap-2">
                   {isSubmitting && <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>}
                   Gửi đánh giá
                 </button>

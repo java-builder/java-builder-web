@@ -212,7 +212,7 @@ export default function QuizModal({ questions, onClose }: QuizModalProps) {
             <div className="mt-8 flex gap-4">
               <button
                 onClick={onClose}
-                className="flex-1 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors"
+                className="flex-1 py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-lg shadow-sm hover:shadow active:scale-98 transition-all cursor-pointer text-center"
               >
                 Hoàn thành
               </button>
@@ -224,7 +224,7 @@ export default function QuizModal({ questions, onClose }: QuizModalProps) {
                     setShowResult(false);
                     setTimeLeft(30 * 60);
                   }}
-                  className="px-6 py-3 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                  className="px-6 py-3 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/60 shadow-xs active:scale-98 transition-all cursor-pointer"
                 >
                   Làm lại
                 </button>
@@ -323,7 +323,7 @@ export default function QuizModal({ questions, onClose }: QuizModalProps) {
             <button
               onClick={handlePrevious}
               disabled={currentQuestionIndex === 0}
-              className="px-6 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/60 disabled:opacity-40 disabled:cursor-not-allowed shadow-xs active:scale-98 transition-all cursor-pointer"
             >
               Trước
             </button>
@@ -333,12 +333,12 @@ export default function QuizModal({ questions, onClose }: QuizModalProps) {
                 <button
                   key={index}
                   onClick={() => setCurrentQuestionIndex(index)}
-                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-8 h-8 rounded-lg text-sm font-bold transition-all cursor-pointer active:scale-95 ${
                     index === currentQuestionIndex
-                      ? "bg-accent text-white"
+                      ? "bg-accent text-white shadow-xs"
                       : userAnswers[index] !== null
                       ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                      : "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400"
+                      : "bg-gray-100 dark:bg-slate-700/70 text-gray-650 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-600"
                   }`}
                 >
                   {index + 1}
@@ -349,14 +349,14 @@ export default function QuizModal({ questions, onClose }: QuizModalProps) {
             {currentQuestionIndex === questions.length - 1 ? (
               <button
                 onClick={handleSubmit}
-                className="px-6 py-2 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
+                className="px-6 py-2 bg-accent hover:bg-accent/90 text-white font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer"
               >
                 Nộp bài
               </button>
             ) : (
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
+                className="px-6 py-2 bg-accent hover:bg-accent/90 text-white font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer"
               >
                 Tiếp theo
               </button>

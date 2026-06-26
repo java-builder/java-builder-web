@@ -68,7 +68,7 @@ export default function CourseSidebar({
       </div>
 
       {/* CTA Buttons */}
-      <div className="space-y-2 mb-6">
+      <div className="space-y-2.5 mb-6">
         {isEnrolled ? (
           <Link
             href={
@@ -76,7 +76,7 @@ export default function CourseSidebar({
                 ? `/docs/${course.slug}`
                 : `/learn/${course.slug}/${course.id}`
             }
-            className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
+            className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-xs hover:shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path
@@ -90,7 +90,7 @@ export default function CourseSidebar({
         ) : (
           <button
             onClick={onPayment}
-            className="w-full bg-accent hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-md transition-all duration-200 hover:shadow-md cursor-pointer"
+            className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-xs hover:shadow-md active:scale-98 cursor-pointer"
           >
             {t("courseDetail.enrollNow")}
           </button>
@@ -98,7 +98,7 @@ export default function CourseSidebar({
         <button
           onClick={onToggleFavorite}
           disabled={favoriteLoading}
-          className={`w-full font-medium py-2.5 px-4 rounded-md border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${
+          className={`w-full font-bold py-2.5 px-4 rounded-lg border transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 active:scale-98 ${
             isFavorite
               ? "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300 dark:bg-rose-400/10 dark:hover:bg-rose-400/15 dark:text-rose-400 dark:border-rose-400/25 dark:hover:border-rose-400/35"
               : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-gray-300 dark:border-slate-600 dark:hover:border-slate-500"

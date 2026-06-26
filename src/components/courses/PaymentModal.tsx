@@ -26,9 +26,9 @@ export default function PaymentModal({
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={() => !isLoading && onClose()}
       />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative bg-white dark:bg-slate-850 border border-gray-100 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-150 dark:border-slate-700/50 bg-white dark:bg-slate-800">
+        <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-850">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
@@ -114,14 +114,14 @@ export default function PaymentModal({
             <div>
               {/* Course Info */}
               <div className="text-center mb-5">
-                <h4 className="font-medium text-gray-900 line-clamp-2">
+                <h4 className="font-bold text-gray-900 dark:text-white line-clamp-2">
                   {courseTitle}
                 </h4>
-                <div className="flex items-center justify-center gap-2 mt-1">
+                <div className="flex items-center justify-center gap-2 mt-1.5">
                   <span className="text-xl font-bold text-accent">
                     {new Intl.NumberFormat("vi-VN").format(data.totalPrice)}đ
                   </span>
-                  <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">
+                  <span className="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-750 dark:text-yellow-400 text-[10px] font-bold rounded-full border border-yellow-200 dark:border-yellow-900/40 uppercase tracking-wider">
                     Chờ thanh toán
                   </span>
                 </div>
@@ -130,16 +130,16 @@ export default function PaymentModal({
               {/* QR Code */}
               {data.qrCode && (
                 <div className="flex justify-center mb-6">
-                  <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                  <div className="p-4 bg-white rounded-xl border border-gray-100 dark:border-slate-800 shadow-xs">
                     <QRCodeSVG value={data.qrCode} size={200} level="M" />
                   </div>
                 </div>
               )}
 
               {/* Order Info */}
-              <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg mb-4">
-                <span className="text-sm text-gray-500">Mã đơn hàng</span>
-                <span className="font-mono font-semibold text-gray-900">
+              <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-slate-900/40 rounded-xl mb-4 border border-gray-100 dark:border-slate-800/80">
+                <span className="text-sm text-gray-555 dark:text-slate-400">Mã đơn hàng</span>
+                <span className="font-mono font-bold text-gray-900 dark:text-white">
                   {data.orderCode}
                 </span>
               </div>
@@ -150,7 +150,7 @@ export default function PaymentModal({
                   href={data.checkoutUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent-600 text-white font-medium rounded-lg transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
                 >
                   Thanh toán qua PayOS
                   <svg
@@ -170,9 +170,9 @@ export default function PaymentModal({
               )}
 
               {/* Footer Note */}
-              <div className="mt-4 flex items-start gap-2 text-xs text-gray-400">
+              <div className="mt-4 flex items-start gap-2 text-xs text-gray-400 dark:text-slate-500">
                 <svg
-                  className="w-4 h-4 flex-shrink-0 mt-0.5"
+                  className="w-4 h-4 flex-shrink-0 mt-0.5 text-gray-400 dark:text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

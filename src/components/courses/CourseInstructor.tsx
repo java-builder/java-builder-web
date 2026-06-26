@@ -64,7 +64,7 @@ export default function CourseInstructor() {
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
           Có câu hỏi về khóa học? Hãy liên hệ trực tiếp với tôi!
         </p>
-        <button className="bg-accent hover:bg-accent-600 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 text-sm">
+        <button className="bg-accent hover:bg-accent/90 text-white font-bold py-2 px-4.5 rounded-lg shadow-xs hover:shadow transition-all active:scale-98 text-sm cursor-pointer">
           Gửi tin nhắn
         </button>
       </div>

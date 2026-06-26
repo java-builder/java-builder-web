@@ -116,19 +116,20 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
                 </span>
               </div>
             )}
-            <div className="flex-1">
+            <div className="flex-1 bg-white dark:bg-slate-900/30 border border-gray-200/80 dark:border-slate-700/80 rounded-xl overflow-hidden focus-within:border-accent focus-within:ring-4 focus-within:ring-accent/15 transition-all shadow-xs">
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Viết câu hỏi hoặc bình luận của bạn..."
-                className="w-full px-3 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500"
+                className="w-full px-4 py-3 text-sm bg-transparent border-none focus:outline-none focus:ring-0 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 resize-none min-h-[80px] leading-relaxed"
                 rows={3}
               />
-              <div className="flex justify-end mt-2">
+              <div className="h-px bg-gray-100 dark:bg-slate-800" />
+              <div className="flex justify-end px-4 py-2.5 bg-gray-50/60 dark:bg-slate-800/30">
                 <button
                   onClick={handleSubmitComment}
                   disabled={!newComment.trim() || isSubmitting}
-                  className="px-4 py-2 bg-accent hover:bg-accent-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs bg-accent hover:bg-accent/90 disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:text-gray-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-all shadow-xs hover:shadow active:scale-98 cursor-pointer"
                 >
                   {isSubmitting ? "Đang gửi..." : "Gửi bình luận"}
                 </button>
@@ -228,7 +229,10 @@ function CommentItem({
   const isOwner = currentUser?.username === comment.username;
 
   return (
-    <div className={isReply ? "ml-12" : ""}>
+    <div className="relative">
+      {isReply && (
+        <div className="absolute -left-[30px] top-[18px] w-[30px] h-px bg-gray-200 dark:bg-slate-700" />
+      )}
       <div className="flex gap-3">
         {comment.avatar ? (
           <Image
@@ -293,31 +297,43 @@ function CommentItem({
 
           {isReplying && (
             <div className="mt-3 flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-medium">
-                  {currentUser?.username?.charAt(0).toUpperCase() || "U"}
-                </span>
-              </div>
-              <div className="flex-1">
+              {currentUser?.avatar ? (
+                <Image
+                  src={currentUser.avatar}
+                  alt={currentUser.username}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                  unoptimized
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-xs font-semibold">
+                    {currentUser?.username?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                </div>
+              )}
+              <div className="flex-1 bg-white dark:bg-slate-900/30 border border-gray-200/80 dark:border-slate-700/80 rounded-xl overflow-hidden focus-within:border-accent focus-within:ring-4 focus-within:ring-accent/15 transition-all shadow-xs">
                 <textarea
                   value={replyContent}
                   onChange={(e) => onReplyContentChange(e.target.value)}
                   placeholder={`Trả lời ${comment.username}...`}
-                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500"
+                  className="w-full px-4 py-2.5 text-sm bg-transparent border-none focus:outline-none focus:ring-0 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 resize-none min-h-[64px] leading-relaxed"
                   rows={2}
                   autoFocus
                 />
-                <div className="flex justify-end gap-2 mt-2">
+                <div className="h-px bg-gray-100 dark:bg-slate-800" />
+                <div className="flex justify-end gap-2 px-3 py-2 bg-gray-50/60 dark:bg-slate-800/30">
                   <button
                     onClick={onCancelReply}
-                    className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    className="px-3 py-1.5 text-xs text-gray-505 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer font-bold rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     Hủy
                   </button>
                   <button
                     onClick={onSubmitReply}
                     disabled={!replyContent.trim()}
-                    className="px-3 py-1.5 bg-accent hover:bg-accent-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                    className="px-3 py-1.5 bg-accent hover:bg-accent/90 disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:text-gray-400 dark:disabled:text-slate-650 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg transition-all shadow-xs hover:shadow active:scale-98 cursor-pointer"
                   >
                     Trả lời
                   </button>
@@ -327,7 +343,7 @@ function CommentItem({
           )}
 
           {isExpanded && comment.replies && comment.replies.length > 0 && (
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 -ml-[30px] pl-[30px] border-l border-gray-200 dark:border-slate-700 space-y-4">
               {comment.replies.map((reply) => (
                 <CommentItem
                   key={reply.id}

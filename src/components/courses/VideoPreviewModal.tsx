@@ -100,14 +100,14 @@ export default function VideoPreviewModal({
 
         {/* CTA - Only show if not enrolled and not premium */}
         {!isEnrolled && (
-          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-accent-50 dark:bg-accent-900/20">
+          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-accent/5 dark:bg-accent/10">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <p className="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left">
+              <p className="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left font-medium">
                 Đăng ký khóa học để xem tất cả bài học
               </p>
               <button
                 onClick={onEnroll}
-                className="w-full sm:w-auto px-4 py-2 bg-accent hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors"
+                className="w-full sm:w-auto px-5 py-2 bg-accent hover:bg-accent/90 text-white text-sm font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer"
               >
                 Đăng ký ngay
               </button>
