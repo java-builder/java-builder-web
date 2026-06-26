@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Document, DocumentType } from "@/types/document";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface DocumentCardProps {
   document: Document;
@@ -8,37 +9,38 @@ interface DocumentCardProps {
 }
 
 export default function DocumentCard({ document, index = 0 }: DocumentCardProps) {
+  const { t } = useI18n();
   const [imageError, setImageError] = React.useState(false);
 
   const getDocumentTypeInfo = (type: DocumentType) => {
     const typeMap = {
       [DocumentType.BOOK]: {
-        name: "Sách",
+        name: t("documentsPage.types.book"),
         color: "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300",
         icon: "📚"
       },
       [DocumentType.ARTICLE]: {
-        name: "Bài viết",
+        name: t("documentsPage.types.article"),
         color: "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300",
         icon: "📝"
       },
       [DocumentType.VIDEO]: {
-        name: "Video",
+        name: t("documentsPage.types.video"),
         color: "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300",
         icon: "🎥"
       },
       [DocumentType.TUTORIAL]: {
-        name: "Hướng dẫn",
+        name: t("documentsPage.types.tutorial"),
         color: "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300",
         icon: "🎓"
       },
       [DocumentType.PDF]: {
-        name: "PDF",
+        name: t("documentsPage.types.pdf"),
         color: "bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300",
         icon: "📄"
       },
       [DocumentType.OTHER]: {
-        name: "Khác",
+        name: t("documentsPage.types.other"),
         color: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300",
         icon: "📋"
       }
@@ -72,7 +74,7 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
   return (
     <div
       onClick={handleClick}
-      className={`group bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden hover:shadow-2xl hover:shadow-accent/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full border border-gray-100 dark:border-slate-700 ${document.url ? 'cursor-pointer' : 'cursor-default'
+      className={`group bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden hover:shadow-2xl hover:shadow-accent/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full border border-gray-100 dark:border-slate-700 ${document.url ? 'cursor-pointer' : 'cursor-default'
         }`}
     >
       {/* Header */}
@@ -139,14 +141,14 @@ export default function DocumentCard({ document, index = 0 }: DocumentCardProps)
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
-              Truy cập tài liệu
+              {t("documentsPage.accessDoc")}
             </>
           ) : (
             <>
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Chưa có link
+              {t("documentsPage.noLink")}
             </>
           )}
         </button>

@@ -10,7 +10,7 @@ type TranslationPath<T> = T extends object
     }[keyof T & string]
   : never;
 
-type TranslationKey = TranslationPath<(typeof messages)[typeof defaultLocale]>;
+export type TranslationKey = TranslationPath<(typeof messages)[typeof defaultLocale]>;
 
 interface I18nContextValue {
   locale: Locale;
@@ -83,11 +83,11 @@ export function I18nProvider({ children, initialLocale }: { children: ReactNode;
 
   const value = useMemo<I18nContextValue>(() => {
     const t = (key: TranslationKey) => {
-      return (
-        getNestedValue(messages[locale], key) ||
-        getNestedValue(messages[defaultLocale], key) ||
-        key
-      );
+      const val = getNestedValue(messages[locale], key);
+      if (val !== undefined) return val;
+      const defVal = getNestedValue(messages[defaultLocale], key);
+      if (defVal !== undefined) return defVal;
+      return key;
     };
 
     return {

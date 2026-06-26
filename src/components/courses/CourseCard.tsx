@@ -45,23 +45,6 @@ const LEVEL_STYLES: Record<
   },
 };
 
-const FORMAT_STYLES: Record<
-  CourseFormat,
-  { label: string; className: string }
-> = {
-  [CourseFormat.VIDEO]: {
-    label: "Video",
-    className: "bg-rose-500/95 text-white",
-  },
-  [CourseFormat.TEXT]: {
-    label: "Text",
-    className: "bg-emerald-500/95 text-white",
-  },
-  [CourseFormat.MIXED]: {
-    label: "Mixed",
-    className: "bg-indigo-500/95 text-white",
-  },
-};
 
 const FALLBACK_GRADIENTS = [
   "from-blue-500 via-indigo-500 to-purple-600",
@@ -146,9 +129,6 @@ export default function CourseCard({
       : `/courses/${course.slug}`;
 
   const levelStyle = course.level ? LEVEL_STYLES[course.level] : null;
-  const formatStyle = course.courseFormat
-    ? FORMAT_STYLES[course.courseFormat]
-    : null;
   const fallbackGradient =
     FALLBACK_GRADIENTS[index % FALLBACK_GRADIENTS.length];
 
@@ -159,7 +139,7 @@ export default function CourseCard({
     course.duration > 0;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-300 hover:shadow-xl hover:shadow-accent/10 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:border-slate-600 dark:hover:shadow-black/40">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-300 hover:shadow-xl hover:shadow-accent/10 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:border-slate-600 dark:hover:shadow-black/40">
       {/* Thumbnail */}
       <Link href={detailHref} className="relative block flex-shrink-0">
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-50 dark:bg-slate-900/50">
@@ -204,44 +184,7 @@ export default function CourseCard({
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-          {formatStyle && (
-            <span
-              className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide shadow-sm backdrop-blur-sm ${formatStyle.className}`}
-            >
-              {course.courseFormat === CourseFormat.VIDEO && (
-                <svg
-                  className="h-3 w-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                </svg>
-              )}
-              {course.courseFormat === CourseFormat.TEXT && (
-                <svg
-                  className="h-3 w-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-              {course.courseFormat === CourseFormat.MIXED && (
-                <svg
-                  className="h-3 w-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                </svg>
-              )}
-              {formatStyle.label}
-            </span>
-          )}
+
 
           {/* Free badge - top right when free */}
           {isFree && (

@@ -84,29 +84,64 @@ export default function DocsArticle({
   return (
     <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
       {/* Desktop breadcrumb - full */}
-      <nav className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
-        {breadcrumbs.map((crumb, index) => (
-          <span key={index} className="flex items-center gap-2">
-            {crumb.href ? (
-              <Link href={crumb.href} className="hover:text-accent">
-                {crumb.label}
-              </Link>
-            ) : (
-              <span className={index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}>
-                {crumb.label}
-              </span>
-            )}
-            {index < breadcrumbs.length - 1 && <span>/</span>}
-          </span>
-        ))}
+      <nav className="hidden sm:flex flex-wrap items-center text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">
+        {breadcrumbs.map((crumb, index) => {
+          const isFirst = index === 0;
+          const isLast = index === breadcrumbs.length - 1;
+          const isIntermediate = !isFirst && !isLast;
+
+          return (
+            <div key={index} className="flex items-center min-w-0">
+              {isFirst && (
+                <svg className="w-3.5 h-3.5 mr-1 text-slate-400 dark:text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              )}
+              
+              {crumb.href ? (
+                <Link 
+                  href={crumb.href} 
+                  title={crumb.label}
+                  className={`hover:text-accent dark:hover:text-accent-400 transition-colors duration-150 flex-shrink-0 ${
+                    isIntermediate ? "max-w-[120px] md:max-w-[180px] lg:max-w-[240px] truncate" : ""
+                  }`}
+                >
+                  {crumb.label}
+                </Link>
+              ) : (
+                <span 
+                  title={crumb.label}
+                  className={`min-w-0 ${
+                    isLast 
+                      ? "text-slate-800 dark:text-slate-200 font-semibold truncate" 
+                      : "text-slate-500 dark:text-slate-400"
+                  } ${
+                    isIntermediate ? "max-w-[120px] md:max-w-[180px] lg:max-w-[240px] truncate flex-shrink-0" : ""
+                  }`}
+                >
+                  {crumb.label}
+                </span>
+              )}
+
+              {!isLast && (
+                <svg className="w-3 h-3 text-slate-300 dark:text-slate-600 mx-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              )}
+            </div>
+          );
+        })}
       </nav>
 
       {/* Mobile breadcrumb - simplified */}
-      <nav className="flex sm:hidden items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-6 min-w-0">
+      <nav className="flex sm:hidden items-center text-xs text-slate-500 dark:text-slate-400 mb-6 min-w-0 font-medium">
         {breadcrumbs.length > 0 && (
           <>
+            <svg className="w-3.5 h-3.5 mr-1 text-slate-400 dark:text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
             {breadcrumbs[0].href ? (
-              <Link href={breadcrumbs[0].href} className="hover:text-accent flex-shrink-0">
+              <Link href={breadcrumbs[0].href} className="hover:text-accent dark:hover:text-accent-400 flex-shrink-0 transition-colors duration-150">
                 {breadcrumbs[0].label}
               </Link>
             ) : (
@@ -114,10 +149,14 @@ export default function DocsArticle({
             )}
             {breadcrumbs.length > 1 && (
               <>
-                <span className="flex-shrink-0">/</span>
-                <span className="flex-shrink-0">...</span>
-                <span className="flex-shrink-0">/</span>
-                <span className="text-gray-900 dark:text-white truncate min-w-0">
+                <svg className="w-2.5 h-2.5 text-slate-300 dark:text-slate-600 mx-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+                <span className="text-slate-400 flex-shrink-0">...</span>
+                <svg className="w-2.5 h-2.5 text-slate-300 dark:text-slate-600 mx-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+                <span className="text-slate-800 dark:text-slate-200 font-semibold truncate min-w-0" title={breadcrumbs[breadcrumbs.length - 1].label}>
                   {breadcrumbs[breadcrumbs.length - 1].label}
                 </span>
               </>

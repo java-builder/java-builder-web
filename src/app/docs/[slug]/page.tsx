@@ -321,10 +321,15 @@ export default function DocsDetailPage() {
         <main className="flex-1 min-w-0 transition-opacity duration-200">
           {showOverview ? (
             <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 animate-in fade-in duration-300">
-              <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
-                <Link href="/docs" className="hover:text-accent">Tài liệu</Link>
-                <span>/</span>
-                <span className="text-gray-900 dark:text-white">{course?.title || ""}</span>
+              <nav className="flex flex-wrap items-center text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">
+                <svg className="w-3.5 h-3.5 mr-1 text-slate-400 dark:text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <Link href="/docs" className="hover:text-accent dark:hover:text-accent-400 transition-colors duration-150">Tài liệu</Link>
+                <svg className="w-3 h-3 text-slate-300 dark:text-slate-600 mx-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+                <span className="text-slate-800 dark:text-slate-200 font-semibold truncate" title={course?.title || ""}>{course?.title || ""}</span>
               </nav>
 
               <header className="mb-8">

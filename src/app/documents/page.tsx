@@ -7,17 +7,31 @@ import SearchBar from "@/components/ui/SearchBar";
 import Image from "next/image";
 import { Document, DocumentType } from "@/types/document";
 import { documentApi } from "@/services/document.service";
+import { useI18n, TranslationKey } from "@/contexts/I18nContext";
 
 const documentTypes = [
-  { type: DocumentType.BOOK, label: "Sách", icon: "📚" },
-  { type: DocumentType.PDF, label: "PDF", icon: "📄" },
-  { type: DocumentType.ARTICLE, label: "Bài viết", icon: "📝" },
-  { type: DocumentType.VIDEO, label: "Video", icon: "🎬" },
-  { type: DocumentType.TUTORIAL, label: "Hướng dẫn", icon: "📖" },
-  { type: DocumentType.OTHER, label: "Khác", icon: "📁" },
+  { type: DocumentType.BOOK, icon: "📚" },
+  { type: DocumentType.PDF, icon: "📄" },
+  { type: DocumentType.ARTICLE, icon: "📝" },
+  { type: DocumentType.VIDEO, icon: "🎬" },
+  { type: DocumentType.TUTORIAL, icon: "📖" },
+  { type: DocumentType.OTHER, icon: "📁" },
 ];
 
+const getDocTypeLabel = (type: DocumentType, t: (key: TranslationKey) => string) => {
+  switch (type) {
+    case DocumentType.BOOK: return t("documentsPage.types.book");
+    case DocumentType.PDF: return t("documentsPage.types.pdf");
+    case DocumentType.ARTICLE: return t("documentsPage.types.article");
+    case DocumentType.VIDEO: return t("documentsPage.types.video");
+    case DocumentType.TUTORIAL: return t("documentsPage.types.tutorial");
+    case DocumentType.OTHER: return t("documentsPage.types.other");
+    default: return type;
+  }
+};
+
 export default function DocumentsPage() {
+  const { t } = useI18n();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
@@ -69,17 +83,20 @@ export default function DocumentsPage() {
               <div className="lg:col-span-7 text-gray-900 dark:text-white">
                 <div className="inline-block">
                   <span className="bg-accent text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                    📚 Sách & Tài liệu
+                    {t("documentsPage.heroBadge")}
                   </span>
                 </div>
 
                 <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Sách & Tài liệu <span className="text-accent">chất lượng</span>
+                  {t("documentsPage.heroTitleStart")}
+                  {t("documentsPage.heroTitleHighlight") && (
+                    <span className="text-accent">{t("documentsPage.heroTitleHighlight")}</span>
+                  )}
+                  {t("documentsPage.heroTitleEnd")}
                 </h1>
 
                 <p className="mt-3 text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
-                  Bộ sưu tập sách và tài liệu chuyên sâu về Spring Boot, Microservices,
-                  Java Backend và Cloud Native development.
+                  {t("documentsPage.heroDesc")}
                 </p>
 
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
@@ -87,10 +104,10 @@ export default function DocumentsPage() {
                     href="#list"
                     className="inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                   >
-                    Khám phá tài liệu
+                    {t("documentsPage.exploreBtn")}
                   </a>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {totalElements} tài liệu có sẵn
+                    {t("documentsPage.availableCount").replace("{count}", String(totalElements))}
                   </span>
                 </div>
               </div>
@@ -118,18 +135,20 @@ export default function DocumentsPage() {
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/15 via-accent/15 to-accent/15 blur-xl" />
           <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-5 sm:p-6">
             <SearchBar
-              placeholder="Tìm sách, tài liệu..."
+              placeholder={t("documentsPage.searchPlaceholder")}
               value={searchText}
               onChange={setSearchText}
               onSearch={handleSearch}
-              buttonText="Tìm kiếm"
+              buttonText={t("documentsPage.searchBtn")}
             />
           </div>
         </div>
 
         {/* Type Filter */}
         <div className="mb-6">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Loại tài liệu</h3>
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            {t("documentsPage.filterLabel")}
+          </h3>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
@@ -140,7 +159,7 @@ export default function DocumentsPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
-              Tất cả
+              {t("documentsPage.allTypes")}
             </button>
             {documentTypes.map((item) => (
               <button
@@ -153,7 +172,7 @@ export default function DocumentsPage() {
                     : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700"
                 }`}
               >
-                {item.icon} {item.label}
+                {item.icon} {getDocTypeLabel(item.type, t)}
               </button>
             ))}
           </div>
@@ -187,18 +206,22 @@ export default function DocumentsPage() {
               />
             </svg>
             <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
-              Không tìm thấy tài liệu
+              {t("documentsPage.noDocsFound")}
             </p>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
+              {t("documentsPage.noDocsFoundDesc")}
             </p>
           </div>
         ) : (
           <>
             <div className="mb-6">
               <p className="text-gray-600 dark:text-gray-400">
-                Hiển thị {documents.length} tài liệu
-                {currentSearch && ` cho "${currentSearch}"`}
+                {currentSearch
+                  ? t("documentsPage.showingCountForKeyword")
+                      .replace("{count}", String(documents.length))
+                      .replace("{keyword}", currentSearch)
+                  : t("documentsPage.showingCount")
+                      .replace("{count}", String(documents.length))}
               </p>
             </div>
 

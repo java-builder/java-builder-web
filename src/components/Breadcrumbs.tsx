@@ -30,9 +30,9 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <nav aria-label="Breadcrumb" className="flex items-center space-x-2 text-sm">
+      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm">
         {items.map((item, index) => (
-          <div key={index} className="flex items-center space-x-2">
+          <div key={index} className="flex items-center gap-x-2">
             {index > 0 && (
               <svg
                 className="w-4 h-4 text-gray-400"

@@ -72,7 +72,7 @@ export default function MyCourseCard({
   return (
     <Link
       href={href}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
+      className="group flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
     >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-slate-700">
