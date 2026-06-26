@@ -13,6 +13,15 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
+const hashString = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString(36);
+};
+
 export default function MarkdownRenderer({
   content,
   className = "",
@@ -130,7 +139,19 @@ export default function MarkdownRenderer({
           code({ className, children, node, ...props }) {
             const match = /language-(\w+)/.exec(className || "");
             const language = match ? match[1] : "";
-            const codeId = `code-${Math.random().toString(36).substring(2, 11)}`;
+            
+            const extractText = (n: React.ReactNode): string => {
+              if (typeof n === "string") return n;
+              if (typeof n === "number") return String(n);
+              if (Array.isArray(n)) return n.map(extractText).join("");
+              if (React.isValidElement(n)) {
+                const element = n as { props: { children?: React.ReactNode } };
+                return extractText(element.props.children);
+              }
+              return "";
+            };
+            const codeString = extractText(children);
+            const codeId = `code-${hashString(codeString)}`;
             
             // Check if this is a code block (inside pre) or inline code
             const isCodeBlock = node?.position && 

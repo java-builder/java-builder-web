@@ -9,13 +9,37 @@ import {
   vs,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import type { Components } from "react-markdown";
+import { slugify } from "@/utils/markdown";
 
 interface PublicMarkdownRendererProps {
   content: string;
   className?: string;
 }
+
+const getTextFromChildren = (children: React.ReactNode): string => {
+  if (!children) return "";
+  if (typeof children === "string") return children;
+  if (typeof children === "number") return String(children);
+  if (Array.isArray(children)) {
+    return children.map(getTextFromChildren).join("");
+  }
+  if (React.isValidElement(children)) {
+    const element = children as { props: { children?: React.ReactNode } };
+    return getTextFromChildren(element.props.children);
+  }
+  return "";
+};
+
+const hashString = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString(36);
+};
 
 export default function PublicMarkdownRenderer({
   content,
@@ -39,6 +63,20 @@ export default function PublicMarkdownRenderer({
   };
 
   const components: Components = {
+    h2(props) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node: _node, children, ...rest } = props;
+      const text = getTextFromChildren(children);
+      const id = slugify(text);
+      return <h2 id={id} {...rest}>{children}</h2>;
+    },
+    h3(props) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node: _node, children, ...rest } = props;
+      const text = getTextFromChildren(children);
+      const id = slugify(text);
+      return <h3 id={id} {...rest}>{children}</h3>;
+    },
     code(props) {
       const { className, children, ...rest } = props;
       const match = /language-(\w+)/.exec(className || "");
@@ -46,7 +84,7 @@ export default function PublicMarkdownRenderer({
       if (match) {
         const language = match[1];
         const codeString = String(children).replace(/\n$/, "");
-        const codeId = `code-${Math.random().toString(36).substring(2, 11)}`;
+        const codeId = `code-${hashString(codeString)}`;
         
         return (
           <div className="relative group">

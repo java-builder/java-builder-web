@@ -48,12 +48,12 @@ export default function DocsDetailPage() {
     const fetchCourse = async () => {
       try {
         setIsLoading(true);
-        
+
         const response = await courseApi.getBySlug(slug);
         if (response.code === 200 && response.data) {
           const courseData = response.data;
           setCourse(courseData);
-          
+
           if (courseData.chapters?.[0]) {
             setOpenCategories([courseData.chapters[0].id]);
           }
@@ -164,11 +164,29 @@ export default function DocsDetailPage() {
 
     try {
       currentLessonIdRef.current = lessonId;
-      
+
       setSelectedChapter(lessonId);
       setShowOverview(false);
       setIsLoadingLesson(true);
-      
+
+      // Find the chapter containing the lesson and expand it in the sidebar
+      let parentChapterId: string | null = null;
+      for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
+        if (lessons.some(l => l.id === lessonId)) {
+          parentChapterId = chapterId;
+          break;
+        }
+      }
+
+      if (parentChapterId) {
+        setOpenCategories(prev => {
+          if (!prev.includes(parentChapterId!)) {
+            return [...prev, parentChapterId!];
+          }
+          return prev;
+        });
+      }
+
       const url = new URL(window.location.href);
       url.searchParams.set('lessonId', lessonId);
       window.history.replaceState({}, '', url.pathname + url.search);
@@ -180,7 +198,7 @@ export default function DocsDetailPage() {
     } finally {
       setIsLoadingLesson(false);
     }
-  }, [isLoadingLesson, loadLessonContent]);
+  }, [isLoadingLesson, loadLessonContent, chapterLessons]);
 
   const handleOverviewClick = () => {
     const url = new URL(window.location.href);
@@ -198,7 +216,7 @@ export default function DocsDetailPage() {
     const newOpenCategories = openCategories.includes(categoryId)
       ? openCategories.filter(id => id !== categoryId)
       : [...openCategories, categoryId];
-    
+
     setOpenCategories(newOpenCategories);
   };
 
@@ -221,13 +239,13 @@ export default function DocsDetailPage() {
 
   const currentLesson = selectedLesson;
 
-  const currentChapter = useMemo(() => 
-    course?.chapters?.find(c => 
+  const currentChapter = useMemo(() =>
+    course?.chapters?.find(c =>
       chapterLessons[c.id]?.some(l => l.id === selectedChapter)
     ), [course?.chapters, chapterLessons, selectedChapter]
   );
 
-  const tocItems = useMemo(() => 
+  const tocItems = useMemo(() =>
     showOverview ? [] : extractHeadings(currentLesson?.content || ""),
     [showOverview, currentLesson?.content]
   );
@@ -246,9 +264,9 @@ export default function DocsDetailPage() {
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <DocsHeader 
+        <DocsHeader
           showMenuButton={false}
-          onMenuClick={() => {}}
+          onMenuClick={() => { }}
         />
         <div className="flex items-center justify-center py-20">
           <div className="max-w-md text-center">
@@ -300,9 +318,10 @@ export default function DocsDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <DocsHeader 
+      <DocsHeader
         showMenuButton={true}
         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        course={course}
       />
 
       <div className="flex max-w-[1600px] mx-auto">
@@ -341,7 +360,14 @@ export default function DocsDetailPage() {
                 </p>
               </header>
 
-              {course && <CourseOverview course={course} />}
+              {course && (
+                <CourseOverview
+                  course={course}
+                  chapterLessons={chapterLessons}
+                  onLessonClick={handleLessonClick}
+                  selectedLessonId={selectedChapter}
+                />
+              )}
             </div>
           ) : isLoadingLesson ? (
             <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 animate-pulse">
