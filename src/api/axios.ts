@@ -7,10 +7,10 @@ const BASE_URL =
 
 let refreshPromise: Promise<string> | null = null;
 
-const isPublicEndpoint = (url: string | undefined, method?: string): boolean => {
+const isAnonymousEndpoint = (url: string | undefined): boolean => {
   if (!url) return false;
 
-  const publicEndpoints = [
+  const anonymousEndpoints = [
     "/api/v1/auth/login",
     "/api/v1/auth/login-two-factor",
     "/api/v1/auth/register",
@@ -24,6 +24,16 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/passkey/login/options",
   ];
 
+  return anonymousEndpoints.some((endpoint) => url.includes(endpoint));
+};
+
+const isPublicEndpoint = (url: string | undefined, method?: string): boolean => {
+  if (!url) return false;
+
+  if (isAnonymousEndpoint(url)) {
+    return true;
+  }
+
   const publicGetPatterns = [
     "/api/v1/courses",
     "/api/v1/categories",
@@ -35,10 +45,6 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/user-subscriptions/check-premium",
     "/api/v1/documents",
   ];
-
-  if (publicEndpoints.some((endpoint) => url.includes(endpoint))) {
-    return true;
-  }
 
   const isGetMethod = !method || method.toUpperCase() === "GET";
   if (isGetMethod && publicGetPatterns.some((pattern) => url.includes(pattern))) {
@@ -59,9 +65,12 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("access_token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      const isAnon = isAnonymousEndpoint(config.url);
+      if (!isAnon) {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       }
       const locale = localStorage.getItem(localeStorageKey) || "en";
       config.headers["Accept-Language"] = locale;
