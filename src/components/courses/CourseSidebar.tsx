@@ -7,7 +7,6 @@ import { CourseDetailResponse, CourseFormat, CourseLevel } from "@/types/course"
 interface CourseSidebarProps {
   course: CourseDetailResponse;
   isEnrolled: boolean;
-  isPremiumUser: boolean;
   isFavorite: boolean;
   favoriteLoading: boolean;
   onPayment: () => void;
@@ -19,7 +18,6 @@ interface CourseSidebarProps {
 export default function CourseSidebar({
   course,
   isEnrolled,
-  isPremiumUser,
   isFavorite,
   favoriteLoading,
   onPayment,
@@ -33,14 +31,10 @@ export default function CourseSidebar({
     <div className="bg-white dark:bg-slate-800 rounded-xl p-5 sticky top-8 border border-gray-200 dark:border-slate-700">
       {/* Price / Enrolled Status */}
       <div className="text-center mb-5">
-        {isEnrolled || isPremiumUser ? (
+        {isEnrolled ? (
           <>
             <div
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 border ${
-                isPremiumUser && !isEnrolled
-                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
-                  : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800"
-              }`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 border bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800"
             >
               <svg
                 className="w-5 h-5"
@@ -54,13 +48,11 @@ export default function CourseSidebar({
                 />
               </svg>
               <span className="font-medium">
-                {isPremiumUser && !isEnrolled ? t("courseDetail.premiumMember") : t("courseDetail.enrolled")}
+                {t("courseDetail.enrolled")}
               </span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {isPremiumUser && !isEnrolled
-                ? t("courseDetail.premiumAccess")
-                : t("courseDetail.fullAccess")}
+              {t("courseDetail.fullAccess")}
             </p>
           </>
         ) : (
@@ -77,7 +69,7 @@ export default function CourseSidebar({
 
       {/* CTA Buttons */}
       <div className="space-y-2 mb-6">
-        {isEnrolled || isPremiumUser ? (
+        {isEnrolled ? (
           <Link
             href={
               course.courseFormat === CourseFormat.TEXT

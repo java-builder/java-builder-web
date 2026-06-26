@@ -85,7 +85,7 @@ export default function DocsSidebar({
 
   return (
     <aside className={`
-      fixed lg:sticky top-16 left-0 h-[calc(100vh-4rem)] w-72 
+      fixed lg:sticky top-16 left-0 lg:left-auto h-[calc(100vh-4rem)] w-72 
       bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700/60
       transition-transform duration-300 z-40 flex flex-col
       ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}

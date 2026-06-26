@@ -42,7 +42,6 @@ export default function CourseDetailPage() {
 
   const hasFetched = useRef(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [isPremiumUser, setIsPremiumUser] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [loadingLessons, setLoadingLessons] = useState<Set<string>>(new Set());
@@ -93,7 +92,6 @@ export default function CourseDetailPage() {
           setCourse(courseData);
           setIsFavorite(courseData.isFavorite ?? false);
           setIsEnrolled(courseData.isEnrolled ?? false);
-          setIsPremiumUser(courseData.isPremiumUser ?? false);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : t("courseDetail.loadError");
@@ -119,9 +117,9 @@ export default function CourseDetailPage() {
 
     setFavoriteLoading(true);
     try {
-      const result = await favoriteService.toggle({ 
-        targetId: course.id, 
-        targetType: FavoriteTargetType.COURSE 
+      const result = await favoriteService.toggle({
+        targetId: course.id,
+        targetType: FavoriteTargetType.COURSE
       });
       if (result.code === 200) {
         setIsFavorite(result.data ?? false);
@@ -175,14 +173,12 @@ export default function CourseDetailPage() {
       return;
     }
 
-    if (isEnrolled || isPremiumUser || lesson.isFreePreview) {
-      // If course format is TEXT, redirect to docs page
+    if (isEnrolled || lesson.isFreePreview) {
       if (course?.courseFormat === "TEXT") {
         window.location.href = `/docs/${course.slug}?lessonId=${lesson.id}`;
         return;
       }
 
-      // Otherwise, show video modal
       try {
         const response = await lessonApi.getById(lesson.id);
         if (response.data) {
@@ -403,7 +399,6 @@ export default function CourseDetailPage() {
                       chapterLessons={chapterLessons}
                       loadingLessons={loadingLessons}
                       isEnrolled={isEnrolled}
-                      isPremiumUser={isPremiumUser}
                       onToggleChapter={toggleChapter}
                       onLessonClick={handleLessonClick}
                     />
@@ -415,7 +410,6 @@ export default function CourseDetailPage() {
                     <ReviewSection
                       courseId={course?.id || ""}
                       isEnrolled={isEnrolled}
-                      isPremiumUser={isPremiumUser}
                     />
                   )}
                 </div>
@@ -428,7 +422,6 @@ export default function CourseDetailPage() {
             <CourseSidebar
               course={course}
               isEnrolled={isEnrolled}
-              isPremiumUser={isPremiumUser}
               isFavorite={isFavorite}
               favoriteLoading={favoriteLoading}
               onPayment={handlePayment}
@@ -444,7 +437,6 @@ export default function CourseDetailPage() {
         isOpen={previewModal.isOpen}
         lesson={previewModal.lesson}
         isEnrolled={isEnrolled}
-        isPremiumUser={isPremiumUser}
         onClose={() => setPreviewModal({ isOpen: false, lesson: null })}
         onEnroll={() => {
           setPreviewModal({ isOpen: false, lesson: null });

@@ -7,7 +7,6 @@ interface VideoPreviewModalProps {
   isOpen: boolean;
   lesson: LessonDetailResponse | null;
   isEnrolled: boolean;
-  isPremiumUser: boolean;
   onClose: () => void;
   onEnroll: () => void;
 }
@@ -16,7 +15,6 @@ export default function VideoPreviewModal({
   isOpen,
   lesson,
   isEnrolled,
-  isPremiumUser,
   onClose,
   onEnroll,
 }: VideoPreviewModalProps) {
@@ -32,11 +30,7 @@ export default function VideoPreviewModal({
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">
               {lesson.lessonName}
             </h3>
-            {isPremiumUser && !isEnrolled ? (
-              <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-800">
-                Premium Member
-              </span>
-            ) : isEnrolled ? (
+            {isEnrolled ? (
               <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full border border-green-200 dark:border-green-800">
                 Đã đăng ký
               </span>
@@ -105,7 +99,7 @@ export default function VideoPreviewModal({
         )}
 
         {/* CTA - Only show if not enrolled and not premium */}
-        {!isEnrolled && !isPremiumUser && (
+        {!isEnrolled && (
           <div className="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-accent-50 dark:bg-accent-900/20">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left">

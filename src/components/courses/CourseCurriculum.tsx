@@ -9,7 +9,6 @@ interface CourseCurriculumProps {
   chapterLessons: Record<string, LessonDetailResponse[]>;
   loadingLessons: Set<string>;
   isEnrolled: boolean;
-  isPremiumUser: boolean;
   onToggleChapter: (chapterId: string) => void;
   onLessonClick: (lesson: LessonDetailResponse) => void;
 }
@@ -20,7 +19,6 @@ export default function CourseCurriculum({
   chapterLessons,
   loadingLessons,
   isEnrolled,
-  isPremiumUser,
   onToggleChapter,
   onLessonClick,
 }: CourseCurriculumProps) {
@@ -134,7 +132,7 @@ export default function CourseCurriculum({
                   chapterLessons[chapter.id].length > 0 ? (
                   chapterLessons[chapter.id].map((lesson, lessonIndex) => {
                     const canWatch =
-                      isEnrolled || isPremiumUser || lesson.isFreePreview;
+                      isEnrolled || lesson.isFreePreview;
                     return (
                       <div
                         key={lesson.id}

@@ -10,12 +10,11 @@ import toast from "react-hot-toast";
 interface ReviewSectionProps {
   courseId: string;
   isEnrolled: boolean;
-  isPremiumUser: boolean;
 }
 
 type FilterType = "all" | 5 | 4 | 3 | 2 | 1;
 
-export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: ReviewSectionProps) {
+export default function ReviewSection({ courseId, isEnrolled }: ReviewSectionProps) {
   const { data: currentUser } = useCurrentUser();
   const { reviews, totalReviews, isLoading, hasReviewed, createReview, isSubmitting } = useReviews(courseId);
 
@@ -24,7 +23,7 @@ export default function ReviewSection({ courseId, isEnrolled, isPremiumUser }: R
   const [hoverRating, setHoverRating] = useState(0);
   const [content, setContent] = useState("");
 
-  const canReview = (isEnrolled || isPremiumUser) && currentUser && !hasReviewed;
+  const canReview = isEnrolled && currentUser && !hasReviewed;
 
   const ratingStats = useMemo(() => {
     const stats = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };

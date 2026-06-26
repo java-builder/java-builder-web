@@ -25,7 +25,7 @@ export default function DocsHeader({
 
   return (
     <header className="sticky top-0 z-50 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-gray-200 dark:border-slate-700/60 shadow-sm transition-all duration-250">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
           {/* Left: Hamburger menu (mobile), Logo & Branding */}

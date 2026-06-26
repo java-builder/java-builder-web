@@ -20,7 +20,7 @@ export default function CourseInstructor() {
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
             JavaBuilder
           </h3>
-          <p className="text-accent-600 dark:text-accent-400 font-medium mb-2">
+          <p className="text-accent font-medium mb-2">
             Backend Developer
           </p>
           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
@@ -48,7 +48,7 @@ export default function CourseInstructor() {
           ].map((skill) => (
             <span
               key={skill}
-              className="px-3 py-1 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 rounded-full text-sm font-medium border border-accent-200 dark:border-accent-800"
+              className="px-3 py-1 bg-accent/10 dark:bg-accent/20 text-accent rounded-full text-sm font-medium border border-accent/20"
             >
               {skill}
             </span>
@@ -57,7 +57,7 @@ export default function CourseInstructor() {
       </div>
 
       {/* Contact */}
-      <div className="p-4 bg-accent-50 dark:bg-accent-900/20 rounded-lg border border-accent-100 dark:border-accent-800">
+      <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/20">
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
           Liên hệ với giảng viên
         </h4>

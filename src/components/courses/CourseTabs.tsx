@@ -17,7 +17,7 @@ export default function CourseTabs({ activeTab, onTabChange }: CourseTabsProps) 
           onClick={() => onTabChange("curriculum")}
           className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
             activeTab === "curriculum"
-              ? "border-accent text-accent-600 dark:text-accent-400"
+              ? "border-accent text-accent"
               : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
           }`}
         >
@@ -27,7 +27,7 @@ export default function CourseTabs({ activeTab, onTabChange }: CourseTabsProps) 
           onClick={() => onTabChange("description")}
           className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
             activeTab === "description"
-              ? "border-accent text-accent-600 dark:text-accent-400"
+              ? "border-accent text-accent"
               : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
           }`}
         >
@@ -37,7 +37,7 @@ export default function CourseTabs({ activeTab, onTabChange }: CourseTabsProps) 
           onClick={() => onTabChange("instructor")}
           className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
             activeTab === "instructor"
-              ? "border-accent text-accent-600 dark:text-accent-400"
+              ? "border-accent text-accent"
               : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
           }`}
         >
@@ -47,7 +47,7 @@ export default function CourseTabs({ activeTab, onTabChange }: CourseTabsProps) 
           onClick={() => onTabChange("comments")}
           className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
             activeTab === "comments"
-              ? "border-accent text-accent-600 dark:text-accent-400"
+              ? "border-accent text-accent"
               : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
           }`}
         >
