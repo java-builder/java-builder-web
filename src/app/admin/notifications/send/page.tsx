@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEmailCampaign } from "@/components/admin/notifications/useEmailCampaign";
 import EmailPreviewPanel from "@/components/admin/notifications/EmailPreviewPanel";
@@ -42,6 +42,8 @@ export default function SendNotificationPage() {
             <ContentStep
               selectedTemplate={c.selectedTemplate}
               content={c.content}
+              templates={c.campaignTemplates}
+              isLoadingTemplates={c.isLoadingTemplates}
               onTemplateChange={c.handleTemplateChange}
               onContentChange={c.setContent}
               onInsertTag={c.insertTag}
@@ -71,12 +73,10 @@ export default function SendNotificationPage() {
               scheduleType={c.scheduleType}
               scheduleDate={c.scheduleDate}
               scheduleTime={c.scheduleTime}
-              priority={c.priority}
               isSubmitting={c.isSending}
               onScheduleTypeChange={c.setScheduleType}
               onScheduleDateChange={c.setScheduleDate}
               onScheduleTimeChange={c.setScheduleTime}
-              onPriorityChange={c.setPriority}
               onBack={() => c.setActiveTab("audience")}
               onSubmit={() => c.handleSubmit()}
             />

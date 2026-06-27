@@ -1014,6 +1014,7 @@ export const en = {
       comments: "Comments",
       notifications: "Notification management",
       emailMarketing: "Send Email Marketing",
+      emailTemplates: "Email Templates",
       scheduledJobs: "Scheduled Jobs",
       subscriptions: "Premium plans",
       userSubscriptions: "Subscription management",

@@ -80,6 +80,9 @@ export const API = {
     NOTIFICATIONS_ADMIN_SEND: "/api/v1/notifications/admin/send",
     NOTIFICATIONS_DELETE: "/api/v1/notifications", // + /:notificationId
 
+    // EMAIL TEMPLATES
+    EMAIL_TEMPLATES: "/api/v1/email-template",
+
     // LESSON NOTE
     CREATE_LESSON_NOTE: "/api/v1/lesson-notes",
     GET_LESSON_NOTE_BY_LESSON: "/api/v1/lesson-notes/lesson", // + /:lessonId

@@ -100,7 +100,7 @@ export default function TemplateVariablesPanel({
               Bắt buộc
             </span>
           </div>
-          <div className="space-y-3">
+          <div className="max-h-[220px] overflow-y-auto pr-1.5 space-y-3 custom-scrollbar">
             {customVars.map((varName) => {
               const meta = CUSTOM_VAR_META[varName] ?? {
                 label: varName,
@@ -108,28 +108,50 @@ export default function TemplateVariablesPanel({
               };
               const isEmpty = !customVarValues[varName]?.trim();
               const sugs = meta.suggestions?.map((fn) => fn()) ?? [];
+              const isHtmlVar = varName.toLowerCase().endsWith("html") || 
+                                varName.toLowerCase().endsWith("content") || 
+                                varName.toLowerCase().endsWith("body");
+
               return (
                 <div key={varName}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <code className="text-[10px] font-mono font-bold text-amber-500 bg-amber-500/15 px-1.5 py-0.5 rounded">
                       {`{${varName}}`}
                     </code>
-                    <span className="text-[11px] text-muted-foreground">{meta.label}</span>
+                    {meta.label !== varName && (
+                      <span className="text-[11px] text-muted-foreground font-medium">{meta.label}</span>
+                    )}
                     {isEmpty && (
                       <span className="ml-auto text-[10px] text-destructive font-medium">Chưa điền</span>
                     )}
                   </div>
-                  <input
-                    type="text"
-                    value={customVarValues[varName] ?? ""}
-                    onChange={(e) => onChange(varName, e.target.value)}
-                    placeholder={meta.placeholder}
-                    className={`w-full px-2.5 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-1 transition-all bg-background text-foreground ${
-                      isEmpty
-                        ? "border-amber-500 focus:ring-amber-500/50"
-                        : "border-input focus:ring-accent/50"
-                    }`}
-                  />
+
+                  {isHtmlVar ? (
+                    <textarea
+                      value={customVarValues[varName] ?? ""}
+                      onChange={(e) => onChange(varName, e.target.value)}
+                      placeholder={meta.placeholder}
+                      rows={3}
+                      className={`w-full px-2.5 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-1 transition-all bg-background text-foreground resize-y leading-relaxed font-mono ${
+                        isEmpty
+                          ? "border-amber-500 focus:ring-amber-500/50"
+                          : "border-input focus:ring-accent/50"
+                      }`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      value={customVarValues[varName] ?? ""}
+                      onChange={(e) => onChange(varName, e.target.value)}
+                      placeholder={meta.placeholder}
+                      className={`w-full px-2.5 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-1 transition-all bg-background text-foreground ${
+                        isEmpty
+                          ? "border-amber-500 focus:ring-amber-500/50"
+                          : "border-input focus:ring-accent/50"
+                      }`}
+                    />
+                  )}
+
                   {sugs.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1.5">
                       {sugs.map((s) => (

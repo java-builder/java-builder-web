@@ -1014,6 +1014,7 @@ export const vi = {
       comments: "Bình luận",
       notifications: "Quản lý thông báo",
       emailMarketing: "Gửi Email Marketing",
+      emailTemplates: "Quản lý mẫu Email",
       scheduledJobs: "Scheduled Jobs",
       subscriptions: "Gói Premium",
       userSubscriptions: "Quản lý Subscriptions",

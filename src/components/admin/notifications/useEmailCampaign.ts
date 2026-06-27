@@ -4,55 +4,111 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import { userApi } from "@/services/user.service";
 import { emailSchedulerService } from "@/services/email-scheduler.service";
+import { emailTemplateService } from "@/services/email-template.service";
 import { ScheduleEmailRequest, RecipientType, EmailEventType } from "@/types/email-scheduler";
 import { UserDetailResponse } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
-import { TEMPLATE_LIST, SYSTEM_VARS, type TemplateId } from "./emailTemplates";
 
 export type ActiveTab = "config" | "content" | "audience" | "schedule";
 export type PreviewMode = "desktop" | "mobile";
 export type TargetSegment = "all" | "premium" | "inactive" | "custom";
 export type Priority = "HIGH" | "NORMAL" | "LOW";
 
-const toEmailEventType = (id: TemplateId): EmailEventType => {
-  switch (id) {
-    case "empty":         return "BROADCAST";
-    case "thank-you":     return "APPRECIATION";
-    case "promotion":     return "PROMOTION";
-    case "system-alert":  return "MAINTENANCE_ALERT";
-    case "re-engage":     return "RE_ENGAGEMENT";
-    case "new-course":    return "NEW_COURSE_ANNOUNCEMENT";
-  }
+export interface CampaignTemplateConfig {
+  id: string;
+  name: string;
+  emoji: string;
+  subject: string;
+  preheader: string;
+  customVars: string[];
+  htmlContent: string;
+  textContent: string;
+}
+
+export const SYSTEM_VARS: Record<string, string> = {
+  username: "Nguyễn Văn A",
+  email: "nguyenvana@gmail.com",
+};
+
+const DEFAULT_TEMPLATE: CampaignTemplateConfig = {
+  id: "empty",
+  name: "Trang Trắng",
+  emoji: "📄",
+  subject: "",
+  preheader: "",
+  customVars: [],
+  htmlContent: "<p>Bắt đầu viết nội dung thư của bạn ở đây...</p>",
+  textContent: "",
 };
 
 export function useEmailCampaign() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("config");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("desktop");
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("empty");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
 
   const [subject, setSubject] = useState("");
   const [preheader, setPreheader] = useState("");
-  const [senderName, setSenderName] = useState("JavaBuilder Support");
+  const [senderName, setSenderName] = useState("JavaBuilder");
   const [senderEmail, setSenderEmail] = useState("noreply@javabuilder.online");
   const [replyTo, setReplyTo] = useState("javabuilder.platform@gmail.com");
 
   const [content, setContent] = useState("");
-
   const [customVarValues, setCustomVarValues] = useState<Record<string, string>>({});
 
+  const [campaignTemplates, setCampaignTemplates] = useState<CampaignTemplateConfig[]>([DEFAULT_TEMPLATE]);
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
+
+  // Fetch all templates from API
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      setIsLoadingTemplates(true);
+      try {
+        const res = await emailTemplateService.getAllEmailTemplates();
+        if (res.data) {
+          const apiTemplates: CampaignTemplateConfig[] = res.data.map((tpl) => {
+            // Extract custom variables like {{var}} or {var}
+            const matches = tpl.htmlContent.match(/\{\{(\w+)\}\}/g) ?? tpl.htmlContent.match(/\{(\w+)\}/g) ?? [];
+            const vars = [...new Set(matches.map((m) => m.replace(/[\{\}]/g, "")))].filter(
+              (v) => v !== "username" && v !== "email"
+            );
+
+            return {
+              id: tpl.templateName,
+              name: tpl.templateName,
+              emoji: "✉️",
+              subject: tpl.subject,
+              preheader: tpl.subject,
+              customVars: vars,
+              htmlContent: tpl.htmlContent,
+              textContent: tpl.textContent,
+            };
+          });
+          setCampaignTemplates([DEFAULT_TEMPLATE, ...apiTemplates]);
+        }
+      } catch (e) {
+        console.error("Failed to fetch templates for campaign", e);
+        toast.error("Không thể tải danh sách mẫu email từ AWS SES. Đang dùng mẫu mặc định.");
+      } finally {
+        setIsLoadingTemplates(false);
+      }
+    };
+    fetchTemplates();
+  }, []);
+
   const currentTemplateCfg = useMemo(
-    () => TEMPLATE_LIST.find((t) => t.id === selectedTemplate)!,
-    [selectedTemplate]
+    () => campaignTemplates.find((t) => t.id === selectedTemplate) || DEFAULT_TEMPLATE,
+    [campaignTemplates, selectedTemplate]
   );
 
   const systemVarsDetected = useMemo(() => {
-    const matches = content.match(/\{(\w+)\}/g) ?? [];
+    const matches = content.match(/\{(\w+)\}/g) ?? content.match(/\{\{(\w+)\}\}/g) ?? [];
     const all = [...new Set(matches.map((m) => m.replace(/[{}]/g, "")))];
     return all.filter((v) => v in SYSTEM_VARS);
   }, [content]);
 
   const [targetSegment, setTargetSegment] = useState<TargetSegment>("all");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsersDetails, setSelectedUsersDetails] = useState<UserDetailResponse[]>([]);
   const [users, setUsers] = useState<UserDetailResponse[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
@@ -86,29 +142,59 @@ export function useEmailCampaign() {
 
   useEffect(() => { loadUsers(); }, [loadUsers]);
 
-  const handleUserSelect = (userId: string) =>
-    setSelectedUsers((prev) =>
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
-    );
+  const handleUserSelect = (userId: string) => {
+    const isSelected = selectedUsers.includes(userId);
+    if (isSelected) {
+      setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+      setSelectedUsersDetails((prev) => prev.filter((u) => u.id !== userId));
+    } else {
+      const userObj = users.find((u) => u.id === userId);
+      setSelectedUsers((prev) => [...prev, userId]);
+      if (userObj) {
+        setSelectedUsersDetails((prev) => {
+          if (prev.some((u) => u.id === userId)) return prev;
+          return [...prev, userObj];
+        });
+      }
+    }
+  };
 
-  const handleSelectAll = () =>
-    setSelectedUsers(selectedUsers.length === users.length ? [] : users.map((u) => u.id));
+  const handleSelectAll = () => {
+    if (!searchQuery.trim()) {
+      setSelectedUsers([]);
+      setSelectedUsersDetails([]);
+      return;
+    }
+    const currentSearchIds = users.map((u) => u.id);
+    const allCurrentSelected = currentSearchIds.every((id) => selectedUsers.includes(id));
 
-  const handleTemplateChange = (id: TemplateId) => {
-    const cfg = TEMPLATE_LIST.find((t) => t.id === id)!;
+    if (allCurrentSelected) {
+      setSelectedUsers((prev) => prev.filter((id) => !currentSearchIds.includes(id)));
+      setSelectedUsersDetails((prev) => prev.filter((u) => !currentSearchIds.includes(u.id)));
+    } else {
+      const toSelect = users.filter((u) => !selectedUsers.includes(u.id));
+      setSelectedUsers((prev) => [...prev, ...toSelect.map((u) => u.id)]);
+      setSelectedUsersDetails((prev) => {
+        const filteredPrev = prev.filter((u) => !toSelect.some((ts) => ts.id === u.id));
+        return [...filteredPrev, ...toSelect];
+      });
+    }
+  };
+
+  const handleTemplateChange = (id: string) => {
+    const cfg = campaignTemplates.find((t) => t.id === id) || DEFAULT_TEMPLATE;
     setSelectedTemplate(id);
     setSubject(cfg.subject);
     setPreheader(cfg.preheader);
     const initVars: Record<string, string> = {};
     cfg.customVars.forEach((v) => { initVars[v] = ""; });
     setCustomVarValues(initVars);
-    setContent(cfg.build({ ...SYSTEM_VARS, ...initVars }));
+    setContent(cfg.htmlContent);
   };
 
   const handleCustomVarChange = (varName: string, value: string) => {
     const next = { ...customVarValues, [varName]: value };
     setCustomVarValues(next);
-    setContent(currentTemplateCfg.build({ ...SYSTEM_VARS, ...next }));
   };
 
   const insertTag = (tag: string) => {
@@ -120,10 +206,13 @@ export function useEmailCampaign() {
     if (!content) return "<p style='color:#94a3b8; text-align:center; padding: 40px;'>Nội dung thư rỗng</p>";
     let html = content;
     Object.entries(SYSTEM_VARS).forEach(([k, v]) => {
-      html = html.replaceAll(`{${k}}`, v);
+      html = html.replaceAll(`{{${k}}}`, v).replaceAll(`{${k}}`, v);
+    });
+    Object.entries(customVarValues).forEach(([k, v]) => {
+      html = html.replaceAll(`{{${k}}}`, v || `[${k}]`).replaceAll(`{${k}}`, v || `[${k}]`);
     });
     return html;
-  }, [content]);
+  }, [content, customVarValues]);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -144,20 +233,31 @@ export function useEmailCampaign() {
 
     const recipientType = targetSegment.toUpperCase() as RecipientType;
     const recipients = recipientType === "CUSTOM"
-      ? users.filter((u) => selectedUsers.includes(u.id)).map((u) => u.email)
+      ? selectedUsersDetails.filter((u) => selectedUsers.includes(u.id)).map((u) => u.email)
       : undefined;
 
     const scheduledTime = scheduleType === "schedule"
       ? new Date(`${scheduleDate}T${scheduleTime}`).toISOString()
       : undefined;
 
+    // Dynamically resolve event type based on template selection
+    const toEmailEventType = (id: string): EmailEventType => {
+      switch (id) {
+        case "PROMOTION": return "PROMOTION";
+        case "MAINTENANCE_ALERT": return "MAINTENANCE_ALERT";
+        case "RE_ENGAGEMENT": return "RE_ENGAGEMENT";
+        case "NEW_COURSE_ANNOUNCEMENT": return "NEW_COURSE_ANNOUNCEMENT";
+        case "APPRECIATION": return "APPRECIATION";
+        default: return "BROADCAST";
+      }
+    };
     const eventType = toEmailEventType(selectedTemplate);
 
     const payload: ScheduleEmailRequest = {
       jobLabel: (currentTemplateCfg.id || "broadcast").replace(/_/g, "-"),
       subject: subject.trim(),
       type: eventType,
-      htmlBody: eventType === "BROADCAST" ? content : undefined,
+      htmlBody: eventType === "BROADCAST" ? content : undefined, // Send HTML body only for BROADCAST
       summary: preheader.trim() || subject.trim(),
       nameSender: senderName,
       emailSender: senderEmail,
@@ -195,13 +295,17 @@ export function useEmailCampaign() {
     customVarValues,
     currentTemplateCfg,
     systemVarsDetected,
+    campaignTemplates,
+    isLoadingTemplates,
     handleTemplateChange,
     handleCustomVarChange,
     insertTag,
     previewHtml,
     targetSegment, setTargetSegment,
     selectedUsers,
-    users,
+    users: searchQuery.trim() === ""
+      ? selectedUsersDetails.filter((u, i, self) => self.findIndex((x) => x.id === u.id) === i)
+      : users,
     searchQuery, setSearchQuery,
     isLoadingUsers,
     handleUserSelect,

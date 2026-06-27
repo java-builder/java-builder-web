@@ -1,8 +1,7 @@
 "use client";
 
-import type { PreviewMode, TargetSegment } from "./useEmailCampaign";
+import type { PreviewMode, TargetSegment, CampaignTemplateConfig } from "./useEmailCampaign";
 import TemplateVariablesPanel from "./TemplateVariablesPanel";
-import type { TemplateConfig } from "./emailTemplates";
 
 interface Props {
   previewMode: PreviewMode;
@@ -14,7 +13,7 @@ interface Props {
   targetSegment: TargetSegment;
   selectedUsersCount: number;
   // Variable panel
-  currentTemplateCfg: TemplateConfig;
+  currentTemplateCfg: CampaignTemplateConfig;
   systemVarsDetected: string[];
   customVarValues: Record<string, string>;
   onCustomVarChange: (varName: string, value: string) => void;
@@ -123,11 +122,12 @@ export default function EmailPreviewPanel({
       </div>
 
       {/* Rendered preview */}
-      <div className="p-4 bg-muted flex justify-center items-start overflow-x-hidden min-h-[460px] max-h-[600px] overflow-y-auto email-preview-area">
+      <div className="p-4 bg-muted flex justify-center items-start overflow-x-hidden min-h-[500px] email-preview-area">
         <div className={`bg-background rounded-lg shadow-sm border border-border overflow-hidden transition-all duration-300 ${previewMode === "mobile" ? "w-[360px]" : "w-full"}`}>
-          <div
-            className="p-4 overflow-auto prose prose-sm max-w-none text-xs leading-normal"
-            dangerouslySetInnerHTML={{ __html: previewHtml }}
+          <iframe
+            srcDoc={previewHtml}
+            className="w-full h-[480px] border-0 bg-white"
+            title="Campaign Email Live Render"
           />
         </div>
       </div>

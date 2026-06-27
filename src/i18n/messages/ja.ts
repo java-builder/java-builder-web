@@ -1008,6 +1008,7 @@ export const ja = {
       comments: "コメント",
       notifications: "通知管理",
       emailMarketing: "メールマーケティング送信",
+      emailTemplates: "メールテンプレート",
       scheduledJobs: "スケジュールジョブ",
       subscriptions: "プレミアムプラン",
       userSubscriptions: "サブスクリプション管理",
