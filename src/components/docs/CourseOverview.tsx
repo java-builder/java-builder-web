@@ -26,12 +26,7 @@ export default function CourseOverview({
   onLessonClick, 
   selectedLessonId 
 }: CourseOverviewProps) {
-  const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>(() => {
-    if (course.chapters && course.chapters.length > 0) {
-      return { [course.chapters[0].id]: true };
-    }
-    return {};
-  });
+  const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({});
 
   // Auto-expand chapter containing the selected lesson
   useEffect(() => {

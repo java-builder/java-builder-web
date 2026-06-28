@@ -133,7 +133,7 @@ export default function BlogCommentsTab() {
     try {
       await commentApi.create({
         targetId: selectedComment.targetId || "",
-        targetType: selectedComment.targetType || "BLOG",
+        targetType: selectedComment.commentTargetType || "BLOG",
         parentId: selectedComment.id,
         content,
       });

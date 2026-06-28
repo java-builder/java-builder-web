@@ -1,18 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CourseDetailResponse, CourseLevel, CourseFormat } from "@/types/course";
-import { favoriteService } from "@/services/favorite.service";
-import { FavoriteTargetType } from "@/types/favorite";
-import { authApi } from "@/services/auth.service";
-import toast from "react-hot-toast";
 
 interface CourseCardProps {
   course: CourseDetailResponse;
   index?: number;
-  initialFavorite?: boolean;
 }
 
 const LEVEL_STYLES: Record<
@@ -67,61 +61,7 @@ const formatPrice = (price: number) => {
 export default function CourseCard({
   course,
   index = 0,
-  initialFavorite,
 }: CourseCardProps) {
-  const [isFavorite, setIsFavorite] = useState(initialFavorite ?? false);
-  const [isLoading, setIsLoading] = useState(false);
-  const hasCheckedFavorite = useRef(false);
-
-  useEffect(() => {
-    if (initialFavorite !== undefined || hasCheckedFavorite.current) return;
-    if (!authApi.isAuthenticated()) return;
-
-    hasCheckedFavorite.current = true;
-
-    const checkFavorite = async () => {
-      try {
-        const result = await favoriteService.check(
-          course.id,
-          FavoriteTargetType.COURSE
-        );
-        if (result && result.data !== undefined) {
-          setIsFavorite(result.data);
-        }
-      } catch {
-        /* silent */
-      }
-    };
-    checkFavorite();
-  }, [course.id, initialFavorite]);
-
-  const handleToggleFavorite = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!authApi.isAuthenticated()) {
-      toast.error("Vui lòng đăng nhập để thêm vào yêu thích");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await favoriteService.toggle({
-        targetId: course.id,
-        targetType: FavoriteTargetType.COURSE,
-      });
-      if (result.code === 200) {
-        setIsFavorite(result.data ?? false);
-        toast.success(
-          result.data ? "Đã thêm vào yêu thích" : "Đã xóa khỏi yêu thích"
-        );
-      }
-    } catch {
-      toast.error("Có lỗi xảy ra");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const detailHref =
     course.courseFormat === CourseFormat.TEXT
@@ -194,54 +134,7 @@ export default function CourseCard({
           )}
         </div>
 
-        {/* Favorite button - floating top right */}
-        <button
-          onClick={handleToggleFavorite}
-          disabled={isLoading}
-          className={`absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full shadow-md transition-all duration-200 disabled:opacity-60 ${
-            isFavorite
-              ? "bg-rose-500 text-white hover:bg-rose-600"
-              : "bg-white/90 text-gray-700 backdrop-blur-sm hover:bg-white hover:text-rose-500 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-rose-400"
-          }`}
-          aria-label={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
-          title={isFavorite ? "Đã yêu thích" : "Thêm vào yêu thích"}
-        >
-          {isLoading ? (
-            <svg
-              className="h-4 w-4 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="h-[18px] w-[18px]"
-              fill={isFavorite ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-          )}
-        </button>
+
       </Link>
 
       {/* Body */}

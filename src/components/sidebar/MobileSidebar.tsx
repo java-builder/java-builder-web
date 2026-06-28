@@ -55,6 +55,8 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     }));
   }, [unreadCount]);
 
+
+
   useEffect(() => {
     if (!rawAppName && typeof document !== "undefined") {
       setClientTitle(document.title || null);
@@ -237,18 +239,18 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             </button>
           </div>
         ) : (
-          <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
-            <div className="flex flex-col gap-2">
+          <div className="p-3 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
+            <div className="flex flex-col gap-1.5">
               <Link
                 href="/login"
-                className="w-full px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium text-center"
+                className="w-full px-3 py-2 bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors text-xs font-semibold text-center shadow-xs"
                 onClick={onClose}
               >
                 {t("auth.login") || "Đăng nhập"}
               </Link>
               <Link
                 href="/register"
-                className="w-full px-4 py-2.5 border border-accent text-accent rounded-lg hover:bg-accent/10 transition-colors text-sm font-medium text-center"
+                className="w-full px-3 py-2 border border-accent text-accent rounded-lg hover:bg-accent/10 transition-colors text-xs font-semibold text-center shadow-xs"
                 onClick={onClose}
               >
                 {t("auth.register") || "Đăng ký"}
@@ -258,7 +260,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         )}
 
         {/* Menu Groups */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+        <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-4">
           {menuGroupsWithBadge.map((group) => {
             if (!shouldShowGroup(group)) return null;
 
@@ -272,62 +274,62 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   )}
                   <span>{group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}</span>
                 </div>
-                <ul className={`space-y-1 pl-2.5 ml-5.5 border-l border-dashed ${group.borderColor || "border-gray-200 dark:border-slate-700"} dark:border-opacity-35 border-opacity-25`}>
+                <ul className="space-y-1 mt-1 pl-3.5 ml-4 border-l border-solid border-gray-150 dark:border-slate-800/60">
                   {group.items.map((item) => {
                     if (!shouldShowItem(item)) return null;
 
                     const active = isActive(item.href);
                     const displayedLabel = item.labelKey ? t(item.labelKey as Parameters<typeof t>[0]) : item.label;
 
-                    return (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${item.highlight
+                      return (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${item.highlight
                               ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
                               : active
-                                ? "bg-accent/10 dark:bg-accent/20 text-accent font-semibold ring-1 ring-inset ring-accent/30 dark:ring-accent/40"
-                                : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
-                            }`}
-                          onClick={onClose}
-                        >
-                          <span
-                            className={`flex-shrink-0 ${item.highlight
+                                ? "bg-accent/8 dark:bg-accent/15 text-accent dark:text-accent-on-dark font-semibold shadow-xs"
+                                : "text-gray-700 dark:text-gray-200 hover:bg-gray-150/55 dark:hover:bg-slate-800"
+                              }`}
+                            onClick={onClose}
+                          >
+                            <span
+                              className={`flex-shrink-0 ${item.highlight
                                 ? "text-purple-600 dark:text-purple-300"
                                 : active
-                                  ? "text-accent"
+                                  ? "text-accent dark:text-accent-on-dark [&_svg]:text-accent dark:[&_svg]:text-accent-on-dark"
                                   : item.color || "text-gray-500 dark:text-gray-300"
-                              }`}
-                          >
-                            {item.icon}
-                          </span>
-                          <span className={`flex-1 font-medium text-sm ${item.highlight ? "font-semibold" : ""
-                            }`}>
-                            {displayedLabel}
-                          </span>
-                          {item.highlight && (
-                            <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
-                              NEW
+                                }`}
+                            >
+                              {item.icon}
                             </span>
-                          )}
-                          {item.badge && (
-                            <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${item.href === "/notifications"
-                                ? "bg-red-600 text-white"
+                            <span className={`flex-1 font-medium text-sm ${item.highlight ? "font-semibold" : ""
+                              }`}>
+                              {displayedLabel}
+                            </span>
+                            {item.highlight && (
+                              <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
+                                NEW
+                              </span>
+                            )}
+                            {item.badge && (
+                              <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${item.href === "/notifications"
+                                ? "bg-red-650 text-white"
                                 : item.badgeColor
                                   ? `${item.badgeColor} text-white animate-pulse`
                                   : "bg-accent/20 text-accent"
-                              }`}>
-                              {item.badge}
-                            </span>
-                          )}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })}
+                                }`}>
+                                {item.badge}
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
         </nav>
 
         {/* Logout Button - Only show if logged in */}

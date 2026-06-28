@@ -143,6 +143,7 @@ export const API = {
 
     // COMMENT
     COMMENTS: "/api/v1/comments",
+    MY_COMMENTS: "/api/v1/comments/my-comments",
     CREATE_COMMENT: "/api/v1/comments",
     DELETE_COMMENT: "/api/v1/comments", // + /:id
     GET_ROOT_COMMENTS: "/api/v1/comments/root",

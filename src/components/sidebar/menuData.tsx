@@ -104,17 +104,7 @@ export const menuGroups: MenuGroup[] = [
         ),
         color: "text-cyan-600 dark:text-cyan-400",
       },
-      {
-        href: "/chatbot",
-        label: "AI Chatbot",
-        labelKey: "sidebar.chatbot",
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-          </svg>
-        ),
-        color: "text-violet-600 dark:text-violet-400",
-      },
+
       {
         href: "/notifications",
         label: "Thông báo",
@@ -127,28 +117,7 @@ export const menuGroups: MenuGroup[] = [
         color: "text-amber-600 dark:text-amber-400",
         requireAuth: true,
       },
-      {
-        href: "/settings/language",
-        label: "Ngôn ngữ",
-        labelKey: "sidebar.language",
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5c-.347 2.225-1.512 4.417-3.239 6.275zM8.5 13H5m3.5-3.5a18.022 18.022 0 01-2.088-3.5" />
-          </svg>
-        ),
-        color: "text-rose-500 dark:text-rose-400",
-      },
-      {
-        href: "/contact",
-        label: "Ủng hộ",
-        labelKey: "sidebar.support",
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        ),
-        color: "text-yellow-600 dark:text-yellow-400",
-      },
+
     ],
   },
   {
@@ -225,27 +194,27 @@ export const menuGroups: MenuGroup[] = [
         requireAuth: true,
       },
       {
-        href: "/favorite-blogs",
-        label: "Bài viết yêu thích",
-        labelKey: "sidebar.favoriteBlogs",
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-        ),
-        color: "text-pink-600 dark:text-pink-400",
-        requireAuth: true,
-      },
-      {
-        href: "/favorite-courses",
-        label: "Khóa học yêu thích",
-        labelKey: "sidebar.favoriteCourses",
+        href: "/favorites",
+        label: "Nội dung yêu thích",
+        labelKey: "sidebar.favorites",
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         ),
         color: "text-red-600 dark:text-red-400",
+        requireAuth: true,
+      },
+      {
+        href: "/my-comments",
+        label: "Bình luận của tôi",
+        labelKey: "sidebar.myComments",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        ),
+        color: "text-violet-600 dark:text-violet-400",
         requireAuth: true,
       },
     ],
@@ -322,6 +291,17 @@ export const menuGroups: MenuGroup[] = [
           </svg>
         ),
         color: "text-indigo-600 dark:text-indigo-400",
+      },
+      {
+        href: "/settings/language",
+        label: "Ngôn ngữ",
+        labelKey: "sidebar.language",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5c-.347 2.225-1.512 4.417-3.239 6.275zM8.5 13H5m3.5-3.5a18.022 18.022 0 01-2.088-3.5" />
+          </svg>
+        ),
+        color: "text-rose-500 dark:text-rose-400",
       },
     ],
   },

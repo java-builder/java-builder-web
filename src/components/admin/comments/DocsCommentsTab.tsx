@@ -131,7 +131,7 @@ export default function DocsCommentsTab() {
     try {
       await commentApi.create({
         targetId: selectedComment.targetId || "",
-        targetType: selectedComment.targetType || "DOCS",
+        targetType: selectedComment.commentTargetType || "DOCS",
         parentId: selectedComment.id,
         content,
       });

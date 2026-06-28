@@ -16,7 +16,8 @@ export default function ConditionalSidebar() {
     "/privacy-policy",
     "/oauth2/callback",
     "/learn",
-    "/docs"
+    "/docs",
+    "/courses/"
   ];
   
   const shouldHideSidebar = hideOnRoutes.some(route => pathname?.startsWith(route));

@@ -16,7 +16,7 @@ export interface CommentDetailResponse {
   repliesCount: number;
   status: "ACTIVE" | "DELETED";
   targetId?: string;
-  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS";
+  commentTargetType?: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS";
   parentComment?: {
     id: string;
     username: string;
@@ -24,6 +24,8 @@ export interface CommentDetailResponse {
     content: string;
   };
   createdAt: string;
+  targetTitle?: string;
+  targetUrlPath?: string;
 }
 
 export interface CreateCommentRequest {

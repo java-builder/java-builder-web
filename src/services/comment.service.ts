@@ -11,6 +11,7 @@ import { API } from "@/api/api";
 export interface CommentSearchParams {
   page?: number;
   size?: number;
+  targetType?: "BLOG" | "LESSON" | "POST" | "QUESTION" | "DOCS";
 }
 
 export interface AdminCommentParams {
@@ -96,6 +97,19 @@ export const commentApi = {
         size: params.size || 10,
         type: params.type,
         ...(params.status && { status: params.status }), // Only include status if provided
+      },
+    });
+    return response.data;
+  },
+
+  getMyComments: async (params: CommentSearchParams = {}) => {
+    const response = await apiClient.get<
+      ApiResponse<PageResponse<CommentDetailResponse>>
+    >(API.MY_COMMENTS, {
+      params: {
+        page: params.page || 1,
+        size: params.size || 10,
+        targetType: params.targetType,
       },
     });
     return response.data;

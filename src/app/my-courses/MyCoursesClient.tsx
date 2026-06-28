@@ -97,6 +97,8 @@ export default function MyCoursesClient() {
         return t("courseDetail.intermediate");
       case CourseLevel.ADVANCED:
         return t("courseDetail.advanced");
+      case CourseLevel.EXPERT:
+        return t("courseDetail.expert");
       default:
         return t("common.all");
     }

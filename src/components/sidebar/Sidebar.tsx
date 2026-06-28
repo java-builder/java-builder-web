@@ -50,6 +50,8 @@ export default function Sidebar() {
     }));
   }, [unreadCount]);
 
+
+
   useEffect(() => {
     if (!rawAppName && typeof document !== "undefined") {
       setClientTitle(document.title || null);
@@ -245,9 +247,11 @@ export default function Sidebar() {
             </svg>
           </button>
         </div>
+        
+
 
         {/* Menu Groups */}
-        <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-2">
+        <nav className="flex-1 overflow-y-auto py-2.5 px-2 space-y-1">
           {menuGroupsWithBadge.map((group) => {
             if (!shouldShowGroup(group)) return null;
 

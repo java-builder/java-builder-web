@@ -54,9 +54,7 @@ export default function DocsDetailPage() {
           const courseData = response.data;
           setCourse(courseData);
 
-          if (courseData.chapters?.[0]) {
-            setOpenCategories([courseData.chapters[0].id]);
-          }
+
 
           if (courseData.chapters && courseData.chapters.length > 0) {
             const fetchAllLessonNames = async () => {

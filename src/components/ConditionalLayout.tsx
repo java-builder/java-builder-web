@@ -19,6 +19,7 @@ export default function ConditionalLayout({ children }: { children: ReactNode })
     "/oauth2/callback",
     "/learn",
     "/docs",
+    "/courses/",
   ];
   
   const shouldRemoveMargin = noMarginRoutes.some(route => pathname?.startsWith(route));
