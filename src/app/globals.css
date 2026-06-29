@@ -1209,6 +1209,9 @@ input[type="text"] {
 .dark .hover\:text-accent:hover {
   color: var(--accent-on-dark, #38bdf8) !important;
 }
+.dark .group:hover .group-hover\:text-accent {
+  color: var(--accent-on-dark, #38bdf8) !important;
+}
 .from-accent {
   --tw-gradient-from: var(--accent) !important;
   --tw-gradient-stops:

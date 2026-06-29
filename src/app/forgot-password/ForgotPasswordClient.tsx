@@ -15,6 +15,7 @@ export default function ForgotPasswordClient() {
   const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
 
   const {
     register,
@@ -32,8 +33,9 @@ export default function ForgotPasswordClient() {
     try {
       setIsLoading(true);
       await userApi.sendResetPasswordLink(data.email);
+      setSubmittedEmail(data.email);
       setEmailSent(true);
-      toast.success(t("auth.emailSentSuccess"));
+      toast.success(t("auth.emailSentSuccess").replace("{email}", data.email));
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : t("auth.emailNotFound");
       toast.error(errorMessage);
@@ -45,7 +47,7 @@ export default function ForgotPasswordClient() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
+        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -118,7 +120,7 @@ export default function ForgotPasswordClient() {
                   {t("auth.checkEmailTitle")}
                 </h2>
                 <p className="text-gray-600 dark:text-slate-400 text-xs sm:text-sm">
-                  {t("auth.checkEmailSubtitle")}
+                  {t("auth.checkEmailSubtitle").replace("{email}", submittedEmail)}
                 </p>
               </>
             )}
@@ -137,7 +139,7 @@ export default function ForgotPasswordClient() {
                   autoComplete="email"
                   disabled={isLoading}
                   placeholder={t("profilePage.profileTab.email")}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                  className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   {...register("email", {
                     required: t("auth.emailRequired"),
                     pattern: {
@@ -156,7 +158,7 @@ export default function ForgotPasswordClient() {
               <button
                 type="submit"
                 disabled={!isValid || isLoading}
-                className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
               >
                 {isLoading ? t("auth.sending") : t("auth.sendResetLinkBtn")}
               </button>
@@ -174,7 +176,7 @@ export default function ForgotPasswordClient() {
                   setEmailSent(false);
                   reset();
                 }}
-                className="w-full py-2.5 sm:py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600 text-gray-700 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 text-sm cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 w-full h-11 border border-input bg-background hover:bg-muted text-foreground font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm shadow-xs cursor-pointer active:scale-[0.99]"
               >
                 {t("auth.resendEmailBtn")}
               </button>

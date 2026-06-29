@@ -71,7 +71,7 @@ export default function RegisterClient() {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 py-4 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Register Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
+        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-4 sm:mb-6">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
@@ -150,7 +150,7 @@ export default function RegisterClient() {
                 type="text"
                 disabled={isLoading}
                 placeholder={t("auth.username")}
-                className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...register("username", {
                   required: t("auth.usernameRequired"),
                   minLength: {
@@ -177,7 +177,7 @@ export default function RegisterClient() {
                 autoComplete="email"
                 disabled={isLoading}
                 placeholder={t("profilePage.profileTab.email")}
-                className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...register("email", {
                   required: t("auth.emailRequired"),
                   pattern: {
@@ -200,7 +200,7 @@ export default function RegisterClient() {
                 autoComplete="new-password"
                 disabled={isLoading}
                 placeholder={t("userMenu.password")}
-                className="w-full px-3 py-2.5 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...register("password", {
                   required: t("auth.passwordRequired"),
                   minLength: {
@@ -239,7 +239,7 @@ export default function RegisterClient() {
                 autoComplete="new-password"
                 disabled={isLoading}
                 placeholder={t("auth.confirmPassword")}
-                className="w-full px-3 py-2.5 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...register("confirmPassword", {
                   required: t("auth.confirmPasswordRequired"),
                   validate: (value) =>
@@ -272,7 +272,7 @@ export default function RegisterClient() {
             <button
               type="submit"
               disabled={!isValid || isLoading}
-              className="w-full py-2.5 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
             >
               {isLoading ? t("auth.creatingAccount") : t("auth.createAccount")}
             </button>
@@ -300,10 +300,10 @@ export default function RegisterClient() {
             {/* Social Login */}
             <div className="relative my-3">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-slate-700"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-400">{t("auth.or")}</span>
+                <span className="px-2 bg-card text-muted-foreground">{t("auth.or")}</span>
               </div>
             </div>
 
@@ -312,19 +312,19 @@ export default function RegisterClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateGoogleAuthUrl())}
-                className="flex items-center justify-center px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex h-10 items-center justify-center border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
               >
-                <Image src="/google.svg" alt="Google" width={14} height={14} />
-                <span className="ml-2 text-xs">Google</span>
+                <Image src="/google.svg" alt="Google" width={16} height={16} />
+                <span className="ml-2 text-sm">Google</span>
               </button>
               <button
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateLinkedinAuthUrl())}
-                className="flex items-center justify-center px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex h-10 items-center justify-center border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
               >
-                <Image src="/linkedin.svg" alt="LinkedIn" width={14} height={14} />
-                <span className="ml-2 text-xs">LinkedIn</span>
+                <Image src="/linkedin.svg" alt="LinkedIn" width={16} height={16} />
+                <span className="ml-2 text-sm">LinkedIn</span>
               </button>
             </div>
 

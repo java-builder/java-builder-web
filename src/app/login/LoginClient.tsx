@@ -133,7 +133,7 @@ export default function LoginClient() {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Login Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
+        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -221,7 +221,7 @@ export default function LoginClient() {
                 autoComplete="email"
                 disabled={isLoading}
                 placeholder={t("profilePage.profileTab.email")}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...register("email", {
                   required: t("auth.emailRequired"),
                   pattern: {
@@ -244,7 +244,7 @@ export default function LoginClient() {
                 autoComplete="current-password"
                 disabled={isLoading}
                 placeholder={t("userMenu.password")}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...register("password", {
                   required: t("auth.passwordRequired"),
                   minLength: {
@@ -288,7 +288,7 @@ export default function LoginClient() {
             <button
               type="submit"
               disabled={!isValid || isLoading || isPasskeyLoading}
-              className="w-full py-2.5 sm:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
             >
               {isLoading ? t("auth.loggingIn") : t("auth.loginBtn")}
             </button>
@@ -297,7 +297,7 @@ export default function LoginClient() {
               type="button"
               disabled={isLoading || isPasskeyLoading}
               onClick={handlePasskeyLogin}
-              className="w-full py-2.5 sm:py-3 border border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 border border-input bg-background hover:bg-muted text-foreground font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm shadow-xs cursor-pointer active:scale-[0.99]"
             >
               {isPasskeyLoading ? (
                 <>
@@ -315,10 +315,10 @@ export default function LoginClient() {
             {/* Social Login */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-slate-700"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-400">{t("auth.or")}</span>
+                <span className="px-2 bg-card text-muted-foreground">{t("auth.or")}</span>
               </div>
             </div>
 
@@ -327,7 +327,7 @@ export default function LoginClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={handleGoogleLogin}
-                className="flex items-center justify-center px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex h-10 items-center justify-center border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
               >
                 <Image src="/google.svg" alt="Google" width={16} height={16} className="social-icon" />
                 <span className="ml-2 text-sm">Google</span>
@@ -336,7 +336,7 @@ export default function LoginClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateLinkedinAuthUrl())}
-                className="flex items-center justify-center px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex h-10 items-center justify-center border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
               >
                 <Image src="/linkedin.svg" alt="LinkedIn" width={16} height={16} className="social-icon" />
                 <span className="ml-2 text-sm">LinkedIn</span>

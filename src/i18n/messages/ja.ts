@@ -66,8 +66,8 @@ export const ja = {
     forgotPasswordTitle: "パスワードをお忘れですか？",
     forgotPasswordSubtitle: "パスワード再設定リンクを受信するには、メールアドレスを入力してください",
     checkEmailTitle: "メールをご確認ください",
-    checkEmailSubtitle: "パスワード再設定用のリンクをメールで送信しました。メールボックスをご確認ください。",
-    emailSentSuccess: "メールアドレスにパスワード再設定リンクを送信しました！",
+    checkEmailSubtitle: "パスワード再設定用のリンクを {email} 宛てに送信しました。メールボックスをご確認ください。",
+    emailSentSuccess: "{email} 宛てにパスワード再設定リンクを送信しました！",
     emailNotFound: "このメールアドレスはシステムに登録されていません",
     sendResetLinkBtn: "再設定リンクを送信",
     sending: "送信中...",
@@ -186,6 +186,7 @@ export const ja = {
     documents: "書籍 & ドキュメント",
     interview: "面接対策",
     roadmap: "ロードマップ",
+    mentor: "1-1 メンターシップ",
     qna: "質疑応答",
     chatbot: "AIチャットボット",
     notifications: "通知",
@@ -193,6 +194,7 @@ export const ja = {
     support: "支援する",
     myLearning: "マイ学習",
     myCourses: "マイコース",
+    certificates: "マイ証明書",
     exercises: "演習問題",
     doneExercises: "回答済みの演習",
     studyProgress: "学習ログ",
@@ -1136,5 +1138,108 @@ export const ja = {
     totalComments: "合計: {count} 件のコメント",
     docBadge: "資料",
   },
+  mentorPage: {
+    hero: {
+      badge: "特別1-1メンタープログラム",
+      title: "バックエンドメンター育成",
+      titleAccent: "実践的Spring Boot",
+      description: "学習速度を最大化し、一般的な講座ではほとんど扱われない高度な実戦知識（Spring AI, Passkey, TOTP, Caching Fallback, Cloud DevOps）に直接アクセスする特別な1-1メンター育成プログラムです。",
+      ctaContact: "今すぐ相談する",
+      ctaCurriculum: "カリキュラム詳細を見る"
+    },
+    curriculum: {
+      title: "トレーニングカリキュラム内容",
+      description: "プロのバックエンドエンジニアとして習得すべき全知識をカバーする実践的カリキュラム。",
+      module1: {
+        title: "Module 1: Spring Boot & Architecture",
+        item1: "N層アーキテクチャ & 国際標準のRESTful API設計。",
+        item2: "総合的なデータバリデーションとグローバル例外処理の構築。",
+        item3: "Spring Data JPA: クエリ最適化、N+1クエリ問題の解決、インデックス、プロジェクション。"
+      },
+      module2: {
+        title: "Module 2: Advanced Security & Auth",
+        item1: "Spring Security 6: フィルターチェーン実行の深掘り。",
+        item2: "JWT (Json Web Token) & 安全なログインセッション管理。",
+        item3: "TOTP (Two-Factor Authentication) による強固な2要素認証の導入。",
+        item4: "WebAuthn (Passkey) による生体認証の実装。"
+      },
+      module3: {
+        title: "Module 3: Caching, Storage & Core Utilities",
+        item1: "Redisを使用したトークン管理とブラックリスト化。",
+        item2: "高度なキャッシュ技術とRedisダウン時のデータベースフォールバック対策。",
+        item3: "HTMLメールテンプレートを活用した基本的かつ実用的なメール送信システム。",
+        item4: "Spring Scheduler: タスクプランニングとバックグラウンド処理の自動化。",
+        item5: "AWS S3統合: 実用的なファイルアップロード処理の実装。",
+        item6: "スマートなデータベースレベルのオブジェクトキー保存戦略。"
+      },
+      module4: {
+        title: "Module 4: Spring AI & Generative AI",
+        item1: "Spring AI: LLMの統合と実践的なパラメータ設定。",
+        item2: "PromptTemplate: インプットプロンプトの設計と最適化技術。",
+        item3: "StructuredOutput: LLMからの構造化データ出力（JSON、DTO）の設定。",
+        item4: "ChatMemory: チャットボットの対話履歴と文脈の管理手法。",
+        item5: "Tool Calling: LLMによるバックエンドサービス実行の自動化設計。",
+        item6: "RAG (Retrieval-Augmented Generation): ローカルドキュメント知識ベース検索エンジンの構築。"
+      },
+      module5: {
+        title: "Module 5: DevOps & Containerization",
+        item1: "Dockerfile: パッケージングとDockerfileの作成・最適化。",
+        item2: "Docker & Docker Compose: 複数コンテナのオーケストレーションと管理。"
+      },
+      module6: {
+        title: "Module 6: AWS Cloud Deployment",
+        item1: "AWSクラウドでの基本的なネットワーク構築。",
+        item2: "AWS EC2/ECS本番環境へのバックエンドサーバ展開。",
+        item3: "Nginx: バックエンドAPI向けリバースプロキシの設定。",
+        item4: "HTTPSセキュリティ: Certbotを使用したSSL自動設定と更新システム。",
+        item5: "ビルド・デプロイ自動化のためのCI/CDパイプライン設計。"
+      }
+    },
+    contact: {
+      title: "カリキュラム & 1-1個別指導の直接お問い合わせ",
+      description: "総合的なSpring Boot & DevOpsロードマップに関心がある方は、以下の連絡窓口から直接お気軽にご連絡ください。最適なキャリアプランをご提案します。",
+      facebook: "Facebook",
+      facebookAction: "今すぐ繋がる",
+      zalo: "Zalo",
+      zaloAction: "今すぐメッセージ",
+      email: "Eメール",
+      emailAction: "メールを送る"
+    }
+  },
+  certificatesPage: {
+    title: "マイ証明書",
+    subtitle: "JavaBuilderから取得したプロフェッショナルな証明書の管理とダウンロードができます。",
+    certMotivation: "あなたの継続的な学習と努力のすべてが、価値ある形で認められています。次の技術的なマイルストーンを征服するために、専門知識を高め続けましょう！",
+    statsTotal: "総証明書数",
+    statsEarned: "取得済み",
+    statsInProgress: "学習中",
+    earnedBadge: "取得済み",
+    viewBtn: "証明書を表示",
+    downloadBtn: "PDFダウンロード",
+    modalClose: "閉じる",
+    modalVerification: "認証ID",
+    modalVerified: "認証済み",
+    cert1: {
+      title: "Spring Security アーキテクト & 認証エキスパート",
+      desc: "高度なSpring Security 6、OAuth2、Passkey、TOTP MFA、JWTセッションセキュリティ、およびOWASP Top 10脆弱性対策コースの修了証明書。",
+      grade: "優秀",
+    },
+    cert2: {
+      title: "Spring AI & ジェネレーティブAI 統合スペシャリスト",
+      desc: "Spring AIによるLLMモデル統合、プロンプトエンジニアリング、構造化出力、会話履歴管理、およびRAG実装コースの修了証明書。",
+      grade: "優秀",
+    },
+    cert3: {
+      title: "Spring Boot & 分散システムアーキテクト",
+      desc: "JPAクエリ最適化、N層クリーンアーキテクチャ設計、Redis分散キャッシュ統合、および高度なデータベースシステム設計コースの修了証明書。",
+      grade: "優秀",
+    },
+    verifyUrl: "検証サイト: javabuilder.online/verify",
+    certTitle: "修了証明書",
+    presentedTo: "本証明書は、以下の者に授与されます",
+    forCompleting: "上記の者は、以下の高度な専門カリキュラムを優秀な成績で修了したことを証明します",
+    platformFounder: "JavaBuilder 設立者",
+    issueDate: "発行日"
+  }
 } as const;
 

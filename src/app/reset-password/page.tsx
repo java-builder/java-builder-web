@@ -79,7 +79,7 @@ function ResetPasswordContent() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 text-center transition-colors duration-300">
+          <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 text-center transition-colors duration-300">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-950/40 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-8 h-8 text-red-600 dark:text-red-400"
@@ -103,7 +103,7 @@ function ResetPasswordContent() {
             </p>
             <Link
               href="/forgot-password"
-              className="inline-block w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 text-sm text-center cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm text-center cursor-pointer active:scale-[0.99]"
             >
               {t("auth.requestNewLinkBtn")}
             </Link>
@@ -116,7 +116,7 @@ function ResetPasswordContent() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 transition-colors duration-300">
+        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -194,7 +194,7 @@ function ResetPasswordContent() {
                   autoComplete="new-password"
                   disabled={isLoading}
                   placeholder={t("auth.newPasswordPlaceholder")}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                  className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   {...register("newPassword", {
                     required: t("auth.passwordRequired"),
                     minLength: {
@@ -225,7 +225,7 @@ function ResetPasswordContent() {
                   {errors.newPassword.message}
                 </p>
               )}
-              <div className="mt-2 bg-gray-50 dark:bg-slate-900 rounded-lg p-3 border border-gray-200 dark:border-slate-700 transition-colors duration-300">
+              <div className="mt-2 bg-gray-50 dark:bg-slate-900/50 rounded-lg p-3 border border-border transition-colors duration-300">
                 <p className="text-xs font-semibold text-gray-900 dark:text-white mb-1.5">{t("auth.passwordRequirementsTitle")}</p>
                 <ul className="space-y-1.5 text-xs">
                   <li className="flex items-center gap-1.5">
@@ -261,7 +261,7 @@ function ResetPasswordContent() {
                   autoComplete="new-password"
                   disabled={isLoading}
                   placeholder={t("auth.confirmPasswordPlaceholder")}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 disabled:opacity-50 text-sm"
+                  className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   {...register("confirmPassword", {
                     required: t("auth.confirmPasswordRequired"),
                     validate: (value) =>
@@ -295,7 +295,7 @@ function ResetPasswordContent() {
             <button
               type="submit"
               disabled={!isValid || isLoading}
-              className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
             >
               {isLoading ? t("auth.resetting") : t("auth.resetPasswordBtn")}
             </button>

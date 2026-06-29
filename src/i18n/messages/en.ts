@@ -66,8 +66,8 @@ export const en = {
     forgotPasswordTitle: "Forgot password?",
     forgotPasswordSubtitle: "Enter your email to receive a password reset link",
     checkEmailTitle: "Check your email",
-    checkEmailSubtitle: "We have sent a password reset link to your email. Please check your inbox.",
-    emailSentSuccess: "Password reset link sent to your email!",
+    checkEmailSubtitle: "We have sent a password reset link to {email}. Please check your inbox.",
+    emailSentSuccess: "Password reset link sent to {email}!",
     emailNotFound: "This email was not found in our system",
     sendResetLinkBtn: "Send reset link",
     sending: "Sending...",
@@ -186,6 +186,7 @@ export const en = {
     documents: "Books & Docs",
     interview: "Interview Prep",
     roadmap: "Roadmap",
+    mentor: "1-1 Mentorship",
     qna: "Q&A",
     chatbot: "AI Chatbot",
     notifications: "Notifications",
@@ -193,6 +194,7 @@ export const en = {
     support: "Support",
     myLearning: "My Learning",
     myCourses: "My Courses",
+    certificates: "My Certificates",
     exercises: "Exercises",
     doneExercises: "My Exercises",
     studyProgress: "Study Journal",
@@ -1143,5 +1145,108 @@ export const en = {
     totalComments: "Total: {count} comments",
     docBadge: "Documents",
   },
+  mentorPage: {
+    hero: {
+      badge: "Special 1-1 Mentorship Program",
+      title: "Backend Mentorship Program",
+      titleAccent: "Comprehensive Spring Boot",
+      description: "A special 1-1 coaching program designed to help you accelerate your learning, fast-track your career, and master advanced production topics (Spring AI, Passkey, TOTP, Caching Fallback, Cloud DevOps) that are rarely taught in typical courses.",
+      ctaContact: "Contact for consultancy",
+      ctaCurriculum: "View roadmap details"
+    },
+    curriculum: {
+      title: "Training Curriculum Content",
+      description: "An in-depth, hands-on program covering all the essential knowledge that a professional Backend Developer needs to master.",
+      module1: {
+        title: "Module 1: Spring Boot & Architecture",
+        item1: "N-tier architecture & internationally standard RESTful API design.",
+        item2: "Comprehensive Data Validation & Global Exception Handling mechanisms.",
+        item3: "Spring Data JPA: Query optimization, N+1 query problem, indexing, and projection."
+      },
+      module2: {
+        title: "Module 2: Advanced Security & Auth",
+        item1: "Spring Security 6: Detailed filter chain execution mechanics.",
+        item2: "JWT (Json Web Token) & secure user session management.",
+        item3: "TOTP (Two-Factor Authentication) for robust dual-layer security.",
+        item4: "Biometric authentication with WebAuthn (Passkey)."
+      },
+      module3: {
+        title: "Module 3: Caching, Storage & Core Utilities",
+        item1: "Token management & blacklisting utilizing Redis.",
+        item2: "Advanced Caching techniques & database fallback strategy when Redis goes offline.",
+        item3: "Basic & professional email delivery using HTML Email Templates.",
+        item4: "Spring Scheduler: Tasks planning and background automation.",
+        item5: "AWS S3 integration: Professional file uploading.",
+        item6: "Smart database-level Object Key storage strategies."
+      },
+      module4: {
+        title: "Module 4: Spring AI & Generative AI",
+        item1: "Spring AI: LLM integration and production-grade parameter configurations.",
+        item2: "PromptTemplate: Designing and optimizing system input prompts.",
+        item3: "StructuredOutput: Formulating structured responses (JSON, DTO) from LLMs.",
+        item4: "ChatMemory: Context preservation and conversation history management for Chatbots.",
+        item5: "Tool Calling: Enacting programmatic callbacks from LLMs to service layers.",
+        item6: "RAG (Retrieval-Augmented Generation): Document indexing & custom knowledge base querying."
+      },
+      module5: {
+        title: "Module 5: DevOps & Containerization",
+        item1: "Dockerfile: Writing and optimizing Dockerfiles for application packaging.",
+        item2: "Docker & Docker Compose: Multi-container orchestration and management."
+      },
+      module6: {
+        title: "Module 6: AWS Cloud Deployment",
+        item1: "Basic network infrastructure building on AWS Cloud.",
+        item2: "Deploying backend servers onto AWS EC2/ECS production environments.",
+        item3: "Nginx: Reverse Proxy setup for backend APIs.",
+        item4: "HTTPS Security: Automating SSL installation and updates using Certbot.",
+        item5: "Setting up CI/CD pipelines to automate the build and deployment process."
+      }
+    },
+    contact: {
+      title: "Direct Contact for Syllabus & 1-1 Guidance",
+      description: "If you are interested in this comprehensive Spring Boot & DevOps roadmap, feel free to reach out to me via the communication channels below. I will personally advise you and map out the most suitable path.",
+      facebook: "Facebook",
+      facebookAction: "Connect now",
+      zalo: "Zalo",
+      zaloAction: "Message now",
+      email: "Email",
+      emailAction: "Send email"
+    }
+  },
+  certificatesPage: {
+    title: "My Certificates",
+    subtitle: "View and download your professional certification credentials from JavaBuilder.",
+    certMotivation: "Every effort of your persistent learning and training is worthily recognized. Keep enhancing your expertise to conquer the next technological milestones!",
+    statsTotal: "Total Certificates",
+    statsEarned: "Earned",
+    statsInProgress: "In Progress",
+    earnedBadge: "Earned",
+    viewBtn: "View Certificate",
+    downloadBtn: "Download PDF",
+    modalClose: "Close",
+    modalVerification: "Credential ID",
+    modalVerified: "VERIFIED",
+    cert1: {
+      title: "Spring Security Architect & Auth Expert",
+      desc: "Certification of completing advanced Spring Security 6, OAuth2, Passkey, TOTP MFA, JWT session security, and OWASP Top 10 vulnerability mitigation.",
+      grade: "Excellent",
+    },
+    cert2: {
+      title: "Spring AI & Generative AI Integration Specialist",
+      desc: "Certification of completing Spring AI applications, LLM integrations, Prompt Engineering, Structured Output, Chat Memory, and RAG techniques.",
+      grade: "Excellent",
+    },
+    cert3: {
+      title: "Spring Boot & Distributed Systems Architect",
+      desc: "Certification of mastering JPA query optimization, n-tier clean architecture, distributed Redis Caching integration, and advanced database system design.",
+      grade: "Excellent",
+    },
+    verifyUrl: "Verify at: javabuilder.online/verify",
+    certTitle: "CERTIFICATE OF COMPLETION",
+    presentedTo: "This certificate is proudly presented to",
+    forCompleting: "for successfully mastering the advanced curriculum of",
+    platformFounder: "JavaBuilder Founder",
+    issueDate: "Issue Date"
+  }
 } as const;
 

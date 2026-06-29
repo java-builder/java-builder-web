@@ -16,7 +16,7 @@ export default function AuthButtons() {
       </Link>
       <Link 
         href="/register" 
-        className="hidden sm:inline-flex px-4 py-1.5 bg-accent hover:bg-accent-600 text-white rounded-lg text-sm font-medium shadow-sm transition-colors whitespace-nowrap"
+        className="hidden sm:inline-flex px-4 py-1.5 bg-accent hover:bg-accent-600 text-white rounded-lg text-sm font-medium border border-transparent shadow-sm transition-colors whitespace-nowrap"
       >
         {t("auth.register")}
       </Link>

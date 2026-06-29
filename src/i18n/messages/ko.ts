@@ -66,8 +66,8 @@ export const ko = {
     forgotPasswordTitle: "비밀번호를 잊으셨나요?",
     forgotPasswordSubtitle: "비밀번호 재설정 링크를 받으실 이메일을 입력하세요",
     checkEmailTitle: "이메일을 확인해 주세요",
-    checkEmailSubtitle: "비밀번호 재설정 링크를 이메일로 전송했습니다. 편지함을 확인해 주세요.",
-    emailSentSuccess: "이메일로 비밀번호 재설정 링크가 발송되었습니다!",
+    checkEmailSubtitle: "{email}(으)로 비밀번호 재설정 링크를 전송했습니다. 편지함을 확인해 주세요.",
+    emailSentSuccess: "{email}(으)로 비밀번호 재설정 링크가 발송되었습니다!",
     emailNotFound: "시스템에 등록되지 않은 이메일입니다.",
     sendResetLinkBtn: "재설정 링크 전송",
     sending: "전송 중...",
@@ -186,6 +186,7 @@ export const ko = {
     documents: "도서 & 문서",
     interview: "면접 대비",
     roadmap: "학습 로드맵",
+    mentor: "1-1 멘토링",
     qna: "질문 답변",
     chatbot: "AI 챗봇",
     notifications: "알림",
@@ -193,6 +194,7 @@ export const ko = {
     support: "후원",
     myLearning: "나의 학습",
     myCourses: "내 강의",
+    certificates: "내 수료증",
     exercises: "연습 문제",
     doneExercises: "푼 연습 문제",
     studyProgress: "학습 일지",
@@ -1136,5 +1138,108 @@ export const ko = {
     totalComments: "총 {count}개 댓글",
     docBadge: "자료",
   },
+  mentorPage: {
+    hero: {
+      badge: "특별 1-1 멘토 프로그램",
+      title: "백엔드 멘토링 프로그램",
+      titleAccent: "실전 Spring Boot",
+      description: "학습 속도를 극대화하여 일반적인 강의에서는 거의 접하기 힘든 고난도 실전 지식(Spring AI, Passkey, TOTP, Caching Fallback, Cloud DevOps)에 바로 도달하도록 돕는 특별한 1-1 동행 멘토링 프로그램입니다.",
+      ctaContact: "지금 바로 상담하기",
+      ctaCurriculum: "상세 로드맵 확인하기"
+    },
+    curriculum: {
+      title: "트레이닝 커리큘럼 구성",
+      description: "프로 백엔드 개발자로서 반드시 마스터해야 하는 필수 실전 역량을 완벽하게 커버합니다.",
+      module1: {
+        title: "Module 1: Spring Boot & Architecture",
+        item1: "N-Tier 아키텍처 및 글로벌 표준 RESTful API 설계.",
+        item2: "종합적인 데이터 검증(Validation) 및 글로벌 예외 처리 구현.",
+        item3: "Spring Data JPA: 쿼리 최적화, N+1 쿼리 문제 해결, 인덱싱, 프로젝션."
+      },
+      module2: {
+        title: "Module 2: Advanced Security & Auth",
+        item1: "Spring Security 6: 필터 체인(Filter Chain) 실행 구조 상세 분석.",
+        item2: "JWT (Json Web Token) 및 안전한 로그인 세션 관리.",
+        item3: "TOTP (Two-Factor Authentication)를 활용한 2단계 보안 구축.",
+        item4: "WebAuthn (Passkey) 생체 인증 구현."
+      },
+      module3: {
+        title: "Module 3: Caching, Storage & Core Utilities",
+        item1: "Redis 기반 토큰 관리 및 블랙리스트 처리.",
+        item2: "고급 캐싱(Caching) 전략 및 Redis 다운 타임 대비 데이터베이스 폴백 메커니즘.",
+        item3: "HTML 템플릿을 활용한 기본 및 프로페셔널 이메일 발송 시스템.",
+        item4: "Spring Scheduler: 태스크 스케줄링 및 백그라운드 작업 자동화.",
+        item5: "AWS S3 연동: 프로페셔널 파일 업로드 처리.",
+        item6: "스마트 데이터베이스 레벨 오브젝트 키 저장 전략."
+      },
+      module4: {
+        title: "Module 4: Spring AI & Generative AI",
+        item1: "Spring AI: LLM 연동 및 운영 레벨 파라미터 구성.",
+        item2: "PromptTemplate: 시스템 입력 프롬프트 설계 및 최적화 기술.",
+        item3: "StructuredOutput: LLM 결과물의 정형 데이터(JSON, DTO) 출력 제어.",
+        item4: "ChatMemory: 챗봇 대화 기록 및 컨텍스트 보존 관리.",
+        item5: "Tool Calling: LLM 기반의 백엔드 서비스 실행 자동화 설계.",
+        item6: "RAG (Retrieval-Augmented Generation): 로컬 문서 기반의 지식 검색 엔진 구축."
+      },
+      module5: {
+        title: "Module 5: DevOps & Containerization",
+        item1: "Dockerfile: 애플리케이션 패키징을 위한 Dockerfile 작성 및 최적화.",
+        item2: "Docker & Docker Compose: 다중 컨테이너 오케스트레이션 및 관리."
+      },
+      module6: {
+        title: "Module 6: AWS Cloud Deployment",
+        item1: "AWS 클라우드 인프라 기본 네트워크 설계.",
+        item2: "실제 운영 환경(AWS EC2/ECS)에 백엔드 서버 배포.",
+        item3: "Nginx: 백엔드 API를 위한 리버스 프록시(Reverse Proxy) 설정.",
+        item4: "HTTPS 보안: Certbot 기반 SSL 자동 인증서 설정 및 갱신 시스템.",
+        item5: "빌드 및 배포 자동화를 위한 CI/CD 파이프라인 설계."
+      }
+    },
+    contact: {
+      title: "커리큘럼 및 1-1 맞춤 상담 직접 문의",
+      description: "종합적인 Spring Boot 및 DevOps 로드맵에 관심이 있으신 분은 아래의 공식 소통 채널로 직접 문의해 주시기 바랍니다. 맞춤 상담과 진로 설정을 도와드립니다.",
+      facebook: "Facebook",
+      facebookAction: "지금 연결하기",
+      zalo: "Zalo",
+      zaloAction: "메시지 보내기",
+      email: "이메일",
+      emailAction: "이메일 보내기"
+    }
+  },
+  certificatesPage: {
+    title: "내 수료증",
+    subtitle: "JavaBuilder에서 발급된 전문 역량 인증 수료증을 확인하고 다운로드할 수 있습니다.",
+    certMotivation: "꾸준한 학습과 노력을 통한 여러분의 모든 결실이 값지게 인정받았습니다. 다음 기술적 이정표를 정복하기 위해 전문성을 계속해서 높여나가세요!",
+    statsTotal: "총 수료증",
+    statsEarned: "취득함",
+    statsInProgress: "학습 중",
+    earnedBadge: "취득함",
+    viewBtn: "수료증 보기",
+    downloadBtn: "PDF 다운로드",
+    modalClose: "닫기",
+    modalVerification: "자격 증명 ID",
+    modalVerified: "인증됨",
+    cert1: {
+      title: "Spring Security 아키텍트 & 인증 전문가",
+      desc: "고급 Spring Security 6, OAuth2, Passkey, TOTP MFA, JWT 세션 보안 및 OWASP Top 10 취약점 방어 과정 이수 증명.",
+      grade: "최우수",
+    },
+    cert2: {
+      title: "Spring AI & 생성형 AI 통합 스페셜리스트",
+      desc: "Spring AI 기반 LLM 연동, 프롬프트 엔지니어링, 구조화된 출력, 대화 메모리 관리 및 RAG 기술 과정 이수 증명.",
+      grade: "최우수",
+    },
+    cert3: {
+      title: "Spring Boot & 분산 시스템 아키텍트",
+      desc: "JPA 쿼리 최적화, N-Tier 클린 아키텍처 설계, Redis 분산 캐싱 연동 및 고급 데이터베이스 설계 과정 이수 증명.",
+      grade: "최우수",
+    },
+    verifyUrl: "검증 페이지: javabuilder.online/verify",
+    certTitle: "수 료 증",
+    presentedTo: "이 수료증은 다음 귀하에게 수여됩니다",
+    forCompleting: "위 사람은 다음의 전문적이고 우수한 백엔드 교육 과정을 마스터하고 수료하였음을 증명합니다",
+    platformFounder: "JavaBuilder 설립자",
+    issueDate: "발급일"
+  }
 } as const;
 

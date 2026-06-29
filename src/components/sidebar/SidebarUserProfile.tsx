@@ -20,7 +20,7 @@ export default function SidebarUserProfile({
             <div className="relative group">
               <Link
                 href="/login"
-                className="w-9 h-9 rounded-lg bg-accent hover:bg-accent-600 text-white flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-lg bg-accent hover:bg-accent-600 text-white flex items-center justify-center transition-colors border border-transparent"
                 title="Đăng nhập"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@ export default function SidebarUserProfile({
             <div className="relative group">
               <Link
                 href="/register"
-                className="w-9 h-9 rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-white flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-lg border border-accent text-accent hover:bg-accent/10 flex items-center justify-center transition-colors bg-white dark:bg-slate-800"
                 title="Đăng ký"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,22 +50,22 @@ export default function SidebarUserProfile({
             </div>
           </>
         ) : (
-          <div className="space-y-1.5 w-full">
+          <div className="space-y-2 w-full">
             <Link
               href="/login"
-              className="w-full px-3 py-2 bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors flex items-center justify-center gap-1.5 font-medium text-xs shadow-xs"
+              className="w-full h-10 border border-transparent bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold text-sm shadow-xs"
             >
-              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
               </svg>
-              <span className="text-white">Đăng nhập</span>
+              <span>Đăng nhập</span>
             </Link>
 
             <Link
               href="/register"
-              className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-accent text-accent hover:bg-accent hover:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 font-medium text-xs shadow-xs"
+              className="w-full h-10 bg-white dark:bg-slate-800 border border-accent text-accent hover:bg-accent/10 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 font-semibold text-sm shadow-xs"
             >
-              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
               <span>Đăng ký</span>

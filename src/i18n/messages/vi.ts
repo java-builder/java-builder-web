@@ -66,8 +66,8 @@ export const vi = {
     forgotPasswordTitle: "Quên mật khẩu?",
     forgotPasswordSubtitle: "Nhập email của bạn để nhận link đặt lại mật khẩu",
     checkEmailTitle: "Kiểm tra email của bạn",
-    checkEmailSubtitle: "Chúng tôi đã gửi link đặt lại mật khẩu đến email của bạn. Vui lòng kiểm tra hộp thư.",
-    emailSentSuccess: "Đã gửi link đặt lại mật khẩu đến email của bạn!",
+    checkEmailSubtitle: "Chúng tôi đã gửi link đặt lại mật khẩu đến email {email}. Vui lòng kiểm tra hộp thư.",
+    emailSentSuccess: "Đã gửi link đặt lại mật khẩu đến email {email}!",
     emailNotFound: "Không tìm thấy email này trong hệ thống",
     sendResetLinkBtn: "Gửi link đặt lại mật khẩu",
     sending: "Đang gửi...",
@@ -186,6 +186,7 @@ export const vi = {
     documents: "Tài liệu & Sách",
     interview: "Ôn tập Phỏng vấn",
     roadmap: "Lộ trình học tập",
+    mentor: "Đào tạo Mentor 1-1",
     qna: "Hỏi đáp",
     chatbot: "AI Chatbot",
     notifications: "Thông báo",
@@ -193,6 +194,7 @@ export const vi = {
     support: "Ủng hộ",
     myLearning: "Học tập của tôi",
     myCourses: "Khóa học của tôi",
+    certificates: "Chứng chỉ của tôi",
     exercises: "Bài tập",
     doneExercises: "Bài tập đã làm",
     studyProgress: "Nhật ký học tập",
@@ -1142,5 +1144,108 @@ export const vi = {
     totalComments: "Tổng số: {count} bình luận",
     docBadge: "Tài liệu",
   },
+  mentorPage: {
+    hero: {
+      badge: "Chương Trình Đào Tạo Đặc Biệt 1-1",
+      title: "Đào Tạo Mentor Backend",
+      titleAccent: "Spring Boot Toàn Diện",
+      description: "Chương trình đồng hành 1-1 giúp bạn bứt phá tốc độ, đi nhanh hơn và tiếp cận những kiến thức thực chiến nâng cao (Spring AI, Passkey, TOTP, Caching Fallback, Cloud DevOps) mà rất ít khóa học thông thường chia sẻ trên thị trường.",
+      ctaContact: "Liên hệ tư vấn ngay",
+      ctaCurriculum: "Xem chi tiết lộ trình"
+    },
+    curriculum: {
+      title: "Nội Dung Lộ Trình Huấn Luyện",
+      description: "Chương trình thực chiến chuyên sâu bao phủ toàn bộ kiến thức một Backend Developer cần làm chủ.",
+      module1: {
+        title: "Module 1: Spring Boot & Architecture",
+        item1: "Kiến trúc n-tier & Thiết kế RESTful API chuẩn quốc tế.",
+        item2: "Data Validation & Cơ chế Global Exception Handling toàn diện.",
+        item3: "Spring Data JPA: Tối ưu hóa truy vấn, N+1 query problem, indexing, projection."
+      },
+      module2: {
+        title: "Module 2: Advanced Security & Auth",
+        item1: "Spring Security 6: Cơ chế lọc Filter Chain hoạt động thế nào?",
+        item2: "JWT (Json Web Token) & Quản lý phiên đăng nhập an toàn.",
+        item3: "TOTP (Two-Factor Authentication) bảo mật 2 lớp.",
+        item4: "Đăng nhập sinh trắc học với WebAuthn (Passkey)."
+      },
+      module3: {
+        title: "Module 3: Caching, Storage & Core Utilities",
+        item1: "Quản lý Token & Blacklisting với Redis.",
+        item2: "Kỹ thuật Caching nâng cao & Xử lý Fallback Database khi Redis gặp sự cố.",
+        item3: "Gửi Email cơ bản & chuyên nghiệp với HTML Email Templates.",
+        item4: "Spring Scheduler: Lập lịch và tự động hóa tác vụ ngầm (Scheduling tasks).",
+        item5: "Tích hợp AWS S3: Upload file chuyên nghiệp.",
+        item6: "Chiến lược lưu trữ Object Key thông minh trong Database."
+      },
+      module4: {
+        title: "Module 4: Spring AI & Generative AI",
+        item1: "Spring AI: Tích hợp LLM, cấu hình tham số AI chuyên nghiệp.",
+        item2: "PromptTemplate: Kỹ thuật thiết kế và tối ưu hóa Prompt đầu vào.",
+        item3: "StructuredOutput: Định cấu trúc dữ liệu đầu ra từ LLM (JSON, DTO).",
+        item4: "ChatMemory: Quản lý ngữ cảnh và lịch sử hội thoại cho Chatbot.",
+        item5: "Tool Calling: Cho phép LLM tự động gọi API/Service nghiệp vụ.",
+        item6: "RAG (Retrieval-Augmented Generation): Truy vấn thông tin trên kho tài liệu nội bộ."
+      },
+      module5: {
+        title: "Module 5: DevOps & Containerization",
+        item1: "Dockerfile: Viết và tối ưu hóa Dockerfile đóng gói ứng dụng.",
+        item2: "Docker & Docker Compose: Quản lý và chạy nhiều container cùng lúc."
+      },
+      module6: {
+        title: "Module 6: AWS Cloud Deployment",
+        item1: "Cơ sở hạ tầng mạng cơ bản trên AWS Cloud.",
+        item2: "Triển khai Backend lên môi trường thực tế AWS EC2/ECS.",
+        item3: "Nginx: Cấu hình Reverse Proxy cho Backend.",
+        item4: "Bảo mật HTTPS: Tự động cài đặt và renew chứng chỉ SSL với Certbot.",
+        item5: "Thiết lập CI/CD pipeline tự động hóa quy trình deploy."
+      }
+    },
+    contact: {
+      title: "Liên Hệ Trực Tiếp Để Nhận Lộ Trình & Tư Vấn 1-1",
+      description: "Nếu bạn quan tâm đến lộ trình học Spring Boot & DevOps toàn diện, vui lòng liên hệ trực tiếp với mình qua các kênh bên dưới. Mình sẽ hỗ trợ tư vấn và định hướng phù hợp nhất cho bạn.",
+      facebook: "Facebook",
+      facebookAction: "Kết nối ngay",
+      zalo: "Zalo",
+      zaloAction: "Nhắn tin ngay",
+      email: "Email",
+      emailAction: "Gửi thư ngay"
+    }
+  },
+  certificatesPage: {
+    title: "Chứng chỉ của tôi",
+    subtitle: "Xem và tải xuống các chứng chỉ chứng nhận năng lực chuyên môn của bạn từ JavaBuilder.",
+    certMotivation: "Mọi nỗ lực học tập và rèn luyện bền bỉ của bạn đều được ghi nhận xứng đáng. Hãy tiếp tục nâng cao chuyên môn để chinh phục những cột mốc công nghệ tiếp theo!",
+    statsTotal: "Tổng chứng chỉ",
+    statsEarned: "Đã đạt được",
+    statsInProgress: "Đang học",
+    earnedBadge: "Đã đạt được",
+    viewBtn: "Xem chứng chỉ",
+    downloadBtn: "Tải xuống PDF",
+    modalClose: "Đóng",
+    modalVerification: "Mã xác thực chứng chỉ",
+    modalVerified: "ĐÃ XÁC THỰC",
+    cert1: {
+      title: "Chuyên Gia Bảo Mật & Xác Thực Spring Security",
+      desc: "Chứng nhận hoàn thành khóa học bảo mật chuyên sâu Spring Security 6, triển khai OAuth2, Passkey, TOTP MFA, JWT và phòng chống các lỗ hổng OWASP Top 10.",
+      grade: "Xuất sắc",
+    },
+    cert2: {
+      title: "Chuyên Gia Tích Hợp Spring AI & Generative AI",
+      desc: "Chứng nhận hoàn thành khóa học ứng dụng trí tuệ nhân tạo Spring AI, tích hợp mô hình ngôn ngữ lớn (LLM), Prompt Engineering, Structured Output, Chat Memory và kỹ thuật RAG.",
+      grade: "Xuất sắc",
+    },
+    cert3: {
+      title: "Chuyên Gia Spring Boot & Kiến Trúc Hệ Thống Phân Tán",
+      desc: "Chứng nhận hoàn thành khóa học tối ưu hóa truy vấn JPA, xây dựng kiến trúc phân tầng n-tier, tích hợp hệ thống lưu trữ phân tán Redis Caching và thiết kế cơ sở dữ liệu chuyên sâu.",
+      grade: "Xuất sắc",
+    },
+    verifyUrl: "Xác thực tại: javabuilder.online/verify",
+    certTitle: "CHỨNG CHỈ HOÀN THÀNH",
+    presentedTo: "Chứng chỉ này được trao tặng trang trọng cho",
+    forCompleting: "vì đã hoàn thành xuất sắc chương trình đào tạo chuyên sâu về",
+    platformFounder: "Sáng lập JavaBuilder",
+    issueDate: "Ngày cấp"
+  }
 } as const;
 

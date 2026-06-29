@@ -52,7 +52,7 @@ export default function AuthRequiredModal({
             </button>
             <Link
               href="/login"
-              className="flex-1 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+              className="flex-1 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white border border-transparent transition hover:bg-accent-600 text-center"
             >
               {t("auth.login")}
             </Link>
