@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { authApi } from "@/services/auth.service";
 import { LoginRequest } from "@/types/auth";
 import {
@@ -17,8 +17,12 @@ import { passkeyApi } from "@/services/passkey.service";
 import { authenticatePasskey } from "@/services/webauthn";
 import { Key } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
+import { Turnstile } from "@marsidev/react-turnstile";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 type LoginFormData = LoginRequest;
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -33,6 +37,8 @@ export default function LoginClient() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   const {
     register,
@@ -98,6 +104,7 @@ export default function LoginClient() {
       const result = await authApi.login({
         email: data.email,
         password: data.password,
+        turnstileToken,
       });
 
       if (result.code === 200) {
@@ -114,6 +121,7 @@ export default function LoginClient() {
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : t("auth.loginFailed"));
+      turnstileRef.current?.reset();
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +139,7 @@ export default function LoginClient() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-[480px]">
         {/* Login Card */}
         <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
           {/* Header */}
@@ -285,9 +293,19 @@ export default function LoginClient() {
               </Link>
             </div>
 
+            <div className="flex justify-center my-2">
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken("")}
+                onError={() => setTurnstileToken("")}
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={!isValid || isLoading || isPasskeyLoading}
+              disabled={!isValid || isLoading || isPasskeyLoading || !turnstileToken}
               className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
             >
               {isLoading ? t("auth.loggingIn") : t("auth.loginBtn")}

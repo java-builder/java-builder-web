@@ -2,6 +2,7 @@ export interface CreateUserRequest {
   username: string;
   email: string;
   password: string;
+  turnstileToken?: string;
 }
 
 export interface CreateUserResponse {

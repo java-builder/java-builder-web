@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { UserDetailResponse, UserStatus } from "@/types/user";
-import { formatReadableDate } from "@/utils/dateUtils";
+import { formatLocaleString } from "@/utils/dateUtils";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, Loader2 } from "lucide-react";
@@ -127,7 +127,7 @@ export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRo
         </span>
       </TableCell>
       <TableCell className="px-4 py-3 text-sm text-muted-foreground">
-        {user.createdAt ? formatReadableDate(user.createdAt) : "N/A"}
+        {user.createdAt ? formatLocaleString(user.createdAt) : "N/A"}
       </TableCell>
       <TableCell className="px-4 py-3 text-right">
         <div className="flex items-center justify-end gap-2">

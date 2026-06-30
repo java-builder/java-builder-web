@@ -13,7 +13,7 @@ export const API = {
     PASSKEY_AUTH_LOGIN: "/api/v1/passkey/login",
 
     // USER
-    CREATE_USER: "/api/v1/users",
+    CREATE_USER: "/api/v1/users/register",
     UPDATE_USER: "/api/v1/users", // + /:id
     DELETE_USER: "/api/v1/users", // + /:id
     GET_USER_BY_ID: "/api/v1/users", // + /:id
