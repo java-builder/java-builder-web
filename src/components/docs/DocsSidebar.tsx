@@ -6,6 +6,7 @@ interface Topic {
   id: string;
   title: string;
   slug: string;
+  completed?: boolean;
 }
 
 interface Category {
@@ -117,30 +118,30 @@ export default function DocsSidebar({
                 <button
                   onClick={() => handleCategoryClick(category.id)}
                   title={cleanTitle}
-                  className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer group ${
+                  className={`w-full flex items-start justify-between gap-2 px-3 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer group ${
                     isCategoryActive
                       ? "bg-accent/5 dark:bg-accent/10 text-accent dark:text-sky-400 border-l-2 border-accent rounded-r-xl rounded-l-none"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/40 hover:text-gray-900 dark:hover:text-white rounded-xl"
                   }`}
                 >
-                  <span className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="flex items-start gap-2 min-w-0 flex-1">
                     {isOverview ? (
-                      <BookOpen className={`w-4 h-4 flex-shrink-0 ${
+                      <BookOpen className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
                         isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
                       }`} />
                     ) : (
                       romanNumeral && (
-                        <span className={`font-bold flex-shrink-0 text-xs ${
+                        <span className={`font-bold flex-shrink-0 text-xs mt-0.5 ${
                           isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
                         }`}>{romanNumeral}.</span>
                       )
                     )}
-                    <span className="truncate leading-none">{cleanTitle}</span>
+                    <span className="line-clamp-2 leading-tight text-left">{cleanTitle}</span>
                   </span>
                   
                   {!isOverview && (
                     <ChevronDown 
-                      className={`w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-250 flex-shrink-0 ${
+                      className={`w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-250 flex-shrink-0 mt-0.5 ${
                         isExpanded ? 'rotate-180 text-accent dark:text-sky-400' : 'group-hover:text-gray-600 dark:group-hover:text-slate-350'
                       }`}
                     />
@@ -165,10 +166,12 @@ export default function DocsSidebar({
                         return (
                           <li key={topic.id} id={`lesson-${topic.id}`} className="relative group/item">
                             {/* Inner bullet timeline dot */}
-                            <div className={`absolute -left-[18px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-200 z-10 ${
+                            <div className={`absolute -left-[18px] top-3.5 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-200 z-10 ${
                               isTopicActive 
                                 ? "bg-accent dark:bg-sky-400 scale-125 shadow-sm shadow-accent/50" 
-                                : "bg-gray-300 dark:bg-slate-600 group-hover/item:bg-accent/60"
+                                : topic.completed
+                                  ? "bg-emerald-500 dark:bg-emerald-400 scale-110 shadow-sm"
+                                  : "bg-gray-300 dark:bg-slate-600 group-hover/item:bg-accent/60"
                             }`} />
                             
                             <button
@@ -177,11 +180,24 @@ export default function DocsSidebar({
                               className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-all duration-200 flex items-start gap-2 cursor-pointer ${
                                 isTopicActive
                                   ? "bg-accent/10 text-accent font-semibold dark:text-sky-400"
-                                  : "text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/30"
+                                  : topic.completed
+                                    ? "text-emerald-600 dark:text-emerald-450 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/10"
+                                    : "text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/30"
                               }`}
                             >
-                              <span className="font-semibold text-gray-400 dark:text-slate-500">{index + 1}.</span>
-                              <span className="truncate leading-normal">{topic.title}</span>
+                              <span className={`font-semibold mt-0.5 ${
+                                isTopicActive
+                                  ? "text-accent dark:text-sky-400"
+                                  : topic.completed
+                                    ? "text-emerald-500 dark:text-emerald-400"
+                                    : "text-gray-400 dark:text-slate-500"
+                              }`}>{index + 1}.</span>
+                              <span className="leading-tight text-left mt-0.5 flex-1">{topic.title}</span>
+                              {topic.completed && (
+                                <svg className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-450 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
                             </button>
                           </li>
                         );

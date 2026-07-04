@@ -1,8 +1,8 @@
 export const exerciseInputClassName =
-  'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors bg-white';
+  "w-full px-3.5 py-2 text-sm border border-border rounded-xl bg-background text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors shadow-xs";
 
 export const exerciseSelectClassName =
-  'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors bg-white appearance-none cursor-pointer';
+  "w-full px-3.5 py-2 text-sm border border-border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors cursor-pointer appearance-none shadow-xs";
 
 export const exercisePrimaryButtonClassName =
-  'px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow-md';
+  "px-5 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-xl text-sm font-bold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center gap-1.5 justify-center";

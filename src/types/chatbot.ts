@@ -47,3 +47,28 @@ export interface QuizAnalysisResponse {
   encouragement: string;
   practiceExercises: PracticeExercise[];
 }
+
+export interface GenerateExerciseRequest {
+  topic: string;
+  difficulty: string[];
+  questionType: string;
+  numQuestions: number;
+}
+
+export interface GenerateOption {
+  optionContent: string;
+  isCorrect: boolean;
+}
+
+export interface GenerateQuestion {
+  questionContent: string;
+  questionType: string;
+  point: string;
+  options: GenerateOption[];
+}
+
+export interface GenerateExerciseResponse {
+  exerciseTitle: string;
+  exerciseDescription: string;
+  questions: GenerateQuestion[];
+}

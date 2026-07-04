@@ -231,6 +231,7 @@ export default function DocsDetailPage() {
         id: lesson.id,
         title: lesson.lessonName,
         slug: lesson.id,
+        completed: lesson.completed,
       })) || []
     })) || [])
   ], [course?.chapters, chapterLessons]);
@@ -247,6 +248,58 @@ export default function DocsDetailPage() {
     showOverview ? [] : extractHeadings(currentLesson?.content || ""),
     [showOverview, currentLesson?.content]
   );
+
+  const isCurrentLessonCompleted = useMemo(() => {
+    const lessonId = selectedChapter;
+    if (!lessonId) return false;
+    for (const lessons of Object.values(chapterLessons)) {
+      const found = lessons.find(l => l.id === lessonId);
+      if (found) return !!found.completed;
+    }
+    return false;
+  }, [selectedChapter, chapterLessons]);
+
+  const handleToggleComplete = useCallback(async () => {
+    const lessonId = selectedChapter;
+    if (!lessonId) return;
+
+    let isCompleted = false;
+    let targetChapterId = "";
+    for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
+      const found = lessons.find(l => l.id === lessonId);
+      if (found) {
+        isCompleted = !!found.completed;
+        targetChapterId = chapterId;
+        break;
+      }
+    }
+
+    const nextCompletedState = !isCompleted;
+
+    try {
+      await lessonApi.updateProgress({
+        lessonId,
+        completed: nextCompletedState
+      });
+
+      setChapterLessons(prev => {
+        const updated = { ...prev };
+        if (updated[targetChapterId]) {
+          updated[targetChapterId] = updated[targetChapterId].map(l =>
+            l.id === lessonId ? { ...l, completed: nextCompletedState } : l
+          );
+        }
+        return updated;
+      });
+
+      const { default: toast } = await import("react-hot-toast");
+      toast.success(nextCompletedState ? "Đã hoàn thành bài học" : "Đã bỏ hoàn thành bài học");
+    } catch (error) {
+      console.error("Error updating lesson progress:", error);
+      const { default: toast } = await import("react-hot-toast");
+      toast.error("Không thể cập nhật tiến độ bài học");
+    }
+  }, [selectedChapter, chapterLessons]);
 
   if (isLoadingUser || isLoading) {
     return (
@@ -409,6 +462,8 @@ export default function DocsDetailPage() {
                 canAccess={currentLesson?.canAccess}
                 isFreePreview={currentLesson?.isFreePreview}
                 courseSlug={course?.slug}
+                completed={isCurrentLessonCompleted}
+                onToggleComplete={handleToggleComplete}
                 breadcrumbs={[
                   { label: "Tài liệu", href: "/docs" },
                   ...(currentChapter ? [{ label: currentChapter.chapterName }] : []),

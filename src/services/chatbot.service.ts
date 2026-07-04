@@ -6,6 +6,8 @@ import {
   ExplainQuestionResponse,
   QuizAnalysisRequest,
   QuizAnalysisResponse,
+  GenerateExerciseRequest,
+  GenerateExerciseResponse,
 } from "@/types/chatbot";
 import { API } from "@/api/api";
 
@@ -29,6 +31,14 @@ export const chatbotApi = {
   analysisQuiz: async (data: QuizAnalysisRequest) => {
     const response = await apiClient.post<ApiResponse<QuizAnalysisResponse>>(
       API.CHATBOT_ANALYSIS_QUIZ,
+      data,
+    );
+    return response.data;
+  },
+
+  generateExercise: async (data: GenerateExerciseRequest) => {
+    const response = await apiClient.post<ApiResponse<GenerateExerciseResponse>>(
+      API.CHATBOT_GENERATE_EXERCISE,
       data,
     );
     return response.data;

@@ -5,7 +5,7 @@ import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import CommentList from "@/components/blogs/CommentList";
 import { useComments } from "@/hooks/useComments";
 import toast from "react-hot-toast";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import { Check } from "lucide-react";
 
 interface DocsArticleProps {
   title: string;
@@ -18,6 +18,8 @@ interface DocsArticleProps {
   canAccess?: boolean;
   isFreePreview?: boolean;
   courseSlug?: string;
+  completed?: boolean;
+  onToggleComplete?: () => void;
 }
 
 export default function DocsArticle({
@@ -26,11 +28,12 @@ export default function DocsArticle({
   readTime,
   lastUpdated,
   content,
-  breadcrumbs,
   lessonId,
   canAccess = true,
   isFreePreview = false,
-  courseSlug
+  courseSlug,
+  completed = false,
+  onToggleComplete
 }: DocsArticleProps) {
   const {
     comments,
@@ -84,11 +87,6 @@ export default function DocsArticle({
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {breadcrumbs && breadcrumbs.length > 0 && (
-        <div className="mb-6">
-          <Breadcrumbs items={breadcrumbs} />
-        </div>
-      )}
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {title}
@@ -118,6 +116,37 @@ export default function DocsArticle({
         content={content}
         className="prose prose-lg dark:prose-invert max-w-none"
       />
+
+      {/* Lesson Completion Action Button */}
+      {lessonId && canAccess !== false && (
+        <div className="mt-8 flex items-center justify-between p-4 sm:p-5 bg-gradient-to-r from-gray-50/50 to-white dark:from-slate-900/30 dark:to-slate-800/10 border border-gray-200/80 dark:border-slate-800/80 rounded-2xl animate-in fade-in duration-300">
+          <div className="text-left min-w-0 pr-4">
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+              {completed ? "Bạn đã hoàn thành bài học này" : "Hoàn thành bài học?"}
+            </h4>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+              {completed 
+                ? "Bài học này đã được ghi nhận trong tiến độ học tập của bạn." 
+                : "Đánh dấu bài học này để lưu tiến độ và hiển thị dấu hoàn thành ở danh mục."}
+            </p>
+          </div>
+          <button
+            onClick={onToggleComplete}
+            className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl border transition-all duration-200 cursor-pointer flex-shrink-0 group ${
+              completed
+                ? "bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30"
+                : "bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700/50 text-gray-700 dark:text-slate-350 border-gray-200 dark:border-slate-700 hover:border-emerald-500/40 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-xs hover:shadow-sm"
+            }`}
+          >
+            {completed ? (
+              <Check className="w-4 h-4" strokeWidth={3} />
+            ) : (
+              <Check className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transition-colors" strokeWidth={2} />
+            )}
+            <span>{completed ? "Đã hoàn thành" : "Hoàn thành bài học"}</span>
+          </button>
+        </div>
+      )}
 
       {!isFreePreview && canAccess === false && (
         <div className="mt-8 relative">
