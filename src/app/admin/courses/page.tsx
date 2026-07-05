@@ -16,7 +16,7 @@ import { formatCurrency } from "@/utils/formatters";
 import { CourseFormat, CourseLevel } from "@/types/course";
 import { CourseOverviewResponse } from "@/types/report";
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCw, Video, FileText, Layers, AlertCircle, Loader2, BookOpen } from "lucide-react";
+import { Plus, RotateCw, Video, FileText, Layers, AlertCircle, BookOpen } from "lucide-react";
 
 type CourseFormatTab = CourseFormat;
 
@@ -211,9 +211,21 @@ export default function CoursesPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="bg-muted/50 border border-border rounded-xl p-4 flex items-center gap-3 text-sm text-muted-foreground">
-          <Loader2 className="animate-spin h-5 w-5 text-accent" />
-          <span className="font-semibold">Đang tải danh sách khóa học...</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card border border-border rounded-xl p-6 space-y-4">
+              <div className="aspect-video bg-muted rounded-lg w-full" />
+              <div className="h-5 bg-muted rounded w-2/3" />
+              <div className="space-y-2">
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-5/6" />
+              </div>
+              <div className="flex justify-between pt-4 border-t border-border">
+                <div className="h-4 bg-muted rounded w-16" />
+                <div className="h-4 bg-muted rounded w-20" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

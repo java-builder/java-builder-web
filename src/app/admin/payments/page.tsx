@@ -86,47 +86,50 @@ export default function PaymentsPage() {
 
       {/* Loading inline notice */}
       {isLoading && data && (
-        <div className="flex items-center gap-2 rounded-lg border border-accent/20 bg-accent/5 px-3 py-2 text-sm text-accent">
-          <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
+        <div className="flex items-center gap-2 rounded-lg border border-accent/15 bg-accent/5 px-3 py-2 text-sm text-accent animate-pulse">
           Đang cập nhật dữ liệu...
         </div>
       )}
 
       {/* Initial loading */}
       {isLoading && !data && (
-        <div className="rounded-xl border border-border bg-card p-12">
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <svg className="h-5 w-5 animate-spin text-accent" fill="none" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            Đang tải giao dịch...
-          </div>
+        <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+          <table className="w-full divide-y divide-border animate-pulse">
+            <thead className="bg-muted/40">
+              <tr>
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <th key={i} className="px-6 py-3 text-left">
+                    <div className="h-4 bg-muted rounded w-16" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border bg-transparent">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <tr key={i}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-16" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-muted rounded w-36 mb-2" />
+                    <div className="h-3 bg-muted rounded w-24" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-16" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-20" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-5 bg-muted rounded w-16" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-28" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

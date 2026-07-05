@@ -15,8 +15,18 @@ export default function LanguagePage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 animate-pulse">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <div className="space-y-2">
+            <div className="h-7 bg-muted rounded w-1/3" />
+            <div className="h-4 bg-muted rounded w-2/3" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-28 bg-muted rounded-xl" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

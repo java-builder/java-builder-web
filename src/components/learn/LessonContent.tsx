@@ -63,10 +63,11 @@ export default function LessonContent({
       <div className="flex-1 flex flex-col min-h-screen bg-gray-50 dark:bg-slate-900">
         {/* Video skeleton */}
         <div className="bg-black flex-shrink-0">
-          <div className="aspect-video w-full max-w-5xl mx-auto flex items-center justify-center bg-slate-950">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-3"></div>
-              <p className="text-slate-400 text-xs font-semibold">Đang tải bài giảng...</p>
+          <div className="aspect-video w-full max-w-5xl mx-auto bg-slate-950/80 animate-pulse flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-slate-800/40 flex items-center justify-center">
+              <svg className="w-8 h-8 text-slate-600 dark:text-slate-450" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
             </div>
           </div>
         </div>

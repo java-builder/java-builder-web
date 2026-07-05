@@ -63,35 +63,22 @@ export default function CategoryTable({
           </thead>
           <tbody className="divide-y divide-border bg-transparent">
             {isLoading && categories.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={COLUMN_HEADERS.length}
-                  className="px-4 py-12 text-center text-sm text-muted-foreground"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <svg
-                      className="h-4 w-4 animate-spin text-accent"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      />
-                    </svg>
-                    Đang tải...
-                  </div>
-                </td>
-              </tr>
+              Array.from({ length: 5 }).map((_, idx) => (
+                <tr key={idx} className="animate-pulse">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-32" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-24" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-16" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <div className="h-8 bg-muted rounded w-16 ml-auto" />
+                  </td>
+                </tr>
+              ))
             ) : categories.length === 0 ? (
               <tr>
                 <td

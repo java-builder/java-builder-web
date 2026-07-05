@@ -170,7 +170,26 @@ export default function QNAClient() {
         {/* Questions List */}
         <div className="mb-8">
           {loadingData ? (
-            <div className="text-center py-12">{t("qnaPage.loadingData")}</div>
+            <div className="space-y-4 animate-pulse">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white dark:bg-slate-800 border border-gray-150 dark:border-slate-700/60 rounded-xl p-5 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted shrink-0" />
+                    <div className="h-4 bg-muted rounded w-28" />
+                    <div className="h-3.5 bg-muted rounded w-16" />
+                  </div>
+                  <div className="h-5 bg-muted rounded w-2/3" />
+                  <div className="space-y-2">
+                    <div className="h-4 bg-muted rounded w-full" />
+                    <div className="h-4 bg-muted rounded w-5/6" />
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <div className="h-6 bg-muted rounded w-16" />
+                    <div className="h-6 bg-muted rounded w-16" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
             <PostList searchQuery={searchQuery} sortBy={sortBy} filterTag={filterTag} />
           )}

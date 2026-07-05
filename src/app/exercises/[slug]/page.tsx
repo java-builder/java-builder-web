@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { exerciseApi } from '@/services/exercise.service';
 import { ExerciseDetailResponse, Difficulty, ExerciseType } from '@/types/exercise';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import ExerciseStartScreen from '@/components/exercises/ExerciseStartScreen';
 import QuestionCard from '@/components/exercises/QuestionCard';
@@ -180,8 +179,37 @@ export default function ExerciseDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner />
+      <div className="min-h-screen bg-gradient-to-br from-accent/5 via-purple-500/5 to-blue-500/5 dark:from-accent/10 dark:via-purple-500/10 dark:to-blue-500/10 dark:bg-slate-900 py-6 px-4">
+        <div className="max-w-2xl mx-auto">
+          {/* Back button skeleton */}
+          <div className="h-5 w-24 bg-muted rounded animate-pulse mb-4" />
+
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 sm:p-8 border border-gray-100 dark:border-slate-700 space-y-6">
+            {/* Header skeleton */}
+            <div className="flex flex-col items-center mb-5 space-y-3">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-muted animate-pulse" />
+              <div className="h-8 bg-muted rounded animate-pulse w-3/4" />
+              <div className="h-4 bg-muted rounded animate-pulse w-5/6" />
+              <div className="flex gap-2">
+                <div className="h-5 w-16 bg-muted rounded-full animate-pulse" />
+                <div className="h-5 w-24 bg-muted rounded-full animate-pulse" />
+              </div>
+            </div>
+
+            {/* Stats skeleton */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              <div className="h-24 bg-muted rounded-xl animate-pulse" />
+              <div className="h-24 bg-muted rounded-xl animate-pulse" />
+              <div className="h-24 bg-muted rounded-xl animate-pulse" />
+            </div>
+
+            {/* Instructions skeleton */}
+            <div className="h-32 bg-muted rounded-lg animate-pulse" />
+
+            {/* Button skeleton */}
+            <div className="h-12 bg-muted rounded-xl animate-pulse w-full" />
+          </div>
+        </div>
       </div>
     );
   }

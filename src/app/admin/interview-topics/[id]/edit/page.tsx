@@ -165,13 +165,33 @@ export default function EditInterviewTopicPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3 text-muted-foreground text-sm">
-          <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          <span>Đang tải...</span>
+      <div className="p-6 space-y-6 animate-pulse max-w-5xl bg-gray-50 min-h-screen">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded bg-muted" />
+          <div className="space-y-2 flex-1">
+            <div className="h-6 bg-muted rounded w-1/4" />
+            <div className="h-4 bg-muted rounded w-1/3" />
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-6 space-y-6">
+          <div className="space-y-2">
+            <div className="h-4 bg-muted rounded w-24" />
+            <div className="h-10 bg-muted rounded w-full" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 bg-muted rounded w-24" />
+            <div className="h-20 bg-muted rounded w-full" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded w-20" />
+              <div className="h-10 bg-muted rounded w-full" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded w-20" />
+              <div className="h-10 bg-muted rounded w-full" />
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -1,7 +1,6 @@
 import { ExerciseSummaryResponse, ExerciseStatus, ExerciseType, Difficulty } from "@/types/exercise";
 import { PageResponse } from "@/types/api";
 import { Pagination } from "@/components/ui/Pagination";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { ExerciseStatusBadge, ExerciseTypeBadge, DifficultyBadge } from "./ExerciseBadges";
 import { formatLocaleString } from "@/utils/dateUtils";
 import { Button } from "@/components/ui/button";
@@ -22,8 +21,48 @@ const emptyStateIcon = (
 export const ExerciseTable = ({ isLoading, data, onPageChange, onCreateNew }: ExerciseTableProps) => {
   if (isLoading) {
     return (
-      <div className="py-12">
-        <LoadingSpinner />
+      <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+        <table className="w-full divide-y divide-border">
+          <thead className="bg-muted/40">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tiêu đề</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Loại</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Độ khó</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Thời gian</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Điểm tối đa</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Trạng thái</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ngày xuất bản</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border bg-transparent">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <tr key={i} className="animate-pulse">
+                <td className="px-6 py-4">
+                  <div className="h-4 bg-muted rounded w-2/3 mb-2" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-5 bg-muted rounded w-24" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-5 bg-muted rounded w-16" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-4 bg-muted rounded w-16" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-4 bg-muted rounded w-16" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-5 bg-muted rounded w-20" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-3 bg-muted rounded w-28" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }

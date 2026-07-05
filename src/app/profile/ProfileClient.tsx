@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AlertTriangle, Loader2, UserX } from "lucide-react";
+import { AlertTriangle, UserX } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import Sidebar from "@/components/profile/Sidebar";
 import ProfileTab from "@/components/profile/ProfileTab";
@@ -178,9 +178,7 @@ export default function ProfilePage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-          <div className="flex min-h-screen items-center justify-center">
-            <Loader2 className="h-7 w-7 animate-spin text-accent" />
-          </div>
+          <ProfileLoadingState />
         </div>
       }
     >

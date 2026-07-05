@@ -47,8 +47,27 @@ export default function AdminSettingsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
+      <div className="p-6 max-w-7xl mx-auto space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
+        <div className="space-y-2">
+          <div className="h-7 bg-muted rounded w-48" />
+          <div className="h-4 bg-muted rounded w-72" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Tabs skeleton */}
+          <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-4 space-y-2 h-48" />
+          {/* Form skeleton */}
+          <div className="md:col-span-3 bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 space-y-6">
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded w-24" />
+              <div className="h-10 bg-muted rounded w-full" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded w-24" />
+              <div className="h-10 bg-muted rounded w-full" />
+            </div>
+            <div className="h-10 bg-muted rounded w-32 mt-6" />
+          </div>
+        </div>
       </div>
     );
   }

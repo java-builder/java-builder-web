@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   Clock3,
   CreditCard,
-  Loader2,
   ReceiptText,
   WalletCards,
   XCircle,
@@ -189,11 +188,44 @@ export default function PaymentHistoryPage() {
 
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="w-10 h-10 animate-spin text-accent" />
-              <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                {t("paymentHistoryPage.loading")}
-              </p>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700 animate-pulse">
+                <thead className="bg-gray-50 dark:bg-slate-900">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableCode")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableContent")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableType")}</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableAmount")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableStatus")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("paymentHistoryPage.tableDate")}</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <tr key={i}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="h-4 bg-muted rounded w-16" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="h-4 bg-muted rounded w-48 mb-2" />
+                        <div className="h-3.5 bg-muted rounded w-32" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="h-5 bg-muted rounded w-20" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <div className="h-4 bg-muted rounded w-24 ml-auto" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="h-5 bg-muted rounded w-16" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="h-4 bg-muted rounded w-28" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : payments.length > 0 ? (
             <>

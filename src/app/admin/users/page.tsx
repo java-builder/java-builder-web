@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -105,32 +105,40 @@ export default function UsersPage() {
 
   if (isLoading && !response) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-slate-900">
-        <div className="rounded-2xl border border-gray-200 bg-white px-8 py-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <div className="flex items-center gap-2">
-            <svg
-              className="h-5 w-5 animate-spin text-accent"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Đang tải dữ liệu...
-            </span>
+      <div className="p-4 sm:p-6 space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
+        <div className="flex justify-between items-center mb-6">
+          <div className="space-y-2">
+            <div className="h-7 bg-muted rounded w-48" />
+            <div className="h-4 bg-muted rounded w-72" />
           </div>
+          <div className="h-10 bg-muted rounded w-32" />
+        </div>
+        <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+          <table className="w-full divide-y divide-border">
+            <thead className="bg-muted/40">
+              <tr>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <th key={i} className="px-6 py-3 text-left">
+                    <div className="h-4 bg-muted rounded w-16" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border bg-transparent">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <tr key={i}>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-muted rounded w-2/3 mb-2" />
+                    <div className="h-3 bg-muted rounded w-1/2" />
+                  </td>
+                  <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-20" /></td>
+                  <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-16" /></td>
+                  <td className="px-6 py-4"><div className="h-5 bg-muted rounded w-16" /></td>
+                  <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-24" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     );

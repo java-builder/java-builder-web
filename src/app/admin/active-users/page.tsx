@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Search,
   RotateCw,
-  Loader2,
   Users
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -117,11 +116,16 @@ export default function ActiveUsersPage() {
 
       {/* Compact Active Users Horizontal Row Grid */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-          <p className="text-xs text-muted-foreground animate-pulse">
-            Đang tải...
-          </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 animate-pulse">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-none min-w-0">
+              <div className="w-11 h-11 rounded-full bg-muted shrink-0" />
+              <div className="flex-1 space-y-2 py-1">
+                <div className="h-3.5 bg-muted rounded w-2/3" />
+                <div className="h-3 bg-muted rounded w-5/6" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : filteredUsers.length === 0 ? (
         <Card className="border border-dashed border-border bg-card/20 py-16 text-center shadow-none rounded-2xl">

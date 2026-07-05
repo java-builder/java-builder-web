@@ -191,11 +191,25 @@ export default function PricingPage() {
         <section className="pb-12 px-4">
           <div className="max-w-6xl mx-auto">
             {isLoading ? (
-              <div className="flex justify-center items-center py-20">
-                <svg className="animate-spin h-10 w-10 text-accent" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
+              <div className="grid md:grid-cols-3 gap-6 lg:gap-8 animate-pulse">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 lg:p-8 space-y-6">
+                    <div className="space-y-2">
+                      <div className="h-6 bg-muted rounded w-1/3" />
+                      <div className="h-4 bg-muted rounded w-2/3" />
+                    </div>
+                    <div className="h-10 bg-muted rounded w-1/2" />
+                    <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                      {[1, 2, 3, 4].map((j) => (
+                        <div key={j} className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-muted" />
+                          <div className="h-4 bg-muted rounded flex-1" />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="h-11 bg-muted rounded-xl w-full mt-6" />
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="grid md:grid-cols-3 gap-6 lg:gap-8">

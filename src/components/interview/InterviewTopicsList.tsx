@@ -14,13 +14,27 @@ export default function InterviewTopicsList({
   topics,
   isLoading,
 }: InterviewTopicsListProps) {
-  const { t, locale } = useI18n();
+  const { locale } = useI18n();
 
   if (isLoading) {
     return (
-      <div className="text-center py-12">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
-        <p className="mt-4 text-gray-600 dark:text-gray-400">{t("common.loading")}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-white dark:bg-slate-800 border border-gray-150 dark:border-slate-700/60 rounded-2xl p-6 shadow-sm space-y-4 animate-pulse">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-muted shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-5 bg-muted rounded w-2/3" />
+                <div className="h-3.5 bg-muted rounded w-1/3" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded w-full" />
+              <div className="h-4 bg-muted rounded w-5/6" />
+            </div>
+            <div className="h-5 bg-muted rounded w-24 pt-2" />
+          </div>
+        ))}
       </div>
     );
   }

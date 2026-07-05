@@ -100,8 +100,26 @@ export default function InterviewTopicsPage() {
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground">
-            {t("admin.interviewTopics.loading")}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 animate-pulse">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-5 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded bg-muted" />
+                    <div className="h-5 bg-muted rounded w-32" />
+                  </div>
+                  <div className="w-16 h-6 rounded bg-muted" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-5/6" />
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <div className="h-8 bg-muted rounded w-16" />
+                  <div className="h-8 bg-muted rounded w-16" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : topics.length === 0 ? (
           <div className="p-12 text-center">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Monitor, Loader2 } from "lucide-react";
+import { Monitor } from "lucide-react";
 import { UserSession } from "@/types/session";
 import { SessionTableRow } from "./SessionTableRow";
 import { Card } from "@/components/ui/card";
@@ -78,17 +78,34 @@ export const SessionsTable = ({
         </TableHeader>
         <TableBody>
           {isLoading && sessions.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={COLUMN_HEADERS.length}
-                className="px-6 py-12 text-center text-sm text-muted-foreground"
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin text-accent" />
-                  Đang tải...
-                </div>
-              </TableCell>
-            </TableRow>
+            Array.from({ length: 5 }).map((_, idx) => (
+              <TableRow key={idx} className="animate-pulse">
+                <TableCell className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted shrink-0" />
+                    <div className="space-y-1.5 flex-1">
+                      <div className="h-4 bg-muted rounded w-24" />
+                      <div className="h-3.5 bg-muted rounded w-36" />
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="px-6 py-4">
+                  <div className="h-4 bg-muted rounded w-32" />
+                </TableCell>
+                <TableCell className="px-6 py-4">
+                  <div className="h-4 bg-muted rounded w-20" />
+                </TableCell>
+                <TableCell className="px-6 py-4">
+                  <div className="h-4 bg-muted rounded w-16" />
+                </TableCell>
+                <TableCell className="px-6 py-4">
+                  <div className="h-5 bg-muted rounded w-16" />
+                </TableCell>
+                <TableCell className="px-6 py-4">
+                  <div className="h-4 bg-muted rounded w-24" />
+                </TableCell>
+              </TableRow>
+            ))
           ) : sessions.length === 0 ? (
             <TableRow>
               <TableCell colSpan={COLUMN_HEADERS.length} className="px-6 py-12 text-center">

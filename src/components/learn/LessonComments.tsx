@@ -147,8 +147,17 @@ export default function LessonComments({ lessonId }: LessonCommentsProps) {
 
       {/* Loading */}
       {isLoading && comments.length === 0 && (
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+        <div className="space-y-4 py-4">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex gap-3 animate-pulse">
+              <div className="w-8 h-8 rounded-full bg-muted shrink-0" />
+              <div className="flex-1 space-y-2 py-1">
+                <div className="h-4 bg-muted rounded w-1/4" />
+                <div className="h-3.5 bg-muted rounded w-full" />
+                <div className="h-3.5 bg-muted rounded w-2/3" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

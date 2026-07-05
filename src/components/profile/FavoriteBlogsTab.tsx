@@ -33,9 +33,24 @@ export default function FavoriteBlogsTab() {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 p-6">
-        <div className="flex justify-center items-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+      <div className="bg-white/80 dark:bg-slate-900/95 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 overflow-hidden">
+        {/* Header skeleton */}
+        <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-950/60 animate-pulse">
+          <div className="h-5 bg-muted rounded w-48 mb-2" />
+          <div className="h-4 bg-muted rounded w-32" />
+        </div>
+        {/* List skeleton */}
+        <div className="p-4 sm:p-6 space-y-5 divide-y divide-gray-100 dark:divide-slate-800">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex flex-col sm:flex-row gap-4 py-5 first:pt-0 last:pb-0 animate-pulse">
+              <div className="h-32 sm:h-28 sm:w-44 flex-shrink-0 bg-muted rounded-xl" />
+              <div className="flex-1 space-y-3 py-1">
+                <div className="h-5 bg-muted rounded w-3/4" />
+                <div className="h-4 bg-muted rounded w-1/4" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

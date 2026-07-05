@@ -184,8 +184,21 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Loading State */}
             {isLoadingCourses && (
-              <div className="col-span-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full col-span-full">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-850 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
+                    <div className="aspect-video bg-muted rounded-xl w-full" />
+                    <div className="h-5 bg-muted rounded w-2/3" />
+                    <div className="space-y-2">
+                      <div className="h-4 bg-muted rounded w-full" />
+                      <div className="h-4 bg-muted rounded w-5/6" />
+                    </div>
+                    <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-slate-800">
+                      <div className="h-5 bg-muted rounded w-16" />
+                      <div className="h-5 bg-muted rounded w-20" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
@@ -267,8 +280,21 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Loading State */}
             {isLoadingBlogs && (
-              <div className="col-span-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-850 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
+                    <div className="aspect-video bg-muted rounded-xl w-full" />
+                    <div className="h-5 bg-muted rounded w-2/3" />
+                    <div className="space-y-2">
+                      <div className="h-4 bg-muted rounded w-full" />
+                      <div className="h-4 bg-muted rounded w-5/6" />
+                    </div>
+                    <div className="flex gap-2 items-center pt-2">
+                      <div className="w-8 h-8 rounded-full bg-muted" />
+                      <div className="h-4 bg-muted rounded w-24" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
@@ -368,8 +394,23 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {isLoadingDocuments && (
-              <div className="col-span-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-850 rounded-2xl p-6 space-y-4 animate-pulse">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-muted" />
+                      <div className="h-5 bg-muted rounded w-1/2" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-muted rounded w-full" />
+                      <div className="h-4 bg-muted rounded w-5/6" />
+                    </div>
+                    <div className="flex justify-between items-center pt-4 border-t border-gray-150 dark:border-slate-800">
+                      <div className="h-4 bg-muted rounded w-16" />
+                      <div className="h-4 bg-muted rounded w-16" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 

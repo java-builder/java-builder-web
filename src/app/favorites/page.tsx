@@ -236,8 +236,21 @@ export default function FavoritesPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl overflow-hidden p-6 space-y-4">
+                <div className="aspect-video bg-muted rounded-lg w-full" />
+                <div className="h-5 bg-muted rounded w-2/3" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-5/6" />
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-slate-700">
+                  <div className="h-4 bg-muted rounded w-16" />
+                  <div className="h-4 bg-muted rounded w-20" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : favorites.length === 0 ? (
           <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">

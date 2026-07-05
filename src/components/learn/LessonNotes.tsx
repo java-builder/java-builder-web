@@ -223,8 +223,17 @@ export default function LessonNotes({
 
       {/* Notes List */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-10">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent"></div>
+        <div className="space-y-3 py-4 animate-pulse">
+          {[1, 2].map((i) => (
+            <div key={i} className="p-4 bg-muted/20 border border-border border-l-4 border-l-muted rounded-xl space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="h-4 bg-muted rounded w-20" />
+                <div className="h-3.5 bg-muted rounded w-16" />
+              </div>
+              <div className="h-4 bg-muted rounded w-full" />
+              <div className="h-4 bg-muted rounded w-5/6" />
+            </div>
+          ))}
         </div>
       ) : notes.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 border border-dashed border-gray-200 dark:border-slate-700/60 rounded-xl bg-gray-50/20 dark:bg-slate-800/5">

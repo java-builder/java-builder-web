@@ -317,12 +317,28 @@ export default function AdminDocumentsPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {isLoading ? (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground">
-                    <Loader2 className="animate-spin h-8 w-8 mx-auto mb-2 text-accent" />
-                    Đang tải...
-                  </td>
-                </tr>
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-20 rounded bg-muted shrink-0" />
+                        <div className="space-y-2 flex-grow">
+                          <div className="h-4 bg-muted rounded w-48" />
+                          <div className="h-3.5 bg-muted rounded w-32" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-16" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-24" />
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="h-8 bg-muted rounded w-16 ml-auto" />
+                    </td>
+                  </tr>
+                ))
               ) : filteredDocuments.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground">

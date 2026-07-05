@@ -199,11 +199,20 @@ export default function EnrollUserModal({
                 {showDropdown && searchTerm.trim().length >= 2 && (
                   <div className="absolute left-0 right-0 mt-2 max-h-64 overflow-y-auto z-50 bg-card border border-border shadow-2xl rounded-xl divide-y divide-border/60 backdrop-blur-md">
                     {isSearching && searchResults.length === 0 ? (
-                      <div className="flex items-center justify-center p-5 text-sm text-muted-foreground gap-2.5">
-                        <Loader2 className="h-4 w-4 animate-spin text-accent" />
-                        Đang tìm kiếm tài khoản học viên...
+                      <div className="p-2 space-y-1">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="flex items-start gap-3.5 p-3.5 rounded-lg animate-pulse">
+                            <div className="w-10 h-10 rounded-full bg-muted shrink-0 mt-0.5" />
+                            <div className="flex-1 space-y-2">
+                              <div className="h-4 bg-muted rounded w-1/3" />
+                              <div className="h-3 bg-muted rounded w-1/2" />
+                              <div className="h-3.5 bg-muted rounded w-20 mt-1" />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ) : searchResults.length > 0 ? (
+                    ) :
+ searchResults.length > 0 ? (
                       searchResults.map((user) => (
                         <div
                           key={user.id}

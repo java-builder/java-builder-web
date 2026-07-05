@@ -173,8 +173,20 @@ export default function DocsCommentsTab() {
 
       {/* Comments List */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent border-t-transparent"></div>
+        <div className="space-y-4 py-6 animate-pulse">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex gap-4 p-5 bg-card border border-border rounded-xl">
+              <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-4 bg-muted rounded w-28" />
+                  <div className="h-3.5 bg-muted rounded w-16" />
+                </div>
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-5/6" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="space-y-4">

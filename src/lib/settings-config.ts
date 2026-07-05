@@ -334,7 +334,7 @@ export const settingsConfig: SettingsConfig = {
               id: "default-theme",
               type: "select",
               label: "Chủ đề mặc định",
-              defaultValue: "light",
+              defaultValue: "dark",
               options: [
                 { value: "light", label: "Sáng" },
                 { value: "dark", label: "Tối" },

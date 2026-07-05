@@ -195,8 +195,19 @@ export default function MyCommentsClient() {
 
         {/* Content list */}
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div>
+          <div className="space-y-4 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700/60 rounded-xl p-5 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-muted shrink-0" />
+                  <div className="h-4 bg-muted rounded w-28" />
+                  <div className="h-3.5 bg-muted rounded w-16" />
+                </div>
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-5/6" />
+                <div className="h-3.5 bg-muted rounded w-1/4 pt-2" />
+              </div>
+            ))}
           </div>
         ) : comments.length === 0 ? (
           <div className="text-center py-20 bg-white dark:bg-slate-800/40 rounded-xl border border-gray-200/80 dark:border-slate-700/60 shadow-sm px-6">

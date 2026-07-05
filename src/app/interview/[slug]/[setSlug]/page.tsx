@@ -12,7 +12,8 @@ import {
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { useI18n } from "@/contexts/I18nContext";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
-import { Crown, Sparkles, Gem } from "lucide-react";
+import ThemeToggle from "@/components/header-components/ThemeToggle";
+import { Crown, Sparkles, Gem, Lightbulb } from "lucide-react";
 
 const COMPLETED_STORAGE_KEY = "interview_completed_questions";
 
@@ -420,6 +421,8 @@ export default function InterviewSetPage() {
               <LanguageSwitcher variant="minimal" />
             </div>
 
+            <ThemeToggle />
+
             {/* Mobile: open list drawer */}
             <button
               onClick={() => setIsMobileListOpen(true)}
@@ -543,13 +546,15 @@ export default function InterviewSetPage() {
 
                     {selectedQuestion.displayTips && (
                       <section className="mb-8">
-                        <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                          <div className="w-1 h-5 sm:h-6 bg-amber-500 rounded-full" />
-                          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                            {t("interviewPage.goodTips")}
-                          </h3>
-                        </div>
-                        <div className="rounded-lg bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20 p-4 sm:p-5">
+                        <div className="rounded-2xl border border-amber-200/80 dark:border-amber-500/20 border-l-4 border-l-amber-500 bg-amber-50/40 dark:bg-amber-500/[0.03] p-5 sm:p-6 shadow-2xs">
+                          <div className="flex items-center gap-2 mb-3.5">
+                            <div className="text-amber-500 dark:text-amber-400">
+                              <Lightbulb className="w-5 h-5 flex-shrink-0" />
+                            </div>
+                            <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400">
+                              {t("interviewPage.goodTips")}
+                            </h3>
+                          </div>
                           <div className="prose prose-sm dark:prose-invert max-w-none">
                             <PublicMarkdownRenderer content={selectedQuestion.displayTips} />
                           </div>

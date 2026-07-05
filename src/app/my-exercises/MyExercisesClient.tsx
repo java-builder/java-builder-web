@@ -11,8 +11,7 @@ import {
   FileCheck,
   Percent,
   CheckCheck,
-  ClipboardCheck,
-  Loader2
+  ClipboardCheck
 } from "lucide-react";
 import {
   PieChart,
@@ -74,13 +73,46 @@ export default function MyExercisesClient() {
     });
   };
 
-  // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-600 dark:text-blue-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-300">{t("common.loading")}</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 animate-pulse">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+          {/* Header skeleton */}
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-muted" />
+            <div className="space-y-2 flex-1">
+              <div className="h-6 bg-muted rounded w-1/4" />
+              <div className="h-4 bg-muted rounded w-1/3" />
+            </div>
+          </div>
+
+          {/* Stats grid skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-250 dark:border-slate-700/60 space-y-2 h-24" />
+            ))}
+          </div>
+
+          {/* Charts grid skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-250 dark:border-slate-700/60 h-80" />
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-250 dark:border-slate-700/60 h-80" />
+          </div>
+
+          {/* List skeleton */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-250 dark:border-slate-700/60 space-y-4">
+            <div className="h-5 bg-muted rounded w-32 mb-6" />
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex gap-4 items-center py-4 border-b border-border/40 last:border-0">
+                <div className="w-10 h-10 rounded bg-muted shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-muted rounded w-1/3" />
+                  <div className="h-3.5 bg-muted rounded w-1/2" />
+                </div>
+                <div className="w-16 h-6 rounded bg-muted" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
