@@ -1,6 +1,6 @@
 import { CourseStats } from "@/types/admin";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, GraduationCap, CircleDollarSign } from "lucide-react";
+import { BookOpen, GraduationCap } from "lucide-react";
 
 interface CourseStatsCardsProps {
   stats: CourseStats;
@@ -47,7 +47,11 @@ export const CourseStatsCards = ({ stats, formatRevenue, isLoading = false }: Co
     {
       label: "Doanh thu",
       value: formatRevenue(stats.totalRevenue),
-      icon: <CircleDollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
+      icon: (
+        <div className="h-5 w-5 flex items-center justify-center font-bold text-[13px] text-emerald-600 dark:text-emerald-400 border-2 border-emerald-600 dark:border-emerald-400 rounded-full select-none leading-none">
+          ₫
+        </div>
+      ),
       bg: "bg-emerald-50 dark:bg-emerald-950/30",
       accent: "border-emerald-100 dark:border-emerald-900/30",
       valueClass: "text-emerald-600 dark:text-emerald-400",

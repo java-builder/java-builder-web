@@ -188,12 +188,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    if (error.response?.status === 403) {
-      if (typeof window !== "undefined") {
-        window.location.href = "/403";
-      }
-      return Promise.reject(error);
-    }
 
     if (apiResponse?.message) {
       const customError = new Error(apiResponse.message);

@@ -23,7 +23,6 @@ interface ChatMessage {
 export default function DocsAiAssistant({
   lessonId = "",
   lessonName = "",
-  lessonDescription = "",
   isInline = false,
 }: DocsAiAssistantProps) {
   const [isOpen, setIsOpen] = useState(isInline);

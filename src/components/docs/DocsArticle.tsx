@@ -247,7 +247,7 @@ export default function DocsArticle({
       )}
 
       {/* Slide-over Notes Drawer */}
-      {lessonId && (
+      {lessonId && canAccess !== false && (
         <>
           {/* Backdrop overlay */}
           <div
@@ -299,11 +299,11 @@ export default function DocsArticle({
 
             {/* Drawer Body */}
             <div className={`flex-1 flex flex-col min-h-0 ${activeTab === "notes" ? "overflow-y-auto px-6 pb-6" : "px-0 pb-0"}`}>
-              {activeTab === "notes" ? (
+              {isNotesOpen && (activeTab === "notes" ? (
                 <LessonNotes lessonId={lessonId} showTimestamp={false} />
               ) : (
                 <DocsAiAssistant lessonId={lessonId} lessonName={title} lessonDescription={description} isInline={true} />
-              )}
+              ))}
             </div>
           </div>
         </>
