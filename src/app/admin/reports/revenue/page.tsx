@@ -17,7 +17,7 @@ import {
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
 import { parseDate } from "@/utils/dateUtils";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 ChartJS.register(
@@ -51,8 +51,8 @@ interface TopCourse {
 export default function RevenueReportPage() {
   const [timeRange, setTimeRange] = useState("30days");
   const [isLoading, setIsLoading] = useState(false);
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   // Mock data
   const [revenueDetails] = useState<RevenueDetail[]>([

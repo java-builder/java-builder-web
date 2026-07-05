@@ -23,7 +23,7 @@ import { reportApi } from "@/services/report.service";
 import { ReportStatsResponse, CourseRevenue } from "@/types/report";
 import { userSessionApi } from "@/services/user-session.service";
 import { UserSessionStatistics } from "@/types/session";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 interface ChartDataPoint {
@@ -36,8 +36,8 @@ interface ChartDataPoint {
 export default function ReportsPage() {
   const [timeRange, setTimeRange] = useState("30days");
   const [isLoading, setIsLoading] = useState(false);
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const [stats, setStats] = useState<ReportStatsResponse>({
     totalRevenue: 0,

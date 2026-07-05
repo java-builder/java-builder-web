@@ -10,7 +10,7 @@ import type { SubscriptionPlan } from "@/types/subscription";
 import type { SubscriptionStatsResponse } from "@/types/user-subscription";
 import { Pagination } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "next-themes";
 import {
   Area,
   Bar,
@@ -50,8 +50,8 @@ export default function AdminUserSubscriptionsPage() {
   const [statsTimeRange, setStatsTimeRange] = useState("30days");
   const [stats, setStats] = useState<SubscriptionStatsResponse | null>(null);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const timeRangeText = useMemo(() => {
     return statsTimeRange === '7days' ? '7 ngày qua' : statsTimeRange === '30days' ? '30 ngày qua' : statsTimeRange === '3months' ? '3 tháng qua' : statsTimeRange === '6months' ? '6 tháng qua' : '1 năm qua';

@@ -56,7 +56,10 @@ export default function DocsHeader({
           {/* Center: Current Course Title */}
           {course && (
             <div className="hidden md:flex items-center gap-2.5 flex-1 max-w-md lg:max-w-lg xl:max-w-2xl mx-6 px-4 py-1.5 bg-gray-50/50 dark:bg-slate-900/30 border border-gray-100 dark:border-slate-750/50 rounded-2xl">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+              <span className="relative flex h-2 w-2 flex-shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 dark:bg-emerald-300 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
+              </span>
               <div className="text-left min-w-0">
                 <p className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider leading-none">
                   Khóa học đang học

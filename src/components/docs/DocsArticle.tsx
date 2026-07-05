@@ -5,7 +5,10 @@ import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import CommentList from "@/components/blogs/CommentList";
 import { useComments } from "@/hooks/useComments";
 import toast from "react-hot-toast";
-import { Check } from "lucide-react";
+import { useState } from "react";
+import LessonNotes from "@/components/learn/LessonNotes";
+import DocsAiAssistant from "@/components/docs/DocsAiAssistant";
+import { Check, X, FileText, Bot } from "lucide-react";
 
 interface DocsArticleProps {
   title: string;
@@ -46,6 +49,9 @@ export default function DocsArticle({
     deleteComment,
     loadMoreComments,
   } = useComments(lessonId || "", "DOCS");
+
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"notes" | "ai">("notes");
 
   const handleAddComment = async (content: string) => {
     if (!lessonId) return;
@@ -223,6 +229,84 @@ export default function DocsArticle({
             hasMore={hasMoreComments}
           />
         </div>
+      )}
+
+      {/* Floating Action Button for Notes */}
+      {lessonId && canAccess !== false && (
+        <button
+          onClick={() => setIsNotesOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center justify-center w-14 h-14 bg-gradient-to-r from-accent to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer"
+          title="Ghi chú cá nhân"
+        >
+          <FileText className="w-6 h-6 group-hover:rotate-6 transition-transform" />
+          <span className="absolute top-0 right-0 flex h-3.5 w-3.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 dark:bg-emerald-300 opacity-75" />
+            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 dark:bg-emerald-400 ring-2 ring-white dark:ring-slate-900" />
+          </span>
+        </button>
+      )}
+
+      {/* Slide-over Notes Drawer */}
+      {lessonId && (
+        <>
+          {/* Backdrop overlay */}
+          <div
+            className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300 ${
+              isNotesOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setIsNotesOpen(false)}
+          />
+
+          {/* Drawer Panel */}
+          <div
+            className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] lg:w-[680px] xl:w-[750px] max-w-[92vw] bg-white dark:bg-slate-900 shadow-2xl border-l border-gray-150 dark:border-slate-800/80 flex flex-col transition-transform duration-300 ease-out transform ${
+              isNotesOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {/* Drawer Header with Tabs */}
+            <div className="flex items-center justify-between px-6 border-b border-gray-150 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/20">
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setActiveTab("notes")}
+                  className={`py-4 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+                    activeTab === "notes"
+                      ? "border-accent text-accent dark:text-sky-400"
+                      : "border-transparent text-gray-450 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
+                  }`}
+                >
+                  <FileText className="w-4 h-4" />
+                  Ghi chú
+                </button>
+                <button
+                  onClick={() => setActiveTab("ai")}
+                  className={`py-4 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+                    activeTab === "ai"
+                      ? "border-accent text-accent dark:text-sky-400"
+                      : "border-transparent text-gray-450 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
+                  }`}
+                >
+                  <Bot className="w-4 h-4" />
+                  Hỏi đáp AI
+                </button>
+              </div>
+              <button
+                onClick={() => setIsNotesOpen(false)}
+                className="p-1.5 text-gray-450 hover:text-gray-750 dark:hover:text-slate-200 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Drawer Body */}
+            <div className={`flex-1 flex flex-col min-h-0 ${activeTab === "notes" ? "overflow-y-auto px-6 pb-6" : "px-0 pb-0"}`}>
+              {activeTab === "notes" ? (
+                <LessonNotes lessonId={lessonId} showTimestamp={false} />
+              ) : (
+                <DocsAiAssistant lessonId={lessonId} lessonName={title} lessonDescription={description} isInline={true} />
+              )}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

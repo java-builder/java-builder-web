@@ -19,7 +19,7 @@ import {
 import DateRangePicker from "@/components/admin/DateRangePicker";
 import ExportButton from "@/components/admin/ExportButton";
 import toast from "react-hot-toast";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 ChartJS.register(
@@ -39,8 +39,8 @@ export default function ReportsDashboard() {
   const [timeRange, setTimeRange] = useState("30days");
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   // Mock data
   const [dashboardData] = useState({

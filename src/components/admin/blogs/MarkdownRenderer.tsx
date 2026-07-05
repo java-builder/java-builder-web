@@ -6,7 +6,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import { useState, useEffect } from "react";
 import React from "react";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "next-themes";
 
 interface MarkdownRendererProps {
   content: string;
@@ -27,7 +27,7 @@ export default function MarkdownRenderer({
   className = "",
 }: MarkdownRendererProps) {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     // Dynamically load highlight.js theme based on current theme
@@ -37,7 +37,7 @@ export default function MarkdownRenderer({
       existingLinks.forEach(link => link.remove());
 
       // Load appropriate theme
-      const themeFile = theme === 'dark' ? 'github-dark' : 'github';
+      const themeFile = resolvedTheme === 'dark' ? 'github-dark' : 'github';
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/${themeFile}.min.css`;
@@ -45,7 +45,7 @@ export default function MarkdownRenderer({
     };
 
     loadTheme();
-  }, [theme]);
+  }, [resolvedTheme]);
 
   const copyToClipboard = async (children: React.ReactNode, codeId: string) => {
     try {

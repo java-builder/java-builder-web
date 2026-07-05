@@ -1,4 +1,5 @@
 export interface ChatbotRequest {
+  conversationId?: string;
   message: string;
 }
 

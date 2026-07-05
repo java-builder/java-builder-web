@@ -6,9 +6,9 @@ import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { 
   vscDarkPlus,
-  vs,
+  oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "next-themes";
 import React, { useMemo, useState } from "react";
 import type { Components } from "react-markdown";
 import { slugify } from "@/utils/markdown";
@@ -46,12 +46,12 @@ export default function PublicMarkdownRenderer({
   content,
   className = "",
 }: PublicMarkdownRendererProps) {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const codeStyle = useMemo(() => {
-    return theme === "dark" ? vscDarkPlus : vs;
-  }, [theme]);
+    return resolvedTheme === "dark" ? vscDarkPlus : oneLight;
+  }, [resolvedTheme]);
 
   const copyToClipboard = async (code: string, id: string) => {
     try {
@@ -103,20 +103,20 @@ export default function PublicMarkdownRenderer({
         const codeId = `code-${hashString(codeString)}`;
         
         return (
-          <div className="relative my-6 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs">
+          <div className="relative my-6 rounded-2xl border border-gray-300 dark:border-slate-800 overflow-hidden shadow-xs">
             {/* Header bar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-slate-900 border-b border-gray-150 dark:border-slate-800">
+            <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-slate-900 border-b border-gray-300 dark:border-slate-800">
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-400/80 dark:bg-red-500/60" />
                 <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80 dark:bg-yellow-500/60" />
                 <span className="w-2.5 h-2.5 rounded-full bg-green-400/80 dark:bg-green-500/60" />
               </div>
-              <span className="text-[10px] font-bold tracking-wider text-gray-400 dark:text-slate-500 uppercase font-mono select-none">
+              <span className="text-[10px] font-bold tracking-wider text-gray-500 dark:text-slate-500 uppercase font-mono select-none">
                 {language === "js" || language === "javascript" ? "JS" : language}
               </span>
               <button
                 onClick={() => copyToClipboard(codeString, codeId)}
-                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200 transition-colors duration-150 cursor-pointer"
+                className="flex items-center gap-1 text-[11px] font-bold text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200 transition-colors duration-150 cursor-pointer"
                 title="Copy code"
               >
                 {copiedCode === codeId ? (

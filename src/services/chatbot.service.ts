@@ -43,4 +43,12 @@ export const chatbotApi = {
     );
     return response.data;
   },
+
+  lessonChat: async (data: ChatbotRequest) => {
+    const response = await apiClient.post<ApiResponse<string>>(
+      API.CHATBOT_LESSON_CHAT,
+      data,
+    );
+    return response.data;
+  },
 };

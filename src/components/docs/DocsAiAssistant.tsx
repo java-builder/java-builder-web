@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { Bot, Sparkles, Loader2, Minimize2, Trash2, Send } from "lucide-react";
+import { Bot, Sparkles, Loader2, Minimize2, Trash2, ArrowUp } from "lucide-react";
 import { chatbotApi } from "@/services/chatbot.service";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 interface DocsAiAssistantProps {
+  lessonId?: string;
   lessonName?: string;
   lessonDescription?: string;
+  isInline?: boolean;
 }
 
 interface ChatMessage {
@@ -19,17 +21,18 @@ interface ChatMessage {
 }
 
 export default function DocsAiAssistant({
+  lessonId = "",
   lessonName = "",
   lessonDescription = "",
+  isInline = false,
 }: DocsAiAssistantProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(isInline);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Welcome message memoized
   const welcomeMessage = useMemo(() => {
     return {
       id: "welcome",
@@ -39,7 +42,6 @@ export default function DocsAiAssistant({
     };
   }, [lessonName]);
 
-  // Initialise messages with welcome message
   useEffect(() => {
     setMessages([welcomeMessage]);
   }, [welcomeMessage]);
@@ -51,7 +53,6 @@ export default function DocsAiAssistant({
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
-      // Auto-focus input when opened
       setTimeout(() => chatInputRef.current?.focus(), 300);
     }
   }, [messages, isOpen, scrollToBottom]);
@@ -83,11 +84,10 @@ export default function DocsAiAssistant({
     setMessages((prev) => [...prev, typingMessage]);
 
     try {
-      // Build context prefix so the AI chatbot knows about the current lesson.
-      const contextPrefix = `[Bối cảnh bài học: "${lessonName}"${lessonDescription ? ` - Mô tả: "${lessonDescription}"` : ""}]. `;
-      const messageWithContext = `${contextPrefix}${rawMessage}`;
-
-      const response = await chatbotApi.chat({ message: messageWithContext });
+      const response = await chatbotApi.lessonChat({
+        conversationId: lessonId,
+        message: rawMessage,
+      });
 
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -134,6 +134,101 @@ export default function DocsAiAssistant({
     { label: "❓ Đố trắc nghiệm nhanh", prompt: "Đặt cho tôi 1 câu hỏi trắc nghiệm kèm 4 lựa chọn (A, B, C, D) kiểm tra hiểu biết về bài học này. Khi tôi trả lời hãy giải thích đúng/sai." }
   ], []);
 
+  if (isInline) {
+    return (
+      <div className="flex flex-col flex-1 min-h-0 w-full bg-transparent">
+        {/* Chat Conversation Content */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-slate-50/50 dark:bg-slate-950/20 min-h-0">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`flex items-start gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"
+                }`}
+            >
+              {msg.role === "assistant" && (
+                <div className="w-7 h-7 rounded-lg bg-accent/10 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 mt-1 border border-accent/20 dark:border-slate-700/50">
+                  <Bot className="w-4 h-4 text-accent" />
+                </div>
+              )}
+
+              <div
+                className={`max-w-[85%] px-4 py-3 rounded-2xl shadow-xs text-sm leading-relaxed ${msg.role === "user"
+                  ? "bg-accent text-white rounded-tr-none animate-in slide-in-from-right-1 duration-150"
+                  : "bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-100 rounded-tl-none border border-slate-200/80 dark:border-slate-700/80 animate-in slide-in-from-left-1 duration-150"
+                  }`}
+              >
+                {msg.isTyping ? (
+                  <div className="flex items-center gap-1.5 py-1">
+                    <Loader2 className="w-4 h-4 animate-spin text-accent" />
+                    <span className="text-xs text-gray-500 dark:text-slate-400 animate-pulse">
+                      AI đang suy nghĩ...
+                    </span>
+                  </div>
+                ) : msg.role === "user" ? (
+                  <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                ) : (
+                  <PublicMarkdownRenderer
+                    content={msg.content}
+                    className="prose-sm dark:prose-invert leading-relaxed max-w-none text-inherit dark:text-inherit"
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Suggestion Prompt Chips */}
+        {messages.length === 1 && (
+          <div className="px-6 py-3 border-t border-gray-150 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/20 space-y-1.5 flex-shrink-0">
+            <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest">
+              Gợi ý nhanh cho bạn
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {suggestionChips.map((chip, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSend(chip.prompt)}
+                  className="text-xs px-2.5 py-1.5 rounded-full border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-accent/5 dark:hover:bg-slate-700 hover:border-accent/40 text-gray-650 dark:text-slate-300 hover:text-accent dark:hover:text-accent transition-all duration-200 font-semibold cursor-pointer shadow-xs"
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Chat Input Bar */}
+        <div className="p-4 bg-white/80 dark:bg-slate-900/85 backdrop-blur-md border-t border-gray-150/80 dark:border-slate-800/80 flex-shrink-0">
+          <div className="relative flex items-end border border-gray-250 dark:border-slate-800/60 rounded-xl bg-gray-50/50 dark:bg-slate-950/60 focus-within:bg-white dark:focus-within:bg-slate-950 focus-within:ring-2 focus-within:ring-accent/15 focus-within:border-accent/60 hover:border-gray-300 dark:hover:border-slate-700 transition-all p-2 pl-3.5 shadow-xs">
+            <textarea
+              ref={chatInputRef}
+              rows={1}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Hỏi trợ lý về bài học này..."
+              spellCheck="false"
+              className="flex-1 max-h-28 min-h-[36px] py-1.5 border-0 bg-transparent focus:outline-none focus:ring-0 text-sm text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-slate-500 resize-none transition-all mr-12 select-text"
+              style={{ height: "36px" }}
+            />
+            <button
+              onClick={() => handleSend()}
+              disabled={!inputValue.trim() || isLoading}
+              className={`absolute right-2 bottom-2 p-2 rounded-lg transition-all duration-200 active:scale-90 flex items-center justify-center ${!inputValue.trim() || isLoading
+                ? "bg-transparent text-gray-350 dark:text-slate-650 cursor-not-allowed"
+                : "bg-accent text-white shadow-sm hover:scale-[1.05] hover:bg-accent/90"
+                }`}
+              title="Gửi"
+            >
+              <ArrowUp className="w-4 h-4" strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Floating Action Button (FAB) */}
@@ -150,8 +245,8 @@ export default function DocsAiAssistant({
       {/* Chat Popover Window */}
       <div
         className={`fixed bottom-6 right-6 z-50 w-[92vw] sm:w-[450px] h-[550px] max-h-[82vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-250 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md transition-all duration-300 origin-bottom-right ${isOpen
-            ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
-            : "translate-y-8 opacity-0 scale-90 pointer-events-none"
+          ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
+          : "translate-y-8 opacity-0 scale-90 pointer-events-none"
           }`}
       >
         {/* Chat Window Header */}
@@ -208,8 +303,8 @@ export default function DocsAiAssistant({
 
               <div
                 className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl shadow-sm text-sm ${msg.role === "user"
-                    ? "bg-accent text-white rounded-tr-none"
-                    : "bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-150 rounded-tl-none border border-gray-150/40 dark:border-slate-800/40"
+                  ? "bg-accent text-white rounded-tr-none"
+                  : "bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-150 rounded-tl-none border border-gray-150/40 dark:border-slate-800/40"
                   }`}
               >
                 {msg.isTyping ? (
@@ -254,8 +349,8 @@ export default function DocsAiAssistant({
         )}
 
         {/* Chat Input Bar */}
-        <div className="p-3 bg-white dark:bg-slate-900 border-t border-gray-150 dark:border-slate-800/80">
-          <div className="relative flex items-end border border-gray-250 dark:border-slate-800 rounded-2xl bg-gray-50 dark:bg-slate-950 focus-within:bg-white dark:focus-within:bg-slate-950 focus-within:ring-1 focus-within:ring-accent focus-within:border-accent dark:focus-within:ring-accent dark:focus-within:border-accent hover:border-gray-300 dark:hover:border-slate-700 transition-all p-1.5 pl-3">
+        <div className="p-4 bg-white/80 dark:bg-slate-900/85 backdrop-blur-md border-t border-gray-150/80 dark:border-slate-800/80">
+          <div className="relative flex items-end border border-gray-250 dark:border-slate-800/60 rounded-xl bg-gray-50/50 dark:bg-slate-950/60 focus-within:bg-white dark:focus-within:bg-slate-950 focus-within:ring-2 focus-within:ring-accent/15 focus-within:border-accent/60 hover:border-gray-300 dark:hover:border-slate-700 transition-all p-2 pl-3.5 shadow-xs">
             <textarea
               ref={chatInputRef}
               rows={1}
@@ -263,19 +358,20 @@ export default function DocsAiAssistant({
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Hỏi trợ lý về bài học này..."
-              className="flex-1 max-h-24 min-h-[38px] py-2 border-0 bg-transparent focus:outline-none focus:ring-0 text-sm text-gray-800 dark:text-gray-200 placeholder-gray-400 resize-none transition-all mr-12"
-              style={{ height: "38px" }}
+              spellCheck="false"
+              className="flex-1 max-h-28 min-h-[36px] py-1.5 border-0 bg-transparent focus:outline-none focus:ring-0 text-sm text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-slate-500 resize-none transition-all mr-12 select-text"
+              style={{ height: "36px" }}
             />
             <button
               onClick={() => handleSend()}
               disabled={!inputValue.trim() || isLoading}
-              className={`absolute right-2 bottom-2 p-2 rounded-xl transition-all active:scale-95 ${!inputValue.trim() || isLoading
-                  ? "bg-gray-100 dark:bg-slate-850 text-gray-400 dark:text-slate-500 cursor-not-allowed"
-                  : "bg-accent text-white shadow-md hover:scale-105 hover:opacity-90"
+              className={`absolute right-2 bottom-2 p-2 rounded-lg transition-all duration-200 active:scale-90 flex items-center justify-center ${!inputValue.trim() || isLoading
+                ? "bg-transparent text-gray-350 dark:text-slate-650 cursor-not-allowed"
+                : "bg-accent text-white shadow-sm hover:scale-[1.05] hover:bg-accent/90"
                 }`}
               title="Gửi"
             >
-              <Send className="w-4 h-4" />
+              <ArrowUp className="w-4 h-4" strokeWidth={2.5} />
             </button>
           </div>
         </div>
