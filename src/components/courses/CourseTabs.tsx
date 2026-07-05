@@ -3,8 +3,8 @@
 import { useI18n } from "@/contexts/I18nContext";
 
 interface CourseTabsProps {
-  activeTab: "description" | "comments" | "curriculum" | "instructor";
-  onTabChange: (tab: "description" | "comments" | "curriculum" | "instructor") => void;
+  activeTab: "description" | "curriculum" | "instructor";
+  onTabChange: (tab: "description" | "curriculum" | "instructor") => void;
 }
 
 export default function CourseTabs({ activeTab, onTabChange }: CourseTabsProps) {
@@ -42,16 +42,6 @@ export default function CourseTabs({ activeTab, onTabChange }: CourseTabsProps) 
           }`}
         >
           {t("courseDetail.tabs.instructor")}
-        </button>
-        <button
-          onClick={() => onTabChange("comments")}
-          className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-            activeTab === "comments"
-              ? "border-accent text-accent"
-              : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600"
-          }`}
-        >
-          {t("courseDetail.tabs.reviews")}
         </button>
       </nav>
     </div>

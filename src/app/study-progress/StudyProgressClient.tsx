@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useUserActivities } from "@/hooks/useUserActivities";
+import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 import {
   ActivityType,
   ActivityTypeDisplayNames,
@@ -28,6 +29,19 @@ export default function StudyProgressClient() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [dateFilter, setDateFilter] = useState<DateFilterId>("today");
+
+  const { topics } = useInterviewTopics();
+  const questionSetToTopicMap = useMemo(() => {
+    const map = new Map<string, string>();
+    topics.forEach((topic) => {
+      topic.questionSets?.forEach((set) => {
+        if (set.slug) {
+          map.set(set.slug, topic.slug);
+        }
+      });
+    });
+    return map;
+  }, [topics]);
 
   const dailyQuote = useMemo(() => getRandomQuote(), []);
   const localizedQuote = useMemo(
@@ -235,6 +249,7 @@ export default function StudyProgressClient() {
             getActivityTypeName={getActivityTypeName}
             t={t}
             timelineLabel={t("studyProgressPage.timeline")}
+            questionSetToTopicMap={questionSetToTopicMap}
           />
         )}
 

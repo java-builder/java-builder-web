@@ -210,7 +210,7 @@ export default function SessionsTab() {
                   <button
                     type="button"
                     onClick={() => handleRevokeSession(session.sessionId)}
-                    className="inline-flex flex-shrink-0 items-center rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-900/40 dark:bg-slate-800 dark:text-rose-400 dark:hover:bg-rose-900/20"
+                    className="inline-flex flex-shrink-0 items-center rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/5 dark:text-rose-400 dark:hover:bg-rose-500/20 cursor-pointer"
                   >
                     {t("profilePage.sessionsTab.revokeBtn")}
                   </button>

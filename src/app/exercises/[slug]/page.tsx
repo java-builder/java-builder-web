@@ -152,10 +152,10 @@ export default function ExerciseDetailPage() {
 
   const getDifficultyColor = (difficulty: Difficulty): string => {
     switch (difficulty) {
-      case 'EASY': return 'text-green-600 bg-green-50';
-      case 'MEDIUM': return 'text-yellow-600 bg-yellow-50';
-      case 'HARD': return 'text-red-600 bg-red-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'EASY': return 'text-green-700 bg-green-50 border border-green-200/60 dark:text-green-400 dark:bg-green-500/10 dark:border-green-500/20';
+      case 'MEDIUM': return 'text-amber-700 bg-amber-50 border border-amber-200/60 dark:text-amber-400 dark:bg-amber-500/10 dark:border-amber-500/20';
+      case 'HARD': return 'text-rose-700 bg-rose-50 border border-rose-200/60 dark:text-rose-400 dark:bg-rose-500/10 dark:border-rose-500/20';
+      default: return 'text-slate-750 bg-slate-50 border border-slate-200/60 dark:text-slate-400 dark:bg-slate-500/10 dark:border-slate-500/20';
     }
   };
 
@@ -264,7 +264,7 @@ export default function ExerciseDetailPage() {
         onExit={handleExit}
       />
       
-      <div className="min-h-screen bg-gray-50 py-4 md:py-4 pt-32 md:pt-4">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-4 md:py-4 pt-32 md:pt-4">
         <div className="flex gap-4">
           {/* Main content */}
           <div className="flex-1 px-4">

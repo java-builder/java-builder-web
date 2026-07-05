@@ -23,6 +23,9 @@ export interface UserDailyActivity {
   id: string;
   userId: string;
   activityType: ActivityType;
+  resourceId?: string;
   resourceTitle: string;
+  resourceSlug?: string;
+  resourceThumbnailUrl?: string | null;
   activityDateTime: string;
 }

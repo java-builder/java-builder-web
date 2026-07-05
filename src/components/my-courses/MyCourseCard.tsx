@@ -67,7 +67,7 @@ export default function MyCourseCard({
       ? PlayCircle
       : PlayCircle;
 
-  const showProgress = course.courseFormat !== CourseFormat.TEXT;
+  const showProgress = true;
 
   return (
     <Link

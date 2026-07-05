@@ -141,7 +141,7 @@ export default function MentorClient() {
           <a
             href="#contact-info"
             onClick={(e) => scrollToSection(e, "contact-info")}
-            className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-accent text-white font-semibold shadow-sm hover:bg-accent-600 transition-all duration-200 active:scale-[0.98] text-sm cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 h-11 px-6 !rounded-xl bg-accent text-white font-semibold shadow-sm hover:bg-accent-600 transition-all duration-200 active:scale-[0.98] text-sm cursor-pointer w-full sm:w-auto"
           >
             {t("mentorPage.hero.ctaContact")}
             <ArrowRight className="w-4 h-4" />
@@ -149,7 +149,7 @@ export default function MentorClient() {
           <a
             href="#curriculum"
             onClick={(e) => scrollToSection(e, "curriculum")}
-            className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl border border-input bg-background hover:bg-muted text-foreground font-semibold shadow-xs transition-all duration-200 active:scale-[0.98] text-sm cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 h-11 px-6 !rounded-xl border border-input bg-background hover:bg-muted text-foreground font-semibold shadow-xs transition-all duration-200 active:scale-[0.98] text-sm cursor-pointer w-full sm:w-auto"
           >
             {t("mentorPage.hero.ctaCurriculum")}
           </a>

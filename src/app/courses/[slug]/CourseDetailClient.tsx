@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
@@ -14,6 +14,7 @@ import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import { isRateLimitError } from "@/utils/apiError";
+import { useReviews } from "@/hooks/useReviews";
 import toast from "react-hot-toast";
 import ReviewSection from "@/components/courses/ReviewSection";
 import CourseHeader from "@/components/courses/CourseHeader";
@@ -37,7 +38,7 @@ export default function CourseDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [activeTab, setActiveTab] = useState<
-    "description" | "comments" | "curriculum" | "instructor"
+    "description" | "curriculum" | "instructor"
   >("curriculum");
 
   const hasFetched = useRef(false);
@@ -45,6 +46,12 @@ export default function CourseDetailPage() {
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [loadingLessons, setLoadingLessons] = useState<Set<string>>(new Set());
+
+  const { reviews, totalReviews } = useReviews(course?.id || "");
+  const averageRating = useMemo(() => {
+    if (!reviews || reviews.length === 0) return 5;
+    return reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+  }, [reviews]);
 
   const [previewModal, setPreviewModal] = useState<{
     isOpen: boolean;
@@ -372,7 +379,7 @@ export default function CourseDetailPage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700">
               <CourseHeader
                 course={course}
@@ -405,15 +412,16 @@ export default function CourseDetailPage() {
                   )}
 
                   {activeTab === "instructor" && <CourseInstructor />}
-
-                  {activeTab === "comments" && (
-                    <ReviewSection
-                      courseId={course?.id || ""}
-                      isEnrolled={isEnrolled}
-                    />
-                  )}
                 </div>
               </div>
+            </div>
+
+            {/* Reviews Section always visible */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6">
+              <ReviewSection
+                courseId={course?.id || ""}
+                isEnrolled={isEnrolled}
+              />
             </div>
           </div>
 
@@ -428,6 +436,8 @@ export default function CourseDetailPage() {
               onToggleFavorite={handleToggleFavorite}
               formatPrice={formatPrice}
               getLevelText={getLevelText}
+              averageRating={averageRating}
+              totalReviews={totalReviews}
             />
           </div>
         </div>

@@ -14,6 +14,7 @@ interface StudyTimelineProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: (key: any) => string;
   timelineLabel: string;
+  questionSetToTopicMap?: Map<string, string>;
 }
 
 export default function StudyTimeline({
@@ -21,6 +22,7 @@ export default function StudyTimeline({
   getActivityTypeName,
   t,
   timelineLabel,
+  questionSetToTopicMap,
 }: StudyTimelineProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
@@ -48,22 +50,42 @@ export default function StudyTimeline({
               </span>
             </div>
 
-            {/* Items */}
-            <div>
-              {dateActivities.map((activity, index) => {
+            <div className="divide-y divide-gray-100 dark:divide-slate-800/60 mt-2">
+              {dateActivities.map((activity) => {
                 const activityType = activity.activityType as ActivityType;
+                
+                const getResourceUrl = () => {
+                  if (!activity.resourceSlug) return "";
+                  switch (activityType) {
+                    case ActivityType.VIEW_LESSON:
+                      return `/docs/${activity.resourceSlug}${activity.resourceId ? `?lessonId=${activity.resourceId}` : ""}`;
+                    case ActivityType.READ_BLOG:
+                      return `/blogs/${activity.resourceSlug}`;
+                    case ActivityType.READ_INTERVIEW:
+                      const topicSlug = questionSetToTopicMap?.get(activity.resourceSlug) || "topic";
+                      return `/interview/${topicSlug}/${activity.resourceSlug}`;
+                    case ActivityType.SUBMIT_EXERCISE:
+                      return `/exercises/${activity.resourceSlug}`;
+                    default:
+                      return "";
+                  }
+                };
+
+                const href = getResourceUrl();
+
                 return (
                   <StudyTimelineItem
                     key={activity.id}
                     activityType={activityType}
                     activityTypeName={getActivityTypeName(activityType)}
                     resourceTitle={activity.resourceTitle}
+                    resourceThumbnailUrl={activity.resourceThumbnailUrl}
                     relativeTime={formatRelativeTime(
                       activity.activityDateTime,
                       t
                     )}
                     fullTime={formatApiDate(activity.activityDateTime)}
-                    isLast={index === dateActivities.length - 1}
+                    href={href}
                   />
                 );
               })}

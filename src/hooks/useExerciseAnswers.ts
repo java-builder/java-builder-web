@@ -10,12 +10,22 @@ export const useExerciseAnswers = () => {
     if (isMultiple) {
       const currentAnswers = newAnswers.get(questionId) || [];
       if (currentAnswers.includes(optionId)) {
-        newAnswers.set(questionId, currentAnswers.filter(id => id !== optionId));
+        const filtered = currentAnswers.filter(id => id !== optionId);
+        if (filtered.length === 0) {
+          newAnswers.delete(questionId);
+        } else {
+          newAnswers.set(questionId, filtered);
+        }
       } else {
         newAnswers.set(questionId, [...currentAnswers, optionId]);
       }
     } else {
-      newAnswers.set(questionId, [optionId]);
+      const currentAnswers = newAnswers.get(questionId) || [];
+      if (currentAnswers.includes(optionId)) {
+        newAnswers.delete(questionId);
+      } else {
+        newAnswers.set(questionId, [optionId]);
+      }
     }
     
     setUserAnswers(newAnswers);

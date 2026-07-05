@@ -13,6 +13,10 @@ import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
 import { formatDate } from "@/utils/formatters";
 import { extractHeadings } from "@/utils/markdown";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { favoriteService } from "@/services/favorite.service";
+import { FavoriteTargetType } from "@/types/favorite";
+import toast from "react-hot-toast";
+import { Heart } from "lucide-react";
 
 export default function DocsDetailPage() {
   const params = useParams();
@@ -23,6 +27,8 @@ export default function DocsDetailPage() {
   const currentLessonIdRef = useRef<string | null>(null);
 
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -53,6 +59,7 @@ export default function DocsDetailPage() {
         if (response.code === 200 && response.data) {
           const courseData = response.data;
           setCourse(courseData);
+          setIsFavorite(courseData.isFavorite ?? false);
 
 
 
@@ -301,6 +308,30 @@ export default function DocsDetailPage() {
     }
   }, [selectedChapter, chapterLessons]);
 
+  const handleToggleFavorite = async () => {
+    if (!course?.id) return;
+    setFavoriteLoading(true);
+    try {
+      const result = await favoriteService.toggle({
+        targetId: course.id,
+        targetType: FavoriteTargetType.COURSE,
+      });
+      if (result.code === 200) {
+        setIsFavorite(result.data ?? false);
+        toast.success(
+          result.data
+            ? "Đã thêm vào danh sách yêu thích"
+            : "Đã xóa khỏi danh sách yêu thích"
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      toast.error("Không thể cập nhật danh sách yêu thích");
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
+
   if (isLoadingUser || isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
@@ -403,10 +434,29 @@ export default function DocsDetailPage() {
               </nav>
 
               <header className="mb-8">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                  {course?.title || ""}
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-4 flex flex-wrap items-center gap-x-3.5 gap-y-2">
+                  <span>{course?.title || ""}</span>
+                  <button
+                    onClick={handleToggleFavorite}
+                    disabled={favoriteLoading}
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-semibold rounded-xl border transition-all duration-150 cursor-pointer shrink-0 ${
+                      isFavorite
+                        ? "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-450 dark:hover:bg-rose-950/40"
+                        : "bg-white border-gray-205 text-gray-755 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-750"
+                    }`}
+                  >
+                    <Heart className={`w-4 h-4 ${isFavorite ? "fill-rose-500 text-rose-500" : ""}`} />
+                    <span className="font-semibold">{isFavorite ? "Đã yêu thích" : "Thêm yêu thích"}</span>
+                  </button>
                 </h1>
-                <p className="text-lg text-gray-600 dark:text-gray-400">
+                
+                {course?.updatedAt && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+                    Cập nhật {formatDate(course.updatedAt)}
+                  </div>
+                )}
+
+                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
                   {course?.description || ""}
                 </p>
               </header>
