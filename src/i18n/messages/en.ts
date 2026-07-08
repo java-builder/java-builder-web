@@ -1045,6 +1045,7 @@ export const en = {
       aiTraining: "AI Training",
       reports: "Reports",
       settings: "Settings",
+      ipAccessRules: "IP Access Rules",
     },
     notificationDropdown: {
       title: "Notifications",

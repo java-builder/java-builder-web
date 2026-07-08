@@ -1045,6 +1045,7 @@ export const vi = {
       aiTraining: "AI Training",
       reports: "Báo cáo",
       settings: "Cài đặt",
+      ipAccessRules: "Quản lý chặn IP",
     },
     notificationDropdown: {
       title: "Thông báo",

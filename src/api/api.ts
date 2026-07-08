@@ -247,4 +247,7 @@ export const API = {
     GET_EXERCISE_SUBMISSIONS: "/api/v1/exercise-submission", // Admin - get all submissions with filters
     GET_SUBMISSION_BY_ID: "/api/v1/exercise-submission", // + /:submissionId
     GET_USER_EXERCISE_SUBMISSIONS: "/api/v1/exercise-submission/users", // + /:userId/exercise/:exerciseId
+
+    // CLOUDFLARE
+    CLOUDFLARE: "/api/cloudflare",
 }
