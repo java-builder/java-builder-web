@@ -12,17 +12,30 @@ export const formatApiDateOnly = (dateString: string | null | undefined): string
 export const parseDate = (dateString: string | null | undefined): Date | null => {
   if (!dateString) return null;
   
+  if (dateString.includes("T") || /^\d{4}-\d{2}-\d{2}/.test(dateString)) {
+    const nativeDate = new Date(dateString);
+    if (!isNaN(nativeDate.getTime())) {
+      return nativeDate;
+    }
+  }
+
   const parts = dateString.split(/[- :]/);
-  if (parts.length !== 6) return null;
+  if (parts.length === 6) {
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const hour = parseInt(parts[3], 10);
+    const minute = parseInt(parts[4], 10);
+    const second = parseInt(parts[5], 10);
+    
+    const parsed = new Date(year, month, day, hour, minute, second);
+    if (!isNaN(parsed.getTime())) {
+      return parsed;
+    }
+  }
   
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1;
-  const year = parseInt(parts[2], 10);
-  const hour = parseInt(parts[3], 10);
-  const minute = parseInt(parts[4], 10);
-  const second = parseInt(parts[5], 10);
-  
-  return new Date(year, month, day, hour, minute, second);
+  const fallbackDate = new Date(dateString);
+  return isNaN(fallbackDate.getTime()) ? null : fallbackDate;
 };
 
 export const parseApiDate = parseDate;

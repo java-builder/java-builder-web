@@ -177,34 +177,53 @@ html[data-accent-theme="slate"] {
    stays correct. */
 .dark[data-accent-theme="blue"],
 .dark:not([data-accent-theme]) {
-  --accent-on-dark: #38bdf8; /* sky-400 */
+  --accent-on-dark: #38bdf8;
+  /* sky-400 */
 }
+
 .dark[data-accent-theme="emerald"] {
-  --accent-on-dark: #34d399; /* emerald-400 */
+  --accent-on-dark: #34d399;
+  /* emerald-400 */
 }
+
 .dark[data-accent-theme="purple"] {
-  --accent-on-dark: #a78bfa; /* violet-400 */
+  --accent-on-dark: #a78bfa;
+  /* violet-400 */
 }
+
 .dark[data-accent-theme="rose"] {
-  --accent-on-dark: #fb7185; /* rose-400 */
+  --accent-on-dark: #fb7185;
+  /* rose-400 */
 }
+
 .dark[data-accent-theme="amber"] {
-  --accent-on-dark: #fbbf24; /* amber-400 */
+  --accent-on-dark: #fbbf24;
+  /* amber-400 */
 }
+
 .dark[data-accent-theme="cyan"] {
-  --accent-on-dark: #22d3ee; /* cyan-400 */
+  --accent-on-dark: #22d3ee;
+  /* cyan-400 */
 }
+
 .dark[data-accent-theme="teal"] {
-  --accent-on-dark: #2dd4bf; /* teal-400 */
+  --accent-on-dark: #2dd4bf;
+  /* teal-400 */
 }
+
 .dark[data-accent-theme="indigo"] {
-  --accent-on-dark: #818cf8; /* indigo-400 */
+  --accent-on-dark: #818cf8;
+  /* indigo-400 */
 }
+
 .dark[data-accent-theme="pink"] {
-  --accent-on-dark: #f472b6; /* pink-400 */
+  --accent-on-dark: #f472b6;
+  /* pink-400 */
 }
+
 .dark[data-accent-theme="slate"] {
-  --accent-on-dark: #94a3b8; /* slate-400 */
+  --accent-on-dark: #94a3b8;
+  /* slate-400 */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -283,8 +302,8 @@ html.theme-switching tr,
 html.theme-switching td,
 html.theme-switching th {
   transition: background-color 0.2s ease-out,
-              color 0.2s ease-out,
-              border-color 0.2s ease-out !important;
+    color 0.2s ease-out,
+    border-color 0.2s ease-out !important;
 }
 
 /* Prevent flash during theme switch */
@@ -296,8 +315,8 @@ html.theme-switching {
 html.theme-switching .not-prose pre,
 html.theme-switching .not-prose code,
 html.theme-switching .not-prose span {
-  transition: background-color 0.25s ease-out, 
-              color 0.25s ease-out !important;
+  transition: background-color 0.25s ease-out,
+    color 0.25s ease-out !important;
 }
 
 /* Global Dark Mode Overrides */
@@ -365,11 +384,11 @@ html.theme-switching .not-prose span {
   border-color: #475569 !important;
 }
 
-.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+.dark .divide-gray-200> :not([hidden])~ :not([hidden]) {
   border-color: #334155 !important;
 }
 
-.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+.dark .divide-gray-100> :not([hidden])~ :not([hidden]) {
   border-color: #1e293b !important;
 }
 
@@ -963,6 +982,7 @@ select {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px) rotate(0deg);
@@ -974,6 +994,7 @@ select {
 }
 
 @keyframes gradient {
+
   0%,
   100% {
     background-position: 0% 50%;
@@ -985,6 +1006,7 @@ select {
 }
 
 @keyframes pulse-glow {
+
   0%,
   100% {
     box-shadow: 0 0 20px rgba(0, 86, 210, 0.5);
@@ -1013,6 +1035,7 @@ select {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1170,27 +1193,35 @@ input[type="text"] {
 .bg-accent {
   background-color: var(--accent) !important;
 }
+
 .bg-accent\/5 {
   background-color: rgba(var(--accent-rgb), 0.05) !important;
 }
+
 .bg-accent\/10 {
   background-color: rgba(var(--accent-rgb), 0.1) !important;
 }
+
 .bg-accent\/20 {
   background-color: rgba(var(--accent-rgb), 0.2) !important;
 }
+
 .bg-accent\/30 {
   background-color: rgba(var(--accent-rgb), 0.3) !important;
 }
+
 .bg-accent-600 {
   background-color: var(--accent-600) !important;
 }
+
 .text-accent {
   color: var(--accent) !important;
 }
+
 .text-accent-600 {
   color: var(--accent-600) !important;
 }
+
 .text-brand {
   color: var(--accent) !important;
 }
@@ -1200,53 +1231,69 @@ input[type="text"] {
 .dark .text-accent {
   color: var(--accent-on-dark, #38bdf8) !important;
 }
+
 .dark .text-accent-600 {
   color: var(--accent-on-dark, #38bdf8) !important;
 }
+
 .dark .text-brand {
   color: var(--accent-on-dark, #38bdf8) !important;
 }
+
 .dark .hover\:text-accent:hover {
   color: var(--accent-on-dark, #38bdf8) !important;
 }
+
 .dark .group:hover .group-hover\:text-accent {
   color: var(--accent-on-dark, #38bdf8) !important;
 }
+
 .from-accent {
   --tw-gradient-from: var(--accent) !important;
   --tw-gradient-stops:
     var(--accent), var(--tw-gradient-to, rgba(0, 68, 170, 0)) !important;
 }
+
 .to-accent-600 {
   --tw-gradient-to: var(--accent-600) !important;
 }
+
 .hover\:text-accent:hover {
   color: var(--accent) !important;
 }
+
 .hover\:bg-accent:hover {
   background-color: var(--accent) !important;
 }
+
 .hover\:bg-accent\/10:hover {
   background-color: rgba(var(--accent-rgb), 0.1) !important;
 }
+
 .hover\:bg-accent\/20:hover {
   background-color: rgba(var(--accent-rgb), 0.2) !important;
 }
+
 .hover\:bg-accent-600:hover {
   background-color: var(--accent-600) !important;
 }
+
 .border-accent {
   border-color: var(--accent) !important;
 }
+
 .border-accent\/30 {
   border-color: rgba(var(--accent-rgb), 0.3) !important;
 }
+
 .border-accent\/50 {
   border-color: rgba(var(--accent-rgb), 0.5) !important;
 }
+
 .hover\:border-accent\/50:hover {
   border-color: rgba(var(--accent-rgb), 0.5) !important;
 }
+
 .focus\:ring-accent:focus {
   --tw-ring-color: var(--accent-ring) !important;
 }
@@ -1259,7 +1306,7 @@ input[type="text"] {
 }
 
 .header-chat-modal {
-  right: 6rem !important; 
+  right: 6rem !important;
 }
 
 @media (max-width: 640px) {
@@ -1286,6 +1333,7 @@ input[type="text"] {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -1672,9 +1720,11 @@ button[disabled],
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }

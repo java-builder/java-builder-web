@@ -8,7 +8,7 @@ import {
   LogOut,
   PenSquare,
   ShieldCheck,
-  Smartphone,
+  MonitorSmartphone,
   User as UserIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -61,7 +61,7 @@ export default function Sidebar({
     {
       id: "sessions",
       label: t("profilePage.sessionsTab.sessionsTitle"),
-      icon: Smartphone,
+      icon: MonitorSmartphone,
     },
   ];
 

@@ -83,77 +83,69 @@ export default function AboutSection() {
   }));
 
   return (
-    <section className="overflow-hidden bg-white py-20 dark:bg-slate-900 md:py-28">
+    <section className="overflow-hidden bg-white py-16 dark:bg-slate-900 md:py-24">
       <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-        <div className="grid gap-12 xl:grid-cols-12 xl:gap-16 2xl:gap-24">
-          {/* Left: Heading & CTA (sticky on xl+) */}
-          <div className="xl:col-span-5">
-            <div className="xl:sticky xl:top-24">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                {t("home.about.badge")}
-              </span>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl">
-                {t("home.about.title")}
-              </h2>
-              <p className="mt-6 max-w-xl text-base leading-relaxed text-gray-600 dark:text-slate-300 md:text-lg xl:max-w-none">
-                {t("home.about.descPart1")}
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {t("home.about.descBeginner")}
-                </span>
-                {t("home.about.descPart2")}
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {t("home.about.descPro")}
-                </span>
-                {t("home.about.descPart3")}
-              </p>
+        {/* Top: Heading & Description Centered */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            {t("home.about.badge")}
+          </span>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl">
+            {t("home.about.title")}
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-gray-650 dark:text-slate-350 md:text-lg">
+            {t("home.about.descPart1")}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {t("home.about.descBeginner")}
+            </span>
+            {t("home.about.descPart2")}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {t("home.about.descPro")}
+            </span>
+            {t("home.about.descPart3")}
+          </p>
 
-              <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:max-w-lg">
-                <Link
-                  href="/courses"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-accent-600 hover:shadow-md"
-                >
-                  {t("home.about.ctaCourses")}
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-                <Link
-                  href="/roadmap"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-700/60"
-                >
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                  </svg>
-                  {t("home.about.ctaRoadmap")}
-                </Link>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/courses"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-accent-600 hover:shadow-md"
+            >
+              {t("home.about.ctaCourses")}
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+            <Link
+              href="/roadmap"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-700/60"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              {t("home.about.ctaRoadmap")}
+            </Link>
+          </div>
+        </div>
+
+        {/* Bottom: Feature Grid (3 columns on md+) */}
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
+          {features.map((feature) => (
+            <div key={feature.title} className="flex flex-col items-start gap-4 p-5 rounded-xl border border-gray-100 dark:border-slate-800/80 bg-gray-50/20 dark:bg-slate-900/40 hover:border-accent/30 dark:hover:border-accent/30 transition-all duration-200 hover:shadow-md dark:hover:shadow-black/20">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-lg ring-1 ${feature.bg} ${feature.text} ${feature.ring}`}
+              >
+                {feature.icon}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-slate-400">
+                  {feature.description}
+                </p>
               </div>
             </div>
-          </div>
-
-          {/* Right: Feature list */}
-          <div className="xl:col-span-7">
-            <ul className="divide-y divide-gray-200 dark:divide-slate-800">
-              {features.map((feature) => (
-                <li key={feature.title} className="py-5 first:pt-0 last:pb-0 md:py-6">
-                  <div className="flex items-start gap-4 md:gap-5">
-                    <div
-                      className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg ring-1 ${feature.bg} ${feature.text} ${feature.ring}`}
-                    >
-                      {feature.icon}
-                    </div>
-                    <div className="min-w-0 flex-1 pt-1">
-                      <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-                        {feature.title}
-                      </h3>
-                      <p className="mt-1.5 text-sm leading-relaxed text-gray-600 dark:text-slate-400">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          ))}
         </div>
       </div>
     </section>

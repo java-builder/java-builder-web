@@ -112,28 +112,28 @@ export default function SidebarUserProfile({
           </div>
         </div>
       ) : (
-        <>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 dark:border-slate-700 flex-shrink-0">
+        <div className="flex items-center justify-between gap-2 w-full">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-slate-700 flex-shrink-0">
               {currentUser.avatar ? (
                 <Image
                   src={currentUser.avatar}
                   alt={currentUser.username}
-                  width={40}
-                  height={40}
+                  width={32}
+                  height={32}
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-accent/20 flex items-center justify-center text-accent font-semibold text-lg">
+                <div className="w-full h-full bg-accent/20 flex items-center justify-center text-accent font-semibold text-sm">
                   {(currentUser.username || "U").charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+              <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                 {currentUser.username}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[125px]">
                 {currentUser.email}
               </p>
             </div>
@@ -141,14 +141,14 @@ export default function SidebarUserProfile({
 
           <button
             onClick={onLogout}
-            className="w-full px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium text-sm"
+            className="w-7 h-7 flex-shrink-0 rounded-lg bg-transparent hover:bg-red-50 dark:hover:bg-red-950/20 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 flex items-center justify-center transition-all duration-150 border border-transparent hover:border-red-100 dark:hover:border-red-950/30"
+            title="Đăng xuất"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Đăng xuất
           </button>
-        </>
+        </div>
       )}
     </>
   );

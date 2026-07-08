@@ -5,7 +5,6 @@ import MotionWrapper from "@/components/MotionWrapper";
 import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";
-import CICDPipelineSection from "@/components/home/CICDPipelineSection";
 import AboutSection from "@/components/home/AboutSection";
 import ViewAllLink from "@/components/ui/ViewAllLink";
 import { useFeaturedCourses } from "@/hooks/useCourses";
@@ -167,6 +166,9 @@ export default function Home() {
         </div>
       </main>
 
+      {/* About JavaBuilder Section */}
+      <AboutSection />
+
       {/* Course Cards Section */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
@@ -282,7 +284,7 @@ export default function Home() {
             {isLoadingBlogs && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-850 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-855 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
                     <div className="aspect-video bg-muted rounded-xl w-full" />
                     <div className="h-5 bg-muted rounded w-2/3" />
                     <div className="space-y-2">
@@ -301,7 +303,7 @@ export default function Home() {
             {/* Error State */}
             {blogsError && !isLoadingBlogs && (
               <div className="col-span-full text-center py-12">
-                <div className="text-red-600 mb-4">
+                <div className="text-red-650 mb-4">
                   <svg
                     className="w-12 h-12 mx-auto"
                     fill="none"
@@ -367,9 +369,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CI/CD Pipeline Section */}
-      <CICDPipelineSection />
-
       {/* Featured Documents Section */}
       <section className="relative overflow-hidden py-16 bg-gradient-to-b from-slate-50 via-white to-blue-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <div className="absolute inset-0 pointer-events-none">
@@ -416,7 +415,7 @@ export default function Home() {
 
             {documentsError && !isLoadingDocuments && (
               <div className="col-span-full text-center py-12">
-                <div className="text-red-600 mb-4">
+                <div className="text-red-650 mb-4">
                   <svg
                     className="w-12 h-12 mx-auto"
                     fill="none"
@@ -456,9 +455,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      {/* About JavaBuilder Section */}
-      <AboutSection />
     </>
   );
 }

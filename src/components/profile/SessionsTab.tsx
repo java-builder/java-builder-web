@@ -9,6 +9,7 @@ import {
   MapPin,
   Smartphone,
   Tablet,
+  MonitorSmartphone,
   type LucideIcon,
 } from "lucide-react";
 import { UserSessionDetailResponse } from "@/types/userSession";
@@ -114,7 +115,7 @@ export default function SessionsTab() {
 
   return (
     <SectionCard
-      icon={Smartphone}
+      icon={MonitorSmartphone}
       title={t("profilePage.sessionsTab.sessionsTitle")}
       subtitle={t("profilePage.sessionsTab.sessionsSubtitle")}
       bodyClassName=""
@@ -131,7 +132,7 @@ export default function SessionsTab() {
       ) : sessions.length === 0 ? (
         <div className="px-5 py-12 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
-            <Smartphone className="h-6 w-6 text-gray-400" />
+            <MonitorSmartphone className="h-6 w-6 text-gray-400" />
           </div>
           <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
             {t("profilePage.sessionsTab.noSessions")}
