@@ -6,7 +6,7 @@ import { UpdateProfileRequest, UserDetailResponse, UserStatus } from "@/types/us
 import { userApi } from "@/services/user.service";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import { Loader2, X, ShieldAlert, Check } from "lucide-react";
+import { Loader2, ShieldAlert, Check } from "lucide-react";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -140,14 +140,6 @@ export default function EditUserModal({
                 Cập nhật thông tin người dùng
               </p>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground"
-            >
-              <X className="w-5 h-5" />
-            </Button>
           </div>
 
           {/* Form */}

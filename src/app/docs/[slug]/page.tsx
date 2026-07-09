@@ -8,6 +8,7 @@ import DocsSidebar from "@/components/docs/DocsSidebar";
 import DocsArticle from "@/components/docs/DocsArticle";
 import DocsTableOfContents from "@/components/docs/DocsTableOfContents";
 import CourseOverview from "@/components/docs/CourseOverview";
+import ReviewSection from "@/components/courses/ReviewSection";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
 import { formatDate } from "@/utils/formatters";
@@ -462,12 +463,29 @@ export default function DocsDetailPage() {
               </header>
 
               {course && (
-                <CourseOverview
-                  course={course}
-                  chapterLessons={chapterLessons}
-                  onLessonClick={handleLessonClick}
-                  selectedLessonId={selectedChapter}
-                />
+                <>
+                  <CourseOverview
+                    course={course}
+                    chapterLessons={chapterLessons}
+                    onLessonClick={handleLessonClick}
+                    selectedLessonId={selectedChapter}
+                  />
+                  
+                  <div className="mt-12 pt-10 border-t border-border space-y-6">
+                    <div className="space-y-1">
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                        Đánh giá khóa học
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        Ý kiến và đánh giá từ những học viên tham gia học tập
+                      </p>
+                    </div>
+                    <ReviewSection
+                      courseId={course.id}
+                      isEnrolled={course.isEnrolled ?? false}
+                    />
+                  </div>
+                </>
               )}
             </div>
           ) : isLoadingLesson ? (

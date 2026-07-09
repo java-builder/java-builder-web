@@ -11,6 +11,7 @@ import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useI18n } from "@/contexts/I18nContext";
 import Logo from "@/components/header-components/Logo";
+import SidebarUserProfile from "@/components/sidebar/SidebarUserProfile";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -505,6 +506,21 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("admin-sidebar-collapsed") === "true";
+    }
+    return false;
+  });
+
+  const toggleSidebar = () => {
+    setIsCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("admin-sidebar-collapsed", String(next));
+      return next;
+    });
+  };
+
   const { data: currentUser } = useCurrentUser();
   const { t, isSwitching } = useI18n();
 
@@ -536,6 +552,177 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const handleLogout = async () => {
     await authApi.logout();
     router.push("/login");
+  };
+
+  const renderSidebarContent = (isCollapsedState: boolean, isDesktop: boolean) => {
+    return (
+      <div className="flex flex-col h-full">
+        {/* Logo & Toggle Header */}
+        <div className={`flex items-center p-4 border-b border-gray-200 dark:border-slate-700 ${isCollapsedState && isDesktop ? "lg:flex-col lg:gap-3 lg:justify-center" : "justify-between"}`}>
+          {isCollapsedState && isDesktop ? (
+            <Link href="/" className="hidden lg:flex items-center justify-center">
+              <div className="relative w-9 h-9">
+                <Image
+                  src="/logos/java-logo.png"
+                  alt="Java Builder"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
+              </div>
+            </Link>
+          ) : (
+            <Logo hideText={false} />
+          )}
+
+          <div className="flex items-center gap-1.5">
+            {isDesktop && (
+              <button
+                type="button"
+                onClick={toggleSidebar}
+                className="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-750 dark:hover:text-white transition-colors text-gray-600 dark:text-gray-400 cursor-pointer"
+                aria-label={isCollapsedState ? "Mở rộng sidebar" : "Thu gọn sidebar"}
+              >
+                {isCollapsedState ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                )}
+              </button>
+            )}
+
+            {!isDesktop && (
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="lg:hidden p-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Navigation - Scrollable */}
+        <nav className={`flex-1 py-4 space-y-3.5 overflow-y-auto ${isCollapsedState && isDesktop ? "px-1.5" : "px-2.5"}`}>
+          {navGroups.map((group, groupIdx) => {
+            const isOpen = (isCollapsedState && isDesktop) ? true : !!openGroups[group.titleKey];
+            const hasActiveChild = group.items.some((item) => {
+              if (item.href === "/admin") {
+                return pathname === "/admin";
+              }
+              return (
+                pathname === item.href ||
+                (item.href !== "/" &&
+                  pathname.startsWith(`${item.href}/`) &&
+                  !navGroups.some((g) =>
+                    g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
+                  ))
+              );
+            });
+
+            return (
+              <div key={group.titleKey} className="space-y-1">
+                {isCollapsedState && isDesktop && groupIdx > 0 && (
+                  <div className="border-t border-gray-100 dark:border-slate-700/60 my-3.5 mx-2" />
+                )}
+
+                {/* Group Header Button */}
+                {!(isCollapsedState && isDesktop) && (
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.titleKey)}
+                    className={`group w-full flex items-center justify-between px-2 py-1.5 text-[10.5px] font-bold text-left uppercase tracking-wider transition-all duration-200 select-none rounded-lg ${hasActiveChild
+                      ? "bg-slate-50 dark:bg-slate-800/40 text-blue-600 dark:text-blue-400"
+                      : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/20"
+                      }`}
+                  >
+                    <div className="flex items-center space-x-2 min-w-0">
+                      <div className={`w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center transition-all duration-200 ${hasActiveChild
+                        ? `${group.borderColor.replace('border-', 'bg-')}/10 dark:${group.borderColor.replace('border-', 'bg-')}/20`
+                        : "bg-gray-100/70 dark:bg-slate-700/40 group-hover:bg-gray-200/80 dark:group-hover:bg-slate-700/60"
+                        }`}>
+                        {group.icon}
+                      </div>
+                      <span className="truncate pr-1">{t(group.titleKey as Parameters<typeof t>[0])}</span>
+                    </div>
+                    <svg
+                      className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
+                        }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Group Items */}
+                {isOpen && (
+                  <div className={(isCollapsedState && isDesktop)
+                    ? "space-y-1.5 flex flex-col items-center"
+                    : `space-y-1 pl-2.5 ml-3 mt-1 border-l border-dashed ${group.borderColor} dark:border-opacity-35 border-opacity-25`
+                  }>
+                    {group.items.map((item) => {
+                      const theme = colorThemes[item.colorKey] || colorThemes.blue;
+                      const isActive =
+                        item.href === "/admin"
+                          ? pathname === "/admin"
+                          : pathname === item.href ||
+                          (item.href !== "/" &&
+                            pathname.startsWith(`${item.href}/`) &&
+                            !navGroups.some((g) =>
+                              g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
+                            ));
+
+                      const label = t(item.nameKey as Parameters<typeof t>[0]);
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          title={(isCollapsedState && isDesktop) ? label : undefined}
+                          className={`group flex items-center transition-all duration-200 ${(isCollapsedState && isDesktop)
+                            ? `justify-center w-12 h-12 rounded-xl ${isActive ? `${theme.itemActiveBg} border-r-0` : `text-gray-600 dark:text-gray-300 ${theme.itemHoverBg} ${theme.itemHoverText}`}`
+                            : `px-2 py-1.5 text-[13px] font-medium rounded-md ${isActive ? `${theme.itemActiveBg} ${theme.itemActiveText}` : `text-gray-600 dark:text-gray-300 ${theme.itemHoverBg} ${theme.itemHoverText}`}`
+                            }`}
+                        >
+                          <span
+                            className={`flex-shrink-0 transition-all duration-200 ${(isCollapsedState && isDesktop) ? "" : "mr-2"} ${isActive
+                              ? theme.iconActive
+                              : `${theme.iconActive} opacity-40 group-hover:opacity-100`
+                              }`}
+                          >
+                            <div className="w-4 h-4 flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4">
+                              {item.icon}
+                            </div>
+                          </span>
+                          {!(isCollapsedState && isDesktop) && <span className="truncate flex-1">{label}</span>}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* User profile - Fixed at bottom */}
+        <div className={`border-t border-gray-200 dark:border-slate-700 flex-shrink-0 transition-all duration-300 ${(isCollapsedState && isDesktop) ? "p-3 flex justify-center" : "p-4"}`}>
+          <SidebarUserProfile
+            currentUser={currentUser || undefined}
+            isCollapsed={isCollapsedState && isDesktop}
+            onLogout={handleLogout}
+          />
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -623,30 +810,32 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2) !important;
             }
           `}</style>
-        <div className="h-screen flex bg-gray-50 dark:bg-slate-900 overflow-hidden" suppressHydrationWarning>
+        <div className="h-screen bg-gray-50 dark:bg-slate-900 overflow-hidden relative" suppressHydrationWarning>
           {/* Fullscreen skeleton overlay khi đổi locale */}
           {isSwitching && (
             <div className="fixed inset-0 z-[60] bg-gray-50 dark:bg-slate-900 flex">
               {/* Sidebar skeleton */}
-              <div className="hidden lg:flex w-64 flex-shrink-0 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex-col">
-                <div className="h-16 px-6 border-b border-gray-100 dark:border-slate-700 flex items-center">
-                  <div className="h-6 w-28 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+              <div className={`hidden lg:flex flex-shrink-0 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex-col transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}>
+                <div className={`h-16 border-b border-gray-100 dark:border-slate-700 flex items-center ${isCollapsed ? "px-4 justify-center" : "px-6"}`}>
+                  <div className={`h-6 bg-gray-200 dark:bg-slate-700 rounded animate-pulse ${isCollapsed ? "w-8" : "w-28"}`} />
                 </div>
-                <div className="flex-1 px-4 py-6 space-y-2">
+                <div className={`flex-1 space-y-2 py-6 ${isCollapsed ? "px-2" : "px-4"}`}>
                   {Array.from({ length: 12 }).map((_, idx) => (
-                    <div key={idx} className="flex items-center px-4 py-3 rounded-lg">
-                      <div className="mr-3 w-5 h-5 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
-                      <div className="h-4 flex-1 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                    <div key={idx} className={`flex items-center rounded-lg ${isCollapsed ? "justify-center py-2" : "px-4 py-3"}`}>
+                      <div className={`w-5 h-5 bg-gray-200 dark:bg-slate-700 rounded animate-pulse ${isCollapsed ? "" : "mr-3"}`} />
+                      {!isCollapsed && <div className="h-4 flex-1 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />}
                     </div>
                   ))}
                 </div>
-                <div className="p-4 border-t border-gray-200 dark:border-slate-700">
+                <div className={`border-t border-gray-200 dark:border-slate-700 ${isCollapsed ? "p-3 flex justify-center" : "p-4"}`}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-3 w-20 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
-                      <div className="h-3 w-32 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
-                    </div>
+                    <div className="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse flex-shrink-0" />
+                    {!isCollapsed && (
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 w-20 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                        <div className="h-3 w-32 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -708,181 +897,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           )}
 
-          {/* Sidebar - Fixed */}
+          {/* Mobile Sidebar - Drawer style */}
           <div
-            className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 shadow-xl transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}
+            className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 shadow-xl transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:hidden flex flex-col`}
           >
-            <div className="flex flex-col h-full">
-              {/* Logo */}
-              <div className="relative flex items-center justify-between h-16 px-6 bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 flex-shrink-0">
-                <Logo />
-
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="lg:hidden p-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Navigation - Scrollable */}
-              <nav className="flex-1 px-2.5 py-4 space-y-3.5 overflow-y-auto">
-                {navGroups.map((group) => {
-                  const isOpen = !!openGroups[group.titleKey];
-                  const hasActiveChild = group.items.some((item) => {
-                    if (item.href === "/admin") {
-                      return pathname === "/admin";
-                    }
-                    return (
-                      pathname === item.href ||
-                      (item.href !== "/" &&
-                        pathname.startsWith(`${item.href}/`) &&
-                        !navGroups.some((g) =>
-                          g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
-                        ))
-                    );
-                  });
-
-                  return (
-                    <div key={group.titleKey} className="space-y-1">
-                      {/* Group Header Button */}
-                      <button
-                        type="button"
-                        onClick={() => toggleGroup(group.titleKey)}
-                        className={`group w-full flex items-center justify-between px-2 py-1.5 text-[10.5px] font-bold text-left uppercase tracking-wider transition-all duration-200 select-none rounded-lg ${hasActiveChild
-                          ? "bg-slate-50 dark:bg-slate-800/40 text-blue-600 dark:text-blue-400"
-                          : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/20"
-                          }`}
-                      >
-                        <div className="flex items-center space-x-2 min-w-0">
-                          <div className={`w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center transition-all duration-200 ${hasActiveChild
-                            ? `${group.borderColor.replace('border-', 'bg-')}/10 dark:${group.borderColor.replace('border-', 'bg-')}/20`
-                            : "bg-gray-100/70 dark:bg-slate-700/40 group-hover:bg-gray-200/80 dark:group-hover:bg-slate-700/60"
-                            }`}>
-                            {group.icon}
-                          </div>
-                          <span className="truncate pr-1">{t(group.titleKey as Parameters<typeof t>[0])}</span>
-                        </div>
-                        <svg
-                          className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
-                            }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-
-                      {/* Group Items */}
-                      {isOpen && (
-                        <div className={`space-y-1 pl-2.5 ml-3 mt-1 border-l border-dashed ${group.borderColor} dark:border-opacity-35 border-opacity-25`}>
-                          {group.items.map((item) => {
-                            const theme = colorThemes[item.colorKey] || colorThemes.blue;
-                            const isActive =
-                              item.href === "/admin"
-                                ? pathname === "/admin"
-                                : pathname === item.href ||
-                                (item.href !== "/" &&
-                                  pathname.startsWith(`${item.href}/`) &&
-                                  !navGroups.some((g) =>
-                                    g.items.some((i) => i.href !== item.href && pathname.startsWith(i.href))
-                                  ));
-
-                            const label = t(item.nameKey as Parameters<typeof t>[0]);
-                            return (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`group flex items-center px-2 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200 ${isActive
-                                  ? `${theme.itemActiveBg} ${theme.itemActiveText}`
-                                  : `text-gray-600 dark:text-gray-300 ${theme.itemHoverBg} ${theme.itemHoverText}`
-                                  }`}
-                              >
-                                <span
-                                  className={`mr-2 flex-shrink-0 transition-all duration-200 ${isActive
-                                    ? theme.iconActive
-                                    : `${theme.iconActive} opacity-40 group-hover:opacity-100`
-                                    }`}
-                                >
-                                  <div className="w-4 h-4 flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4">
-                                    {item.icon}
-                                  </div>
-                                </span>
-                                <span className="truncate flex-1">{label}</span>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </nav>
-              {/* User profile - Fixed at bottom */}
-              <div className="p-4 border-t border-gray-200 dark:border-slate-700 flex-shrink-0">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-accent to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
-                    {currentUser?.avatar ? (
-                      <Image
-                        src={currentUser.avatar}
-                        alt={currentUser.username || "Avatar"}
-                        width={40}
-                        height={40}
-                        className="w-full h-full object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <span className="text-white font-medium">
-                        {currentUser?.username?.charAt(0)?.toUpperCase() || "A"}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {currentUser?.username || t("admin.common.adminUser")}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-300 truncate">
-                      {currentUser?.email || "admin@JavaBuilder.com"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="text-gray-400 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                    title={t("admin.common.logoutTooltip")}
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
+            {renderSidebarContent(false, false)}
           </div>
+
+          {/* Desktop Sidebar - Fixed height & transition width */}
+          <aside
+            className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 transition-all duration-300 z-40 ${isCollapsed ? "w-20" : "w-64"}`}
+          >
+            {renderSidebarContent(isCollapsed, true)}
+          </aside>
+
           {/* Main content area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className={`h-full flex flex-col overflow-hidden transition-all duration-300 ${isCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>
             {/* Top header - Fixed */}
             <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
               <div className="flex items-center justify-between h-16 px-6">

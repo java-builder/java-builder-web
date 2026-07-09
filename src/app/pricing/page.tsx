@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { Check, X } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
@@ -79,9 +80,21 @@ export default function PricingPage() {
       const isMonthly = plan.durationDays <= 31;
       const isYearly = plan.durationDays >= 365;
 
-      const features = plan.features
+      const baseFeatures = plan.features
         ? plan.features.split("|").map((f: string) => ({ text: f.trim(), included: true }))
         : [];
+
+      const isPremium = plan.name.toLowerCase().includes("premium") || plan.id.toLowerCase().includes("premium");
+
+      const features = isPremium
+        ? [
+            ...baseFeatures,
+            { 
+              text: locale === "vi" ? "Ôn tập toàn bộ câu hỏi phỏng vấn" : "Practice all interview questions", 
+              included: true 
+            }
+          ]
+        : baseFeatures;
 
       return {
         id: plan.id,
@@ -171,17 +184,17 @@ export default function PricingPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-4">
+      <main className="min-h-screen bg-background text-foreground pt-4">
         {/* Hero Section */}
         <section className="pt-8 pb-8 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-sm font-medium rounded-full mb-3">
+          <div className="max-w-4xl mx-auto text-center space-y-3">
+            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-sm font-semibold rounded-full border border-accent/20">
               {t("pricingPage.heroBadge")}
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
               {t("pricingPage.heroTitle")}
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               {t("pricingPage.heroDesc")}
             </p>
           </div>
@@ -193,14 +206,14 @@ export default function PricingPage() {
             {isLoading ? (
               <div className="grid md:grid-cols-3 gap-6 lg:gap-8 animate-pulse">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 lg:p-8 space-y-6">
+                  <div key={i} className="bg-card border border-border rounded-2xl p-6 lg:p-8 space-y-6">
                     <div className="space-y-2">
                       <div className="h-6 bg-muted rounded w-1/3" />
                       <div className="h-4 bg-muted rounded w-2/3" />
                     </div>
                     <div className="h-10 bg-muted rounded w-1/2" />
-                    <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-slate-700">
-                      {[1, 2, 3, 4].map((j) => (
+                    <div className="space-y-3 pt-4 border-t border-border">
+                      {[1, 2, 3, 4, 5].map((j) => (
                         <div key={j} className="flex items-center gap-3">
                           <div className="w-4 h-4 rounded-full bg-muted" />
                           <div className="h-4 bg-muted rounded flex-1" />
@@ -212,79 +225,92 @@ export default function PricingPage() {
                 ))}
               </div>
             ) : (
-              <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+              <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 lg:p-8 transition-all duration-300 ${plan.popular
-                      ? "ring-2 ring-accent shadow-xl scale-[1.02]"
-                      : "border border-gray-200 dark:border-gray-700 hover:border-accent/50 dark:hover:border-accent/50 hover:shadow-lg"
+                    className={`relative bg-card text-card-foreground border rounded-2xl p-6 lg:p-8 flex flex-col justify-between transition-all duration-300 ${plan.popular
+                        ? "border-accent ring-1 ring-accent/20 shadow-xl scale-[1.02] md:scale-105 z-10"
+                        : "border-border hover:border-accent/40 hover:shadow-md"
                       }`}
                   >
                     {plan.popular && (
                       <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <span className="bg-accent text-white text-sm font-medium px-4 py-1 rounded-full shadow-lg">
+                        <span className="bg-accent text-white text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full shadow-lg">
                           {t("pricingPage.popularBadge")}
                         </span>
                       </div>
                     )}
 
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{plan.description}</p>
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground min-h-[40px] flex items-center justify-center">{plan.description}</p>
 
-                      <div className="flex items-baseline justify-center gap-1">
-                        {plan.originalPrice && (
-                          <span className="text-lg text-gray-400 dark:text-gray-500 line-through mr-2">
-                            {formatPrice(plan.originalPrice)}đ
+                        <div className="flex items-baseline justify-center gap-1 mt-4">
+                          {plan.originalPrice && (
+                            <span className="text-sm text-muted-foreground line-through mr-2">
+                              {formatPrice(plan.originalPrice)}đ
+                            </span>
+                          )}
+                          <span className="text-3xl sm:text-4xl font-extrabold text-foreground">
+                            {plan.price === 0 ? "0" : formatPrice(plan.price)}
                           </span>
+                          <span className="text-sm text-muted-foreground">đ{plan.period}</span>
+                        </div>
+
+                        {plan.monthlyEquivalent && (
+                          <p className="text-xs text-green-600 dark:text-green-400 font-semibold mt-1">
+                            {plan.monthlyEquivalent}
+                          </p>
                         )}
-                        <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                          {plan.price === 0 ? "0" : formatPrice(plan.price)}
-                        </span>
-                        <span className="text-gray-500 dark:text-gray-400">đ{plan.period}</span>
                       </div>
 
-                      {plan.monthlyEquivalent && (
-                        <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-2">
-                          {plan.monthlyEquivalent}
-                        </p>
-                      )}
+                      <div className="border-t border-border my-2" />
+
+                      <ul className="space-y-3.5">
+                        {plan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2.5">
+                            {feature.included ? (
+                              <Check className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                            ) : (
+                              <X className="w-5 h-5 text-muted-foreground/30 shrink-0 mt-0.5" />
+                            )}
+                            <span className={`text-sm ${feature.included
+                                ? "text-foreground/90 font-medium"
+                                : "text-muted-foreground/50 line-through"
+                              }`}>
+                              {feature.text}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
 
-                    <ul className="space-y-3 mb-8">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          <span className="text-gray-700 dark:text-gray-300">{feature.text}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <button
-                      onClick={() => handleSubscribe(plan)}
-                      disabled={plan.disabled || loadingPlan === plan.id}
-                      className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 ${plan.disabled
-                        ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                        : plan.popular
-                          ? "bg-accent hover:bg-accent-600 text-white shadow-lg shadow-accent/25"
-                          : "bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white"
-                        }`}
-                    >
-                      {loadingPlan === plan.id ? (
-                        <>
-                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                          {t("pricingPage.processing")}
-                        </>
-                      ) : (
-                        plan.buttonText
-                      )}
-                    </button>
+                    <div className="mt-8">
+                      <button
+                        onClick={() => handleSubscribe(plan)}
+                        disabled={plan.disabled || loadingPlan === plan.id}
+                        className={`w-full py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${plan.disabled
+                            ? "bg-muted text-muted-foreground cursor-not-allowed"
+                            : plan.popular
+                              ? "bg-accent hover:bg-accent-600 text-white shadow-lg shadow-accent/20 hover:scale-[1.01]"
+                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground hover:scale-[1.01]"
+                          }`}
+                      >
+                        {loadingPlan === plan.id ? (
+                          <>
+                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            {t("pricingPage.processing")}
+                          </>
+                        ) : (
+                          plan.buttonText
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

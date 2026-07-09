@@ -95,11 +95,27 @@ export default function AboutSection() {
           </h2>
           <p className="mt-6 text-base leading-relaxed text-gray-650 dark:text-slate-350 md:text-lg">
             {t("home.about.descPart1")}
-            <span className="font-semibold text-gray-900 dark:text-white">
+            <span className="font-semibold text-gray-905 dark:text-white">
+              {t("home.about.descRoadmap")}
+            </span>
+            {t("home.about.descSeparator1")}
+            <span className="font-semibold text-gray-905 dark:text-white">
+              {t("home.about.descPractice")}
+            </span>
+            {t("home.about.descSeparator2")}
+            <span className="font-semibold text-gray-905 dark:text-white">
+              {t("home.about.descCommunity")}
+            </span>
+            {t("home.about.descSeparator3")}
+            <span className="font-semibold text-gray-905 dark:text-white">
+              {t("home.about.descInterview")}
+            </span>
+            {t("home.about.descPart1End")}
+            <span className="font-semibold text-gray-905 dark:text-white">
               {t("home.about.descBeginner")}
             </span>
             {t("home.about.descPart2")}
-            <span className="font-semibold text-gray-900 dark:text-white">
+            <span className="font-semibold text-gray-905 dark:text-white">
               {t("home.about.descPro")}
             </span>
             {t("home.about.descPart3")}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -184,24 +185,21 @@ export default function SecurityTab({
                         disabled={isLoading}
                         role="switch"
                         aria-checked={twoFactorEnabled}
-                        className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${
-                          twoFactorEnabled
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 ${twoFactorEnabled
                             ? "bg-accent"
                             : "bg-gray-300 dark:bg-slate-600"
-                        }`}
+                          }`}
                       >
                         <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${
-                            twoFactorEnabled ? "translate-x-6" : "translate-x-1"
-                          }`}
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${twoFactorEnabled ? "translate-x-6" : "translate-x-1"
+                            }`}
                         />
                       </button>
                       <span
-                        className={`text-xs font-semibold ${
-                          twoFactorEnabled
+                        className={`text-xs font-semibold ${twoFactorEnabled
                             ? "text-accent"
                             : "text-gray-500 dark:text-gray-400"
-                        }`}
+                          }`}
                       >
                         {twoFactorEnabled
                           ? t("profilePage.securityTab.enabled")
@@ -270,46 +268,50 @@ export default function SecurityTab({
           )}
 
           {!isInitialLoading && !twoFactorEnabled && (
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
-              <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                  <Info className="h-4 w-4" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h5 className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {t("profilePage.securityTab.twoFactorGuide")}
-                  </h5>
-                  <p className="mt-1 text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
-                    {t("profilePage.securityTab.downloadAuthenticatorDesc")}
-                  </p>
-                  <div className="mt-2.5 flex items-center gap-3 text-xs font-medium">
-                    <a
-                      href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-accent transition hover:underline"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 512 512" fill="none" aria-hidden>
-                        <path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1z" fill="#3BCCFF" />
-                        <path d="m104.6 13 220.7 221.3-220.7 220.7c-3.4-1.3-6.4-3.7-8.4-7C93.7 444 92 439.6 92 435V31c0-4.6 1.7-9 4.2-12.3 2-3.3 5-5.7 8.4-7Z" fill="#22DA6E" />
-                        <path d="m385.4 174.2-60.1 60.1-60.1 60.1L96.2 461.3c2.2 2.5 5 4.5 8.3 5.7L385.4 174.2Z" fill="#FF3F4D" />
-                        <path d="m467.4 224-82.1-50 60.2 60.2-60.1 60.1 82-49.7c25.3-15.4 25.3-55.2 0-70.6Z" fill="#FFD109" />
-                      </svg>
-                      Google Play
-                    </a>
-                    <span className="text-gray-300 dark:text-slate-600">|</span>
-                    <a
-                      href="https://apps.apple.com/us/app/google-authenticator/id388497605"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-accent transition hover:underline"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor" aria-hidden>
-                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
-                      </svg>
-                      App Store
-                    </a>
+            <div className="rounded-xl border border-border bg-muted/20 p-5 mt-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div className="flex items-start gap-3.5">
+                  <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/10">
+                    <Info className="h-5 w-5" />
+                  </span>
+                  <div className="space-y-1">
+                    <h5 className="text-sm font-semibold text-foreground">
+                      {t("profilePage.securityTab.twoFactorGuide")}
+                    </h5>
+                    <p className="text-xs text-muted-foreground leading-relaxed max-w-xl">
+                      {t("profilePage.securityTab.downloadAuthenticatorDesc")}
+                    </p>
                   </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3 shrink-0">
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-4 py-2 bg-background hover:bg-muted text-foreground rounded-lg border border-border text-sm font-semibold shadow-xs transition-colors duration-150 group"
+                  >
+                    <Image
+                      src="/logos/google-play-store-logo.png"
+                      alt="Google Play"
+                      width={32}
+                      height={32}
+                      className="shrink-0 object-contain transition-transform duration-200 group-hover:scale-105"
+                      unoptimized
+                    />
+                    <span>Google Play</span>
+                  </a>
+                  <a
+                    href="https://apps.apple.com/us/app/google-authenticator/id388497605"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-4 py-2 bg-background hover:bg-muted text-foreground rounded-lg border border-border text-sm font-semibold shadow-xs transition-colors duration-150 group"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 384 512" fill="currentColor" aria-hidden className="transition-transform duration-200 group-hover:scale-105 text-foreground/90 shrink-0">
+                      <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
+                    </svg>
+                    <span>App Store</span>
+                  </a>
                 </div>
               </div>
             </div>

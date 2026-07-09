@@ -4,15 +4,15 @@ import { CourseDetailResponse, CourseLevel, CourseFormat } from "@/types/course"
 import { LevelBadge } from "./LevelBadge";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { formatPrice } from "@/utils/formatters";
-import { 
-  Clock, 
-  Coins, 
-  Calendar, 
-  MoreHorizontal, 
-  ExternalLink, 
-  Users, 
-  UserPlus, 
-  Edit, 
+import {
+  Clock,
+  Coins,
+  Calendar,
+  MoreHorizontal,
+  ExternalLink,
+  Users,
+  UserPlus,
+  Edit,
   Trash2,
   BookOpen
 } from "lucide-react";
@@ -37,9 +37,8 @@ export const CourseCard = ({
   return (
     <div className="bg-card rounded-xl border border-border hover:shadow-md transition-all duration-200">
       <div className="p-6">
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          {/* Thumbnail */}
-          <div className="relative w-full sm:w-32 h-40 sm:h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0 border border-border">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+          <div className="relative w-full sm:w-40 h-48 sm:h-24 rounded-lg overflow-hidden bg-muted flex-shrink-0 border border-border">
             {course.thumbnailUrl ? (
               <Image
                 src={course.thumbnailUrl}
@@ -55,7 +54,8 @@ export const CourseCard = ({
             )}
           </div>
 
-          {/* Content */}
+          <div className="hidden sm:block w-px h-20 bg-gray-200 dark:bg-slate-700/80 flex-shrink-0 self-center mx-2" />
+
           <div className="flex-1 min-w-0 w-full">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
@@ -65,8 +65,7 @@ export const CourseCard = ({
                 <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                   {course.description}
                 </p>
-                
-                {/* Meta Info */}
+
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1.5">
                     <LevelBadge level={course.level || CourseLevel.BEGINNER} />
@@ -102,7 +101,6 @@ export const CourseCard = ({
                 </div>
               </div>
 
-              {/* Actions Dropdown */}
               <div className="relative flex-shrink-0">
                 <button
                   onClick={(e) => {
@@ -115,7 +113,6 @@ export const CourseCard = ({
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
 
-                {/* Dropdown Menu */}
                 {openMenuId === course.id && (
                   <>
                     <div

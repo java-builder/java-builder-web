@@ -43,20 +43,18 @@ export default function MyContributionsFilter({
               key={id}
               type="button"
               onClick={() => onChange(id)}
-              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                isActive
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${isActive
                   ? "bg-accent text-white shadow-sm"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600"
-              }`}
+                }`}
             >
               <span>{labels[id]}</span>
               {typeof count === "number" && (
                 <span
-                  className={`inline-flex items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${
-                    isActive
+                  className={`inline-flex items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${isActive
                       ? "bg-white/20 text-white"
                       : "bg-white text-gray-600 dark:bg-slate-800 dark:text-gray-300"
-                  }`}
+                    }`}
                 >
                   {count}
                 </span>

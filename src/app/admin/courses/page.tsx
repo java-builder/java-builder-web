@@ -115,7 +115,7 @@ export default function CoursesPage() {
       if (typeof window !== "undefined" && searchParams.get("create") === "1") {
         router.replace(window.location.pathname);
       }
-    } catch {}
+    } catch { }
   };
 
   const handleCreateSuccess = () => {
@@ -175,11 +175,10 @@ export default function CoursesPage() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
-                isActive
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${isActive
                   ? "bg-background text-foreground shadow-sm ring-1 ring-black/5"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
+                }`}
             >
               {tab === CourseFormat.VIDEO && <Video className="w-4 h-4" />}
               {tab === CourseFormat.TEXT && <FileText className="w-4 h-4" />}
