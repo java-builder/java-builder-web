@@ -11,11 +11,11 @@ export interface CloudflareAccessRule {
 export interface CloudflareResponse<T> {
   success: boolean;
   result: T;
-  resultInfo?: {
+  result_info?: {
     count: number;
     page: number;
-    perPage: number;
-    totalCount: number;
+    per_page: number;
+    total_count: number;
   };
 }
 
@@ -36,3 +36,13 @@ export interface UpdateAccessRuleRequest {
     value: string;
   };
 }
+
+export interface GetAccessRulesRequest {
+  page?: number;
+  perPage?: number;
+  target?: string;
+  value?: string;
+  mode?: string;
+  notes?: string;
+}
+

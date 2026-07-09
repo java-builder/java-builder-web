@@ -40,13 +40,19 @@ export default function AdminIpAccessRulesPage() {
     totalPages,
     getModeBadge,
     getValuePlaceholder,
+    blockedCount,
   } = useIpAccessRules();
 
   return (
     <div className="p-6 min-h-screen bg-gray-50 dark:bg-slate-900 text-foreground transition-colors duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Quản lý chặn IP & Access Rules</h1>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2.5">
+            Quản lý chặn IP & Access Rules
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-900/50">
+              Đang chặn {blockedCount} IP
+            </span>
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Cấu hình chặn, cấp phép hoặc thử thách truy cập từ IP, dải IP, Quốc gia sang website thông qua Cloudflare
           </p>
@@ -228,11 +234,10 @@ export default function AdminIpAccessRulesPage() {
                     <button
                       key={pageNum}
                       onClick={() => setPage(pageNum)}
-                      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-semibold border transition-all ${
-                        page === pageNum
+                      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-semibold border transition-all ${page === pageNum
                           ? "bg-red-600 dark:bg-red-700 border-red-600 text-white shadow-xs"
                           : "bg-white dark:bg-slate-700 border-gray-200 dark:border-slate-600 hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>

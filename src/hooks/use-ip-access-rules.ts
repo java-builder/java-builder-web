@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { cloudflareService } from "@/services/cloudflare.service";
-import { CloudflareAccessRule } from "@/types/cloudflare";
+import { CloudflareAccessRule, GetAccessRulesRequest } from "@/types/cloudflare";
 import toast from "react-hot-toast";
 
 export function useIpAccessRules() {
@@ -13,9 +13,11 @@ export function useIpAccessRules() {
   const [perPage, setPerPage] = useState(20);
   const [totalCount, setTotalCount] = useState(0);
 
+  const [blockedCount, setBlockedCount] = useState(0);
+
   const [filterTarget, setFilterTarget] = useState("");
   const [filterValue, setFilterValue] = useState("");
-  const [filterMode, setFilterMode] = useState("");
+  const [filterMode, setFilterMode] = useState("block");
   const [filterNotes, setFilterNotes] = useState("");
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -23,26 +25,44 @@ export function useIpAccessRules() {
   const [editingRule, setEditingRule] = useState<CloudflareAccessRule | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const fetchBlockedCount = useCallback(async () => {
+    try {
+      const res = await cloudflareService.getAll({ page: 1, perPage: 1, mode: "block" });
+      if (res.data?.success && res.data.result_info) {
+        setBlockedCount(res.data.result_info.total_count);
+      }
+    } catch (e) {
+      console.error("Lỗi khi tải số lượng IP bị chặn:", e);
+    }
+  }, []);
+
   const fetchRules = useCallback(async () => {
     try {
       setIsLoading(true);
-      const params: Record<string, string | number> = {
+      const params: GetAccessRulesRequest = {
         page,
-        per_page: perPage,
+        perPage,
+        target: filterTarget || undefined,
+        value: filterValue.trim() || undefined,
+        mode: filterMode || undefined,
+        notes: filterNotes.trim() || undefined,
       };
-
-      if (filterTarget) params["configuration.target"] = filterTarget;
-      if (filterValue.trim()) params["configuration.value"] = filterValue.trim();
-      if (filterMode) params["mode"] = filterMode;
-      if (filterNotes.trim()) params["notes"] = filterNotes.trim();
 
       const res = await cloudflareService.getAll(params);
       if (res.data?.success && res.data.result) {
         setRules(res.data.result);
-        if (res.data.resultInfo) {
-          setTotalCount(res.data.resultInfo.totalCount);
+        if (res.data.result_info) {
+          const total = res.data.result_info.total_count;
+          setTotalCount(total);
+          if (filterMode === "block") {
+            setBlockedCount(total);
+          }
         } else {
-          setTotalCount(res.data.result.length);
+          const total = res.data.result.length;
+          setTotalCount(total);
+          if (filterMode === "block") {
+            setBlockedCount(total);
+          }
         }
       } else {
         toast.error("Không thể tải danh sách rule từ Cloudflare");
@@ -61,6 +81,13 @@ export function useIpAccessRules() {
     }, 400);
     return () => clearTimeout(timer);
   }, [fetchRules]);
+
+  const refreshRulesAndStats = useCallback(() => {
+    fetchRules();
+    if (filterMode !== "block") {
+      fetchBlockedCount();
+    }
+  }, [fetchRules, fetchBlockedCount, filterMode]);
 
   const handleFilterChange = (setter: (val: string) => void, val: string) => {
     setter(val);
@@ -86,7 +113,7 @@ export function useIpAccessRules() {
       if (res.data?.success) {
         toast.success("Tạo rule thành công!");
         setShowCreateModal(false);
-        fetchRules();
+        refreshRulesAndStats();
       } else {
         toast.error("Tạo rule thất bại trên Cloudflare");
       }
@@ -120,7 +147,7 @@ export function useIpAccessRules() {
         toast.success("Cập nhật rule thành công!");
         setShowEditModal(false);
         setEditingRule(null);
-        fetchRules();
+        refreshRulesAndStats();
       } else {
         toast.error("Cập nhật rule thất bại");
       }
@@ -140,6 +167,7 @@ export function useIpAccessRules() {
         toast.success("Bỏ chặn thành công!");
         setRules((prev) => prev.filter((r) => r.id !== rule.id));
         setTotalCount((prev) => Math.max(0, prev - 1));
+        refreshRulesAndStats();
         return true;
       } else {
         toast.error("Xóa rule thất bại");
@@ -219,5 +247,6 @@ export function useIpAccessRules() {
     totalPages,
     getModeBadge,
     getValuePlaceholder,
+    blockedCount,
   };
 }

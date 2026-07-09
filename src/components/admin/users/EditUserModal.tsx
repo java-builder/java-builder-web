@@ -198,16 +198,9 @@ export default function EditUserModal({
                   <input
                     type="text"
                     value={formData.username || ""}
-                    onChange={(e) => handleInputChange("username", e.target.value)}
-                    className={`flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
-                      errors.username
-                        ? "border-destructive focus-visible:ring-destructive/30"
-                        : "border-input"
-                    }`}
+                    disabled
+                    className="flex h-10 w-full rounded-md border border-input bg-muted/60 px-3 py-2 text-sm text-muted-foreground shadow-sm cursor-not-allowed"
                   />
-                  {errors.username && (
-                    <p className="text-xs text-destructive">{errors.username}</p>
-                  )}
                 </div>
 
                 {/* Email */}
@@ -232,45 +225,55 @@ export default function EditUserModal({
                 <input
                   type="text"
                   value={formData.university || ""}
-                  onChange={(e) => handleInputChange("university", e.target.value)}
-                  placeholder="Nhập tên trường đại học..."
-                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                />
-              </div>
-
-              {/* User Status */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">
-                  Trạng thái tài khoản <span className="text-destructive">*</span>
-                </label>
-                <select
-                  value={formData.userStatus || UserStatus.ACTIVE}
-                  onChange={(e) =>
-                    handleInputChange("userStatus", e.target.value as UserStatus)
-                  }
-                  className="flex h-10 w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  <option value={UserStatus.ACTIVE}>Hoạt động</option>
-                  <option value={UserStatus.INACTIVE}>Không hoạt động</option>
-                </select>
-              </div>
-
-              {/* Two-Factor Authentication */}
-              <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-muted/20">
-                <input
-                  type="checkbox"
-                  id="mftEnable"
                   disabled
-                  checked={formData.mftEnable || false}
-                  className="h-4 w-4 rounded border-input text-accent focus:ring-accent dark:bg-slate-800 disabled:opacity-50 mt-1 cursor-not-allowed"
+                  placeholder="Chưa cập nhật thông tin trường đại học"
+                  className="flex h-10 w-full rounded-md border border-input bg-muted/60 px-3 py-2 text-sm text-muted-foreground shadow-sm cursor-not-allowed"
                 />
-                <div className="space-y-0.5">
-                  <label htmlFor="mftEnable" className="text-sm font-semibold text-foreground cursor-not-allowed">
-                    Xác thực hai yếu tố (2FA)
+              </div>
+
+              {/* Account Status and Two-Factor Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* User Status */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground">
+                    Trạng thái tài khoản <span className="text-destructive">*</span>
                   </label>
-                  <p className="text-[11px] text-muted-foreground">
-                    Admin không thể bật/tắt trực tiếp xác thực 2FA của người dùng.
-                  </p>
+                  <div className="relative group">
+                    <select
+                      value={formData.userStatus || UserStatus.ACTIVE}
+                      onChange={(e) =>
+                        handleInputChange("userStatus", e.target.value as UserStatus)
+                      }
+                      className="appearance-none flex h-10 w-full rounded-md border border-input bg-background text-foreground pl-3.5 pr-10 py-2 text-sm shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring cursor-pointer hover:bg-muted/10 dark:hover:bg-slate-700/20"
+                    >
+                      <option value={UserStatus.ACTIVE}>🟢 Hoạt động</option>
+                      <option value={UserStatus.INACTIVE}>🔴 Không hoạt động</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground group-hover:text-foreground transition-colors duration-150">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Two-Factor Authentication - Display Only */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground">
+                    Xác thực 2 yếu tố (2FA)
+                  </label>
+                  <div className="flex items-center space-x-3 px-3 h-10 rounded-md border border-border bg-muted/30 cursor-not-allowed select-none">
+                    <input
+                      type="checkbox"
+                      id="mftEnable"
+                      disabled
+                      checked={formData.mftEnable || false}
+                      className="h-4 w-4 rounded border-input text-accent focus:ring-accent dark:bg-slate-800 disabled:opacity-50 cursor-not-allowed"
+                    />
+                    <label htmlFor="mftEnable" className="text-sm font-medium text-muted-foreground cursor-not-allowed">
+                      {formData.mftEnable ? "Đã kích hoạt" : "Chưa kích hoạt"}
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

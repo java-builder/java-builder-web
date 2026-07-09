@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { UserSession } from "@/types/session";
@@ -12,6 +12,8 @@ import { SessionDetailModal } from "@/components/admin/sessions/SessionDetailMod
 import { RevokeSessionModal } from "@/components/admin/sessions/RevokeSessionModal";
 import { RevokeAllSessionsModal } from "@/components/admin/sessions/RevokeAllSessionsModal";
 import { Pagination } from "@/components/ui/Pagination";
+import { useConfirm } from "@/hooks/useConfirm";
+import { cloudflareService } from "@/services/cloudflare.service";
 
 export default function AdminSessionsPage() {
   const [sessions, setSessions] = useState<UserSession[]>([]);
@@ -26,6 +28,34 @@ export default function AdminSessionsPage() {
   const [revokeUserTarget, setRevokeUserTarget] = useState<{ userId: string; username: string } | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+
+  const { confirm } = useConfirm();
+
+  const handleBlockIp = async (ipAddress: string) => {
+    await confirm(
+      async () => {
+        const response = await cloudflareService.create({
+          mode: "block",
+          notes: `Chặn IP đăng nhập bất thường từ Admin Sessions cho IP: ${ipAddress}`,
+          configuration: {
+            target: "ip",
+            value: ipAddress,
+          },
+        });
+
+        if (!response.data?.success) {
+          throw new Error("Không thể chặn IP trên Cloudflare");
+        }
+      },
+      {
+        title: "Xác nhận chặn IP",
+        message: `Bạn có chắc chắn muốn chặn địa chỉ IP <strong class="font-mono text-red-600 dark:text-red-400">${ipAddress}</strong>? Người dùng từ địa chỉ IP này sẽ không thể truy cập website thông qua Cloudflare.`,
+        confirmText: "Chặn IP",
+        cancelText: "Hủy",
+        type: "warning",
+      }
+    );
+  };
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -153,6 +183,7 @@ export default function AdminSessionsPage() {
           onClose={() => setViewSession(null)}
           onRevokeSession={setRevokeTarget}
           onRevokeAllSessions={(userId, username) => setRevokeUserTarget({ userId, username })}
+          onBlockIp={handleBlockIp}
         />
       )}
 

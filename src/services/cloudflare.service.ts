@@ -5,12 +5,13 @@ import {
   CloudflareAccessRule,
   CloudflareResponse,
   CreateAccessRuleRequest,
+  GetAccessRulesRequest,
   UpdateAccessRuleRequest,
 } from "@/types/cloudflare";
 
 export const cloudflareService = {
   async getAll(
-    params?: Record<string, string | number>
+    params?: GetAccessRulesRequest
   ): Promise<ApiResponse<CloudflareResponse<CloudflareAccessRule[]>>> {
     const response = await apiClient.get<ApiResponse<CloudflareResponse<CloudflareAccessRule[]>>>(API.CLOUDFLARE, { params });
     return response.data;

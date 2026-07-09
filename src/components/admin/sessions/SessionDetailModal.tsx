@@ -22,6 +22,7 @@ interface SessionDetailModalProps {
   onClose: () => void;
   onRevokeSession: (session: UserSession) => void;
   onRevokeAllSessions: (userId: string, username: string) => void;
+  onBlockIp?: (ipAddress: string) => void;
 }
 
 export const SessionDetailModal = ({
@@ -31,6 +32,7 @@ export const SessionDetailModal = ({
   onClose,
   onRevokeSession,
   onRevokeAllSessions,
+  onBlockIp,
 }: SessionDetailModalProps) => {
   // Lock body scroll
   useEffect(() => {
@@ -168,36 +170,54 @@ export const SessionDetailModal = ({
           </div>
 
           {/* Footer */}
-          {isActive && (
-            <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-muted/20 px-5 py-3.5">
+          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-muted/20 px-5 py-3.5">
+            {onBlockIp && (
               <Button
                 type="button"
-                variant="outline"
                 size="sm"
                 onClick={() => {
-                  onRevokeAllSessions(session.userId, session.username);
+                  onBlockIp(session.ipAddress);
                   onClose();
                 }}
-                className="gap-1.5"
+                className="gap-1.5 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white border-transparent cursor-pointer"
               >
-                <LogOut className="h-4 w-4" />
-                Thu hồi tất cả
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+                Chặn IP
               </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                onClick={() => {
-                  onRevokeSession(session);
-                  onClose();
-                }}
-                className="gap-1.5"
-              >
-                <X className="h-4 w-4" />
-                Thu hồi phiên này
-              </Button>
-            </div>
-          )}
+            )}
+            {isActive && (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    onRevokeAllSessions(session.userId, session.username);
+                    onClose();
+                  }}
+                  className="gap-1.5"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Thu hồi tất cả
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    onRevokeSession(session);
+                    onClose();
+                  }}
+                  className="gap-1.5"
+                >
+                  <X className="h-4 w-4" />
+                  Thu hồi phiên này
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
