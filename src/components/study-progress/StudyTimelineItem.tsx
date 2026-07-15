@@ -122,7 +122,7 @@ export default function StudyTimelineItem({
   const cardContent = (
     <div className="flex items-center gap-4 w-full">
       {/* Thumbnail or Fallback Icon Box with Overlay Icon Badge */}
-      <div className="relative w-16 h-12 sm:w-24 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200/65 dark:border-slate-800 flex items-center justify-center">
+      <div className="relative w-16 h-12 sm:w-24 sm:h-16 rounded-md overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200/65 dark:border-slate-800 flex items-center justify-center">
         {resourceThumbnailUrl ? (
           <>
             <Image
@@ -141,6 +141,9 @@ export default function StudyTimelineItem({
           renderPlaceholder(activityType)
         )}
       </div>
+
+      {/* Vertical divider */}
+      <div className="w-[1px] h-10 sm:h-12 bg-slate-200 dark:bg-slate-700 flex-shrink-0" />
 
       {/* Main Metadata & Title */}
       <div className="min-w-0 flex-1 flex flex-col justify-center">

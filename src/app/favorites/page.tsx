@@ -287,7 +287,7 @@ export default function FavoritesPage() {
                           className="object-cover group-hover:scale-105 transition-transform duration-300" 
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-accent/70 via-accent to-indigo-650 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-accent/70 via-accent to-indigo-600 flex items-center justify-center">
                           {getItemIcon(item.targetType)}
                         </div>
                       )}

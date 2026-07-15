@@ -160,6 +160,8 @@ export const API = {
     GET_BLOG_BY_ID: "/api/v1/blogs", // + /:id
     GET_BLOG_BY_SLUG: "/api/v1/blogs/slug", // + /:slug
     GET_BLOGS: "/api/v1/blogs",
+    GET_FEATURED_BLOGS: "/api/v1/blogs/featured",
+    GET_MAX_FEATURED_ORDER: "/api/v1/blogs/max-featured-order",
     INCREMENT_VIEW: "/api/v1/blogs", // + /:slug/increment-view
     INCREMENT_LIKE: "/api/v1/blogs", // + /:slug/increment-like
 

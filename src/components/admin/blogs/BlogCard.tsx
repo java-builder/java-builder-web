@@ -51,8 +51,8 @@ export default function BlogCard({
           </div>
         )}
 
-        {/* Type chip */}
-        <div className="absolute left-3 top-3">
+        {/* Type and Featured chips */}
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5 items-start">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-background/95 px-2.5 py-0.5 text-[11px] font-semibold text-foreground shadow-sm ring-1 ring-border backdrop-blur-sm dark:bg-background/90">
             <BlogTypeIcon
               blogType={blog.blogType}
@@ -60,6 +60,11 @@ export default function BlogCard({
             />
             {BlogTypeDisplayNames[blog.blogType]}
           </span>
+          {blog.isFeatured && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm ring-1 ring-amber-600/20">
+              ★ Nổi bật {blog.featuredOrder !== undefined && blog.featuredOrder !== null ? `#${blog.featuredOrder}` : ""}
+            </span>
+          )}
         </div>
       </div>
 

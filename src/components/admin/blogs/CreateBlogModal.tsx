@@ -45,6 +45,8 @@ export default function CreateBlogModal({
     categoryId: undefined,
     tags: [],
     isPremium: false,
+    isFeatured: false,
+    featuredOrder: undefined,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -53,17 +55,32 @@ export default function CreateBlogModal({
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
   const [isLoadingTags, setIsLoadingTags] = useState(false);
+  const [maxFeaturedOrder, setMaxFeaturedOrder] = useState<number | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       loadCategories();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (formData.isFeatured && isOpen) {
+      const fetchMaxOrder = async () => {
+        try {
+          const res = await blogService.getMaxFeaturedOrder();
+          setMaxFeaturedOrder(res.data ?? 0);
+        } catch (error) {
+          console.error("Error fetching max featured order:", error);
+        }
+      };
+      fetchMaxOrder();
+    }
+  }, [formData.isFeatured, isOpen]);
 
   const loadCategories = async () => {
     try {
@@ -99,7 +116,7 @@ export default function CreateBlogModal({
 
   const handleInputChange = (
     field: keyof CreateBlogRequest,
-    value: string | BlogType | string[] | boolean | undefined,
+    value: string | BlogType | string[] | boolean | number | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -110,7 +127,7 @@ export default function CreateBlogModal({
   const handleAddTag = (tagName: string) => {
     const trimmedTag = tagName.trim();
     if (!trimmedTag) return;
-    
+
     const currentTags = formData.tags || [];
     if (!currentTags.includes(trimmedTag)) {
       handleInputChange("tags", [...currentTags, trimmedTag]);
@@ -175,7 +192,11 @@ export default function CreateBlogModal({
 
     setIsLoading(true);
     try {
-      const finalFormData: CreateBlogRequest = { ...formData };
+      const finalFormData: CreateBlogRequest = {
+        ...formData,
+        isFeatured: formData.isFeatured || false,
+        featuredOrder: formData.isFeatured ? formData.featuredOrder : undefined,
+      };
 
       // Nếu có file được chọn, upload trước
       if (selectedFile) {
@@ -199,7 +220,6 @@ export default function CreateBlogModal({
       // Tạo blog với dữ liệu đã có URL ảnh
       const result = await blogService.createBlog(finalFormData);
       console.log("✅ Create Blog Success:", result);
-      toast.success("Tạo bài viết thành công!");
       onSuccess();
       handleClose();
     } catch (error: unknown) {
@@ -229,6 +249,8 @@ export default function CreateBlogModal({
       categoryId: undefined,
       tags: [],
       isPremium: false,
+      isFeatured: false,
+      featuredOrder: undefined,
     });
     setErrors({});
     setImagePreview("");
@@ -250,7 +272,7 @@ export default function CreateBlogModal({
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-7xl bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
+        <div className="relative w-full max-w-5xl bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-border">
             <div>
@@ -287,8 +309,8 @@ export default function CreateBlogModal({
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Nhập tiêu đề hấp dẫn cho bài viết..."
                     className={`w-full px-4 py-3 bg-background border rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm transition-colors duration-200 ${errors.title
-                        ? "border-destructive bg-destructive/10"
-                        : "border-input"
+                      ? "border-destructive bg-destructive/10"
+                      : "border-input"
                       }`}
                   />
                   {errors.title && (
@@ -307,8 +329,8 @@ export default function CreateBlogModal({
                       handleInputChange("blogType", e.target.value as BlogType)
                     }
                     className={`w-full px-4 py-3 bg-background border rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm transition-colors duration-200 ${errors.blogType
-                        ? "border-destructive bg-destructive/10"
-                        : "border-input"
+                      ? "border-destructive bg-destructive/10"
+                      : "border-input"
                       }`}
                   >
                     {Object.entries(BlogTypeDisplayNames).map(
@@ -447,14 +469,13 @@ export default function CreateBlogModal({
                     <ImageIcon className="w-4 h-4 mr-1.5 text-accent" />
                     Ảnh đại diện
                   </label>
-                  
+
                   <div
                     onClick={() => !isUploadingImage && !isLoading && fileInputRef.current?.click()}
-                    className={`relative w-full h-[200px] rounded-lg border-2 border-dashed transition-all duration-200 overflow-hidden bg-muted/30 ${
-                      isUploadingImage || isLoading
+                    className={`relative w-full h-[200px] rounded-lg border-2 border-dashed transition-all duration-200 overflow-hidden bg-muted/30 ${isUploadingImage || isLoading
                         ? 'border-border cursor-not-allowed opacity-50'
                         : 'border-border hover:border-accent hover:bg-accent/5 cursor-pointer'
-                    }`}
+                      }`}
                   >
                     {imagePreview ? (
                       <Image
@@ -472,7 +493,7 @@ export default function CreateBlogModal({
                         <span className="text-xs text-muted-foreground mt-1">PNG, JPG, GIF tối đa 5MB</span>
                       </div>
                     )}
-                    
+
                     {isUploadingImage && (
                       <div className="absolute inset-0 bg-background/90 flex flex-col items-center justify-center">
                         <Loader2 className="animate-spin w-8 h-8 text-accent mb-2" />
@@ -526,21 +547,71 @@ export default function CreateBlogModal({
               </div>
             )}
 
-            {/* Premium Checkbox */}
-            <div className="flex items-center gap-3 mt-6 pt-6 border-t border-border">
-              <input
-                type="checkbox"
-                id="isPremiumCreate"
-                checked={formData.isPremium || false}
-                onChange={(e) =>
-                  handleInputChange("isPremium", e.target.checked)
-                }
-                className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background"
-                disabled={isLoading}
-              />
-              <label htmlFor="isPremiumCreate" className="text-sm text-foreground">
-                Chỉ dành cho Premium (yêu cầu subscription để đọc)
-              </label>
+            {/* Options Panel (Premium & Featured) */}
+            <div className="flex flex-col gap-4 mt-6 pt-6 border-t border-border bg-muted/20 p-4 rounded-xl">
+              {/* Premium Option */}
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="isPremiumCreate"
+                  checked={formData.isPremium || false}
+                  onChange={(e) =>
+                    handleInputChange("isPremium", e.target.checked)
+                  }
+                  className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background cursor-pointer"
+                  disabled={isLoading}
+                />
+                <label htmlFor="isPremiumCreate" className="text-sm font-medium text-foreground cursor-pointer select-none">
+                  Chỉ dành cho Premium (yêu cầu subscription để đọc)
+                </label>
+              </div>
+
+              {/* Featured Option */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isFeaturedCreate"
+                    checked={formData.isFeatured || false}
+                    onChange={(e) =>
+                      handleInputChange("isFeatured", e.target.checked)
+                    }
+                    className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background cursor-pointer"
+                    disabled={isLoading}
+                  />
+                  <label htmlFor="isFeaturedCreate" className="text-sm font-medium text-foreground cursor-pointer select-none">
+                    Bài viết nổi bật (Hiển thị ở trang chủ)
+                  </label>
+                </div>
+
+                {formData.isFeatured && (
+                  <div className="ml-7 max-w-[240px] animate-in fade-in slide-in-from-top-1 duration-200">
+                    <label htmlFor="featuredOrderCreate" className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                      Thứ tự hiển thị (tăng dần)
+                    </label>
+                    <input
+                      type="number"
+                      id="featuredOrderCreate"
+                      value={formData.featuredOrder !== undefined ? formData.featuredOrder : ""}
+                      onChange={(e) => {
+                        const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+                        handleInputChange("featuredOrder", val);
+                      }}
+                      placeholder="Ví dụ: 1"
+                      className="w-full px-3 py-1.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm"
+                      disabled={isLoading}
+                      min={0}
+                    />
+                    {maxFeaturedOrder !== null && (
+                      <p className="mt-1.5 text-[11px] text-muted-foreground font-medium">
+                        Vị trí lớn nhất: <span className="text-accent font-semibold">{maxFeaturedOrder}</span>
+                        {` (Gợi ý tiếp theo: `}
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{maxFeaturedOrder + 1}</span>)
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Actions */}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import StudyProgressClient from "./StudyProgressClient";
+import StudyProgressWrapper from "./StudyProgressWrapper";
 
 export const metadata: Metadata = {
   title: "Nhật ký học tập - JavaBuilder",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function StudyProgressPage() {
-  return <StudyProgressClient />;
+  return <StudyProgressWrapper />;
 }

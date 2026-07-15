@@ -41,6 +41,8 @@ interface UpdateBlogFormData {
   categoryId?: string;
   tags?: string[];
   isPremium?: boolean;
+  isFeatured?: boolean;
+  featuredOrder?: number;
 }
 
 export default function UpdateBlogModal({
@@ -58,6 +60,8 @@ export default function UpdateBlogModal({
     categoryId: undefined,
     tags: [],
     isPremium: false,
+    isFeatured: false,
+    featuredOrder: undefined,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -73,12 +77,27 @@ export default function UpdateBlogModal({
   const [tagInput, setTagInput] = useState("");
   const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
   const [isLoadingTags, setIsLoadingTags] = useState(false);
+  const [maxFeaturedOrder, setMaxFeaturedOrder] = useState<number | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       loadCategories();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (formData.isFeatured && isOpen) {
+      const fetchMaxOrder = async () => {
+        try {
+          const res = await blogService.getMaxFeaturedOrder();
+          setMaxFeaturedOrder(res.data ?? 0);
+        } catch (error) {
+          console.error("Error fetching max featured order:", error);
+        }
+      };
+      fetchMaxOrder();
+    }
+  }, [formData.isFeatured, isOpen]);
 
   const loadCategories = async () => {
     try {
@@ -133,6 +152,8 @@ export default function UpdateBlogModal({
         categoryId: fullBlog.category?.id,
         tags: fullBlog.tags?.map(t => typeof t === 'string' ? t : t.name) || [],
         isPremium: fullBlog.isPremium || false,
+        isFeatured: fullBlog.isFeatured || false,
+        featuredOrder: fullBlog.featuredOrder,
       });
       setImagePreview(fullBlog.thumbnailUrl || "");
     } catch (error) {
@@ -151,7 +172,7 @@ export default function UpdateBlogModal({
 
   const handleInputChange = (
     field: keyof UpdateBlogFormData,
-    value: string | BlogType | string[] | boolean | undefined,
+    value: string | BlogType | string[] | boolean | number | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -255,6 +276,8 @@ export default function UpdateBlogModal({
         blogType: formData.blogType,
         categoryId: formData.categoryId,
         isPremium: formData.isPremium || false,
+        isFeatured: formData.isFeatured || false,
+        featuredOrder: formData.isFeatured ? formData.featuredOrder : undefined,
       };
 
       // Only include key if a new image was uploaded
@@ -273,7 +296,6 @@ export default function UpdateBlogModal({
 
       await blogService.updateBlog(currentBlog.id, updatePayload);
 
-      toast.success("Cập nhật bài viết thành công!");
       onSuccess();
       handleClose();
     } catch (error: unknown) {
@@ -301,6 +323,9 @@ export default function UpdateBlogModal({
       blogType: BlogType.TUTORIAL,
       categoryId: undefined,
       tags: [],
+      isPremium: false,
+      isFeatured: false,
+      featuredOrder: undefined,
     });
     setErrors({});
     setImagePreview("");
@@ -321,7 +346,7 @@ export default function UpdateBlogModal({
           onClick={handleClose}
         />
 
-        <div className="relative w-full max-w-7xl bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
+        <div className="relative w-full max-w-5xl bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
           <div className="flex items-center justify-between p-6 border-b border-border">
             <div>
               <h2 className="text-2xl font-bold text-foreground">
@@ -591,21 +616,71 @@ export default function UpdateBlogModal({
                 </div>
               )}
 
-              {/* Premium Checkbox */}
-              <div className="flex items-center gap-3 mt-6 pt-6 border-t border-border">
-                <input
-                  type="checkbox"
-                  id="isPremium"
-                  checked={formData.isPremium || false}
-                  onChange={(e) =>
-                    handleInputChange("isPremium", e.target.checked)
-                  }
-                  className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background"
-                  disabled={isLoading}
-                />
-                <label htmlFor="isPremium" className="text-sm text-foreground">
-                  Chỉ dành cho Premium (yêu cầu subscription để đọc)
-                </label>
+              {/* Options Panel (Premium & Featured) */}
+              <div className="flex flex-col gap-4 mt-6 pt-6 border-t border-border bg-muted/20 p-4 rounded-xl">
+                {/* Premium Option */}
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isPremiumUpdate"
+                    checked={formData.isPremium || false}
+                    onChange={(e) =>
+                      handleInputChange("isPremium", e.target.checked)
+                    }
+                    className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background cursor-pointer"
+                    disabled={isLoading}
+                  />
+                  <label htmlFor="isPremiumUpdate" className="text-sm font-medium text-foreground cursor-pointer select-none">
+                    Chỉ dành cho Premium (yêu cầu subscription để đọc)
+                  </label>
+                </div>
+
+                {/* Featured Option */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      id="isFeaturedUpdate"
+                      checked={formData.isFeatured || false}
+                      onChange={(e) =>
+                        handleInputChange("isFeatured", e.target.checked)
+                      }
+                      className="w-4 h-4 text-accent border-input rounded focus:ring-accent bg-background cursor-pointer"
+                      disabled={isLoading}
+                    />
+                    <label htmlFor="isFeaturedUpdate" className="text-sm font-medium text-foreground cursor-pointer select-none">
+                      Bài viết nổi bật (Hiển thị ở trang chủ)
+                    </label>
+                  </div>
+
+                  {formData.isFeatured && (
+                    <div className="ml-7 max-w-[240px] animate-in fade-in slide-in-from-top-1 duration-200">
+                      <label htmlFor="featuredOrderUpdate" className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                        Thứ tự hiển thị (tăng dần)
+                      </label>
+                      <input
+                        type="number"
+                        id="featuredOrderUpdate"
+                        value={formData.featuredOrder !== undefined ? formData.featuredOrder : ""}
+                        onChange={(e) => {
+                          const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+                          handleInputChange("featuredOrder", val);
+                        }}
+                        placeholder="Ví dụ: 1"
+                        className="w-full px-3 py-1.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm"
+                        disabled={isLoading}
+                        min={0}
+                      />
+                      {maxFeaturedOrder !== null && (
+                        <p className="mt-1.5 text-[11px] text-muted-foreground font-medium">
+                          Vị trí lớn nhất: <span className="text-accent font-semibold">{maxFeaturedOrder}</span> 
+                          {` (Gợi ý tiếp theo: `}
+                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{maxFeaturedOrder + 1}</span>)
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-border">

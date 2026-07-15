@@ -18,6 +18,7 @@ import {
   StudyEmptyState,
   StudyLoadingState,
   StudyLoadMoreButton,
+  StudyStreak,
   type DateFilterId,
 } from "@/components/study-progress";
 import { localizeQuote } from "@/components/study-progress/localizeQuote";
@@ -198,72 +199,91 @@ export default function StudyProgressClient() {
   const isEmpty = Object.keys(groupedActivities).length === 0;
   const hasDateFilter = Boolean(selectedDate);
 
+  // Get all activities fetched so far for streak and chart processing
+  const allFetchedActivities = activities;
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <div className="mx-auto max-w-6xl space-y-4 p-4 sm:space-y-6 sm:p-6">
+      <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6">
         <StudyHeader
           title={t("studyProgressPage.title")}
           subtitle={t("studyProgressPage.subtitle")}
           quote={localizedQuote}
         />
 
-        <StudyDateFilter
-          filter={dateFilter}
-          selectedDate={selectedDate}
-          totalElements={totalElements}
-          totalLabel={t("studyProgressPage.activities")}
-          filterLabel={t("studyProgressPage.filterTime")}
-          customDateLabel={t("studyProgressPage.orChooseDate")}
-          customPlaceholder={t("studyProgressPage.chooseSpecificDate")}
-          quickLabels={quickLabels}
-          onQuickFilter={handleQuickFilter}
-          onCustomDateChange={handleCustomDateChange}
-          onClear={clearDateFilter}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          {/* Left Column: Timeline, Stats, Filter */}
+          <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
 
-        <StudyStats
-          stats={stats}
-          totalElements={totalElements}
-          getActivityTypeName={getActivityTypeName}
-        />
 
-        {isEmpty ? (
-          <StudyEmptyState
-            hasDateFilter={hasDateFilter}
-            title={
-              hasDateFilter
-                ? t("studyProgressPage.noActivity")
-                : t("studyProgressPage.startYourJourney")
-            }
-            description={
-              hasDateFilter
-                ? t("studyProgressPage.noActivityOnDate")
-                : t("studyProgressPage.startJourneyDesc")
-            }
-            exploreCoursesLabel={t("studyProgressPage.exploreCourses")}
-            doExercisesLabel={t("studyProgressPage.doExercises")}
-          />
-        ) : (
-          <StudyTimeline
-            groupedActivities={groupedActivities}
-            getActivityTypeName={getActivityTypeName}
-            t={t}
-            timelineLabel={t("studyProgressPage.timeline")}
-            questionSetToTopicMap={questionSetToTopicMap}
-          />
-        )}
+            <StudyDateFilter
+              filter={dateFilter}
+              selectedDate={selectedDate}
+              totalElements={totalElements}
+              totalLabel={t("studyProgressPage.activities")}
+              filterLabel={t("studyProgressPage.filterTime")}
+              customDateLabel={t("studyProgressPage.orChooseDate")}
+              customPlaceholder={t("studyProgressPage.chooseSpecificDate")}
+              quickLabels={quickLabels}
+              onQuickFilter={handleQuickFilter}
+              onCustomDateChange={handleCustomDateChange}
+              onClear={clearDateFilter}
+            />
 
-        {currentPage < totalPages && (
-          <StudyLoadMoreButton
-            isLoading={isFetching}
-            loadingLabel={t("studyProgressPage.loadingMore")}
-            buttonLabel={t("studyProgressPage.viewMore")}
-            pageInfo={t("studyProgressPage.pageInfo")
-              .replace("{current}", String(currentPage))
-              .replace("{total}", String(totalPages))}
-            onClick={handleLoadMore}
-          />
-        )}
+            <StudyStats
+              stats={stats}
+              totalElements={totalElements}
+              getActivityTypeName={getActivityTypeName}
+            />
+
+            {isEmpty ? (
+              <StudyEmptyState
+                hasDateFilter={hasDateFilter}
+                title={
+                  hasDateFilter
+                    ? t("studyProgressPage.noActivity")
+                    : t("studyProgressPage.startYourJourney")
+                }
+                description={
+                  hasDateFilter
+                    ? t("studyProgressPage.noActivityOnDate")
+                    : t("studyProgressPage.startJourneyDesc")
+                }
+                exploreCoursesLabel={t("studyProgressPage.exploreCourses")}
+                doExercisesLabel={t("studyProgressPage.doExercises")}
+              />
+            ) : (
+              <StudyTimeline
+                groupedActivities={groupedActivities}
+                getActivityTypeName={getActivityTypeName}
+                t={t}
+                timelineLabel={t("studyProgressPage.timeline")}
+                questionSetToTopicMap={questionSetToTopicMap}
+              />
+            )}
+
+            {currentPage < totalPages && (
+              <StudyLoadMoreButton
+                isLoading={isFetching}
+                loadingLabel={t("studyProgressPage.loadingMore")}
+                buttonLabel={t("studyProgressPage.viewMore")}
+                pageInfo={t("studyProgressPage.pageInfo")
+                  .replace("{current}", String(currentPage))
+                  .replace("{total}", String(totalPages))}
+                onClick={handleLoadMore}
+              />
+            )}
+          </div>
+
+          {/* Right Column: Study Streak (Dashboard summary) */}
+          <div className="lg:col-span-1 order-1 lg:order-2">
+            <StudyStreak
+              activities={allFetchedActivities}
+              locale={locale}
+              t={t}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

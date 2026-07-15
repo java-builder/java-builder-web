@@ -21,6 +21,10 @@ export default function BlogsPage() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedBlogSlug, setSelectedBlogSlug] = useState<string | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [toastConfig, setToastConfig] = useState({
+    message: "Tạo bài viết thành công!",
+    description: "Bài viết đã được lưu vào hệ thống",
+  });
   const [previewBlogSlug, setPreviewBlogSlug] = useState<string | null>(null);
   const { confirm } = useConfirm();
 
@@ -309,6 +313,10 @@ export default function BlogsPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={() => {
           fetchBlogs(); // Refresh the blog list
+          setToastConfig({
+            message: "Tạo bài viết thành công!",
+            description: "Bài viết mới đã được lưu vào hệ thống.",
+          });
           setShowSuccessToast(true);
         }}
       />
@@ -322,6 +330,10 @@ export default function BlogsPage() {
         }}
         onSuccess={() => {
           fetchBlogs(); // Refresh the blog list
+          setToastConfig({
+            message: "Cập nhật bài viết thành công!",
+            description: "Các thay đổi đã được lưu vào hệ thống.",
+          });
           setShowSuccessToast(true);
         }}
         blogSlug={selectedBlogSlug}
@@ -330,6 +342,8 @@ export default function BlogsPage() {
       {/* Success Toast */}
       <BlogSuccessToast
         show={showSuccessToast}
+        message={toastConfig.message}
+        description={toastConfig.description}
         onClose={() => setShowSuccessToast(false)}
       />
 

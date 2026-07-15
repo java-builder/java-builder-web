@@ -15,5 +15,11 @@ export const useBlogs = (page = 1, size = 10) => {
 };
 
 export const useFeaturedBlogs = () => {
-  return useBlogs(1, 6);
+  return useQuery({
+    queryKey: ["blogs", "featured"],
+    queryFn: async () => {
+      return await blogService.getFeaturedBlogs();
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
 };

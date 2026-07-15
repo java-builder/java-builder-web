@@ -6,12 +6,14 @@ interface BlogSuccessToastProps {
   show: boolean;
   onClose: () => void;
   message?: string;
+  description?: string;
 }
 
 export default function BlogSuccessToast({
   show,
   onClose,
   message = "Tạo bài viết thành công!",
+  description = "Bài viết đã được lưu vào hệ thống",
 }: BlogSuccessToastProps) {
   useEffect(() => {
     if (show) {
@@ -48,7 +50,7 @@ export default function BlogSuccessToast({
           <div className="ml-3 flex-1">
             <p className="text-sm font-medium text-gray-900">{message}</p>
             <p className="text-xs text-gray-500 mt-1">
-              Bài viết đã được tạo và sẵn sàng để xuất bản
+              {description}
             </p>
           </div>
           <button

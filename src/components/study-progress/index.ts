@@ -6,4 +6,5 @@ export { default as StudyTimelineItem } from "./StudyTimelineItem";
 export { default as StudyEmptyState } from "./StudyEmptyState";
 export { default as StudyLoadingState } from "./StudyLoadingState";
 export { default as StudyLoadMoreButton } from "./StudyLoadMoreButton";
+export { default as StudyStreak } from "./StudyStreak";
 export type { DateFilterId } from "./StudyDateFilter";

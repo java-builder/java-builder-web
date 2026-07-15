@@ -11,11 +11,13 @@ interface StudyHeaderProps {
 export default function StudyHeader({ title, subtitle, quote }: StudyHeaderProps) {
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {title}
         </h1>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 border-l-2 border-accent/70 pl-3.5 italic leading-relaxed max-w-2xl">
+          {subtitle}
+        </p>
       </div>
 
       {quote && (

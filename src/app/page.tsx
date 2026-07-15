@@ -19,7 +19,7 @@ export default function Home() {
   const { data: documentsData, isLoading: isLoadingDocuments, error: documentsError } = useFeaturedDocuments();
 
   const courses = coursesData?.data || [];
-  const blogs = (blogsData?.data || []).slice(0, 6);
+  const blogs = blogsData?.data || [];
   const documents = documentsData?.data?.data || [];
 
   return (
@@ -64,7 +64,7 @@ export default function Home() {
                     <div className="flex-shrink-0">
                       <div className="w-9 h-9 bg-accent rounded-full flex items-center justify-center">
                         <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                         </svg>
                       </div>
                     </div>
@@ -73,15 +73,15 @@ export default function Home() {
                     <div className="flex-1">
                       <div className="inline-flex items-center bg-accent/10 dark:bg-accent/20 text-accent px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
                         <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                         </svg>
                         {t("home.communityBadge")}
                       </div>
-                      
+
                       <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
                         {t("home.fbGroupTitle")}
                       </h3>
-                      
+
                       <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
                         {t("home.fbGroupDesc")}
                       </p>
@@ -90,13 +90,13 @@ export default function Home() {
                       <div className="flex items-center space-x-4 mb-3 text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
                           <svg className="w-3.5 h-3.5 mr-1 text-accent" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                           </svg>
                           <span className="font-medium">{t("home.fbMembers")}</span>
                         </div>
                         <div className="flex items-center">
                           <svg className="w-3.5 h-3.5 mr-1 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                           <span className="font-medium">{t("home.fbActive")}</span>
                         </div>
@@ -110,11 +110,11 @@ export default function Home() {
                         className="inline-flex items-center justify-center w-full px-4 py-2 bg-accent text-white text-xs font-semibold rounded-lg shadow hover:bg-accent-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                       >
                         <svg className="w-3.5 h-3.5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                         </svg>
                         {t("home.fbJoin")}
                         <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                       </a>
                     </div>

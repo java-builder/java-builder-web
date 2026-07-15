@@ -64,6 +64,18 @@ export const blogService = {
     await apiClient.delete(`${API.DELETE_BLOG}/${id}`);
   },
 
+  // Lấy danh sách blogs nổi bật (top 10)
+  async getFeaturedBlogs(): Promise<ApiResponse<Blog[]>> {
+    const response = await apiClient.get(API.GET_FEATURED_BLOGS);
+    return response.data;
+  },
+
+  // Lấy vị trí nổi bật lớn nhất hiện tại
+  async getMaxFeaturedOrder(): Promise<ApiResponse<number>> {
+    const response = await apiClient.get(API.GET_MAX_FEATURED_ORDER);
+    return response.data;
+  },
+
   // Upload ảnh featured bằng presigned URL
   async uploadFeaturedImage(file: File): Promise<{ key: string }> {
     return fileApi.uploadPublicImage(file);

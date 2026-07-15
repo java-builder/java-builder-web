@@ -198,54 +198,67 @@ export default function MyExercisesClient() {
             </div>
           </div>
         </div>
+
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="bg-gradient-to-br from-blue-50/30 to-white dark:from-blue-950/5 dark:to-slate-800 rounded-2xl p-5 border border-blue-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
             <div className="flex items-center gap-2 mb-2">
-              <FileCheck className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t("myExercisesPage.statsTotal")}</span>
+              <span className="p-1.5 rounded-lg bg-blue-100/60 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
+                <FileCheck className="w-4 h-4" />
+              </span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsTotal")}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.total}</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="bg-gradient-to-br from-emerald-50/30 to-white dark:from-emerald-950/5 dark:to-slate-800 rounded-2xl p-5 border border-emerald-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
             <div className="flex items-center gap-2 mb-2">
-              <Percent className="w-5 h-5 text-green-600 dark:text-green-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t("myExercisesPage.statsAvgScore")}</span>
+              <span className="p-1.5 rounded-lg bg-emerald-100/60 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                <Percent className="w-4 h-4" />
+              </span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsAvgScore")}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.avgScore}%</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.avgScore}%</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="bg-gradient-to-br from-purple-50/30 to-white dark:from-purple-950/5 dark:to-slate-800 rounded-2xl p-5 border border-purple-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
             <div className="flex items-center gap-2 mb-2">
-              <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t("myExercisesPage.statsAccuracy")}</span>
+              <span className="p-1.5 rounded-lg bg-purple-100/60 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                <Target className="w-4.5 h-4.5" />
+              </span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsAccuracy")}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.accuracy}%</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.accuracy}%</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="bg-gradient-to-br from-amber-50/30 to-white dark:from-amber-950/5 dark:to-slate-800 rounded-2xl p-5 border border-amber-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
             <div className="flex items-center gap-2 mb-2">
-              <Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t("myExercisesPage.statsPerfect")}</span>
+              <span className="p-1.5 rounded-lg bg-amber-100/60 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300">
+                <Trophy className="w-4.5 h-4.5" />
+              </span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsPerfect")}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.perfectScores}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.perfectScores}</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="bg-gradient-to-br from-emerald-50/30 to-white dark:from-emerald-950/5 dark:to-slate-800 rounded-2xl p-5 border border-emerald-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
             <div className="flex items-center gap-2 mb-2">
-              <CheckCheck className="w-5 h-5 text-green-600 dark:text-green-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t("myExercisesPage.statsCorrect")}</span>
+              <span className="p-1.5 rounded-lg bg-emerald-100/60 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                <CheckCheck className="w-4.5 h-4.5" />
+              </span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsCorrect")}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalCorrect}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.totalCorrect}</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="bg-gradient-to-br from-rose-50/30 to-white dark:from-rose-950/5 dark:to-slate-800 rounded-2xl p-5 border border-rose-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
             <div className="flex items-center gap-2 mb-2">
-              <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t("myExercisesPage.statsIncorrect")}</span>
+              <span className="p-1.5 rounded-lg bg-rose-100/60 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300">
+                <XCircle className="w-4.5 h-4.5" />
+              </span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsIncorrect")}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">
               {stats.totalQuestions - stats.totalCorrect}
             </p>
           </div>
@@ -255,39 +268,50 @@ export default function MyExercisesClient() {
         {stats.total > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Pie Chart - Tỷ lệ câu đúng/sai */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <span className="w-1 h-6 bg-gradient-to-b from-green-500 to-red-500 rounded-full"></span>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
+              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <span className="w-1 h-5 bg-gradient-to-b from-emerald-500 to-rose-500 rounded-full"></span>
                 {t("myExercisesPage.chartAnswersTitle")}
               </h3>
-              <div className="h-64">
+              <div className="relative h-64 flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
+                    <defs>
+                      <linearGradient id="colorCorrect" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981"/>
+                        <stop offset="100%" stopColor="#059669"/>
+                      </linearGradient>
+                      <linearGradient id="colorIncorrect" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f43f5e"/>
+                        <stop offset="100%" stopColor="#e11d48"/>
+                      </linearGradient>
+                    </defs>
                     <Pie
                       data={[
-                        { name: t("myExercisesPage.chartCorrect"), value: stats.totalCorrect, color: '#10b981' },
-                        { name: t("myExercisesPage.chartIncorrect"), value: stats.totalQuestions - stats.totalCorrect, color: '#ef4444' }
+                        { name: t("myExercisesPage.chartCorrect"), value: stats.totalCorrect, color: 'url(#colorCorrect)' },
+                        { name: t("myExercisesPage.chartIncorrect"), value: stats.totalQuestions - stats.totalCorrect, color: 'url(#colorIncorrect)' }
                       ]}
                       cx="50%"
                       cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name}: ${((percent ?? 0) * 100).toFixed(0)}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
+                      innerRadius={65}
+                      outerRadius={85}
+                      paddingAngle={3}
                       dataKey="value"
                     >
-                      <Cell fill="#10b981" />
-                      <Cell fill="#ef4444" />
+                      <Cell fill="url(#colorCorrect)" />
+                      <Cell fill="url(#colorIncorrect)" />
                     </Pie>
                     <Tooltip 
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
+                          const isCorrect = payload[0].name === t("myExercisesPage.chartCorrect");
+                          const color = isCorrect ? '#10b981' : '#f43f5e';
                           return (
-                            <div className="bg-white dark:bg-slate-800 px-4 py-3 shadow-xl rounded-xl border border-gray-200 dark:border-slate-700">
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            <div className="bg-white dark:bg-slate-800 px-4 py-3 shadow-xl rounded-xl border border-slate-100 dark:border-slate-700">
+                              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">
                                 {payload[0].name}
                               </p>
-                              <p className="text-lg font-bold" style={{ color: payload[0].payload.color }}>
+                              <p className="text-base font-black" style={{ color }}>
                                 {t("myExercisesPage.chartCorrectCount").replace("{count}", String(payload[0].value))} ({((payload[0].value as number / stats.totalQuestions) * 100).toFixed(1)}%)
                               </p>
                             </div>
@@ -298,23 +322,31 @@ export default function MyExercisesClient() {
                     />
                   </PieChart>
                 </ResponsiveContainer>
-              </div>
-              <div className="flex items-center justify-center gap-6 mt-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{t("myExercisesPage.chartCorrect")}: {stats.totalCorrect}</span>
+
+                {/* Center Stats overlay */}
+                <div className="absolute flex flex-col items-center justify-center text-center pointer-events-none select-none">
+                  <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t("myExercisesPage.statsAccuracy")}</span>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white mt-0.5">{stats.accuracy}%</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{t("myExercisesPage.chartIncorrect")}: {stats.totalQuestions - stats.totalCorrect}</span>
+              </div>
+
+              {/* Legends Badges */}
+              <div className="flex items-center justify-center gap-4 mt-6">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100/50 dark:border-emerald-900/30 shadow-sm">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">{t("myExercisesPage.chartCorrect")}: {stats.totalCorrect}</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/20 border border-rose-100/50 dark:border-rose-900/30 shadow-sm">
+                  <div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                  <span className="text-xs font-bold text-rose-800 dark:text-rose-300">{t("myExercisesPage.chartIncorrect")}: {stats.totalQuestions - stats.totalCorrect}</span>
                 </div>
               </div>
             </div>
 
             {/* Bar Chart - Các chỉ số */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <span className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
+              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <span className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
                 {t("myExercisesPage.chartStatsTitle")}
               </h3>
               <div className="h-64">
@@ -325,30 +357,44 @@ export default function MyExercisesClient() {
                       { name: t("myExercisesPage.chartAccuracy"), value: stats.accuracy, color: '#8b5cf6' },
                       { name: t("myExercisesPage.chartPerfect"), value: stats.total > 0 ? Math.round((stats.perfectScores / stats.total) * 100) : 0, color: '#f59e0b' }
                     ]}
-                    margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+                    margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <defs>
+                      <linearGradient id="colorAvgScore" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#60a5fa"/>
+                        <stop offset="100%" stopColor="#2563eb"/>
+                      </linearGradient>
+                      <linearGradient id="colorAccuracy" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#a78bfa"/>
+                        <stop offset="100%" stopColor="#7c3aed"/>
+                      </linearGradient>
+                      <linearGradient id="colorPerfect" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#fbbf24"/>
+                        <stop offset="100%" stopColor="#d97706"/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E2E8F0" opacity={0.4} />
                     <XAxis 
                       dataKey="name" 
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: '#6B7280', fontSize: 12 }}
+                      tick={{ fill: '#6B7280', fontSize: 11, fontWeight: 500 }}
                     />
                     <YAxis 
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: '#6B7280', fontSize: 12 }}
+                      tick={{ fill: '#6B7280', fontSize: 11, fontWeight: 500 }}
                       domain={[0, 100]}
                     />
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           return (
-                            <div className="bg-white dark:bg-slate-800 px-4 py-3 shadow-xl rounded-xl border border-gray-200 dark:border-slate-700">
-                              <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                            <div className="bg-white dark:bg-slate-800 px-4 py-3 shadow-xl rounded-xl border border-slate-100 dark:border-slate-700">
+                              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">
                                 {payload[0].payload.name}
                               </p>
-                              <p className="text-lg font-bold" style={{ color: payload[0].payload.color }}>
+                              <p className="text-base font-black" style={{ color: payload[0].payload.color }}>
                                 {payload[0].value}%
                               </p>
                             </div>
@@ -357,39 +403,35 @@ export default function MyExercisesClient() {
                         return null;
                       }}
                     />
-                    <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={60}>
-                      {[
-                        { name: t("myExercisesPage.chartAvgScore"), value: stats.avgScore, color: '#3b82f6' },
-                        { name: t("myExercisesPage.chartAccuracy"), value: stats.accuracy, color: '#8b5cf6' },
-                        { name: t("myExercisesPage.chartPerfect"), value: stats.total > 0 ? Math.round((stats.perfectScores / stats.total) * 100) : 0, color: '#f59e0b' }
-                      ].map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                    <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={45}>
+                      <Cell fill="url(#colorAvgScore)" />
+                      <Cell fill="url(#colorAccuracy)" />
+                      <Cell fill="url(#colorPerfect)" />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
+              <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-gray-100 dark:border-slate-800/80">
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <div className="w-3 h-3 rounded bg-blue-500"></div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{t("myExercisesPage.chartAvgScore")}</p>
+                  <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                    <div className="w-2.5 h-2.5 rounded bg-blue-500"></div>
+                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{t("myExercisesPage.chartAvgScore")}</p>
                   </div>
-                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{stats.avgScore}%</p>
+                  <p className="text-lg font-black text-blue-600 dark:text-blue-400">{stats.avgScore}%</p>
                 </div>
-                <div className="text-center border-l border-r border-gray-100 dark:border-slate-700">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <div className="w-3 h-3 rounded bg-purple-500"></div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{t("myExercisesPage.chartAccuracy")}</p>
+                <div className="text-center border-l border-r border-gray-100 dark:border-slate-800/80">
+                  <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                    <div className="w-2.5 h-2.5 rounded bg-purple-500"></div>
+                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{t("myExercisesPage.chartAccuracy")}</p>
                   </div>
-                  <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{stats.accuracy}%</p>
+                  <p className="text-lg font-black text-purple-600 dark:text-purple-400">{stats.accuracy}%</p>
                 </div>
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <div className="w-3 h-3 rounded bg-amber-500"></div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{t("myExercisesPage.chartPerfectLabel")}</p>
+                  <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                    <div className="w-2.5 h-2.5 rounded bg-amber-500"></div>
+                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{t("myExercisesPage.chartPerfectLabel")}</p>
                   </div>
-                  <p className="text-lg font-bold text-amber-600 dark:text-amber-400">
+                  <p className="text-lg font-black text-amber-600 dark:text-amber-400">
                     {stats.total > 0 ? Math.round((stats.perfectScores / stats.total) * 100) : 0}%
                   </p>
                 </div>
