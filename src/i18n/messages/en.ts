@@ -197,7 +197,6 @@ export const en = {
     certificates: "My Certificates",
     exercises: "Exercises",
     doneExercises: "My Exercises",
-    interviewArena: "AI Interview",
     studyProgress: "Study Journal",
     leaderboard: "Leaderboard",
     personalizedRoadmap: "Personalized Roadmap",

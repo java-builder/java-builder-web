@@ -197,7 +197,6 @@ export const vi = {
     certificates: "Chứng chỉ của tôi",
     exercises: "Bài tập",
     doneExercises: "Bài tập đã làm",
-    interviewArena: "Phỏng vấn AI",
     studyProgress: "Nhật ký học tập",
     leaderboard: "Bảng xếp hạng",
     personalizedRoadmap: "Lộ trình cá nhân hóa",
