@@ -1039,6 +1039,7 @@ export const ja = {
       backToUser: "ユーザー画面へ戻る",
       users: "ユーザー管理",
       sessions: "セッション管理",
+      sessionsAnalytics: "セッション分析",
       activeUsers: "アクティブユーザー",
       courses: "コース",
       exercises: "練習問題",

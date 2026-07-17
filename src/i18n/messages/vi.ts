@@ -1045,6 +1045,7 @@ export const vi = {
       backToUser: "Về trang người dùng",
       users: "Quản lý người dùng",
       sessions: "Quản lý đăng nhập",
+      sessionsAnalytics: "Phân tích đăng nhập",
       activeUsers: "Người dùng hoạt động",
       courses: "Khóa học",
       exercises: "Bài tập",

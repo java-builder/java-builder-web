@@ -5,7 +5,6 @@ import MotionWrapper from "@/components/MotionWrapper";
 import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";
-import AboutSection from "@/components/home/AboutSection";
 import ViewAllLink from "@/components/ui/ViewAllLink";
 import { useFeaturedCourses } from "@/hooks/useCourses";
 import { useFeaturedBlogs } from "@/hooks/useBlogs";
@@ -166,8 +165,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* About JavaBuilder Section */}
-      <AboutSection />
 
       {/* Course Cards Section */}
       <section className="py-12 bg-white">

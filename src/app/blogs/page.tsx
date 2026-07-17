@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import BlogsClient from "./BlogsClient";
+import { metadata as seoMetadata } from "./metadata";
 
-export const metadata: Metadata = {
-  title: "Bài viết - JavaBuilder",
-  description: "Khám phá các bài viết, hướng dẫn và kiến thức về lập trình Java từ cộng đồng JavaBuilder",
-};
+export const metadata: Metadata = seoMetadata;
 
 export default function BlogsPage() {
   return <BlogsClient />;

@@ -11,7 +11,7 @@ export const formatApiDateOnly = (dateString: string | null | undefined): string
 
 export const parseDate = (dateString: string | null | undefined): Date | null => {
   if (!dateString) return null;
-  
+
   if (dateString.includes("T") || /^\d{4}-\d{2}-\d{2}/.test(dateString)) {
     const nativeDate = new Date(dateString);
     if (!isNaN(nativeDate.getTime())) {
@@ -27,13 +27,13 @@ export const parseDate = (dateString: string | null | undefined): Date | null =>
     const hour = parseInt(parts[3], 10);
     const minute = parseInt(parts[4], 10);
     const second = parseInt(parts[5], 10);
-    
+
     const parsed = new Date(year, month, day, hour, minute, second);
     if (!isNaN(parsed.getTime())) {
       return parsed;
     }
   }
-  
+
   const fallbackDate = new Date(dateString);
   return isNaN(fallbackDate.getTime()) ? null : fallbackDate;
 };
@@ -43,11 +43,11 @@ export const parseApiDate = parseDate;
 export const formatShortDate = (dateString: string | null | undefined): string => {
   const date = parseDate(dateString);
   if (!date) return "";
-  
+
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
-  
+
   return `${day}/${month}/${year}`;
 };
 
@@ -73,7 +73,7 @@ export const formatRelativeTime = (
 ): string => {
   const date = parseDate(dateString);
   if (!date) return "";
-  
+
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffSeconds = Math.floor(diffMs / 1000);
@@ -82,7 +82,7 @@ export const formatRelativeTime = (
   const diffDays = Math.floor(diffMs / 86400000);
   const diffMonths = Math.floor(diffDays / 30);
   const diffYears = Math.floor(diffDays / 365);
-  
+
   if (t) {
     if (diffSeconds < 10) return t("time.justNow");
     if (diffSeconds < 60) return t("time.secondsAgo").replace("{count}", String(diffSeconds));
@@ -92,7 +92,7 @@ export const formatRelativeTime = (
     if (diffMonths < 12) return t("time.monthsAgo").replace("{count}", String(diffMonths));
     return t("time.yearsAgo").replace("{count}", String(diffYears));
   }
-  
+
   if (diffSeconds < 10) return "Vừa xong";
   if (diffSeconds < 60) return `${diffSeconds} giây trước`;
   if (diffMins < 60) return `${diffMins} phút trước`;
@@ -108,7 +108,7 @@ export const formatLocaleString = (dateString: string | null | undefined, locale
 };
 
 export const formatLocaleStringWithOptions = (
-  dateString: string | null | undefined, 
+  dateString: string | null | undefined,
   locale: string = "vi-VN",
   options?: Intl.DateTimeFormatOptions
 ): string => {

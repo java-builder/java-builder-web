@@ -1045,6 +1045,7 @@ export const en = {
       backToUser: "Back to user site",
       users: "User management",
       sessions: "Session management",
+      sessionsAnalytics: "Session Analytics",
       activeUsers: "Active users",
       courses: "Courses",
       exercises: "Exercises",

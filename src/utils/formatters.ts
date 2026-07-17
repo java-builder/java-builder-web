@@ -50,3 +50,7 @@ export const formatDate = (dateString: string): string => {
   
   return date.toLocaleDateString("vi-VN");
 };
+
+export const formatPercent = (val: number): string => {
+  return val % 1 === 0 ? val.toString() : val.toFixed(2);
+};

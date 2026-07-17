@@ -14,15 +14,12 @@ import { useI18n } from '@/contexts/I18nContext';
 
 export default function ExercisesPage() {
   const { t } = useI18n();
-  // Custom hooks
   const { filters, handlePageChange } = useExerciseFilters();
   const { navigateToExercise } = useExerciseNavigation();
   const { data: exercisesData, isLoading } = useExercises(filters);
 
-  // Get motivational quote
   const quote = useMemo(() => getRandomQuote(), []);
 
-  // Lọc chỉ bài tập đã published
   const publishedExercises = exercisesData?.data?.filter(
     exercise => exercise.status === ExerciseStatus.PUBLISHED
   ) || [];
