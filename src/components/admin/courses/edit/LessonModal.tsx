@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { LessonFormat } from "@/types/lesson";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
-import VideoPlayer from "@/components/VideoPlayer";
+import VideoPlayer from "@/components/common/VideoPlayer";
 import { X, Loader2, UploadCloud, Film, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

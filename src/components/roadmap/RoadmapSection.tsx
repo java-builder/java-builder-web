@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import MotionWrapper from "@/components/MotionWrapper";
+import MotionWrapper from "@/components/common/MotionWrapper";
 import { FaCheckCircle, FaClock, FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { getLocalizedRoadmapData, RoadmapLevel } from "@/data/roadmapData";
 import { useI18n } from "@/contexts/I18nContext";

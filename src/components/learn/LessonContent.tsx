@@ -1,6 +1,6 @@
 "use client";
 
-import VideoPlayer, { VideoPlayerRef } from "@/components/VideoPlayer";
+import VideoPlayer, { VideoPlayerRef } from "@/components/common/VideoPlayer";
 import { LessonDetailResponse } from "@/types/course";
 import LessonComments from "./LessonComments";
 import LessonNotes from "./LessonNotes";

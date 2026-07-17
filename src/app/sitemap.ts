@@ -6,12 +6,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/java-b
 
 interface BlogItem {
   slug: string;
-  createdAt: string; // Format: "dd-MM-yyyy HH:mm:ss"
+  createdAt: string;
 }
 
 interface CourseItem {
   slug: string;
-  createdAt: string; // Format: "dd-MM-yyyy HH:mm:ss"
+  createdAt: string;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -55,9 +55,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    // Fetch blogs
     const blogsResponse = await fetch(`${API_URL}/api/v1/blogs?page=1&size=1000`, {
-      next: { revalidate: 3600 }, // Cache 1 hour
+      next: { revalidate: 3600 },
     });
     const blogsData = await blogsResponse.json();
     const blogs: BlogItem[] = blogsData?.data?.data || [];
@@ -69,7 +68,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-    // Fetch courses
     const coursesResponse = await fetch(`${API_URL}/api/v1/courses?page=1&size=1000`, {
       next: { revalidate: 3600 },
     });

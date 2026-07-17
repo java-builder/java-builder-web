@@ -7,7 +7,7 @@ import { favoriteService } from "@/services/favorite.service";
 import { FavoriteTargetType, FavoriteResponse } from "@/types/favorite";
 import { CourseLevel } from "@/types/course";
 import toast from "react-hot-toast";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { Pagination } from "@/components/ui/Pagination";
 import { formatShortDate } from "@/utils/dateUtils";
 import { useI18n } from "@/contexts/I18nContext";
@@ -44,7 +44,6 @@ export default function FavoritesPage() {
 
   useEffect(() => {
     if (hasFetched && cachedPage === currentPage) {
-      // Data is already cached for this tab and page, do not call API.
       setIsLoading(false);
       return;
     }
@@ -91,7 +90,7 @@ export default function FavoritesPage() {
   const handleRemoveFavorite = async (targetId: string, targetType: FavoriteTargetType) => {
     try {
       await favoriteService.toggle({ targetId, targetType });
-      
+
       // Force refetch current page for active tab to sync UI
       setIsLoading(true);
       const result = await favoriteService.getMyFavorites(currentPage, PAGE_SIZE, activeTab);
@@ -158,8 +157,8 @@ export default function FavoritesPage() {
 
   const getItemUrl = (item: typeof favorites[0]) => {
     const slug = item.targetSlug || item.targetId;
-    return item.targetType === FavoriteTargetType.COURSE 
-      ? `/courses/${slug}` 
+    return item.targetType === FavoriteTargetType.COURSE
+      ? `/courses/${slug}`
       : `/blogs/${slug}`;
   };
 
@@ -203,11 +202,10 @@ export default function FavoritesPage() {
           <nav className="flex gap-8">
             <button
               onClick={() => handleTabChange(FavoriteTargetType.COURSE)}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === FavoriteTargetType.COURSE
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === FavoriteTargetType.COURSE
                   ? "border-accent text-accent"
                   : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-2">
                 <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,11 +216,10 @@ export default function FavoritesPage() {
             </button>
             <button
               onClick={() => handleTabChange(FavoriteTargetType.BLOG)}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === FavoriteTargetType.BLOG
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === FavoriteTargetType.BLOG
                   ? "border-accent text-accent"
                   : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-2">
                 <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,12 +258,12 @@ export default function FavoritesPage() {
               {activeTab === FavoriteTargetType.COURSE ? t("favoritesPage.emptyCoursesTitle") : t("favoritesPage.emptyBlogsTitle")}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {activeTab === FavoriteTargetType.COURSE 
+              {activeTab === FavoriteTargetType.COURSE
                 ? t("favoritesPage.emptyCoursesDesc")
                 : t("favoritesPage.emptyBlogsDesc")}
             </p>
-            <Link 
-              href={activeTab === FavoriteTargetType.COURSE ? "/courses" : "/blogs"} 
+            <Link
+              href={activeTab === FavoriteTargetType.COURSE ? "/courses" : "/blogs"}
               className="inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent/90 text-white font-semibold rounded-lg transition-colors text-sm shadow-sm"
             >
               {activeTab === FavoriteTargetType.COURSE ? t("favoritesPage.exploreCourses") : t("favoritesPage.exploreBlogs")}
@@ -280,11 +277,11 @@ export default function FavoritesPage() {
                   <Link href={getItemUrl(item)}>
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-50 dark:bg-slate-900/50">
                       {item.thumbnailUrl ? (
-                        <Image 
-                          src={item.thumbnailUrl} 
-                          alt={item.targetTitle} 
-                          fill 
-                          className="object-cover group-hover:scale-105 transition-transform duration-300" 
+                        <Image
+                          src={item.thumbnailUrl}
+                          alt={item.targetTitle}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-accent/70 via-accent to-indigo-600 flex items-center justify-center">
@@ -293,11 +290,10 @@ export default function FavoritesPage() {
                       )}
                       {/* Type Badge */}
                       <div className="absolute top-4 left-4">
-                        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                          item.targetType === FavoriteTargetType.COURSE 
-                            ? 'bg-blue-500 text-white' 
+                        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${item.targetType === FavoriteTargetType.COURSE
+                            ? 'bg-blue-500 text-white'
                             : 'bg-purple-500 text-white'
-                        }`}>
+                          }`}>
                           {item.targetType === FavoriteTargetType.COURSE ? t("favoritesPage.coursesTab") : t("favoritesPage.blogsTab")}
                         </span>
                       </div>

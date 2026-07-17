@@ -1,6 +1,6 @@
 "use client";
 
-import MotionWrapper from "@/components/MotionWrapper";
+import MotionWrapper from "@/components/common/MotionWrapper";
 import { FaMapSigns } from "react-icons/fa";
 import { useI18n } from "@/contexts/I18nContext";
 

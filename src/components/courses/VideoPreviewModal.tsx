@@ -1,6 +1,6 @@
 "use client";
 
-import VideoPlayer from "@/components/VideoPlayer";
+import VideoPlayer from "@/components/common/VideoPlayer";
 import { LessonDetailResponse } from "@/types/course";
 
 interface VideoPreviewModalProps {

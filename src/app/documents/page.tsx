@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import DocumentCard from "@/components/documents/DocumentCard";
-import MotionWrapper from "@/components/MotionWrapper";
+import MotionWrapper from "@/components/common/MotionWrapper";
 import SearchBar from "@/components/ui/SearchBar";
 import Image from "next/image";
 import { Document, DocumentType } from "@/types/document";

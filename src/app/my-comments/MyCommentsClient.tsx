@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { Pagination } from "@/components/ui/Pagination";
 import { formatShortDate } from "@/utils/dateUtils";
 import { useI18n } from "@/contexts/I18nContext";

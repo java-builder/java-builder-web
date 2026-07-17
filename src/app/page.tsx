@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import MotionWrapper from "@/components/MotionWrapper";
+import MotionWrapper from "@/components/common/MotionWrapper";
 import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { CourseDetailResponse, CourseLevel, CourseFormat, CourseStatus, ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
 import { LessonFormat } from "@/types/lesson";
 import ConfirmModal from "@/components/ui/ConfirmModal";
-import VideoPlayer from "@/components/VideoPlayer";
+import VideoPlayer from "@/components/common/VideoPlayer";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { ChapterModal, LessonModal, CourseEditHeader, CourseInfoTab, CourseContentTab } from "@/components/admin/courses/edit";
 import toast from "react-hot-toast";
