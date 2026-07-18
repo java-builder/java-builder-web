@@ -123,10 +123,10 @@ export default function MarkdownRenderer({
             );
           },
           ul({ children }) {
-            return <ul className="mb-4 pl-6 space-y-1">{children}</ul>;
+            return <ul className="list-disc mb-4 pl-6 space-y-1">{children}</ul>;
           },
           ol({ children }) {
-            return <ol className="mb-4 pl-6 space-y-1">{children}</ol>;
+            return <ol className="list-decimal mb-4 pl-6 space-y-1">{children}</ol>;
           },
           li({ children }) {
             return (

@@ -265,6 +265,42 @@ export default function PublicMarkdownRenderer({
         </blockquote>
       );
     },
+    p(props) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node: _node, children, ...rest } = props;
+      return (
+        <p className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300" {...rest}>
+          {children}
+        </p>
+      );
+    },
+    ul(props) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node: _node, children, ...rest } = props;
+      return (
+        <ul className="list-disc pl-6 my-4 space-y-1.5 text-gray-700 dark:text-gray-300" {...rest}>
+          {children}
+        </ul>
+      );
+    },
+    ol(props) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node: _node, children, ...rest } = props;
+      return (
+        <ol className="list-decimal pl-6 my-4 space-y-1.5 text-gray-700 dark:text-gray-300" {...rest}>
+          {children}
+        </ol>
+      );
+    },
+    li(props) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node: _node, children, ...rest } = props;
+      return (
+        <li className="leading-relaxed mb-1 text-gray-700 dark:text-gray-300" {...rest}>
+          {children}
+        </li>
+      );
+    },
     table(props) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, children, ...rest } = props;

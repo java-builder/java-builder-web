@@ -73,23 +73,22 @@ const markdownComponents: Components = {
   },
   ul({ children }) {
     return (
-      <ul className="mb-2 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
+      <ul className="list-disc pl-6 mb-2 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
         {children}
       </ul>
     );
   },
   ol({ children }) {
     return (
-      <ol className="mb-2 list-inside list-decimal space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
+      <ol className="list-decimal pl-6 mb-2 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
         {children}
       </ol>
     );
   },
   li({ children }) {
     return (
-      <li className="flex items-start gap-2 leading-relaxed">
-        <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-gray-400 dark:bg-gray-500" />
-        <span className="flex-1">{children}</span>
+      <li className="leading-relaxed">
+        {children}
       </li>
     );
   },
