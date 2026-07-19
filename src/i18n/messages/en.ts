@@ -1044,6 +1044,7 @@ export const en = {
       home: "Home",
       backToUser: "Back to user site",
       users: "User management",
+      roles: "Role management",
       sessions: "Session management",
       sessionsAnalytics: "Session Analytics",
       activeUsers: "Active users",

@@ -166,4 +166,12 @@ export const userApi = {
     );
     return response.data;
   },
+
+  assignRoles: async (userId: string, roleNames: string[]) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      `${API.GET_USER_BY_ID}/${userId}/roles`,
+      { roleNames }
+    );
+    return response.data;
+  },
 };

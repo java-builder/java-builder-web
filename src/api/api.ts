@@ -186,6 +186,11 @@ export const API = {
     DELETE_TAG: "/api/v1/tags", // + /:id
     CREATE_TAGS_BATCH: "/api/v1/tags/batch",
 
+    // ROLE
+    CREATE_ROLE: "/api/v1/roles",
+    GET_ROLES: "/api/v1/roles",
+    UPDATE_ROLE: "/api/v1/roles", // + /:id
+
     // INTERVIEW TOPIC
     CREATE_INTERVIEW_TOPIC: "/api/v1/interview-topics",
     GET_INTERVIEW_TOPICS: "/api/v1/interview-topics",

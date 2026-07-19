@@ -27,7 +27,7 @@ const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x0000
 export default function LoginClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { setAuthFromLogin, hasAdminAccess } = useAuth();
+  const { setAuthFromLogin } = useAuth();
   const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
@@ -127,9 +127,9 @@ export default function LoginClient() {
     }
   };
 
-  const handleTwoFactorSuccess = async () => {
+  const handleTwoFactorSuccess = async (data?: { authorities?: string[]; accessToken?: string; userId?: string }) => {
     await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    const isAdmin = hasAdminAccess;
+    const isAdmin = data?.authorities?.includes("ADMIN");
     router.push(isAdmin ? "/admin" : "/");
   };
 

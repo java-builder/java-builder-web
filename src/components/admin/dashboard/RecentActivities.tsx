@@ -3,27 +3,29 @@
 import { useAdminOverviewContext } from "@/contexts/AdminOverviewContext";
 import { TransactionType } from "@/types/report";
 import { formatCurrency } from "@/utils/formatters";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
+
+const COLUMN_HEADERS: { label: string; align?: "left" | "right"; className?: string }[] = [
+  { label: "Khách hàng", align: "left", className: "w-[20%] min-w-[140px]" },
+  { label: "Nội dung hoạt động", align: "left", className: "w-[50%]" },
+  { label: "Số tiền", align: "right", className: "w-[10%] text-right min-w-[100px]" },
+  { label: "Thời gian", align: "right", className: "w-[10%] text-right min-w-[100px]" },
+  { label: "Trạng thái", align: "right", className: "w-[10%] text-right min-w-[100px]" },
+];
 
 export const RecentActivities = () => {
   const { overview, loading } = useAdminOverviewContext();
   const activities = overview?.recentActivities || [];
-
-  const getActivityIcon = (type: TransactionType) => {
-    if (type === TransactionType.PAYIN) {
-      return (
-        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      );
-    }
-    return (
-      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      </svg>
-    );
-  };
 
   const getInitials = (name: string) => {
     return name
@@ -36,75 +38,117 @@ export const RecentActivities = () => {
 
   return (
     <Card>
-      <CardHeader className="border-b border-border">
-        <CardTitle className="text-lg font-semibold text-foreground">Hoạt động gần đây</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Các thanh toán thành công gần nhất</CardDescription>
-      </CardHeader>
-      <CardContent className="pt-6">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border px-5 py-4">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">
+            Hoạt động gần đây
+          </h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Các giao dịch thanh toán thành công gần nhất trên hệ thống
+          </p>
+        </div>
+        {!loading && activities.length > 0 && (
+          <span className="whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent dark:text-accent-on-dark">
+            {activities.length} hoạt động
+          </span>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-0">
         {loading ? (
-          <div className="space-y-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-start space-x-3 animate-pulse">
-                <div className="w-10 h-10 bg-muted rounded-full"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-3/4"></div>
-                  <div className="h-3 bg-muted rounded w-1/2"></div>
-                </div>
-              </div>
-            ))}
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
+            <span className="text-xs text-muted-foreground">Đang tải dữ liệu hoạt động...</span>
           </div>
         ) : activities.length === 0 ? (
-          <div className="text-center py-8">
-            <svg className="w-12 h-12 text-muted-foreground mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-12">
+            <svg className="w-10 h-10 text-muted-foreground mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <p className="text-sm text-muted-foreground">Chưa có hoạt động nào</p>
+            <p className="text-xs text-muted-foreground">Chưa có giao dịch hoạt động nào</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {activities.map((activity, index) => (
-              <div key={index} className="flex items-start space-x-3">
-                <div className="flex-shrink-0 relative">
-                  {activity.userAvatarUrl ? (
-                    <div className="relative w-10 h-10">
-                      <Image
-                        src={activity.userAvatarUrl}
-                        alt={activity.userName}
-                        fill
-                        className="rounded-full object-cover"
-                      />
-                      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-accent to-accent-600 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800">
-                        {getActivityIcon(activity.transactionType)}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {COLUMN_HEADERS.map((col) => (
+                  <TableHead
+                    key={col.label}
+                    className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${col.className}`}
+                  >
+                    {col.label}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {activities.map((activity, index) => (
+                <TableRow key={index} className="group transition-colors">
+                  {/* Customer */}
+                  <TableCell className="px-4 py-3.5 align-middle whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-8 h-8 flex-shrink-0">
+                        {activity.userAvatarUrl ? (
+                          <Image
+                            src={activity.userAvatarUrl}
+                            alt={activity.userName}
+                            fill
+                            sizes="32px"
+                            className="rounded-full object-cover border border-border"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="w-8 h-8 bg-gradient-to-r from-accent to-accent-600 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-sm">
+                            {getInitials(activity.userName)}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ) : (
-                    <div className="w-10 h-10 bg-gradient-to-r from-accent to-accent-600 rounded-full flex items-center justify-center relative">
-                      <span className="text-sm font-medium text-white">
-                        {getInitials(activity.userName)}
+                      <span className="text-xs font-semibold text-foreground truncate max-w-[140px] sm:max-w-none">
+                        {activity.userName}
                       </span>
-                      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-accent to-accent-600 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800">
-                        {getActivityIcon(activity.transactionType)}
-                      </div>
                     </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground">
-                    <span className="font-medium text-foreground">{activity.userName}</span> {activity.description}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <p className="text-xs text-muted-foreground">{activity.timeAgo}</p>
-                    <span className="text-xs text-muted-foreground">•</span>
-                    <p className="text-xs font-medium text-accent dark:text-accent-on-dark">
-                      {formatCurrency(activity.price)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                  </TableCell>
+
+                  {/* Content */}
+                  <TableCell className="px-4 py-3.5 align-middle max-w-[200px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[500px] whitespace-nowrap">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium w-full">
+                      <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[9px] font-bold ring-1 ring-inset shrink-0 ${activity.transactionType === TransactionType.PAYIN
+                        ? "bg-emerald-50 text-emerald-700 ring-emerald-600/10 dark:bg-emerald-950/20 dark:text-emerald-450 dark:ring-emerald-900/30"
+                        : "bg-blue-50 text-blue-700 ring-blue-600/10 dark:bg-blue-950/20 dark:text-blue-450 dark:ring-blue-900/30"
+                        }`}>
+                        {activity.transactionType === TransactionType.PAYIN ? "Mua khóa học" : "Đăng ký gói"}
+                      </span>
+                      <span className="truncate text-foreground block flex-1">
+                        {activity.description}
+                      </span>
+                    </div>
+                  </TableCell>
+
+                  {/* Amount */}
+                  <TableCell className="px-4 py-3.5 align-middle text-right text-xs font-bold text-accent dark:text-accent-on-dark whitespace-nowrap">
+                    {formatCurrency(activity.price)}
+                  </TableCell>
+
+                  {/* Time */}
+                  <TableCell className="px-4 py-3.5 align-middle text-right text-xs text-muted-foreground font-medium whitespace-nowrap">
+                    {activity.timeAgo}
+                  </TableCell>
+
+                  {/* Status */}
+                  <TableCell className="px-4 py-3.5 align-middle text-right whitespace-nowrap">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50/60 dark:bg-emerald-950/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 ring-1 ring-inset ring-emerald-600/10 dark:ring-emerald-900/30">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Thành công
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
-      </CardContent>
+      </div>
     </Card>
   );
 };

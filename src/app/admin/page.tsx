@@ -3,7 +3,6 @@
 import { AdminOverviewProvider, useAdminOverviewContext } from "@/contexts/AdminOverviewContext";
 import { formatNumber, formatCurrency } from "@/utils/formatters";
 import { StatCard } from "@/components/admin/dashboard/StatCard";
-import { QuickActions } from "@/components/admin/dashboard/QuickActions";
 import { RecentActivities } from "@/components/admin/dashboard/RecentActivities";
 
 function AdminDashboardContent() {
@@ -72,14 +71,8 @@ function AdminDashboardContent() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-        <div className="lg:col-span-2">
-          <QuickActions />
-        </div>
-
-        <div className="lg:col-span-1">
-          <RecentActivities />
-        </div>
+      <div className="w-full">
+        <RecentActivities />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { Lock, X, Loader2 } from "lucide-react";
 import { authApi } from "@/services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -10,7 +11,7 @@ interface TwoFactorModalProps {
   email?: string;
   userId?: string;
   identityProvider?: 'USERNAME_PASSWORD' | 'GOOGLE' | 'GITHUB' | 'LINKEDIN';
-  onSuccess: () => void;
+  onSuccess: (data: { authorities?: string[]; accessToken?: string; userId?: string }) => void;
 }
 
 export default function TwoFactorModal({
@@ -28,22 +29,42 @@ export default function TwoFactorModal({
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) return;
+    if (!value) {
+      const newOtp = [...otp];
+      newOtp[index] = "";
+      setOtp(newOtp);
+      return;
+    }
+
+    // Lấy ký tự cuối cùng được nhập vào (để ghi đè và tương thích bộ gõ tiếng Việt)
+    const lastChar = value.slice(-1);
+    
+    // Chỉ chấp nhận các chữ số từ 0-9
+    if (!/^\d$/.test(lastChar)) return;
 
     const newOtp = [...otp];
-    newOtp[index] = value;
+    newOtp[index] = lastChar;
     setOtp(newOtp);
 
-    if (value && index < 5) {
+    if (index < 5) {
       inputRefs.current[index + 1]?.focus();
+    } else if (index === 5) {
+      // Tự động xác thực khi đã nhập đủ 6 chữ số
+      const code = newOtp.join("");
+      if (code.length === 6) {
+        onSubmit(newOtp);
+      }
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
-    } else if (e.key === "Enter" && otp.join("").length === 6 && !isLoading) {
-      onSubmit();
+    } else if (e.key === "Enter") {
+      const code = otp.join("");
+      if (code.length === 6 && !isLoading) {
+        onSubmit();
+      }
     }
   };
 
@@ -59,14 +80,14 @@ export default function TwoFactorModal({
     setOtp(newOtp);
 
     if (pastedData.length === 6) {
-      inputRefs.current[5]?.focus();
+      onSubmit(newOtp);
     } else if (pastedData.length > 0) {
       inputRefs.current[pastedData.length]?.focus();
     }
   };
 
-  const onSubmit = async () => {
-    const code = otp.join("");
+  const onSubmit = async (currentOtp: string[] = otp) => {
+    const code = currentOtp.join("");
     if (code.length !== 6) {
       setError("Vui lòng nhập đủ 6 chữ số");
       return;
@@ -76,7 +97,6 @@ export default function TwoFactorModal({
       setIsLoading(true);
       setError("");
 
-      // Use userId for both OAuth and regular 2FA
       const requestUserId = userId || email;
       if (!requestUserId) {
         setError("Thiếu thông tin xác thực");
@@ -90,9 +110,8 @@ export default function TwoFactorModal({
       });
 
       if (result.code === 200 && result.data?.accessToken) {
-        // Update auth context directly from login response (avoids extra introspect)
         setAuthFromLogin(result.data);
-        onSuccess();
+        onSuccess(result.data);
         handleClose();
       } else {
         setError("Mã OTP không đúng. Vui lòng thử lại.");
@@ -119,71 +138,40 @@ export default function TwoFactorModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 animate-in fade-in-0 zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/40 dark:bg-black/60">
+      <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-slate-800 animate-in fade-in-0 zoom-in-95 duration-300">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <X className="w-5 h-5" />
         </button>
 
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-accent-400 to-accent rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+          <div className="w-12 h-12 rounded-full bg-accent/10 dark:bg-accent/20 flex items-center justify-center mx-auto mb-4 ring-8 ring-accent/5 dark:ring-accent/10">
+            <Lock className="w-5 h-5 text-accent" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             Xác thực 2 bước
           </h2>
-          <p className="text-gray-600 text-sm">Nhập mã OTP từ ứng dụng authenticator</p>
-          {email && <p className="text-gray-900 font-medium text-sm">{email}</p>}
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            Nhập mã OTP từ ứng dụng authenticator
+          </p>
+          {email && (
+            <span className="mt-2 inline-flex items-center rounded-lg bg-gray-50 dark:bg-slate-800 px-2.5 py-1 text-xs font-mono text-gray-700 dark:text-slate-300 border border-gray-100 dark:border-slate-700">
+              {email}
+            </span>
+          )}
         </div>
 
         {error && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center">
-              <svg
-                className="w-4 h-4 text-red-400 mr-2"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <p className="text-sm text-red-600">{error}</p>
-            </div>
-          </div>
+          <p className="mb-4 text-center text-xs font-semibold text-rose-600 dark:text-rose-400">
+            {error}
+          </p>
         )}
 
-        <div className="space-y-4">
-          <div className="flex justify-center space-x-3">
+        <div className="space-y-5">
+          <div className="flex justify-center space-x-2">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -192,24 +180,32 @@ export default function TwoFactorModal({
                 }}
                 type="text"
                 inputMode="numeric"
-                maxLength={1}
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 disabled={isLoading}
-                className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-lg focus:border-accent focus:outline-none transition-colors disabled:opacity-50"
+                className="w-12 h-12 text-center text-xl font-bold border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800 rounded-xl focus:border-accent focus:ring-2 focus:ring-accent/15 focus:outline-none transition-all disabled:opacity-50 text-gray-950 dark:text-white"
               />
             ))}
           </div>
 
-          <button
-            onClick={onSubmit}
-            disabled={isLoading || otp.join("").length !== 6}
-            className="w-32 py-2 bg-gradient-to-r from-accent to-accent-600 text-white font-medium rounded-lg hover:from-accent-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-md text-sm mx-auto block"
-          >
-            {isLoading ? "Đang xác thực..." : "Xác thực"}
-          </button>
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => onSubmit()}
+              disabled={isLoading || otp.join("").length !== 6}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-8 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Đang xác thực...
+                </>
+              ) : (
+                "Xác thực"
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

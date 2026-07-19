@@ -1038,6 +1038,7 @@ export const ja = {
       home: "ホーム",
       backToUser: "ユーザー画面へ戻る",
       users: "ユーザー管理",
+      roles: "ロール管理",
       sessions: "セッション管理",
       sessionsAnalytics: "セッション分析",
       activeUsers: "アクティブユーザー",

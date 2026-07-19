@@ -1038,6 +1038,7 @@ export const ko = {
       home: "홈",
       backToUser: "사용자 페이지로",
       users: "사용자 관리",
+      roles: "역할 관리",
       sessions: "세션 관리",
       sessionsAnalytics: "세션 분석",
       activeUsers: "활성 사용자",
