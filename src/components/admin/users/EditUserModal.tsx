@@ -132,7 +132,7 @@ export default function EditUserModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/40 dark:bg-black/60">
       {/* Modal Box */}
       <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 border border-gray-150 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-slate-800">
           <div>
@@ -152,10 +152,7 @@ export default function EditUserModal({
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Body */}
-          <div className="px-5 py-4 space-y-4">
-            
-            {/* Avatar Section (Read Only) */}
+          <div className="px-5 py-4 space-y-4 max-h-[calc(100dvh-180px)] overflow-y-auto">
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                 Ảnh đại diện
@@ -188,9 +185,7 @@ export default function EditUserModal({
               </div>
             </div>
 
-            {/* Readonly Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Username */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                   Tên người dùng
@@ -203,7 +198,6 @@ export default function EditUserModal({
                 />
               </div>
 
-              {/* Email */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                   Email
@@ -217,7 +211,6 @@ export default function EditUserModal({
               </div>
             </div>
 
-            {/* University (Full Width) */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                 Trường đại học
@@ -231,7 +224,6 @@ export default function EditUserModal({
               />
             </div>
 
-            {/* Roles/Authorities (Switch Toggle List) */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-700 dark:text-slate-350 flex items-center justify-between">
                 <span>Quyền hạn tài khoản <span className="text-rose-500">*</span></span>
@@ -241,7 +233,7 @@ export default function EditUserModal({
                 {availableRoles.length > 0 ? (
                   availableRoles.map((roleName) => {
                     const isSelected = selectedRoles.includes(roleName);
-                    
+
                     const roleMeta: Record<string, { label: string; desc: string }> = {
                       ADMIN: {
                         label: "Quản trị viên (ADMIN)",
@@ -282,13 +274,10 @@ export default function EditUserModal({
                           </p>
                         </div>
 
-                        {/* Custom Toggle Switch */}
-                        <div className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                          isSelected ? "bg-accent" : "bg-gray-200 dark:bg-slate-800"
-                        }`}>
-                          <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                            isSelected ? "translate-x-4" : "translate-x-0"
-                          }`} />
+                        <div className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isSelected ? "bg-accent" : "bg-gray-200 dark:bg-slate-800"
+                          }`}>
+                          <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isSelected ? "translate-x-4" : "translate-x-0"
+                            }`} />
                         </div>
                       </div>
                     );
@@ -302,9 +291,7 @@ export default function EditUserModal({
               </div>
             </div>
 
-            {/* Editable Fields Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* User Status Select */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-gray-700 dark:text-slate-300">
                   Trạng thái tài khoản <span className="text-rose-500">*</span>
@@ -325,10 +312,7 @@ export default function EditUserModal({
 
                   {isDropdownOpen && (
                     <>
-                      {/* Close overlay */}
                       <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
-                      
-                      {/* Custom dropdown menu */}
                       <div className="absolute left-0 right-0 mt-1.5 z-20 rounded-lg border border-gray-150 bg-white dark:border-slate-800 dark:bg-slate-900 py-1 shadow-lg ring-1 ring-black/5 animate-in fade-in-0 slide-in-from-top-1 duration-150">
                         <button
                           type="button"
@@ -336,11 +320,10 @@ export default function EditUserModal({
                             handleInputChange("userStatus", UserStatus.ACTIVE);
                             setIsDropdownOpen(false);
                           }}
-                          className={`flex w-full items-center px-3.5 py-2.5 text-sm text-left transition-colors ${
-                            formData.userStatus === UserStatus.ACTIVE
+                          className={`flex w-full items-center px-3.5 py-2.5 text-sm text-left transition-colors ${formData.userStatus === UserStatus.ACTIVE
                               ? "bg-accent/10 text-accent font-semibold dark:bg-accent/25"
                               : "text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40"
-                          }`}
+                            }`}
                         >
                           Hoạt động
                         </button>
@@ -350,11 +333,10 @@ export default function EditUserModal({
                             handleInputChange("userStatus", UserStatus.INACTIVE);
                             setIsDropdownOpen(false);
                           }}
-                          className={`flex w-full items-center px-3.5 py-2.5 text-sm text-left transition-colors ${
-                            formData.userStatus === UserStatus.INACTIVE
+                          className={`flex w-full items-center px-3.5 py-2.5 text-sm text-left transition-colors ${formData.userStatus === UserStatus.INACTIVE
                               ? "bg-accent/10 text-accent font-semibold dark:bg-accent/25"
                               : "text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40"
-                          }`}
+                            }`}
                         >
                           Không hoạt động
                         </button>
@@ -364,7 +346,6 @@ export default function EditUserModal({
                 </div>
               </div>
 
-              {/* Two-Factor Authentication - Readonly checkbox info */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                   Xác thực 2 yếu tố (2FA)
@@ -384,17 +365,14 @@ export default function EditUserModal({
               </div>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl dark:bg-rose-950/20 dark:border-rose-900/30 flex items-start gap-2 text-rose-600 dark:text-rose-400">
                 <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
                 <p className="text-xs font-semibold">{error}</p>
               </div>
             )}
-
           </div>
 
-          {/* Footer Actions */}
           <div className="flex items-center justify-end gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/40">
             <Button
               type="button"
