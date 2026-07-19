@@ -4,7 +4,6 @@ import { ApiResponse } from "@/types/api";
 import {
   CreateQuestionSetRequest,
   UpdateQuestionSetRequest,
-  ListQuestionSetResponse,
   QuestionSetDetailResponse,
 } from "@/types/question-set";
 
@@ -18,14 +17,14 @@ export const questionSetService = {
   },
 
   getAllQuestionSets: async () => {
-    const response = await apiClient.get<ApiResponse<ListQuestionSetResponse>>(
+    const response = await apiClient.get<ApiResponse<QuestionSetDetailResponse[]>>(
       API.GET_QUESTION_SETS
     );
     return response.data;
   },
 
   getQuestionSetsByTopicSlug: async (topicSlug: string) => {
-    const response = await apiClient.get<ApiResponse<ListQuestionSetResponse>>(
+    const response = await apiClient.get<ApiResponse<QuestionSetDetailResponse[]>>(
       `${API.GET_QUESTION_SETS}/topic/${topicSlug}`
     );
     return response.data;

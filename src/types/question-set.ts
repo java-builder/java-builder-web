@@ -20,10 +20,6 @@ export interface QuestionSetDetailResponse {
   updatedAt?: string;
 }
 
-export interface ListQuestionSetResponse {
-  questionSets: QuestionSetDetailResponse[];
-}
-
 export interface CreateQuestionSetRequest {
   level: "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
   difficulty: "EASY" | "MEDIUM" | "HARD";

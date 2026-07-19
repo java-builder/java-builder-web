@@ -45,8 +45,4 @@ export interface CategoryDetailResponse {
   createdAt: string;
 }
 
-export interface ListCategoryDetailResponse {
-  categories: CategoryDetailResponse[];
-}
-
 

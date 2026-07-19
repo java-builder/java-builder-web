@@ -17,10 +17,6 @@ export interface InterviewQuestionResponse {
   isAccess?: boolean;
 }
 
-export interface ListInterviewQuestionResponse {
-  questions: InterviewQuestionResponse[];
-}
-
 export interface CreateInterviewQuestionRequest {
   difficulty: Difficulty;
   displayOrder: number;

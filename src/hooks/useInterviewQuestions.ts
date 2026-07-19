@@ -32,7 +32,7 @@ function useInterviewQuestionsBy(
         mode === "id"
           ? await interviewQuestionService.getInterviewQuestionsByQuestionSetId(identifier)
           : await interviewQuestionService.getInterviewQuestionsByQuestionSetSlug(identifier);
-      const data = res.data?.questions || [];
+      const data = res.data || [];
       listCache.set(key, data);
       setQuestions(data);
     } catch (error) {

@@ -42,7 +42,7 @@ export default function EditQuestionSetPage() {
       setIsLoading(true);
 
       const allSetsRes = await questionSetService.getAllQuestionSets();
-      const foundSet = allSetsRes.data?.questionSets.find((qs) => qs.id === questionSetId);
+      const foundSet = allSetsRes.data?.find((qs) => qs.id === questionSetId);
 
       if (foundSet) {
         setQuestionSet(foundSet);
@@ -51,7 +51,7 @@ export default function EditQuestionSetPage() {
       const questionsRes = await interviewQuestionService.getInterviewQuestionsByQuestionSetId(
         questionSetId
       );
-      setQuestions(questionsRes.data?.questions || []);
+      setQuestions(questionsRes.data || []);
     } catch (error) {
       console.error("Error fetching question set:", error);
       toast.error("Không thể tải thông tin bộ câu hỏi");

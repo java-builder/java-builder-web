@@ -42,7 +42,7 @@ export function useInterviewTopics() {
 
       setIsLoading(true);
       cachePromise[locale] = interviewService.getAllTopics().then((response) => {
-        const topicsData = response.data?.topics || [];
+        const topicsData = response.data || [];
         cachedTopics[locale] = topicsData;
         cacheTimestamp[locale] = Date.now();
         return topicsData;

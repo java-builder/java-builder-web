@@ -38,7 +38,7 @@ export default function InterviewTopicsPage() {
     setIsLoading(true);
     try {
       const res = await interviewService.getAllTopics();
-      setTopics(res.data?.topics || []);
+      setTopics(res.data || []);
     } catch (e) {
       console.error(e);
       setTopics([]);

@@ -1,6 +1,6 @@
 import { apiClient } from "@/api/axios";
 import { ApiResponse } from "@/types/api";
-import { CreateCategoryRequest, CreateCategoryResponse, CategoryDetailResponse, UpdateCategoryRequest, CategoryType, ListCategoryDetailResponse } from "@/types/category";
+import { CreateCategoryRequest, CreateCategoryResponse, CategoryDetailResponse, UpdateCategoryRequest, CategoryType } from "@/types/category";
 import { API } from "@/api/api";
 
 export const categoryService = {
@@ -10,12 +10,10 @@ export const categoryService = {
   },
 
   getAll: async (type: CategoryType) => {
-    const response = await apiClient.get<ApiResponse<ListCategoryDetailResponse>>(API.GET_CATEGORIES, {
+    const response = await apiClient.get<ApiResponse<CategoryDetailResponse[]>>(API.GET_CATEGORIES, {
       params: { type }
     });
-
-    const categories = response.data.data?.categories || [];
-    return { data: categories } as ApiResponse<CategoryDetailResponse[]>;
+    return response.data;
   },
 
   deleteCategory: async (id: string) => {

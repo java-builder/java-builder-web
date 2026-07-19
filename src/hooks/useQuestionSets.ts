@@ -29,7 +29,7 @@ export function useQuestionSets(topicSlug: string | null) {
       .getQuestionSetsByTopicSlug(topicSlug)
       .then((response) => {
         if (cancelled) return;
-        const data = response.data?.questionSets || [];
+        const data = response.data || [];
         cache.set(cacheKey, data);
         setQuestionSets(data);
       })

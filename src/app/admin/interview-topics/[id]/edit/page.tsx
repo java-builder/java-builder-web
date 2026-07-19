@@ -49,7 +49,7 @@ export default function EditInterviewTopicPage() {
       setIsLoading(true);
 
       const allTopicsRes = await interviewService.getAllTopics();
-      const foundTopic = allTopicsRes.data?.topics.find((t) => t.id === topicId);
+      const foundTopic = allTopicsRes.data?.find((t) => t.id === topicId);
 
       if (foundTopic) {
         const tr = pickTopicTranslation(foundTopic.translations, locale);
@@ -62,7 +62,7 @@ export default function EditInterviewTopicPage() {
         // Fetch question sets by topic slug
         const { questionSetService } = await import("@/services/question-set.service");
         const setsRes = await questionSetService.getQuestionSetsByTopicSlug(foundTopic.slug);
-        setQuestionSets(setsRes.data?.questionSets || []);
+        setQuestionSets(setsRes.data || []);
       }
     } catch (error) {
       console.error("Error fetching topic:", error);

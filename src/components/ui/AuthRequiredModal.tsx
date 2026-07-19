@@ -9,6 +9,7 @@ interface AuthRequiredModalProps {
   onClose: () => void;
   title?: string;
   message?: string;
+  showLater?: boolean;
 }
 
 export default function AuthRequiredModal({
@@ -16,6 +17,7 @@ export default function AuthRequiredModal({
   onClose,
   title,
   message,
+  showLater = true,
 }: AuthRequiredModalProps) {
   const { t } = useI18n();
 
@@ -24,7 +26,7 @@ export default function AuthRequiredModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 p-4 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={showLater ? onClose : undefined}
     >
       <div
         className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
@@ -43,13 +45,15 @@ export default function AuthRequiredModal({
           </p>
 
           <div className="mt-5 flex gap-2.5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
-            >
-              {t("common.later")}
-            </button>
+            {showLater && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
+              >
+                {t("common.later")}
+              </button>
+            )}
             <Link
               href="/login"
               className="flex-1 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white border border-transparent transition hover:bg-accent-600 text-center"

@@ -4,7 +4,6 @@ import { ApiResponse } from "@/types/api";
 import {
   CreateInterviewQuestionRequest,
   UpdateInterviewQuestionRequest,
-  ListInterviewQuestionResponse,
   InterviewQuestionResponse,
 } from "@/types/interview-question";
 
@@ -21,20 +20,19 @@ export const interviewQuestionService = {
   },
 
   getInterviewQuestionsByQuestionSetId: async (questionSetId: string) => {
-    const response = await apiClient.get<ApiResponse<ListInterviewQuestionResponse>>(
+    const response = await apiClient.get<ApiResponse<InterviewQuestionResponse[]>>(
       `${API.GET_INTERVIEW_QUESTIONS}/${questionSetId}`
     );
     return response.data;
   },
 
   getInterviewQuestionsByQuestionSetSlug: async (questionSetSlug: string) => {
-    const response = await apiClient.get<ApiResponse<ListInterviewQuestionResponse>>(
+    const response = await apiClient.get<ApiResponse<InterviewQuestionResponse[]>>(
       `${API.GET_INTERVIEW_QUESTIONS_BY_SLUG}/${questionSetSlug}`
     );
     return response.data;
   },
 
-  // Lấy full translations cho admin edit
   getInterviewQuestionForAdmin: async (questionId: string) => {
     const response = await apiClient.get<ApiResponse<InterviewQuestionResponse>>(
       `${API.GET_INTERVIEW_QUESTION_FOR_ADMIN}/${questionId}`

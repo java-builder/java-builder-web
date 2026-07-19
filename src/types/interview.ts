@@ -1,7 +1,3 @@
-export interface InterviewTopicsResponse {
-  topics: InterviewTopicDetailResponse[];
-}
-
 export interface InterviewTopicDetailResponse {
   id: string;
   slug: string;
@@ -10,10 +6,6 @@ export interface InterviewTopicDetailResponse {
   active?: boolean;
   totalQuestionSets?: number;
   totalQuestions?: number;
-  /**
-   * List endpoint: chứa 1 entry resolved theo locale hiện tại.
-   * Admin endpoint: chứa toàn bộ translations của các locale.
-   */
   translations: TopicTranslation[];
   createdAt: string;
   updatedAt?: string;
@@ -44,15 +36,12 @@ export interface InterviewQuestionItem {
   isAccess?: boolean;
 }
 
-// ─── Locale ───────────────────────────────────────────────────────────────────
 export type Locale = "VI" | "EN" | "JA" | "KO";
 
-/** Convert FE locale (lowercase: vi, en, ja, ko) to BE locale (uppercase: VI, EN, JA, KO). */
 export function toBackendLocale(locale: string): Locale {
   return locale.toUpperCase() as Locale;
 }
 
-// ─── Translation ──────────────────────────────────────────────────────────────
 export interface TopicTranslation {
   id?: string;
   locale: Locale;
@@ -75,8 +64,6 @@ export interface InterviewQuestionTranslation {
   tips?: string;
 }
 
-// ─── Helpers: pick translation theo locale, fallback VI/EN/first ──────────────
-// Locale arg có thể là FE locale (lowercase) hoặc BE locale (uppercase).
 export function pickTopicTranslation(
   translations: TopicTranslation[] | undefined,
   locale: string
@@ -119,7 +106,6 @@ export function pickInterviewQuestionTranslation(
   );
 }
 
-// ─── Create / Update Topic ────────────────────────────────────────────────────
 export interface CreateInterviewTopicRequest {
   key?: string;
   displayOrder?: number;

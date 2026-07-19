@@ -3,14 +3,13 @@ import { API } from "@/api/api";
 import { ApiResponse } from "@/types/api";
 import {
   InterviewTopicDetailResponse,
-  InterviewTopicsResponse,
   CreateInterviewTopicRequest,
   UpdateInterviewTopicRequest,
 } from "@/types/interview";
 
 export const interviewService = {
   getAllTopics: async () => {
-    const response = await apiClient.get<ApiResponse<InterviewTopicsResponse>>(
+    const response = await apiClient.get<ApiResponse<InterviewTopicDetailResponse[]>>(
       API.GET_INTERVIEW_TOPICS
     );
     return response.data;

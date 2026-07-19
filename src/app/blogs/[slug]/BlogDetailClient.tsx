@@ -112,6 +112,7 @@ export default function BlogDetailPage() {
           onClose={() => {}}
           title="Đăng nhập để đọc bài viết"
           message="Bạn cần đăng nhập để đọc bài viết này. Vui lòng đăng nhập để tiếp tục."
+          showLater={false}
         />
       </div>
     );
