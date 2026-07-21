@@ -94,6 +94,14 @@ export default function LoginClient() {
     } else if (message === "password-reset-success") {
       setSuccessMessage(t("auth.resetPasswordSuccess"));
     }
+
+    // Auto reset Turnstile widget on soft navigation (e.g. after logout redirect)
+    const timer = setTimeout(() => {
+      if (turnstileRef.current) {
+        turnstileRef.current.reset();
+      }
+    }, 300);
+    return () => clearTimeout(timer);
   }, [t]);
 
   const onSubmit = async (data: LoginFormData) => {
@@ -298,8 +306,21 @@ export default function LoginClient() {
                 ref={turnstileRef}
                 siteKey={TURNSTILE_SITE_KEY}
                 onSuccess={(token) => setTurnstileToken(token)}
-                onExpire={() => setTurnstileToken("")}
-                onError={() => setTurnstileToken("")}
+                onExpire={() => {
+                  setTurnstileToken("");
+                  turnstileRef.current?.reset();
+                }}
+                onError={() => {
+                  setTurnstileToken("");
+                  setTimeout(() => {
+                    turnstileRef.current?.reset();
+                  }, 500);
+                }}
+                options={{
+                  refreshExpired: "auto",
+                  retry: "auto",
+                  retryInterval: 1000,
+                }}
               />
             </div>
 

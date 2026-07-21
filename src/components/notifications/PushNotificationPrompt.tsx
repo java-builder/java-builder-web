@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { fcmService } from "@/services/fcm.service";
 import { useAuth } from "@/contexts/AuthContext";
-import { FaBell, FaTimes } from "react-icons/fa";
+import { Bell, X, Lightbulb } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const PROMPT_DISMISSED_KEY = "push_notification_prompt_dismissed";
-const PROMPT_DELAY = 3000;
+const PROMPT_DELAY = 2500;
 
 export default function PushNotificationPrompt() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -52,52 +54,79 @@ export default function PushNotificationPrompt() {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-80 animate-fade-in">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500 to-blue-600">
-          <div className="flex items-center gap-2">
-            <FaBell className="text-white text-sm" />
-            <span className="text-white font-semibold text-sm">Bật thông báo</span>
+    <div className="fixed bottom-5 right-5 z-50 max-w-sm w-full animate-in fade-in slide-in-from-bottom-5 duration-300">
+      <div className="bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 p-4 space-y-3.5 backdrop-blur-xl">
+        {/* Top Header */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 p-1.5 flex items-center justify-center shrink-0 border border-accent/20">
+              <Image
+                src="/logos/java-logo.png"
+                alt="JavaBuilder Logo"
+                width={28}
+                height={28}
+                className="object-contain"
+              />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <h4 className="text-sm font-bold text-foreground">Nhận Tips & Kiến Thức Java</h4>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap shrink-0">
+                  <Lightbulb className="w-3 h-3 mr-1 shrink-0" /> Java Tips
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                JavaBuilder Platform
+              </p>
+            </div>
           </div>
+
           <button
+            type="button"
             onClick={handleDismiss}
-            className="text-white hover:text-white/90 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted cursor-pointer"
             aria-label="Đóng"
           >
-            <FaTimes className="text-sm" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-3">
-          <p className="text-gray-600 dark:text-gray-300 text-xs mb-3">
-            Nhận thông báo về khóa học mới và hoạt động quan trọng
-          </p>
+        {/* Content */}
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Cập nhật sớm nhất mẹo lập trình Java Backend, bộ câu hỏi phỏng vấn HOT & kiến thức công nghệ mới từ JavaBuilder.
+        </p>
 
-          <div className="flex gap-2">
-            <button
-              onClick={handleDismiss}
-              className="flex-1 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            >
-              Để sau
-            </button>
-            <button
-              onClick={handleEnable}
-              disabled={isEnabling}
-              className="flex-1 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
-            >
-              {isEnabling ? (
-                <>
-                  <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Đang bật...
-                </>
-              ) : (
-                "Bật ngay"
-              )}
-            </button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex items-center justify-end gap-2 pt-1 border-t border-border">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleDismiss}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Để sau
+          </Button>
+
+          <Button
+            type="button"
+            variant="accent"
+            size="sm"
+            onClick={handleEnable}
+            disabled={isEnabling}
+            className="gap-1.5 text-xs font-semibold"
+          >
+            {isEnabling ? (
+              <>
+                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Đang kích hoạt...
+              </>
+            ) : (
+              <>
+                <Bell className="w-3.5 h-3.5" /> Bật Nhận Tips Ngay
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </div>

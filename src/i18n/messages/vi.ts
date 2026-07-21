@@ -1058,6 +1058,7 @@ export const vi = {
       tags: "Tags",
       comments: "Bình luận",
       notifications: "Quản lý thông báo",
+      pushNotifications: "Push Notifications",
       emailMarketing: "Gửi Email Marketing",
       emailTemplates: "Quản lý mẫu Email",
       scheduledJobs: "Scheduled Jobs",

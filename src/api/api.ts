@@ -226,6 +226,8 @@ export const API = {
     // FCM TOKEN
     REGISTER_FCM_TOKEN: "/api/v1/user-fcm-tokens",
     DELETE_FCM_TOKEN: "/api/v1/user-fcm-tokens",
+    GET_SUBSCRIBED_USERS: "/api/v1/user-fcm-tokens/admin/subscribers",
+    SEND_FCM_PUSH: "/api/v1/user-fcm-tokens/admin/send",
 
     // EMAIL SCHEDULER
     EMAIL_BROADCAST: "/api/v1/job-scheduler/broadcast",

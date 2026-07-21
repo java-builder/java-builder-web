@@ -12,6 +12,9 @@ import { useSettingsContext } from "@/contexts/SettingsContext";
 import { menuGroups } from "./menuData";
 import { MenuItem, MenuGroup } from "./types";
 import { useI18n } from "@/contexts/I18nContext";
+import { Bell, BellOff, Loader2 } from "lucide-react";
+import { fcmService } from "@/services/fcm.service";
+import toast from "react-hot-toast";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -29,6 +32,60 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+
+  const [isPushEnabled, setIsPushEnabled] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && fcmService.isSupported() && currentUser) {
+      const status = fcmService.getPermissionStatus();
+      const localToken = localStorage.getItem("fcm_token_registered");
+      setIsPushEnabled(status === "granted" && !!localToken);
+    }
+  }, [currentUser]);
+
+  const handleTogglePush = async () => {
+    if (!fcmService.isSupported()) {
+      toast.error("Trình duyệt không hỗ trợ thông báo đẩy (FCM)");
+      return;
+    }
+
+    const currentPermission = fcmService.getPermissionStatus();
+    if (currentPermission === "denied") {
+      toast.error("Quyền thông báo bị chặn! Hãy click icon 🔒 trên URL để bật lại.");
+      return;
+    }
+
+    setIsToggling(true);
+    try {
+      if (!isPushEnabled) {
+        const token = await fcmService.requestPermission();
+        if (token) {
+          await fcmService.saveFCMToken(token);
+          localStorage.setItem("fcm_token_registered", token);
+          setIsPushEnabled(true);
+          toast.success("🔔 Đã bật thông báo đẩy thành công!");
+        } else {
+          const statusAfterPrompt = fcmService.getPermissionStatus();
+          if (statusAfterPrompt === "denied") {
+            toast.error("Bạn đã từ chối quyền nhận thông báo.");
+          } else {
+            toast.error("Không thể bật thông báo. Vui lòng thử lại.");
+          }
+        }
+      } else {
+        await fcmService.deleteFCMToken();
+        localStorage.removeItem("fcm_token_registered");
+        setIsPushEnabled(false);
+        toast.success("🔕 Đã tắt thông báo đẩy");
+      }
+    } catch (error) {
+      console.error("Error toggling FCM:", error);
+      toast.error("Có lỗi xảy ra khi thiết lập thông báo");
+    } finally {
+      setIsToggling(false);
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -331,6 +388,40 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               );
             })}
         </nav>
+
+        {/* Quick Notification Settings Toggle Panel */}
+        {currentUser && fcmService.isSupported() && (
+          <div className="px-4 py-3 border-t border-gray-150 dark:border-slate-800/60">
+            <div className="p-3 rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/20 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                {isPushEnabled ? (
+                  <Bell className="w-4 h-4 text-emerald-500 animate-bounce" />
+                ) : (
+                  <BellOff className="w-4 h-4 text-gray-400" />
+                )}
+                <span>Nhận thông báo</span>
+              </div>
+              
+              {/* Custom Toggle Switch */}
+              <button
+                onClick={handleTogglePush}
+                disabled={isToggling}
+                type="button"
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  isPushEnabled ? "bg-accent" : "bg-gray-200 dark:bg-slate-700"
+                } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                    isPushEnabled ? "translate-x-4" : "translate-x-0"
+                  } flex items-center justify-center`}
+                >
+                  {isToggling && <Loader2 className="w-2.5 h-2.5 animate-spin text-accent" />}
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Logout Button - Only show if logged in */}
         {isAuthChecked && currentUser && (

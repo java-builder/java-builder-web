@@ -1052,6 +1052,7 @@ export const ko = {
       tags: "태그",
       comments: "댓글",
       notifications: "알림 관리",
+      pushNotifications: "푸시 알림",
       emailMarketing: "이메일 마케팅 전송",
       emailTemplates: "이메일 템플릿",
       scheduledJobs: "예약 작업",

@@ -1058,6 +1058,7 @@ export const en = {
       tags: "Tags",
       comments: "Comments",
       notifications: "Notification management",
+      pushNotifications: "Push Notifications",
       emailMarketing: "Send Email Marketing",
       emailTemplates: "Email Templates",
       scheduledJobs: "Scheduled Jobs",

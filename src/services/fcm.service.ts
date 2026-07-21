@@ -1,5 +1,5 @@
 import { apiClient } from "@/api/axios";
-import { ApiResponse } from "@/types/api";
+import { ApiResponse, PageResponse } from "@/types/api";
 import { FcmTokenRequest } from "@/types/fcm";
 import { API } from "@/api/api";
 import { getMessaging, getToken, onMessage, MessagePayload } from "firebase/messaging";
@@ -52,40 +52,38 @@ export const fcmService = {
         
         return "WEB";
       };
-      
-      const response = await apiClient.post<ApiResponse<void>>(
-        API.REGISTER_FCM_TOKEN,
-        { 
-          fcmToken: token,
-          deviceId: navigator.userAgent,
-          deviceType: getDeviceType()
-        } as FcmTokenRequest
-      );
-      return response.data;
+
+      const deviceType = getDeviceType();
+      const payload: FcmTokenRequest = {
+        fcmToken: token,
+        deviceType: deviceType,
+        deviceId: navigator.userAgent
+      };
+
+      await apiClient.post(API.REGISTER_FCM_TOKEN, payload);
     } catch (error) {
-      console.error("Error saving FCM token:", error);
-      throw error;
+      console.error("Error saving FCM token to backend:", error);
     }
   },
 
-  removeFCMToken: async () => {
+  deleteFCMToken: async () => {
     try {
-      const response = await apiClient.put<ApiResponse<void>>(
-        API.DELETE_FCM_TOKEN
-      );
-      return response.data;
+      await apiClient.put(API.DELETE_FCM_TOKEN);
     } catch (error) {
-      console.error("Error removing FCM token:", error);
-      throw error;
+      console.error("Error deleting FCM token from backend:", error);
     }
   },
 
-  setupForegroundListener: (callback: (payload: MessagePayload) => void) => {
+  onForegroundMessage: (callback: (payload: MessagePayload) => void) => {
+    if (typeof window === "undefined") return () => {};
+    
     try {
       const messaging = getMessaging(app);
-      return onMessage(messaging, callback);
+      return onMessage(messaging, (payload) => {
+        callback(payload);
+      });
     } catch (error) {
-      console.error("Error setting up foreground listener:", error);
+      console.error("Error setting up foreground message listener:", error);
       return () => {};
     }
   },
@@ -104,5 +102,33 @@ export const fcmService = {
       return "default";
     }
     return Notification.permission;
+  },
+
+  getSubscribedUsers: async (keyword?: string, page: number = 1, size: number = 20) => {
+    try {
+      const response = await apiClient.get<ApiResponse<PageResponse<unknown>>>(API.GET_SUBSCRIBED_USERS, {
+        params: { keyword: keyword || undefined, page, size },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching FCM subscribed users:", error);
+      throw error;
+    }
+  },
+
+  sendFCMPush: async (data: {
+    title: string;
+    body: string;
+    clickUrl?: string;
+    targetAudience?: string;
+    targetUserIds?: string[];
+  }) => {
+    try {
+      const response = await apiClient.post<ApiResponse<void>>(API.SEND_FCM_PUSH, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error sending FCM Push notification:", error);
+      throw error;
+    }
   },
 };
