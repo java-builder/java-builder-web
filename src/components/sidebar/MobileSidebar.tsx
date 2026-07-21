@@ -35,6 +35,15 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
   const [isPushEnabled, setIsPushEnabled] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userAgent = navigator.userAgent || "";
+      const ios = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+      setIsIOS(ios);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined" && fcmService.isSupported() && currentUser) {
@@ -390,36 +399,48 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         </nav>
 
         {/* Quick Notification Settings Toggle Panel */}
-        {currentUser && fcmService.isSupported() && (
+        {currentUser && (
           <div className="px-4 py-3 border-t border-gray-150 dark:border-slate-800/60">
-            <div className="p-3 rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/20 flex items-center justify-between shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                {isPushEnabled ? (
-                  <Bell className="w-4 h-4 text-emerald-500 animate-bounce" />
-                ) : (
-                  <BellOff className="w-4 h-4 text-gray-400" />
-                )}
-                <span>Nhận thông báo</span>
-              </div>
-              
-              {/* Custom Toggle Switch */}
-              <button
-                onClick={handleTogglePush}
-                disabled={isToggling}
-                type="button"
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  isPushEnabled ? "bg-accent" : "bg-gray-200 dark:bg-slate-700"
-                } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                    isPushEnabled ? "translate-x-4" : "translate-x-0"
-                  } flex items-center justify-center`}
+            {fcmService.isSupported() ? (
+              <div className="p-3 rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/20 flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                  {isPushEnabled ? (
+                    <Bell className="w-4 h-4 text-emerald-500 animate-bounce" />
+                  ) : (
+                    <BellOff className="w-4 h-4 text-gray-400" />
+                  )}
+                  <span>Nhận thông báo</span>
+                </div>
+                
+                {/* Custom Toggle Switch */}
+                <button
+                  onClick={handleTogglePush}
+                  disabled={isToggling}
+                  type="button"
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    isPushEnabled ? "bg-accent" : "bg-gray-200 dark:bg-slate-700"
+                  } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                  {isToggling && <Loader2 className="w-2.5 h-2.5 animate-spin text-accent" />}
-                </span>
-              </button>
-            </div>
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                      isPushEnabled ? "translate-x-4" : "translate-x-0"
+                    } flex items-center justify-center`}
+                  >
+                    {isToggling && <Loader2 className="w-2.5 h-2.5 animate-spin text-accent" />}
+                  </span>
+                </button>
+              </div>
+            ) : isIOS ? (
+              <div className="p-3 rounded-xl border border-dashed border-gray-200 dark:border-slate-800 bg-gray-50/30 dark:bg-slate-950/10 flex flex-col gap-1.5 shadow-xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-gray-650 dark:text-gray-400">
+                  <BellOff className="w-4 h-4 text-amber-500/80" />
+                  <span>Nhận thông báo (iOS)</span>
+                </div>
+                <p className="text-[10px] leading-normal text-gray-500 dark:text-gray-400">
+                  Nhấn <span className="font-semibold">Chia sẻ 📤</span> trên Safari &rarr; chọn <span className="font-semibold">"Thêm vào MH chính"</span> để bật thông báo.
+                </p>
+              </div>
+            ) : null}
           </div>
         )}
 
