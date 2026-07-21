@@ -41,7 +41,7 @@ export default function Sidebar() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userAgent = navigator.userAgent || "";
-      const ios = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+      const ios = /iPad|iPhone|iPod/.test(userAgent) && !("MSStream" in window);
       setIsIOS(ios);
     }
   }, []);
@@ -417,7 +417,7 @@ export default function Sidebar() {
                     <span>Nhận thông báo (iOS)</span>
                   </div>
                   <p className="text-[10px] leading-normal text-gray-500 dark:text-gray-400">
-                    Nhấn <span className="font-semibold">Chia sẻ 📤</span> trên Safari &rarr; chọn <span className="font-semibold">"Thêm vào MH chính"</span> để bật thông báo.
+                    Nhấn <span className="font-semibold">Chia sẻ 📤</span> trên Safari &rarr; chọn <span className="font-semibold">&quot;Thêm vào MH chính&quot;</span> để bật thông báo.
                   </p>
                 </div>
               )
