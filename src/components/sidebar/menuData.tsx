@@ -24,6 +24,17 @@ export const menuGroups: MenuGroup[] = [
         color: "text-blue-600 dark:text-blue-400",
       },
       {
+        href: "/leaderboard",
+        label: "Bảng xếp hạng Streak",
+        labelKey: "sidebar.leaderboard",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 1-4 4-6 1.286 1.714 3.09 3.09 3.757 5.757 1.2 1.2 1.2 3.1 0 4.3 0 1.2 1.2 2.657 1.657 4.657z" />
+          </svg>
+        ),
+        color: "text-amber-500 dark:text-amber-400",
+      },
+      {
         href: "/courses",
         label: "Khóa học",
         labelKey: "sidebar.courses",

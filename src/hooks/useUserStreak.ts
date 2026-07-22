@@ -14,6 +14,16 @@ export const useUserStreak = (enabled: boolean = true) => {
       return response.data;
     },
     enabled: Boolean(enabled && isAuthenticated),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useStreakLeaderboard = () => {
+  return useQuery({
+    queryKey: ["streakLeaderboard"],
+    queryFn: async () => {
+      const res = await userStreakService.getLeaderboard();
+      return res.data;
+    },
   });
 };
