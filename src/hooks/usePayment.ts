@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { paymentApi, PaymentSearchParams } from "@/services/payment.service";
 
 export const useMyPaymentHistory = (page: number = 1, size: number = 10) => {
@@ -22,5 +22,11 @@ export const useAllPayments = (params: PaymentSearchParams) => {
       return response.data;
     },
     staleTime: 30 * 1000,
+  });
+};
+
+export const useCreatePaymentLink = () => {
+  return useMutation({
+    mutationFn: (courseId: string) => paymentApi.createPaymentLink(courseId),
   });
 };

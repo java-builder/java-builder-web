@@ -32,9 +32,8 @@ export default function CourseDetailPage() {
   const { data: currentUser } = useCurrentUser();
   const { locale, t } = useI18n();
 
-  usePaymentWebSocket(slug);
-
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
+  usePaymentWebSocket(course?.id);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [activeTab, setActiveTab] = useState<

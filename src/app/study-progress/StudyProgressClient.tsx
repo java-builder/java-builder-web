@@ -64,6 +64,9 @@ export default function StudyProgressClient() {
       case "yesterday":
         targetDate = new Date(year, month, day - 1);
         break;
+      case "days3":
+        targetDate = new Date(year, month, day - 3);
+        break;
       case "week":
         targetDate = new Date(year, month, day - 7);
         break;
@@ -180,6 +183,7 @@ export default function StudyProgressClient() {
   const quickLabels: Record<DateFilterId, string> = {
     today: t("studyProgressPage.today"),
     yesterday: t("studyProgressPage.yesterday"),
+    days3: t("studyProgressPage.daysAgo3"),
     week: t("studyProgressPage.daysAgo7"),
     month: t("studyProgressPage.monthAgo1"),
     "6months": t("studyProgressPage.monthsAgo6"),
@@ -234,6 +238,7 @@ export default function StudyProgressClient() {
               stats={stats}
               totalElements={totalElements}
               getActivityTypeName={getActivityTypeName}
+              isLoading={isLoading || isFetching}
             />
 
             {isEmpty ? (
@@ -281,6 +286,7 @@ export default function StudyProgressClient() {
               activities={allFetchedActivities}
               locale={locale}
               t={t}
+              isLoading={isLoading}
             />
           </div>
         </div>

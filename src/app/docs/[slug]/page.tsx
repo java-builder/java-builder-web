@@ -9,13 +9,18 @@ import DocsArticle from "@/components/docs/DocsArticle";
 import DocsTableOfContents from "@/components/docs/DocsTableOfContents";
 import CourseOverview from "@/components/docs/CourseOverview";
 import ReviewSection from "@/components/courses/ReviewSection";
+import PaymentModal from "@/components/courses/PaymentModal";
+import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
 import { formatDate } from "@/utils/formatters";
 import { extractHeadings } from "@/utils/markdown";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import { favoriteService } from "@/services/favorite.service";
 import { FavoriteTargetType } from "@/types/favorite";
+import { useCreatePaymentLink } from "@/hooks/usePayment";
+import { CreatePaymentResponse } from "@/types/payment";
 import toast from "react-hot-toast";
 import { Heart } from "lucide-react";
 
@@ -41,6 +46,56 @@ export default function DocsDetailPage() {
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
   const [isLoadingLesson, setIsLoadingLesson] = useState(!!lessonIdFromUrl);
   const lessonCacheRef = useRef<Record<string, LessonDetailResponse>>({});
+
+  usePaymentWebSocket(course?.id);
+  const createPaymentMutation = useCreatePaymentLink();
+
+  const [paymentModal, setPaymentModal] = useState<{
+    isOpen: boolean;
+    isLoading: boolean;
+    data: CreatePaymentResponse | null;
+  }>({
+    isOpen: false,
+    isLoading: false,
+    data: null,
+  });
+
+  const [authModal, setAuthModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
+
+  const handlePayment = async () => {
+    if (!course?.id) return;
+    if (!currentUser) {
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để đăng ký khóa học",
+        message: "Bạn cần đăng nhập để mua khóa học này.",
+      });
+      return;
+    }
+
+    setPaymentModal({ isOpen: true, isLoading: true, data: null });
+
+    try {
+      const result = await createPaymentMutation.mutateAsync(course.id);
+      if (result.code === 201 && result.data) {
+        setPaymentModal({ isOpen: true, isLoading: false, data: result.data });
+      } else {
+        toast.error("Không thể tạo link thanh toán");
+        setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      }
+    } catch {
+      setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      toast.error("Có lỗi xảy ra khi tạo mã thanh toán.");
+    }
+  };
 
   useEffect(() => {
     if (isLoadingUser) {
@@ -468,6 +523,7 @@ export default function DocsDetailPage() {
                     course={course}
                     chapterLessons={chapterLessons}
                     onLessonClick={handleLessonClick}
+                    onEnrollClick={handlePayment}
                     selectedLessonId={selectedChapter}
                   />
                   
@@ -551,6 +607,21 @@ export default function DocsDetailPage() {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
+
+      <PaymentModal
+        isOpen={paymentModal.isOpen}
+        isLoading={paymentModal.isLoading}
+        data={paymentModal.data}
+        courseTitle={course?.title || ""}
+        onClose={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
+      />
+
+      <AuthRequiredModal
+        isOpen={authModal.isOpen}
+        title={authModal.title}
+        message={authModal.message}
+        onClose={() => setAuthModal({ isOpen: false, title: "", message: "" })}
+      />
     </div>
   );
 }

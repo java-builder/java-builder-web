@@ -701,6 +701,7 @@ export const ja = {
     filterTime: "期間でフィルター",
     today: "今日",
     yesterday: "昨日",
+    daysAgo3: "3日前",
     daysAgo7: "7日前",
     monthAgo1: "1ヶ月前",
     monthsAgo6: "6ヶ月前",

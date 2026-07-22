@@ -5,6 +5,7 @@ import { CalendarRange, SlidersHorizontal, X } from "lucide-react";
 export type DateFilterId =
   | "today"
   | "yesterday"
+  | "days3"
   | "week"
   | "month"
   | "6months"
@@ -27,6 +28,7 @@ interface StudyDateFilterProps {
 const QUICK_OPTIONS: DateFilterId[] = [
   "today",
   "yesterday",
+  "days3",
   "week",
   "month",
   "6months",

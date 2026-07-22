@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import { Flame } from "lucide-react";
 import { UserDailyActivity, ActivityType } from "@/types/user-activity";
 import { TranslationKey } from "@/contexts/I18nContext";
+import { useUserStreak } from "@/hooks/useUserStreak";
 
 interface StudyStreakProps {
   activities: UserDailyActivity[];
   locale: string;
   t: (key: TranslationKey) => string;
+  isLoading?: boolean;
   onViewDetails?: () => void;
 }
 
@@ -23,8 +25,12 @@ export default function StudyStreak({
   activities,
   locale,
   t,
+  isLoading,
   onViewDetails,
 }: StudyStreakProps) {
+  const { data: userStreakData, isLoading: isStreakLoading } = useUserStreak();
+  const showSkeleton = isLoading || isStreakLoading;
+
   // Activity minutes config
   const getActivityMinutes = (type: ActivityType) => {
     switch (type) {
@@ -175,10 +181,13 @@ export default function StudyStreak({
       avgExs = parseFloat((totalExs / activeDaysCount).toFixed(1));
     }
 
+    const displayStreakCount = userStreakData ? userStreakData.currentStreak : currentStreak;
+    const displayRecordStreak = userStreakData ? userStreakData.longestStreak : recStreak;
+
     return {
       activeDatesSet: activeDates,
-      streakCount: currentStreak,
-      recordStreak: recStreak,
+      streakCount: displayStreakCount,
+      recordStreak: displayRecordStreak,
       todayMinutes: todayMins,
       weekMinutes: totalWeekMins,
       chartData: last7DaysData,
@@ -186,12 +195,56 @@ export default function StudyStreak({
       avgExercisesPerSession: avgExs,
       weekDaysStatus: daysStatus,
     };
-  }, [activities, locale]);
+  }, [activities, locale, userStreakData]);
 
   const maxMinutesInChart = useMemo(() => {
     const maxVal = Math.max(...chartData.map((d) => d.minutes));
     return maxVal > 0 ? maxVal : 1;
   }, [chartData]);
+
+  if (showSkeleton) {
+    return (
+      <div className="flex flex-col gap-5">
+        {/* CARD 1 Skeleton */}
+        <div className="rounded-2xl border border-orange-100 bg-[#FFF9F2] p-4 sm:p-5 shadow-sm dark:border-amber-950/40 dark:bg-[#1E1A16] flex flex-col items-center justify-between min-h-[300px] animate-pulse">
+          <div className="w-16 h-16 rounded-full bg-orange-200 dark:bg-orange-950/60 my-3" />
+          <div className="h-5 w-32 bg-orange-200 dark:bg-orange-950/60 rounded mb-2" />
+          <div className="h-3 w-24 bg-orange-100 dark:bg-orange-950/40 rounded" />
+          <div className="grid grid-cols-7 gap-1.5 w-full mt-4 justify-items-center">
+            {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+              <div key={i} className="w-8 h-8 rounded-full bg-orange-200/60 dark:bg-orange-950/40" />
+            ))}
+          </div>
+          <div className="w-full border-t border-orange-100 dark:border-amber-950/20 my-3" />
+          <div className="grid grid-cols-2 w-full gap-2 text-center">
+            <div className="h-4 bg-orange-200/50 dark:bg-orange-950/40 rounded mx-2" />
+            <div className="h-4 bg-orange-200/50 dark:bg-orange-950/40 rounded mx-2" />
+          </div>
+        </div>
+
+        {/* CARD 2 Skeleton */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between min-h-[260px] animate-pulse">
+          <div className="space-y-3">
+            <div className="h-5 w-36 bg-gray-200 dark:bg-slate-800 rounded" />
+            <div className="space-y-2 pt-2">
+              <div className="h-3 w-16 bg-gray-200 dark:bg-slate-800 rounded" />
+              <div className="h-7 w-24 bg-gray-300 dark:bg-slate-700 rounded" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-16 bg-gray-200 dark:bg-slate-800 rounded" />
+              <div className="h-7 w-24 bg-gray-300 dark:bg-slate-700 rounded" />
+            </div>
+            <div className="w-full border-t border-gray-100 dark:border-slate-800 my-3" />
+            <div className="flex items-end justify-between gap-1 h-14 mt-2">
+              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                <div key={i} className="flex-1 bg-gray-200 dark:bg-slate-800 rounded-full h-10" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5">

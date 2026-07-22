@@ -19,6 +19,13 @@ export const ActivityTypeColors: Record<ActivityType, string> = {
   [ActivityType.SUBMIT_EXERCISE]: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
 };
 
+export const ActivityTypeBarColors: Record<ActivityType, string> = {
+  [ActivityType.VIEW_LESSON]: "bg-green-500",
+  [ActivityType.READ_BLOG]: "bg-purple-500",
+  [ActivityType.READ_INTERVIEW]: "bg-blue-500",
+  [ActivityType.SUBMIT_EXERCISE]: "bg-orange-500",
+};
+
 export interface UserDailyActivity {
   id: string;
   userId: string;

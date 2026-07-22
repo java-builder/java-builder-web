@@ -701,6 +701,7 @@ export const en = {
     filterTime: "Filter by time",
     today: "Today",
     yesterday: "Yesterday",
+    daysAgo3: "3 days ago",
     daysAgo7: "7 days ago",
     monthAgo1: "1 month ago",
     monthsAgo6: "6 months ago",

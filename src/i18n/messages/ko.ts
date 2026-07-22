@@ -701,6 +701,7 @@ export const ko = {
     filterTime: "기간별 필터",
     today: "오늘",
     yesterday: "어제",
+    daysAgo3: "3일 전",
     daysAgo7: "7일 전",
     monthAgo1: "1개월 전",
     monthsAgo6: "6개월 전",

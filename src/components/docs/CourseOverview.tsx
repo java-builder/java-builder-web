@@ -13,10 +13,13 @@ import {
   CheckCircle2 
 } from "lucide-react";
 
+import { ShoppingCart, ArrowRight } from "lucide-react";
+
 interface CourseOverviewProps {
   course: CourseDetailResponse;
   chapterLessons?: Record<string, LessonDetailResponse[]>;
   onLessonClick?: (lessonId: string) => void;
+  onEnrollClick?: () => void;
   selectedLessonId?: string | null;
 }
 
@@ -24,6 +27,7 @@ export default function CourseOverview({
   course, 
   chapterLessons, 
   onLessonClick, 
+  onEnrollClick,
   selectedLessonId 
 }: CourseOverviewProps) {
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({});
@@ -57,6 +61,10 @@ export default function CourseOverview({
     return sum + (lessons.length || 0);
   }, 0) || 0;
 
+  const formattedPrice = course.price != null && course.price > 0
+    ? new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(course.price)
+    : "Miễn phí";
+
   const toggleChapter = (chapterId: string) => {
     setExpandedChapters(prev => ({
       ...prev,
@@ -66,6 +74,38 @@ export default function CourseOverview({
 
   return (
     <div className="space-y-8">
+      {/* Buy Now / Enroll Banner if Not Enrolled */}
+      {!course.isEnrolled && (
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+              <Lock className="w-3.5 h-3.5" />
+              <span>Chưa đăng ký khóa học</span>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              Đăng ký để mở khóa toàn bộ bài học
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              Quyền truy cập không giới hạn {course.chapters?.length || 0} chương với {totalLessons} bài học chuyên sâu.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:items-end gap-2 w-full sm:w-auto shrink-0">
+            <div className="text-2xl font-bold tabular-nums text-accent">
+              {formattedPrice}
+            </div>
+            <button
+              onClick={() => onEnrollClick?.()}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent/20 cursor-pointer w-full sm:w-auto"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              <span>Mua ngay</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Course Info Cards */}
       <section>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">

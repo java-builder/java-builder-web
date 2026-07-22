@@ -17,7 +17,6 @@ export const usePaymentWebSocket = (courseId?: string) => {
 
     const subscription = subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
       if (notification.transactionType === 'SUBSCRIPTION') {
-        // Xóa cache câu hỏi phỏng vấn khi đăng ký premium thành công
         clearInterviewQuestionsCache();
 
         toast.success('🎉 Đăng ký Premium thành công!', {

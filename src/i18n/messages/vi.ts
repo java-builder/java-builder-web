@@ -701,6 +701,7 @@ export const vi = {
     filterTime: "Lọc theo thời gian",
     today: "Hôm nay",
     yesterday: "Hôm qua",
+    daysAgo3: "3 ngày trước",
     daysAgo7: "7 ngày trước",
     monthAgo1: "1 tháng trước",
     monthsAgo6: "6 tháng trước",
