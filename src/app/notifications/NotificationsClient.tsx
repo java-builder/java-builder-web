@@ -138,7 +138,7 @@ export default function NotificationsPage() {
           >
             {t("notificationsPage.tabUnread")}
             {unreadCount > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.5 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+              <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-[20px] px-1 text-xs font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 leading-none select-none">
                 {unreadCount}
               </span>
             )}

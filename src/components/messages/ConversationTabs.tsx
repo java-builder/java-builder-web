@@ -39,7 +39,7 @@ export default function ConversationTabs({
       >
         <span>Chưa đọc</span>
         {unreadCount > 0 && (
-          <span className="px-1.5 py-0.2 rounded-full bg-red-500 text-white text-[10px] font-black">
+          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none select-none shrink-0">
             {unreadCount}
           </span>
         )}
