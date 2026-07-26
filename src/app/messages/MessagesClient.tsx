@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { MessageSquare } from "lucide-react";
 import {
   Conversation,
   ChatMessage,
@@ -17,10 +16,12 @@ import ChatWindow from "@/components/messages/ChatWindow";
 import ChatDetailDrawer from "@/components/messages/ChatDetailDrawer";
 import CodeSnippetModal from "@/components/messages/CodeSnippetModal";
 import NewChatModal from "@/components/messages/NewChatModal";
+import EmptyChatState from "@/components/messages/EmptyChatState";
 import { EnrolledUserResponse } from "@/services/enrollment.service";
 import { conversationApi } from "@/services/conversation.service";
 import { chatMessageApi } from "@/services/chatMessage.service";
-import { BEMessageType } from "@/types/chatMessage";
+import { BEMessageType, ChatMessageResponse } from "@/types/chatMessage";
+import { useWebSocket } from "@/components/providers/PresenceProvider";
 import toast from "react-hot-toast";
 
 export default function MessagesClient() {
@@ -37,8 +38,7 @@ export default function MessagesClient() {
   useEffect(() => {
     let isMounted = true;
 
-    conversationApi
-      .getMyConversations(1, 20)
+    conversationApi.getMyConversations(1, 20)
       .then((res) => {
         if (!isMounted) return;
         const list = res?.data?.data || [];
@@ -53,14 +53,14 @@ export default function MessagesClient() {
           unreadCount: 0,
           lastMessage: item.lastMessage
             ? {
-                id: `msg_last_${item.id}`,
-                conversationId: item.id,
-                senderId: "",
-                senderName: item.lastMessageSender,
-                content: item.lastMessage,
-                timestamp: item.lastMessageTime || "Vừa xong",
-                type: "text",
-              }
+              id: `msg_last_${item.id}`,
+              conversationId: item.id,
+              senderId: "",
+              senderName: item.lastMessageSender,
+              content: item.lastMessage,
+              timestamp: item.lastMessageTime || "Vừa xong",
+              type: "text",
+            }
             : undefined,
         }));
         setConversations(converted);
@@ -79,8 +79,7 @@ export default function MessagesClient() {
     if (!activeConversationId) return;
 
     let isMounted = true;
-    chatMessageApi
-      .getMessagesByConversationId(activeConversationId, 1, 50)
+    chatMessageApi.getMessagesByConversationId(activeConversationId, 1, 50)
       .then((res) => {
         if (!isMounted) return;
         const pageData = res?.data?.data || [];
@@ -103,11 +102,11 @@ export default function MessagesClient() {
             attachments: item.attachments,
             fileData: firstAtt
               ? {
-                  name: firstAtt.attachmentName,
-                  size: (firstAtt.attachmentSize / (1024 * 1024)).toFixed(1) + " MB",
-                  fileType: firstAtt.attachmentType === "IMAGE" ? "image" : "pdf",
-                  url: firstAtt.attachmentUrl,
-                }
+                name: firstAtt.attachmentName,
+                size: (firstAtt.attachmentSize / (1024 * 1024)).toFixed(1) + " MB",
+                fileType: firstAtt.attachmentType === "IMAGE" ? "image" : "pdf",
+                url: firstAtt.attachmentUrl,
+              }
               : undefined,
             timestamp: item.createdAt || "Vừa xong",
             isRead: true,
@@ -130,6 +129,76 @@ export default function MessagesClient() {
       isMounted = false;
     };
   }, [activeConversationId]);
+
+  // Subscribe tới WebSocket Topic của cuộc trò chuyện hiện tại để nhận tin nhắn Realtime
+  const { client, isConnected } = useWebSocket();
+
+  useEffect(() => {
+    if (!activeConversationId || !client || !isConnected) return;
+
+    const destination = `/topic/conversations/${activeConversationId}`;
+
+    const subscription = client.subscribe(destination, (message) => {
+      try {
+        const item: ChatMessageResponse = JSON.parse(message.body);
+
+        const firstAtt = item.attachments?.[0];
+        let type: MessageType = "text";
+        if (item.messageType === "IMAGE") type = "image";
+        else if (item.messageType === "VIDEO") type = "video";
+        else if (item.messageType === "FILE") type = "file";
+
+        const incomingMsg: ChatMessage = {
+          id: item.id,
+          senderId: item.senderId,
+          senderName: item.senderName,
+          senderAvatar: item.senderAvatar,
+          conversationId: item.conversationId,
+          type,
+          content: item.content || "",
+          mediaUrl: firstAtt?.attachmentUrl,
+          attachments: item.attachments,
+          fileData: firstAtt
+            ? {
+              name: firstAtt.attachmentName,
+              size: (firstAtt.attachmentSize / (1024 * 1024)).toFixed(1) + " MB",
+              fileType: firstAtt.attachmentType === "IMAGE" ? "image" : "pdf",
+              url: firstAtt.attachmentUrl,
+            }
+            : undefined,
+          timestamp: item.createdAt || "Vừa xong",
+          isRead: true,
+        };
+
+        setMessagesMap((prev) => {
+          const list = prev[activeConversationId] || [];
+          if (list.some((m) => m.id === incomingMsg.id)) {
+            return prev;
+          }
+          if (item.tempId && list.some((m) => m.id === item.tempId)) {
+            return {
+              ...prev,
+              [activeConversationId]: list.map((m) => (m.id === item.tempId ? incomingMsg : m)),
+            };
+          }
+          return {
+            ...prev,
+            [activeConversationId]: [...list, incomingMsg],
+          };
+        });
+
+        setConversations((prev) =>
+          prev.map((c) => (c.id === activeConversationId ? { ...c, lastMessage: incomingMsg } : c))
+        );
+      } catch (err) {
+        console.error("Lỗi khi xử lý message nhận từ WebSocket:", err);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [activeConversationId, client, isConnected]);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId);
   const activeMessages = activeConversationId ? messagesMap[activeConversationId] || [] : [];
@@ -290,22 +359,27 @@ export default function MessagesClient() {
             mediaUrl: firstAtt?.attachmentUrl || mediaUrl,
             fileData: firstAtt
               ? {
-                  name: firstAtt.attachmentName,
-                  size: (firstAtt.attachmentSize / (1024 * 1024)).toFixed(1) + " MB",
-                  fileType: firstAtt.attachmentType === "IMAGE" ? "image" : "pdf",
-                  url: firstAtt.attachmentUrl,
-                }
+                name: firstAtt.attachmentName,
+                size: (firstAtt.attachmentSize / (1024 * 1024)).toFixed(1) + " MB",
+                fileType: firstAtt.attachmentType === "IMAGE" ? "image" : "pdf",
+                url: firstAtt.attachmentUrl,
+              }
               : fileData,
             timestamp: data.createdAt || "Vừa xong",
             isRead: true,
           };
 
-          setMessagesMap((prev) => ({
-            ...prev,
-            [activeConversationId]: (prev[activeConversationId] || []).map((msg) =>
-              msg.id === tempId ? serverMsg : msg
-            ),
-          }));
+          setMessagesMap((prev) => {
+            const list = prev[activeConversationId] || [];
+            // Nếu đã được WebSocket cập nhật rồi (không còn tempId trong list) -> Bỏ qua không cập nhật lại
+            if (!list.some((msg) => msg.id === tempId)) {
+              return prev;
+            }
+            return {
+              ...prev,
+              [activeConversationId]: list.map((msg) => (msg.id === tempId ? serverMsg : msg)),
+            };
+          });
 
           setConversations((prev) =>
             prev.map((c) =>
@@ -412,17 +486,7 @@ export default function MessagesClient() {
             )}
           </div>
         ) : (
-          <div className="flex-1 h-full flex flex-col items-center justify-center p-8 text-center bg-muted/20">
-            <div className="p-4 rounded-3xl bg-accent/10 text-accent mb-4">
-              <MessageSquare className="w-12 h-12" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">
-              Hệ thống tin nhắn học tập JavaBuilder
-            </h3>
-            <p className="text-xs text-muted-foreground max-w-sm mt-1">
-              Chọn một nhóm học tập hoặc trao đổi 1-1 với Mentor để bắt đầu thảo luận bài tập & kiến thức lập trình!
-            </p>
-          </div>
+          <EmptyChatState />
         )}
       </div>
 
