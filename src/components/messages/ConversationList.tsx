@@ -52,6 +52,13 @@ export default function ConversationList({
   // Lazy load courses on "Nhóm học" tab click
   const handleSelectTab = (tab: FilterTab) => {
     setFilterTab(tab);
+    if (tab !== "groups") {
+      setSelectedCourseId("ALL");
+    }
+    if (tab === "all") {
+      setSearchQuery("");
+      setSelectedCourseId("ALL");
+    }
     if (tab === "groups" && (!hasLoadedCourses || myCourses.length === 0)) {
       setIsLoadingCourses(true);
       enrollmentApi
@@ -165,7 +172,8 @@ export default function ConversationList({
     });
   }, [conversations, searchQuery, filterTab, selectedCourseId, myCourses]);
 
-  const showSearchResults = searchQuery.trim().length > 0 || selectedCourseId !== "ALL";
+  const showSearchResults =
+    searchQuery.trim().length > 0 || (filterTab === "groups" && selectedCourseId !== "ALL");
 
   return (
     <div className="w-full md:w-80 h-full bg-card text-card-foreground border-r border-border flex flex-col shadow-2xs select-none">
@@ -225,7 +233,12 @@ export default function ConversationList({
                   <EnrolledUserItem
                     key={user.id}
                     user={user}
-                    onSelectUser={onSelectEnrolledUser}
+                    onSelectUser={(u) => {
+                      setSelectedCourseId("ALL");
+                      setSearchQuery("");
+                      setFilterTab("all");
+                      onSelectEnrolledUser(u);
+                    }}
                   />
                 ))
             )}
