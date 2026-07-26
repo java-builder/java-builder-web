@@ -190,6 +190,7 @@ export const ko = {
     qna: "질문 답변",
     chatbot: "AI 챗봇",
     notifications: "알림",
+    messages: "메시지",
     language: "언어",
     support: "후원",
     myLearning: "나의 학습",

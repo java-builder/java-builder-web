@@ -96,6 +96,7 @@ export const API = {
     ENROLLMENTS_ADMIN: "/api/v1/enrollments/admin/enroll",
     GET_ENROLLMENTS_BY_COURSE: "/api/v1/enrollments/course", // + /:courseId
     UNENROLL_STUDENT: "/api/v1/enrollments", // + /:enrollmentId
+    ENROLLMENTS_SEARCH_USERS: "/api/v1/enrollments/users",
 
     // DOCUMENT
     CREATE_DOCUMENT: "/api/v1/documents",
@@ -259,4 +260,12 @@ export const API = {
 
     // CLOUDFLARE
     CLOUDFLARE: "/api/cloudflare",
+
+    // CONVERSATION
+    CONVERSATION: "/api/v1/conversation",
+    CONVERSATION_MY: "/api/v1/conversation/my-conversations",
+
+    // CHAT MESSAGES
+    CHAT_MESSAGES_SEND: "/api/v1/chat-messages/send",
+    CHAT_MESSAGES: "/api/v1/chat-messages",
 }

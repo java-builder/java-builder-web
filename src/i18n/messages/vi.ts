@@ -190,6 +190,7 @@ export const vi = {
     qna: "Hỏi đáp",
     chatbot: "AI Chatbot",
     notifications: "Thông báo",
+    messages: "Nhắn tin",
     language: "Ngôn ngữ",
     support: "Ủng hộ",
     myLearning: "Học tập của tôi",

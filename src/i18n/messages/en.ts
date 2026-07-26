@@ -190,6 +190,7 @@ export const en = {
     qna: "Q&A",
     chatbot: "AI Chatbot",
     notifications: "Notifications",
+    messages: "Messages",
     language: "Language",
     support: "Support",
     myLearning: "My Learning",

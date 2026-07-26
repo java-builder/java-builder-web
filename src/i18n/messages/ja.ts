@@ -190,6 +190,7 @@ export const ja = {
     qna: "質疑応答",
     chatbot: "AIチャットボット",
     notifications: "通知",
+    messages: "メッセージ",
     language: "言語",
     support: "支援する",
     myLearning: "マイ学習",

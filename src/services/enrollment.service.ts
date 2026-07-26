@@ -4,7 +4,26 @@ import { MyEnrolledCourseResponse } from "@/types/course";
 import { CourseEnrollmentResponse } from "@/types/enrollment";
 import { API } from "@/api/api";
 
+export interface EnrolledUserResponse {
+  id: string;
+  username: string;
+  avatar?: string;
+  role?: string;
+  courseName?: string;
+  status?: string;
+  lastActive?: string;
+}
+
 export const enrollmentApi = {
+  // Tìm kiếm học viên/người dùng theo khóa học hoặc từ khóa
+  searchEnrolledUsers: async (params?: { page?: number; size?: number; courseId?: string; query?: string }) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<EnrolledUserResponse>>>(
+      API.ENROLLMENTS_SEARCH_USERS,
+      { params }
+    );
+    return response.data;
+  },
+
   // Lấy danh sách khóa học đã đăng ký
   getMyCourses: async (page: number = 1, size: number = 10) => {
     const response = await apiClient.get<ApiResponse<PageResponse<MyEnrolledCourseResponse>>>(

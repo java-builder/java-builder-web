@@ -98,7 +98,13 @@ export default function PublicMarkdownRenderer({
       const match = /language-(\w+)/.exec(className || "");
       
       if (match) {
-        const language = match[1];
+        const rawLanguage = match[1];
+        const languageMap: Record<string, string> = {
+          springboot: "java",
+          js: "javascript",
+          ts: "typescript",
+        };
+        const highlightLanguage = languageMap[rawLanguage.toLowerCase()] || rawLanguage.toLowerCase();
         const codeString = String(children).replace(/\n$/, "");
         const codeId = `code-${hashString(codeString)}`;
         
@@ -112,10 +118,15 @@ export default function PublicMarkdownRenderer({
                 <span className="w-2.5 h-2.5 rounded-full bg-green-400/80 dark:bg-green-500/60" />
               </div>
               <span className="text-[10px] font-bold tracking-wider text-gray-500 dark:text-slate-500 uppercase font-mono select-none">
-                {language === "js" || language === "javascript" ? "JS" : language}
+                {rawLanguage === "js" || rawLanguage === "javascript" ? "JS" : rawLanguage}
               </span>
               <button
-                onClick={() => copyToClipboard(codeString, codeId)}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  copyToClipboard(codeString, codeId);
+                }}
                 className="flex items-center gap-1 text-[11px] font-bold text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200 transition-colors duration-150 cursor-pointer"
                 title="Copy code"
               >
@@ -135,7 +146,7 @@ export default function PublicMarkdownRenderer({
             {/* Code highlighter */}
             <div className="text-sm overflow-x-auto relative bg-[#fafafa] dark:bg-[#1e1e1e]">
               <SyntaxHighlighter
-                language={language}
+                language={highlightLanguage}
                 style={codeStyle}
                 PreTag="div"
                 showLineNumbers={false}
