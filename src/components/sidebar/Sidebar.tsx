@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { conversationApi } from "@/services/conversation.service";
 import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -100,7 +101,16 @@ export default function Sidebar() {
   const notifications = notifData?.data || [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // Update menu groups with notification badge
+  const { data: unreadConvData } = useQuery({
+    queryKey: ["unread-messages-count"],
+    queryFn: () => conversationApi.getUnreadCount(),
+    enabled: !!currentUser,
+    staleTime: 0,
+    refetchInterval: 10000,
+  });
+
+  const unreadChatCount = unreadConvData?.data ?? 0;
+
   const menuGroupsWithBadge = useMemo(() => {
     return menuGroups.map((group) => ({
       ...group,
@@ -108,13 +118,19 @@ export default function Sidebar() {
         if (item.href === "/notifications" && unreadCount > 0) {
           return {
             ...item,
-            badge: unreadCount > 9 ? "9+" : String(unreadCount),
+            badge: unreadCount > 99 ? "99+" : String(unreadCount),
+          };
+        }
+        if (item.href === "/messages" && unreadChatCount > 0) {
+          return {
+            ...item,
+            badge: unreadChatCount > 99 ? "99+" : String(unreadChatCount),
           };
         }
         return item;
       }),
     }));
-  }, [unreadCount]);
+  }, [unreadCount, unreadChatCount]);
 
 
 
@@ -361,8 +377,8 @@ export default function Sidebar() {
                   disabled={isToggling}
                   type="button"
                   className={`mx-auto w-10 h-10 rounded-xl flex items-center justify-center border transition-all cursor-pointer ${isPushEnabled
-                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-                      : "bg-gray-50 border-gray-200 dark:bg-slate-800/50 dark:border-slate-700/80 text-gray-400 hover:text-foreground hover:bg-gray-100"
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                    : "bg-gray-50 border-gray-200 dark:bg-slate-800/50 dark:border-slate-700/80 text-gray-400 hover:text-foreground hover:bg-gray-100"
                     }`}
                   title={isPushEnabled ? "Đã bật thông báo đẩy" : "Bấm để nhận thông báo đẩy"}
                 >
@@ -404,7 +420,7 @@ export default function Sidebar() {
               )
             ) : isIOS ? (
               isCollapsed ? (
-                <div 
+                <div
                   className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center border border-dashed border-gray-200 dark:border-slate-700/80 text-amber-500/70 cursor-help"
                   title="iOS: Nhấn Chia sẻ 📤 -> 'Thêm vào MH chính' để nhận thông báo đẩy."
                 >

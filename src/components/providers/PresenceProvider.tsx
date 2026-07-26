@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { connectWebSocket } from "@/lib/websocket";
 import { Client } from "@stomp/stompjs";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface WebSocketContextType {
   client: Client | null;
@@ -25,6 +26,7 @@ export default function PresenceProvider({
   const { isAuthenticated } = useAuth();
   const [client, setClient] = useState<Client | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -55,6 +57,17 @@ export default function PresenceProvider({
       };
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (client && isConnected) {
+      const sub = client.subscribe("/user/queue/chat-messages", () => {
+        queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
+      });
+      return () => {
+        sub.unsubscribe();
+      };
+    }
+  }, [client, isConnected, queryClient]);
 
   return (
     <WebSocketContext.Provider value={{ client, isConnected }}>

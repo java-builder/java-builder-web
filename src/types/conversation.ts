@@ -41,4 +41,6 @@ export interface ConversationDetailResponse {
   lastMessageSender?: string;
   lastMessageTime?: string;
   createdAt?: string;
+  unreadCount?: number;
 }
+

@@ -73,7 +73,7 @@ export default function SidebarMenuGroup({
                   title={isCollapsed ? displayedLabel : undefined}
                 >
                   <span
-                    className={`flex-shrink-0 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 ${item.highlight
+                    className={`flex-shrink-0 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 relative ${item.highlight
                         ? "text-purple-600 dark:text-purple-300"
                         : active
                           ? "text-blue-600 dark:text-blue-400 scale-105"
@@ -81,6 +81,11 @@ export default function SidebarMenuGroup({
                       }`}
                   >
                     {item.icon}
+                    {item.badge && (
+                      <span className="absolute -top-1 -right-1.5 min-w-[13px] h-[13px] px-0.5 p-0 flex items-center justify-center text-[8.5px] font-bold text-center leading-none rounded-full bg-red-500 text-white dark:bg-red-600 border border-white dark:border-slate-900 select-none shadow-xs">
+                        {item.badge}
+                      </span>
+                    )}
                   </span>
                   {!isCollapsed && (
                     <>
@@ -93,16 +98,6 @@ export default function SidebarMenuGroup({
                           NEW
                         </span>
                       )}
-                      {item.badge && (
-                        <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${item.href === "/notifications"
-                            ? "bg-red-650 text-white"
-                            : item.badgeColor
-                              ? `${item.badgeColor} text-white animate-pulse`
-                              : "bg-blue-50 text-blue-650 dark:bg-blue-900/30 dark:text-blue-400"
-                          }`}>
-                          {item.badge}
-                        </span>
-                      )}
                     </>
                   )}
                   {isCollapsed && (
@@ -111,16 +106,6 @@ export default function SidebarMenuGroup({
                       {item.highlight && (
                         <span className="ml-2 px-1.5 py-0.5 text-xs font-bold rounded bg-gradient-to-r from-purple-500 to-blue-500 text-white">
                           NEW
-                        </span>
-                      )}
-                      {item.badge && (
-                        <span className={`ml-2 px-1.5 py-0.5 text-xs font-bold rounded ${item.href === "/notifications"
-                            ? "bg-red-650 text-white"
-                            : item.badgeColor
-                              ? `${item.badgeColor} text-white`
-                              : "bg-blue-600 text-white"
-                          }`}>
-                          {item.badge}
                         </span>
                       )}
                       <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-slate-700"></div>

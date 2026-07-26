@@ -23,4 +23,18 @@ export const conversationApi = {
     );
     return response.data;
   },
+
+  getUnreadCount: async () => {
+    const response = await apiClient.get<ApiResponse<number>>(
+      API.CONVERSATION_UNREAD_COUNT
+    );
+    return response.data;
+  },
+
+  markAsRead: async (conversationId: string) => {
+    const response = await apiClient.put<ApiResponse<void>>(
+      API.CONVERSATION_MARK_READ(conversationId)
+    );
+    return response.data;
+  },
 };

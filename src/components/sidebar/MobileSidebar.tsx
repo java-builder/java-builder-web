@@ -4,7 +4,8 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { conversationApi } from "@/services/conversation.service";
 import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -106,6 +107,16 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const notifications = notifData?.data || [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
+  const { data: unreadConvData } = useQuery({
+    queryKey: ["unread-messages-count"],
+    queryFn: () => conversationApi.getUnreadCount(),
+    enabled: !!currentUser,
+    staleTime: 0,
+    refetchInterval: 10000,
+  });
+
+  const unreadChatCount = unreadConvData?.data ?? 0;
+
   const menuGroupsWithBadge = useMemo(() => {
     return menuGroups.map((group) => ({
       ...group,
@@ -113,13 +124,19 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         if (item.href === "/notifications" && unreadCount > 0) {
           return {
             ...item,
-            badge: unreadCount > 9 ? "9+" : String(unreadCount),
+            badge: unreadCount > 99 ? "99+" : String(unreadCount),
+          };
+        }
+        if (item.href === "/messages" && unreadChatCount > 0) {
+          return {
+            ...item,
+            badge: unreadChatCount > 99 ? "99+" : String(unreadChatCount),
           };
         }
         return item;
       }),
     }));
-  }, [unreadCount]);
+  }, [unreadCount, unreadChatCount]);
 
 
 
@@ -379,11 +396,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                               </span>
                             )}
                             {item.badge && (
-                              <span className={`px-2 py-0.5 text-xs font-bold rounded-full shadow-sm ${item.href === "/notifications"
-                                ? "bg-red-650 text-white"
-                                : item.badgeColor
-                                  ? `${item.badgeColor} text-white animate-pulse`
-                                  : "bg-accent/20 text-accent"
+                              <span className={`px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none ${
+                                item.href === "/notifications"
+                                  ? "bg-red-500 text-white dark:bg-red-600 dark:text-white"
+                                  : item.href === "/messages"
+                                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                                  : item.badgeColor
+                                  ? `${item.badgeColor} text-white`
+                                  : "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
                                 }`}>
                                 {item.badge}
                               </span>

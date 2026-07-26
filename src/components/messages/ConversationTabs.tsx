@@ -13,7 +13,7 @@ export default function ConversationTabs({
   onSelectTab,
   conversations,
 }: ConversationTabsProps) {
-  const unreadCount = conversations.reduce((acc, c) => acc + (c.unreadCount || 0), 0);
+  const unreadCount = conversations.filter((c) => (c.unreadCount || 0) > 0).length;
 
   return (
     <div className="flex items-center gap-1 p-2 border-b border-border overflow-x-auto text-xs font-semibold">

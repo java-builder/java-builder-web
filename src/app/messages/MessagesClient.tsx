@@ -22,10 +22,12 @@ import { conversationApi } from "@/services/conversation.service";
 import { chatMessageApi } from "@/services/chatMessage.service";
 import { BEMessageType, ChatMessageResponse } from "@/types/chatMessage";
 import { useWebSocket } from "@/components/providers/PresenceProvider";
+import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function MessagesClient() {
   const currentUser = useChatCurrentUser();
+  const queryClient = useQueryClient();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messagesMap, setMessagesMap] = useState<Record<string, ChatMessage[]>>({});
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function MessagesClient() {
             item.conversationAvatar ||
             "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80",
           members: [],
-          unreadCount: 0,
+          unreadCount: item.unreadCount || 0,
           lastMessage: item.lastMessage
             ? {
               id: `msg_last_${item.id}`,
@@ -74,11 +76,22 @@ export default function MessagesClient() {
     };
   }, []);
 
-  // Fetch tin nhắn thực tế từ BE API khi chọn activeConversationId
   useEffect(() => {
     if (!activeConversationId) return;
 
     let isMounted = true;
+
+    conversationApi
+      .markAsRead(activeConversationId)
+      .then(() => {
+        if (isMounted) {
+          queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi đánh dấu đã đọc cuộc trò chuyện:", err);
+      });
+
     chatMessageApi.getMessagesByConversationId(activeConversationId, 1, 50)
       .then((res) => {
         if (!isMounted) return;
@@ -128,19 +141,14 @@ export default function MessagesClient() {
     return () => {
       isMounted = false;
     };
-  }, [activeConversationId]);
+  }, [activeConversationId, queryClient]);
 
-  // Subscribe tới WebSocket Topic của cuộc trò chuyện hiện tại để nhận tin nhắn Realtime
   const { client, isConnected } = useWebSocket();
 
-  useEffect(() => {
-    if (!activeConversationId || !client || !isConnected) return;
-
-    const destination = `/topic/conversations/${activeConversationId}`;
-
-    const subscription = client.subscribe(destination, (message) => {
+  const handleIncomingMessage = useCallback(
+    (messageBody: string) => {
       try {
-        const item: ChatMessageResponse = JSON.parse(message.body);
+        const item: ChatMessageResponse = JSON.parse(messageBody);
 
         const firstAtt = item.attachments?.[0];
         let type: MessageType = "text";
@@ -170,35 +178,79 @@ export default function MessagesClient() {
           isRead: true,
         };
 
+        // 1. Cập nhật danh sách tin nhắn của cuộc trò chuyện tương ứng
         setMessagesMap((prev) => {
-          const list = prev[activeConversationId] || [];
+          const list = prev[item.conversationId] || [];
           if (list.some((m) => m.id === incomingMsg.id)) {
             return prev;
           }
           if (item.tempId && list.some((m) => m.id === item.tempId)) {
             return {
               ...prev,
-              [activeConversationId]: list.map((m) => (m.id === item.tempId ? incomingMsg : m)),
+              [item.conversationId]: list.map((m) => (m.id === item.tempId ? incomingMsg : m)),
             };
           }
           return {
             ...prev,
-            [activeConversationId]: [...list, incomingMsg],
+            [item.conversationId]: [...list, incomingMsg],
           };
         });
 
-        setConversations((prev) =>
-          prev.map((c) => (c.id === activeConversationId ? { ...c, lastMessage: incomingMsg } : c))
-        );
+        // 2. Cập nhật Sidebar: nếu đã có trong mảng -> ĐẨY LÊN ĐẦU. Nếu CHƯA CÓ (trang 2 hoặc phòng mới) -> TỰ ĐỘNG THÊM VÀO ĐẦU SIDEBAR!
+        setConversations((prev) => {
+          const targetConv = prev.find((c) => c.id === item.conversationId);
+          const isCurrentlyActive = item.conversationId === activeConversationId;
+
+          if (targetConv) {
+            const updatedConv: Conversation = {
+              ...targetConv,
+              lastMessage: incomingMsg,
+              unreadCount: isCurrentlyActive
+                ? 0
+                : (targetConv.unreadCount || 0) + (incomingMsg.senderId !== currentUser.id ? 1 : 0),
+            };
+            const remainingConvs = prev.filter((c) => c.id !== item.conversationId);
+            return [updatedConv, ...remainingConvs];
+          } else {
+            // Cuộc trò chuyện nằm ở trang 2 hoặc mới được khởi tạo
+            const newConv: Conversation = {
+              id: item.conversationId,
+              type: "PRIVATE",
+              name: item.senderName || "Tin nhắn mới",
+              avatar: item.senderAvatar,
+              members: [],
+              unreadCount: isCurrentlyActive ? 0 : 1,
+              lastMessage: incomingMsg,
+            };
+            return [newConv, ...prev];
+          }
+        });
       } catch (err) {
-        console.error("Lỗi khi xử lý message nhận từ WebSocket:", err);
+        console.error("Lỗi khi xử lý message từ WebSocket:", err);
       }
-    });
+    },
+    [activeConversationId, currentUser.id]
+  );
+
+  useEffect(() => {
+    if (!client || !isConnected) return;
+
+    const subs = [
+      client.subscribe("/user/queue/chat-messages", (m) => handleIncomingMessage(m.body)),
+    ];
+
+    if (activeConversationId) {
+      subs.push(
+        client.subscribe(`/topic/conversations/${activeConversationId}`, (m) =>
+          handleIncomingMessage(m.body)
+        )
+      );
+    }
 
     return () => {
-      subscription.unsubscribe();
+      subs.forEach((s) => s.unsubscribe());
     };
-  }, [activeConversationId, client, isConnected]);
+  }, [client, isConnected, activeConversationId, handleIncomingMessage]);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId);
   const activeMessages = activeConversationId ? messagesMap[activeConversationId] || [] : [];
@@ -207,11 +259,20 @@ export default function MessagesClient() {
     setConversations((prev) => {
       const exists = prev.some((c) => c.id === conv.id);
       if (!exists) {
-        return [conv, ...prev];
+        return [{ ...conv, unreadCount: 0 }, ...prev];
       }
       return prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c));
     });
     setActiveConversationId(conv.id);
+
+    conversationApi
+      .markAsRead(conv.id)
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
+      })
+      .catch((err) => {
+        console.error("Lỗi khi đánh dấu đã đọc cuộc trò chuyện:", err);
+      });
   };
 
   const handleSelectEnrolledUser = async (user: EnrolledUserResponse) => {
