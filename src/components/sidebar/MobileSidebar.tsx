@@ -111,8 +111,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     queryKey: ["unread-messages-count"],
     queryFn: () => conversationApi.getUnreadCount(),
     enabled: !!currentUser,
-    staleTime: 0,
-    refetchInterval: 10000,
+    staleTime: 1000 * 60 * 5,
   });
 
   const unreadChatCount = unreadConvData?.data ?? 0;
