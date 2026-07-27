@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import ThemeToggle from "@/components/header-components/ThemeToggle";
 import { CourseDetailResponse } from "@/types/course";
-import { 
-  BookOpen, 
-  LogIn, 
+import {
+  BookOpen,
+  LogIn,
   Menu
 } from "lucide-react";
 
@@ -16,8 +17,8 @@ interface DocsHeaderProps {
   course?: CourseDetailResponse | null;
 }
 
-export default function DocsHeader({ 
-  onMenuClick, 
+export default function DocsHeader({
+  onMenuClick,
   showMenuButton = false,
   course
 }: DocsHeaderProps) {
@@ -27,7 +28,7 @@ export default function DocsHeader({
     <header className="sticky top-0 z-50 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-gray-200 dark:border-slate-700/60 shadow-sm transition-all duration-250">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
+
           {/* Left: Hamburger menu (mobile), Logo & Branding */}
           <div className="flex items-center gap-3">
             {showMenuButton && (
@@ -42,7 +43,7 @@ export default function DocsHeader({
                 <div className="lg:hidden h-5 w-px bg-gray-200 dark:bg-slate-700" />
               </>
             )}
-            
+
             <Link href="/docs" className="flex items-center gap-2 group">
               <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent dark:text-sky-400 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <BookOpen className="w-4 h-4" />
@@ -75,26 +76,26 @@ export default function DocsHeader({
           <div className="flex items-center gap-3">
             {/* Global Nav Links - hidden on mobile */}
             <nav className="hidden lg:flex items-center gap-1 mr-2 border-r border-gray-200 dark:border-slate-700/80 pr-4">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
               >
                 Trang chủ
               </Link>
-              <Link 
-                href="/courses" 
+              <Link
+                href="/courses"
                 className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
               >
                 Khóa học
               </Link>
-              <Link 
-                href="/exercises" 
+              <Link
+                href="/exercises"
                 className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
               >
                 Bài tập
               </Link>
-              <Link 
-                href="/blogs" 
+              <Link
+                href="/blogs"
                 className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
               >
                 Blog
@@ -103,7 +104,7 @@ export default function DocsHeader({
 
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              
+
               {/* User Profile Info */}
               {currentUser ? (
                 <Link
@@ -112,10 +113,11 @@ export default function DocsHeader({
                   title="Xem hồ sơ cá nhân"
                 >
                   {currentUser.avatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={currentUser.avatar}
                       alt={currentUser.username}
+                      width={26}
+                      height={26}
                       className="w-6.5 h-6.5 rounded-full object-cover border border-gray-150 dark:border-slate-700"
                     />
                   ) : (
@@ -138,7 +140,7 @@ export default function DocsHeader({
               ) : null}
             </div>
           </div>
-          
+
         </div>
       </div>
     </header>

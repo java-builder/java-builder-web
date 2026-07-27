@@ -20,7 +20,7 @@ import EmptyChatState from "@/components/messages/EmptyChatState";
 import { EnrolledUserResponse } from "@/services/enrollment.service";
 import { conversationApi } from "@/services/conversation.service";
 import { chatMessageApi } from "@/services/chatMessage.service";
-import { BEMessageType, ChatMessageResponse } from "@/types/chatMessage";
+import { BEMessageType, ChatMessageResponse, MessageAttachmentRequest } from "@/types/chatMessage";
 import { useWebSocket } from "@/components/providers/PresenceProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -365,7 +365,8 @@ export default function MessagesClient() {
       codeData?: CodeSnippetData,
       exerciseData?: ExerciseCardData,
       fileData?: FileData,
-      mediaUrl?: string
+      mediaUrl?: string,
+      attachmentObj?: MessageAttachmentRequest
     ) => {
       if (!activeConversationId) return;
 
@@ -402,6 +403,7 @@ export default function MessagesClient() {
           conversationId: activeConversationId,
           content: content.trim() || undefined,
           messageType: beMessageType,
+          attachments: attachmentObj ? [attachmentObj] : undefined,
         });
 
         const data = res?.data;

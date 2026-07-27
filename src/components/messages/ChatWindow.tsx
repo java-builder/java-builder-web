@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
+import { MessageAttachmentRequest } from "@/types/chatMessage";
+
 interface ChatWindowProps {
   conversation: Conversation;
   messages: ChatMessage[];
@@ -30,7 +32,8 @@ interface ChatWindowProps {
     codeData?: CodeSnippetData,
     exerciseData?: ExerciseCardData,
     fileData?: FileData,
-    mediaUrl?: string
+    mediaUrl?: string,
+    attachmentObj?: MessageAttachmentRequest
   ) => void;
   onAddReaction: (messageId: string, emoji: string) => void;
   onOpenCodeModal: () => void;
@@ -112,7 +115,8 @@ export default function ChatWindow({
         undefined,
         undefined,
         undefined,
-        att.attachmentKey
+        att.attachmentKey,
+        att
       );
       toast.success("Tải ảnh lên thành công!", { id: toastId });
       setInputText("");
@@ -139,7 +143,7 @@ export default function ChatWindow({
 
     const toastId = toast.loading("Đang tải tài liệu lên...");
     try {
-      await chatMessageApi.uploadAttachmentWithPresign(file);
+      const att = await chatMessageApi.uploadAttachmentWithPresign(file);
       onSendMessage(
         `Đã chia sẻ tệp tài liệu: ${file.name}`,
         "file",
@@ -150,7 +154,9 @@ export default function ChatWindow({
           size: sizeInMB,
           fileType: ext === "zip" || ext === "rar" ? "zip" : "pdf",
           url: "#",
-        }
+        },
+        att.attachmentKey,
+        att
       );
       toast.success(`Đã đính kèm file ${file.name}`, { id: toastId });
     } catch (err: unknown) {

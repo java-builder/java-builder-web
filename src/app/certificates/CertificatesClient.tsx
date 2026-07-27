@@ -385,11 +385,12 @@ export default function CertificatesClient() {
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(133, 77, 14, 0.1)", paddingBottom: "16px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src="/logos/java-logo.png"
                     alt="JavaBuilder"
-                    style={{ width: "32px", height: "32px", objectFit: "contain" }}
+                    width={32}
+                    height={32}
+                    style={{ objectFit: "contain" }}
                   />
                   <div style={{ textAlign: "left", lineHeight: "1" }}>
                     <p style={{ fontSize: "14px", fontWeight: "900", letterSpacing: "0.15em", color: "#451a03", margin: 0 }}>JAVABUILDER</p>
