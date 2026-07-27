@@ -1,15 +1,17 @@
 import Image from "next/image";
-import { Plus } from "lucide-react";
+import { Plus, PanelLeftClose } from "lucide-react";
 import { EnrolledUserResponse } from "@/services/enrollment.service";
 
 interface ConversationHeaderProps {
   currentUser: EnrolledUserResponse;
   onOpenNewChatModal: () => void;
+  onToggleSidebar?: () => void;
 }
 
 export default function ConversationHeader({
   currentUser,
   onOpenNewChatModal,
+  onToggleSidebar,
 }: ConversationHeaderProps) {
   return (
     <div className="p-4 border-b border-border bg-muted/30 flex items-center justify-between">
@@ -37,15 +39,29 @@ export default function ConversationHeader({
         </div>
       </div>
 
-      {/* New Chat Button */}
-      <button
-        type="button"
-        onClick={onOpenNewChatModal}
-        className="p-2.5 rounded-2xl bg-accent text-white hover:bg-accent/90 shadow-md shadow-accent/20 transition-all cursor-pointer hover:scale-105 active:scale-95"
-        title="Tạo nhóm / Chat mới"
-      >
-        <Plus className="w-4.5 h-4.5" />
-      </button>
+      <div className="flex items-center gap-1.5">
+        {onToggleSidebar && (
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors cursor-pointer shrink-0"
+            title="Thu gọn danh sách trò chuyện"
+          >
+            <PanelLeftClose className="w-4.5 h-4.5" />
+          </button>
+        )}
+
+        {/* New Chat Button */}
+        <button
+          type="button"
+          onClick={onOpenNewChatModal}
+          style={{ width: "36px", height: "36px", minWidth: "36px", minHeight: "36px", borderRadius: "9999px", padding: 0 }}
+          className="p-0 rounded-full shrink-0 flex items-center justify-center bg-accent text-white hover:bg-accent/90 border-0 outline-none transition-transform cursor-pointer hover:scale-105 active:scale-95"
+          title="Tạo nhóm / Chat mới"
+        >
+          <Plus className="w-5 h-5 shrink-0" />
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   Conversation,
   ChatMessage,
@@ -36,6 +36,7 @@ export default function MessagesClient() {
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -81,17 +82,7 @@ export default function MessagesClient() {
 
     let isMounted = true;
 
-    conversationApi
-      .markAsRead(activeConversationId)
-      .then(() => {
-        if (isMounted) {
-          queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
-        }
-      })
-      .catch((err) => {
-        console.error("Lỗi khi đánh dấu đã đọc cuộc trò chuyện:", err);
-      });
-
+    // 1. Lấy danh sách tin nhắn theo conversationId TRƯỚC
     chatMessageApi.getMessagesByConversationId(activeConversationId, 1, 50)
       .then((res) => {
         if (!isMounted) return;
@@ -133,9 +124,28 @@ export default function MessagesClient() {
           ...prev,
           [activeConversationId]: convertedMessages,
         }));
+
+        const latestMsg = convertedMessages[convertedMessages.length - 1];
+        if (latestMsg) {
+          setConversations((prev) =>
+            prev.map((c) => (c.id === activeConversationId ? { ...c, lastMessage: latestMsg } : c))
+          );
+        }
       })
       .catch((err) => {
-        console.error("Lỗi khi tải lịch sử tin nhắn:", err);
+        console.error("Lỗi khi tải tin nhắn:", err);
+      });
+
+    // 2. Gọi Đánh dấu đã đọc SAU khi đã kích hoạt tải tin nhắn
+    conversationApi
+      .markAsRead(activeConversationId)
+      .then(() => {
+        if (isMounted) {
+          queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi đánh dấu đã đọc cuộc trò chuyện:", err);
       });
 
     return () => {
@@ -143,12 +153,19 @@ export default function MessagesClient() {
     };
   }, [activeConversationId, queryClient]);
 
+  const activeConversationIdRef = useRef(activeConversationId);
+  useEffect(() => {
+    activeConversationIdRef.current = activeConversationId;
+  }, [activeConversationId]);
+
   const { client, isConnected } = useWebSocket();
 
   const handleIncomingMessage = useCallback(
     (messageBody: string) => {
       try {
         const item: ChatMessageResponse = JSON.parse(messageBody);
+        const currentActiveId = activeConversationIdRef.current;
+        const isCurrentlyActive = item.conversationId === currentActiveId;
 
         const firstAtt = item.attachments?.[0];
         let type: MessageType = "text";
@@ -178,7 +195,7 @@ export default function MessagesClient() {
           isRead: true,
         };
 
-        // 1. Cập nhật danh sách tin nhắn của cuộc trò chuyện tương ứng
+        // 1. Cập nhật danh sách tin nhắn ngay lập tức (Instant Render!)
         setMessagesMap((prev) => {
           const list = prev[item.conversationId] || [];
           if (list.some((m) => m.id === incomingMsg.id)) {
@@ -196,10 +213,9 @@ export default function MessagesClient() {
           };
         });
 
-        // 2. Cập nhật Sidebar: nếu đã có trong mảng -> ĐẨY LÊN ĐẦU. Nếu CHƯA CÓ (trang 2 hoặc phòng mới) -> TỰ ĐỘNG THÊM VÀO ĐẦU SIDEBAR!
+        // 2. Cập nhật Sidebar ngay lập tức: unreadCount = 0 nếu đang mở phòng chat này!
         setConversations((prev) => {
           const targetConv = prev.find((c) => c.id === item.conversationId);
-          const isCurrentlyActive = item.conversationId === activeConversationId;
 
           if (targetConv) {
             const updatedConv: Conversation = {
@@ -212,7 +228,6 @@ export default function MessagesClient() {
             const remainingConvs = prev.filter((c) => c.id !== item.conversationId);
             return [updatedConv, ...remainingConvs];
           } else {
-            // Cuộc trò chuyện nằm ở trang 2 hoặc mới được khởi tạo
             const newConv: Conversation = {
               id: item.conversationId,
               type: "PRIVATE",
@@ -225,11 +240,23 @@ export default function MessagesClient() {
             return [newConv, ...prev];
           }
         });
+
+        // 3. Nếu đang mở phòng này và tin nhắn do người khác gửi -> Tự động gọi API markAsRead CHẠY NGẦM (UI đã được cập nhật 0ms!)
+        if (isCurrentlyActive && item.senderId !== currentUser.id) {
+          conversationApi
+            .markAsRead(item.conversationId)
+            .then(() => {
+              queryClient.invalidateQueries({ queryKey: ["unread-messages-count"] });
+            })
+            .catch((err) => {
+              console.error("Lỗi khi tự động đánh dấu đã đọc:", err);
+            });
+        }
       } catch (err) {
         console.error("Lỗi khi xử lý message từ WebSocket:", err);
       }
     },
-    [activeConversationId, currentUser.id]
+    [currentUser.id, queryClient]
   );
 
   useEffect(() => {
@@ -283,31 +310,38 @@ export default function MessagesClient() {
       });
 
       const resData = res?.data;
-      const conversationId = resData?.id || `conv_${Date.now()}`;
+      const conversationId = resData?.id;
 
-      const newConv: Conversation = {
-        id: conversationId,
-        type: "PRIVATE",
-        name: user.username,
-        avatar: user.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
-        courseTag: user.courseName || user.role || "Thành viên",
-        unreadCount: 0,
-        members: [
-          currentUser,
-          {
-            id: user.id,
-            username: user.username,
-            avatar: user.avatar || "",
-            role: (user.role as string) || "STUDENT",
-            status: (user.status as string) || "online",
-          },
-        ],
-      };
+      if (!conversationId) {
+        toast.error("Không thể khởi tạo cuộc trò chuyện");
+        return;
+      }
 
       setConversations((prev) => {
+        const existingConv = prev.find((c) => c.id === conversationId);
+        const newConv: Conversation = {
+          id: conversationId,
+          type: "PRIVATE",
+          name: user.username,
+          avatar: user.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+          courseTag: user.courseName || (user.role === "ADMIN" || user.role === "ROLE_ADMIN" ? "Quản trị viên" : undefined),
+          unreadCount: existingConv?.unreadCount || 0,
+          lastMessage: existingConv?.lastMessage,
+          members: [
+            currentUser,
+            {
+              id: user.id,
+              username: user.username,
+              avatar: user.avatar || "",
+              role: (user.role as string) || "STUDENT",
+              status: (user.status as string) || "online",
+            },
+          ],
+        };
         const filtered = prev.filter((c) => c.id !== conversationId);
         return [newConv, ...filtered];
       });
+
       setActiveConversationId(conversationId);
     } catch (err: unknown) {
       console.error("Lỗi khi tạo cuộc trò chuyện:", err);
@@ -472,46 +506,44 @@ export default function MessagesClient() {
       "code",
       codeData
     );
-    toast.success("Đã gửi đoạn code Java lên phòng chat!");
   };
 
   const handleCreateConversation = (newConvData: Partial<Conversation>) => {
-    const newConv: Conversation = {
-      id: `conv_${Date.now()}`,
-      type: newConvData.type || "GROUP",
-      name: newConvData.name || "Nhóm Học Tập Mới",
-      avatar: newConvData.avatar,
-      courseTag: newConvData.courseTag || "Java Core",
-      topic: newConvData.topic,
-      members: newConvData.members || [currentUser],
-      unreadCount: 0,
-      isPinned: false,
-    };
+    const realId = newConvData.id;
+    if (!realId) {
+      toast.error("Lỗi khi tạo phòng trò chuyện (không tìm thấy ID)");
+      return;
+    }
 
-    setConversations((prev) => [newConv, ...prev]);
-    setMessagesMap((prev) => ({
-      ...prev,
-      [newConv.id]: [
-        {
-          id: `msg_init_${Date.now()}`,
-          senderId: currentUser.id,
-          conversationId: newConv.id,
-          type: "text",
-          content: `Chào mừng bạn đến với ${newConv.name}! Đã khởi tạo phòng học tập thành công.`,
-          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          isRead: true,
-        },
-      ],
-    }));
-    setActiveConversationId(newConv.id);
-    toast.success(`Đã tạo ${newConv.type === "GROUP" ? "nhóm" : "cuộc trò chuyện"} thành công!`);
+    setConversations((prev) => {
+      const existingConv = prev.find((c) => c.id === realId);
+      const newConv: Conversation = {
+        id: realId,
+        type: newConvData.type || "GROUP",
+        name: newConvData.name || "Nhóm Học Tập Mới",
+        avatar: newConvData.avatar || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80",
+        courseTag: newConvData.courseTag || "Java Core",
+        topic: newConvData.topic,
+        members: newConvData.members || [currentUser],
+        unreadCount: existingConv?.unreadCount || 0,
+        lastMessage: existingConv?.lastMessage,
+        isPinned: existingConv?.isPinned || false,
+      };
+      return [newConv, ...prev.filter((c) => c.id !== realId)];
+    });
+
+    setActiveConversationId(realId);
+    setIsNewChatModalOpen(false);
   };
 
   return (
     <div className="h-dvh w-full flex bg-background text-foreground overflow-hidden relative">
       <div
-        className={`${activeConversationId ? "hidden md:flex" : "flex"
-          } w-full md:w-80 h-full shrink-0`}
+        className={`${
+          activeConversationId ? "hidden md:flex" : "flex"
+        } ${
+          isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none md:w-0 overflow-hidden border-none" : "w-full md:w-80"
+        } h-full shrink-0 transition-all duration-300 ease-in-out`}
       >
         <ConversationList
           conversations={conversations}
@@ -519,14 +551,16 @@ export default function MessagesClient() {
           onSelectConversation={handleSelectConversation}
           onSelectEnrolledUser={handleSelectEnrolledUser}
           onOpenNewChatModal={() => setIsNewChatModalOpen(true)}
+          onToggleSidebar={() => setIsSidebarCollapsed(true)}
           myStatus={myStatus}
           onChangeMyStatus={setMyStatus}
         />
       </div>
 
       <div
-        className={`${!activeConversationId ? "hidden md:flex" : "flex"
-          } flex-1 h-full flex-col relative overflow-hidden`}
+        className={`${
+          !activeConversationId ? "hidden md:flex" : "flex"
+        } flex-1 h-full flex-col relative overflow-hidden transition-all duration-300 ease-in-out`}
       >
         {activeConversation ? (
           <div className="flex-1 h-full flex relative overflow-hidden">
@@ -538,6 +572,8 @@ export default function MessagesClient() {
               onOpenCodeModal={() => setIsCodeModalOpen(true)}
               onToggleDrawer={() => setIsDrawerOpen(!isDrawerOpen)}
               onBackToList={() => setActiveConversationId(null)}
+              onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+              isSidebarCollapsed={isSidebarCollapsed}
             />
 
             {isDrawerOpen && (
@@ -549,7 +585,10 @@ export default function MessagesClient() {
             )}
           </div>
         ) : (
-          <EmptyChatState />
+          <EmptyChatState
+            onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+            isSidebarCollapsed={isSidebarCollapsed}
+          />
         )}
       </div>
 

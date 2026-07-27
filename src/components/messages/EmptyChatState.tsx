@@ -1,10 +1,30 @@
 "use client";
 
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, PanelLeftOpen } from "lucide-react";
 
-export default function EmptyChatState() {
+interface EmptyChatStateProps {
+  onToggleSidebar?: () => void;
+  isSidebarCollapsed?: boolean;
+}
+
+export default function EmptyChatState({
+  onToggleSidebar,
+  isSidebarCollapsed,
+}: EmptyChatStateProps) {
   return (
-    <div className="flex-1 h-full flex flex-col items-center justify-center p-8 text-center bg-muted/20">
+    <div className="flex-1 h-full flex flex-col items-center justify-center p-8 text-center bg-muted/20 relative">
+      {onToggleSidebar && isSidebarCollapsed && (
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="absolute top-4 left-4 p-2 rounded-xl bg-card border border-border text-foreground hover:text-accent hover:border-accent/40 shadow-xs transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-2"
+          title="Mở danh sách trò chuyện"
+        >
+          <PanelLeftOpen className="w-5 h-5 text-accent shrink-0" />
+          <span className="text-xs font-bold hidden sm:inline">Danh sách trò chuyện</span>
+        </button>
+      )}
+
       <div className="p-4 rounded-3xl bg-accent/10 text-accent mb-4">
         <MessageSquare className="w-12 h-12" />
       </div>

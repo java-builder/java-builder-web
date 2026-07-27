@@ -90,7 +90,7 @@ export default function ConversationItem({
           )}
         </h3>
 
-        {conv.courseTag && (
+        {conv.courseTag && conv.courseTag !== "Thành viên" && (
           <span className="text-[9px] font-bold text-accent bg-accent/10 px-1.5 py-0.2 rounded-md mb-0.5 inline-block">
             {conv.courseTag}
           </span>
@@ -103,7 +103,13 @@ export default function ConversationItem({
                 ? "💻 Đoạn code Java"
                 : conv.lastMessage.type === "exercise"
                   ? "📝 Bài tập Java"
-                  : conv.lastMessage.content
+                  : conv.lastMessage.type === "image"
+                    ? "📷 Hình ảnh"
+                    : conv.lastMessage.type === "file"
+                      ? "📎 Tài liệu đính kèm"
+                      : conv.lastMessage.type === "video"
+                        ? "🎥 Video"
+                        : conv.lastMessage.content || "Chưa có tin nhắn"
             ) : (
               "Chưa có tin nhắn"
             )}

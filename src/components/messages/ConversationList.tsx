@@ -10,7 +10,7 @@ import ConversationTabs, { FilterTab } from "./ConversationTabs";
 import CourseFilterDropdown, { CourseItem } from "./CourseFilterDropdown";
 import EnrolledUserItem from "./EnrolledUserItem";
 import ConversationItem from "./ConversationItem";
-import { Users } from "lucide-react";
+import { Users, Loader2, ChevronDown } from "lucide-react";
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -18,6 +18,7 @@ interface ConversationListProps {
   onSelectConversation: (conv: Conversation) => void;
   onSelectEnrolledUser: (user: EnrolledUserResponse) => void;
   onOpenNewChatModal: () => void;
+  onToggleSidebar?: () => void;
   myStatus?: UserPresenceStatus;
   onChangeMyStatus?: (status: UserPresenceStatus) => void;
 }
@@ -28,12 +29,17 @@ export default function ConversationList({
   onSelectConversation,
   onSelectEnrolledUser,
   onOpenNewChatModal,
+  onToggleSidebar,
 }: ConversationListProps) {
   const currentUser = useChatCurrentUser();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 400);
   const [searchResults, setSearchResults] = useState<EnrolledUserResponse[]>([]);
   const [isSearchingApi, setIsSearchingApi] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+  const [hasMoreSearch, setHasMoreSearch] = useState(false);
+  const [isLoadingMoreSearch, setIsLoadingMoreSearch] = useState(false);
+  const [totalSearchElements, setTotalSearchElements] = useState(0);
 
   const [filterTab, setFilterTab] = useState<FilterTab>("all");
 
@@ -106,29 +112,41 @@ export default function ConversationList({
     if (!debouncedSearch.trim() && selectedCourseId === "ALL") {
       setSearchResults([]);
       setIsSearchingApi(false);
+      setHasMoreSearch(false);
+      setSearchPage(1);
+      setTotalSearchElements(0);
       return;
     }
 
     let isMounted = true;
     setIsSearchingApi(true);
+    setSearchPage(1);
 
     const courseIdParam = selectedCourseId !== "ALL" ? selectedCourseId : undefined;
 
-    enrollmentApi
-      .searchEnrolledUsers({
-        page: 1,
-        size: 50,
-        courseId: courseIdParam,
-        query: debouncedSearch.trim() ? debouncedSearch.trim() : undefined,
-      })
+    enrollmentApi.searchEnrolledUsers({
+      page: 1,
+      size: 20,
+      courseId: courseIdParam,
+      query: debouncedSearch.trim() ? debouncedSearch.trim() : undefined,
+    })
       .then((res) => {
         if (isMounted) {
           const list: EnrolledUserResponse[] = res?.data?.data || [];
-          setSearchResults(list);
+          const uniqueList = Array.from(new Map(list.map((u) => [u.id, u])).values());
+          setSearchResults(uniqueList);
+          const currentPage = res?.data?.currentPage || 1;
+          const totalPages = res?.data?.totalPages || 1;
+          setHasMoreSearch(currentPage < totalPages);
+          setTotalSearchElements(res?.data?.totalElements || uniqueList.length);
         }
       })
       .catch(() => {
-        if (isMounted) setSearchResults([]);
+        if (isMounted) {
+          setSearchResults([]);
+          setHasMoreSearch(false);
+          setTotalSearchElements(0);
+        }
       })
       .finally(() => {
         if (isMounted) setIsSearchingApi(false);
@@ -138,6 +156,41 @@ export default function ConversationList({
       isMounted = false;
     };
   }, [debouncedSearch, selectedCourseId]);
+
+  const handleLoadMoreSearch = async () => {
+    if (isLoadingMoreSearch || !hasMoreSearch) return;
+
+    setIsLoadingMoreSearch(true);
+    const nextPage = searchPage + 1;
+    const courseIdParam = selectedCourseId !== "ALL" ? selectedCourseId : undefined;
+
+    try {
+      const res = await enrollmentApi.searchEnrolledUsers({
+        page: nextPage,
+        size: 20,
+        courseId: courseIdParam,
+        query: debouncedSearch.trim() ? debouncedSearch.trim() : undefined,
+      });
+
+      const list: EnrolledUserResponse[] = res?.data?.data || [];
+      if (list.length > 0) {
+        setSearchResults((prev) => {
+          const combined = [...prev, ...list];
+          return Array.from(new Map(combined.map((u) => [u.id, u])).values());
+        });
+        setSearchPage(nextPage);
+        const currentPage = res?.data?.currentPage || nextPage;
+        const totalPages = res?.data?.totalPages || nextPage;
+        setHasMoreSearch(currentPage < totalPages);
+      } else {
+        setHasMoreSearch(false);
+      }
+    } catch (err) {
+      console.error("Lỗi khi tải thêm thành viên:", err);
+    } finally {
+      setIsLoadingMoreSearch(false);
+    }
+  };
 
   // Filter conversations
   const filteredConversations = useMemo(() => {
@@ -181,6 +234,7 @@ export default function ConversationList({
       <ConversationHeader
         currentUser={currentUser}
         onOpenNewChatModal={onOpenNewChatModal}
+        onToggleSidebar={onToggleSidebar}
       />
 
       {/* Search Input Component */}
@@ -217,30 +271,82 @@ export default function ConversationList({
       <div className="flex-1 overflow-y-auto divide-y divide-border/40 custom-scrollbar">
         {showSearchResults ? (
           <div>
-            <div className="px-3 py-1.5 bg-muted/40 text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-              <Users className="w-3 h-3 text-accent" />
-              <span>Thành viên ({searchResults.filter((u) => u.id !== currentUser.id).length})</span>
+            <div className="px-3 py-1.5 bg-muted/40 text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Users className="w-3 h-3 text-accent" />
+                <span>Thành viên</span>
+              </span>
+              {isSearchingApi ? (
+                <span className="flex items-center gap-1 text-[10px] text-accent font-semibold animate-pulse">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Đang tìm...
+                </span>
+              ) : (
+                <span className="text-[10px] text-muted-foreground font-semibold">
+                  {searchResults.filter((u) => u.id !== currentUser.id).length} kết quả
+                </span>
+              )}
             </div>
 
-            {searchResults.filter((u) => u.id !== currentUser.id).length === 0 ? (
+            {isSearchingApi ? (
+              <div className="p-2 space-y-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-2.5 rounded-2xl bg-muted/30 border border-border/40 animate-pulse"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-muted/80 shrink-0" />
+                    <div className="flex-1 space-y-1.5">
+                      <div className="h-3 bg-muted/80 rounded-md w-28" />
+                      <div className="h-2 bg-muted/60 rounded-md w-20" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : searchResults.filter((u) => u.id !== currentUser.id).length === 0 ? (
               <div className="p-6 text-center text-xs text-muted-foreground font-medium">
                 Không tìm thấy thành viên nào
               </div>
             ) : (
-              searchResults
-                .filter((u) => u.id !== currentUser.id)
-                .map((user) => (
-                  <EnrolledUserItem
-                    key={user.id}
-                    user={user}
-                    onSelectUser={(u) => {
-                      setSelectedCourseId("ALL");
-                      setSearchQuery("");
-                      setFilterTab("all");
-                      onSelectEnrolledUser(u);
-                    }}
-                  />
-                ))
+              <div>
+                {searchResults
+                  .filter((u) => u.id !== currentUser.id)
+                  .map((user) => (
+                    <EnrolledUserItem
+                      key={user.id}
+                      user={user}
+                      onSelectUser={(u) => {
+                        setSelectedCourseId("ALL");
+                        setSearchQuery("");
+                        setFilterTab("all");
+                        onSelectEnrolledUser(u);
+                      }}
+                    />
+                  ))}
+
+                {/* Load More Button for Pagination */}
+                {hasMoreSearch && (
+                  <div className="p-3 text-center">
+                    <button
+                      type="button"
+                      onClick={handleLoadMoreSearch}
+                      disabled={isLoadingMoreSearch}
+                      className="w-full py-2 px-3 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {isLoadingMoreSearch ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Đang tải thêm...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3.5 h-3.5" />
+                          <span>Xem thêm thành viên ({searchResults.length}/{totalSearchElements})</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         ) : (

@@ -15,9 +15,10 @@ import {
   Phone,
   Video,
   Info,
-  Award,
   ImageIcon,
   ArrowLeft,
+  PanelLeftOpen,
+  PanelLeftClose,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -39,6 +40,8 @@ interface ChatWindowProps {
   onOpenCodeModal: () => void;
   onToggleDrawer: () => void;
   onBackToList?: () => void;
+  onToggleSidebar?: () => void;
+  isSidebarCollapsed?: boolean;
 }
 
 export default function ChatWindow({
@@ -49,22 +52,40 @@ export default function ChatWindow({
   onOpenCodeModal,
   onToggleDrawer,
   onBackToList,
+  onToggleSidebar,
+  isSidebarCollapsed,
 }: ChatWindowProps) {
   const currentUser = useChatCurrentUser();
   const [inputText, setInputText] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const scrollToBottom = () => {
+      container.scrollTop = container.scrollHeight;
+      messagesEndRef.current?.scrollIntoView({ block: "end", behavior: "auto" });
+    };
+
     scrollToBottom();
-  }, [messages]);
+
+    const observer = new ResizeObserver(() => {
+      scrollToBottom();
+    });
+
+    observer.observe(container);
+    Array.from(container.children).forEach((child) => observer.observe(child));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [conversation.id, messages.length]);
 
   const handleSend = (e?: React.FormEvent) => {
     if (e) {
@@ -118,7 +139,7 @@ export default function ChatWindow({
         att.attachmentKey,
         att
       );
-      toast.success("Tải ảnh lên thành công!", { id: toastId });
+      toast.dismiss(toastId);
       setInputText("");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Tải ảnh thất bại";
@@ -158,29 +179,13 @@ export default function ChatWindow({
         att.attachmentKey,
         att
       );
-      toast.success(`Đã đính kèm file ${file.name}`, { id: toastId });
+      toast.dismiss(toastId);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Tải tài liệu thất bại";
       toast.error(msg, { id: toastId });
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
-  };
-
-  const handleSendExerciseCard = () => {
-    onSendMessage(
-      "Đã chia sẻ bài tập: Vòng lặp For và Array trong Java",
-      "exercise",
-      undefined,
-      {
-        id: "ex-" + Date.now(),
-        title: "Bài tập 01: Vòng lặp For và Mảng 1 chiều trong Java",
-        difficulty: "Trung bình",
-        score: 100,
-        slug: "vong-lap-for-va-mang-1-chieu",
-      }
-    );
-    toast.success("Đã đính kèm bài tập");
   };
 
   const otherUser =
@@ -205,6 +210,21 @@ export default function ChatWindow({
             </button>
           )}
 
+          {onToggleSidebar && (
+            <button
+              type="button"
+              onClick={onToggleSidebar}
+              className="hidden md:flex p-2 -ml-1 rounded-xl text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors cursor-pointer shrink-0"
+              title={isSidebarCollapsed ? "Mở danh sách trò chuyện" : "Thu gọn danh sách trò chuyện"}
+            >
+              {isSidebarCollapsed ? (
+                <PanelLeftOpen className="w-5 h-5 text-accent" />
+              ) : (
+                <PanelLeftClose className="w-5 h-5" />
+              )}
+            </button>
+          )}
+
           <div className="relative cursor-pointer" onClick={onToggleDrawer}>
             <Image
               src={
@@ -225,7 +245,7 @@ export default function ChatWindow({
           <div className="min-w-0 flex-1">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 min-w-0">
               <span className="truncate">{conversation.name}</span>
-              {conversation.courseTag && (
+              {conversation.courseTag && conversation.courseTag !== "Thành viên" && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent font-bold shrink-0 whitespace-nowrap">
                   {conversation.courseTag}
                 </span>
@@ -237,8 +257,8 @@ export default function ChatWindow({
                 {conversation.type === "GROUP"
                   ? `${onlineMembersCount}/${conversation.members.length} thành viên Online`
                   : otherUser?.status === "online"
-                  ? "Đang hoạt động"
-                  : otherUser?.lastActive || "Offline"}
+                    ? "Đang hoạt động"
+                    : otherUser?.lastActive || "Offline"}
               </span>
             </p>
           </div>
@@ -271,7 +291,7 @@ export default function ChatWindow({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3">
         <div className="flex items-center justify-center my-4">
           <span className="text-[11px] font-bold text-muted-foreground px-3.5 py-1 rounded-full bg-muted border border-border">
             Hôm nay
@@ -290,7 +310,7 @@ export default function ChatWindow({
           );
         })}
 
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-4 shrink-0" />
       </div>
 
       <input
@@ -304,7 +324,7 @@ export default function ChatWindow({
         type="file"
         ref={fileInputRef}
         onChange={handleFileUpload}
-        accept=".pdf,.doc,.docx,.zip,.rar"
+        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z,.tar,.gz,.java,.js,.ts,.jsx,.tsx,.py,.html,.css,.json,.sql,.xml,.cpp,.c,.sh,text/plain"
         className="hidden"
       />
 
@@ -370,16 +390,6 @@ export default function ChatWindow({
               >
                 <Code2 className="w-4 h-4 text-accent" />
                 <span className="hidden sm:inline">Code</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSendExerciseCard}
-                className="flex items-center gap-1 text-muted-foreground hover:text-emerald-500 text-xs font-semibold transition-colors cursor-pointer"
-                title="Đính kèm bài tập"
-              >
-                <Award className="w-4 h-4 text-emerald-500" />
-                <span className="hidden sm:inline">Bài tập</span>
               </button>
             </div>
 

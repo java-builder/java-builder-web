@@ -23,7 +23,7 @@ export default function NewChatModal({
   onCreateConversation,
 }: NewChatModalProps) {
   const currentUser = useChatCurrentUser();
-  const [chatType, setChatType] = useState<ConversationType>("GROUP");
+  const [chatType, setChatType] = useState<ConversationType>("PRIVATE");
   const [groupName, setGroupName] = useState("");
   const [groupAvatar, setGroupAvatar] = useState(DEFAULT_GROUP_AVATAR);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -50,6 +50,8 @@ export default function NewChatModal({
     }
   }, [isOpen]);
 
+  const currentUserId = currentUser?.id;
+
   // Tìm kiếm danh bạ từ Conversation API
   useEffect(() => {
     if (!isOpen) return;
@@ -69,8 +71,9 @@ export default function NewChatModal({
       .then((res) => {
         if (isMounted) {
           const list: EnrolledUserResponse[] = res?.data?.data || [];
-          const converted: ChatUser[] = list
-            .filter((u) => u.id !== currentUser.id)
+          const uniqueList = Array.from(new Map(list.map((u) => [u.id, u])).values());
+          const converted: ChatUser[] = uniqueList
+            .filter((u) => u.id !== currentUserId)
             .map((u) => ({
               id: u.id,
               name: u.username,
@@ -93,7 +96,7 @@ export default function NewChatModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen, debouncedSearch, selectedCourseId, currentUser]);
+  }, [isOpen, debouncedSearch, selectedCourseId, currentUserId]);
 
   if (!isOpen) return null;
 
@@ -146,7 +149,7 @@ export default function NewChatModal({
           type: "PRIVATE",
           name: targetUser.name,
           avatar: targetUser.avatar,
-          courseTag: (targetUser.role === "ADMIN" || targetUser.role === "ROLE_ADMIN") ? "Quản trị viên" : "Thành viên",
+          courseTag: (targetUser.role === "ADMIN" || targetUser.role === "ROLE_ADMIN") ? "Quản trị viên" : undefined,
           members: allMembers,
           unreadCount: 0,
           isPinned: false,
@@ -163,7 +166,6 @@ export default function NewChatModal({
           isPinned: false,
         });
       }
-      toast.success("Tạo cuộc trò chuyện thành công!");
       onClose();
     } catch (err: unknown) {
       console.error("Lỗi tạo cuộc trò chuyện:", err);
@@ -206,30 +208,32 @@ export default function NewChatModal({
             <button
               type="button"
               onClick={() => {
-                setChatType("GROUP");
+                setChatType("PRIVATE");
                 setSelectedUserIds([]);
               }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${chatType === "GROUP"
-                ? "bg-card text-accent shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                chatType === "PRIVATE"
+                  ? "bg-card text-accent shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <Users className="w-4 h-4 shrink-0" />
-              <span>Tạo Nhóm Học Tập</span>
+              <MessageSquare className="w-4 h-4 shrink-0" />
+              <span>Chat 1-1</span>
             </button>
             <button
               type="button"
               onClick={() => {
-                setChatType("PRIVATE");
+                setChatType("GROUP");
                 setSelectedUserIds([]);
               }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${chatType === "PRIVATE"
-                ? "bg-card text-accent shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                chatType === "GROUP"
+                  ? "bg-card text-accent shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <MessageSquare className="w-4 h-4 shrink-0" />
-              <span>Chat 1-1</span>
+              <Users className="w-4 h-4 shrink-0" />
+              <span>Tạo Nhóm Học Tập</span>
             </button>
           </div>
 
