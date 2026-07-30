@@ -266,6 +266,7 @@ export const API = {
     CONVERSATION_MY: "/api/v1/conversation/my-conversations",
     CONVERSATION_UNREAD_COUNT: "/api/v1/conversation/unread-count",
     CONVERSATION_MARK_READ: (id: string) => `/api/v1/conversation/${id}/read`,
+    CONVERSATION_CLEAR_HISTORY: (id: string) => `/api/v1/conversation/${id}/clear-history`,
 
     // CHAT MESSAGES
     CHAT_MESSAGES_SEND: "/api/v1/chat-messages/send",

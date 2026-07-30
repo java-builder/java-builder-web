@@ -37,4 +37,11 @@ export const conversationApi = {
     );
     return response.data;
   },
+
+  clearHistory: async (conversationId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      API.CONVERSATION_CLEAR_HISTORY(conversationId)
+    );
+    return response.data;
+  },
 };

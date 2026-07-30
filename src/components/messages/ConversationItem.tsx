@@ -126,17 +126,17 @@ export default function ConversationItem({
         </div>
       </div>
 
-      <div className="shrink-0 flex items-center gap-1.5 relative z-10">
-        <div
-          ref={isMenuOpen ? menuRef : null}
-          onClick={(e) => e.stopPropagation()}
-        >
+      <div
+        ref={isMenuOpen ? menuRef : null}
+        className="shrink-0 flex items-center gap-1.5 relative z-10"
+      >
+        <div onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
             onClick={(e) => onToggleMenu(conv.id, e)}
             className={`w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted bg-card/90 border border-border/60 shadow-xs transition-all cursor-pointer ${isMenuOpen
-                ? "opacity-100 bg-muted text-foreground scale-105"
-                : "opacity-0 group-hover:opacity-100"
+              ? "opacity-100 bg-muted text-foreground scale-105"
+              : "opacity-0 group-hover:opacity-100"
               }`}
             title="Tùy chọn cuộc trò chuyện"
           >
@@ -157,57 +157,72 @@ export default function ConversationItem({
             title={`${conv.unreadCount} tin nhắn chưa đọc`}
           />
         )}
+
+        {isMenuOpen && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="absolute right-0 top-full mt-1 z-50 w-48 p-1.5 rounded-2xl bg-card border border-border shadow-2xl text-xs font-medium space-y-0.5 animate-in fade-in zoom-in-95 duration-150"
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleMute(conv.id);
+              }}
+              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+            >
+              {isMuted ? (
+                <Bell className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              ) : (
+                <BellOff className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              )}
+              <span>{isMuted ? "Bật thông báo" : "Tắt thông báo"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onTogglePin(conv);
+              }}
+              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+            >
+              <Pin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span>{conv.isPinned ? "Bỏ ghim nhóm" : "Ghim lên đầu"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleUnread(conv);
+              }}
+              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+            >
+              {conv.unreadCount > 0 ? (
+                <MailOpen className="w-3.5 h-3.5 text-accent shrink-0" />
+              ) : (
+                <Mail className="w-3.5 h-3.5 text-accent shrink-0" />
+              )}
+              <span>{conv.unreadCount > 0 ? "Đánh dấu đã đọc" : "Đánh dấu chưa đọc"}</span>
+            </button>
+
+            <div className="my-1 border-t border-border/60" />
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteConversation(conv.id);
+              }}
+              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
+              <span>Xóa trò chuyện</span>
+            </button>
+          </div>
+        )}
       </div>
-
-      {isMenuOpen && (
-        <div className="absolute right-0 top-full mt-1 z-50 w-48 p-1.5 rounded-2xl bg-card border border-border shadow-2xl text-xs font-medium space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-          <button
-            type="button"
-            onClick={() => onToggleMute(conv.id)}
-            className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
-          >
-            {isMuted ? (
-              <Bell className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            ) : (
-              <BellOff className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            )}
-            <span>{isMuted ? "Bật thông báo" : "Tắt thông báo"}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onTogglePin(conv)}
-            className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
-          >
-            <Pin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span>{conv.isPinned ? "Bỏ ghim nhóm" : "Ghim lên đầu"}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onToggleUnread(conv)}
-            className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
-          >
-            {conv.unreadCount > 0 ? (
-              <MailOpen className="w-3.5 h-3.5 text-accent shrink-0" />
-            ) : (
-              <Mail className="w-3.5 h-3.5 text-accent shrink-0" />
-            )}
-            <span>{conv.unreadCount > 0 ? "Đánh dấu đã đọc" : "Đánh dấu chưa đọc"}</span>
-          </button>
-
-          <div className="my-1 border-t border-border/60" />
-
-          <button
-            type="button"
-            onClick={() => onDeleteConversation(conv.id)}
-            className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
-          >
-            <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
-            <span>Xóa trò chuyện</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -18,13 +18,29 @@ export const connectWebSocket = () => {
     connectHeaders: token ? {
       Authorization: `Bearer ${token}`,
     } : {},
+    reconnectDelay: 5000,
+    heartbeatIncoming: 10000,
+    heartbeatOutgoing: 10000,
+
+    beforeConnect: () => {
+      const freshToken = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+      if (freshToken) {
+        client.connectHeaders = {
+          Authorization: `Bearer ${freshToken}`,
+        };
+      }
+    },
 
     onConnect: () => {
-      console.log('WebSocket connected');
+      console.log('WebSocket connected successfully');
     },
 
     onStompError: (frame) => {
-      console.error('WebSocket error:', frame.headers['message']);
+      console.error('WebSocket STOMP error:', frame.headers['message']);
+    },
+
+    onWebSocketClose: (evt) => {
+      console.warn('WebSocket connection closed, STOMP client will auto-reconnect in 5s', evt);
     },
   });
 

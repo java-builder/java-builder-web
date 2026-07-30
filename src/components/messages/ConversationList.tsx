@@ -19,6 +19,7 @@ interface ConversationListProps {
   onSelectEnrolledUser: (user: EnrolledUserResponse) => void;
   onOpenNewChatModal: () => void;
   onToggleSidebar?: () => void;
+  onDeleteConversation?: (convId: string) => void;
   myStatus?: UserPresenceStatus;
   onChangeMyStatus?: (status: UserPresenceStatus) => void;
 }
@@ -30,6 +31,7 @@ export default function ConversationList({
   onSelectEnrolledUser,
   onOpenNewChatModal,
   onToggleSidebar,
+  onDeleteConversation,
 }: ConversationListProps) {
   const currentUser = useChatCurrentUser();
   const [searchQuery, setSearchQuery] = useState("");
@@ -377,7 +379,10 @@ export default function ConversationList({
                 c.unreadCount = c.unreadCount > 0 ? 0 : 1;
                 setMenuOpenConvId(null);
               }}
-              onDeleteConversation={() => setMenuOpenConvId(null)}
+              onDeleteConversation={(convId) => {
+                setMenuOpenConvId(null);
+                onDeleteConversation?.(convId);
+              }}
               menuRef={menuRef}
             />
           ))

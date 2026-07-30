@@ -536,14 +536,31 @@ export default function MessagesClient() {
     setIsNewChatModalOpen(false);
   };
 
+  const handleClearHistory = async (conversationId: string) => {
+    try {
+      await conversationApi.clearHistory(conversationId);
+      setConversations((prev) => prev.filter((c) => c.id !== conversationId));
+
+      setMessagesMap((prev) => {
+        const copy = { ...prev };
+        delete copy[conversationId];
+        return copy;
+      });
+
+      if (activeConversationId === conversationId) {
+        setActiveConversationId(null);
+      }
+    } catch {
+      toast.error("Không thể xóa cuộc trò chuyện");
+    }
+  };
+
   return (
     <div className="h-dvh w-full flex bg-background text-foreground overflow-hidden relative">
       <div
-        className={`${
-          activeConversationId ? "hidden md:flex" : "flex"
-        } ${
-          isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none md:w-0 overflow-hidden border-none" : "w-full md:w-80"
-        } h-full shrink-0 transition-all duration-300 ease-in-out`}
+        className={`${activeConversationId ? "hidden md:flex" : "flex"
+          } ${isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none md:w-0 overflow-hidden border-none" : "w-full md:w-80"
+          } h-full shrink-0 transition-all duration-300 ease-in-out`}
       >
         <ConversationList
           conversations={conversations}
@@ -552,15 +569,15 @@ export default function MessagesClient() {
           onSelectEnrolledUser={handleSelectEnrolledUser}
           onOpenNewChatModal={() => setIsNewChatModalOpen(true)}
           onToggleSidebar={() => setIsSidebarCollapsed(true)}
+          onDeleteConversation={handleClearHistory}
           myStatus={myStatus}
           onChangeMyStatus={setMyStatus}
         />
       </div>
 
       <div
-        className={`${
-          !activeConversationId ? "hidden md:flex" : "flex"
-        } flex-1 h-full flex-col relative overflow-hidden transition-all duration-300 ease-in-out`}
+        className={`${!activeConversationId ? "hidden md:flex" : "flex"
+          } flex-1 h-full flex-col relative overflow-hidden transition-all duration-300 ease-in-out`}
       >
         {activeConversation ? (
           <div className="flex-1 h-full flex relative overflow-hidden">
