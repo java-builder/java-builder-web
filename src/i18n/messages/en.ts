@@ -1084,6 +1084,7 @@ export const en = {
       tags: "Tags",
       comments: "Comments",
       notifications: "Notification management",
+      messages: "Message management",
       pushNotifications: "Push Notifications",
       emailMarketing: "Send Email Marketing",
       emailTemplates: "Email Templates",

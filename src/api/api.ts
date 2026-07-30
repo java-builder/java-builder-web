@@ -17,6 +17,7 @@ export const API = {
     UPDATE_USER: "/api/v1/users", // + /:id
     DELETE_USER: "/api/v1/users", // + /:id
     GET_USER_BY_ID: "/api/v1/users", // + /:id
+    GET_DEFAULT_ADMIN_USER: "/api/v1/users/default-admin",
     USER_SEARCH: "/api/v1/users/search",
     USER_PROFILE: "/api/v1/users/me",
     USER_STATISTICS: "/api/v1/users/statistics",

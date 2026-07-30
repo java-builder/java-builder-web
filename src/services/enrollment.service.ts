@@ -7,6 +7,7 @@ import { API } from "@/api/api";
 export interface EnrolledUserResponse {
   id: string;
   username: string;
+  email?: string;
   avatar?: string;
   role?: string;
   courseName?: string;

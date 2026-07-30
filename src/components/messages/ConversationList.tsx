@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Conversation, UserPresenceStatus } from "./types";
 import { useChatCurrentUser } from "@/hooks/useCurrentUser";
 import { enrollmentApi, EnrolledUserResponse } from "@/services/enrollment.service";
+import { userApi } from "@/services/user.service";
 import { MyEnrolledCourseResponse } from "@/types/course";
 import { useDebounce } from "@/hooks/useDebounce";
 import ConversationHeader from "./ConversationHeader";
@@ -52,12 +53,16 @@ export default function ConversationList({
   const [selectedCourseId, setSelectedCourseId] = useState<string>("ALL");
   const [isCourseDropdownOpen, setIsCourseDropdownOpen] = useState(false);
 
+  // Admin user state for "Quản trị" tab
+  const [adminUser, setAdminUser] = useState<EnrolledUserResponse | null>(null);
+  const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
+
   const [menuOpenConvId, setMenuOpenConvId] = useState<string | null>(null);
   const [mutedConvIds, setMutedConvIds] = useState<string[]>([]);
   const menuRef = useRef<HTMLDivElement>(null);
   const courseDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Lazy load courses on "Nhóm học" tab click
+  // Lazy load courses on "Nhóm học" tab click, or fetch Admin user on "Quản trị" tab click
   const handleSelectTab = (tab: FilterTab) => {
     setFilterTab(tab);
     if (tab !== "groups") {
@@ -92,6 +97,31 @@ export default function ConversationList({
         .finally(() => {
           setHasLoadedCourses(true);
           setIsLoadingCourses(false);
+        });
+    }
+    if (tab === "admin" && !adminUser) {
+      setIsLoadingAdmin(true);
+      userApi
+        .getDefaultAdminUser()
+        .then((res) => {
+          const u = res?.data;
+          if (u) {
+            setAdminUser({
+              id: u.id,
+              username: u.username || u.email,
+              avatar: u.avatar || "",
+              email: u.email,
+              role: "ADMIN",
+              courseName: "Quản trị viên Hệ thống",
+              status: "online",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error("Lỗi khi tải thông tin Admin mặc định:", err);
+        })
+        .finally(() => {
+          setIsLoadingAdmin(false);
         });
     }
   };
@@ -348,6 +378,35 @@ export default function ConversationList({
                     </button>
                   </div>
                 )}
+              </div>
+            )}
+          </div>
+        ) : filterTab === "admin" ? (
+          <div>
+            <div className="px-3 py-1.5 bg-muted/40 text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Users className="w-3 h-3 text-accent" />
+              <span>Quản trị viên Hỗ trợ</span>
+            </div>
+
+            {isLoadingAdmin ? (
+              <div className="p-3 flex items-center gap-3 animate-pulse">
+                <div className="w-11 h-11 rounded-full bg-muted/80 shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3.5 bg-muted/80 rounded-md w-32" />
+                  <div className="h-2.5 bg-muted/60 rounded-md w-24" />
+                </div>
+              </div>
+            ) : adminUser ? (
+              <EnrolledUserItem
+                user={adminUser}
+                onSelectUser={(u) => {
+                  setFilterTab("all");
+                  onSelectEnrolledUser(u);
+                }}
+              />
+            ) : (
+              <div className="p-6 text-center text-xs text-muted-foreground font-medium">
+                Chưa có thông tin Quản trị viên
               </div>
             )}
           </div>

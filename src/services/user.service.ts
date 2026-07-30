@@ -67,6 +67,12 @@ export const userApi = {
     return response.data;
   },
 
+  getDefaultAdminUser: async () => {
+    const response =
+      await apiClient.get<ApiResponse<UserDetailResponse>>(API.GET_DEFAULT_ADMIN_USER);
+    return response.data;
+  },
+
   update: async (id: string, data: Partial<UserDetailResponse>) => {
     const response = await apiClient.put<ApiResponse<UserDetailResponse>>(
       `${API.UPDATE_USER}/${id}`,
