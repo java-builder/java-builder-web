@@ -19,6 +19,13 @@ import {
   ArrowLeft,
   PanelLeftOpen,
   PanelLeftClose,
+  MoreVertical,
+  Bell,
+  BellOff,
+  Pin,
+  Mail,
+  MailOpen,
+  Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -27,6 +34,7 @@ import { MessageAttachmentRequest } from "@/types/chatMessage";
 interface ChatWindowProps {
   conversation: Conversation;
   messages: ChatMessage[];
+  isMuted?: boolean;
   onSendMessage: (
     content: string,
     type?: MessageType,
@@ -37,32 +45,55 @@ interface ChatWindowProps {
     attachmentObj?: MessageAttachmentRequest
   ) => void;
   onAddReaction: (messageId: string, emoji: string) => void;
+  onDeleteMessage?: (messageId: string) => void;
   onOpenCodeModal: () => void;
   onToggleDrawer: () => void;
   onBackToList?: () => void;
   onToggleSidebar?: () => void;
   isSidebarCollapsed?: boolean;
+  onToggleMute?: (convId: string) => void;
+  onTogglePin?: (conv: Conversation) => void;
+  onToggleUnread?: (conv: Conversation) => void;
+  onDeleteConversation?: (convId: string) => void;
 }
 
 export default function ChatWindow({
   conversation,
   messages,
+  isMuted = false,
   onSendMessage,
   onAddReaction,
+  onDeleteMessage,
   onOpenCodeModal,
   onToggleDrawer,
   onBackToList,
   onToggleSidebar,
   isSidebarCollapsed,
+  onToggleMute,
+  onTogglePin,
+  onToggleUnread,
+  onDeleteConversation,
 }: ChatWindowProps) {
   const currentUser = useChatCurrentUser();
   const [inputText, setInputText] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showHeaderMenu, setShowHeaderMenu] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const headerMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (headerMenuRef.current && !headerMenuRef.current.contains(e.target as Node)) {
+        setShowHeaderMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -264,7 +295,7 @@ export default function ChatWindow({
           </div>
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1 shrink-0 relative" ref={headerMenuRef}>
           <button
             type="button"
             disabled
@@ -288,6 +319,88 @@ export default function ChatWindow({
           >
             <Info className="w-4 h-4" />
           </button>
+
+          {/* Mobile & Header 3-Dots Dropdown Menu */}
+          <button
+            onClick={() => setShowHeaderMenu(!showHeaderMenu)}
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+            title="Tùy chọn cuộc trò chuyện"
+          >
+            <MoreVertical className="w-4.5 h-4.5" />
+          </button>
+
+          {showHeaderMenu && (
+            <div
+              className="absolute right-0 top-full mt-2 z-50 w-52 p-1.5 rounded-2xl bg-card border border-border shadow-2xl text-xs font-medium space-y-0.5 animate-in fade-in zoom-in-95 duration-150"
+            >
+              {onToggleMute && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onToggleMute(conversation.id);
+                    setShowHeaderMenu(false);
+                  }}
+                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                >
+                  {isMuted ? (
+                    <Bell className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  ) : (
+                    <BellOff className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  )}
+                  <span>{isMuted ? "Bật thông báo" : "Tắt thông báo"}</span>
+                </button>
+              )}
+
+              {onTogglePin && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onTogglePin(conversation);
+                    setShowHeaderMenu(false);
+                  }}
+                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                >
+                  <Pin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  <span>{conversation.isPinned ? "Bỏ ghim trò chuyện" : "Ghim trò chuyện lên đầu"}</span>
+                </button>
+              )}
+
+              {onToggleUnread && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onToggleUnread(conversation);
+                    setShowHeaderMenu(false);
+                  }}
+                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                >
+                  {conversation.unreadCount > 0 ? (
+                    <MailOpen className="w-3.5 h-3.5 text-accent shrink-0" />
+                  ) : (
+                    <Mail className="w-3.5 h-3.5 text-accent shrink-0" />
+                  )}
+                  <span>{conversation.unreadCount > 0 ? "Đánh dấu đã đọc" : "Đánh dấu chưa đọc"}</span>
+                </button>
+              )}
+
+              {onDeleteConversation && (
+                <>
+                  <div className="my-1 border-t border-border/60" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowHeaderMenu(false);
+                      onDeleteConversation(conversation.id);
+                    }}
+                    className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                    <span>Xóa trò chuyện</span>
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -306,6 +419,7 @@ export default function ChatWindow({
               message={msg}
               sender={sender}
               onAddReaction={onAddReaction}
+              onDeleteMessage={onDeleteMessage}
             />
           );
         })}

@@ -37,6 +37,57 @@ export default function MessagesClient() {
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [mutedConvIds, setMutedConvIds] = useState<string[]>([]);
+
+  const handleToggleMute = useCallback((convId: string) => {
+    setMutedConvIds((prev) => {
+      const isCurrentlyMuted = prev.includes(convId);
+      if (isCurrentlyMuted) {
+        toast.success("Đã bật thông báo cuộc trò chuyện");
+        return prev.filter((id) => id !== convId);
+      } else {
+        toast.success("Đã tắt thông báo cuộc trò chuyện");
+        return [...prev, convId];
+      }
+    });
+  }, []);
+
+  const handleTogglePin = useCallback((conv: Conversation) => {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === conv.id) {
+          const nextPinned = !c.isPinned;
+          toast.success(nextPinned ? "Đã ghim cuộc trò chuyện lên đầu" : "Đã bỏ ghim cuộc trò chuyện");
+          return { ...c, isPinned: nextPinned };
+        }
+        return c;
+      })
+    );
+  }, []);
+
+  const handleToggleUnread = useCallback((conv: Conversation) => {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === conv.id) {
+          const nextUnread = c.unreadCount > 0 ? 0 : 1;
+          toast.success(nextUnread > 0 ? "Đã đánh dấu chưa đọc" : "Đã đánh dấu đã đọc");
+          return { ...c, unreadCount: nextUnread };
+        }
+        return c;
+      })
+    );
+  }, []);
+
+  const handleDeleteMessage = useCallback((messageId: string) => {
+    if (!activeConversationId) return;
+    setMessagesMap((prev) => {
+      const list = prev[activeConversationId] || [];
+      return {
+        ...prev,
+        [activeConversationId]: list.filter((m) => m.id !== messageId),
+      };
+    });
+  }, [activeConversationId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -570,6 +621,10 @@ export default function MessagesClient() {
           onOpenNewChatModal={() => setIsNewChatModalOpen(true)}
           onToggleSidebar={() => setIsSidebarCollapsed(true)}
           onDeleteConversation={handleClearHistory}
+          mutedConvIds={mutedConvIds}
+          onToggleMute={handleToggleMute}
+          onTogglePin={handleTogglePin}
+          onToggleUnread={handleToggleUnread}
           myStatus={myStatus}
           onChangeMyStatus={setMyStatus}
         />
@@ -584,13 +639,19 @@ export default function MessagesClient() {
             <ChatWindow
               conversation={activeConversation}
               messages={activeMessages}
+              isMuted={mutedConvIds.includes(activeConversation.id)}
               onSendMessage={handleSendMessage}
               onAddReaction={handleAddReaction}
+              onDeleteMessage={handleDeleteMessage}
               onOpenCodeModal={() => setIsCodeModalOpen(true)}
               onToggleDrawer={() => setIsDrawerOpen(!isDrawerOpen)}
               onBackToList={() => setActiveConversationId(null)}
               onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
               isSidebarCollapsed={isSidebarCollapsed}
+              onToggleMute={handleToggleMute}
+              onTogglePin={handleTogglePin}
+              onToggleUnread={handleToggleUnread}
+              onDeleteConversation={handleClearHistory}
             />
 
             {isDrawerOpen && (
@@ -598,6 +659,10 @@ export default function MessagesClient() {
                 isOpen={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
                 conversation={activeConversation}
+                isMuted={mutedConvIds.includes(activeConversation.id)}
+                onToggleMute={handleToggleMute}
+                onTogglePin={handleTogglePin}
+                onDeleteConversation={handleClearHistory}
               />
             )}
           </div>

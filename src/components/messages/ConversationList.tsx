@@ -21,6 +21,10 @@ interface ConversationListProps {
   onOpenNewChatModal: () => void;
   onToggleSidebar?: () => void;
   onDeleteConversation?: (convId: string) => void;
+  mutedConvIds?: string[];
+  onToggleMute?: (convId: string) => void;
+  onTogglePin?: (conv: Conversation) => void;
+  onToggleUnread?: (conv: Conversation) => void;
   myStatus?: UserPresenceStatus;
   onChangeMyStatus?: (status: UserPresenceStatus) => void;
 }
@@ -33,6 +37,10 @@ export default function ConversationList({
   onOpenNewChatModal,
   onToggleSidebar,
   onDeleteConversation,
+  mutedConvIds: externalMutedConvIds,
+  onToggleMute: externalOnToggleMute,
+  onTogglePin: externalOnTogglePin,
+  onToggleUnread: externalOnToggleUnread,
 }: ConversationListProps) {
   const currentUser = useChatCurrentUser();
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,7 +66,9 @@ export default function ConversationList({
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
 
   const [menuOpenConvId, setMenuOpenConvId] = useState<string | null>(null);
-  const [mutedConvIds, setMutedConvIds] = useState<string[]>([]);
+  const [localMutedConvIds, setLocalMutedConvIds] = useState<string[]>([]);
+
+  const mutedConvIds = externalMutedConvIds || localMutedConvIds;
   const menuRef = useRef<HTMLDivElement>(null);
   const courseDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -425,17 +435,29 @@ export default function ConversationList({
                 setMenuOpenConvId((prev) => (prev === id ? null : id));
               }}
               onToggleMute={(id) => {
-                setMutedConvIds((prev) =>
-                  prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-                );
+                if (externalOnToggleMute) {
+                  externalOnToggleMute(id);
+                } else {
+                  setLocalMutedConvIds((prev) =>
+                    prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+                  );
+                }
                 setMenuOpenConvId(null);
               }}
               onTogglePin={(c) => {
-                c.isPinned = !c.isPinned;
+                if (externalOnTogglePin) {
+                  externalOnTogglePin(c);
+                } else {
+                  c.isPinned = !c.isPinned;
+                }
                 setMenuOpenConvId(null);
               }}
               onToggleUnread={(c) => {
-                c.unreadCount = c.unreadCount > 0 ? 0 : 1;
+                if (externalOnToggleUnread) {
+                  externalOnToggleUnread(c);
+                } else {
+                  c.unreadCount = c.unreadCount > 0 ? 0 : 1;
+                }
                 setMenuOpenConvId(null);
               }}
               onDeleteConversation={(convId) => {

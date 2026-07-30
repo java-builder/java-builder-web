@@ -27,6 +27,8 @@ import {
   Presentation,
   Download,
   Eye,
+  MoreHorizontal,
+  Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -34,6 +36,7 @@ interface ChatMessageItemProps {
   message: ChatMessage;
   sender?: EnrolledUserResponse | ChatUser;
   onAddReaction: (messageId: string, emoji: string) => void;
+  onDeleteMessage?: (messageId: string) => void;
 }
 
 const getFileTypeInfo = (fileName: string) => {
@@ -162,9 +165,11 @@ export default function ChatMessageItem({
   message,
   sender,
   onAddReaction,
+  onDeleteMessage,
 }: ChatMessageItemProps) {
   const currentUser = useChatCurrentUser();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showMessageMenu, setShowMessageMenu] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
@@ -471,18 +476,31 @@ export default function ChatMessageItem({
             </div>
           </div>
 
-          {/* Emoji Reaction Action Trigger */}
+          {/* Action Triggers (Emoji & 3-dots Menu) */}
           <div
-            className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover/bubble:opacity-100 transition-opacity flex items-center gap-1 ${
-              isMe ? "-left-10" : "-right-10"
+            className={`absolute top-1/2 -translate-y-1/2 opacity-100 md:opacity-0 md:group-hover/bubble:opacity-100 transition-opacity flex items-center gap-1 z-20 ${
+              isMe ? "-left-16 sm:-left-20" : "-right-16 sm:-right-20"
             }`}
           >
             <button
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="p-1.5 rounded-full bg-popover border border-border text-muted-foreground hover:text-accent shadow-xs cursor-pointer"
+              onClick={() => {
+                setShowEmojiPicker(!showEmojiPicker);
+                setShowMessageMenu(false);
+              }}
+              className="p-1 rounded-full bg-popover border border-border text-muted-foreground hover:text-accent shadow-xs cursor-pointer"
               title="Thả cảm xúc"
             >
-              <Smile className="w-4 h-4" />
+              <Smile className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+            <button
+              onClick={() => {
+                setShowMessageMenu(!showMessageMenu);
+                setShowEmojiPicker(false);
+              }}
+              className="p-1 rounded-full bg-popover border border-border text-muted-foreground hover:text-accent shadow-xs cursor-pointer"
+              title="Tùy chọn tin nhắn"
+            >
+              <MoreHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
 
@@ -501,6 +519,58 @@ export default function ChatMessageItem({
                 }}
                 onClose={() => setShowEmojiPicker(false)}
               />
+            </div>
+          )}
+
+          {/* Message Options Dropdown */}
+          {showMessageMenu && (
+            <div
+              className={`absolute z-40 top-full mt-1 w-44 p-1.5 rounded-2xl bg-card border border-border shadow-2xl text-xs font-medium space-y-0.5 animate-in fade-in zoom-in-95 duration-150 ${
+                isMe ? "right-0" : "left-0"
+              }`}
+            >
+              {message.content && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(message.content);
+                    toast.success("Đã sao chép nội dung tin nhắn");
+                    setShowMessageMenu(false);
+                  }}
+                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5 text-accent shrink-0" />
+                  <span>Sao chép tin nhắn</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEmojiPicker(true);
+                  setShowMessageMenu(false);
+                }}
+                className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+              >
+                <Smile className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>Thả cảm xúc</span>
+              </button>
+              {onDeleteMessage && (
+                <>
+                  <div className="my-1 border-t border-border/60" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onDeleteMessage(message.id);
+                      toast.success("Đã xóa tin nhắn");
+                      setShowMessageMenu(false);
+                    }}
+                    className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                    <span>Xóa tin nhắn</span>
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>

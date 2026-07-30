@@ -16,6 +16,10 @@ import {
   FolderArchive,
   Film,
   ImageIcon,
+  Bell,
+  BellOff,
+  Pin,
+  Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
@@ -24,12 +28,20 @@ interface ChatDetailDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   conversation: Conversation;
+  isMuted?: boolean;
+  onToggleMute?: (convId: string) => void;
+  onTogglePin?: (conv: Conversation) => void;
+  onDeleteConversation?: (convId: string) => void;
 }
 
 export default function ChatDetailDrawer({
   isOpen,
   onClose,
   conversation,
+  isMuted = false,
+  onToggleMute,
+  onTogglePin,
+  onDeleteConversation,
 }: ChatDetailDrawerProps) {
   const [filterOnline, setFilterOnline] = useState<"all" | "online" | "offline">("all");
   const [memberSearch, setMemberSearch] = useState("");
@@ -98,6 +110,56 @@ export default function ChatDetailDrawer({
             {conversation.topic}
           </p>
         )}
+
+        {/* Quick Action Buttons for Mute, Pin & Delete */}
+        <div className="mt-4 flex items-center justify-center gap-2 w-full pt-3 border-t border-border/60">
+          {onToggleMute && (
+            <button
+              type="button"
+              onClick={() => onToggleMute(conversation.id)}
+              className={`flex-1 py-2 px-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                isMuted
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400"
+                  : "bg-muted/50 border-border text-foreground hover:bg-muted"
+              }`}
+              title={isMuted ? "Bật thông báo" : "Tắt thông báo"}
+            >
+              {isMuted ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />}
+              <span className="text-[11px] truncate">{isMuted ? "Bật chuông" : "Tắt chuông"}</span>
+            </button>
+          )}
+
+          {onTogglePin && (
+            <button
+              type="button"
+              onClick={() => onTogglePin(conversation)}
+              className={`flex-1 py-2 px-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                conversation.isPinned
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 font-bold"
+                  : "bg-muted/50 border-border text-foreground hover:bg-muted"
+              }`}
+              title={conversation.isPinned ? "Bỏ ghim" : "Ghim trò chuyện"}
+            >
+              <Pin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span className="text-[11px] truncate">{conversation.isPinned ? "Đã ghim" : "Ghim"}</span>
+            </button>
+          )}
+
+          {onDeleteConversation && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onDeleteConversation(conversation.id);
+              }}
+              className="py-2 px-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-500/20 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              title="Xóa cuộc trò chuyện này"
+            >
+              <Trash2 className="w-3.5 h-3.5 shrink-0" />
+              <span className="text-[11px] truncate">Xóa</span>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="p-4 border-b border-border bg-muted/30">

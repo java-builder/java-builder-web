@@ -136,7 +136,7 @@ export default function ConversationItem({
             onClick={(e) => onToggleMenu(conv.id, e)}
             className={`w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted bg-card/90 border border-border/60 shadow-xs transition-all cursor-pointer ${isMenuOpen
               ? "opacity-100 bg-muted text-foreground scale-105"
-              : "opacity-0 group-hover:opacity-100"
+              : "opacity-100 md:opacity-0 md:group-hover:opacity-100"
               }`}
             title="Tùy chọn cuộc trò chuyện"
           >
