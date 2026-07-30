@@ -188,7 +188,9 @@ export default function ChatMessageItem({
 
   return (
     <div
-      className={`group flex items-start gap-2.5 my-3 px-1 transition-all ${
+      className={`group flex items-start gap-2.5 my-3 px-1 transition-all relative ${
+        showMessageMenu || showEmojiPicker ? "z-30" : "z-0"
+      } ${
         isMe ? "flex-row-reverse" : "flex-row"
       }`}
     >
@@ -220,7 +222,7 @@ export default function ChatMessageItem({
         )}
 
         {/* Message Bubble Container */}
-        <div className="relative group/bubble inline-block max-w-full">
+        <div className={`relative group/bubble inline-block max-w-full ${showMessageMenu || showEmojiPicker ? "z-40" : ""}`}>
           <div
             className={`p-3.5 rounded-2xl text-sm leading-relaxed shadow-xs transition-all max-w-full overflow-hidden ${
               isMe

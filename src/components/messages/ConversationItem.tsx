@@ -58,7 +58,7 @@ export default function ConversationItem({
   return (
     <div
       onClick={() => onSelectConversation(conv)}
-      className={`p-3 flex items-start gap-3 transition-all cursor-pointer group relative ${isActive
+      className={`p-3 flex items-start gap-3 transition-all cursor-pointer group relative ${isMenuOpen ? "z-40" : "z-0"} ${isActive
         ? "bg-accent/10 border-l-4 border-accent text-foreground"
         : hasUnread
           ? "bg-accent/5 dark:bg-accent/10 hover:bg-muted/60"
@@ -128,7 +128,7 @@ export default function ConversationItem({
 
       <div
         ref={isMenuOpen ? menuRef : null}
-        className="shrink-0 flex items-center gap-1.5 relative z-10"
+        className={`shrink-0 flex items-center gap-1.5 relative ${isMenuOpen ? "z-50" : "z-10"}`}
       >
         <div onClick={(e) => e.stopPropagation()}>
           <button
