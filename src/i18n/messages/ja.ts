@@ -1074,6 +1074,7 @@ export const ja = {
       documents: "ドキュメント管理",
       interviewTopics: "面接質問",
       questionContributions: "質問の投稿",
+      qna: "Q&A & 課題管理",
       categories: "カテゴリ",
       tags: "タグ",
       comments: "コメント",

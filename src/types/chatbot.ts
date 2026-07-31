@@ -73,3 +73,17 @@ export interface GenerateExerciseResponse {
   exerciseDescription: string;
   questions: GenerateQuestion[];
 }
+
+export interface GenerateQnAPostRequest {
+  postType: "daily_problem" | "fix_bug" | "solution" | "general";
+  topic?: string;
+  level?: "EASY" | "MEDIUM" | "HARD";
+  description?: string;
+}
+
+export interface GenerateQnAPostResponse {
+  title: string;
+  content: string;
+  categoryName?: string;
+  tags?: string[];
+}

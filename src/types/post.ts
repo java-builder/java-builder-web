@@ -11,6 +11,7 @@ export interface PostDetail {
   commentCount?: number;
   categoryId: string;
   categoryName: string;
+  isSolved?: boolean;
   createdAt: string;
 }
 

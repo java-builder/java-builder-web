@@ -1074,6 +1074,7 @@ export const ko = {
       documents: "문서 관리",
       interviewTopics: "면접 질문",
       questionContributions: "질문 기여",
+      qna: "Q&A 및 챌린지 관리",
       categories: "카테고리",
       tags: "태그",
       comments: "댓글",

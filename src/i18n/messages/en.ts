@@ -1080,6 +1080,7 @@ export const en = {
       documents: "Document management",
       interviewTopics: "Interview questions",
       questionContributions: "Question contributions",
+      qna: "Q&A & Challenges",
       categories: "Categories",
       tags: "Tags",
       comments: "Comments",

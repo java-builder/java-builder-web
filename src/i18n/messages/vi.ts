@@ -1080,6 +1080,7 @@ export const vi = {
       documents: "Quản lý tài liệu",
       interviewTopics: "Câu hỏi phỏng vấn",
       questionContributions: "Đóng góp câu hỏi",
+      qna: "Quản lý Q&A & Thách thức",
       categories: "Danh mục",
       tags: "Tags",
       comments: "Bình luận",

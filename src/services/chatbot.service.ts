@@ -8,6 +8,8 @@ import {
   QuizAnalysisResponse,
   GenerateExerciseRequest,
   GenerateExerciseResponse,
+  GenerateQnAPostRequest,
+  GenerateQnAPostResponse,
 } from "@/types/chatbot";
 import { API } from "@/api/api";
 
@@ -39,6 +41,14 @@ export const chatbotApi = {
   generateExercise: async (data: GenerateExerciseRequest) => {
     const response = await apiClient.post<ApiResponse<GenerateExerciseResponse>>(
       API.CHATBOT_GENERATE_EXERCISE,
+      data,
+    );
+    return response.data;
+  },
+
+  generateQnAPost: async (data: GenerateQnAPostRequest) => {
+    const response = await apiClient.post<ApiResponse<GenerateQnAPostResponse>>(
+      API.CHATBOT_GENERATE_QNA,
       data,
     );
     return response.data;
