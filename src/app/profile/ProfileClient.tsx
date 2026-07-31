@@ -3,14 +3,14 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AlertTriangle, UserX } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
+import { useProfileDetails } from "@/hooks/useProfileDetails";
 import Sidebar from "@/components/profile/Sidebar";
 import ProfileTab from "@/components/profile/ProfileTab";
 import MyPostsTab from "@/components/profile/MyPostsTab";
 import SecurityTab from "@/components/profile/SecurityTab";
 import PasswordTab from "@/components/profile/PasswordTab";
 import SessionsTab from "@/components/profile/SessionsTab";
-import { UserDetailResponse } from "@/types/user";
+import { ProfileDetailResponse } from "@/types/user";
 import { useI18n } from "@/contexts/I18nContext";
 
 function ProfileLoadingState() {
@@ -33,7 +33,7 @@ function ProfileContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tabParam = searchParams?.get("tab");
-  const { user, loading, error, updateUser } = useUser();
+  const { profile: user, loading, error, updateProfile } = useProfileDetails();
   const [activeTab, setActiveTab] = useState(tabParam || "profile");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -48,10 +48,10 @@ function ProfileContent() {
     router.push(`/profile?tab=${tab}`);
   };
 
-  const handleSave = async (data: Partial<UserDetailResponse>) => {
+  const handleSave = async (data: Partial<ProfileDetailResponse>) => {
     try {
       setIsSaving(true);
-      await updateUser(data);
+      await updateProfile(data);
     } catch (err) {
       console.error("Error updating user:", err);
     } finally {
@@ -69,7 +69,7 @@ function ProfileContent() {
       case "sessions":
         return <SessionsTab />;
       case "security":
-        return <SecurityTab user={user} onUserUpdate={updateUser} />;
+        return <SecurityTab user={user} onUserUpdate={updateProfile} />;
       case "password":
         return <PasswordTab />;
       case "my-posts":

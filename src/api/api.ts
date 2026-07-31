@@ -20,6 +20,7 @@ export const API = {
     GET_DEFAULT_ADMIN_USER: "/api/v1/users/default-admin",
     USER_SEARCH: "/api/v1/users/search",
     USER_PROFILE: "/api/v1/users/me",
+    USER_PROFILE_DETAILS: "/api/v1/profiles/details",
     USER_STATISTICS: "/api/v1/users/statistics",
     USER_PROFILE_AVATAR: "/api/v1/profiles/update-avatar",
     UPDATE_PROFILE: "/api/v1/profiles",
@@ -192,6 +193,9 @@ export const API = {
     CREATE_ROLE: "/api/v1/roles",
     GET_ROLES: "/api/v1/roles",
     UPDATE_ROLE: "/api/v1/roles", // + /:id
+
+    // SKILLS
+    SKILLS: "/api/v1/skills",
 
     // INTERVIEW TOPIC
     CREATE_INTERVIEW_TOPIC: "/api/v1/interview-topics",

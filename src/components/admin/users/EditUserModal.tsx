@@ -321,8 +321,8 @@ export default function EditUserModal({
                             setIsDropdownOpen(false);
                           }}
                           className={`flex w-full items-center px-3.5 py-2.5 text-sm text-left transition-colors ${formData.userStatus === UserStatus.ACTIVE
-                              ? "bg-accent/10 text-accent font-semibold dark:bg-accent/25"
-                              : "text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40"
+                            ? "bg-accent/10 text-accent font-semibold dark:bg-accent/25"
+                            : "text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40"
                             }`}
                         >
                           Hoạt động
@@ -334,8 +334,8 @@ export default function EditUserModal({
                             setIsDropdownOpen(false);
                           }}
                           className={`flex w-full items-center px-3.5 py-2.5 text-sm text-left transition-colors ${formData.userStatus === UserStatus.INACTIVE
-                              ? "bg-accent/10 text-accent font-semibold dark:bg-accent/25"
-                              : "text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40"
+                            ? "bg-accent/10 text-accent font-semibold dark:bg-accent/25"
+                            : "text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40"
                             }`}
                         >
                           Không hoạt động

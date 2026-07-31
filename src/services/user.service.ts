@@ -3,6 +3,7 @@ import { ApiResponse, PageResponse } from "@/types/api";
 import { API } from "@/api/api";
 import {
   UserDetailResponse,
+  ProfileDetailResponse,
   CreateUserRequest,
   CreateUserResponse,
   UpdateProfileRequest,
@@ -46,11 +47,11 @@ export const userApi = {
     >(API.USER_SEARCH, null, {
       params: queryParams,
       paramsSerializer: {
-        indexes: null, 
+        indexes: null,
       },
     });
-    
-    
+
+
     return response.data;
   },
 
@@ -64,6 +65,12 @@ export const userApi = {
   getCurrentUser: async () => {
     const response =
       await apiClient.get<ApiResponse<UserDetailResponse>>(API.USER_PROFILE);
+    return response.data;
+  },
+
+  getProfileDetails: async () => {
+    const response =
+      await apiClient.get<ApiResponse<ProfileDetailResponse>>(API.USER_PROFILE_DETAILS);
     return response.data;
   },
 

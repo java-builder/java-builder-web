@@ -1083,6 +1083,7 @@ export const vi = {
       qna: "Quản lý Q&A & Thách thức",
       categories: "Danh mục",
       tags: "Tags",
+      skills: "Quản lý Skills",
       comments: "Bình luận",
       notifications: "Quản lý thông báo",
       messages: "Quản lý tin nhắn",

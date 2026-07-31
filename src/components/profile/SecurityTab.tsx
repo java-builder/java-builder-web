@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   AlertTriangle,
@@ -11,7 +11,7 @@ import {
   Key,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { UserDetailResponse } from "@/types/user";
+import { ProfileDetailResponse } from "@/types/user";
 import { twoFactorApi } from "@/services/two-factor.service";
 import { useI18n } from "@/contexts/I18nContext";
 import TwoFactorModal from "./TwoFactorModal";
@@ -21,8 +21,8 @@ import { passkeyApi } from "@/services/passkey.service";
 import { registerPasskeyCredential } from "@/services/webauthn";
 
 interface SecurityTabProps {
-  user: UserDetailResponse;
-  onUserUpdate?: (user: Partial<UserDetailResponse>) => void;
+  user: ProfileDetailResponse;
+  onUserUpdate?: (user: Partial<ProfileDetailResponse>) => void;
 }
 
 export default function SecurityTab({
@@ -71,12 +71,10 @@ export default function SecurityTab({
     }
   };
 
-  const handleUserUpdate = useCallback(
-    (updates: Partial<UserDetailResponse>) => {
-      onUserUpdate?.(updates);
-    },
-    [onUserUpdate]
-  );
+  const onUserUpdateRef = useRef(onUserUpdate);
+  useEffect(() => {
+    onUserUpdateRef.current = onUserUpdate;
+  }, [onUserUpdate]);
 
   useEffect(() => {
     const checkMfaStatus = async () => {
@@ -85,7 +83,7 @@ export default function SecurityTab({
         if (response.data !== undefined) {
           setTwoFactorEnabled(response.data);
           if (response.data !== initialUserMftEnable.current) {
-            handleUserUpdate({ mftEnable: response.data });
+            onUserUpdateRef.current?.({ mftEnable: response.data });
           }
         }
       } catch (err) {
@@ -96,7 +94,7 @@ export default function SecurityTab({
       }
     };
     checkMfaStatus();
-  }, [handleUserUpdate]);
+  }, []);
 
   const handleToggleTwoFactor = () => {
     setError("");
