@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Sparkles, Bug, Lightbulb, HelpCircle, AlertCircle, ChevronDown, Check, Plus } from "lucide-react";
+import { X, Sparkles, Bug, Lightbulb, HelpCircle, AlertCircle, ChevronDown, Check, Plus, Tag as TagIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
+import { tagService } from "@/services/tag.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
+import { Tag as TagType } from "@/types/tag";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 
 interface CreateQnAModalProps {
@@ -49,11 +51,20 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
   const [isCatDropdownOpen, setIsCatDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Tag Selection State
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [tagSuggestions, setTagSuggestions] = useState<TagType[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
+
   useEffect(() => {
     if (!isOpen) return;
     setTitle("");
     setContent("");
     setError(null);
+    setTags([]);
+    setTagInput("");
+    setTagSuggestions([]);
     setActiveTemplate("daily_problem");
 
     let mounted = true;
@@ -79,6 +90,43 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
       mounted = false;
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (tagInput.trim()) {
+        searchTags(tagInput);
+      } else {
+        setTagSuggestions([]);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [tagInput]);
+
+  const searchTags = async (query: string) => {
+    setIsLoadingTags(true);
+    try {
+      const response = await tagService.search(query, 1, 10);
+      setTagSuggestions(response.data?.data || []);
+    } catch (err) {
+      console.error("Error searching tags:", err);
+    } finally {
+      setIsLoadingTags(false);
+    }
+  };
+
+  const handleAddTag = (tagName: string) => {
+    const trimmed = tagName.trim();
+    if (!trimmed) return;
+    if (!tags.includes(trimmed)) {
+      setTags((prev) => [...prev, trimmed]);
+    }
+    setTagInput("");
+    setTagSuggestions([]);
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags((prev) => prev.filter((t) => t !== tagToRemove));
+  };
 
   // Click outside listener for category dropdown
   useEffect(() => {
@@ -119,6 +167,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
         title: title.trim(),
         categoryId,
         content: content.trim(),
+        tags,
       });
       onSuccess();
       onClose();
@@ -267,6 +316,72 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Tags Selection */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2 flex items-center">
+              <TagIcon className="w-4 h-4 mr-1.5 text-accent" />
+              Tags bài viết
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddTag(tagInput);
+                  }
+                }}
+                placeholder="Nhập tag kỹ thuật (ví dụ: java, spring-boot, microservices) và nhấn Enter..."
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm shadow-sm transition-colors"
+              />
+              {isLoadingTags && (
+                <div className="absolute right-3 top-3">
+                  <Loader2 className="animate-spin w-4 h-4 text-accent" />
+                </div>
+              )}
+              {tagSuggestions.length > 0 && (
+                <div className="absolute z-10 w-full mt-1.5 bg-card border border-border rounded-xl shadow-2xl max-h-48 overflow-y-auto p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                  {tagSuggestions.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => handleAddTag(t.name)}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-lg text-left text-foreground hover:bg-muted transition-colors"
+                    >
+                      <TagIcon className="w-3.5 h-3.5 text-accent shrink-0" />
+                      <span>{t.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Thêm các tag liên quan giúp bài viết dễ dàng tìm kiếm (nhấn Enter để chọn)
+            </p>
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2.5">
+                {tags.map((t) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center px-3 py-1 bg-accent/15 border border-accent/20 text-accent rounded-lg text-xs font-semibold shadow-sm"
+                  >
+                    <TagIcon className="w-3 h-3 mr-1.5" />
+                    {t}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(t)}
+                      className="ml-2 text-accent/80 hover:text-accent hover:bg-accent/20 rounded-full p-0.5 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* System MarkdownEditor */}

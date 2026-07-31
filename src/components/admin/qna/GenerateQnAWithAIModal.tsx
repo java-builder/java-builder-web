@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Sparkles, Bug, Lightbulb, HelpCircle, AlertCircle, ChevronDown, Wand2, Check, RefreshCw, ShieldCheck, Zap, Database, Cpu, ChevronRight, Code2, Server, Layers, Cloud } from "lucide-react";
+import { X, Sparkles, Bug, Lightbulb, HelpCircle, AlertCircle, ChevronDown, Wand2, Check, RefreshCw, ShieldCheck, Zap, Database, Cpu, ChevronRight, Code2, Server, Layers, Cloud, Tag as TagIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
+import { tagService } from "@/services/tag.service";
 import { chatbotApi } from "@/services/chatbot.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
+import { Tag as TagType } from "@/types/tag";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 
 interface GenerateQnAWithAIModalProps {
@@ -166,6 +168,11 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
   const [isCatDropdownOpen, setIsCatDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Tag Selection State
+  const [tagInput, setTagInput] = useState("");
+  const [tagSuggestions, setTagSuggestions] = useState<TagType[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
+
   useEffect(() => {
     if (!isOpen) return;
     setPostType("daily_problem");
@@ -212,6 +219,43 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (tagInput.trim()) {
+        searchTags(tagInput);
+      } else {
+        setTagSuggestions([]);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [tagInput]);
+
+  const searchTags = async (query: string) => {
+    setIsLoadingTags(true);
+    try {
+      const response = await tagService.search(query, 1, 10);
+      setTagSuggestions(response.data?.data || []);
+    } catch (err) {
+      console.error("Error searching tags:", err);
+    } finally {
+      setIsLoadingTags(false);
+    }
+  };
+
+  const handleAddTag = (tagName: string) => {
+    const trimmed = tagName.trim();
+    if (!trimmed) return;
+    if (!generatedTags.includes(trimmed)) {
+      setGeneratedTags((prev) => [...prev, trimmed]);
+    }
+    setTagInput("");
+    setTagSuggestions([]);
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setGeneratedTags((prev) => prev.filter((t) => t !== tagToRemove));
+  };
 
   if (!isOpen) return null;
 
@@ -276,6 +320,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
         title: title.trim(),
         categoryId,
         content: content.trim(),
+        tags: generatedTags,
       });
       onSuccess();
       onClose();
@@ -516,6 +561,69 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                 ))}
               </div>
             )}
+            
+            {/* Tags Selection */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1 flex items-center">
+                <TagIcon className="w-3.5 h-3.5 mr-1 text-accent" />
+                Tags bài viết
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddTag(tagInput);
+                    }
+                  }}
+                  placeholder="Nhập tag kỹ thuật và nhấn Enter..."
+                  className="w-full px-3 py-1.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs shadow-sm transition-colors"
+                />
+                {isLoadingTags && (
+                  <div className="absolute right-2.5 top-2">
+                    <Loader2 className="animate-spin w-3.5 h-3.5 text-accent" />
+                  </div>
+                )}
+                {tagSuggestions.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-xl shadow-2xl max-h-40 overflow-y-auto p-1 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                    {tagSuggestions.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => handleAddTag(t.name)}
+                        className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-lg text-left text-foreground hover:bg-muted transition-colors"
+                      >
+                        <TagIcon className="w-3 h-3 text-accent shrink-0" />
+                        <span>{t.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {generatedTags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {generatedTags.map((t) => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center px-2 py-0.5 bg-accent/15 border border-accent/20 text-accent rounded-md text-[11px] font-semibold"
+                    >
+                      <TagIcon className="w-3 h-3 mr-1" />
+                      {t}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(t)}
+                        className="ml-1.5 text-accent/80 hover:text-accent hover:bg-accent/20 rounded-full p-0.5 transition-colors"
+                      >
+                        <X className="w-2.5 h-2.5" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Form Result Fields */}

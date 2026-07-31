@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -16,28 +16,36 @@ interface CreateCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  defaultCategoryType?: CategoryType;
 }
 
 export default function CreateCategoryModal({
   isOpen,
   onClose,
   onSuccess,
+  defaultCategoryType = CategoryType.BLOG,
 }: CreateCategoryModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState(DEFAULT_ICON);
   const [color, setColor] = useState(DEFAULT_COLOR);
   const [categoryType, setCategoryType] = useState<CategoryType>(
-    CategoryType.BLOG
+    defaultCategoryType
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCategoryType(defaultCategoryType);
+    }
+  }, [isOpen, defaultCategoryType]);
 
   const resetForm = () => {
     setName("");
     setDescription("");
     setIcon(DEFAULT_ICON);
     setColor(DEFAULT_COLOR);
-    setCategoryType(CategoryType.BLOG);
+    setCategoryType(defaultCategoryType);
   };
 
   const handleClose = () => {

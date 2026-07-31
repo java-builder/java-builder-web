@@ -12,6 +12,7 @@ export interface PostDetail {
   categoryId: string;
   categoryName: string;
   isSolved?: boolean;
+  tags?: string[];
   createdAt: string;
 }
 
@@ -20,6 +21,7 @@ export interface CreatePostRequest {
   content?: string;
   key?: string | null;
   categoryId: string;
+  tags?: string[];
 }
 
 export interface UpdatePostRequest {
@@ -28,6 +30,7 @@ export interface UpdatePostRequest {
   key?: string | null;
   isSolved?: boolean;
   categoryId?: string;
+  tags?: string[];
 }
 
 export interface CreatePostResponse {

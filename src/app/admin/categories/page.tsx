@@ -104,9 +104,11 @@ export default function CategoriesPage() {
       />
 
       <CreateCategoryModal
+        key={`${isCreateOpen}-${activeTab}`}
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         onSuccess={fetchAll}
+        defaultCategoryType={activeTab}
       />
       <UpdateCategoryModal
         isOpen={isEditOpen}

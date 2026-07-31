@@ -92,6 +92,18 @@ export default function QnAPreviewModal({ post, isOpen, onClose }: QnAPreviewMod
           <div className="p-5 rounded-lg border border-border bg-background">
             <PublicMarkdownRenderer content={post.content} className="prose-sm sm:prose max-w-full dark:prose-invert" />
           </div>
+
+          {/* Tags */}
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              {post.tags.map((t) => (
+                <span key={t} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-medium bg-muted text-foreground border border-border">
+                  <Tag className="w-3 h-3 text-muted-foreground" />
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Modal Footer */}
