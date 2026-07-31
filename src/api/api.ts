@@ -194,9 +194,6 @@ export const API = {
     GET_ROLES: "/api/v1/roles",
     UPDATE_ROLE: "/api/v1/roles", // + /:id
 
-    // SKILLS
-    SKILLS: "/api/v1/skills",
-
     // INTERVIEW TOPIC
     CREATE_INTERVIEW_TOPIC: "/api/v1/interview-topics",
     GET_INTERVIEW_TOPICS: "/api/v1/interview-topics",

@@ -5,11 +5,8 @@ import { userApi } from "@/services/user.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { EnrolledUserResponse } from "@/services/enrollment.service";
 
-import { usePathname } from "next/navigation";
-
 export const useCurrentUser = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  const pathname = usePathname();
 
   return useQuery({
     queryKey: ["currentUser"],
