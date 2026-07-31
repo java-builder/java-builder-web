@@ -461,7 +461,7 @@ export default function ChatWindow({
             onKeyDown={handleKeyDown}
             rows={1}
             placeholder="Nhập tin nhắn học tập (gõ @, chèn code, đính kèm file)..."
-            className="w-full px-2 py-1 bg-transparent text-foreground text-sm focus:outline-none resize-none min-h-[42px] max-h-[120px] leading-relaxed placeholder:text-muted-foreground"
+            className="w-full px-2 py-1 bg-transparent text-foreground text-[16px] sm:text-sm focus:outline-none resize-none min-h-[42px] max-h-[120px] leading-relaxed placeholder:text-muted-foreground"
           />
 
           <div className="flex items-center justify-between pt-2 border-t border-border/40 mt-1">

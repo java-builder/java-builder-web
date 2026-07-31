@@ -1728,4 +1728,13 @@ button[disabled],
   html {
     @apply font-sans;
   }
+
+  /* Prevent iOS Safari / Mobile Browser auto-zoom when focusing inputs/textareas */
+  @media screen and (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
 }
