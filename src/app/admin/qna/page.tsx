@@ -70,7 +70,7 @@ export default function AdminQnAPage() {
         page,
         size: pageSize,
         search: search.trim() || undefined,
-        categoryName: selectedCategory !== "all" ? selectedCategory : undefined,
+        category: selectedCategory !== "all" ? selectedCategory : undefined,
       });
 
       const items = resp.data?.data || [];
@@ -441,23 +441,23 @@ export default function AdminQnAPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                           <Tag className="w-3 h-3 text-muted-foreground" />
-                          {post.categoryName || "Thảo luận"}
+                          {post.category?.name || "Thảo luận"}
                         </span>
                       </td>
 
                       {/* Author */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          {post.avatar ? (
+                          {post.author?.avatarUrl ? (
                             /* eslint-disable-next-line @next/next/no-img-element */
-                            <img src={post.avatar} alt="Avatar" className="w-6 h-6 rounded-full object-cover shrink-0" />
+                            <img src={post.author.avatarUrl} alt="Avatar" className="w-6 h-6 rounded-full object-cover shrink-0" />
                           ) : (
                             <div className="w-6 h-6 rounded-full bg-accent/20 text-accent font-bold text-[10px] flex items-center justify-center shrink-0">
-                              {(post.username || "A").substring(0, 1).toUpperCase()}
+                              {(post.author?.username || "A").substring(0, 1).toUpperCase()}
                             </div>
                           )}
                           <span className="text-xs font-medium text-foreground">
-                            {post.username || "N/A"}
+                            {post.author?.username || "N/A"}
                           </span>
                         </div>
                       </td>

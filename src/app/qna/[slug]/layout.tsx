@@ -27,8 +27,8 @@ export async function generateMetadata({
       url: `/qna/${post.slug}`,
       type: "article",
       publishedTime: post.createdAt,
-      author: post.username || "JavaBuilder Member",
-      tags: [post.categoryName || "Q&A", ...(post.tags || []), "hỏi đáp lập trình"],
+      author: post.author?.username || "JavaBuilder Member",
+      tags: [post.category?.name || "Q&A", ...(post.tags || []), "hỏi đáp lập trình"],
       useTemplate: false,
     });
   } catch {

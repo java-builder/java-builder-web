@@ -144,7 +144,7 @@ export default function BlogPreviewModal({
                 <div className="flex items-center space-x-4 mb-6 text-sm text-muted-foreground pb-4 border-b border-border">
                   {blog.author && (
                     <>
-                      <span>Tác giả: {blog.author}</span>
+                      <span>Tác giả: {typeof blog.author === "object" ? blog.author?.username : blog.author}</span>
                       <span>•</span>
                     </>
                   )}

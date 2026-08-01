@@ -78,10 +78,10 @@ export default function PostDetailPage() {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-12">
         <div className="max-w-4xl w-full mx-auto">
           <div className="flex flex-col sm:flex-row items-start gap-5 mb-6">
-            {post.avatar ? (
+            {post.author?.avatarUrl ? (
               <Image
-                src={post.avatar}
-                alt={post.username ?? "avatar"}
+                src={post.author.avatarUrl}
+                alt={post.author.username ?? "avatar"}
                 width={56}
                 height={56}
                 className="w-14 h-14 rounded-full object-cover"
@@ -92,7 +92,7 @@ export default function PostDetailPage() {
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white leading-tight">{post.title}</h1>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
-                {post.username} • {post.categoryName} • {formatLocaleString(post.createdAt) || 'N/A'}
+                {post.author?.username || 'N/A'} • {post.category?.name || 'N/A'} • {formatLocaleString(post.createdAt) || 'N/A'}
               </div>
               <div className="mt-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2">

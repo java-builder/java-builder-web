@@ -49,7 +49,7 @@ export default function QnAPreviewModal({ post, isOpen, onClose }: QnAPreviewMod
             )}
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent border border-accent/20">
               <Tag className="w-3.5 h-3.5" />
-              {post.categoryName || "Thảo luận"}
+              {post.category?.name || "Thảo luận"}
             </span>
           </div>
 
@@ -59,16 +59,16 @@ export default function QnAPreviewModal({ post, isOpen, onClose }: QnAPreviewMod
           {/* Author bar */}
           <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border text-xs text-muted-foreground">
             <div className="flex items-center gap-2.5">
-              {post.avatar ? (
+              {post.author?.avatarUrl ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={post.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                <img src={post.author.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-semibold flex items-center justify-center">
-                  {(post.username || "A").substring(0, 1).toUpperCase()}
+                  {(post.author?.username || "A").substring(0, 1).toUpperCase()}
                 </div>
               )}
               <div>
-                <p className="font-semibold text-foreground">{post.username || "Tác giả"}</p>
+                <p className="font-semibold text-foreground">{post.author?.username || "Tác giả"}</p>
                 <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
                   <Calendar className="w-3 h-3" />
                   {post.createdAt}

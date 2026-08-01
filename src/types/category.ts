@@ -45,4 +45,10 @@ export interface CategoryDetailResponse {
   createdAt: string;
 }
 
+export interface CategorySummaryResponse {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 

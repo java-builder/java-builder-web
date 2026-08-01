@@ -1,16 +1,24 @@
 "use client";
 
 import Image from "next/image";
+import { UserSummaryResponse } from "@/types/user";
 
-export default function CourseInstructor() {
+interface CourseInstructorProps {
+  instructor?: UserSummaryResponse | null;
+}
+
+export default function CourseInstructor({ instructor }: CourseInstructorProps) {
+  const username = instructor?.username || "JavaBuilder";
+  const avatarUrl = instructor?.avatarUrl || "/logos/java-logo.png";
+
   return (
     <div className="space-y-6">
       {/* Instructor Profile */}
       <div className="flex items-start space-x-4 p-6 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
         <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-white">
           <Image
-            src="/logos/java-logo.png"
-            alt="JavaBuilder"
+            src={avatarUrl}
+            alt={username}
             width={64}
             height={64}
             className="w-full h-full object-cover"
@@ -18,7 +26,7 @@ export default function CourseInstructor() {
         </div>
         <div className="flex-1">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-            JavaBuilder
+            {username}
           </h3>
           <p className="text-accent font-medium mb-2">
             Backend Developer

@@ -1,5 +1,6 @@
 import { Tag } from "./tag";
 import { CategoryDetailResponse } from "./category";
+import { UserSummaryResponse } from "./user";
 
 export enum BlogType {
   EXPERIENCE = "EXPERIENCE",
@@ -83,7 +84,7 @@ export interface Blog {
   viewCount: number;
   likeCount: number;
   commentCount: number;
-  author?: string;
+  author?: UserSummaryResponse | string | null;
   category?: CategoryDetailResponse;
   categoryName?: string;
   tags: Tag[] | string[];

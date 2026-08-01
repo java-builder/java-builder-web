@@ -410,7 +410,7 @@ export default function CourseDetailPage() {
                     />
                   )}
 
-                  {activeTab === "instructor" && <CourseInstructor />}
+                  {activeTab === "instructor" && <CourseInstructor instructor={course.instructor} />}
                 </div>
               </div>
             </div>

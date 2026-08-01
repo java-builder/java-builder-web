@@ -1,3 +1,6 @@
+import { UserSummaryResponse } from "./user";
+import { CategorySummaryResponse } from "./category";
+
 export interface PostDetail {
   id: string;
   title: string;
@@ -5,12 +8,10 @@ export interface PostDetail {
   content: string;
   key?: string | null;
   thumbnailUrl?: string | null;
-  username?: string | null;
-  avatar?: string | null;
+  author?: UserSummaryResponse | null;
+  category?: CategorySummaryResponse | null;
   viewCount?: number;
   commentCount?: number;
-  categoryId: string;
-  categoryName: string;
   isSolved?: boolean;
   tags?: string[];
   createdAt: string;

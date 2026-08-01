@@ -41,7 +41,7 @@ export default function UpdateQnAModal({ post, isOpen, onClose, onSuccess }: Upd
   useEffect(() => {
     if (!isOpen || !post) return;
     setTitle(post.title || "");
-    setCategoryId(post.categoryId || "");
+    setCategoryId(post.category?.id || "");
     setContent(post.content || "");
     setIsSolved(!!post.isSolved);
     setTags(post.tags || []);

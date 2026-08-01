@@ -11,7 +11,7 @@ export const postService = {
         page?: number;
         size?: number;
         search?: string;
-        categoryName?: string;
+        category?: string;
     } = {}) => {
         const response = await apiClient.get<ApiResponse<PageResponse<PostDetail>>>(API.GET_POSTS, {
             params,

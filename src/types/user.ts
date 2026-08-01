@@ -104,3 +104,9 @@ export interface UserStatisticsResponse {
   inactiveUsers: number;
   deletedUsers: number;
 }
+
+export interface UserSummaryResponse {
+  userId: string;
+  username: string;
+  avatarUrl?: string | null;
+}

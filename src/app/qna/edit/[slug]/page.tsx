@@ -42,7 +42,7 @@ export default function EditPostPage() {
             title: post.title,
             content: post.content,
             key: post.key ?? undefined,
-            categoryId: post.categoryId,
+            categoryId: post.category?.id,
           });
         }
       } catch (e) {

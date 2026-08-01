@@ -121,7 +121,7 @@ export default function PostList({
       try {
         const params: Record<string, unknown> = { page: 1, size: pageSize };
         if (searchQuery) params.search = searchQuery;
-        if (filterTag && filterTag !== "all") params.categoryName = filterTag;
+        if (filterTag && filterTag !== "all") params.category = filterTag;
         if (statusFilter === "resolved") params.isSolved = true;
         if (statusFilter === "unanswered") params.isSolved = false;
         if (sortBy) params.sortBy = sortBy;
@@ -196,10 +196,13 @@ export default function PostList({
       searchQuery === "" ||
       q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (q.content ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (q.categoryName ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (q.category?.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       (q.tags ?? []).some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesTag = filterTag === "all" || (q.categoryName ?? "") === filterTag;
+    const matchesTag =
+      filterTag === "all" ||
+      (q.category?.name ?? "") === filterTag ||
+      (q.category?.slug ?? "") === filterTag;
 
     let matchesStatus = true;
     if (statusFilter === "resolved" || sortBy === "resolved") {
@@ -370,23 +373,23 @@ export default function PostList({
             {/* Header: User avatar, name, status badge, category */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3 pr-8 sm:pr-10">
               <div className="flex items-center gap-3">
-                {post.avatar ? (
+                {post.author?.avatarUrl ? (
                   <Image
-                    src={post.avatar}
-                    alt={post.username ?? "avatar"}
+                    src={post.author.avatarUrl}
+                    alt={post.author.username ?? "avatar"}
                     width={38}
                     height={38}
                     className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-gray-100 dark:ring-slate-700 flex-shrink-0"
                   />
                 ) : (
                   <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-accent text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0">
-                    {(post.username || "U").charAt(0).toUpperCase()}
+                    {(post.author?.username || "U").charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold text-gray-800 dark:text-gray-200 hover:text-accent transition-colors">
-                      {post.username || "Khách"}
+                      {post.author?.username || "Khách"}
                     </span>
                     <span className="text-gray-300 dark:text-gray-600">•</span>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -417,10 +420,10 @@ export default function PostList({
               </div>
 
               {/* Category pill */}
-              {post.categoryName && (
+              {post.category?.name && (
                 <span className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-md bg-accent/10 text-accent border border-accent/20">
                   <TagIcon className="w-3 h-3" />
-                  {post.categoryName}
+                  {post.category.name}
                 </span>
               )}
             </div>

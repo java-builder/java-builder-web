@@ -27,7 +27,7 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: blog.createdAt,
       modifiedTime: blog.createdAt,
-      author: blog.author || 'JavaBuilder',
+      author: (typeof blog.author === "object" ? blog.author?.username : blog.author) || "JavaBuilder",
       tags: [blog.blogType, 'blog', 'lập trình'],
     });
   } catch {

@@ -1,4 +1,5 @@
 import type { ChapterDetailResponse } from "./chapter";
+import type { UserSummaryResponse } from "./user";
 
 // Course types
 export interface CreateCourseRequest {
@@ -45,6 +46,7 @@ export interface CourseDetailResponse {
   level?: CourseLevel;
   courseFormat: CourseFormat;
   courseStatus?: CourseStatus;
+  instructor?: UserSummaryResponse | null;
   chapters?: ChapterDetailResponse[];
   createdAt: string;
   updatedAt?: string;

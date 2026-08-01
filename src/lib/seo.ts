@@ -139,10 +139,11 @@ export function generateBlogStructuredData(blog: {
   slug: string;
   summary?: string | null;
   content: string;
-  author?: string | null;
+  author?: { username?: string | null } | string | null;
   thumbnailUrl?: string | null;
   createdAt: string;
 }) {
+  const authorName = typeof blog.author === "object" ? blog.author?.username : blog.author;
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -151,7 +152,7 @@ export function generateBlogStructuredData(blog: {
     image: blog.thumbnailUrl || `${SITE_URL}/logos/java-logo.png`,
     author: {
       '@type': 'Person',
-      name: blog.author || 'JavaBuilder',
+      name: authorName || 'JavaBuilder',
       url: `${SITE_URL}/about`,
     },
     publisher: {
@@ -176,10 +177,12 @@ export function generateQnAStructuredData(post: {
   title: string;
   slug: string;
   content: string;
+  author?: { username?: string | null } | null;
   username?: string | null;
   commentCount?: number;
   createdAt: string;
 }) {
+  const authorName = post.author?.username || post.username || 'JavaBuilder Member';
   return {
     '@context': 'https://schema.org',
     '@type': 'QAPage',
@@ -191,7 +194,7 @@ export function generateQnAStructuredData(post: {
       dateCreated: post.createdAt,
       author: {
         '@type': 'Person',
-        name: post.username || 'JavaBuilder Member',
+        name: authorName,
       },
     },
   };
