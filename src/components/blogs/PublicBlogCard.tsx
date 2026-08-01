@@ -25,12 +25,12 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
   });
 
   const handleReadMoreClick = (e: React.MouseEvent) => {
-    if (!currentUser) {
+    if (blog.isPremium && !currentUser) {
       e.preventDefault();
       setAuthModal({
         isOpen: true,
-        title: "Đăng nhập để đọc bài viết",
-        message: "Bạn cần đăng nhập để đọc đầy đủ nội dung bài viết này.",
+        title: "Đăng nhập để đọc bài viết Premium",
+        message: "Bài viết này thuộc nội dung Premium. Bạn cần đăng nhập để truy cập.",
       });
       return;
     }
@@ -39,7 +39,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
    return (
     <article className="bg-white dark:bg-slate-800/50 rounded-lg shadow-sm border border-gray-200/80 dark:border-slate-700/60 hover:shadow-lg hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden group flex flex-col h-full">
       {blog.thumbnailUrl && (
-        <Link href={`/blogs/${blog.slug}`} className="block">
+        <Link href={`/blogs/${blog.slug}`} onClick={handleReadMoreClick} className="block">
           <div className="aspect-[16/10] w-full overflow-hidden relative bg-gray-50 dark:bg-slate-900/50">
             <Image
               src={blog.thumbnailUrl}
@@ -74,7 +74,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
         </div>
 
         {/* Title */}
-        <Link href={`/blogs/${blog.slug}`}>
+        <Link href={`/blogs/${blog.slug}`} onClick={handleReadMoreClick}>
           <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-accent transition-colors duration-200 leading-snug">
             {blog.title}
           </h3>
