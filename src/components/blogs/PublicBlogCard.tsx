@@ -25,12 +25,12 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
   });
 
   const handleReadMoreClick = (e: React.MouseEvent) => {
-    if (blog.isPremium && !currentUser) {
+    if (!currentUser) {
       e.preventDefault();
       setAuthModal({
         isOpen: true,
-        title: "Đăng nhập để đọc bài viết Premium",
-        message: "Bài viết này thuộc nội dung Premium. Bạn cần đăng nhập để truy cập.",
+        title: "Đăng nhập để đọc bài viết",
+        message: "Bạn cần đăng nhập để đọc đầy đủ nội dung bài viết này.",
       });
       return;
     }
