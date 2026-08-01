@@ -107,6 +107,13 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401) {
       if (isPublicEndpoint(originalRequest.url)) {
+        if (!originalRequest._retry) {
+          originalRequest._retry = true;
+          if (originalRequest.headers) {
+            delete originalRequest.headers.Authorization;
+          }
+          return apiClient(originalRequest);
+        }
         const customError = new Error(apiResponse?.message || error.message);
         (customError as Error & { response?: typeof error.response; code?: number }).response = error.response;
         (customError as Error & { response?: typeof error.response; code?: number }).code = apiResponse?.code;

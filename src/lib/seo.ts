@@ -60,7 +60,7 @@ export interface SEOProps {
 export function generateSEO({
   title,
   description,
-  image = `${SITE_URL}/hero-background.jpg`,
+  image = `${SITE_URL}/logos/java-logo.png`,
   url,
   type = 'website',
   publishedTime,
@@ -137,10 +137,10 @@ export function generateBlogStructuredData(blog: {
   id: string;
   title: string;
   slug: string;
-  summary?: string;
+  summary?: string | null;
   content: string;
-  author?: string;
-  thumbnailUrl?: string;
+  author?: string | null;
+  thumbnailUrl?: string | null;
   createdAt: string;
 }) {
   return {
@@ -148,7 +148,7 @@ export function generateBlogStructuredData(blog: {
     '@type': 'BlogPosting',
     headline: blog.title,
     description: blog.summary || blog.content.substring(0, 160),
-    image: blog.thumbnailUrl || `${SITE_URL}/hero-background.jpg`,
+    image: blog.thumbnailUrl || `${SITE_URL}/logos/java-logo.png`,
     author: {
       '@type': 'Person',
       name: blog.author || 'JavaBuilder',
@@ -171,15 +171,41 @@ export function generateBlogStructuredData(blog: {
   };
 }
 
+export function generateQnAStructuredData(post: {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  username?: string | null;
+  commentCount?: number;
+  createdAt: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'QAPage',
+    mainEntity: {
+      '@type': 'Question',
+      name: post.title,
+      text: post.content ? post.content.replace(/<[^>]*>/g, '').substring(0, 300) : post.title,
+      answerCount: post.commentCount || 0,
+      dateCreated: post.createdAt,
+      author: {
+        '@type': 'Person',
+        name: post.username || 'JavaBuilder Member',
+      },
+    },
+  };
+}
+
 export function generateCourseStructuredData(course: {
   id: string;
   title: string;
   slug: string;
   description: string;
   price: number;
-  thumbnailUrl?: string;
-  duration?: number;
-  level?: string;
+  thumbnailUrl?: string | null;
+  duration?: number | null;
+  level?: string | null;
   createdAt: string;
 }) {
   return {
@@ -193,7 +219,7 @@ export function generateCourseStructuredData(course: {
       name: SITE_NAME,
       sameAs: SITE_URL,
     },
-    image: course.thumbnailUrl || `${SITE_URL}/hero-background.jpg`,
+    image: course.thumbnailUrl || `${SITE_URL}/logos/java-logo.png`,
     offers: {
       '@type': 'Offer',
       price: course.price,
@@ -351,7 +377,7 @@ export function generateLocalBusinessStructuredData() {
     '@type': 'ProfessionalService',
     name: SITE_NAME,
     alternateName: ['Java Builder', 'javabuilder', 'JavaBuilder.online'],
-    image: `${SITE_URL}/hero-background.jpg`,
+    image: `${SITE_URL}/logos/java-logo.png`,
     url: SITE_URL,
     description: SITE_DESCRIPTION,
     address: {
