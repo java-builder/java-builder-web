@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { MessageSquare, LogIn } from "lucide-react";
+import { LogIn, UserPlus, User as UserIcon } from "lucide-react";
 import { authApi } from "@/services/auth.service";
 
 interface CommentFormProps {
@@ -39,35 +39,38 @@ export default function CommentForm({
     const loginUrl = redirectPath ? `/login?redirect=${encodeURIComponent(redirectPath)}` : "/login";
 
     return (
-      <div className="relative overflow-hidden bg-gradient-to-r from-accent/5 via-blue-500/5 to-purple-500/5 dark:from-slate-800/80 dark:via-slate-800/60 dark:to-slate-800/80 border border-accent/20 dark:border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-sm transition-all">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5 text-center sm:text-left">
-            <div className="w-11 h-11 rounded-xl bg-accent/10 dark:bg-accent/20 text-accent flex items-center justify-center shrink-0">
-              <MessageSquare className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
-                Tham gia thảo luận
-              </h4>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5">
-                Hãy đăng nhập để để lại bình luận và chia sẻ ý kiến cùng cộng đồng.
+      <div className="rounded-2xl border border-gray-200 bg-white p-3.5 sm:p-5 shadow-2xs dark:border-slate-700 dark:bg-slate-800 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-slate-700 dark:text-gray-400">
+            <UserIcon className="h-4.5 w-4.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50/60 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/60">
+              <p className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 italic select-none truncate">
+                Viết bình luận hoặc trao đổi ý kiến tại đây...
               </p>
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-gray-100 pt-3 dark:border-slate-700/80">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center sm:text-left">
+            Đăng nhập để tham gia thảo luận cùng cộng đồng <strong className="font-semibold text-gray-700 dark:text-gray-300">JavaBuilder</strong>.
+          </p>
+          <div className="grid grid-cols-2 gap-2 w-full sm:flex sm:w-auto shrink-0">
             <Link
               href={loginUrl}
-              className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 bg-accent hover:bg-accent/90 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-sm hover:shadow active:scale-98 cursor-pointer"
+              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl bg-accent px-4 text-xs font-semibold text-white transition hover:bg-accent-600 cursor-pointer shadow-sm shadow-accent/25 active:scale-98 sm:min-w-[110px]"
             >
-              <LogIn className="w-4 h-4 mr-1.5" />
-              Đăng nhập
+              <LogIn className="h-3.5 w-3.5" />
+              <span>Đăng nhập</span>
             </Link>
             <Link
               href="/register"
-              className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-2xs cursor-pointer"
+              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50 px-4 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-200 dark:hover:bg-slate-600 cursor-pointer sm:min-w-[110px]"
             >
-              Đăng ký
+              <UserPlus className="h-3.5 w-3.5" />
+              <span>Đăng ký</span>
             </Link>
           </div>
         </div>
