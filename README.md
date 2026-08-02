@@ -52,6 +52,7 @@
 | 🎯 **Interview Prep** | Curated interview questions across Java Core, Spring, Database, Docker, Git, and more |
 | 📝 **Blogs** | Community blog system with markdown support, comments, and favorites |
 | 🗺️ **Roadmap** | Personalized learning roadmaps tailored to your goals |
+| 💬 **Messages** | Real-time private & group chat with optimistic UI, media/document attachments (< 100MB), member-level cleared history, and live typing indicators |
 | 💬 **Q&A** | Community question and answer forum |
 | 🔔 **Notifications** | Real-time push notifications via Firebase Cloud Messaging |
 | 💳 **Subscriptions** | Payment integration with subscription plans |
@@ -129,6 +130,32 @@ src/
 | **Video** | [Video.js](https://videojs.com/) |
 | **Alerts** | [SweetAlert2](https://sweetalert2.github.io/) + [React Hot Toast](https://react-hot-toast.com/) |
 | **Linting** | [ESLint 9](https://eslint.org/) |
+
+### 💬 Real-time WebSocket & Typing Indicator Integration
+
+Real-time messaging and live typing feedback are managed using **STOMP over WebSocket** (`@stomp/stompjs`) via the app-level `PresenceProvider` context (`useWebSocket()`).
+
+#### 1. STOMP Protocol Architecture
+- **WebSocket Endpoint**: `wss://api.javabuilder.online/ws` (JWT Bearer Token authenticated)
+- **Active Connection**: Single shared TCP WebSocket connection per session
+
+#### 2. STOMP Destinations & Subscriptions
+- **Inbound Typing Trigger (`client.publish`)**:
+  - Destination: `/app/chat/{conversationId}/typing`
+  - Payload: `{ "isTyping": boolean, "username": string }`
+  - Logic: Triggered on input change with a 2-second debounce timer, canceled immediately upon sending a message.
+- **Outbound Topic Subscriptions (`client.subscribe`)**:
+  - `/topic/conversations/{conversationId}` — Real-time chat messages stream
+  - `/topic/conversations/{conversationId}/typing` — Live typing indicator stream (`{ conversationId, userId, username, isTyping }`)
+  - `/user/queue/chat-messages` — Active user notification queue for unread counts
+
+#### 3. Features & UI Capabilities
+- **Debounced Input Detection**: 2s idle timeout to automatically stop typing state.
+- **Auto-Cleanup Timer**: 4s fallback timeout for incoming typing states to prevent stuck indicators.
+- **Floating Typing Indicator UI**: Glassmorphic animated bubble (`backdrop-blur-md`, 3-dot bounce animation) positioned floating right above the input bar in `ChatWindow`.
+- **Dual Interface Support**: Fully integrated into both User (`/messages`) and Admin (`/admin/messages`) workspaces.
+
+---
 
 ## 📋 Prerequisites
 
