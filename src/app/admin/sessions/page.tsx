@@ -15,7 +15,10 @@ import { Pagination } from "@/components/ui/Pagination";
 import { useConfirm } from "@/hooks/useConfirm";
 import { cloudflareService } from "@/services/cloudflare.service";
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function AdminSessionsPage() {
+  const { t } = useI18n();
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [pagination, setPagination] = useState<PageResponse<UserSession> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +39,7 @@ export default function AdminSessionsPage() {
       async () => {
         const response = await cloudflareService.create({
           mode: "block",
-          notes: `Chặn IP đăng nhập bất thường từ Admin Sessions cho IP: ${ipAddress}`,
+          notes: `Block IP from Admin Sessions for IP: ${ipAddress}`,
           configuration: {
             target: "ip",
             value: ipAddress,
@@ -44,14 +47,14 @@ export default function AdminSessionsPage() {
         });
 
         if (!response.data?.success) {
-          throw new Error("Không thể chặn IP trên Cloudflare");
+          throw new Error("Failed to block IP");
         }
       },
       {
-        title: "Xác nhận chặn IP",
-        message: `Bạn có chắc chắn muốn chặn địa chỉ IP <strong class="font-mono text-red-600 dark:text-red-400">${ipAddress}</strong>? Người dùng từ địa chỉ IP này sẽ không thể truy cập website thông qua Cloudflare.`,
-        confirmText: "Chặn IP",
-        cancelText: "Hủy",
+        title: t("admin.sessions.blockIpTitle"),
+        message: t("admin.sessions.blockIpMsg").replace("{ip}", ipAddress),
+        confirmText: t("admin.sessions.blockIpBtn"),
+        cancelText: t("admin.common.cancel"),
         type: "warning",
       }
     );

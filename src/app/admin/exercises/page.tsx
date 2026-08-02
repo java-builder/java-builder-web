@@ -52,7 +52,10 @@ const TabButton = ({ label, icon, isActive, onClick }: TabButtonProps) => (
   </button>
 );
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function ExercisesPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const [filters, setFilters] = useState<ExerciseFilters>({
     page: 1,
@@ -73,9 +76,9 @@ export default function ExercisesPage() {
 
   // Helper function to format time spent
   const formatTimeSpent = (seconds: number): string => {
-    if (seconds < 60) return `${seconds} giây`;
+    if (seconds < 60) return `${seconds}s`;
     const minutes = Math.floor(seconds / 60);
-    return `${minutes} phút`;
+    return `${minutes}m`;
   };
 
   const exerciseSummary = useMemo(() => {
@@ -95,16 +98,13 @@ export default function ExercisesPage() {
     if (!submissionsData?.data) return [];
 
     return submissionsData.data.map((submission) => {
-      // Làm tròn accuracy và score về 1 chữ số thập phân
       const accuracy = Math.round(submission.accuracy * 10) / 10;
-      const score = accuracy; // Score and accuracy are the same from backend
+      const score = accuracy;
       
-      // Tính completion rate từ correctCount và totalQuestions
       const completionRate = submission.totalQuestions > 0 
         ? Math.round((submission.correctCount / submission.totalQuestions) * 1000) / 10
         : 0;
       
-      // Determine status based on accuracy
       let status: SubmissionStatus;
       if (accuracy >= 70) {
         status = SubmissionStatus.PASSED;
@@ -115,7 +115,7 @@ export default function ExercisesPage() {
       }
 
       return {
-        id: submission.userId, // Use userId as unique identifier
+        id: submission.userId,
         learnerName: submission.username,
         email: submission.email,
         avatar: submission.avatar,
@@ -168,9 +168,9 @@ export default function ExercisesPage() {
     <div className="p-6 space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Trung tâm quản lý bài tập</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("admin.exercises.pageTitle")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Tạo và quản lý kho bài tập, đồng thời theo dõi tiến độ làm bài của học viên
+            {t("admin.exercises.pageSubtitle")}
           </p>
         </div>
 
@@ -178,12 +178,12 @@ export default function ExercisesPage() {
           <Button
             onClick={() => router.push("/admin/exercises/create")}
             variant="accent"
-            className="h-10 gap-2 shadow-sm"
+            className="h-10 gap-2 shadow-sm cursor-pointer"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Tạo bài tập mới
+            {t("admin.exercises.createExerciseBtn")}
           </Button>
         </div>
       </div>
@@ -191,13 +191,13 @@ export default function ExercisesPage() {
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <div className="flex items-center gap-1 border-b border-border bg-card px-4 pt-2">
           <TabButton
-            label="Kho bài tập"
+            label={t("admin.exercises.tabExerciseList")}
             icon={<BookCopy className="h-3.5 w-3.5" />}
             isActive={activeTab === "exerciseList"}
             onClick={() => setActiveTab("exerciseList")}
           />
           <TabButton
-            label="Theo dõi học viên"
+            label={t("admin.exercises.tabLearnerTracking")}
             icon={<Users className="h-3.5 w-3.5" />}
             isActive={activeTab === "learnerTracking"}
             onClick={() => setActiveTab("learnerTracking")}

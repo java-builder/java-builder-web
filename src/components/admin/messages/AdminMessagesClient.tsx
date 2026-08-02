@@ -4,18 +4,17 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import {
   Conversation,
   ChatMessage,
-  UserPresenceStatus,
   CodeSnippetData,
-  ExerciseCardData,
   MessageType,
   FileData,
+  ExerciseCardData,
 } from "@/components/messages/types";
 import { useChatCurrentUser } from "@/hooks/useCurrentUser";
-import ConversationList from "@/components/messages/ConversationList";
+import AdminConversationList from "@/components/admin/messages/AdminConversationList";
 import ChatWindow, { TypingUser } from "@/components/messages/ChatWindow";
 import ChatDetailDrawer from "@/components/messages/ChatDetailDrawer";
 import CodeSnippetModal from "@/components/messages/CodeSnippetModal";
-import NewChatModal from "@/components/messages/NewChatModal";
+import AdminNewChatModal from "@/components/admin/messages/AdminNewChatModal";
 import EmptyChatState from "@/components/messages/EmptyChatState";
 import { EnrolledUserResponse } from "@/services/enrollment.service";
 import { conversationApi } from "@/services/conversation.service";
@@ -25,7 +24,7 @@ import { useWebSocket } from "@/components/providers/PresenceProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-export default function MessagesClient() {
+export default function AdminMessagesClient() {
   const currentUser = useChatCurrentUser();
   const queryClient = useQueryClient();
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -34,7 +33,6 @@ export default function MessagesClient() {
   const [typingUsersMap, setTypingUsersMap] = useState<Record<string, TypingUser[]>>({});
   const typingTimersRef = useRef<Record<string, Record<string, NodeJS.Timeout>>>({});
 
-  const [myStatus, setMyStatus] = useState<UserPresenceStatus>("online");
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -91,10 +89,11 @@ export default function MessagesClient() {
     });
   }, [activeConversationId]);
 
+  // Initial Fetch Conversations from Backend API
   useEffect(() => {
     let isMounted = true;
 
-    conversationApi.getMyConversations(1, 20)
+    conversationApi.getMyConversations(1, 50)
       .then((res) => {
         if (!isMounted) return;
         const list = res?.data?.data || [];
@@ -122,7 +121,7 @@ export default function MessagesClient() {
         setConversations(converted);
       })
       .catch((err) => {
-        console.error("Lỗi khi tải danh sách cuộc trò chuyện:", err);
+        console.error("Lỗi khi tải danh sách cuộc trò chuyện Admin:", err);
       });
 
     return () => {
@@ -130,12 +129,12 @@ export default function MessagesClient() {
     };
   }, []);
 
+  // Fetch Message History when Active Conversation Changes
   useEffect(() => {
     if (!activeConversationId) return;
 
     let isMounted = true;
 
-    // 1. Lấy danh sách tin nhắn theo conversationId TRƯỚC
     chatMessageApi.getMessagesByConversationId(activeConversationId, 1, 50)
       .then((res) => {
         if (!isMounted) return;
@@ -170,7 +169,6 @@ export default function MessagesClient() {
           };
         });
 
-        // BE trả về DESC -> reverse để hiển thị tin nhắn mới ở dưới cùng
         convertedMessages.reverse();
 
         setMessagesMap((prev) => ({
@@ -186,10 +184,9 @@ export default function MessagesClient() {
         }
       })
       .catch((err) => {
-        console.error("Lỗi khi tải tin nhắn:", err);
+        console.error("Lỗi khi tải tin nhắn Admin:", err);
       });
 
-    // 2. Gọi Đánh dấu đã đọc SAU khi đã kích hoạt tải tin nhắn
     conversationApi
       .markAsRead(activeConversationId)
       .then(() => {
@@ -249,7 +246,6 @@ export default function MessagesClient() {
           isRead: true,
         };
 
-        // 1. Cập nhật danh sách tin nhắn ngay lập tức (Instant Render!)
         setMessagesMap((prev) => {
           const list = prev[item.conversationId] || [];
           if (list.some((m) => m.id === incomingMsg.id)) {
@@ -267,7 +263,6 @@ export default function MessagesClient() {
           };
         });
 
-        // 2. Cập nhật Sidebar ngay lập tức: unreadCount = 0 nếu đang mở phòng chat này!
         setConversations((prev) => {
           const targetConv = prev.find((c) => c.id === item.conversationId);
 
@@ -295,7 +290,6 @@ export default function MessagesClient() {
           }
         });
 
-        // 3. Nếu đang mở phòng này và tin nhắn do người khác gửi -> Tự động gọi API markAsRead CHẠY NGẦM (UI đã được cập nhật 0ms!)
         if (isCurrentlyActive && item.senderId !== currentUser.id) {
           conversationApi
             .markAsRead(item.conversationId)
@@ -358,7 +352,7 @@ export default function MessagesClient() {
           });
         }
       } catch (err) {
-        console.error("Lỗi khi xử lý typing event:", err);
+        console.error("Lỗi khi xử lý typing event Admin:", err);
       }
     },
     [currentUser.id]
@@ -373,7 +367,7 @@ export default function MessagesClient() {
           body: JSON.stringify({ isTyping, username: currentUser.username }),
         });
       } catch (err) {
-        console.error("Lỗi khi gửi status typing:", err);
+        console.error("Lỗi khi gửi status typing Admin:", err);
       }
     },
     [client, isConnected, activeConversationId, currentUser]
@@ -475,291 +469,196 @@ export default function MessagesClient() {
     }
   };
 
-  const handleAddReaction = (messageId: string, emoji: string) => {
-    if (!activeConversationId) return;
+  const handleSendMessage = async (
+    content: string,
+    type: MessageType = "text",
+    codeData?: CodeSnippetData,
+    exerciseData?: ExerciseCardData,
+    fileData?: FileData,
+    mediaUrl?: string,
+    attachmentObj?: MessageAttachmentRequest
+  ) => {
+    if (!activeConversationId || (!content.trim() && !fileData && !codeData && !attachmentObj && !mediaUrl)) return;
 
-    setMessagesMap((prev) => {
-      const list = prev[activeConversationId] || [];
-      const updated = list.map((msg) => {
-        if (msg.id !== messageId) return msg;
+    const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        const reactions = msg.reactions || [];
-        const existing = reactions.find((r) => r.emoji === emoji);
+    let beType: BEMessageType = "TEXT";
+    if (type === "image") beType = "IMAGE";
+    else if (type === "video") beType = "VIDEO";
+    else if (type === "file") beType = "FILE";
 
-        if (existing) {
-          const hasUser = existing.users.includes(currentUser.id);
-          const newUsers = hasUser
-            ? existing.users.filter((u) => u !== currentUser.id)
-            : [...existing.users, currentUser.id];
+    const optimisticMsg: ChatMessage = {
+      id: tempId,
+      senderId: currentUser.id,
+      senderName: currentUser.username,
+      senderAvatar: currentUser.avatar,
+      conversationId: activeConversationId,
+      type,
+      content,
+      mediaUrl,
+      codeData,
+      exerciseData,
+      fileData,
+      timestamp: "Đang gửi...",
+      isRead: true,
+    };
 
-          if (newUsers.length === 0) {
-            return {
-              ...msg,
-              reactions: reactions.filter((r) => r.emoji !== emoji),
-            };
-          }
+    setMessagesMap((prev) => ({
+      ...prev,
+      [activeConversationId]: [...(prev[activeConversationId] || []), optimisticMsg],
+    }));
 
-          return {
-            ...msg,
-            reactions: reactions.map((r) =>
-              r.emoji === emoji ? { ...r, count: newUsers.length, users: newUsers } : r
-            ),
-          };
-        } else {
-          return {
-            ...msg,
-            reactions: [...reactions, { emoji, count: 1, users: [currentUser.id] }],
-          };
-        }
+    setConversations((prev) => {
+      const target = prev.find((c) => c.id === activeConversationId);
+      if (!target) return prev;
+      const updated = { ...target, lastMessage: optimisticMsg, unreadCount: 0 };
+      return [updated, ...prev.filter((c) => c.id !== activeConversationId)];
+    });
+
+    try {
+      const res = await chatMessageApi.sendMessage({
+        conversationId: activeConversationId,
+        content: content.trim() || undefined,
+        messageType: beType,
+        tempId,
+        attachments: attachmentObj ? [attachmentObj] : undefined,
       });
 
-      return { ...prev, [activeConversationId]: updated };
-    });
-  };
-
-  const handleSendMessage = useCallback(
-    async (
-      content: string,
-      type: MessageType = "text",
-      codeData?: CodeSnippetData,
-      exerciseData?: ExerciseCardData,
-      fileData?: FileData,
-      mediaUrl?: string,
-      attachmentObj?: MessageAttachmentRequest
-    ) => {
-      if (!activeConversationId) return;
-
-      const tempId = `temp_${Date.now()}`;
-      let beMessageType: BEMessageType = "TEXT";
-      if (type === "image") beMessageType = "IMAGE";
-      else if (type === "video") beMessageType = "VIDEO";
-      else if (type === "file") beMessageType = "FILE";
-
-      const optimisticMsg: ChatMessage = {
-        id: tempId,
-        senderId: currentUser.id,
-        senderName: currentUser.username,
-        senderAvatar: currentUser.avatar,
-        conversationId: activeConversationId,
-        type,
-        content,
-        codeData,
-        exerciseData,
-        fileData,
-        mediaUrl,
-        timestamp: "Đang gửi... ⏳",
-        isRead: true,
-      };
-
-      setMessagesMap((prev) => ({
-        ...prev,
-        [activeConversationId]: [...(prev[activeConversationId] || []), optimisticMsg],
-      }));
-
-      try {
-        const res = await chatMessageApi.sendMessage({
-          tempId,
-          conversationId: activeConversationId,
-          content: content.trim() || undefined,
-          messageType: beMessageType,
-          attachments: attachmentObj ? [attachmentObj] : undefined,
-        });
-
-        const data = res?.data;
-        if (data) {
-          const firstAtt = data.attachments?.[0];
-          const serverMsg: ChatMessage = {
-            id: data.id,
-            senderId: data.senderId,
-            senderName: data.senderName || currentUser.username,
-            senderAvatar: data.senderAvatar || currentUser.avatar,
-            conversationId: activeConversationId,
-            type,
-            content: data.content || content,
-            codeData,
-            exerciseData,
-            mediaUrl: firstAtt?.attachmentUrl || mediaUrl,
-            fileData: firstAtt
-              ? {
+      const serverMsg = res?.data;
+      if (serverMsg) {
+        const firstAtt = serverMsg.attachments?.[0];
+        const realMsg: ChatMessage = {
+          id: serverMsg.id,
+          senderId: serverMsg.senderId,
+          senderName: serverMsg.senderName,
+          senderAvatar: serverMsg.senderAvatar,
+          conversationId: serverMsg.conversationId,
+          type,
+          content: serverMsg.content || content,
+          mediaUrl: firstAtt?.attachmentUrl || mediaUrl,
+          codeData,
+          exerciseData,
+          fileData: firstAtt
+            ? {
                 name: firstAtt.attachmentName,
                 size: (firstAtt.attachmentSize / (1024 * 1024)).toFixed(1) + " MB",
                 fileType: firstAtt.attachmentType === "IMAGE" ? "image" : "pdf",
                 url: firstAtt.attachmentUrl,
               }
-              : fileData,
-            timestamp: data.createdAt || "Vừa xong",
-            isRead: true,
+            : fileData,
+          timestamp: serverMsg.createdAt || "Vừa xong",
+          isRead: true,
+        };
+
+        setMessagesMap((prev) => {
+          const list = prev[activeConversationId] || [];
+          return {
+            ...prev,
+            [activeConversationId]: list.map((m) => (m.id === tempId ? realMsg : m)),
           };
+        });
 
-          setMessagesMap((prev) => {
-            const list = prev[activeConversationId] || [];
-            // Nếu đã được WebSocket cập nhật rồi (không còn tempId trong list) -> Bỏ qua không cập nhật lại
-            if (!list.some((msg) => msg.id === tempId)) {
-              return prev;
-            }
-            return {
-              ...prev,
-              [activeConversationId]: list.map((msg) => (msg.id === tempId ? serverMsg : msg)),
-            };
-          });
-
-          setConversations((prev) =>
-            prev.map((c) =>
-              c.id === activeConversationId ? { ...c, lastMessage: serverMsg } : c
-            )
-          );
-        }
-      } catch (err: unknown) {
-        console.error("Lỗi khi gửi tin nhắn:", err);
-        const apiErr = err as { response?: { data?: { message?: string } } };
-        toast.error(apiErr?.response?.data?.message || "Không thể gửi tin nhắn");
-
-        setMessagesMap((prev) => ({
-          ...prev,
-          [activeConversationId]: (prev[activeConversationId] || []).filter((msg) => msg.id !== tempId),
-        }));
+        setConversations((prev) =>
+          prev.map((c) => (c.id === activeConversationId ? { ...c, lastMessage: realMsg } : c))
+        );
       }
-    },
-    [activeConversationId, currentUser]
-  );
+    } catch (err) {
+      console.error("Lỗi khi gửi tin nhắn Admin:", err);
+      toast.error("Không thể gửi tin nhắn. Vui lòng thử lại!");
 
-  const handleSendCodeFromModal = (codeData: CodeSnippetData, commentText: string) => {
-    const text = commentText || "Mình chia sẻ đoạn code này nhờ mọi người review giúp nhé:";
-    const fullContent = `${text}\n\n\`\`\`${codeData.language || "java"}\n${codeData.code}\n\`\`\``;
-    handleSendMessage(
-      fullContent,
-      "code",
-      codeData
-    );
-  };
-
-  const handleCreateConversation = (newConvData: Partial<Conversation>) => {
-    const realId = newConvData.id;
-    if (!realId) {
-      toast.error("Lỗi khi tạo phòng trò chuyện (không tìm thấy ID)");
-      return;
-    }
-
-    setConversations((prev) => {
-      const existingConv = prev.find((c) => c.id === realId);
-      const newConv: Conversation = {
-        id: realId,
-        type: newConvData.type || "GROUP",
-        name: newConvData.name || "Nhóm Học Tập Mới",
-        avatar: newConvData.avatar || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80",
-        courseTag: newConvData.courseTag || "Java Core",
-        topic: newConvData.topic,
-        members: newConvData.members || [currentUser],
-        unreadCount: existingConv?.unreadCount || 0,
-        lastMessage: existingConv?.lastMessage,
-        isPinned: existingConv?.isPinned || false,
-      };
-      return [newConv, ...prev.filter((c) => c.id !== realId)];
-    });
-
-    setActiveConversationId(realId);
-    setIsNewChatModalOpen(false);
-  };
-
-  const handleClearHistory = async (conversationId: string) => {
-    try {
-      await conversationApi.clearHistory(conversationId);
-      setConversations((prev) => prev.filter((c) => c.id !== conversationId));
-
-      setMessagesMap((prev) => {
-        const copy = { ...prev };
-        delete copy[conversationId];
-        return copy;
-      });
-
-      if (activeConversationId === conversationId) {
-        setActiveConversationId(null);
-      }
-    } catch {
-      toast.error("Không thể xóa cuộc trò chuyện");
+      setMessagesMap((prev) => ({
+        ...prev,
+        [activeConversationId]: (prev[activeConversationId] || []).filter((msg) => msg.id !== tempId),
+      }));
     }
   };
 
   return (
-    <div className="h-dvh w-full flex bg-background text-foreground overflow-hidden relative">
-      <div
-        className={`${activeConversationId ? "hidden md:flex" : "flex"
-          } ${isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none md:w-0 overflow-hidden border-none" : "w-full md:w-80"
+    <div className="flex flex-col h-full w-full bg-background overflow-hidden relative">
+      {/* Main Split Layout */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar */}
+        <div
+          className={`${activeConversationId ? "hidden md:flex" : "flex"} ${
+            isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none md:w-0 overflow-hidden border-none" : "w-full md:w-80"
           } h-full shrink-0 transition-all duration-300 ease-in-out`}
-      >
-        <ConversationList
-          conversations={conversations}
-          activeConversationId={activeConversationId}
-          onSelectConversation={handleSelectConversation}
-          onSelectEnrolledUser={handleSelectEnrolledUser}
-          onOpenNewChatModal={() => setIsNewChatModalOpen(true)}
-          onToggleSidebar={() => setIsSidebarCollapsed(true)}
-          onDeleteConversation={handleClearHistory}
-          mutedConvIds={mutedConvIds}
-          onToggleMute={handleToggleMute}
-          onTogglePin={handleTogglePin}
-          onToggleUnread={handleToggleUnread}
-          myStatus={myStatus}
-          onChangeMyStatus={setMyStatus}
-        />
-      </div>
+        >
+          <AdminConversationList
+            conversations={conversations}
+            activeConversationId={activeConversationId}
+            onSelectConversation={handleSelectConversation}
+            onSelectEnrolledUser={handleSelectEnrolledUser}
+            onOpenNewChatModal={() => setIsNewChatModalOpen(true)}
+            onToggleMute={handleToggleMute}
+            onTogglePin={handleTogglePin}
+            onToggleUnread={handleToggleUnread}
+            onDeleteConversation={(id) => {
+              setConversations((prev) => prev.filter((c) => c.id !== id));
+              toast.success("Đã xóa cuộc trò chuyện");
+            }}
+            onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            mutedConvIds={mutedConvIds}
+          />
+        </div>
 
-      <div
-        className={`${!activeConversationId ? "hidden md:flex" : "flex"
-          } flex-1 h-full flex-col relative overflow-hidden transition-all duration-300 ease-in-out`}
-      >
+        {/* Center Chat Viewport */}
         {activeConversation ? (
-          <div className="flex-1 h-full flex relative overflow-hidden">
-            <ChatWindow
-              conversation={activeConversation}
-              messages={activeMessages}
-              isMuted={mutedConvIds.includes(activeConversation.id)}
-              typingUsers={typingUsersMap[activeConversation.id] || []}
-              onTyping={handleSendTyping}
-              onSendMessage={handleSendMessage}
-              onAddReaction={handleAddReaction}
-              onDeleteMessage={handleDeleteMessage}
-              onOpenCodeModal={() => setIsCodeModalOpen(true)}
-              onToggleDrawer={() => setIsDrawerOpen(!isDrawerOpen)}
-              onBackToList={() => setActiveConversationId(null)}
-              onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
-              isSidebarCollapsed={isSidebarCollapsed}
-              onToggleMute={handleToggleMute}
-              onTogglePin={handleTogglePin}
-              onToggleUnread={handleToggleUnread}
-              onDeleteConversation={handleClearHistory}
-            />
-
-            {isDrawerOpen && (
-              <ChatDetailDrawer
-                isOpen={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
-                conversation={activeConversation}
-                isMuted={mutedConvIds.includes(activeConversation.id)}
-                onToggleMute={handleToggleMute}
-                onTogglePin={handleTogglePin}
-                onDeleteConversation={handleClearHistory}
-              />
-            )}
-          </div>
+          <ChatWindow
+            conversation={activeConversation}
+            messages={activeMessages}
+            typingUsers={typingUsersMap[activeConversation.id] || []}
+            onTyping={handleSendTyping}
+            onSendMessage={handleSendMessage}
+            onOpenCodeModal={() => setIsCodeModalOpen(true)}
+            onToggleDrawer={() => setIsDrawerOpen(!isDrawerOpen)}
+            onBackToList={() => setActiveConversationId(null)}
+            onAddReaction={() => { }}
+            onDeleteMessage={handleDeleteMessage}
+            onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            isSidebarCollapsed={isSidebarCollapsed}
+          />
         ) : (
           <EmptyChatState
-            onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+            onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             isSidebarCollapsed={isSidebarCollapsed}
+          />
+        )}
+
+        {/* Right Drawer */}
+        {activeConversation && (
+          <ChatDetailDrawer
+            conversation={activeConversation}
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            onToggleMute={() => handleToggleMute(activeConversation.id)}
+            onTogglePin={() => handleTogglePin(activeConversation)}
+            isMuted={mutedConvIds.includes(activeConversation.id)}
           />
         )}
       </div>
 
+      {/* New Chat Modal */}
+      <AdminNewChatModal
+        isOpen={isNewChatModalOpen}
+        onClose={() => setIsNewChatModalOpen(false)}
+        onSelectUser={handleSelectEnrolledUser}
+        onCreateConversation={(newConv) => {
+          if (newConv.id) {
+            setActiveConversationId(newConv.id);
+          }
+        }}
+      />
+
+      {/* Code Snippet Modal */}
       <CodeSnippetModal
         isOpen={isCodeModalOpen}
         onClose={() => setIsCodeModalOpen(false)}
-        onSendCode={handleSendCodeFromModal}
-      />
-
-      <NewChatModal
-        isOpen={isNewChatModalOpen}
-        onClose={() => setIsNewChatModalOpen(false)}
-        onCreateConversation={handleCreateConversation}
+        onSendCode={(codeData, commentText) => {
+          const text = commentText || "Mình chia sẻ đoạn code này nhờ mọi người review giúp nhé:";
+          const fullContent = `${text}\n\n\`\`\`${codeData.language || "java"}\n${codeData.code}\n\`\`\``;
+          handleSendMessage(fullContent, "code", codeData);
+          setIsCodeModalOpen(false);
+        }}
       />
     </div>
   );

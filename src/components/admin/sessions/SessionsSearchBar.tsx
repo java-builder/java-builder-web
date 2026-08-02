@@ -2,6 +2,7 @@
 
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SessionsSearchBarProps {
   query: string;
@@ -14,6 +15,7 @@ export const SessionsSearchBar = ({
   onChange,
   onClear,
 }: SessionsSearchBarProps) => {
+  const { t } = useI18n();
   const hasQuery = query.length > 0;
 
   return (
@@ -24,7 +26,7 @@ export const SessionsSearchBar = ({
           type="text"
           value={query}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Tìm theo trình duyệt, IP, thiết bị, hệ điều hành..."
+          placeholder={t("admin.sessions.searchPlaceholder")}
           className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-9 pr-3 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
@@ -33,10 +35,10 @@ export const SessionsSearchBar = ({
           variant="outline"
           size="sm"
           onClick={onClear}
-          className="gap-1.5 shrink-0 self-end sm:self-auto"
+          className="gap-1.5 shrink-0 self-end sm:self-auto cursor-pointer"
         >
           <X className="h-3.5 w-3.5" />
-          Xoá lọc
+          {t("admin.payments.clearFilters")}
         </Button>
       )}
     </div>

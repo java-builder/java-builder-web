@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
-import { formatDate } from "@/utils/formatters";
+import { formatDate } from "@/utils/dateUtils";
 import { 
   GraduationCap, 
   Layers, 

@@ -5,24 +5,44 @@ import { SubscriptionPlan } from "@/types/subscription";
 import { subscriptionPlanService } from "@/services/subscription-plan.service";
 import toast from "react-hot-toast";
 import { formatNumber, formatPriceInput, parsePriceInput } from "@/utils/formatters";
+import { Button } from "@/components/ui/button";
+import {
+  Crown,
+  Sparkles,
+  Plus,
+  Pencil,
+  Trash2,
+  Check,
+  Zap,
+  X,
+  Users,
+  Layers,
+} from "lucide-react";
+import Link from "next/link";
+import { useI18n } from "@/contexts/I18nContext";
 
 const freePlan = {
   id: "free",
   name: "Miễn phí",
   price: 0,
   durationDays: 0,
-  description: "Bắt đầu hành trình học Java",
+  description: "Bắt đầu hành trình học Java dành người mới",
   features: "Truy cập khóa học miễn phí|Đọc blog & bài viết|Tài liệu công khai|Tài liệu Premium (Ebooks)",
 };
 
 export default function AdminSubscriptionsPage() {
+  const { t } = useI18n();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: "", price: "", durationDays: "", description: "", features: "",
+    name: "",
+    price: "",
+    durationDays: "",
+    description: "",
+    features: "",
   });
 
   const fetchPlans = useCallback(async () => {
@@ -31,91 +51,108 @@ export default function AdminSubscriptionsPage() {
       const response = await subscriptionPlanService.getAllPlansAdmin();
       if (response.data) setPlans(response.data);
     } catch {
-      toast.error("Không thể tải danh sách gói");
+      toast.error(t("admin.common.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
-  useEffect(() => { fetchPlans(); }, [fetchPlans]);
+  useEffect(() => {
+    fetchPlans();
+  }, [fetchPlans]);
+
+  const handleOpenModal = (plan?: SubscriptionPlan) => {
+    if (plan) {
+      setEditingPlan(plan);
+      setFormData({
+        name: plan.name,
+        price: formatPriceInput(String(plan.price)),
+        durationDays: String(plan.durationDays),
+        description: plan.description || "",
+        features: plan.features || "",
+      });
+    } else {
+      setEditingPlan(null);
+      setFormData({
+        name: "",
+        price: "",
+        durationDays: "",
+        description: "",
+        features: "",
+      });
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingPlan(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      const payload = {
+        name: formData.name,
+        price: parsePriceInput(formData.price),
+        durationDays: Number(formData.durationDays),
+        description: formData.description,
+        features: formData.features,
+      };
+
       if (editingPlan) {
         await subscriptionPlanService.updatePlan({
           id: editingPlan.id,
-          name: formData.name,
-          price: parsePriceInput(formData.price),
-          durationDays: Number(formData.durationDays),
-          description: formData.description,
-          features: formData.features,
+          ...payload
         });
-        toast.success("Cập nhật thành công");
+        toast.success(t("admin.common.success"));
       } else {
-        await subscriptionPlanService.createPlan({
-          name: formData.name,
-          price: parsePriceInput(formData.price),
-          durationDays: Number(formData.durationDays),
-          description: formData.description,
-          features: formData.features,
-        });
-        toast.success("Tạo gói thành công");
+        await subscriptionPlanService.createPlan(payload);
+        toast.success(t("admin.common.success"));
       }
-      setShowModal(false);
-      setEditingPlan(null);
-      setFormData({ name: "", price: "", durationDays: "", description: "", features: "" });
+      handleCloseModal();
       fetchPlans();
     } catch {
-      toast.error("Lưu thất bại");
+      toast.error(t("admin.common.error"));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleEdit = (plan: SubscriptionPlan) => {
-    setEditingPlan(plan);
-    setFormData({
-      name: plan.name, price: formatPriceInput(String(plan.price)), durationDays: String(plan.durationDays),
-      description: plan.description || "", features: plan.features || "",
-    });
-    setShowModal(true);
-  };
-
   const handleDelete = async (planId: string, planName: string) => {
-    if (!confirm(`Xóa gói "${planName}"?`)) return;
+    if (!confirm(`Bạn có chắc chắn muốn xóa gói "${planName}"?`)) return;
     try {
       await subscriptionPlanService.deletePlan(planId);
-      toast.success("Đã xóa");
+      toast.success(t("admin.common.success"));
       fetchPlans();
     } catch {
-      toast.error("Xóa thất bại");
+      toast.error(t("admin.common.error"));
     }
   };
 
-  // Combine free plan with API plans, sort to put monthly plan in middle
-  const sortedPlans = [...plans].sort((a, b) => {
-    // Sort by duration: shorter duration first (monthly before yearly)
-    return a.durationDays - b.durationDays;
-  });
-  const allPlans = [freePlan, ...sortedPlans];
+  const sortedPlans = [...plans].sort((a, b) => a.durationDays - b.durationDays);
+  
+  const filteredApiPlans = sortedPlans.filter(
+    (p) => p.id !== "free" && p.price > 0 && !p.name.toLowerCase().includes("miễn phí")
+  );
+  const allPlans = [freePlan, ...filteredApiPlans];
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
-        <div className="flex justify-between items-center mb-6">
-          <div className="space-y-2 flex-1">
+      <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
+        <div className="flex justify-between items-center animate-pulse">
+          <div className="space-y-2">
             <div className="h-7 bg-muted rounded w-48" />
             <div className="h-4 bg-muted rounded w-72" />
           </div>
-          <div className="h-10 bg-muted rounded w-32 shrink-0" />
+          <div className="h-9 bg-muted rounded w-32 shrink-0" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 space-y-4">
-              <div className="h-6 bg-muted rounded w-2/3" />
-              <div className="h-10 bg-muted rounded w-1/2 my-4" />
+            <div key={i} className="bg-card border border-border rounded-xl p-6 space-y-4 animate-pulse">
+              <div className="h-6 bg-muted rounded w-2/3 mx-auto" />
+              <div className="h-10 bg-muted rounded w-1/2 mx-auto my-4" />
               <div className="space-y-2">
                 <div className="h-4 bg-muted rounded w-full" />
                 <div className="h-4 bg-muted rounded w-5/6" />
@@ -130,185 +167,277 @@ export default function AdminSubscriptionsPage() {
   }
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Gói Premium</h1>
-          <p className="text-sm text-muted-foreground mt-1">Quản lý các gói đăng ký</p>
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
+            {t("admin.subscriptions.pageTitle")}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.subscriptions.pageSubtitle")}
+          </p>
         </div>
-        <button
-          onClick={() => { setEditingPlan(null); setFormData({ name: "", price: "", durationDays: "", description: "", features: "" }); setShowModal(true); }}
-          className="inline-flex items-center px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors"
-        >
-          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Thêm gói
-        </button>
+
+        <div className="flex items-center gap-2">
+          <Link href="/admin/user-subscriptions">
+            <Button variant="outline" size="sm" className="gap-1.5 h-9">
+              <Users className="h-4 w-4 text-accent" />
+              <span>Người dùng đăng ký</span>
+            </Button>
+          </Link>
+          <Button
+            variant="accent"
+            size="sm"
+            onClick={() => handleOpenModal()}
+            className="gap-1.5 h-9"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Thêm gói</span>
+          </Button>
+        </div>
       </div>
 
       {/* Plans Grid */}
-      <div className="grid md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-2">
         {allPlans.map((plan, index) => {
-          const isFree = plan.id === "free";
-          const isPopular = index === 1; // Middle plan (Premium Tháng)
+          const isFree = plan.id === "free" || plan.price === 0 || plan.name.toLowerCase().includes("miễn phí");
+          const isPopular = index === 1; // Middle plan (Monthly Premium)
 
           return (
             <div
               key={plan.id}
-              className={`relative bg-card rounded-xl p-5 transition-all ${isPopular ? "ring-2 ring-accent shadow-lg" : "border border-border hover:shadow-md"
-                }`}
+              className={`relative flex flex-col justify-between rounded-xl bg-card p-6 transition-all duration-200 ${
+                isPopular
+                  ? "border-2 border-accent shadow-md"
+                  : "border border-border shadow-sm hover:border-border/80"
+              }`}
             >
+              {/* Popular Badge */}
               {isPopular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full">
-                  Phổ biến nhất
-                </span>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 rounded-full bg-accent px-3 py-0.5 text-xs font-semibold text-white shadow-sm">
+                  <Sparkles className="h-3 w-3" />
+                  <span>Phổ biến nhất</span>
+                </div>
               )}
 
-              <div className="text-center mb-4">
-                <h3 className="font-semibold text-foreground text-center">{plan.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{plan.description}</p>
-                <div className="mt-3">
-                  <span className="text-2xl font-bold text-foreground">
-                    {plan.price === 0 ? "0" : formatNumber(plan.price)}
-                  </span>
-                  <span className="text-muted-foreground text-sm ml-0.5">đ</span>
-                  {plan.durationDays > 0 && (
-                    <span className="text-muted-foreground/60 text-sm ml-1">/{plan.durationDays} ngày</span>
+              <div>
+                {/* Header Row */}
+                <div className="flex items-start justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={`flex h-9 w-9 items-center justify-center rounded-lg font-bold ${
+                        isFree
+                          ? "bg-muted text-muted-foreground"
+                          : isPopular
+                          ? "bg-accent/15 text-accent"
+                          : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                      }`}
+                    >
+                      {isFree ? (
+                        <Layers className="h-4 w-4" />
+                      ) : isPopular ? (
+                        <Zap className="h-4 w-4" />
+                      ) : (
+                        <Crown className="h-4 w-4" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-foreground">{plan.name}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-1">
+                        {plan.description || "Gói dịch vụ hệ thống"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action Icons for non-free plans */}
+                  {!isFree && (
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onClick={() => handleOpenModal(plan as SubscriptionPlan)}
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-accent"
+                        title="Chỉnh sửa"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onClick={() => handleDelete(plan.id, plan.name)}
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:border-destructive/40"
+                        title="Xóa gói"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   )}
                 </div>
+
+                {/* Price Display */}
+                <div className="my-4 border-y border-border/60 py-4 text-center">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-3xl font-extrabold text-foreground tracking-tight">
+                      {plan.price === 0 ? "0" : formatNumber(plan.price)}
+                    </span>
+                    <span className="text-sm font-semibold text-muted-foreground">đ</span>
+                    {plan.durationDays > 0 && (
+                      <span className="text-xs font-medium text-muted-foreground/70 ml-1">
+                        / {plan.durationDays} ngày
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Feature List */}
+                <div className="space-y-2.5">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-2">
+                    Quyền lợi gói:
+                  </span>
+                  {plan.features?.split("|").map((f, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs text-foreground/90">
+                      <div className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                        <Check className="h-2.5 w-2.5 stroke-[3]" />
+                      </div>
+                      <span className="leading-relaxed">{f.trim()}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-
-              <ul className="space-y-2 mb-4 text-sm">
-                {plan.features?.split("|").map((f, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-foreground/80">{f.trim()}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {isFree ? (
-                <div className="py-2 text-center text-sm text-muted-foreground/80 bg-muted/50 rounded-lg border border-border/40 font-medium">
-                  Mặc định
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(plan as SubscriptionPlan)}
-                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${isPopular
-                        ? "bg-accent text-white hover:bg-accent/90"
-                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border"
-                      }`}
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    onClick={() => handleDelete(plan.id, plan.name)}
-                    className="px-3 py-2 text-sm text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500/10 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              )}
             </div>
           );
         })}
       </div>
 
-      {/* Modal */}
+      {/* Modal Edit/Create */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative bg-card rounded-xl w-full max-w-md shadow-xl border border-border text-foreground">
-            <div className="flex items-center justify-between p-4 border-b border-border">
-              <h3 className="font-semibold text-foreground">
-                {editingPlan ? "Sửa gói" : "Thêm gói mới"}
-              </h3>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowModal(false)}
+          />
+          <div className="relative bg-card rounded-xl w-full max-w-lg shadow-xl border border-border text-foreground overflow-hidden animate-in fade-in-50 zoom-in-95">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border bg-muted/20">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10 text-accent">
+                  <Crown className="h-4 w-4" />
+                </div>
+                <h3 className="font-semibold text-foreground text-sm">
+                  {editingPlan ? `Sửa gói "${editingPlan.name}"` : "Thêm gói Premium mới"}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
               </button>
             </div>
 
+            {/* Modal Form */}
             <form onSubmit={handleSubmit} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Tên gói *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Tên gói <span className="text-destructive">*</span>
+                </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                  placeholder="Ví dụ: Premium Tháng, Premium Năm..."
+                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-1 focus:ring-accent focus:border-accent text-sm transition-colors"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Giá (VNĐ) *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Giá (VNĐ) <span className="text-destructive">*</span>
+                  </label>
                   <input
                     type="text"
                     value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: formatPriceInput(e.target.value) })}
-                    className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                    onChange={(e) =>
+                      setFormData({ ...formData, price: formatPriceInput(e.target.value) })
+                    }
+                    placeholder="499.000"
+                    className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-1 focus:ring-accent focus:border-accent text-sm transition-colors"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Số ngày *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Số ngày sử dụng <span className="text-destructive">*</span>
+                  </label>
                   <input
                     type="number"
                     value={formData.durationDays}
-                    onChange={(e) => setFormData({ ...formData, durationDays: e.target.value })}
-                    className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                    onChange={(e) =>
+                      setFormData({ ...formData, durationDays: e.target.value })
+                    }
+                    placeholder="30"
+                    className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-1 focus:ring-accent focus:border-accent text-sm transition-colors"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Mô tả</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Mô tả ngắn
+                </label>
                 <input
                   type="text"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
+                  placeholder="Ví dụ: Phù hợp để trải nghiệm full khóa học..."
+                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-1 focus:ring-accent focus:border-accent text-sm transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Tính năng <span className="text-muted-foreground font-normal">(phân cách bằng |)</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Quyền lợi gói{" "}
+                  <span className="text-muted-foreground/60 font-normal">
+                    (Mỗi quyền lợi cách nhau bằng dấu |)
+                  </span>
                 </label>
                 <textarea
                   value={formData.features}
                   onChange={(e) => setFormData({ ...formData, features: e.target.value })}
-                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm resize-none"
-                  rows={3}
+                  placeholder="Xem tất cả khóa học|Đọc tất cả bài viết|Tài liệu Premium (Ebooks)..."
+                  className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:ring-1 focus:ring-accent focus:border-accent text-sm resize-none transition-colors"
+                  rows={4}
                 />
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button
+              {/* Action Footer */}
+              <div className="flex gap-3 pt-3 border-t border-border">
+                <Button
                   type="button"
+                  variant="outline"
+                  size="default"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-secondary-foreground bg-secondary rounded-lg hover:bg-secondary/80 transition-colors border border-border"
+                  className="flex-1"
                 >
                   Hủy
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
+                  variant="accent"
+                  size="default"
                   disabled={isSubmitting}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-accent rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                  className="flex-1 font-semibold"
                 >
-                  {isSubmitting ? "Đang lưu..." : editingPlan ? "Cập nhật" : "Tạo mới"}
-                </button>
+                  {isSubmitting
+                    ? "Đang lưu..."
+                    : editingPlan
+                    ? "Cập nhật gói"
+                    : "Tạo gói mới"}
+                </Button>
               </div>
             </form>
           </div>

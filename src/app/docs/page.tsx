@@ -6,7 +6,7 @@ import Image from "next/image";
 import SearchBar from "@/components/ui/SearchBar";
 import { useCourses } from "@/hooks/useCourses";
 import { CourseFormat } from "@/types/course";
-import { formatDate } from "@/utils/formatters";
+import { formatDate } from "@/utils/dateUtils";
 
 export default function DocsPage() {
   const [searchText, setSearchText] = useState("");

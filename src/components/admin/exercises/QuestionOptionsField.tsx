@@ -3,6 +3,8 @@
 import { Control, UseFormRegister, useFieldArray } from "react-hook-form";
 import { CreateExerciseRequest } from "@/types/exercise";
 import { exerciseInputClassName } from "./constants";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export type ExerciseFormData = CreateExerciseRequest;
 
@@ -41,16 +43,16 @@ export default function QuestionOptionsField({
           </svg>
           <span>Các lựa chọn</span>
         </label>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={handleAddOption}
-          className="inline-flex items-center px-3.5 py-1.5 text-xs font-bold text-accent hover:bg-accent/10 rounded-xl transition-all duration-200 cursor-pointer"
+          className="gap-1 text-accent hover:text-accent font-semibold h-8"
         >
-          <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-          </svg>
-          Thêm lựa chọn
-        </button>
+          <Plus className="h-3.5 w-3.5" />
+          <span>Thêm lựa chọn</span>
+        </Button>
       </div>
 
       <div className="space-y-3">

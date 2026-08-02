@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Mail, Package, X } from "lucide-react";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { Button } from "@/components/ui/button";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 
 interface AssignSubscriptionModalProps {
   isOpen: boolean;
@@ -103,34 +104,16 @@ export default function AssignSubscriptionModal({
               <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Gói Premium
               </label>
-              <div className="relative">
-                <Package className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-                <select
-                  value={subscriptionPlanId}
-                  onChange={(e) => onPlanChange(e.target.value)}
-                  className="block w-full appearance-none rounded-lg border border-border bg-background py-2 pl-8 pr-8 text-sm text-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
-                >
-                  <option value="">Chọn gói</option>
-                  {plans.map((plan) => (
-                    <option key={plan.id} value={plan.id}>
-                      {plan.name} — {plan.durationDays} ngày
-                    </option>
-                  ))}
-                </select>
-                <svg
-                  className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
+              <FilterSelect
+                value={subscriptionPlanId}
+                onChange={onPlanChange}
+                options={plans.map((p) => ({
+                  value: p.id,
+                  label: `${p.name} — ${p.durationDays} ngày`,
+                }))}
+                placeholder="Chọn gói Premium..."
+                icon={<Package className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/60" />}
+              />
             </div>
           </div>
 

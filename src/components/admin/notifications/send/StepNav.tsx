@@ -22,29 +22,29 @@ export default function StepNav({ activeTab, onChange }: StepNavProps) {
           const isLast = idx === STEPS.length - 1;
 
           return (
-            <div key={step.id} className="flex flex-1 items-center">
+            <div key={step.id} className="flex flex-1 items-center justify-center">
               <button
                 type="button"
                 onClick={() => onChange(step.id)}
-                className="group flex min-w-0 items-center gap-2.5 focus:outline-none"
+                className="group flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 p-1.5 focus:outline-none cursor-pointer rounded-xl hover:bg-accent/5 transition-all"
               >
                 <span
-                  className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums transition ${
+                  className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums transition ${
                     isActive
-                      ? "bg-accent text-white shadow-sm"
+                      ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
                       : isCompleted
                       ? "bg-emerald-500 text-white"
                       : "bg-muted text-muted-foreground ring-1 ring-border"
                   }`}
                 >
                   {isCompleted ? (
-                    <Check className="h-3 w-3" strokeWidth={3} />
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
                   ) : (
                     idx + 1
                   )}
                 </span>
                 <span
-                  className={`hidden truncate text-xs font-medium transition sm:inline ${
+                  className={`hidden truncate text-xs font-semibold transition sm:inline ${
                     isActive
                       ? "text-accent"
                       : isCompleted

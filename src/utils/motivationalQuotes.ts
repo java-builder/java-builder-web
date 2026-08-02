@@ -1,4 +1,3 @@
-// Danh sách các câu nói động lực từ các nhà nổi tiếng và triết lý học tập
 export const motivationalQuotes = [
   {
     quote: "Muốn có những gì mình chưa từng có, thì phải làm những việc mình chưa từng làm.",

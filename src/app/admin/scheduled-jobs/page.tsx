@@ -15,9 +15,12 @@ import {
   JobTable,
 } from "@/components/admin/scheduled-jobs";
 
+import { useI18n } from "@/contexts/I18nContext";
+
 const PAGE_SIZE = 15;
 
 export default function ScheduledJobsPage() {
+  const { t } = useI18n();
   const [data, setData] = useState<PageResponse<ScheduledJobResponse> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,10 +73,10 @@ export default function ScheduledJobsPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold text-foreground sm:text-2xl">
-            Scheduled Jobs
+            {t("admin.scheduledJobs.pageTitle")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Theo dõi tất cả các job đã chạy, đang chạy và sắp chạy trong hệ thống
+            {t("admin.scheduledJobs.pageSubtitle")}
           </p>
         </div>
       </div>

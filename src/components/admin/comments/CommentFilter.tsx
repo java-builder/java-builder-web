@@ -1,3 +1,6 @@
+import { Search, SlidersHorizontal, Layers, Eye, Trash2 } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
+
 interface CommentFilterProps {
   statusFilter: "ACTIVE" | "DELETED" | "ALL";
   onStatusChange: (status: "ACTIVE" | "DELETED" | "ALL") => void;
@@ -11,71 +14,62 @@ export default function CommentFilter({
   searchQuery,
   onSearchChange,
 }: CommentFilterProps) {
+  const { t } = useI18n();
+
   return (
-    <div className="bg-muted/30 rounded-xl p-4 border border-border">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="relative z-20 rounded-xl border border-border bg-card p-4 shadow-sm mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         {/* Search */}
-        <div className="flex-1 max-w-md">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Tìm kiếm bình luận, tác giả..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm"
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg
-                className="h-5 w-5 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-          </div>
+        <div className="relative flex-1 w-full max-w-xl">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder={t("admin.comments.searchPlaceholder")}
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 pl-9 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+          />
         </div>
 
-        {/* Status Filter */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-sm text-muted-foreground font-medium whitespace-nowrap">Trạng thái:</span>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => onStatusChange("ALL")}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                statusFilter === "ALL"
-                  ? "bg-accent text-white"
-                  : "bg-card text-foreground border border-border hover:bg-muted/40"
-              }`}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => onStatusChange("ACTIVE")}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                statusFilter === "ACTIVE"
-                  ? "bg-green-600 text-white"
-                  : "bg-card text-foreground border border-border hover:bg-muted/40"
-              }`}
-            >
-              Hiển thị
-            </button>
-            <button
-              onClick={() => onStatusChange("DELETED")}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                statusFilter === "DELETED"
-                  ? "bg-red-600 text-white"
-                  : "bg-card text-foreground border border-border hover:bg-muted/40"
-              }`}
-            >
-              Đã xóa
-            </button>
+        {/* Status Filter Segmented Control */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 pr-2 border-r border-border/80 hidden sm:flex">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
+              <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+            </div>
+            <span className="text-sm font-semibold text-foreground whitespace-nowrap">
+              {t("admin.comments.filterStatus")}
+            </span>
+          </div>
+
+          <div className="flex h-9 items-center gap-1 rounded-md border border-input bg-muted/40 p-1 shadow-xs">
+            {[
+              { value: "ALL", label: t("admin.comments.filterAll"), icon: Layers },
+              { value: "ACTIVE", label: t("admin.comments.filterActive"), icon: Eye, activeColor: "text-emerald-500" },
+              { value: "DELETED", label: t("admin.comments.filterDeleted"), icon: Trash2, activeColor: "text-rose-500" },
+            ].map((tab) => {
+              const isActive = statusFilter === tab.value;
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.value}
+                  type="button"
+                  onClick={() => onStatusChange(tab.value as "ACTIVE" | "DELETED" | "ALL")}
+                  className={`flex h-7 items-center gap-1.5 px-3 text-sm font-medium rounded transition-all duration-150 cursor-pointer ${
+                    isActive
+                      ? "bg-background text-foreground shadow-xs ring-1 ring-border/80 font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                  }`}
+                >
+                  <Icon
+                    className={`h-4 w-4 transition-colors ${
+                      isActive ? (tab.activeColor || "text-accent") : "text-muted-foreground/70"
+                    }`}
+                  />
+                  <span className="whitespace-nowrap">{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

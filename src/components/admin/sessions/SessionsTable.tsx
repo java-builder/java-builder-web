@@ -12,51 +12,53 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SessionsTableProps {
   sessions: UserSession[];
   isLoading: boolean;
   totalElements: number;
-  hasFilter: boolean;
+  hasFilter?: boolean;
   imageErrors: Set<string>;
   onImageError: (sessionId: string) => void;
   onViewDetails: (session: UserSession) => void;
 }
 
-const COLUMN_HEADERS: { label: string; align?: "left" | "center" }[] = [
-  { label: "Người dùng" },
-  { label: "Nguồn" },
-  { label: "Trạng thái" },
-  { label: "Trình duyệt" },
-  { label: "Thiết bị" },
-  { label: "IP" },
-  { label: "Thời gian" },
-  { label: "Chi tiết", align: "center" },
-];
-
 export const SessionsTable = ({
   sessions,
   isLoading,
   totalElements,
-  hasFilter,
   imageErrors,
   onImageError,
   onViewDetails,
 }: SessionsTableProps) => {
+  const { t } = useI18n();
+
+  const columnHeaders: { label: string; align?: "left" | "center" }[] = [
+    { label: t("admin.sessions.colUser") },
+    { label: "Provider" },
+    { label: t("admin.userStreaks.colStatus") },
+    { label: "Browser" },
+    { label: t("admin.sessions.colDevice") },
+    { label: t("admin.sessions.colIp") },
+    { label: t("admin.sessions.colLastActive") },
+    { label: t("admin.sessions.colActions"), align: "center" },
+  ];
+
   return (
     <Card>
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
-            Danh sách phiên đăng nhập
+            {t("admin.sessions.pageTitle")}
           </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Sắp xếp từ phiên hoạt động gần nhất
+            {t("admin.sessions.pageSubtitle")}
           </p>
         </div>
         {totalElements > 0 && (
           <span className="whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent dark:text-accent-on-dark">
-            {totalElements.toLocaleString("vi-VN")} phiên
+            {totalElements.toLocaleString()}
           </span>
         )}
       </div>
@@ -64,7 +66,7 @@ export const SessionsTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            {COLUMN_HEADERS.map((col) => (
+            {columnHeaders.map((col) => (
               <TableHead
                 key={col.label}
                 className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${
@@ -108,19 +110,12 @@ export const SessionsTable = ({
             ))
           ) : sessions.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={COLUMN_HEADERS.length} className="px-6 py-12 text-center">
+              <TableCell colSpan={columnHeaders.length} className="px-6 py-12 text-center">
                 <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
                   <Monitor className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <p className="text-sm font-medium text-foreground">
-                  {hasFilter
-                    ? "Không tìm thấy phiên đăng nhập phù hợp"
-                    : "Chưa có phiên đăng nhập nào"}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {hasFilter
-                    ? "Thử thay đổi từ khoá tìm kiếm"
-                    : "Phiên truy cập của người dùng sẽ hiển thị tại đây"}
+                  {t("admin.common.noData")}
                 </p>
               </TableCell>
             </TableRow>

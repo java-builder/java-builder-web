@@ -3,8 +3,10 @@
 import { useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { aiTrainingApi } from "@/services/ai-training.service";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function AITrainingClient() {
+  const { t } = useI18n();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -54,18 +56,14 @@ export default function AITrainingClient() {
     setIsUploading(true);
     try {
       const response = await aiTrainingApi.ingestMarkdown(selectedFile);
-      toast.success(response.message || "Upload thành công!");
+      toast.success(response.message || t("admin.common.success"));
       setSelectedFile(null);
       
       // Reset file input
       const fileInput = document.getElementById("file-input") as HTMLInputElement;
       if (fileInput) fileInput.value = "";
-    } catch (error) {
-      console.error("Upload error:", error);
-      const errorMessage = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Đã có lỗi xảy ra khi upload"
-        : "Đã có lỗi xảy ra khi upload";
-      toast.error(errorMessage);
+    } catch {
+      toast.error(t("admin.common.error"));
     } finally {
       setIsUploading(false);
     }
@@ -91,11 +89,10 @@ export default function AITrainingClient() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-3">
-            AI Training - Huấn luyện AI Chatbot
+            {t("admin.aiTraining.pageTitle")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Upload file markdown chứa kiến thức về Java để AI Chatbot có thể trả lời câu hỏi chính xác hơn.
-            Dữ liệu sẽ được xử lý và lưu vào vector store để AI có thể tìm kiếm và trích xuất thông tin phù hợp.
+            {t("admin.aiTraining.pageSubtitle")}
           </p>
         </div>
 

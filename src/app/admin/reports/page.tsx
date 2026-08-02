@@ -14,6 +14,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
+  LabelProps,
 } from "recharts";
 import toast from "react-hot-toast";
 import { reportApi } from "@/services/report.service";
@@ -597,22 +598,26 @@ export default function ReportsPage() {
                   <Bar dataKey="revenue" fill="#9fd3c4" radius={[4, 4, 0, 0]} maxBarSize={45}>
                     <LabelList
                       dataKey="revenue"
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      content={(props: any) => {
+                      content={(props: LabelProps) => {
                         const { x, y, width, value } = props;
                         if (x === undefined || y === undefined || width === undefined || value === undefined) return null;
+                        const numX = Number(x);
+                        const numY = Number(y);
+                        const numWidth = Number(width);
+                        const numVal = Number(value);
+                        if (isNaN(numX) || isNaN(numY) || isNaN(numWidth) || isNaN(numVal)) return null;
 
-                        const formattedVal = formatPrice(value);
+                        const formattedVal = formatPrice(numVal);
                         const fontSize = 8;
                         const boxHeight = 14;
                         const boxWidth = formattedVal.length * 4.8 + 6;
-                        const boxX = x + width / 2 - boxWidth / 2;
-                        const boxY = y - 18;
+                        const boxX = numX + numWidth / 2 - boxWidth / 2;
+                        const boxY = numY - 18;
 
                         return (
                           <g>
                             <rect x={boxX} y={boxY} width={boxWidth} height={boxHeight} rx={4} fill={isDark ? "#1e293b" : "#ffffff"} stroke={isDark ? "#334155" : "#e2e8f0"} strokeWidth={1} />
-                            <text x={x + width / 2} y={boxY + 9.5} fill={isDark ? "#cbd5e1" : "#4b5563"} fontSize={fontSize} fontWeight="medium" textAnchor="middle">
+                            <text x={numX + numWidth / 2} y={boxY + 9.5} fill={isDark ? "#cbd5e1" : "#4b5563"} fontSize={fontSize} fontWeight="medium" textAnchor="middle">
                               {formattedVal}
                             </text>
                           </g>

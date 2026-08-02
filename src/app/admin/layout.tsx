@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import AdminNotificationDropdown from "@/components/admin/AdminNotificationDropdown";
+import AdminNotificationDropdown from "@/components/admin/notifications/AdminNotificationDropdown";
 import ThemeToggle from "@/components/header-components/ThemeToggle";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { authApi } from "@/services/auth.service";

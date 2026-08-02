@@ -10,6 +10,7 @@ import type { SubscriptionPlan } from "@/types/subscription";
 import type { SubscriptionStatsResponse } from "@/types/user-subscription";
 import { Pagination } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/button";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 import { useTheme } from "next-themes";
 import {
   Area,
@@ -280,17 +281,19 @@ export default function AdminUserSubscriptionsPage() {
               Theo dõi hiệu quả doanh số Premium và tỷ lệ chuyển đổi học viên
             </p>
           </div>
-          <select
+          <FilterSelect
             value={statsTimeRange}
-            onChange={(e) => setStatsTimeRange(e.target.value)}
-            className="px-3 py-1.5 border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm bg-background text-foreground self-start sm:self-auto"
-          >
-            <option value="7days">7 ngày qua</option>
-            <option value="30days">30 ngày qua</option>
-            <option value="3months">3 tháng qua</option>
-            <option value="6months">6 tháng qua</option>
-            <option value="1year">1 năm qua</option>
-          </select>
+            onChange={setStatsTimeRange}
+            options={[
+              { value: "7days", label: "7 ngày qua" },
+              { value: "30days", label: "30 ngày qua" },
+              { value: "3months", label: "3 tháng qua" },
+              { value: "6months", label: "6 tháng qua" },
+              { value: "1year", label: "1 năm qua" },
+            ]}
+            placeholder="Chọn khoảng thời gian"
+            className="w-full sm:w-44"
+          />
         </div>
 
         {isStatsLoading && !stats ? (

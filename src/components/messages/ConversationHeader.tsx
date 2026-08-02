@@ -32,9 +32,6 @@ export default function ConversationHeader({
         <div>
           <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
             Hộp thoại học tập
-            <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent uppercase tracking-wider">
-              PRO
-            </span>
           </h2>
         </div>
       </div>

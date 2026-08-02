@@ -19,7 +19,10 @@ const COLUMN_HEADERS: { label: string; align?: "left" | "right"; hiddenUntilXl?:
   { label: "Ngày tạo", hiddenUntilXl: true },
 ];
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function PaymentsPage() {
+  const { t } = useI18n();
   const [currentPage, setCurrentPage] = useState(1);
   const [orderCode, setOrderCode] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -52,20 +55,16 @@ export default function PaymentsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
-            Quản lý thanh toán
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
+            {t("admin.payments.pageTitle")}
           </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-            Xem và quản lý tất cả giao dịch thanh toán trong hệ thống
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.payments.pageSubtitle")}
           </p>
         </div>
         {data && (
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-            Tổng{" "}
-            <span className="tabular-nums">
-              {data.totalElements.toLocaleString("vi-VN")}
-            </span>{" "}
-            giao dịch
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+            {t("admin.payments.totalTransactions").replace("{count}", data.totalElements.toLocaleString())}
           </span>
         )}
       </div>

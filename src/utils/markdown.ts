@@ -8,18 +8,18 @@ export const slugify = (text: string): string => {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove accents
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[đĐ]/g, "d")
-    .replace(/([^0-9a-z-\s])/g, "") // remove non-alphanumeric except hyphen and spaces
+    .replace(/([^0-9a-z-\s])/g, "")
     .trim()
-    .replace(/\s+/g, "-") // replace multiple spaces with single hyphen
-    .replace(/-+/g, "-"); // replace multiple hyphens with single hyphen
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
 };
 
 const cleanMarkdown = (text: string): string => {
   return text
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // link [text](url) -> text
-    .replace(/[*_`~]/g, ""); // strip bold, italic, code, strike
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`~]/g, "");
 };
 
 export const extractHeadings = (markdown: string): HeadingItem[] => {
@@ -32,7 +32,7 @@ export const extractHeadings = (markdown: string): HeadingItem[] => {
     const rawTitle = match[2].trim();
     const title = cleanMarkdown(rawTitle);
     const id = slugify(title);
-    
+
     headings.push({ id, title, level });
   }
 

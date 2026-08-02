@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarRange, SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
+import { DateTimePicker } from "@/components/ui/DateTimePicker";
 
 export type DateFilterId =
   | "today"
@@ -22,7 +23,7 @@ interface StudyDateFilterProps {
   quickLabels: Record<DateFilterId, string>;
   onQuickFilter: (filter: DateFilterId) => void;
   onCustomDateChange: (value: string) => void;
-  onClear: () => void;
+  onClear?: () => void;
 }
 
 const QUICK_OPTIONS: DateFilterId[] = [
@@ -45,11 +46,10 @@ export default function StudyDateFilter({
   quickLabels,
   onQuickFilter,
   onCustomDateChange,
-  onClear,
 }: StudyDateFilterProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-slate-700">
+    <div className="relative z-20 rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 rounded-t-2xl dark:border-slate-700">
         <div className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
             <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
@@ -93,25 +93,12 @@ export default function StudyDateFilter({
           <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             {customDateLabel}
           </span>
-          <div className="relative flex-1 min-w-[180px] sm:flex-initial">
-            <CalendarRange className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-            <input
-              type="date"
+          <div className="relative flex-1 min-w-[200px] sm:flex-initial">
+            <DateTimePicker
               value={selectedDate}
-              onChange={(e) => onCustomDateChange(e.target.value)}
-              placeholder={customPlaceholder}
-              className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-8 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+              onChange={onCustomDateChange}
+              placeholder={customPlaceholder || "Chọn ngày tùy chỉnh..."}
             />
-            {filter === "custom" && selectedDate && (
-              <button
-                type="button"
-                onClick={onClear}
-                className="absolute right-1.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-700 dark:hover:text-gray-200"
-                aria-label="Clear"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
           </div>
         </div>
       </div>

@@ -12,50 +12,52 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface UsersTableProps {
   users: UserDetailResponse[];
   isLoading: boolean;
   totalElements: number;
-  hasFilter: boolean;
+  hasFilter?: boolean;
   deletingId: string;
   onEdit: (user: UserDetailResponse) => void;
   onDelete: (id: string, userName: string) => void;
 }
 
-const COLUMN_HEADERS: { label: string; align?: "left" | "right" }[] = [
-  { label: "Người dùng" },
-  { label: "Email" },
-  { label: "Trạng thái" },
-  { label: "Vai trò" },
-  { label: "MFT" },
-  { label: "Ngày tạo" },
-  { label: "Thao tác", align: "right" },
-];
-
 export const UsersTable = ({
   users,
   isLoading,
   totalElements,
-  hasFilter,
   deletingId,
   onEdit,
   onDelete,
 }: UsersTableProps) => {
+  const { t } = useI18n();
+
+  const COLUMN_HEADERS: { label: string; align?: "left" | "right" }[] = [
+    { label: t("admin.users.colUser") },
+    { label: t("admin.users.colEmail") },
+    { label: t("admin.users.colStatus") },
+    { label: t("admin.users.colRole") },
+    { label: "MFT" },
+    { label: t("admin.users.colCreatedAt") },
+    { label: t("admin.users.colActions"), align: "right" },
+  ];
+
   return (
     <Card>
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
-            Danh sách người dùng
+            {t("admin.users.pageTitle")}
           </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Quản lý thông tin tài khoản, vai trò và trạng thái
+            {t("admin.users.pageSubtitle")}
           </p>
         </div>
         {totalElements > 0 && (
           <span className="whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent dark:text-accent-on-dark">
-            {totalElements.toLocaleString("vi-VN")} người dùng
+            {totalElements.toLocaleString()} {t("admin.users.totalUsers")}
           </span>
         )}
       </div>
@@ -84,7 +86,7 @@ export const UsersTable = ({
               >
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin text-accent" />
-                  Đang tải...
+                  {t("admin.common.loading")}
                 </div>
               </TableCell>
             </TableRow>
@@ -95,14 +97,7 @@ export const UsersTable = ({
                   <Users className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <p className="text-sm font-medium text-foreground">
-                  {hasFilter
-                    ? "Không tìm thấy người dùng phù hợp"
-                    : "Chưa có người dùng nào"}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {hasFilter
-                    ? "Thử thay đổi từ khoá tìm kiếm"
-                    : "Bấm 'Thêm người dùng' để tạo tài khoản mới"}
+                  {t("admin.common.noData")}
                 </p>
               </TableCell>
             </TableRow>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { useCreateExercise } from "@/hooks/useExercises";
 import {
   ExerciseType,
@@ -10,16 +10,14 @@ import {
   QuestionType,
   Question,
 } from "@/types/exercise";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ExerciseQuestionBlock from "@/components/admin/exercises/ExerciseQuestionBlock";
 import { ExerciseFormData } from "@/components/admin/exercises/QuestionOptionsField";
 import {
   exerciseInputClassName,
-  exercisePrimaryButtonClassName,
-  exerciseSelectClassName,
 } from "@/components/admin/exercises/constants";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Sparkles, Loader2, Wand2 } from "lucide-react";
+import { FilterSelect } from "@/components/ui/FilterSelect";
+import { ChevronLeft, Sparkles, Loader2, Wand2, FileQuestion, Plus } from "lucide-react";
 import { chatbotApi } from "@/services/chatbot.service";
 import toast from "react-hot-toast";
 
@@ -174,21 +172,27 @@ export default function CreateExercisePage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
         <div className="flex items-center gap-3">
           <Button
             type="button"
             variant="outline"
             size="icon"
             onClick={() => router.back()}
-            className="h-10 w-10 rounded-xl"
+            className="h-9 w-9 rounded-lg border border-border hover:bg-muted text-muted-foreground hover:text-foreground shrink-0"
           >
-            <ChevronLeft className="h-5 w-5 text-foreground" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Tạo bài tập mới</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Thêm bài tập thực hành mới vào kho bài tập của hệ thống</p>
+            <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl flex items-center gap-2">
+              <FileQuestion className="h-6 w-6 text-accent" />
+              <span>Tạo bài tập mới</span>
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Thêm bài tập thực hành mới vào kho bài tập của hệ thống JavaBuilder
+            </p>
           </div>
         </div>
 
@@ -197,7 +201,7 @@ export default function CreateExercisePage() {
             type="button"
             variant="accent"
             onClick={() => setIsAiModalOpen(true)}
-            className="h-10 gap-1.5 rounded-xl font-bold shadow-xs hover:shadow-sm"
+            className="gap-2 font-semibold h-9 shrink-0"
           >
             <Sparkles className="h-4 w-4" />
             <span>Tự động tạo bằng AI</span>
@@ -245,18 +249,22 @@ export default function CreateExercisePage() {
                   <span>Loại bài tập *</span>
                 </div>
               </label>
-              <div className="relative">
-                <select {...register("exerciseType")} className={exerciseSelectClassName}>
-                  <option value={ExerciseType.MULTIPLE_CHOICE}>Trắc nghiệm</option>
-                  <option value={ExerciseType.ESSAY}>Tự luận</option>
-                  <option value={ExerciseType.CODING}>Lập trình</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
+              <Controller
+                control={control}
+                name="exerciseType"
+                render={({ field }) => (
+                  <FilterSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={[
+                      { value: ExerciseType.MULTIPLE_CHOICE, label: "Trắc nghiệm" },
+                      { value: ExerciseType.ESSAY, label: "Tự luận" },
+                      { value: ExerciseType.CODING, label: "Lập trình" },
+                    ]}
+                    placeholder="Chọn loại bài tập..."
+                  />
+                )}
+              />
             </div>
 
             <div>
@@ -268,18 +276,22 @@ export default function CreateExercisePage() {
                   <span>Độ khó *</span>
                 </div>
               </label>
-              <div className="relative">
-                <select {...register("difficulty")} className={exerciseSelectClassName}>
-                  <option value={Difficulty.EASY}>Dễ</option>
-                  <option value={Difficulty.MEDIUM}>Trung bình</option>
-                  <option value={Difficulty.HARD}>Khó</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
+              <Controller
+                control={control}
+                name="difficulty"
+                render={({ field }) => (
+                  <FilterSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={[
+                      { value: Difficulty.EASY, label: "Dễ", badge: <span className="h-2 w-2 rounded-full bg-emerald-500" /> },
+                      { value: Difficulty.MEDIUM, label: "Trung bình", badge: <span className="h-2 w-2 rounded-full bg-amber-500" /> },
+                      { value: Difficulty.HARD, label: "Khó", badge: <span className="h-2 w-2 rounded-full bg-rose-500" /> },
+                    ]}
+                    placeholder="Chọn độ khó..."
+                  />
+                )}
+              />
             </div>
 
             <div>
@@ -369,26 +381,25 @@ export default function CreateExercisePage() {
             )}
 
             <div className="flex justify-center pt-2">
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={addNewQuestion}
-                className={exercisePrimaryButtonClassName}
+                className="gap-2 font-semibold"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                </svg>
+                <Plus className="h-4 w-4 text-accent" />
                 <span>Thêm câu hỏi</span>
-              </button>
+              </Button>
             </div>
           </div>
         )}
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex items-center justify-end gap-3 pt-2">
           <Button
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            className="px-6 py-2.5 rounded-xl border border-border text-foreground hover:bg-muted text-sm font-bold h-11"
+            className="font-medium"
           >
             Hủy
           </Button>
@@ -396,10 +407,16 @@ export default function CreateExercisePage() {
             type="submit"
             disabled={isSubmitting}
             variant="accent"
-            className="px-6 py-2.5 rounded-xl text-sm font-bold h-11"
+            className="gap-2 font-semibold"
           >
-            {isSubmitting && <LoadingSpinner size="sm" />}
-            <span>{isSubmitting ? "Đang tạo..." : "Tạo bài tập"}</span>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Đang tạo...</span>
+              </>
+            ) : (
+              <span>Tạo bài tập</span>
+            )}
           </Button>
         </div>
       </form>

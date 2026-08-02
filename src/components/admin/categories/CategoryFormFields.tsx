@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FileText, Search, Tag } from "lucide-react";
 import { CategoryType } from "@/types/category";
 import { CATEGORY_COLORS, EMOJI_LIST } from "./helpers";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface CategoryFormFieldsProps {
   name: string;
@@ -30,6 +31,7 @@ export default function CategoryFormFields({
   isLocked,
   onChange,
 }: CategoryFormFieldsProps) {
+  const { t } = useI18n();
   const [emojiSearch, setEmojiSearch] = useState("");
   const filteredEmojis = emojiSearch
     ? EMOJI_LIST.filter((e) => e.includes(emojiSearch))
@@ -77,12 +79,12 @@ export default function CategoryFormFields({
       {/* Type */}
       <div>
         <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-          Loại danh mục
+          {t("admin.categories.colType")}
         </label>
         <div className="grid grid-cols-2 gap-2">
           {[
-            { value: CategoryType.BLOG, label: "Blog", desc: "Bài viết kiến thức" },
-            { value: CategoryType.POST, label: "Post", desc: "Bài đăng cộng đồng" },
+            { value: CategoryType.BLOG, label: t("admin.categories.tabBlog"), desc: "Bài viết blog & tin tức" },
+            { value: CategoryType.POST, label: t("admin.categories.tabPost"), desc: "Bài đăng Q&A & thảo luận" },
           ].map((opt) => {
             const isActive = categoryType === opt.value;
             return (

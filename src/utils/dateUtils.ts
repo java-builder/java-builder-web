@@ -1,13 +1,4 @@
-export const formatApiDate = (dateString: string | null | undefined): string => {
-  if (!dateString) return "";
-  return dateString;
-};
-
-export const formatApiDateOnly = (dateString: string | null | undefined): string => {
-  if (!dateString) return "";
-  const parts = dateString.split(" ");
-  return parts[0] || dateString;
-};
+import { TranslationKey } from "@/contexts/I18nContext";
 
 export const parseDate = (dateString: string | null | undefined): Date | null => {
   if (!dateString) return null;
@@ -34,42 +25,51 @@ export const parseDate = (dateString: string | null | undefined): Date | null =>
     }
   }
 
-  const fallbackDate = new Date(dateString);
-  return isNaN(fallbackDate.getTime()) ? null : fallbackDate;
+  const fallback = new Date(dateString);
+  return isNaN(fallback.getTime()) ? null : fallback;
 };
 
-export const parseApiDate = parseDate;
-
-export const formatShortDate = (dateString: string | null | undefined): string => {
+export const formatDate = (
+  dateString: string | null | undefined,
+  locale?: string
+): string => {
   const date = parseDate(dateString);
-  if (!date) return "";
+  if (!date) return dateString || "";
 
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
+  if (locale) {
+    return date.toLocaleDateString(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
   return `${day}/${month}/${year}`;
 };
 
-export const formatReadableDate = (
+export const formatDateTime = (
   dateString: string | null | undefined,
   locale: string = "vi-VN"
 ): string => {
   const date = parseDate(dateString);
-  if (!date || isNaN(date.getTime())) {
-    return "-";
-  }
-  return date.toLocaleDateString(locale, {
-    day: "numeric",
-    month: "short",
+  if (!date) return "-";
+
+  return date.toLocaleString(locale, {
+    day: "2-digit",
+    month: "2-digit",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
 export const formatRelativeTime = (
   dateString: string | null | undefined,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t?: (key: any) => string
+  t?: (key: TranslationKey) => string
 ): string => {
   const date = parseDate(dateString);
   if (!date) return "";
@@ -102,46 +102,10 @@ export const formatRelativeTime = (
   return `${diffYears} năm trước`;
 };
 
-export const formatLocaleString = (dateString: string | null | undefined, locale: string = "vi-VN"): string => {
-  const date = parseDate(dateString);
-  return date ? date.toLocaleString(locale) : "";
-};
-
-export const formatLocaleStringWithOptions = (
-  dateString: string | null | undefined,
-  locale: string = "vi-VN",
-  options?: Intl.DateTimeFormatOptions
-): string => {
-  const date = parseDate(dateString);
-  return date ? date.toLocaleString(locale, options) : "";
-};
-
-export const formatReadableDateTime = (
-  dateString: string | null | undefined,
-  locale: string = "vi-VN"
-): string => {
-  if (!dateString) {
-    return "-";
-  }
-
-  let date = parseDate(dateString);
-
-  if (!date || isNaN(date.getTime())) {
-    const isoDate = new Date(dateString);
-    if (!isNaN(isoDate.getTime())) {
-      date = isoDate;
-    }
-  }
-
-  if (!date) {
-    return "-";
-  }
-
-  return date.toLocaleString(locale, {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+export const parseApiDate = parseDate;
+export const formatShortDate = formatDate;
+export const formatReadableDate = formatDate;
+export const formatReadableDateTime = formatDateTime;
+export const formatLocaleString = formatDateTime;
+export const formatApiDate = (dateString: string | null | undefined): string => dateString || "";
+export const formatApiDateOnly = (dateString: string | null | undefined): string => dateString?.split(" ")[0] || "";

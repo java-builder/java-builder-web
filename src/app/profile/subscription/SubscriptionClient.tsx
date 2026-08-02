@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { userSubscriptionService } from "@/services/user-subscription.service";
 import { UserSubscription } from "@/types/user-subscription";
-import { formatDate } from "@/utils/formatters";
+import { formatDate } from "@/utils/dateUtils";
 import { useI18n } from "@/contexts/I18nContext";
 import {
   NoSubscriptionState,

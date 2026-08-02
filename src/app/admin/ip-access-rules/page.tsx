@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useIpAccessRules } from "@/hooks/use-ip-access-rules";
-import { CreateRuleModal } from "@/components/admin/ip-access-rules/create-modal";
-import { EditRuleModal } from "@/components/admin/ip-access-rules/edit-modal";
+import { CreateRuleModal } from "@/components/admin/ip-access-rules/CreateRuleModal";
+import { EditRuleModal } from "@/components/admin/ip-access-rules/EditRuleModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { CloudflareAccessRule } from "@/types/cloudflare";
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function AdminIpAccessRulesPage() {
+  const { t } = useI18n();
   const [ruleToDelete, setRuleToDelete] = useState<CloudflareAccessRule | null>(null);
   const {
     rules,
@@ -44,29 +47,24 @@ export default function AdminIpAccessRulesPage() {
   } = useIpAccessRules();
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50 dark:bg-slate-900 text-foreground transition-colors duration-200">
+    <div className="p-6 min-h-screen bg-background text-foreground transition-colors duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2.5">
-            Quản lý chặn IP & Access Rules
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-900/50">
-              Đang chặn {blockedCount} IP
+            {t("admin.ipAccessRules.pageTitle")}
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-500 border border-red-500/20">
+              Blocked: {blockedCount}
             </span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Cấu hình chặn, cấp phép hoặc thử thách truy cập từ IP, dải IP, Quốc gia sang website thông qua Cloudflare
+            {t("admin.ipAccessRules.pageSubtitle")}
           </p>
         </div>
         <button
-          onClick={() => {
-            setShowCreateModal(true);
-          }}
-          className="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white text-sm font-semibold rounded-lg shadow-sm transition-all duration-150 transform hover:-translate-y-0.5 active:translate-y-0"
+          onClick={() => setShowCreateModal(true)}
+          className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 transition-all cursor-pointer"
         >
-          <svg className="w-4.5 h-4.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          Chặn IP / Access Rule mới
+          {t("admin.ipAccessRules.addRuleBtn")}
         </button>
       </div>
 

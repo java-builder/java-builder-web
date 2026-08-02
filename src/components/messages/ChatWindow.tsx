@@ -31,10 +31,17 @@ import toast from "react-hot-toast";
 
 import { MessageAttachmentRequest } from "@/types/chatMessage";
 
+export interface TypingUser {
+  userId: string;
+  username?: string;
+}
+
 interface ChatWindowProps {
   conversation: Conversation;
   messages: ChatMessage[];
   isMuted?: boolean;
+  typingUsers?: TypingUser[];
+  onTyping?: (isTyping: boolean) => void;
   onSendMessage: (
     content: string,
     type?: MessageType,
@@ -61,6 +68,8 @@ export default function ChatWindow({
   conversation,
   messages,
   isMuted = false,
+  typingUsers = [],
+  onTyping,
   onSendMessage,
   onAddReaction,
   onDeleteMessage,
@@ -84,6 +93,46 @@ export default function ChatWindow({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const headerMenuRef = useRef<HTMLDivElement>(null);
+
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isTypingActiveRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      isTypingActiveRef.current = false;
+    };
+  }, [conversation.id]);
+
+  const handleTextChange = (value: string) => {
+    setInputText(value);
+
+    if (onTyping) {
+      if (value.trim().length > 0) {
+        if (!isTypingActiveRef.current) {
+          isTypingActiveRef.current = true;
+          onTyping(true);
+        }
+
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
+          if (isTypingActiveRef.current) {
+            isTypingActiveRef.current = false;
+            onTyping(false);
+          }
+        }, 2000);
+      } else {
+        if (isTypingActiveRef.current) {
+          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+          isTypingActiveRef.current = false;
+          onTyping(false);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -122,6 +171,13 @@ export default function ChatWindow({
     if (e) {
       e.preventDefault();
     }
+
+    if (isTypingActiveRef.current && onTyping) {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      isTypingActiveRef.current = false;
+      onTyping(false);
+    }
+
     if (!inputText.trim() && !selectedImage) return;
 
     if (selectedImage) {
@@ -443,11 +499,29 @@ export default function ChatWindow({
       />
 
       <div className="p-2.5 sm:p-3.5 border-t border-border bg-card/80 backdrop-blur-md shrink-0 shadow-lg relative">
+        {typingUsers && typingUsers.length > 0 && (
+          <div className="absolute bottom-full mb-2.5 left-4 z-20 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card/95 border border-border/80 text-xs text-muted-foreground backdrop-blur-md shadow-md animate-fade-in">
+            <div className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
+            <span className="font-medium text-foreground">
+              {typingUsers
+                .map((u) => {
+                  const member = conversation.members.find((m) => m.id === u.userId);
+                  return member?.username || u.username || "Ai đó";
+                })
+                .join(", ")}{" "}
+              đang gõ tin nhắn...
+            </span>
+          </div>
+        )}
         {showEmojiPicker && (
           <div className="absolute bottom-full mb-2 left-4 z-30">
             <EmojiPickerPopover
               onSelectEmoji={(emoji) => {
-                setInputText((prev) => prev + emoji);
+                handleTextChange(inputText + emoji);
               }}
               onClose={() => setShowEmojiPicker(false)}
             />
@@ -457,7 +531,7 @@ export default function ChatWindow({
         <form onSubmit={handleSend} className="relative rounded-2xl border border-input bg-background p-2.5 focus-within:ring-2 focus-within:ring-accent focus-within:border-accent transition-all shadow-2xs">
           <textarea
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e) => handleTextChange(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={1}
             placeholder="Nhập tin nhắn học tập (gõ @, chèn code, đính kèm file)..."

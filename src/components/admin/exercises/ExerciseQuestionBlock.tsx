@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Control, UseFormRegister, useWatch } from 'react-hook-form';
+import { Control, UseFormRegister, useWatch, Controller } from 'react-hook-form';
 import { QuestionType } from '@/types/exercise';
-import { exerciseInputClassName, exerciseSelectClassName } from './constants';
+import { exerciseInputClassName } from './constants';
 import QuestionOptionsField, { ExerciseFormData } from './QuestionOptionsField';
 import { Eye, Edit2 } from "lucide-react";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 
 interface ExerciseQuestionBlockProps {
   questionIndex: number;
@@ -116,13 +117,21 @@ export default function ExerciseQuestionBlock({
               <span>Loại câu hỏi</span>
             </div>
           </label>
-          <select
-            {...register(`questions.${questionIndex}.questionType`)}
-            className={exerciseSelectClassName}
-          >
-            <option value={QuestionType.SINGLE_CHOICE}>Một đáp án</option>
-            <option value={QuestionType.MULTIPLE_CHOICE}>Nhiều đáp án</option>
-          </select>
+          <Controller
+            control={control}
+            name={`questions.${questionIndex}.questionType`}
+            render={({ field }) => (
+              <FilterSelect
+                value={field.value}
+                onChange={field.onChange}
+                options={[
+                  { value: QuestionType.SINGLE_CHOICE, label: "Một đáp án" },
+                  { value: QuestionType.MULTIPLE_CHOICE, label: "Nhiều đáp án" },
+                ]}
+                placeholder="Chọn loại câu hỏi..."
+              />
+            )}
+          />
         </div>
         <div>
           <label className="block text-sm font-semibold text-foreground mb-2">

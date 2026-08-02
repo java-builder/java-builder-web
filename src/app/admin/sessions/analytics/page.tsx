@@ -20,7 +20,10 @@ import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { formatPercent } from "@/utils/formatters";
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function SessionAnalyticsPage() {
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(true);
   const [sessionStats, setSessionStats] = useState<UserSessionStatistics | null>(null);
   const { resolvedTheme } = useTheme();
@@ -35,11 +38,11 @@ export default function SessionAnalyticsPage() {
       }
     } catch (error) {
       console.error("Failed to fetch session statistics", error);
-      toast.error("Không thể tải thống kê phiên đăng nhập");
+      toast.error(t("admin.common.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchSessionStats();
@@ -48,8 +51,8 @@ export default function SessionAnalyticsPage() {
   // Derived charts data
   const sessionStatusData = sessionStats
     ? [
-        { name: "Hoạt động", value: sessionStats.activeSessions, fill: "#10b981" },
-        { name: "Thu hồi", value: sessionStats.revokedSessions, fill: "#ef4444" },
+        { name: t("admin.sessionsAnalytics.activeSessions"), value: sessionStats.activeSessions, fill: "#10b981" },
+        { name: t("admin.sessionsAnalytics.revokedSessions"), value: sessionStats.revokedSessions, fill: "#ef4444" },
       ]
     : [];
 
@@ -102,7 +105,7 @@ export default function SessionAnalyticsPage() {
 
   if (isLoading && !sessionStats) {
     return (
-      <div className="p-6 space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
+      <div className="p-6 space-y-6 animate-pulse bg-card min-h-screen">
         <div className="flex justify-between items-center mb-6">
           <div className="space-y-2 flex-grow">
             <div className="h-7 bg-muted rounded w-1/4" />
@@ -110,55 +113,34 @@ export default function SessionAnalyticsPage() {
           </div>
           <div className="h-10 bg-muted rounded w-32 shrink-0" />
         </div>
-        
-        {/* Metric Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-5 space-y-3 h-28" />
+            <div key={i} className="bg-card border border-border rounded-xl p-5 space-y-3 h-28" />
           ))}
-        </div>
-
-        {/* Charts Skeleton */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 h-96" />
-          <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 h-96" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6 text-foreground min-h-screen bg-gray-50 dark:bg-slate-900">
+    <div className="p-6 space-y-6 text-foreground min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gradient-to-r from-card to-card/60 rounded-xl p-6 border border-border shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground mb-1">
-            Báo cáo Phiên đăng nhập
+            {t("admin.sessionsAnalytics.pageTitle")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Phân tích chi tiết về các phiên truy cập và bảo mật hệ thống
+            {t("admin.sessionsAnalytics.pageSubtitle")}
           </p>
         </div>
         <Button
           variant="accent"
           onClick={fetchSessionStats}
           disabled={isLoading}
-          className="gap-2 self-start sm:self-auto"
+          className="gap-2 self-start sm:self-auto cursor-pointer"
         >
-          <svg
-            className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          Làm mới
+          {t("admin.questionContributions.refreshBtn")}
         </Button>
       </div>
 
@@ -167,25 +149,16 @@ export default function SessionAnalyticsPage() {
           {/* Overview Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white overflow-hidden shadow-lg shadow-blue-500/20">
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
-              <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/10 rounded-full" />
-              <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-2">Tổng phiên</p>
+              <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-2">{t("admin.sessionsAnalytics.totalSessions")}</p>
               <p className="text-4xl font-bold">{sessionStats.totalSessions.toLocaleString()}</p>
-              <p className="text-blue-200 text-xs mt-2">Tất cả phiên đăng nhập</p>
             </div>
             <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white overflow-hidden shadow-lg shadow-emerald-500/20">
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
-              <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/10 rounded-full" />
-              <p className="text-emerald-100 text-xs font-medium uppercase tracking-wider mb-2">Đang hoạt động</p>
+              <p className="text-emerald-100 text-xs font-medium uppercase tracking-wider mb-2">{t("admin.sessionsAnalytics.activeSessions")}</p>
               <p className="text-4xl font-bold">{sessionStats.activeSessions.toLocaleString()}</p>
-              <p className="text-emerald-200 text-xs mt-2">Phiên đang online</p>
             </div>
             <div className="relative bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl p-5 text-white overflow-hidden shadow-lg shadow-rose-500/20">
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
-              <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/10 rounded-full" />
-              <p className="text-rose-100 text-xs font-medium uppercase tracking-wider mb-2">Đã thu hồi</p>
+              <p className="text-rose-100 text-xs font-medium uppercase tracking-wider mb-2">{t("admin.sessionsAnalytics.revokedSessions")}</p>
               <p className="text-4xl font-bold">{sessionStats.revokedSessions.toLocaleString()}</p>
-              <p className="text-rose-200 text-xs mt-2">Phiên bị vô hiệu hóa</p>
             </div>
             <div className="relative bg-card rounded-2xl p-5 border border-border shadow-sm overflow-hidden">
               <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider mb-3">Tỷ lệ hoạt động</p>

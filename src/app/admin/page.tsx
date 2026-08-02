@@ -4,13 +4,15 @@ import { AdminOverviewProvider, useAdminOverviewContext } from "@/contexts/Admin
 import { formatNumber, formatCurrency } from "@/utils/formatters";
 import { StatCard } from "@/components/admin/dashboard/StatCard";
 import { RecentActivities } from "@/components/admin/dashboard/RecentActivities";
+import { useI18n } from "@/contexts/I18nContext";
 
 function AdminDashboardContent() {
+  const { t } = useI18n();
   const { overview, loading } = useAdminOverviewContext();
 
   const stats = [
     {
-      name: "Tổng người dùng",
+      name: t("admin.dashboard.totalUsers"),
       value: loading ? "..." : formatNumber(overview?.totalUsers || 0),
       icon: (
         <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,9 +21,9 @@ function AdminDashboardContent() {
       ),
     },
     {
-      name: "Người dùng mới hôm nay",
+      name: t("admin.dashboard.newUsersToday"),
       value: loading ? "..." : formatNumber(overview?.totalUsersNewToday || 0),
-      badge: !loading && overview?.totalUsersNewToday ? "Mới" : undefined,
+      badge: !loading && overview?.totalUsersNewToday ? t("admin.dashboard.badgeNew") : undefined,
       badgeColor: "emerald" as const,
       icon: (
         <svg className="w-full h-full text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +32,7 @@ function AdminDashboardContent() {
       ),
     },
     {
-      name: "Khóa học hoạt động",
+      name: t("admin.dashboard.activeCourses"),
       value: loading ? "..." : formatNumber(overview?.totalCourses || 0),
       icon: (
         <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +41,7 @@ function AdminDashboardContent() {
       ),
     },
     {
-      name: "Doanh thu tháng này",
+      name: t("admin.dashboard.monthlyRevenue"),
       value: loading ? "..." : formatCurrency(overview?.monthlyRevenue || 0),
       icon: (
         <div className="w-full h-full flex items-center justify-center font-bold text-xs sm:text-sm border-2 border-current rounded-full select-none leading-none">
@@ -48,7 +50,7 @@ function AdminDashboardContent() {
       ),
     },
     {
-      name: "Học viên mới tháng này",
+      name: t("admin.dashboard.newEnrollments"),
       value: loading ? "..." : formatNumber(overview?.newEnrollments || 0),
       icon: (
         <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,8 +63,8 @@ function AdminDashboardContent() {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">Chào mừng trở lại!</h1>
-        <p className="mt-1 sm:mt-2 text-sm sm:text-base text-muted-foreground">Đây là tổng quan về hoạt động của hệ thống JavaBuilder hôm nay.</p>
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">{t("admin.dashboard.welcome")}</h1>
+        <p className="mt-1 sm:mt-2 text-sm sm:text-base text-muted-foreground">{t("admin.dashboard.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8">

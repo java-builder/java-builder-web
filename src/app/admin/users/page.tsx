@@ -16,8 +16,13 @@ import { UsersHeader } from "@/components/admin/users/UsersHeader";
 import { UsersTable } from "@/components/admin/users/UsersTable";
 import { Pagination } from "@/components/ui/Pagination";
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function UsersPage() {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [currentPage, setCurrentPage] = useState(0);
   const [isDeleting, setIsDeleting] = useState<string>("");
@@ -28,7 +33,9 @@ export default function UsersPage() {
 
   const { response, isLoading, error, stats, refetch } = useUsersList(
     debouncedSearch,
-    currentPage
+    currentPage,
+    startDate,
+    endDate
   );
 
   const handleDelete = async (id: string, userName: string) => {
@@ -43,20 +50,14 @@ export default function UsersPage() {
         }
       },
       {
-        title: "🗑️ Xác nhận xóa người dùng",
+        title: t("admin.users.deleteConfirmTitle"),
         message: `
                     <div style="text-align: center; line-height: 1.5;">
-                        <p style="margin-bottom: 8px;">Bạn có chắc chắn muốn xóa người dùng</p>
-                        <p style="font-weight: 700; color: #dc2626; font-size: 14px; margin: 8px 0; padding: 6px 12px; background: #fef2f2; border-radius: 6px; display: inline-block;">
-                            "${userName}"
-                        </p>
-                        <p style="margin-top: 8px; font-size: 12px; color: #6b7280;">
-                            ⚠️ Hành động này không thể hoàn tác
-                        </p>
+                        <p style="margin-bottom: 8px;">${t("admin.users.deleteConfirmMsg").replace("{name}", userName)}</p>
                     </div>
                 `,
-        confirmText: "🗑️ Xóa người dùng",
-        cancelText: "❌ Hủy bỏ",
+        confirmText: t("admin.users.deleteConfirmBtn"),
+        cancelText: t("admin.users.cancelBtn"),
         type: "error",
       }
     );
@@ -167,10 +168,11 @@ export default function UsersPage() {
     );
   }
 
-  const totalCount =
-    debouncedSearch
-      ? response?.data?.totalElements || 0
-      : stats?.totalUsers ?? response?.data?.totalElements ?? 0;
+  const hasFilter = !!debouncedSearch || !!startDate || !!endDate;
+
+  const totalCount = hasFilter
+    ? response?.data?.totalElements || 0
+    : stats?.totalUsers ?? response?.data?.totalElements ?? 0;
   const users = response?.data?.data ?? [];
 
   return (
@@ -181,21 +183,37 @@ export default function UsersPage() {
         onCreate={() => setIsCreateModalOpen(true)}
       />
 
-      <UserStatsCards stats={stats} response={response?.data ?? null} />
+      <UserStatsCards stats={stats} response={response?.data ?? null} hasFilter={hasFilter} />
 
       <UserSearchBar
         search={search}
+        startDate={startDate}
+        endDate={endDate}
         debouncedSearch={debouncedSearch}
         isLoading={isLoading}
-        onSearch={handleSearch}
+        onSearchChange={handleSearch}
+        onStartDateChange={(val) => {
+          setStartDate(val);
+          setCurrentPage(0);
+        }}
+        onEndDateChange={(val) => {
+          setEndDate(val);
+          setCurrentPage(0);
+        }}
         onRefresh={refetch}
+        onClearFilters={() => {
+          setSearch("");
+          setStartDate("");
+          setEndDate("");
+          setCurrentPage(0);
+        }}
       />
 
       <UsersTable
         users={users}
         isLoading={isLoading}
         totalElements={response?.data?.totalElements ?? 0}
-        hasFilter={!!debouncedSearch}
+        hasFilter={!!debouncedSearch || !!startDate || !!endDate}
         deletingId={isDeleting}
         onEdit={handleEditUser}
         onDelete={handleDelete}

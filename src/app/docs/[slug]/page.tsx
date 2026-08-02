@@ -13,7 +13,7 @@ import PaymentModal from "@/components/courses/PaymentModal";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
-import { formatDate } from "@/utils/formatters";
+import { formatDate } from "@/utils/dateUtils";
 import { extractHeadings } from "@/utils/markdown";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";

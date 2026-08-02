@@ -13,6 +13,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { activeUserService } from "@/services/active-user.service";
 
+import { useI18n } from "@/contexts/I18nContext";
+
 interface ActiveUser {
   id: string;
   username: string;
@@ -21,6 +23,7 @@ interface ActiveUser {
 }
 
 export default function ActiveUsersPage() {
+  const { t } = useI18n();
   const page = 1;
   const size = 50;
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,9 +54,9 @@ export default function ActiveUsersPage() {
     setIsRefreshing(true);
     try {
       await refetch();
-      toast.success("Đã cập nhật danh sách trực tuyến");
+      toast.success(t("admin.common.success"));
     } catch {
-      toast.error("Làm mới thất bại");
+      toast.error(t("admin.common.error"));
     } finally {
       setIsRefreshing(false);
     }
@@ -73,14 +76,14 @@ export default function ActiveUsersPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl flex items-center gap-2">
-          Thành viên trực tuyến
+          {t("admin.activeUsers.pageTitle")}
           <span className="flex h-2.5 w-2.5 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
         </h1>
         <p className="mt-0.5 text-xs text-muted-foreground">
-          Danh sách người dùng đang hoạt động trong hệ thống.
+          {t("admin.activeUsers.pageSubtitle")}
         </p>
       </div>
 
@@ -92,24 +95,24 @@ export default function ActiveUsersPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm theo tên hoặc email..."
+            placeholder={t("admin.activeUsers.searchPlaceholder")}
             className="flex h-9 w-full rounded-lg border border-input bg-background/50 px-3 pl-9 text-xs shadow-none transition-all placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500/40"
           />
         </div>
 
         <div className="flex items-center gap-3.5 self-end sm:self-auto text-xs">
           <div className="text-muted-foreground/80 font-medium">
-            Tìm thấy {filteredUsers.length}
+            {t("admin.activeUsers.totalOnline").replace("{count}", String(filteredUsers.length))}
           </div>
           <Button
             variant="outline"
             size="sm"
             onClick={handleRefresh}
             disabled={isRefreshing || isLoading}
-            className="gap-1.5 rounded-lg h-9 px-3 hover:bg-muted/50 border-border/60 transition-colors text-xs"
+            className="gap-1.5 rounded-lg h-9 px-3 hover:bg-muted/50 border-border/60 transition-colors text-xs cursor-pointer"
           >
             <RotateCw className={`h-3.5 w-3.5 ${isRefreshing || isLoading ? "animate-spin" : ""}`} />
-            Làm mới
+            {t("admin.questionContributions.refreshBtn")}
           </Button>
         </div>
       </div>
@@ -135,11 +138,8 @@ export default function ActiveUsersPage() {
             </div>
             <div className="space-y-0.5">
               <h3 className="font-semibold text-sm text-foreground">
-                Không tìm thấy kết quả
+                {t("admin.common.noData")}
               </h3>
-              <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                Không có thành viên nào đang kết nối trùng khớp với thông tin tìm kiếm.
-              </p>
             </div>
           </CardContent>
         </Card>

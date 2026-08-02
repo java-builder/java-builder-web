@@ -6,13 +6,13 @@ import {
   UserDailyActivity,
 } from "@/types/user-activity";
 import { formatApiDate, formatRelativeTime } from "@/utils/dateUtils";
+import { TranslationKey } from "@/contexts/I18nContext";
 import StudyTimelineItem from "./StudyTimelineItem";
 
 interface StudyTimelineProps {
   groupedActivities: Record<string, UserDailyActivity[]>;
   getActivityTypeName: (type: ActivityType) => string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: (key: any) => string;
+  t: (key: TranslationKey) => string;
   timelineLabel: string;
   questionSetToTopicMap?: Map<string, string>;
 }

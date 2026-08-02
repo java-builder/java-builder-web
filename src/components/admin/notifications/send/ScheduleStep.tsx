@@ -3,6 +3,7 @@
 import StepCard from "./StepCard";
 import StepFooter from "./StepFooter";
 import { ICON_TONE, SCHEDULE_OPTIONS } from "./helpers";
+import { DateTimePicker } from "@/components/ui/DateTimePicker";
 
 interface ScheduleStepProps {
   scheduleType: "now" | "schedule";
@@ -27,6 +28,24 @@ export default function ScheduleStep({
   onBack,
   onSubmit,
 }: ScheduleStepProps) {
+  const dateTimeValue =
+    scheduleDate && scheduleTime
+      ? `${scheduleDate}T${scheduleTime}`
+      : scheduleDate
+      ? `${scheduleDate}T00:00`
+      : "";
+
+  const handleDateTimeChange = (val: string) => {
+    if (!val) {
+      onScheduleDateChange("");
+      onScheduleTimeChange("");
+      return;
+    }
+    const [d, t] = val.split("T");
+    onScheduleDateChange(d || "");
+    onScheduleTimeChange(t || "");
+  };
+
   return (
     <div className="space-y-5">
       <StepCard
@@ -73,29 +92,16 @@ export default function ScheduleStep({
         </div>
 
         {scheduleType === "schedule" && (
-          <div className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-border bg-muted/40 p-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Ngày gửi
-              </label>
-              <input
-                type="date"
-                value={scheduleDate}
-                onChange={(e) => onScheduleDateChange(e.target.value)}
-                className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-              />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Giờ gửi
-              </label>
-              <input
-                type="time"
-                value={scheduleTime}
-                onChange={(e) => onScheduleTimeChange(e.target.value)}
-                className="block w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-              />
-            </div>
+          <div className="mt-4 rounded-xl border border-border bg-card p-4">
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Ngày & Giờ lên lịch gửi
+            </label>
+            <DateTimePicker
+              value={dateTimeValue}
+              onChange={handleDateTimeChange}
+              placeholder="Chọn ngày và giờ gửi..."
+              presetType="start"
+            />
           </div>
         )}
       </StepCard>

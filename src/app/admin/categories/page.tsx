@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useI18n } from "@/contexts/I18nContext";
 import {
   CategoriesHeader,
   CategoryTable,
@@ -13,6 +14,7 @@ import {
 } from "@/components/admin/categories";
 
 export default function CategoriesPage() {
+  const { t } = useI18n();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] =
@@ -63,10 +65,10 @@ export default function CategoriesPage() {
         }
       },
       {
-        title: "Xác nhận xoá danh mục",
-        message: `<div>Bạn có chắc muốn xoá danh mục <strong>${name}</strong>?</div>`,
-        confirmText: "Xoá",
-        cancelText: "Huỷ",
+        title: t("admin.categories.deleteConfirmTitle"),
+        message: `<div>${t("admin.categories.deleteConfirmMessage").replace("{name}", `<strong>${name}</strong>`)}</div>`,
+        confirmText: t("admin.common.delete"),
+        cancelText: t("admin.common.cancel"),
         type: "error",
       }
     );

@@ -16,11 +16,14 @@ import { formatCurrency } from "@/utils/formatters";
 import { CourseFormat, CourseLevel } from "@/types/course";
 import { CourseOverviewResponse } from "@/types/report";
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCw, Video, FileText, Layers, AlertCircle, BookOpen } from "lucide-react";
+import { Plus, RotateCw, AlertCircle, BookOpen } from "lucide-react";
 
 type CourseFormatTab = CourseFormat;
 
+import { useI18n } from "@/contexts/I18nContext";
+
 export default function CoursesPage() {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<CourseFormatTab>(CourseFormat.VIDEO);
@@ -138,66 +141,46 @@ export default function CoursesPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Quản lý khóa học
+            {t("admin.courses.pageTitle")}
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Quản lý và theo dõi tất cả khóa học trong hệ thống JavaBuilder
+            {t("admin.courses.pageSubtitle")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="accent"
             onClick={() => setIsCreateModalOpen(true)}
-            className="gap-2 font-medium"
+            className="gap-2 font-medium cursor-pointer"
           >
             <Plus className="w-4.5 h-4.5" />
-            Tạo khóa học mới
+            {t("admin.courses.createCourseBtn")}
           </Button>
           <Button
             variant="outline"
             onClick={() => refetch()}
             disabled={isLoading}
-            className="gap-2 text-muted-foreground hover:text-foreground font-medium"
+            className="gap-2 text-muted-foreground hover:text-foreground font-medium cursor-pointer"
           >
             <RotateCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-            Làm mới
+            {t("admin.questionContributions.refreshBtn")}
           </Button>
         </div>
       </div>
 
       <CourseStatsCards stats={stats} formatRevenue={formatCurrency} isLoading={isLoadingOverview} />
 
-      {/* Course Format Tabs */}
-      <div className="flex border-b border-border bg-muted/30 p-1 rounded-lg max-w-md border">
-        {([CourseFormat.VIDEO, CourseFormat.TEXT, CourseFormat.MIXED] as CourseFormatTab[]).map((tab) => {
-          const isActive = activeTab === tab;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${isActive
-                  ? "bg-background text-foreground shadow-sm ring-1 ring-black/5"
-                  : "text-muted-foreground hover:text-foreground"
-                }`}
-            >
-              {tab === CourseFormat.VIDEO && <Video className="w-4 h-4" />}
-              {tab === CourseFormat.TEXT && <FileText className="w-4 h-4" />}
-              {tab === CourseFormat.MIXED && <Layers className="w-4 h-4" />}
-              <span className="whitespace-nowrap">
-                {tab === CourseFormat.VIDEO && "Video"}
-                {tab === CourseFormat.TEXT && "Văn bản"}
-                {tab === CourseFormat.MIXED && "Kết hợp"}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
       <CourseFilters
         search={search}
         levelFilter={levelFilter}
+        formatFilter={activeTab}
         onSearchChange={setSearch}
         onLevelChange={setLevelFilter}
+        onFormatChange={setActiveTab}
+        onClearFilters={() => {
+          setSearch("");
+          setLevelFilter("all");
+        }}
       />
 
       {/* Error State */}

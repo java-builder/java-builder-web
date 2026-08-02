@@ -1,31 +1,39 @@
+"use client";
+
 import { UserStatisticsResponse, UserDetailResponse } from "@/types/user";
 import { PageResponse } from "@/types/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, CheckCircle2, AlertTriangle, Trash2 } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface UserStatsCardsProps {
   stats: UserStatisticsResponse | null;
   response: PageResponse<UserDetailResponse> | null;
+  hasFilter?: boolean;
 }
 
-export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
-  const total = stats?.totalUsers ?? response?.totalElements ?? 0;
-  const active =
-    stats?.activeUsers ??
-    response?.data?.filter((u) => u.userStatus === "ACTIVE").length ??
-    0;
-  const inactive =
-    stats?.inactiveUsers ??
-    response?.data?.filter((u) => u.userStatus === "INACTIVE").length ??
-    0;
-  const deleted =
-    stats?.deletedUsers ??
-    response?.data?.filter((u) => u.userStatus === "DELETED").length ??
-    0;
+export const UserStatsCards = ({ stats, response, hasFilter = false }: UserStatsCardsProps) => {
+  const { t } = useI18n();
+
+  const total = hasFilter
+    ? response?.totalElements ?? 0
+    : stats?.totalUsers ?? response?.totalElements ?? 0;
+
+  const active = hasFilter
+    ? response?.data?.filter((u) => u.userStatus === "ACTIVE").length ?? 0
+    : stats?.activeUsers ?? response?.data?.filter((u) => u.userStatus === "ACTIVE").length ?? 0;
+
+  const inactive = hasFilter
+    ? response?.data?.filter((u) => u.userStatus === "INACTIVE").length ?? 0
+    : stats?.inactiveUsers ?? response?.data?.filter((u) => u.userStatus === "INACTIVE").length ?? 0;
+
+  const deleted = hasFilter
+    ? response?.data?.filter((u) => u.userStatus === "DELETED").length ?? 0
+    : stats?.deletedUsers ?? response?.data?.filter((u) => u.userStatus === "DELETED").length ?? 0;
 
   const items = [
     {
-      label: "Tổng người dùng",
+      label: t("admin.users.totalUsers"),
       value: total,
       icon: <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
       bg: "bg-blue-50 dark:bg-blue-950/30",
@@ -33,7 +41,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
       valueClass: "text-foreground",
     },
     {
-      label: "Đang hoạt động",
+      label: t("admin.users.activeUsers"),
       value: active,
       icon: <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
       bg: "bg-emerald-50 dark:bg-emerald-950/30",
@@ -41,7 +49,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
       valueClass: "text-emerald-600 dark:text-emerald-400",
     },
     {
-      label: "Không hoạt động",
+      label: t("admin.common.inactive"),
       value: inactive,
       icon: <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />,
       bg: "bg-amber-50 dark:bg-amber-950/30",
@@ -49,7 +57,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
       valueClass: "text-amber-600 dark:text-amber-400",
     },
     {
-      label: "Đã xoá",
+      label: t("admin.common.delete"),
       value: deleted,
       icon: <Trash2 className="h-5 w-5 text-rose-600 dark:text-rose-400" />,
       bg: "bg-rose-50 dark:bg-rose-950/30",
@@ -68,7 +76,7 @@ export const UserStatsCards = ({ stats, response }: UserStatsCardsProps) => {
                 {item.label}
               </p>
               <p className={`text-2xl font-bold tracking-tight tabular-nums ${item.valueClass}`}>
-                {item.value.toLocaleString("vi-VN")}
+                {item.value.toLocaleString()}
               </p>
             </div>
             <div className={`p-3 rounded-xl ${item.bg}`}>

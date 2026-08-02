@@ -4,6 +4,7 @@ import { RotateCw, SlidersHorizontal, X } from "lucide-react";
 import type { JobType } from "@/types/scheduled-job";
 import { JOB_TYPES } from "./helpers";
 import { Button } from "@/components/ui/button";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 
 interface JobFiltersProps {
   jobType: JobType | "";
@@ -23,16 +24,52 @@ export default function JobFilters({
   onRefresh,
 }: JobFiltersProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+    <div className="relative z-20 rounded-xl border border-border bg-card p-3 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* Left Side: Filter icon + Dropdown + Quick Category Pills */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 pr-2 sm:border-r sm:border-border">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
+              <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+            </div>
+            <span className="text-sm font-semibold text-foreground whitespace-nowrap">
+              Bộ lọc
+            </span>
           </div>
-          <h3 className="text-sm font-semibold text-foreground">
-            Bộ lọc
-          </h3>
+
+          {/* Job Type Dropdown */}
+          <div className="w-52">
+            <FilterSelect
+              value={jobType}
+              onChange={(val) => onJobTypeChange(val as JobType | "")}
+              options={JOB_TYPES}
+              placeholder="Tất cả loại job"
+            />
+          </div>
+
+          {/* Quick filter chips */}
+          <div className="hidden md:flex items-center gap-1">
+            {JOB_TYPES.filter((t) => t.value !== "").map((t) => {
+              const isActive = jobType === t.value;
+              return (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => onJobTypeChange(isActive ? "" : (t.value as JobType))}
+                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-accent text-white shadow-sm font-semibold"
+                      : "bg-muted/60 text-muted-foreground hover:bg-accent/10 hover:text-accent"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {/* Right Side: Clear & Refresh Buttons */}
         <div className="flex items-center gap-2">
           {hasActiveFilters && (
             <Button
@@ -55,40 +92,6 @@ export default function JobFilters({
             <RotateCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
             Làm mới
           </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 sm:gap-4 lg:p-5">
-        <div>
-          <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Loại job
-          </label>
-          <div className="relative">
-            <select
-              value={jobType}
-              onChange={(e) => onJobTypeChange(e.target.value as JobType | "")}
-              className="block w-full appearance-none rounded-lg border border-input bg-background py-2 pl-3 pr-8 text-sm text-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
-            >
-              {JOB_TYPES.map((option) => (
-                <option key={option.value || "all"} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <svg
-              className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
         </div>
       </div>
     </div>

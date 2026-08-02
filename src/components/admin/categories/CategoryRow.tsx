@@ -1,6 +1,7 @@
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface CategoryRowProps {
   category: CategoryDetailResponse;
@@ -23,6 +24,7 @@ export default function CategoryRow({
   onEdit,
   onDelete,
 }: CategoryRowProps) {
+  const { t } = useI18n();
   const fallbackColor = "#374151";
   const color = category.color || fallbackColor;
   const isBlog = category.categoryType === CategoryType.BLOG;
@@ -70,7 +72,7 @@ export default function CategoryRow({
               isBlog ? "bg-blue-500" : "bg-violet-500"
             }`}
           />
-          {isBlog ? "Blog" : "Bài viết"}
+          {isBlog ? t("admin.categories.tabBlog") : t("admin.categories.tabPost")}
         </span>
       </td>
 
@@ -99,7 +101,7 @@ export default function CategoryRow({
             className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground transition hover:border-accent hover:text-accent cursor-pointer"
           >
             <Pencil className="h-3.5 w-3.5" />
-            Sửa
+            {t("admin.common.edit")}
           </button>
           <button
             type="button"
@@ -112,7 +114,7 @@ export default function CategoryRow({
             ) : (
               <Trash2 className="h-3.5 w-3.5" />
             )}
-            {isDeleting ? "Đang xoá..." : "Xoá"}
+            {isDeleting ? t("admin.common.deleting") : t("admin.common.delete")}
           </button>
         </div>
       </td>

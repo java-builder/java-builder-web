@@ -17,6 +17,8 @@ import {
 export interface UserSearchParams {
   page?: number;
   search?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const userApi = {
@@ -34,12 +36,26 @@ export const userApi = {
       size: 20,
     };
 
+    const usersSpecList: string[] = [];
+
     if (params.search && params.search.trim()) {
       const searchText = params.search.trim();
-      queryParams.users = [
-        `username~${searchText}|`,
-        `email~${searchText}`
-      ];
+      usersSpecList.push(`username~${searchText}|`);
+      usersSpecList.push(`email~${searchText}`);
+    }
+
+    if (params.startDate && params.startDate.trim()) {
+      const start = params.startDate.includes("T") ? params.startDate : `${params.startDate}T00:00:00`;
+      usersSpecList.push(`createdAt>${start}`);
+    }
+
+    if (params.endDate && params.endDate.trim()) {
+      const end = params.endDate.includes("T") ? params.endDate : `${params.endDate}T23:59:59`;
+      usersSpecList.push(`createdAt<${end}`);
+    }
+
+    if (usersSpecList.length > 0) {
+      queryParams.users = usersSpecList;
     }
 
     const response = await apiClient.post<

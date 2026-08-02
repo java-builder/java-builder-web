@@ -2,6 +2,7 @@
 
 import { Loader2, Search, X } from "lucide-react";
 import { StreakStatus } from "@/types/user-streak";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface UserStreakSearchBarProps {
   search: string;
@@ -18,6 +19,7 @@ export const UserStreakSearchBar = ({
   onSearch,
   onStatusChange,
 }: UserStreakSearchBarProps) => {
+  const { t } = useI18n();
   const isDebouncing = search !== debouncedSearch;
 
   return (
@@ -29,7 +31,7 @@ export const UserStreakSearchBar = ({
           type="text"
           value={search}
           onChange={(e) => onSearch(e.target.value)}
-          placeholder="Nhập tên, email hoặc user ID..."
+          placeholder={t("admin.userStreaks.searchPlaceholder")}
           className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-9 pr-9 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         />
         {isDebouncing ? (
@@ -37,7 +39,7 @@ export const UserStreakSearchBar = ({
         ) : search ? (
           <button
             onClick={() => onSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -48,16 +50,16 @@ export const UserStreakSearchBar = ({
       <div className="flex items-center gap-0.5 bg-muted/60 p-1 rounded-xl border border-border/50 text-xs overflow-x-auto max-w-full shrink-0">
         {(
           [
-            { label: "Tất cả", value: "ALL" },
-            { label: "Đã duy trì", value: "ACTIVE_TODAY" },
-            { label: "Nguy cơ", value: "AT_RISK" },
-            { label: "Đã mất", value: "BROKEN" },
+            { label: t("admin.documents.filterAllTypes"), value: "ALL" },
+            { label: t("admin.userStreaks.statActiveStreaks"), value: "ACTIVE_TODAY" },
+            { label: t("admin.userStreaks.statAtRisk"), value: "AT_RISK" },
+            { label: t("admin.userStreaks.colStatus"), value: "BROKEN" },
           ] as const
         ).map((tab) => (
           <button
             key={tab.value}
             onClick={() => onStatusChange(tab.value)}
-            className={`px-3 py-1 rounded-lg transition-all font-medium ${
+            className={`px-3 py-1 rounded-lg transition-all font-medium cursor-pointer ${
               selectedStatus === tab.value
                 ? "bg-background text-foreground shadow-xs"
                 : "text-muted-foreground hover:text-foreground"

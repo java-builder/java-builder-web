@@ -1,20 +1,23 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Plus, Search, HelpCircle, CheckCircle2, AlertCircle, Sparkles, MessageSquare, Eye, Edit3, Trash2, Tag, Calendar, ChevronDown, Wand2, Check, Clock, Bug, Lightbulb } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Search, HelpCircle, CheckCircle2, AlertCircle, Sparkles, MessageSquare, Eye, Edit3, Trash2, Tag, Calendar, Wand2, Clock, Bug, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { PostDetail } from "@/types/post";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useI18n } from "@/contexts/I18nContext";
 import CreateQnAModal from "@/components/admin/qna/CreateQnAModal";
 import GenerateQnAWithAIModal from "@/components/admin/qna/GenerateQnAWithAIModal";
 import UpdateQnAModal from "@/components/admin/qna/UpdateQnAModal";
 import QnAPreviewModal from "@/components/admin/qna/QnAPreviewModal";
 
 export default function AdminQnAPage() {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<PostDetail[]>([]);
   const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,12 +29,6 @@ export default function AdminQnAPage() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  // Filter Dropdown States
-  const [isCatFilterOpen, setIsCatFilterOpen] = useState(false);
-  const [isStatusFilterOpen, setIsStatusFilterOpen] = useState(false);
-  const catFilterRef = useRef<HTMLDivElement>(null);
-  const statusFilterRef = useRef<HTMLDivElement>(null);
-
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -39,20 +36,6 @@ export default function AdminQnAPage() {
   const [previewPost, setPreviewPost] = useState<PostDetail | null>(null);
 
   const { confirm } = useConfirm();
-
-  // Click outside listener for custom dropdown filters
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (catFilterRef.current && !catFilterRef.current.contains(e.target as Node)) {
-        setIsCatFilterOpen(false);
-      }
-      if (statusFilterRef.current && !statusFilterRef.current.contains(e.target as Node)) {
-        setIsStatusFilterOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const fetchCategories = async () => {
     try {
@@ -144,90 +127,93 @@ export default function AdminQnAPage() {
   return (
     <div className="p-4 sm:p-6">
       {/* Page Header */}
-      <div className="mb-8 sm:flex sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Quản lý Q&A</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Thống kê và quản lý tất cả bài hỏi đáp, câu hỏi và thách thức lập trình hàng ngày
+          <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl flex items-center gap-2">
+            <MessageSquare className="h-6 w-6 text-accent" />
+            <span>{t("admin.qna.pageTitle")}</span>
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.qna.pageSubtitle")}
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 flex items-center gap-2.5 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Button
             onClick={() => setIsAIModalOpen(true)}
             variant="outline"
-            className="gap-2 h-9 border-accent/40 text-accent hover:bg-accent/10 shadow-sm"
+            className="gap-2 h-9 border-accent/40 text-accent hover:bg-accent/10 shadow-xs font-medium"
           >
             <Wand2 className="h-4 w-4 text-accent" />
-            Tạo tự động bằng AI
+            <span>{t("admin.qna.btnGenerateAI")}</span>
           </Button>
 
           <Button
             onClick={() => setIsCreateOpen(true)}
             variant="accent"
-            className="gap-2 h-9 shadow-sm"
+            className="gap-2 h-9 shadow-xs font-semibold"
           >
             <Plus className="h-4 w-4" />
-            Tạo thủ công
+            <span>{t("admin.qna.btnCreateManual")}</span>
           </Button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
-          <div className="flex items-center">
-            <div className="p-2 bg-accent/10 rounded-lg">
-              <HelpCircle className="w-6 h-6 text-accent" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statTotal")}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">{totalElements}</p>
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-muted-foreground">Tổng bài Q&A</p>
-              <p className="text-2xl font-bold text-foreground">{totalElements}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
-          <div className="flex items-center">
-            <div className="p-2 bg-emerald-500/10 rounded-lg">
-              <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-muted-foreground">Đã giải quyết</p>
-              <p className="text-2xl font-bold text-foreground">{totalSolved}</p>
+            <div className="p-2 bg-accent/10 border border-accent/20 rounded-lg">
+              <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
             </div>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
-          <div className="flex items-center">
-            <div className="p-2 bg-purple-500/10 rounded-lg">
-              <Sparkles className="w-6 h-6 text-purple-500" />
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statSolved")}</p>
+              <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{totalSolved}</p>
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-muted-foreground">Daily & Debug</p>
-              <p className="text-2xl font-bold text-foreground">{challengeCount}</p>
+            <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
-          <div className="flex items-center">
-            <div className="p-2 bg-amber-500/10 rounded-lg">
-              <MessageSquare className="w-6 h-6 text-amber-500" />
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statChallenge")}</p>
+              <p className="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{challengeCount}</p>
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-muted-foreground">Lượt bình luận</p>
-              <p className="text-2xl font-bold text-foreground">{totalComments}</p>
+            <div className="p-2 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statComments")}</p>
+              <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">{totalComments}</p>
+            </div>
+            <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+              <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Search and Custom Filters Bar */}
-      <div className="bg-card rounded-xl p-4 border border-border shadow-sm mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="relative z-20 rounded-xl border border-border bg-card p-4 shadow-sm mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
           {/* Search Input */}
-          <div className="relative flex-1 w-full">
+          <div className="relative flex-1 w-full max-w-xl">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
@@ -236,130 +222,41 @@ export default function AdminQnAPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Tìm kiếm tiêu đề bài viết..."
-              className="w-full pl-9 pr-4 py-2 bg-background border border-input rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              placeholder={t("admin.qna.searchPlaceholder")}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 pl-9 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
             />
           </div>
 
-          {/* Custom Filters Popovers */}
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-            {/* Custom Category Filter Dropdown */}
-            <div className="relative" ref={catFilterRef}>
-              <button
-                type="button"
-                onClick={() => setIsCatFilterOpen(!isCatFilterOpen)}
-                className="px-3.5 py-2 bg-background border border-input text-foreground text-sm rounded-lg flex items-center justify-between gap-2 hover:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors shadow-sm min-w-[160px]"
-              >
-                <span className="truncate">
-                  {selectedCategory === "all" ? "Tất cả danh mục" : selectedCategory}
-                </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
-                    isCatFilterOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+          {/* Custom Filters */}
+          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end flex-wrap">
+            <FilterSelect
+              value={selectedCategory}
+              onChange={(val) => {
+                setSelectedCategory(String(val));
+                setPage(1);
+              }}
+              options={[
+                { value: "all", label: t("admin.qna.filterAllCategory") },
+                ...categories.map((c) => ({ value: c.name, label: c.name })),
+              ]}
+              placeholder={t("admin.categories.colCategory") + "..."}
+              className="w-[180px]"
+            />
 
-              {isCatFilterOpen && (
-                <div className="absolute top-full right-0 mt-1.5 w-48 bg-card border border-border rounded-xl shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedCategory("all");
-                      setPage(1);
-                      setIsCatFilterOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg text-left transition-colors ${
-                      selectedCategory === "all"
-                        ? "bg-accent/10 text-accent font-semibold"
-                        : "text-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <span>Tất cả danh mục</span>
-                    {selectedCategory === "all" && <Check className="w-3.5 h-3.5 text-accent shrink-0" />}
-                  </button>
-                  {categories.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory(c.name);
-                        setPage(1);
-                        setIsCatFilterOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg text-left transition-colors ${
-                        selectedCategory === c.name
-                          ? "bg-accent/10 text-accent font-semibold"
-                          : "text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      <span className="truncate">{c.name}</span>
-                      {selectedCategory === c.name && <Check className="w-3.5 h-3.5 text-accent shrink-0" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Custom Solved Status Filter Dropdown */}
-            <div className="relative" ref={statusFilterRef}>
-              <button
-                type="button"
-                onClick={() => setIsStatusFilterOpen(!isStatusFilterOpen)}
-                className="px-3.5 py-2 bg-background border border-input text-foreground text-sm rounded-lg flex items-center justify-between gap-2 hover:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors shadow-sm min-w-[160px]"
-              >
-                <span className="truncate flex items-center gap-1.5">
-                  {solvedFilter === "all" ? (
-                    "Tất cả trạng thái"
-                  ) : solvedFilter === "solved" ? (
-                    <>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      <span>Đã giải quyết</span>
-                    </>
-                  ) : (
-                    <>
-                      <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                      <span>Chưa giải quyết</span>
-                    </>
-                  )}
-                </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
-                    isStatusFilterOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {isStatusFilterOpen && (
-                <div className="absolute top-full right-0 mt-1.5 w-48 bg-card border border-border rounded-xl shadow-2xl z-30 p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-                  {[
-                    { value: "all", label: "Tất cả trạng thái", icon: null, iconColor: "" },
-                    { value: "solved", label: "Đã giải quyết", icon: CheckCircle2, iconColor: "text-emerald-500" },
-                    { value: "unsolved", label: "Chưa giải quyết", icon: Clock, iconColor: "text-amber-500" },
-                  ].map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => {
-                        setSolvedFilter(opt.value as "all" | "solved" | "unsolved");
-                        setIsStatusFilterOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg text-left transition-colors ${
-                        solvedFilter === opt.value
-                          ? "bg-accent/10 text-accent font-semibold"
-                          : "text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      <span className="flex items-center gap-1.5">
-                        {opt.icon && <opt.icon className={`w-3.5 h-3.5 ${opt.iconColor} shrink-0`} />}
-                        <span>{opt.label}</span>
-                      </span>
-                      {solvedFilter === opt.value && <Check className="w-3.5 h-3.5 text-accent shrink-0" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <FilterSelect
+              value={solvedFilter}
+              onChange={(val) => {
+                setSolvedFilter(val as "all" | "solved" | "unsolved");
+                setPage(1);
+              }}
+              options={[
+                { value: "all", label: t("admin.qna.filterAllStatus") },
+                { value: "solved", label: t("admin.qna.statusSolved"), icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" /> },
+                { value: "unsolved", label: t("admin.qna.statusUnsolved"), icon: <Clock className="w-4 h-4 text-amber-500" /> },
+              ]}
+              placeholder={t("admin.common.status") + "..."}
+              className="w-[180px]"
+            />
           </div>
         </div>
       </div>
@@ -382,14 +279,14 @@ export default function AdminQnAPage() {
             <table className="w-full text-left text-sm">
               <thead className="bg-muted/50 border-b border-border text-xs font-semibold uppercase text-muted-foreground">
                 <tr>
-                  <th className="px-6 py-4 w-12 text-center">#</th>
-                  <th className="px-6 py-4">Bài Viết & Tiêu Đề</th>
-                  <th className="px-6 py-4">Danh Mục</th>
-                  <th className="px-6 py-4">Tác Giả</th>
-                  <th className="px-6 py-4 text-center">Trạng Thái</th>
-                  <th className="px-6 py-4 text-center">Thống Kê</th>
-                  <th className="px-6 py-4">Ngày Tạo</th>
-                  <th className="px-6 py-4 text-right">Thao Tác</th>
+                  <th className="px-6 py-4 w-12 text-center">{t("admin.qna.colIndex")}</th>
+                  <th className="px-6 py-4">{t("admin.qna.colTitle")}</th>
+                  <th className="px-6 py-4">{t("admin.qna.colCategory")}</th>
+                  <th className="px-6 py-4">{t("admin.qna.colAuthor")}</th>
+                  <th className="px-6 py-4 text-center">{t("admin.qna.colStatus")}</th>
+                  <th className="px-6 py-4 text-center">{t("admin.qna.colStats")}</th>
+                  <th className="px-6 py-4">{t("admin.categories.colCreatedAt")}</th>
+                  <th className="px-6 py-4 text-right">{t("admin.qna.colActions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -406,34 +303,31 @@ export default function AdminQnAPage() {
 
                       {/* Title & Slug */}
                       <td className="px-6 py-4 max-w-md">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            {isDaily && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                                <Sparkles className="w-3 h-3 shrink-0" />
-                                Daily
-                              </span>
-                            )}
-                            {isBug && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-                                <Bug className="w-3 h-3 shrink-0" />
-                                Fix Bug
-                              </span>
-                            )}
-                            {isSol && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                                <Lightbulb className="w-3 h-3 shrink-0" />
-                                Solution
-                              </span>
-                            )}
-                            <button
-                              onClick={() => setPreviewPost(post)}
-                              className="font-semibold text-foreground hover:text-accent text-left line-clamp-1 transition"
-                            >
-                              {post.title}
-                            </button>
-                          </div>
-                          <p className="text-xs text-muted-foreground font-mono truncate">/{post.slug}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {isDaily && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                              <Sparkles className="w-3 h-3 shrink-0" />
+                              Daily
+                            </span>
+                          )}
+                          {isBug && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                              <Bug className="w-3 h-3 shrink-0" />
+                              Fix Bug
+                            </span>
+                          )}
+                          {isSol && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                              <Lightbulb className="w-3 h-3 shrink-0" />
+                              Solution
+                            </span>
+                          )}
+                          <button
+                            onClick={() => setPreviewPost(post)}
+                            className="font-semibold text-foreground hover:text-accent text-left line-clamp-1 transition"
+                          >
+                            {post.title}
+                          </button>
                         </div>
                       </td>
 
@@ -470,7 +364,8 @@ export default function AdminQnAPage() {
                             Đã giải quyết
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                            <Clock className="w-3.5 h-3.5" />
                             Đang mở
                           </span>
                         )}

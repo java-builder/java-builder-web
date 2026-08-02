@@ -14,18 +14,20 @@ import {
 } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-
-const COLUMN_HEADERS: { label: string; align?: "left" | "right"; className?: string }[] = [
-  { label: "Khách hàng", align: "left", className: "w-[20%] min-w-[140px]" },
-  { label: "Nội dung hoạt động", align: "left", className: "w-[50%]" },
-  { label: "Số tiền", align: "right", className: "w-[10%] text-right min-w-[100px]" },
-  { label: "Thời gian", align: "right", className: "w-[10%] text-right min-w-[100px]" },
-  { label: "Trạng thái", align: "right", className: "w-[10%] text-right min-w-[100px]" },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 export const RecentActivities = () => {
+  const { t } = useI18n();
   const { overview, loading } = useAdminOverviewContext();
   const activities = overview?.recentActivities || [];
+
+  const COLUMN_HEADERS: { key: string; align?: "left" | "right"; className?: string }[] = [
+    { key: t("admin.dashboard.colCustomer"), align: "left", className: "w-[20%] min-w-[140px]" },
+    { key: t("admin.dashboard.colContent"), align: "left", className: "w-[50%]" },
+    { key: t("admin.dashboard.colAmount"), align: "right", className: "w-[10%] text-right min-w-[100px]" },
+    { key: t("admin.dashboard.colTime"), align: "right", className: "w-[10%] text-right min-w-[100px]" },
+    { key: t("admin.dashboard.colStatus"), align: "right", className: "w-[10%] text-right min-w-[100px]" },
+  ];
 
   const getInitials = (name: string) => {
     return name
@@ -42,15 +44,15 @@ export const RecentActivities = () => {
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
-            Hoạt động gần đây
+            {t("admin.dashboard.recentActivitiesTitle")}
           </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Các giao dịch thanh toán thành công gần nhất trên hệ thống
+            {t("admin.dashboard.recentActivitiesSubtitle")}
           </p>
         </div>
         {!loading && activities.length > 0 && (
           <span className="whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent dark:text-accent-on-dark">
-            {activities.length} hoạt động
+            {t("admin.dashboard.activitiesCount").replace("{count}", String(activities.length))}
           </span>
         )}
       </div>
@@ -60,25 +62,25 @@ export const RecentActivities = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
             <Loader2 className="h-5 w-5 animate-spin text-accent" />
-            <span className="text-xs text-muted-foreground">Đang tải dữ liệu hoạt động...</span>
+            <span className="text-xs text-muted-foreground">{t("admin.dashboard.loadingActivities")}</span>
           </div>
         ) : activities.length === 0 ? (
           <div className="text-center py-12">
             <svg className="w-10 h-10 text-muted-foreground mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <p className="text-xs text-muted-foreground">Chưa có giao dịch hoạt động nào</p>
+            <p className="text-xs text-muted-foreground">{t("admin.dashboard.noActivities")}</p>
           </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                {COLUMN_HEADERS.map((col) => (
+                {COLUMN_HEADERS.map((col, idx) => (
                   <TableHead
-                    key={col.label}
+                    key={idx}
                     className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${col.className}`}
                   >
-                    {col.label}
+                    {col.key}
                   </TableHead>
                 ))}
               </TableRow>
@@ -118,7 +120,7 @@ export const RecentActivities = () => {
                         ? "bg-emerald-50 text-emerald-700 ring-emerald-600/10 dark:bg-emerald-950/20 dark:text-emerald-450 dark:ring-emerald-900/30"
                         : "bg-blue-50 text-blue-700 ring-blue-600/10 dark:bg-blue-950/20 dark:text-blue-450 dark:ring-blue-900/30"
                         }`}>
-                        {activity.transactionType === TransactionType.PAYIN ? "Mua khóa học" : "Đăng ký gói"}
+                        {activity.transactionType === TransactionType.PAYIN ? t("admin.dashboard.buyCourse") : t("admin.dashboard.subscribePlan")}
                       </span>
                       <span className="truncate text-foreground block flex-1">
                         {activity.description}
@@ -140,7 +142,7 @@ export const RecentActivities = () => {
                   <TableCell className="px-4 py-3.5 align-middle text-right whitespace-nowrap">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50/60 dark:bg-emerald-950/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 ring-1 ring-inset ring-emerald-600/10 dark:ring-emerald-900/30">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Thành công
+                      {t("admin.dashboard.statusSuccess")}
                     </span>
                   </TableCell>
                 </TableRow>

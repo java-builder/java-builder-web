@@ -56,7 +56,12 @@ export const useUser = (userId?: string) => {
   };
 };
 
-export const useUsersList = (debouncedSearch: string, currentPage: number) => {
+export const useUsersList = (
+  debouncedSearch: string,
+  currentPage: number,
+  startDate?: string,
+  endDate?: string
+) => {
   const [response, setResponse] = useState<ApiResponse<PageResponse<UserDetailResponse>> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -70,6 +75,8 @@ export const useUsersList = (debouncedSearch: string, currentPage: number) => {
       const result = await userApi.search({
         page: currentPage + 1,
         ...(debouncedSearch && { search: debouncedSearch }),
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
       });
 
       setResponse(result);
@@ -80,7 +87,7 @@ export const useUsersList = (debouncedSearch: string, currentPage: number) => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, debouncedSearch]);
+  }, [currentPage, debouncedSearch, startDate, endDate]);
 
   useEffect(() => {
     fetchUsers();

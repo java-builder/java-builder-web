@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 import { Document, DocumentType } from "@/types/document";
 import { documentApi } from "@/services/document.service";
 import { fileApi } from "@/services/course.service";
@@ -19,6 +20,8 @@ import {
   Upload,
   Loader2,
 } from "lucide-react";
+
+import { useI18n } from "@/contexts/I18nContext";
 
 const documentTypes = [
   { type: DocumentType.BOOK, label: "Sách", icon: "📚" },
@@ -48,6 +51,7 @@ const TypeBadge = ({ type }: { type: DocumentType }) => {
 };
 
 export default function AdminDocumentsPage() {
+  const { t } = useI18n();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string>("");
@@ -230,28 +234,28 @@ export default function AdminDocumentsPage() {
       <div className="mb-6">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Quản lý Tài liệu</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t("admin.documents.pageTitle")}</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Quản lý sách và tài liệu học tập
+              {t("admin.documents.pageSubtitle")}
             </p>
           </div>
           <div className="mt-4 sm:mt-0 flex gap-3">
             <Button
               onClick={() => handleOpenModal()}
               variant="accent"
-              className="gap-2 h-9.5"
+              className="gap-2 h-9.5 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
-              Thêm tài liệu
+              {t("admin.documents.createBtn")}
             </Button>
             <Button
               onClick={fetchDocuments}
               disabled={isLoading}
               variant="outline"
-              className="gap-2 h-9.5"
+              className="gap-2 h-9.5 cursor-pointer"
             >
               <RotateCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-              Làm mới
+              {t("admin.questionContributions.refreshBtn")}
             </Button>
           </div>
         </div>
@@ -281,7 +285,7 @@ export default function AdminDocumentsPage() {
           <div className="flex-1 relative">
             <input
               type="text"
-              placeholder="Tìm kiếm tài liệu..."
+              placeholder={t("admin.documents.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="block w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm transition-colors duration-200"
@@ -290,16 +294,20 @@ export default function AdminDocumentsPage() {
               <Search className="h-4 w-4 text-muted-foreground" />
             </div>
           </div>
-          <select
+          <FilterSelect
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as DocumentType | "")}
-            className="px-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground text-sm"
-          >
-            <option value="">Tất cả loại</option>
-            {documentTypes.map((t) => (
-              <option key={t.type} value={t.type}>{t.icon} {t.label}</option>
-            ))}
-          </select>
+            onChange={(val) => setTypeFilter(val as DocumentType | "")}
+            options={[
+              { value: "", label: t("admin.documents.filterAllTypes") },
+              ...documentTypes.map((t) => ({
+                value: t.type,
+                label: `${t.icon} ${t.label}`,
+              })),
+            ]}
+            placeholder={t("admin.documents.filterAllTypes")}
+            align="right"
+            className="w-full sm:w-[180px]"
+          />
         </div>
       </div>
 

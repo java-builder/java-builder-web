@@ -12,8 +12,10 @@ import { blogService } from "@/services/blog.service";
 import { Pagination } from "@/components/ui/Pagination";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function BlogsPage() {
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [isDeleting, setIsDeleting] = useState<string>("");
@@ -71,14 +73,18 @@ export default function BlogsPage() {
     };
   };
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  };
+
   const handleDelete = async (id: string, title: string) => {
     await confirm(
       async () => {
         setIsDeleting(id);
         try {
           await blogService.deleteBlog(id);
-
-          await fetchBlogs();
+          fetchBlogs();
         } catch (error) {
           console.error("Error deleting blog:", error);
         } finally {
@@ -86,22 +92,12 @@ export default function BlogsPage() {
         }
       },
       {
-        title: "📝 Xác nhận xóa bài viết",
-        message: `
-                    <div style="text-align: center; line-height: 1.5;">
-                        <p style="margin-bottom: 8px;">Bạn có chắc chắn muốn xóa bài viết</p>
-                        <p style="font-weight: 700; color: #dc2626; font-size: 14px; margin: 8px 0; padding: 6px 12px; background: #fef2f2; border-radius: 6px; display: inline-block; max-width: 280px; word-wrap: break-word;">
-                            "${title}"
-                        </p>
-                        <p style="margin-top: 8px; font-size: 12px; color: #6b7280;">
-                            ⚠️ Hành động này không thể hoàn tác
-                        </p>
-                    </div>
-                `,
-        confirmText: "🗑️ Xóa bài viết",
-        cancelText: "❌ Hủy bỏ",
-        type: "error",
-      },
+        title: "Xác nhận xoá bài viết",
+        message: `Bạn có chắc muốn xoá bài viết <strong>"${title}"</strong>?`,
+        confirmText: "Xoá bài viết",
+        cancelText: "Hủy",
+        type: "warning",
+      }
     );
   };
 
@@ -110,7 +106,6 @@ export default function BlogsPage() {
   }, [fetchBlogs]);
 
   const filteredStats = getFilteredStats();
-  // years/filter removed
 
   return (
     <div className="p-4 sm:p-6">
@@ -118,19 +113,19 @@ export default function BlogsPage() {
       <div className="mb-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Quản lý Blog</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t("admin.blogs.pageTitle")}</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Thống kê và quản lý tất cả bài viết blog trong hệ thống
+              {t("admin.blogs.pageSubtitle")}
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
             <Button
               onClick={() => setIsCreateModalOpen(true)}
               variant="accent"
-              className="gap-2 h-9 shadow-sm"
+              className="gap-2 h-9 shadow-sm cursor-pointer"
             >
               <Plus className="h-4 w-4" />
-              Tạo bài viết mới
+              {t("admin.blogs.createBtn")}
             </Button>
           </div>
         </div>
@@ -248,7 +243,7 @@ export default function BlogsPage() {
                 type="text"
                 placeholder="Tìm kiếm bài viết theo tiêu đề, tác giả..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="block w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm transition-colors duration-200"
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
