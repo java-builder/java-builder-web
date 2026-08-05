@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type { QuestionResultResponse } from "@/types/exercise-submission";
 import ExplainQuestionModal from "./ExplainQuestionModal";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 interface QuestionItemProps {
   questionResult: QuestionResultResponse;
@@ -54,9 +55,12 @@ export default function QuestionItem({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-              <h4 className="flex-1 break-words text-sm font-semibold leading-relaxed text-gray-900 dark:text-white">
-                {questionResult.content}
-              </h4>
+              <div className="flex-1 min-w-0 font-semibold text-gray-900 dark:text-white">
+                <PublicMarkdownRenderer
+                  content={questionResult.content}
+                  className="prose-sm sm:prose max-w-none text-gray-900 dark:text-white [&>p]:my-1"
+                />
+              </div>
 
               <span className="flex-shrink-0 rounded-md border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 px-2 py-0.5 text-xs font-semibold text-gray-700 dark:text-gray-300">
                 {questionResult.score} điểm
@@ -172,9 +176,12 @@ function OptionRow({
       >
         {optionLetter}.
       </span>
-      <p className={`min-w-0 flex-1 break-words text-sm leading-relaxed ${textClass}`}>
-        {content}
-      </p>
+      <div className={`min-w-0 flex-1 text-sm leading-relaxed ${textClass}`}>
+        <PublicMarkdownRenderer
+          content={content}
+          className="prose-sm sm:prose max-w-none [&>p]:mb-0 [&>p]:inline"
+        />
+      </div>
       {badge && (
         <span
           className={`inline-flex flex-shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${badge.className}`}

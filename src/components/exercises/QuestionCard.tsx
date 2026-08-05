@@ -1,5 +1,6 @@
 import { QuestionDetail } from '@/types/exercise';
 import { Flag } from 'lucide-react';
+import PublicMarkdownRenderer from '@/components/blogs/PublicMarkdownRenderer';
 
 interface QuestionCardProps {
   question: QuestionDetail;
@@ -30,9 +31,12 @@ export default function QuestionCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-2 mb-1">
-            <h3 className="text-base sm:text-lg font-bold text-slate-850 dark:text-slate-100 flex-1 leading-snug">
-              {question.content}
-            </h3>
+            <div className="flex-1 min-w-0 text-slate-850 dark:text-slate-100">
+              <PublicMarkdownRenderer
+                content={question.content}
+                className="prose-sm sm:prose max-w-none text-slate-850 dark:text-slate-100 font-bold [&>p]:my-1"
+              />
+            </div>
             <span className="flex-shrink-0 px-2 py-0.5 bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent-400 text-xs font-semibold rounded-md border border-accent/10">
               {question.score}đ
             </span>
@@ -77,15 +81,20 @@ export default function QuestionCard({
                     : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900/10 hover:border-accent/40 dark:hover:border-accent/40 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                 } ${isSubmitted ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
               >
-                <div className="flex items-start min-w-0">
-                  <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold mr-3 transition-colors flex-shrink-0 ${
+                <div className="flex items-start min-w-0 flex-1">
+                  <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold mr-3 transition-colors flex-shrink-0 mt-0.5 ${
                     isSelected
                       ? 'bg-accent text-white'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                   }`}>
                     {optionLetter}
                   </span>
-                  <span className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 pt-0.5 leading-snug">{option.content}</span>
+                  <div className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 leading-snug flex-1 min-w-0">
+                    <PublicMarkdownRenderer
+                      content={option.content}
+                      className="prose-sm sm:prose max-w-none text-slate-800 dark:text-slate-200 [&>p]:mb-0 [&>p]:inline"
+                    />
+                  </div>
                 </div>
               </button>
             );

@@ -1,6 +1,7 @@
 import { ExerciseSubmissionResponse, QuestionResultResponse } from '@/types/submission';
 import { ExerciseDetailResponse } from '@/types/exercise';
 import { CheckCircle, XCircle, Trophy, Clock, Target } from 'lucide-react';
+import PublicMarkdownRenderer from '@/components/blogs/PublicMarkdownRenderer';
 
 interface ExerciseResultScreenProps {
   exercise: ExerciseDetailResponse;
@@ -140,7 +141,9 @@ export default function ExerciseResultScreen({
                         {isCorrect ? `+${questionResult?.score || 0}` : '0'} điểm
                       </span>
                     </div>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4">{question.content}</p>
+                    <div className="text-gray-700 dark:text-gray-300 mb-4">
+                      <PublicMarkdownRenderer content={question.content} className="prose-sm sm:prose max-w-none text-gray-700 dark:text-gray-300 [&>p]:my-1" />
+                    </div>
 
                     {/* Options */}
                     <div className="space-y-2">
@@ -167,12 +170,12 @@ export default function ExerciseResultScreen({
                               {isUserSelected && !isCorrectOption && (
                                 <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
                               )}
-                              <span className={`text-sm ${
+                              <div className={`text-sm flex-1 min-w-0 ${
                                 isCorrectOption ? 'text-green-900 dark:text-green-300 font-medium' : 
                                 isUserSelected ? 'text-red-900 dark:text-red-300' : 'text-gray-700 dark:text-gray-300'
                               }`}>
-                                {option.content}
-                              </span>
+                                <PublicMarkdownRenderer content={option.content} className="prose-sm sm:prose max-w-none [&>p]:mb-0 [&>p]:inline" />
+                              </div>
                             </div>
                           </div>
                         );

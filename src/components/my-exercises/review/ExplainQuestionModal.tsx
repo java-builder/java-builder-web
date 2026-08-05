@@ -23,6 +23,7 @@ import type {
   ExplainQuestionRequest,
   ExplainQuestionResponse,
 } from "@/types/chatbot";
+import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import type { QuestionResultResponse } from "@/types/exercise-submission";
 
 interface ExplainQuestionModalProps {
@@ -321,9 +322,9 @@ export default function ExplainQuestionModal({
                   <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     Câu hỏi
                   </p>
-                  <p className="mt-1 text-sm font-medium leading-relaxed text-gray-800 dark:text-gray-200">
-                    {questionResult.content}
-                  </p>
+                  <div className="mt-1 text-sm font-medium leading-relaxed text-gray-800 dark:text-gray-200">
+                    <PublicMarkdownRenderer content={questionResult.content} className="prose-sm sm:prose max-w-none text-gray-800 dark:text-gray-200 [&>p]:mb-0 [&>p]:inline" />
+                  </div>
                 </div>
               )}
             </div>
