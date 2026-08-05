@@ -267,7 +267,7 @@ export default function ExerciseDetailPage() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-4 md:py-4 pt-32 md:pt-4">
         <div className="flex gap-4">
           {/* Main content */}
-          <div className="flex-1 px-4">
+          <div className="flex-1 min-w-0 px-4">
             <div className="max-w-4xl mx-auto">
               {/* Questions */}
               <div className="space-y-4 mb-20 md:mb-4">

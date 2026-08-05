@@ -109,7 +109,7 @@ export default function PublicMarkdownRenderer({
         const codeId = `code-${hashString(codeString)}`;
         
         return (
-          <div className="relative my-6 rounded-2xl border border-gray-300 dark:border-slate-800 overflow-hidden shadow-xs">
+          <div className="relative my-3 rounded-2xl border border-gray-300 dark:border-slate-800 overflow-hidden shadow-xs">
             {/* Header bar */}
             <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-slate-900 border-b border-gray-300 dark:border-slate-800">
               <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -278,9 +278,9 @@ export default function PublicMarkdownRenderer({
     },
     p(props) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { node: _node, children, ...rest } = props;
+      const { node: _node, children, className: pClassName = "", ...rest } = props;
       return (
-        <p className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300" {...rest}>
+        <p className={`mb-4 leading-relaxed text-inherit ${pClassName}`} {...rest}>
           {children}
         </p>
       );
@@ -289,7 +289,7 @@ export default function PublicMarkdownRenderer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, children, ...rest } = props;
       return (
-        <ul className="list-disc pl-6 my-4 space-y-1.5 text-gray-700 dark:text-gray-300" {...rest}>
+        <ul className="list-disc pl-6 my-4 space-y-1.5 text-inherit" {...rest}>
           {children}
         </ul>
       );
@@ -298,7 +298,7 @@ export default function PublicMarkdownRenderer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, children, ...rest } = props;
       return (
-        <ol className="list-decimal pl-6 my-4 space-y-1.5 text-gray-700 dark:text-gray-300" {...rest}>
+        <ol className="list-decimal pl-6 my-4 space-y-1.5 text-inherit" {...rest}>
           {children}
         </ol>
       );
@@ -307,7 +307,7 @@ export default function PublicMarkdownRenderer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, children, ...rest } = props;
       return (
-        <li className="leading-relaxed mb-1 text-gray-700 dark:text-gray-300" {...rest}>
+        <li className="leading-relaxed mb-1 text-inherit" {...rest}>
           {children}
         </li>
       );
@@ -352,8 +352,11 @@ export default function PublicMarkdownRenderer({
     },
   };
 
+  const hasSizeClass = /\bprose-(sm|base|lg|xl|2xl)\b/.test(className);
+  const defaultSize = hasSizeClass ? "" : "prose-base sm:prose-lg";
+
   return (
-    <div className={`prose prose-lg dark:prose-invert max-w-none ${className}`}>
+    <div className={`prose dark:prose-invert max-w-none ${defaultSize} ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw]}
