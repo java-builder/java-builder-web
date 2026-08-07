@@ -105,12 +105,12 @@ export default function CertificateDetailModal({
         </div>
 
         {/* Modal Certificate Viewer Body */}
-        <div className="p-6 sm:p-10 overflow-y-auto flex justify-center bg-slate-100/70 dark:bg-slate-950/40">
+        <div className="p-4 sm:p-6 md:p-8 overflow-y-auto flex justify-center bg-slate-100/70 dark:bg-slate-950/40">
 
           {/* World-Class Executive Certificate Canvas */}
           <div
             id="certificate-modal-content"
-            className="w-full aspect-[1.414/1] min-w-[320px] max-w-[820px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-10 md:p-12 flex flex-col justify-between relative shadow-xl select-none overflow-hidden"
+            className="w-full aspect-[1.414/1] min-w-[320px] max-w-[820px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-7 md:p-9 flex flex-col justify-between relative shadow-xl select-none overflow-hidden"
           >
             {/* Subtle Ambient Background Gradient */}
             <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
@@ -122,108 +122,105 @@ export default function CertificateDetailModal({
             <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 w-6 h-6 sm:w-10 sm:h-10 border-b-2 border-r-2 border-amber-500/35 rounded-br-md pointer-events-none" />
 
             {/* Header */}
-            <div className="flex justify-between items-center z-10 border-b border-slate-100 dark:border-slate-800/80 pb-2.5 sm:pb-4">
+            <div className="flex justify-between items-center z-10 border-b border-slate-100 dark:border-slate-800/80 pb-2 sm:pb-3">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="relative w-7 h-7 sm:w-9 sm:h-9 flex-shrink-0">
+                <div className="relative w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0">
                   <Image
                     src="/logos/java-logo.png"
                     alt="JavaBuilder Logo"
-                    width={36}
-                    height={36}
+                    width={32}
+                    height={32}
                     className="object-contain"
                   />
                 </div>
                 <div className="text-left leading-tight">
-                  <h3 className="text-xs sm:text-base font-black tracking-widest text-slate-900 dark:text-white uppercase font-sans">
+                  <h3 className="text-xs sm:text-sm md:text-base font-black tracking-widest text-slate-900 dark:text-white uppercase font-sans">
                     JAVABUILDER
                   </h3>
-                  <p className="text-[8px] sm:text-[10px] font-semibold text-amber-600 dark:text-amber-400 tracking-wider uppercase">
+                  <p className="text-[7.5px] sm:text-[9px] font-semibold text-amber-600 dark:text-amber-400 tracking-wider uppercase">
                     Official Online Certification
                   </p>
                 </div>
               </div>
 
-              <div className="text-right text-[9px] sm:text-xs text-slate-400 dark:text-slate-500 font-mono">
-                <p className="uppercase tracking-widest text-[8px] sm:text-[9px] text-slate-400 font-semibold">Credential ID</p>
+              <div className="text-right text-[8px] sm:text-xs text-slate-400 dark:text-slate-500 font-mono">
+                <p className="uppercase tracking-widest text-[7.5px] sm:text-[9px] text-slate-400 font-semibold">Credential ID</p>
                 <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">{cert.certificateCode}</p>
               </div>
             </div>
 
             {/* Main Certificate Core */}
-            <div className="my-auto py-2 sm:py-6 space-y-2.5 sm:space-y-5 z-10 text-center">
+            <div className="my-auto py-1 sm:py-3 md:py-4 space-y-1.5 sm:space-y-3 z-10 text-center">
               <div>
-                <p className="text-[9px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
+                <p className="text-[8px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
                   CHỨNG CHỈ HOÀN THÀNH KHOÁ HỌC
                 </p>
-                <div className="w-12 sm:w-16 h-0.5 bg-linear-to-r from-transparent via-amber-500 to-transparent mx-auto mt-1 sm:mt-2 opacity-80" />
+                <div className="w-12 sm:w-16 h-0.5 bg-linear-to-r from-transparent via-amber-500 to-transparent mx-auto mt-1 opacity-80" />
               </div>
 
-              <div className="space-y-0.5 sm:space-y-1">
-                <p className="text-[10px] sm:text-sm text-slate-400 dark:text-slate-400 font-medium">
+              <div className="space-y-0.5">
+                <p className="text-[9.5px] sm:text-xs text-slate-400 dark:text-slate-400 font-medium">
                   Chứng nhận này được trang trọng trao tặng cho
                 </p>
-                <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white font-serif tracking-tight py-0.5 sm:py-1">
+                <h1 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white font-serif tracking-tight py-0.5">
                   {cert.studentName || studentName}
                 </h1>
               </div>
 
-              <div className="space-y-1 sm:space-y-2 max-w-xl mx-auto">
-                <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+              <div className="space-y-0.5 sm:space-y-1 max-w-2xl mx-auto">
+                <p className="text-[9.5px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
                   Vì đã hoàn thành xuất sắc chương trình đào tạo chuyên sâu &amp; kiểm tra năng lực:
                 </p>
-                <h2 className="text-sm sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
+                <h2 className="text-xs sm:text-base md:text-xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
                   {cert.courseName}
                 </h2>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="w-full pt-2.5 sm:pt-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-end z-10 text-left">
+            <div className="w-full pt-2 sm:pt-3 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-end z-10 text-left">
               {/* Issue & Expiry Dates */}
-              <div className="w-1/3 space-y-1">
-                <div className="flex flex-col sm:flex-row gap-1 sm:gap-6">
+              <div className="w-1/3 space-y-0.5">
+                <div className="flex flex-col sm:flex-row gap-1 sm:gap-5">
                   <div>
-                    <p className="text-[8px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Ngày cấp</p>
-                    <p className="text-[10px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{formatDate(cert.issuedDate)}</p>
+                    <p className="text-[7.5px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Ngày cấp</p>
+                    <p className="text-[9.5px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{formatDate(cert.issuedDate)}</p>
                   </div>
                   <div>
-                    <p className="text-[8px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Hạn dùng</p>
-                    <p className="text-[10px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{cert.expiryDate ? formatDate(cert.expiryDate) : "Vĩnh viễn"}</p>
+                    <p className="text-[7.5px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Hạn dùng</p>
+                    <p className="text-[9.5px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{cert.expiryDate ? formatDate(cert.expiryDate) : "Vĩnh viễn"}</p>
                   </div>
                 </div>
                 <button
                   onClick={handleCopyCode}
-                  className="text-[9px] sm:text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-medium cursor-pointer inline-flex items-center gap-1 pt-0.5 transition-colors"
+                  className="text-[8.5px] sm:text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-medium cursor-pointer inline-flex items-center gap-1 pt-0.5 transition-colors"
                 >
                   {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
                   {copied ? "Đã sao chép" : "Sao chép mã"}
                 </button>
               </div>
 
-              {/* Official Red Ink Brand Seal */}
-              <div className="w-1/3 flex flex-col items-center justify-end -mb-1">
-                <div className="flex items-center justify-center relative w-11 h-11 sm:w-16 sm:h-16 rounded-full border-2 border-red-600/85 bg-red-500/5 rotate-[-6deg] shadow-2xs select-none">
-                  <div className="absolute inset-0.5 sm:inset-1 rounded-full border border-dashed border-red-500/50 pointer-events-none" />
-                  <div className="flex flex-col items-center justify-center text-center">
-                    <ShieldCheck className="w-4 h-4 sm:w-6.5 sm:h-6.5 text-red-600" />
-                    <span className="text-[4.5px] sm:text-[6.5px] font-black tracking-widest text-red-600 uppercase mt-0.5 whitespace-nowrap">
-                      VERIFIED
-                    </span>
-                  </div>
+              {/* Official Authority Seal */}
+              <div className="w-1/3 flex flex-col items-center justify-center space-y-0.5">
+                <div className="flex items-center justify-center w-7 h-7 sm:w-10 sm:h-10 rounded-full border border-amber-500/40 bg-amber-500/5 text-amber-600 dark:text-amber-400 shadow-2xs">
+                  <ShieldCheck className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                 </div>
-                <span className="text-[6.5px] sm:text-[8.5px] font-extrabold tracking-widest text-red-600 uppercase whitespace-nowrap mt-0.5 sm:mt-1 bg-red-50 dark:bg-red-950/30 px-1.5 sm:px-2 py-0.5 rounded border border-red-200 dark:border-red-900/40 rotate-[-2deg]">
-                  OFFICIAL CERTIFICATE
-                </span>
+                <div className="text-center">
+                  <p className="text-[7.5px] sm:text-[9.5px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                    JavaBuilder Authority
+                  </p>
+                  <p className="text-[7px] sm:text-[8.5px] text-slate-400 font-medium">Hội đồng xác thực</p>
+                </div>
               </div>
 
               {/* Signatory */}
               <div className="w-1/3 text-right">
-                <div className="h-5 sm:h-7 flex items-end justify-end mb-0.5 sm:mb-1">
-                  <span className="font-serif italic text-xs sm:text-lg font-bold text-slate-800 dark:text-slate-200 select-none">
+                <div className="h-4 sm:h-6 flex items-end justify-end mb-0.5">
+                  <span className="font-serif italic text-xs sm:text-base font-bold text-slate-800 dark:text-slate-200 select-none">
                     JavaBuilder
                   </span>
                 </div>
-                <p className="text-[7.5px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-0.5 sm:pt-1 inline-block">
+                <p className="text-[7px] sm:text-[8.5px] font-semibold text-slate-400 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-0.5 inline-block">
                   JavaBuilder Certification Authority
                 </p>
               </div>

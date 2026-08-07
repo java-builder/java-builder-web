@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { Check, Download, Eye, Share2, ShieldCheck } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
@@ -107,8 +106,8 @@ export default function MyCertificateCard({
             <span className="font-semibold text-slate-700 dark:text-slate-300">{formatDate(cert.issuedDate)}</span>
             <p className="font-mono text-[5px] text-slate-400 mt-0.5">{cert.certificateCode}</p>
           </div>
-          <div className="w-5 h-5 rounded-full border border-red-600/80 bg-red-500/5 flex items-center justify-center rotate-[-6deg]">
-            <ShieldCheck className="w-3 h-3 text-red-600" />
+          <div className="w-5 h-5 rounded-full border border-amber-500/40 bg-amber-500/10 flex items-center justify-center">
+            <ShieldCheck className="w-3 h-3 text-amber-600 dark:text-amber-400" />
           </div>
         </div>
       </div>
@@ -126,14 +125,6 @@ export default function MyCertificateCard({
 
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-2 pt-2.5 border-t border-border/60 relative">
-          <Link
-            href={`/verify-certificate?code=${encodeURIComponent(cert.certificateCode)}`}
-            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-lg border border-accent/20 bg-accent/10 text-accent hover:bg-accent/20 font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
-            title="Xác thực"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-          </Link>
-
           <button
             onClick={() => onView(cert)}
             className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
