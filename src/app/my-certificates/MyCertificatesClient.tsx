@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Pagination } from "@/components/ui/Pagination";
 import { certificateApi } from "@/services/certificate.service";
@@ -249,8 +250,18 @@ export default function MyCertificatesClient() {
                 <p className="text-[7px] text-amber-900/50 uppercase font-semibold">Ngày cấp</p>
                 <p className="text-[9px] text-amber-955 font-bold mt-0.5">{new Date(selectedCert.issuedDate).toLocaleDateString("vi-VN")}</p>
               </div>
-              <div className="text-right">
-                <span className="font-serif italic text-sm text-amber-800/80 select-none">JavaBuilder</span>
+              <div className="flex items-end gap-3">
+                <div className="p-1 bg-white rounded border border-slate-200">
+                  <QRCodeSVG
+                    value={selectedCert.verifyUrl || `https://javabuilder.online/verify-certificate?code=${encodeURIComponent(selectedCert.certificateCode)}`}
+                    size={40}
+                    level="H"
+                    includeMargin={false}
+                  />
+                </div>
+                <div className="text-right">
+                  <span className="font-serif italic text-sm text-amber-800/80 select-none">JavaBuilder</span>
+                </div>
               </div>
             </div>
           </div>

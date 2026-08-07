@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { QRCodeSVG } from "qrcode.react";
 import { Award, Check, Copy, Download, Share2, ShieldCheck, X } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { CertificateDetailResponse } from "@/types/certificate";
@@ -116,10 +117,10 @@ export default function CertificateDetailModal({
             <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
 
             {/* Premium Corner Accents */}
-            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 w-6 h-6 sm:w-10 sm:h-10 border-t-2 border-l-2 border-amber-500/35 rounded-tl-md pointer-events-none" />
-            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-6 h-6 sm:w-10 sm:h-10 border-t-2 border-r-2 border-amber-500/35 rounded-tr-md pointer-events-none" />
-            <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 w-6 h-6 sm:w-10 sm:h-10 border-b-2 border-l-2 border-amber-500/35 rounded-bl-md pointer-events-none" />
-            <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 w-6 h-6 sm:w-10 sm:h-10 border-b-2 border-r-2 border-amber-500/35 rounded-br-md pointer-events-none" />
+            <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-amber-500/35 rounded-tl-md pointer-events-none" />
+            <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-amber-500/35 rounded-tr-md pointer-events-none" />
+            <div className="absolute bottom-1.5 left-1.5 sm:bottom-2 sm:left-2 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-amber-500/35 rounded-bl-md pointer-events-none" />
+            <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-amber-500/35 rounded-br-md pointer-events-none" />
 
             {/* Header */}
             <div className="flex justify-between items-center z-10 border-b border-slate-100 dark:border-slate-800/80 pb-2 sm:pb-3">
@@ -213,16 +214,20 @@ export default function CertificateDetailModal({
                 </div>
               </div>
 
-              {/* Signatory */}
-              <div className="w-1/3 text-right">
-                <div className="h-4 sm:h-6 flex items-end justify-end mb-0.5">
-                  <span className="font-serif italic text-xs sm:text-base font-bold text-slate-800 dark:text-slate-200 select-none">
-                    JavaBuilder
-                  </span>
+              {/* QR Code Container */}
+              <div className="w-1/3 flex flex-col items-end justify-center">
+                <div className="p-1 sm:p-1.5 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                  <QRCodeSVG
+                    value={getCertificateShareUrl()}
+                    size={55}
+                    level="H"
+                    includeMargin={false}
+                    className="w-10 h-10 sm:w-14 sm:h-14"
+                  />
                 </div>
-                <p className="text-[7px] sm:text-[8.5px] font-semibold text-slate-400 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-0.5 inline-block">
-                  JavaBuilder Certification Authority
-                </p>
+                <span className="text-[7px] sm:text-[8.5px] font-medium text-slate-400 mt-0.5 text-right">
+                  Quét QR tra cứu
+                </span>
               </div>
             </div>
 

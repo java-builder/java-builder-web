@@ -79,16 +79,20 @@ export default function VerifyCertificateClient() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputCode.trim()) {
+    const trimmed = inputCode.trim();
+    if (!trimmed) {
       toast.error("Vui lòng nhập mã chứng chỉ cần tra cứu");
       return;
     }
-    router.push(`/verify-certificate?code=${encodeURIComponent(inputCode.trim())}`);
+    router.push(`/verify-certificate?code=${encodeURIComponent(trimmed)}`);
+    fetchCertificate(trimmed);
   };
 
   const handleSampleClick = (code: string) => {
-    setInputCode(code);
-    router.push(`/verify-certificate?code=${encodeURIComponent(code)}`);
+    const trimmed = code.trim();
+    setInputCode(trimmed);
+    router.push(`/verify-certificate?code=${encodeURIComponent(trimmed)}`);
+    fetchCertificate(trimmed);
   };
 
   const formatDate = (dateStr?: string) => {
@@ -297,11 +301,11 @@ export default function VerifyCertificateClient() {
 
       {/* Verified Certificate Card Result */}
       {cert && !isLoading && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Status Banner */}
           <div className="no-print-area">
             {cert.status === "ISSUED" ? (
-              <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm font-medium">
+              <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm font-medium">
                 <div className="flex items-center gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <span>Chứng chỉ hợp lệ — Xác nhận bởi <strong>JavaBuilder Certification Authority</strong></span>
@@ -311,7 +315,7 @@ export default function VerifyCertificateClient() {
                 </span>
               </div>
             ) : cert.status === "EXPIRED" ? (
-              <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs sm:text-sm font-medium">
+              <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs sm:text-sm font-medium">
                 <div className="flex items-center gap-2.5">
                   <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>Chứng chỉ này đã hết hạn sử dụng</span>
@@ -321,7 +325,7 @@ export default function VerifyCertificateClient() {
                 </span>
               </div>
             ) : (
-              <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-400 text-xs sm:text-sm font-medium">
+              <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-400 text-xs sm:text-sm font-medium">
                 <div className="flex items-center gap-2.5">
                   <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
                   <span>Chứng chỉ đã bị thu hồi hoặc không còn hiệu lực</span>
@@ -338,11 +342,11 @@ export default function VerifyCertificateClient() {
             {/* Ambient Background Radial */}
             <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent pointer-events-none" />
 
-            {/* Corner Decorative Borders */}
-            <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-amber-500/50 rounded-tl-sm pointer-events-none" />
-            <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-amber-500/50 rounded-tr-sm pointer-events-none" />
-            <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-amber-500/50 rounded-bl-sm pointer-events-none" />
-            <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-amber-500/50 rounded-br-sm pointer-events-none" />
+            {/* Compact Corner Decorative Borders (positioned safely in padding margin) */}
+            <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-amber-500/40 rounded-tl-xs pointer-events-none" />
+            <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-amber-500/40 rounded-tr-xs pointer-events-none" />
+            <div className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-amber-500/40 rounded-bl-xs pointer-events-none" />
+            <div className="absolute bottom-2 right-2 sm:bottom-2.5 sm:right-2.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-amber-500/40 rounded-br-xs pointer-events-none" />
 
             {/* Certificate Header */}
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 relative z-10">
@@ -369,7 +373,7 @@ export default function VerifyCertificateClient() {
 
             {/* Certificate Title & Student */}
             <div className="space-y-4 relative z-10 py-2">
-              <p className="text-xs sm:text-sm font-bold tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
+              <p className="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
                 CHỨNG CHỈ HOÀN THÀNH XUẤT SẮC
               </p>
               <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto opacity-80" />
@@ -440,15 +444,15 @@ export default function VerifyCertificateClient() {
                     includeMargin={false}
                   />
                 </div>
-                <span className="text-[9px] font-medium text-slate-400 mt-1.5 text-center sm:text-right">
+                <span className="text-[9px] font-medium text-slate-400 mt-1.5 text-center sm:text-right pr-1">
                   Quét QR để tra cứu công khai
                 </span>
               </div>
             </div>
           </div>
 
-          {/* External Action Bar (Outside Certificate Box for Clean Printing & Responsive UX) */}
-          <div className="no-print-area flex items-center justify-end gap-2 pt-4 sm:pt-5">
+          {/* Action Bar (Below Certificate Card, Aligned Right Under QR Code Column) */}
+          <div className="no-print-area flex items-center justify-end gap-2 pt-1">
             {/* Share Dropdown Button */}
             <div className="relative">
               <Button
@@ -456,7 +460,7 @@ export default function VerifyCertificateClient() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className="gap-1.5 cursor-pointer font-medium"
+                className="gap-1.5 cursor-pointer font-medium h-9"
               >
                 <Share2 className="w-3.5 h-3.5 text-amber-500" />
                 <span>Chia sẻ</span>
@@ -509,7 +513,7 @@ export default function VerifyCertificateClient() {
               variant="accent"
               size="sm"
               onClick={handlePrint}
-              className="gap-1.5 cursor-pointer font-medium"
+              className="gap-1.5 cursor-pointer font-medium h-9"
             >
               <Download className="w-3.5 h-3.5" />
               <span>In / Tải PDF</span>
