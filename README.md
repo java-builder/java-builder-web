@@ -56,6 +56,7 @@
 | 💬 **Q&A** | Community question and answer forum |
 | 🔔 **Notifications** | Real-time push notifications via Firebase Cloud Messaging |
 | 💳 **Subscriptions** | Payment integration with subscription plans |
+| 📜 **Certificates & Verification** | Official certificate issuance, user certificate management, public verification page (`/verify-certificate?code=...`) with QR Code generation, PDF download, and multi-channel sharing (LinkedIn, Facebook) |
 | 🌍 **i18n** | Multi-language support (Vietnamese, English, Japanese, Korean) |
 | 🌙 **Dark Mode** | Full dark/light theme support |
 | 🔐 **Security** | OAuth2, 2FA, session management |
@@ -76,6 +77,8 @@ src/
 │   ├── exercises/          # Exercise workspace
 │   ├── interview/          # Interview questions
 │   ├── learn/              # Learning interface
+│   ├── my-certificates/    # Student certificate management
+│   ├── verify-certificate/ # Public certificate verification & QR page
 │   ├── my-exercises/       # Exercise submissions & review
 │   ├── personalized-roadmap/ # AI-generated roadmaps
 │   ├── pricing/            # Subscription plans

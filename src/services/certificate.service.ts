@@ -55,4 +55,14 @@ export const certificateApi = {
     );
     return response.data;
   },
+
+  /**
+   * Tra cứu công khai chi tiết chứng chỉ theo mã (Public Certificate Verification API)
+   */
+  getCertificateByCode: async (certificateCode: string) => {
+    const response = await apiClient.get<ApiResponse<CertificateDetailResponse>>(
+      `${API.CERTIFICATES}/public/verify/${certificateCode}`
+    );
+    return response.data;
+  },
 };

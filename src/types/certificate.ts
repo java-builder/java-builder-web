@@ -9,6 +9,7 @@ export interface CertificateDetailResponse {
   issuedDate: string;
   expiryDate?: string;
   certificateUrl?: string;
+  verifyUrl?: string;
   status: CertificateStatus;
 }
 
@@ -25,5 +26,6 @@ export interface CreateCertificateResponse {
   issuedDate: string;
   expiryDate?: string;
   certificateUrl?: string;
+  verifyUrl?: string;
   status: CertificateStatus;
 }

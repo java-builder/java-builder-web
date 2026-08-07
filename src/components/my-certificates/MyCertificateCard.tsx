@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Check, Download, Eye, Share2, ShieldCheck } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
@@ -22,28 +23,10 @@ export default function MyCertificateCard({
   const { t } = useI18n();
   const [showShare, setShowShare] = useState(false);
 
-  const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "N/A";
-    try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      });
-    } catch {
-      return dateStr;
-    }
-  };
-
   const getShareUrl = () => {
+    if (cert.verifyUrl) return cert.verifyUrl;
     if (typeof window !== "undefined") {
-      const code = cert.certificateCode || cert.id;
-      const baseOrigin =
-        window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-          ? "https://javabuilder.online"
-          : window.location.origin;
-      return `${baseOrigin}/certificates?code=${encodeURIComponent(code)}`;
+      return `${window.location.origin}/verify-certificate?code=${encodeURIComponent(cert.certificateCode)}`;
     }
     return "";
   };
@@ -58,6 +41,20 @@ export default function MyCertificateCard({
     const url = getShareUrl();
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
     setShowShare(false);
+  };
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "N/A";
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
   };
 
   return (
@@ -129,6 +126,14 @@ export default function MyCertificateCard({
 
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-2 pt-2.5 border-t border-border/60 relative">
+          <Link
+            href={`/verify-certificate?code=${encodeURIComponent(cert.certificateCode)}`}
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-lg border border-accent/20 bg-accent/10 text-accent hover:bg-accent/20 font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
+            title="Xác thực"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+          </Link>
+
           <button
             onClick={() => onView(cert)}
             className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"

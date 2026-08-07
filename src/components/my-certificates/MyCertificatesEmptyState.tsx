@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Award, Compass } from "lucide-react";
+import { Award, Compass, ShieldCheck } from "lucide-react";
 
 interface MyCertificatesEmptyStateProps {
   title: string;
@@ -28,13 +28,23 @@ export default function MyCertificatesEmptyState({
         {description}
       </p>
 
-      <Link
-        href="/courses"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-600 shadow-sm"
-      >
-        <Compass className="h-4 w-4" />
-        {actionLabel}
-      </Link>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <Link
+          href="/courses"
+          className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-accent/90 shadow-xs cursor-pointer"
+        >
+          <Compass className="h-4 w-4" />
+          {actionLabel}
+        </Link>
+
+        <Link
+          href="/verify-certificate"
+          className="inline-flex items-center gap-2 rounded-xl border border-input bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted shadow-xs cursor-pointer"
+        >
+          <ShieldCheck className="h-4 w-4 text-accent" />
+          <span>Tra Cứu Mã Chứng Chỉ</span>
+        </Link>
+      </div>
     </div>
   );
 }

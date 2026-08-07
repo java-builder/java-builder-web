@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Award, Check, Copy, Download, Share2, ShieldCheck, X } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { CertificateDetailResponse } from "@/types/certificate";
@@ -26,13 +27,19 @@ export default function CertificateDetailModal({
   const [linkCopied, setLinkCopied] = useState(false);
 
   const getCertificateShareUrl = () => {
+    if (cert.verifyUrl) {
+      return cert.verifyUrl;
+    }
+    if (cert.certificateUrl && cert.certificateUrl.startsWith("http")) {
+      return cert.certificateUrl;
+    }
     if (typeof window !== "undefined") {
       const code = cert.certificateCode || cert.id;
       const baseOrigin =
         window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
           ? "https://javabuilder.online"
           : window.location.origin;
-      return `${baseOrigin}/certificates?code=${encodeURIComponent(code)}`;
+      return `${baseOrigin}/verify-certificate?code=${encodeURIComponent(code)}`;
     }
     return "";
   };
@@ -228,6 +235,16 @@ export default function CertificateDetailModal({
 
         {/* Modal Footer */}
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border bg-muted/40 relative">
+          {/* Public Verify Link */}
+          <Link
+            href={`/verify-certificate?code=${encodeURIComponent(cert.certificateCode)}`}
+            target="_blank"
+            className="inline-flex items-center gap-1.5 h-8.5 px-3.5 rounded-lg border border-accent/20 bg-accent/10 text-accent hover:bg-accent/20 font-medium text-[0.8rem] transition-all cursor-pointer mr-auto"
+            title="Mở trang tra cứu bảo chứng công khai"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Tra cứu công khai</span>
+          </Link>
           {/* Share Dropdown Button */}
           <div className="relative">
             <Button

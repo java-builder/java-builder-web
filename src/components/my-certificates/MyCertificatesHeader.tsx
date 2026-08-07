@@ -1,7 +1,9 @@
 "use client";
 
-import { Award } from "lucide-react";
+import Link from "next/link";
+import { Award, ShieldCheck } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
+import { Button } from "@/components/ui/button";
 
 export default function MyCertificatesHeader() {
   const { t } = useI18n();
@@ -9,17 +11,31 @@ export default function MyCertificatesHeader() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="text-center md:text-left space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
-          <Award className="w-3.5 h-3.5" />
-          JavaBuilder Certification
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
+            <Award className="w-3.5 h-3.5" />
+            JavaBuilder Certification
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+            {t("certificatesPage.title")}
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-3xl">
+            {t("certificatesPage.subtitle")}
+          </p>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-          {t("certificatesPage.title")}
-        </h1>
-        <p className="text-sm sm:text-base text-muted-foreground max-w-3xl">
-          {t("certificatesPage.subtitle")}
-        </p>
+
+        {/* Quick Link to Verify Certificate Page */}
+        <Link href="/verify-certificate">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-10 px-4 rounded-xl border-accent/30 bg-accent/5 hover:bg-accent/15 text-accent font-semibold text-xs sm:text-sm gap-2 cursor-pointer transition-all shadow-xs shrink-0"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            <span>Tra Cứu &amp; Bảo Chứng</span>
+          </Button>
+        </Link>
       </div>
 
       {/* Motivation/Description Banner */}

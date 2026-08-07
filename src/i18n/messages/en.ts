@@ -196,6 +196,7 @@ export const en = {
     myLearning: "My Learning",
     myCourses: "My Courses",
     certificates: "My Certificates",
+    verifyCertificate: "Verify Certificate",
     exercises: "Exercises",
     doneExercises: "My Exercises",
     studyProgress: "Study Journal",

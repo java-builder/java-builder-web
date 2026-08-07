@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AlertTriangle, Award, CheckCircle2, Download, Eye, Loader2, MoreHorizontal, XCircle } from "lucide-react";
+import { AlertTriangle, Award, CheckCircle2, Download, Eye, Loader2, MoreHorizontal, ShieldCheck, XCircle } from "lucide-react";
 import { CertificateDetailResponse } from "@/types/certificate";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -206,11 +206,11 @@ export const CertificatesTable = ({
                           } else {
                             const rect = e.currentTarget.getBoundingClientRect();
                             const spaceBelow = window.innerHeight - rect.bottom;
-                            const popUp = spaceBelow < 110;
+                            const popUp = spaceBelow < 130;
                             setActiveMenu({
                               cert,
-                              top: popUp ? rect.top - 88 : rect.bottom + 6,
-                              left: Math.max(10, rect.right - 176),
+                              top: popUp ? rect.top - 120 : rect.bottom + 6,
+                              left: Math.max(10, rect.right - 180),
                             });
                           }
                         }}
@@ -241,7 +241,7 @@ export const CertificatesTable = ({
               top: `${activeMenu.top}px`,
               left: `${activeMenu.left}px`,
             }}
-            className="w-44 bg-card rounded-xl shadow-2xl border border-border py-1.5 z-50 text-left"
+            className="w-48 bg-card rounded-xl shadow-2xl border border-border py-1.5 z-50 text-left"
           >
             <button
               type="button"
@@ -254,6 +254,16 @@ export const CertificatesTable = ({
               <Eye className="w-4 h-4 text-muted-foreground" />
               <span>Xem chi tiết</span>
             </button>
+            <a
+              href={`/verify-certificate?code=${encodeURIComponent(activeMenu.cert.certificateCode)}`}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setActiveMenu(null)}
+              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted/80 transition-colors text-left cursor-pointer"
+            >
+              <ShieldCheck className="w-4 h-4 text-accent" />
+              <span>Tra cứu công khai</span>
+            </a>
             <button
               type="button"
               onClick={() => {

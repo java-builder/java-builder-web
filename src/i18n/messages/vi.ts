@@ -196,6 +196,7 @@ export const vi = {
     myLearning: "Học tập của tôi",
     myCourses: "Khóa học của tôi",
     certificates: "Chứng chỉ của tôi",
+    verifyCertificate: "Xác thực chứng chỉ",
     exercises: "Bài tập",
     doneExercises: "Bài tập đã làm",
     studyProgress: "Nhật ký học tập",
