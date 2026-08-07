@@ -1075,6 +1075,7 @@ export const en = {
       activeUsers: "Active users",
       userStreaks: "User Streaks",
       courses: "Courses",
+      certificates: "Certificates",
       exercises: "Exercises",
       blogs: "Blog management",
       documents: "Document management",

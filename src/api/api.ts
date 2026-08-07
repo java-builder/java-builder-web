@@ -274,4 +274,9 @@ export const API = {
     // CHAT MESSAGES
     CHAT_MESSAGES_SEND: "/api/v1/chat-messages/send",
     CHAT_MESSAGES: "/api/v1/chat-messages",
+
+    // CERTIFICATES
+    CERTIFICATES: "/api/v1/certificates",
+    CERTIFICATES_MY: "/api/v1/certificates/my-certificates",
+    CERTIFICATES_CREATE: "/api/v1/certificates",
 }

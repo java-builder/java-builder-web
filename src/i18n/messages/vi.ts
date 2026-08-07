@@ -1075,6 +1075,7 @@ export const vi = {
       activeUsers: "Người dùng hoạt động",
       userStreaks: "Quản lý User Streak",
       courses: "Khóa học",
+      certificates: "Quản lý chứng chỉ",
       exercises: "Bài tập",
       blogs: "Quản lý bài viết",
       documents: "Quản lý tài liệu",

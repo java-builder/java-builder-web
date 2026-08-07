@@ -31,7 +31,7 @@ export default function SidebarMenuGroup({
         >
           <div className="flex items-center gap-2 min-w-0">
             {group.icon && (
-              <span className="w-3.5 h-3.5 opacity-80 group-hover:opacity-100 transition-all duration-200 [&_svg]:w-3.5 [&_svg]:h-3.5">
+              <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:flex-shrink-0">
                 {group.icon}
               </span>
             )}
@@ -40,7 +40,7 @@ export default function SidebarMenuGroup({
             </span>
           </div>
           <svg
-            className={`w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
+            className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
               }`}
             fill="none"
             stroke="currentColor"
@@ -73,7 +73,7 @@ export default function SidebarMenuGroup({
                   title={isCollapsed ? displayedLabel : undefined}
                 >
                   <span
-                    className={`flex-shrink-0 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 relative ${item.highlight
+                    className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all duration-200 [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 relative ${item.highlight
                         ? "text-purple-600 dark:text-purple-300"
                         : active
                           ? "text-blue-600 dark:text-blue-400 scale-105"

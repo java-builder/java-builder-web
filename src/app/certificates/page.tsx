@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CertificatesClient from "./CertificatesClient";
+import MyCertificatesClient from "../my-certificates/MyCertificatesClient";
 
 export const metadata: Metadata = {
   title: "Chứng chỉ của tôi - JavaBuilder",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function CertificatesPage() {
-  return <CertificatesClient />;
+  return <MyCertificatesClient />;
 }

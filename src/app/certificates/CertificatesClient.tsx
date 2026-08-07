@@ -128,54 +128,51 @@ export default function CertificatesClient() {
               key={cert.id} 
               className="bg-card border border-border hover:border-accent/40 rounded-3xl p-4 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col group space-y-4"
             >
-              <div className="w-full aspect-[1.414/1] bg-[#faf8f5] border-2 border-solid border-amber-800/40 rounded-xl p-3 flex flex-col justify-between text-center relative overflow-hidden shadow-2xs select-none">
-                {/* Subtle Watermark background */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] dark:opacity-[0.04] pointer-events-none">
-                  <Image 
-                    src="/logos/java-logo.png" 
-                    alt="JavaBuilder Logo Watermark" 
-                    width={80} 
-                    height={80}
-                    className="object-contain"
-                  />
-                </div>
+              <div className="w-full aspect-[1.414/1] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-2xs select-none">
+                {/* Subtle Ambient Background Gradient */}
+                <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
 
-                <div className="flex justify-between items-center z-10">
-                  <div className="flex items-center gap-1">
-                    <div className="w-4 h-4 rounded bg-white border border-amber-800/10 flex items-center justify-center">
-                      <Image 
-                        src="/logos/java-logo.png" 
-                        alt="Java" 
-                        width={10} 
-                        height={10} 
+                {/* Premium Corner Accents */}
+                <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-amber-500/40 rounded-tl-xs pointer-events-none" />
+                <div className="absolute top-2 right-2 w-4 h-4 border-t border-r border-amber-500/40 rounded-tr-xs pointer-events-none" />
+
+                {/* Header */}
+                <div className="flex justify-between items-center z-10 border-b border-slate-100 dark:border-slate-800 pb-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <div className="relative w-4 h-4 flex-shrink-0">
+                      <Image
+                        src="/logos/java-logo.png"
+                        alt="JavaBuilder Logo"
+                        width={16}
+                        height={16}
                         className="object-contain"
                       />
                     </div>
-                    <span className="text-[7px] font-black tracking-widest text-amber-900/80 uppercase">JAVABUILDER</span>
+                    <span className="text-[7.5px] font-black tracking-widest text-slate-900 dark:text-white uppercase font-sans">
+                      JAVABUILDER
+                    </span>
                   </div>
-                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[6px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                    <Check className="w-2.5 h-2.5" />
-                    {t("certificatesPage.earnedBadge")}
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[5.5px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                    <Check className="w-2 h-2" />
+                    VERIFIED
                   </span>
                 </div>
 
-                <div className="my-1 z-10 text-center">
-                  <p className="text-[7px] font-bold tracking-wider text-amber-700 uppercase leading-none">{t("certificatesPage.certTitle")}</p>
-                  <p className="text-[5.5px] text-amber-900/50 italic mt-0.5 leading-none">presented to</p>
-                  <h4 className="text-[9px] font-black text-amber-950 font-serif border-b border-amber-800/10 pb-0.5 w-fit mx-auto px-2 mt-0.5 leading-none">Lê Khánh Đức</h4>
-                  <h3 className="text-[8px] font-black text-amber-900 leading-tight mt-1 px-1 line-clamp-2">
+                {/* Core */}
+                <div className="my-1 z-10 text-center space-y-0.5">
+                  <p className="text-[5.5px] font-bold tracking-[0.2em] text-amber-600 dark:text-amber-400 uppercase">CHỨNG CHỈ HOÀN THÀNH</p>
+                  <h4 className="text-[9.5px] font-extrabold text-slate-900 dark:text-white font-serif leading-none pt-0.5">
+                    Lê Khánh Đức
+                  </h4>
+                  <h3 className="text-[7.5px] font-bold text-slate-700 dark:text-slate-300 leading-tight line-clamp-1 pt-0.5 px-1">
                     {cert.title}
                   </h3>
                 </div>
 
-                <div className="flex justify-between items-end z-10 text-[6px] text-muted-foreground/80 leading-none">
-                  <div className="text-left">
-                    <p className="font-semibold text-[5.5px]">{cert.issueDate}</p>
-                    <p className="font-mono mt-0.5 text-[5px]">{cert.credentialId}</p>
-                  </div>
-                  <div className="w-5.5 h-5.5 bg-red-500/5 rounded-full border border-red-500/35 flex items-center justify-center text-red-600/90 flex-shrink-0">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                  </div>
+                {/* Footer */}
+                <div className="flex justify-between items-center z-10 text-[6px] text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800 leading-none">
+                  <span>{cert.issueDate}</span>
+                  <span className="font-mono text-[5px] font-semibold text-slate-500">{cert.credentialId}</span>
                 </div>
               </div>
 
@@ -190,20 +187,20 @@ export default function CertificatesClient() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                <div className="flex items-center justify-end gap-2 pt-2.5 border-t border-border/60">
                   <button 
                     onClick={() => setSelectedCert(cert)}
-                    className="flex-grow inline-flex items-center justify-center gap-1.5 h-9 rounded-xl border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
+                    className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    <Eye className="w-3.5 h-3.5" />
+                    <Eye className="w-3.5 h-3.5 text-muted-foreground" />
                     {t("certificatesPage.viewBtn")}
                   </button>
                   <button 
                     onClick={() => triggerPrint(cert)}
-                    className="inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-accent text-white font-semibold text-xs hover:bg-accent-600 active:scale-[0.98] transition-all cursor-pointer"
+                    className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
                     title={t("certificatesPage.downloadBtn")}
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <Download className="w-3.5 h-3.5 text-muted-foreground" />
                   </button>
                 </div>
               </div>
@@ -234,103 +231,115 @@ export default function CertificatesClient() {
             {/* Modal Certificate Viewer Body */}
             <div className="p-6 sm:p-10 overflow-y-auto flex justify-center bg-gray-100/50 dark:bg-slate-950/20">
 
-              {/* Premium Realistic Certificate Container */}
+              {/* World-Class Executive Certificate Canvas */}
               <div
                 id="certificate-modal-content"
-                className="w-full aspect-[1.414/1] min-w-[320px] max-w-[800px] bg-[#faf8f5] text-amber-950 border-2 sm:border-4 border-solid border-amber-800/85 rounded-2xl pt-4 pb-7 px-4 sm:pt-6 sm:pb-10 sm:px-6 md:pt-8 md:pb-12 md:px-8 flex flex-col justify-between text-center relative shadow-lg select-none"
+                className="w-full aspect-[1.414/1] min-w-[320px] max-w-[820px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-10 md:p-12 flex flex-col justify-between relative shadow-xl select-none overflow-hidden"
               >
+                {/* Subtle Ambient Background Gradient */}
+                <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
 
-                {/* Subtle Watermark background */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] dark:opacity-[0.04] pointer-events-none">
-                  <Image
-                    src="/logos/java-logo.png"
-                    alt="JavaBuilder Logo Watermark"
-                    width={280}
-                    height={280}
-                    className="object-contain"
-                  />
-                </div>
+                {/* Premium Corner Accents */}
+                <div className="absolute top-4 left-4 w-10 h-10 border-t-2 border-l-2 border-amber-500/35 rounded-tl-md pointer-events-none" />
+                <div className="absolute top-4 right-4 w-10 h-10 border-t-2 border-r-2 border-amber-500/35 rounded-tr-md pointer-events-none" />
+                <div className="absolute bottom-4 left-4 w-10 h-10 border-b-2 border-l-2 border-amber-500/35 rounded-bl-md pointer-events-none" />
+                <div className="absolute bottom-4 right-4 w-10 h-10 border-b-2 border-r-2 border-amber-500/35 rounded-br-md pointer-events-none" />
 
                 {/* Header */}
-                <div className="flex justify-between items-center z-10 border-b border-amber-900/10 pb-2 sm:pb-2.5">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-8 h-8 rounded-lg bg-white border border-amber-800/20 flex items-center justify-center shadow-xs">
+                <div className="flex justify-between items-center z-10 border-b border-slate-100 dark:border-slate-800/80 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-9 h-9 flex-shrink-0">
                       <Image
                         src="/logos/java-logo.png"
-                        alt="JavaBuilder"
-                        width={20}
-                        height={20}
+                        alt="JavaBuilder Logo"
+                        width={36}
+                        height={36}
                         className="object-contain"
                       />
                     </div>
-                    <div className="text-left leading-none">
-                      <p className="text-[10px] sm:text-xs font-black tracking-widest text-amber-900 uppercase">JAVABUILDER</p>
-                      <p className="text-[6px] sm:text-[7px] font-bold text-amber-700/60 uppercase tracking-widest mt-0.5">Online Platform</p>
+                    <div className="text-left leading-tight">
+                      <h3 className="text-sm sm:text-base font-black tracking-widest text-slate-900 dark:text-white uppercase font-sans">
+                        JAVABUILDER
+                      </h3>
+                      <p className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 tracking-wider uppercase">
+                        Official Online Certification
+                      </p>
                     </div>
                   </div>
-                  <div className="text-right text-[7px] sm:text-[8px] font-semibold text-amber-900/60 font-mono">
-                    <p>{t("certificatesPage.modalVerification")}</p>
-                    <p className="text-[8px] sm:text-[9px] font-bold text-amber-900 mt-0.5">{selectedCert.credentialId}</p>
+
+                  <div className="text-right text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-mono">
+                    <p className="uppercase tracking-widest text-[9px] text-slate-400 font-semibold">Credential ID</p>
+                    <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">{selectedCert.credentialId}</p>
                   </div>
                 </div>
 
-                {/* Certificate Core Text */}
-                <div className="my-auto space-y-2 sm:space-y-3 z-10 py-2 sm:py-4">
+                {/* Main Certificate Core */}
+                <div className="my-auto py-4 sm:py-6 space-y-4 sm:space-y-5 z-10 text-center">
                   <div>
-                    <h2 className="text-xs sm:text-sm md:text-base font-black tracking-widest text-amber-800 uppercase">
-                      {t("certificatesPage.certTitle")}
-                    </h2>
-                    <div className="flex items-center justify-center gap-2 mt-0.5 sm:mt-1">
-                      <div className="h-0.5 w-5 bg-amber-800/40" />
-                      <Award className="w-3 h-3 text-amber-600" />
-                      <div className="h-0.5 w-5 bg-amber-800/40" />
-                    </div>
+                    <p className="text-[11px] sm:text-xs font-bold tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
+                      CHỨNG CHỈ HOÀN THÀNH KHOÁ HỌC
+                    </p>
+                    <div className="w-16 h-0.5 bg-linear-to-r from-transparent via-amber-500 to-transparent mx-auto mt-2 opacity-80" />
                   </div>
 
-                  <div className="space-y-0.5">
-                    <p className="text-[8px] sm:text-[9px] text-amber-900/80 italic font-medium">
-                      {t("certificatesPage.presentedTo")}
+                  <div className="space-y-1">
+                    <p className="text-xs sm:text-sm text-slate-400 dark:text-slate-400 font-medium">
+                      Chứng nhận này được trang trọng trao tặng cho
                     </p>
-                    <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-amber-950 font-serif tracking-wide border-b border-amber-800/20 w-fit mx-auto px-4 pb-0.5">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white font-serif tracking-tight py-1">
                       Lê Khánh Đức
                     </h1>
                   </div>
 
-                  <div className="space-y-0.5 max-w-md mx-auto">
-                    <p className="text-[8px] sm:text-[9px] text-amber-900/80 leading-relaxed font-medium">
-                      {t("certificatesPage.forCompleting")}
+                  <div className="space-y-2 max-w-xl mx-auto">
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                      Vì đã hoàn thành xuất sắc chương trình đào tạo chuyên sâu &amp; kiểm tra năng lực:
                     </p>
-                    <h3 className="text-[10px] sm:text-xs md:text-sm font-extrabold text-amber-900 leading-snug">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
                       {selectedCert.title}
-                    </h3>
+                    </h2>
                   </div>
                 </div>
 
-                {/* Signatures and Seals */}
-                <div className="flex justify-between items-end z-10 border-t border-amber-900/10 pt-2 sm:pt-3 text-left px-2">
-                  <div className="w-1/3">
-                    <p className="text-[6px] sm:text-[7px] text-amber-900/50 uppercase font-semibold">{t("certificatesPage.issueDate")}</p>
-                    <p className="text-[8px] sm:text-[9px] text-amber-955 font-bold mt-0.5">{selectedCert.issueDate}</p>
+                {/* Footer */}
+                <div className="w-full pt-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-end z-10 text-left">
+                  <div className="w-1/3 space-y-1.5">
+                    <div className="flex gap-4 sm:gap-6">
+                      <div>
+                        <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Ngày cấp</p>
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{selectedCert.issueDate}</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Hạn dùng</p>
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">Vĩnh viễn</p>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Decorative red ink brand seal - Option 2 (Larger) */}
-                  <div className="w-1/3 flex flex-col items-center justify-end">
-                    <div className="flex items-center justify-center relative w-14 h-14 sm:w-20 sm:h-20 bg-red-500/5 rounded-full border-[2.5px] border-red-600/80 flex-shrink-0 rotate-[-6deg]">
-                      <div className="absolute inset-0.5 sm:inset-1 border border-dashed border-red-500/45 rounded-full pointer-events-none" />
-                      <ShieldCheck className="w-6.5 h-6.5 sm:w-9 sm:h-9 text-red-600/90" />
+                  {/* Official Red Ink Brand Seal */}
+                  <div className="w-1/3 flex flex-col items-center justify-end -mb-1">
+                    <div className="flex items-center justify-center relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-red-600/85 bg-red-500/5 rotate-[-6deg] shadow-2xs select-none">
+                      <div className="absolute inset-1 rounded-full border border-dashed border-red-500/50 pointer-events-none" />
+                      <div className="flex flex-col items-center justify-center text-center">
+                        <ShieldCheck className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 text-red-600" />
+                        <span className="text-[5.5px] sm:text-[6.5px] font-black tracking-widest text-red-600 uppercase mt-0.5 whitespace-nowrap">
+                          VERIFIED
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-[6px] sm:text-[8.5px] font-black tracking-widest text-red-600/95 uppercase whitespace-nowrap mt-2 sm:mt-3 bg-red-50/50 dark:bg-slate-950/40 px-2 py-0.5 sm:px-3 sm:py-1 rounded border border-red-500/15 rotate-[-3deg]">
-                      {t("certificatesPage.modalVerified")}
+                    <span className="text-[7.5px] sm:text-[8.5px] font-extrabold tracking-widest text-red-600 uppercase whitespace-nowrap mt-1 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded border border-red-200 dark:border-red-900/40 rotate-[-2deg]">
+                      OFFICIAL CERTIFICATE
                     </span>
                   </div>
 
                   <div className="w-1/3 text-right">
-                    {/* Handwritten signature mockup */}
-                    <div className="h-5 sm:h-7 flex items-end justify-end mb-0.5">
-                      <span className="font-serif italic text-xs sm:text-sm text-amber-800/80 select-none mr-2">JavaBuilder</span>
+                    <div className="h-6 sm:h-7 flex items-end justify-end mb-1">
+                      <span className="font-serif italic text-base sm:text-lg font-bold text-slate-800 dark:text-slate-200 select-none">
+                        JavaBuilder
+                      </span>
                     </div>
-                    <p className="text-[6px] sm:text-[7px] text-amber-900/50 uppercase font-semibold border-t border-amber-800/20 pt-0.5 inline-block">
-                      {t("certificatesPage.platformFounder")}
+                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-1 inline-block">
+                      JavaBuilder Certification Authority
                     </p>
                   </div>
                 </div>
@@ -367,9 +376,9 @@ export default function CertificatesClient() {
             <div
               style={{
                 fontFamily: "var(--font-inter), sans-serif",
-                color: "#1a1a1a",
-                border: "3px solid rgba(133, 77, 14, 0.85)",
-                borderRadius: "16px",
+                color: "#0f172a",
+                border: "1px solid #e2e8f0",
+                borderRadius: "20px",
                 padding: "48px",
                 width: "297mm",
                 height: "210mm",
@@ -377,73 +386,82 @@ export default function CertificatesClient() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                textAlign: "center",
                 position: "relative",
-                background: "#faf8f5"
+                background: "#ffffff"
               }}
             >
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(133, 77, 14, 0.1)", paddingBottom: "16px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f1f5f9", paddingBottom: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <Image
                     src="/logos/java-logo.png"
-                    alt="JavaBuilder"
-                    width={32}
-                    height={32}
+                    alt="JavaBuilder Logo"
+                    width={36}
+                    height={36}
                     style={{ objectFit: "contain" }}
                   />
-                  <div style={{ textAlign: "left", lineHeight: "1" }}>
-                    <p style={{ fontSize: "14px", fontWeight: "900", letterSpacing: "0.15em", color: "#451a03", margin: 0 }}>JAVABUILDER</p>
-                    <p style={{ fontSize: "8px", fontWeight: "700", color: "#b45309", textTransform: "uppercase", letterSpacing: "0.15em", margin: "2px 0 0 0" }}>Online Platform</p>
+                  <div style={{ textAlign: "left", lineHeight: "1.2" }}>
+                    <h3 style={{ fontSize: "16px", fontWeight: "900", letterSpacing: "0.1em", color: "#0f172a", textTransform: "uppercase", margin: 0 }}>
+                      JAVABUILDER
+                    </h3>
+                    <p style={{ fontSize: "10px", fontWeight: "600", color: "#d97706", textTransform: "uppercase", margin: "2px 0 0 0" }}>
+                      Official Online Certification
+                    </p>
                   </div>
                 </div>
-                <div style={{ textAlign: "right", fontSize: "10px", fontWeight: "600", color: "rgba(133, 77, 14, 0.6)", fontFamily: "monospace" }}>
-                  <p style={{ margin: 0 }}>{t("certificatesPage.modalVerification")}</p>
-                  <p style={{ fontSize: "11px", fontWeight: "700", color: "#451a03", margin: "2px 0 0 0" }}>{selectedCert.credentialId}</p>
+
+                <div style={{ textAlign: "right", fontSize: "11px", color: "#64748b", fontFamily: "monospace" }}>
+                  <p style={{ textTransform: "uppercase", fontSize: "9px", margin: 0 }}>Credential ID</p>
+                  <p style={{ fontWeight: "700", color: "#0f172a", margin: "2px 0 0 0" }}>{selectedCert.credentialId}</p>
                 </div>
               </div>
 
-              <div style={{ margin: "auto 0", padding: "24px 0" }}>
-                <h2 style={{ fontSize: "20px", fontWeight: "900", letterSpacing: "0.15em", color: "#9a3412", textTransform: "uppercase", margin: 0 }}>
-                  {t("certificatesPage.certTitle")}
-                </h2>
-                <p style={{ fontSize: "12px", color: "#451a03", fontStyle: "italic", margin: "16px 0 4px 0", fontWeight: "500" }}>
-                  {t("certificatesPage.presentedTo")}
+              <div style={{ textAlign: "center", margin: "auto 0" }}>
+                <p style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.25em", color: "#d97706", textTransform: "uppercase", margin: "0 0 16px 0" }}>
+                  CHỨNG CHỈ HOÀN THÀNH KHOÁ HỌC
                 </p>
-                <h1 style={{ fontSize: "32px", fontWeight: "900", color: "#451a03", borderBottom: "2px solid rgba(133, 77, 14, 0.2)", width: "fit-content", margin: "0 auto", padding: "0 24px 4px 24px", fontFamily: "serif" }}>
+                <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 8px 0" }}>
+                  Chứng nhận này được trang trọng trao tặng cho
+                </p>
+                <h1 style={{ fontSize: "38px", fontWeight: "900", color: "#0f172a", fontFamily: "serif", margin: "0 0 16px 0" }}>
                   Lê Khánh Đức
                 </h1>
-                <p style={{ fontSize: "11px", color: "#451a03", margin: "16px 0 4px 0", fontWeight: "500" }}>
-                  {t("certificatesPage.forCompleting")}
+                <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 8px 0" }}>
+                  Vì đã hoàn thành xuất sắc chương trình đào tạo chuyên sâu &amp; kiểm tra năng lực:
                 </p>
-                <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#451a03", margin: 0 }}>
+                <h2 style={{ fontSize: "22px", fontWeight: "900", color: "#0f172a", margin: 0, maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>
                   {selectedCert.title}
-                </h3>
+                </h2>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", borderTop: "1px solid rgba(133, 77, 14, 0.1)", paddingTop: "16px", textAlign: "left" }}>
-                <div style={{ width: "33%" }}>
-                  <p style={{ fontSize: "9px", color: "rgba(133, 77, 14, 0.5)", textTransform: "uppercase", fontWeight: "600", margin: 0 }}>{t("certificatesPage.issueDate")}</p>
-                  <p style={{ fontSize: "12px", color: "#451a03", fontWeight: "700", margin: "2px 0 0 0" }}>{selectedCert.issueDate}</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderTop: "1px solid #f1f5f9", paddingTop: "16px" }}>
+                <div style={{ width: "33%", textAlign: "left", display: "flex", gap: "16px" }}>
+                  <div>
+                    <p style={{ fontSize: "10px", fontWeight: "600", color: "#94a3b8", textTransform: "uppercase", margin: "0 0 2px 0" }}>Ngày cấp</p>
+                    <p style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a", margin: 0 }}>{selectedCert.issueDate}</p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "10px", fontWeight: "600", color: "#94a3b8", textTransform: "uppercase", margin: "0 0 2px 0" }}>Hạn dùng</p>
+                    <p style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a", margin: 0 }}>Vĩnh viễn</p>
+                  </div>
                 </div>
 
-                <div style={{ width: "33%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "end" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative", width: "80px", height: "80px", borderRadius: "50%", border: "2.5px solid #dc2626", background: "rgba(220, 38, 38, 0.05)", transform: "rotate(-6deg)" }}>
-                    <div style={{ position: "absolute", inset: "4px", border: "1px dashed rgba(220, 38, 38, 0.4)", borderRadius: "50%" }} />
-                    {/* ShieldCheck SVG */}
-                    <svg style={{ width: "36px", height: "36px", color: "#dc2626" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <div style={{ width: "33%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", marginBottom: "-4px" }}>
+                  <div style={{ position: "relative", width: "64px", height: "64px", borderRadius: "50%", border: "2px solid #dc2626", background: "rgba(239, 68, 68, 0.05)", transform: "rotate(-6deg)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                    <div style={{ position: "absolute", inset: "4px", borderRadius: "50%", border: "1px dashed rgba(239, 68, 68, 0.5)" }} />
+                    <svg style={{ width: "24px", height: "24px", color: "#dc2626" }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
+                    <span style={{ fontSize: "6.5px", fontWeight: "900", letterSpacing: "0.15em", color: "#dc2626", textTransform: "uppercase", marginTop: "2px", whiteSpace: "nowrap" }}>VERIFIED</span>
                   </div>
-                  <span style={{ fontSize: "8.5px", fontWeight: "900", color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.15em", marginTop: "10px", whiteSpace: "nowrap", border: "1px solid rgba(220, 38, 38, 0.15)", background: "rgba(220, 38, 38, 0.02)", padding: "2px 6px", borderRadius: "3px", transform: "rotate(-3deg)" }}>{t("certificatesPage.modalVerified")}</span>
+                  <span style={{ fontSize: "8.5px", fontWeight: "800", letterSpacing: "0.1em", color: "#dc2626", textTransform: "uppercase", marginTop: "4px", background: "#fef2f2", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fecaca", transform: "rotate(-2deg)" }}>
+                    OFFICIAL CERTIFICATE
+                  </span>
                 </div>
 
                 <div style={{ width: "33%", textAlign: "right" }}>
-                  <div style={{ height: "32px", display: "flex", alignItems: "end", justifyContent: "end", marginBottom: "4px" }}>
-                    <span style={{ fontFamily: "serif", fontStyle: "italic", fontSize: "20px", color: "rgba(133, 77, 14, 0.8)" }}>JavaBuilder</span>
-                  </div>
-                  <p style={{ fontSize: "9px", color: "rgba(133, 77, 14, 0.5)", textTransform: "uppercase", fontWeight: "600", borderTop: "1px solid rgba(133, 77, 14, 0.2)", paddingTop: "4px", display: "inline-block", margin: 0 }}>
-                    {t("certificatesPage.platformFounder")}
+                  <p style={{ fontFamily: "serif", fontStyle: "italic", fontSize: "18px", fontWeight: "700", color: "#0f172a", margin: "0 0 4px 0" }}>JavaBuilder</p>
+                  <p style={{ fontSize: "10px", fontWeight: "600", color: "#94a3b8", textTransform: "uppercase", borderTop: "1px solid #e2e8f0", paddingTop: "4px", display: "inline-block", margin: 0 }}>
+                    JavaBuilder Certification Authority
                   </p>
                 </div>
               </div>

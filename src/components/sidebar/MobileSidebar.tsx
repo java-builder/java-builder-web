@@ -350,7 +350,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               <div key={group.title} className="space-y-1">
                 <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   {group.icon && (
-                    <div className="w-5.5 h-5.5 rounded bg-gray-100/70 dark:bg-slate-700/40 flex items-center justify-center text-gray-500 dark:text-gray-400 [&_svg]:w-3.5 [&_svg]:h-3.5 flex-shrink-0">
+                    <div className="w-5.5 h-5.5 rounded bg-gray-100/70 dark:bg-slate-700/40 flex items-center justify-center text-gray-500 dark:text-gray-400 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:flex-shrink-0 flex-shrink-0">
                       {group.icon}
                     </div>
                   )}
@@ -376,7 +376,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                             onClick={onClose}
                           >
                             <span
-                              className={`flex-shrink-0 ${item.highlight
+                              className={`w-5 h-5 flex-shrink-0 flex items-center justify-center [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 ${item.highlight
                                 ? "text-purple-600 dark:text-purple-300"
                                 : active
                                   ? "text-accent dark:text-accent-on-dark [&_svg]:text-accent dark:[&_svg]:text-accent-on-dark"
