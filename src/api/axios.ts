@@ -22,6 +22,7 @@ const isAnonymousEndpoint = (url: string | undefined): boolean => {
     "/api/v1/users/reset-password",
     "/api/v1/passkey/login",
     "/api/v1/passkey/login/options",
+    "/api/v1/certificates/public/verify",
   ];
 
   return anonymousEndpoints.some((endpoint) => url.includes(endpoint));
@@ -44,6 +45,7 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/subscriptions/plans",
     "/api/v1/user-subscriptions/check-premium",
     "/api/v1/documents",
+    "/api/v1/certificates/public/verify",
   ];
 
   const isGetMethod = !method || method.toUpperCase() === "GET";

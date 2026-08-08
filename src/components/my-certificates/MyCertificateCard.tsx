@@ -24,11 +24,15 @@ export default function MyCertificateCard({
   const [showShare, setShowShare] = useState(false);
 
   const getShareUrl = () => {
-    if (cert.verifyUrl) return cert.verifyUrl;
+    const code = cert.certificateCode || cert.id;
     if (typeof window !== "undefined") {
-      return `${window.location.origin}/verify-certificate?code=${encodeURIComponent(cert.certificateCode)}`;
+      const baseOrigin =
+        window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+          ? "https://javabuilder.online"
+          : window.location.origin;
+      return `${baseOrigin}/verify-certificate?code=${encodeURIComponent(code)}`;
     }
-    return "";
+    return cert.verifyUrl || `https://javabuilder.online/verify-certificate?code=${encodeURIComponent(code)}`;
   };
 
   const handleShareLinkedIn = () => {

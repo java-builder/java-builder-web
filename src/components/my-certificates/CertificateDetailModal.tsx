@@ -28,21 +28,15 @@ export default function CertificateDetailModal({
   const [linkCopied, setLinkCopied] = useState(false);
 
   const getCertificateShareUrl = () => {
-    if (cert.verifyUrl) {
-      return cert.verifyUrl;
-    }
-    if (cert.certificateUrl && cert.certificateUrl.startsWith("http")) {
-      return cert.certificateUrl;
-    }
+    const code = cert.certificateCode;
     if (typeof window !== "undefined") {
-      const code = cert.certificateCode || cert.id;
       const baseOrigin =
         window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
           ? "https://javabuilder.online"
           : window.location.origin;
       return `${baseOrigin}/verify-certificate?code=${encodeURIComponent(code)}`;
     }
-    return "";
+    return cert.verifyUrl || `https://javabuilder.online/verify-certificate?code=${encodeURIComponent(code)}`;
   };
 
   const handleShareLinkedIn = () => {
