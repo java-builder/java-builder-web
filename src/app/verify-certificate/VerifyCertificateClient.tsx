@@ -135,13 +135,31 @@ export default function VerifyCertificateClient() {
     }
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    if (cert?.certificateUrl) {
+      try {
+        const response = await fetch(cert.certificateUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `${cert.certificateCode || "certificate"}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(link);
+        return;
+      } catch (err) {
+        console.warn("Blob fetch failed, opening direct URL", err);
+        window.open(cert.certificateUrl, "_blank");
+        return;
+      }
+    }
     window.print();
   };
 
   return (
     <div className="min-h-screen py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-6 max-w-6xl mx-auto animate-in fade-in duration-300">
-      {/* Print-only CSS style */}
       <style dangerouslySetInnerHTML={{
         __html: `
         @media print {
@@ -158,7 +176,6 @@ export default function VerifyCertificateClient() {
         }
       `}} />
 
-      {/* Page Header (Consistent System Style) */}
       <div className="space-y-2 text-left no-print-area">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
           <ShieldCheck className="w-3.5 h-3.5" />
@@ -172,7 +189,6 @@ export default function VerifyCertificateClient() {
         </p>
       </div>
 
-      {/* Search & Filter Card (Identical System Card Component Style) */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs no-print-area">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border px-5 py-3.5">
           <div className="flex items-center gap-2">
@@ -184,8 +200,7 @@ export default function VerifyCertificateClient() {
             </h3>
           </div>
 
-          {/* Quick Sample Code Suggestions */}
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
             <span className="text-muted-foreground text-xs font-medium">Mã mẫu:</span>
             {SAMPLE_CODES.map((code) => (
               <button
@@ -200,7 +215,6 @@ export default function VerifyCertificateClient() {
           </div>
         </div>
 
-        {/* Search Input Bar */}
         <div className="p-4 sm:p-5">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-center gap-3">
             <div className="relative flex-1 w-full">
@@ -246,25 +260,32 @@ export default function VerifyCertificateClient() {
         </div>
       </div>
 
-      {/* Error / Not Found State */}
       {error && !isLoading && (
-        <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-6 sm:p-8 text-center space-y-3 shadow-xs no-print-area">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/20 text-rose-500">
-            <XCircle className="h-6 w-6" />
+        <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center shadow-xs no-print-area max-w-xl mx-auto my-6">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+            <Search className="h-7 w-7" />
           </div>
-          <h3 className="text-base font-bold text-rose-600 dark:text-rose-400">
-            Không tìm thấy thông tin chứng chỉ
+
+          <h3 className="mt-4 text-lg font-bold text-foreground">
+            Không Tìm Thấy Chứng Chỉ
           </h3>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-            {error}
+
+          <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+            Hệ thống không tìm thấy chứng chỉ chính thức nào khớp với mã{" "}
+            {inputCode ? (
+              <code className="font-mono text-accent font-bold px-1.5 py-0.5 rounded bg-accent/10 border border-accent/20">
+                {inputCode}
+              </code>
+            ) : (
+              "đã nhập"
+            )}
+            . Vui lòng kiểm tra lại mã tra cứu.
           </p>
         </div>
       )}
 
-      {/* Default System Info Cards (When no certificate searched yet) */}
       {!hasSearched && !isLoading && (
         <div className="space-y-6 no-print-area">
-          {/* 3 Pillars Card Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-card border border-border rounded-2xl p-5 space-y-2 shadow-xs">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent">
@@ -299,10 +320,8 @@ export default function VerifyCertificateClient() {
         </div>
       )}
 
-      {/* Verified Certificate Card Result */}
       {cert && !isLoading && (
         <div className="space-y-4">
-          {/* Status Banner */}
           <div className="no-print-area">
             {cert.status === "ISSUED" ? (
               <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm font-medium">
@@ -337,123 +356,136 @@ export default function VerifyCertificateClient() {
             )}
           </div>
 
-          {/* Certificate Frame Paper UI */}
-          <div className="print-certificate-box bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden text-center space-y-6">
-            {/* Ambient Background Radial */}
-            <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent pointer-events-none" />
+          <div className="print-certificate-box bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-10 md:p-12 shadow-xl relative overflow-hidden text-center space-y-6 sm:space-y-8 select-none">
+            <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
 
-            {/* Compact Corner Decorative Borders (positioned safely in padding margin) */}
-            <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-amber-500/40 rounded-tl-xs pointer-events-none" />
-            <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-amber-500/40 rounded-tr-xs pointer-events-none" />
-            <div className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-amber-500/40 rounded-bl-xs pointer-events-none" />
-            <div className="absolute bottom-2 right-2 sm:bottom-2.5 sm:right-2.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-amber-500/40 rounded-br-xs pointer-events-none" />
+            <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 w-3.5 h-3.5 sm:w-5 sm:h-5 border-t-2 border-l-2 border-amber-500/35 rounded-tl-md pointer-events-none" />
+            <div className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 w-3.5 h-3.5 sm:w-5 sm:h-5 border-t-2 border-r-2 border-amber-500/35 rounded-tr-md pointer-events-none" />
+            <div className="absolute bottom-2.5 left-2.5 sm:bottom-3.5 sm:left-3.5 w-3.5 h-3.5 sm:w-5 sm:h-5 border-b-2 border-l-2 border-amber-500/35 rounded-bl-md pointer-events-none" />
+            <div className="absolute bottom-2.5 right-2.5 sm:bottom-3.5 sm:right-3.5 w-3.5 h-3.5 sm:w-5 sm:h-5 border-b-2 border-r-2 border-amber-500/35 rounded-br-md pointer-events-none" />
 
-            {/* Certificate Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 relative z-10">
-              <div className="flex items-center gap-2.5">
-                <div className="relative w-7 h-7 shrink-0">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4 relative z-10">
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
                   <Image
                     src="/logos/java-logo.png"
                     alt="JavaBuilder Logo"
-                    width={28}
-                    height={28}
+                    width={36}
+                    height={36}
                     className="object-contain"
                   />
                 </div>
-                <span className="text-base font-black tracking-widest text-slate-900 dark:text-white uppercase font-sans">
-                  JAVABUILDER
-                </span>
+                <div className="text-left leading-tight">
+                  <h3 className="text-sm sm:text-base md:text-lg font-black tracking-widest text-slate-900 dark:text-white uppercase font-sans">
+                    JAVABUILDER
+                  </h3>
+                  <p className="text-[9px] sm:text-[10px] font-semibold text-amber-600 dark:text-amber-400 tracking-wider uppercase">
+                    Official Online Certification
+                  </p>
+                </div>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                VERIFIED OFFICIAL
+              <div className="flex items-center gap-3">
+                <div className="text-right text-xs font-mono hidden sm:block">
+                  <p className="uppercase tracking-widest text-[9px] text-slate-400 font-semibold">Credential ID</p>
+                  <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">{cert.certificateCode}</p>
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>VERIFIED OFFICIAL</span>
+                </div>
               </div>
             </div>
 
-            {/* Certificate Title & Student */}
-            <div className="space-y-4 relative z-10 py-2">
-              <p className="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
-                CHỨNG CHỈ HOÀN THÀNH XUẤT SẮC
-              </p>
-              <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto opacity-80" />
+            <div className="space-y-4 sm:space-y-6 relative z-10 py-3 sm:py-6">
+              <div>
+                <p className="text-xs sm:text-sm md:text-base font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-600 dark:text-amber-400 uppercase">
+                  CERTIFICATE OF ACHIEVEMENT
+                </p>
+                <div className="w-16 sm:w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-2 opacity-80" />
+              </div>
 
-              <p className="text-xs sm:text-sm text-slate-400 font-medium">
-                Trao tặng cho học viên:
-              </p>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-serif tracking-tight">
-                {cert.studentName || "Học viên"}
-              </h2>
+              <div className="space-y-1">
+                <p className="text-xs sm:text-sm text-slate-400 font-medium">
+                  This is proudly presented to:
+                </p>
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white font-serif tracking-tight py-1">
+                  {cert.studentName || "Student"}
+                </h2>
+              </div>
 
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium max-w-lg mx-auto leading-relaxed pt-1">
-                Vì đã hoàn thành xuất sắc chương trình kiểm định &amp; đánh giá năng lực lập trình chuyên sâu:
-              </p>
-              <h3 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
-                {cert.courseName}
-              </h3>
+              <div className="space-y-1.5 max-w-xl mx-auto">
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                  For successfully completing the comprehensive programming assessment &amp; certification program:
+                </p>
+                <h3 className="text-base sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
+                  {cert.courseName}
+                </h3>
+              </div>
             </div>
 
-            {/* Verification QR & Details Grid */}
-            <div className="pt-6 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center relative z-10">
-              {/* Issue Details */}
-              <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-2">
+            <div className="pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center relative z-10">
+              <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-2 pl-1 sm:pl-2">
                 <div className="flex justify-center sm:justify-start gap-6">
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Ngày cấp</p>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{formatDate(cert.issuedDate)}</p>
+                    <p className="text-[9px] sm:text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Date of Issuance</p>
+                    <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">{formatDate(cert.issuedDate)}</p>
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Hạn hiệu lực</p>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{cert.expiryDate ? formatDate(cert.expiryDate) : "Vĩnh viễn"}</p>
+                    <p className="text-[9px] sm:text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Expiration Date</p>
+                    <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">{cert.expiryDate ? formatDate(cert.expiryDate) : "Lifetime"}</p>
                   </div>
                 </div>
 
                 <div className="pt-1">
-                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Mã bảo chứng</p>
+                  <p className="text-[9px] sm:text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Credential ID</p>
                   <button
                     type="button"
                     onClick={handleCopyCode}
                     className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer mt-0.5"
                   >
                     <span>{cert.certificateCode}</span>
-                    {codeCopied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                    {codeCopied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
 
-              {/* Center Official Seal */}
-              <div className="flex flex-col items-center justify-center space-y-1">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full border border-amber-500/40 bg-amber-500/5 text-amber-600 dark:text-amber-400 shadow-2xs">
-                  <ShieldCheck className="w-6 h-6" />
+              <div className="flex flex-col items-center justify-center space-y-1.5">
+                <div className="relative flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-double border-red-600/85 dark:border-rose-500/85 bg-red-500/5 dark:bg-rose-500/10 text-red-600 dark:text-rose-400 shadow-xs -rotate-6 select-none transition-transform hover:rotate-0">
+                  <div className="absolute inset-0.5 rounded-full border border-dashed border-red-500/50 dark:border-rose-400/50 pointer-events-none" />
+
+                  <div className="flex flex-col items-center justify-center text-center p-1">
+                    <ShieldCheck className="w-5 h-5 sm:w-7 sm:h-7 text-red-600 dark:text-rose-400 stroke-[2.2]" />
+                    <span className="text-[6px] sm:text-[7.5px] font-black tracking-tighter uppercase text-red-700 dark:text-rose-400 leading-none mt-0.5 font-sans">
+                      OFFICIAL
+                    </span>
+                  </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                  <p className="text-xs font-black text-red-700 dark:text-rose-400 uppercase tracking-wider font-sans">
                     JavaBuilder Authority
                   </p>
-                  <p className="text-[9px] text-slate-400 font-medium">Hội đồng xác thực chứng chỉ</p>
                 </div>
               </div>
 
-              {/* QR Code Container */}
-              <div className="flex flex-col items-center sm:items-end justify-center">
-                <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-2xs">
+              <div className="flex flex-col items-center sm:items-end justify-center pr-1 sm:pr-2 space-y-1">
+                <div className="p-1.5 bg-white rounded-lg border border-slate-200 shadow-2xs">
                   <QRCodeSVG
-                    value={getVerifyUrl()}
-                    size={90}
+                    value={typeof window !== "undefined" ? window.location.href : ""}
+                    size={72}
                     level="H"
                     includeMargin={false}
+                    className="w-14 h-14 sm:w-18 sm:h-18"
                   />
                 </div>
-                <span className="text-[9px] font-medium text-slate-400 mt-1.5 text-center sm:text-right pr-1">
-                  Quét QR để tra cứu công khai
+                <span className="text-[9px] sm:text-[10px] font-medium text-slate-400 mt-1.5 text-center sm:text-right">
+                  Scan QR code for public verification
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Action Bar (Below Certificate Card, Aligned Right Under QR Code Column) */}
           <div className="no-print-area flex items-center justify-end gap-2 pt-1">
-            {/* Share Dropdown Button */}
             <div className="relative">
               <Button
                 type="button"
@@ -507,7 +539,6 @@ export default function VerifyCertificateClient() {
               )}
             </div>
 
-            {/* Print / Download Button */}
             <Button
               type="button"
               variant="accent"

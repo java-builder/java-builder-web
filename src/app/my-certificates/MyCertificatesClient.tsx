@@ -77,7 +77,26 @@ export default function MyCertificatesClient() {
     fetchCertificates();
   };
 
-  const triggerPrint = (cert: CertificateDetailResponse) => {
+  const triggerPrint = async (cert: CertificateDetailResponse) => {
+    if (cert.certificateUrl) {
+      try {
+        const response = await fetch(cert.certificateUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `${cert.certificateCode || "certificate"}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(link);
+        return;
+      } catch (err) {
+        console.warn("Blob fetch failed, opening Cloudinary/CloudFront URL", err);
+        window.open(cert.certificateUrl, "_blank");
+        return;
+      }
+    }
     setSelectedCert(cert);
     setTimeout(() => {
       window.print();
@@ -116,7 +135,7 @@ export default function MyCertificatesClient() {
   }
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300 py-10 px-4 sm:px-6 lg:px-8 no-print-layout">
+    <div className="min-h-screen bg-background transition-colors duration-300 py-6 sm:py-10 px-3 sm:px-6 lg:px-8 no-print-layout">
       {/* Dynamic styles for printing */}
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -143,7 +162,7 @@ export default function MyCertificatesClient() {
         }
       `}} />
 
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
         {/* Header */}
         <MyCertificatesHeader />
 
@@ -159,7 +178,7 @@ export default function MyCertificatesClient() {
 
         {/* Grid List */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
@@ -178,7 +197,7 @@ export default function MyCertificatesClient() {
             actionLabel="Khám phá khóa học ngay"
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredCertificates.map((cert) => (
               <MyCertificateCard
                 key={cert.id}
