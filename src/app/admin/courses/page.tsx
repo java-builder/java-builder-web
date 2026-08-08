@@ -18,7 +18,7 @@ import { CourseOverviewResponse } from "@/types/report";
 import { Button } from "@/components/ui/button";
 import { Plus, RotateCw, AlertCircle, BookOpen } from "lucide-react";
 
-type CourseFormatTab = CourseFormat;
+type CourseFormatTab = CourseFormat | "ALL";
 
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -26,7 +26,7 @@ export default function CoursesPage() {
   const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<CourseFormatTab>(CourseFormat.VIDEO);
+  const [activeTab, setActiveTab] = useState<CourseFormatTab>("ALL");
   const [isDeleting, setIsDeleting] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
@@ -48,7 +48,7 @@ export default function CoursesPage() {
     20,
     undefined,
     levelFilter === "all" ? undefined : (levelFilter as CourseLevel),
-    activeTab
+    activeTab === "ALL" ? undefined : activeTab
   );
   const courses = data?.data || [];
   const stats = {
@@ -180,6 +180,7 @@ export default function CoursesPage() {
         onClearFilters={() => {
           setSearch("");
           setLevelFilter("all");
+          setActiveTab("ALL");
         }}
       />
 

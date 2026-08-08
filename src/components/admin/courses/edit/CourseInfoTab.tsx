@@ -4,6 +4,25 @@ import { RefObject } from "react";
 import Image from "next/image";
 import { CourseLevel, CourseFormat, CourseStatus } from "@/types/course";
 import { UploadCloud } from "lucide-react";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+
+const levelOptions = [
+  { value: CourseLevel.BEGINNER, label: "Cơ bản" },
+  { value: CourseLevel.INTERMEDIATE, label: "Trung cấp" },
+  { value: CourseLevel.ADVANCED, label: "Nâng cao" },
+];
+
+const courseFormatOptions = [
+  { value: CourseFormat.VIDEO, label: "Video - Học qua video" },
+  { value: CourseFormat.TEXT, label: "Văn bản - Học qua tài liệu" },
+  { value: CourseFormat.MIXED, label: "Hỗn hợp - Kết hợp cả hai" },
+];
+
+const courseStatusOptions = [
+  { value: CourseStatus.ACTIVE, label: "Hoạt động" },
+  { value: CourseStatus.INACTIVE, label: "Không hoạt động" },
+  { value: CourseStatus.DELETED, label: "Đã xóa" },
+];
 
 interface CourseInfoTabProps {
   title: string;
@@ -90,39 +109,27 @@ export default function CourseInfoTab({
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-foreground">Cấp độ</label>
-          <select
+          <CustomSelect
             value={level}
-            onChange={(e) => onLevelChange(e.target.value as CourseLevel)}
-            className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-          >
-            <option value={CourseLevel.BEGINNER}>Cơ bản</option>
-            <option value={CourseLevel.INTERMEDIATE}>Trung cấp</option>
-            <option value={CourseLevel.ADVANCED}>Nâng cao</option>
-          </select>
+            onChange={(val) => onLevelChange(val as CourseLevel)}
+            options={levelOptions}
+          />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-foreground">Định dạng khóa học</label>
-          <select
+          <CustomSelect
             value={courseFormat}
-            onChange={(e) => onCourseFormatChange(e.target.value as CourseFormat)}
-            className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-          >
-            <option value={CourseFormat.VIDEO}>Video - Học qua video</option>
-            <option value={CourseFormat.TEXT}>Văn bản - Học qua tài liệu</option>
-            <option value={CourseFormat.MIXED}>Hỗn hợp - Kết hợp cả hai</option>
-          </select>
+            onChange={(val) => onCourseFormatChange(val as CourseFormat)}
+            options={courseFormatOptions}
+          />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-foreground">Trạng thái khóa học</label>
-          <select
+          <CustomSelect
             value={courseStatus}
-            onChange={(e) => onCourseStatusChange(e.target.value as CourseStatus)}
-            className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-          >
-            <option value={CourseStatus.ACTIVE}>Hoạt động</option>
-            <option value={CourseStatus.INACTIVE}>Không hoạt động</option>
-            <option value={CourseStatus.DELETED}>Đã xóa</option>
-          </select>
+            onChange={(val) => onCourseStatusChange(val as CourseStatus)}
+            options={courseStatusOptions}
+          />
         </div>
       </div>
       {/* Right Column - Image */}
@@ -133,7 +140,7 @@ export default function CourseInfoTab({
           className="relative aspect-video bg-muted/30 rounded-lg border-2 border-dashed border-border hover:border-accent/40 cursor-pointer overflow-hidden transition-all duration-200"
         >
           {imagePreview ? (
-            <Image src={imagePreview} alt="Cover" fill className="object-cover" unoptimized />
+            <Image src={imagePreview} alt="Cover" fill className="object-contain" unoptimized />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground">
               <UploadCloud className="w-10 h-10 mb-2" />

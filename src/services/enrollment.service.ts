@@ -46,6 +46,14 @@ export const enrollmentApi = {
     }
   },
 
+  // Đăng ký khóa học miễn phí (price = 0)
+  enrollFreeCourse: async (courseId: string) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      `${API.ENROLL_FREE_COURSE}/${courseId}`
+    );
+    return response.data;
+  },
+
   // Admin thêm user vào khóa học
   adminEnrollUser: async (email: string, courseId: string) => {
     const response = await apiClient.post<ApiResponse<void>>(

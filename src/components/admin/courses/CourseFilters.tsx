@@ -1,18 +1,20 @@
 "use client";
 
-import { Search, SlidersHorizontal, Video, FileText, Layers, X } from "lucide-react";
+import { Search, SlidersHorizontal, Video, FileText, Layers, X, LayoutGrid } from "lucide-react";
 import { CourseFormat } from "@/types/course";
 import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/contexts/I18nContext";
 
+export type CourseFormatFilterType = CourseFormat | "ALL";
+
 interface CourseFiltersProps {
   search: string;
   levelFilter: string;
-  formatFilter: CourseFormat;
+  formatFilter: CourseFormatFilterType;
   onSearchChange: (value: string) => void;
   onLevelChange: (value: string) => void;
-  onFormatChange: (value: CourseFormat) => void;
+  onFormatChange: (value: CourseFormatFilterType) => void;
   onClearFilters: () => void;
 }
 
@@ -26,7 +28,7 @@ export const CourseFilters = ({
   onClearFilters,
 }: CourseFiltersProps) => {
   const { t } = useI18n();
-  const hasActiveFilters = Boolean(search.trim() || levelFilter !== "all");
+  const hasActiveFilters = Boolean(search.trim() || levelFilter !== "all" || formatFilter !== "ALL");
 
   const levelOptions: FilterOption[] = [
     { value: "all", label: t("admin.courses.filterAllLevels") },
@@ -37,6 +39,7 @@ export const CourseFilters = ({
   ];
 
   const formatButtons = [
+    { value: "ALL" as const, label: "Tất cả", icon: LayoutGrid, activeColor: "text-blue-500" },
     { value: CourseFormat.VIDEO, label: t("admin.courses.tabVideo"), icon: Video, activeColor: "text-accent" },
     { value: CourseFormat.TEXT, label: t("admin.courses.tabText"), icon: FileText, activeColor: "text-emerald-500" },
     { value: CourseFormat.MIXED, label: "Mixed", icon: Layers, activeColor: "text-purple-500" },

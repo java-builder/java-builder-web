@@ -148,6 +148,14 @@ export const CourseCard = ({
                         Thêm học viên
                       </button>
                       <Link
+                        href={`/admin/courses/${course.id}/content`}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                        onClick={() => onMenuToggle("")}
+                      >
+                        <BookOpen className="w-4 h-4 text-muted-foreground" />
+                        Nội dung khóa học
+                      </Link>
+                      <Link
                         href={`/admin/courses/${course.id}/edit`}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                         onClick={() => onMenuToggle("")}

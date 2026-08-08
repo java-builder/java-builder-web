@@ -12,6 +12,7 @@ import ReviewSection from "@/components/courses/ReviewSection";
 import PaymentModal from "@/components/courses/PaymentModal";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { courseApi, lessonApi } from "@/services/course.service";
+import { enrollmentApi } from "@/services/enrollment.service";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
 import { formatDate } from "@/utils/dateUtils";
 import { extractHeadings } from "@/utils/markdown";
@@ -94,6 +95,43 @@ export default function DocsDetailPage() {
     } catch {
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
       toast.error("Có lỗi xảy ra khi tạo mã thanh toán.");
+    }
+  };
+
+  const [, setIsEnrollingFree] = useState(false);
+
+  const handleEnrollFree = async () => {
+    if (!course?.id) return;
+    if (!currentUser) {
+      setAuthModal({
+        isOpen: true,
+        title: "Đăng nhập để tham gia khóa học",
+        message: "Bạn cần đăng nhập để tham gia khóa học này.",
+      });
+      return;
+    }
+
+    setIsEnrollingFree(true);
+    try {
+      const result = await enrollmentApi.enrollFreeCourse(course.id);
+      if (result.code === 200) {
+        setCourse(prev => prev ? { ...prev, isEnrolled: true } : null);
+      } else {
+        toast.error(result.message || "Có lỗi xảy ra khi đăng ký khóa học.");
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Có lỗi xảy ra khi đăng ký khóa học.";
+      toast.error(errorMsg);
+    } finally {
+      setIsEnrollingFree(false);
+    }
+  };
+
+  const handleEnrollClick = () => {
+    if (!course?.price || course.price === 0) {
+      handleEnrollFree();
+    } else {
+      handlePayment();
     }
   };
 
@@ -523,7 +561,7 @@ export default function DocsDetailPage() {
                     course={course}
                     chapterLessons={chapterLessons}
                     onLessonClick={handleLessonClick}
-                    onEnrollClick={handlePayment}
+                    onEnrollClick={handleEnrollClick}
                     selectedLessonId={selectedChapter}
                   />
                   

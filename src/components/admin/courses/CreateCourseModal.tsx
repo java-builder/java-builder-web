@@ -9,6 +9,7 @@ import { formatPriceInput, parsePriceInput } from "@/utils/formatters";
 import toast from "react-hot-toast";
 import { PlusCircle, X, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
 interface CreateCourseModalProps {
   isOpen: boolean;
@@ -19,6 +20,18 @@ interface CreateCourseModalProps {
 interface FormData extends CreateCourseRequest {
   imageFile?: File;
 }
+
+const levelOptions = [
+  { value: CourseLevel.BEGINNER, label: "Cơ bản" },
+  { value: CourseLevel.INTERMEDIATE, label: "Trung bình" },
+  { value: CourseLevel.ADVANCED, label: "Nâng cao" },
+];
+
+const courseFormatOptions = [
+  { value: CourseFormat.VIDEO, label: "Video - Học qua video" },
+  { value: CourseFormat.TEXT, label: "Văn bản - Học qua tài liệu" },
+  { value: CourseFormat.MIXED, label: "Hỗn hợp - Kết hợp cả hai" },
+];
 
 export default function CreateCourseModal({
   isOpen,
@@ -36,6 +49,7 @@ export default function CreateCourseModal({
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<FormData>({
     defaultValues: {
       title: "",
@@ -256,32 +270,24 @@ export default function CreateCourseModal({
                   <label className="text-sm font-semibold text-foreground">
                     Cấp độ
                   </label>
-                  <select
-                    {...register("level")}
-                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
+                  <CustomSelect
+                    value={watch("level")}
+                    onChange={(val) => setValue("level", val as CourseLevel)}
+                    options={levelOptions}
                     disabled={isLoading}
-                  >
-                    <option value={CourseLevel.BEGINNER}>Cơ bản</option>
-                    <option value={CourseLevel.INTERMEDIATE}>Trung bình</option>
-                    <option value={CourseLevel.ADVANCED}>Nâng cao</option>
-                  </select>
+                  />
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-sm font-semibold text-foreground">
                     Định dạng khóa học <span className="text-destructive">*</span>
                   </label>
-                  <select
-                    {...register("courseFormat", {
-                      required: "Định dạng khóa học là bắt buộc",
-                    })}
-                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
+                  <CustomSelect
+                    value={watch("courseFormat")}
+                    onChange={(val) => setValue("courseFormat", val as CourseFormat, { shouldValidate: true })}
+                    options={courseFormatOptions}
                     disabled={isLoading}
-                  >
-                    <option value={CourseFormat.VIDEO}>Video - Học qua video</option>
-                    <option value={CourseFormat.TEXT}>Văn bản - Học qua tài liệu</option>
-                    <option value={CourseFormat.MIXED}>Hỗn hợp - Kết hợp cả hai</option>
-                  </select>
+                  />
                   {errors.courseFormat && (
                     <p className="text-xs text-destructive">
                       {errors.courseFormat.message}

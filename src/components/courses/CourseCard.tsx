@@ -128,8 +128,9 @@ export default function CourseCard({
 
           {/* Free badge - top right when free */}
           {isFree && (
-            <span className="absolute right-14 top-3 inline-flex items-center rounded-full bg-emerald-500/95 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm">
-              Free
+            <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-md bg-white/90 dark:bg-slate-900/90 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shadow-xs backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span>Miễn phí</span>
             </span>
           )}
         </div>

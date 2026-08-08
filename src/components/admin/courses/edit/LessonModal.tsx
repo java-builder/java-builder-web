@@ -6,6 +6,13 @@ import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 import VideoPlayer from "@/components/common/VideoPlayer";
 import { X, Loader2, UploadCloud, Film, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+
+const lessonFormatOptions = [
+  { value: LessonFormat.VIDEO, label: "Video - Học qua video" },
+  { value: LessonFormat.TEXT, label: "Văn bản - Học qua tài liệu" },
+  { value: LessonFormat.MIXED, label: "Hỗn hợp - Kết hợp cả hai" },
+];
 
 interface LessonModalProps {
   isOpen: boolean;
@@ -108,16 +115,12 @@ export default function LessonModal({
 
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-foreground">Định dạng bài học <span className="text-destructive">*</span></label>
-                <select
+                <CustomSelect
                   value={lessonFormat}
-                  onChange={(e) => onFormatChange(e.target.value as LessonFormat)}
-                  className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                  onChange={(val) => onFormatChange(val as LessonFormat)}
+                  options={lessonFormatOptions}
                   disabled={isSubmitting || isUploading}
-                >
-                  <option value={LessonFormat.VIDEO}>Video - Học qua video</option>
-                  <option value={LessonFormat.TEXT}>Văn bản - Học qua tài liệu</option>
-                  <option value={LessonFormat.MIXED}>Hỗn hợp - Kết hợp cả hai</option>
-                </select>
+                />
               </div>
             </div>
 

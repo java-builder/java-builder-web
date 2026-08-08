@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import RateLimitModal from "@/components/ui/RateLimitModal";
 import { courseApi, lessonApi } from "@/services/course.service";
+import { enrollmentApi } from "@/services/enrollment.service";
 import { favoriteService } from "@/services/favorite.service";
 import { FavoriteTargetType } from "@/types/favorite";
 import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
-import { CourseDetailResponse, CourseLevel, LessonDetailResponse } from "@/types/course";
+import { CourseDetailResponse, CourseLevel, CourseFormat, LessonDetailResponse } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import { isRateLimitError } from "@/utils/apiError";
@@ -28,6 +29,7 @@ import { useI18n } from "@/contexts/I18nContext";
 
 export default function CourseDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params?.slug as string;
   const { data: currentUser } = useCurrentUser();
   const { locale, t } = useI18n();
@@ -229,7 +231,41 @@ export default function CourseDetailPage() {
     }
   };
 
+  const [isEnrollingFree, setIsEnrollingFree] = useState(false);
+
+  const handleEnrollFree = async () => {
+    if (!course?.id) return;
+    if (!currentUser) {
+      setAuthModal({
+        isOpen: true,
+        title: t("courseDetail.enrollLoginTitle"),
+        message: t("courseDetail.enrollLoginMessage"),
+      });
+      return;
+    }
+
+    setIsEnrollingFree(true);
+    try {
+      const result = await enrollmentApi.enrollFreeCourse(course.id);
+      if (result.code === 200) {
+        setIsEnrolled(true);
+        const targetUrl = course.courseFormat === CourseFormat.TEXT
+          ? `/docs/${course.slug}`
+          : `/learn/${course.slug}/${course.id}`;
+        router.push(targetUrl);
+      } else {
+        toast.error(result.message || t("courseDetail.genericError"));
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : t("courseDetail.genericError");
+      toast.error(errorMsg);
+    } finally {
+      setIsEnrollingFree(false);
+    }
+  };
+
   const formatPrice = (price: number) => {
+    if (!price || price === 0) return "0 đ";
     return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : locale, {
       style: "currency",
       currency: "VND",
@@ -431,7 +467,9 @@ export default function CourseDetailPage() {
               isEnrolled={isEnrolled}
               isFavorite={isFavorite}
               favoriteLoading={favoriteLoading}
+              isEnrollingFree={isEnrollingFree}
               onPayment={handlePayment}
+              onEnrollFree={handleEnrollFree}
               onToggleFavorite={handleToggleFavorite}
               formatPrice={formatPrice}
               getLevelText={getLevelText}

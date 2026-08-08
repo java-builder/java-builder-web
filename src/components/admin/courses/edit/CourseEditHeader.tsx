@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 
 interface CourseEditHeaderProps {
   courseTitle?: string;
-  isSaving: boolean;
-  onSave: () => void;
+  isSaving?: boolean;
+  onSave?: () => void;
 }
 
 export default function CourseEditHeader({
@@ -34,19 +34,21 @@ export default function CourseEditHeader({
           </p>
         </div>
       </div>
-      <Button
-        variant="accent"
-        onClick={onSave}
-        disabled={isSaving}
-        className="gap-2 font-medium"
-      >
-        {isSaving ? (
-          <Loader2 className="animate-spin w-4 h-4" />
-        ) : (
-          <Save className="w-4 h-4" />
-        )}
-        Lưu thay đổi
-      </Button>
+      {onSave && (
+        <Button
+          variant="accent"
+          onClick={onSave}
+          disabled={isSaving}
+          className="gap-2 font-medium"
+        >
+          {isSaving ? (
+            <Loader2 className="animate-spin w-4 h-4" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
+          Lưu thay đổi
+        </Button>
+      )}
     </div>
   );
 }
