@@ -5,10 +5,12 @@ import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import CommentList from "@/components/blogs/CommentList";
 import { useComments } from "@/hooks/useComments";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import LessonNotes from "@/components/learn/LessonNotes";
 import DocsAiAssistant from "@/components/docs/DocsAiAssistant";
 import { Check, X, FileText, Bot } from "lucide-react";
+
+const READ_TIME_THRESHOLD_MS = 90 * 1000; // 1 minute 30 seconds (90,000 ms)
 
 interface DocsArticleProps {
   title: string;
@@ -23,6 +25,7 @@ interface DocsArticleProps {
   courseSlug?: string;
   completed?: boolean;
   onToggleComplete?: () => void;
+  onAutoComplete?: () => void;
 }
 
 export default function DocsArticle({
@@ -36,7 +39,8 @@ export default function DocsArticle({
   isFreePreview = false,
   courseSlug,
   completed = false,
-  onToggleComplete
+  onToggleComplete,
+  onAutoComplete
 }: DocsArticleProps) {
   const {
     comments,
@@ -52,6 +56,95 @@ export default function DocsArticle({
 
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"notes" | "ai">("notes");
+
+  const completionRef = useRef<HTMLDivElement | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
+  const hasAutoCompletedRef = useRef<boolean>(false);
+  const isAtBottomRef = useRef<boolean>(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const tryTriggerAutoComplete = useCallback(() => {
+    if (completed || hasAutoCompletedRef.current || !lessonId || canAccess === false) {
+      return;
+    }
+
+    const elapsedTime = Date.now() - startTimeRef.current;
+    if (elapsedTime >= READ_TIME_THRESHOLD_MS && isAtBottomRef.current) {
+      hasAutoCompletedRef.current = true;
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      if (onAutoComplete) {
+        onAutoComplete();
+      } else if (onToggleComplete) {
+        onToggleComplete();
+      }
+    } else if (isAtBottomRef.current && elapsedTime < READ_TIME_THRESHOLD_MS) {
+      const remainingTime = READ_TIME_THRESHOLD_MS - elapsedTime;
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        tryTriggerAutoComplete();
+      }, remainingTime + 100);
+    }
+  }, [completed, lessonId, canAccess, onAutoComplete, onToggleComplete]);
+
+  useEffect(() => {
+    if (!lessonId || completed || canAccess === false) return;
+
+    startTimeRef.current = Date.now();
+    hasAutoCompletedRef.current = false;
+    isAtBottomRef.current = false;
+
+    const twoMinTimer = setTimeout(() => {
+      tryTriggerAutoComplete();
+    }, READ_TIME_THRESHOLD_MS + 100);
+
+    const checkScrollBottom = () => {
+      const windowHeight = window.innerHeight;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const bodyHeight = document.documentElement.scrollHeight;
+      return windowHeight + scrollY >= bodyHeight - 200;
+    };
+
+    const handleScroll = () => {
+      const atBottom = checkScrollBottom();
+      if (atBottom !== isAtBottomRef.current) {
+        isAtBottomRef.current = atBottom;
+        if (atBottom) {
+          tryTriggerAutoComplete();
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    let observer: IntersectionObserver | null = null;
+    const currentRef = completionRef.current;
+    if (currentRef) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry && entry.isIntersecting) {
+            isAtBottomRef.current = true;
+            tryTriggerAutoComplete();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      clearTimeout(twoMinTimer);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      window.removeEventListener("scroll", handleScroll);
+      if (observer && currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [lessonId, completed, canAccess, tryTriggerAutoComplete]);
 
   const handleAddComment = async (content: string) => {
     if (!lessonId) return;
@@ -125,7 +218,10 @@ export default function DocsArticle({
 
       {/* Lesson Completion Action Button */}
       {lessonId && canAccess !== false && (
-        <div className="mt-8 flex items-center justify-between p-4 sm:p-5 bg-gradient-to-r from-gray-50/50 to-white dark:from-slate-900/30 dark:to-slate-800/10 border border-gray-200/80 dark:border-slate-800/80 rounded-2xl animate-in fade-in duration-300">
+        <div
+          ref={completionRef}
+          className="mt-8 flex items-center justify-between p-4 sm:p-5 bg-gradient-to-r from-gray-50/50 to-white dark:from-slate-900/30 dark:to-slate-800/10 border border-gray-200/80 dark:border-slate-800/80 rounded-2xl animate-in fade-in duration-300"
+        >
           <div className="text-left min-w-0 pr-4">
             <h4 className="text-sm font-bold text-gray-900 dark:text-white">
               {completed ? "Bạn đã hoàn thành bài học này" : "Hoàn thành bài học?"}
