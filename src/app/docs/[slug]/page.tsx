@@ -98,7 +98,7 @@ export default function DocsDetailPage() {
     }
   };
 
-  const [, setIsEnrollingFree] = useState(false);
+  const [isEnrollingFree, setIsEnrollingFree] = useState(false);
 
   const handleEnrollFree = async () => {
     if (!course?.id) return;
@@ -116,6 +116,13 @@ export default function DocsDetailPage() {
       const result = await enrollmentApi.enrollFreeCourse(course.id);
       if (result.code === 200) {
         setCourse(prev => prev ? { ...prev, isEnrolled: true } : null);
+        toast.success("Đăng ký tham gia khóa học thành công!");
+        lessonCacheRef.current = {};
+        if (selectedChapter) {
+          setIsLoadingLesson(true);
+          await loadLessonContent(selectedChapter);
+          setIsLoadingLesson(false);
+        }
       } else {
         toast.error(result.message || "Có lỗi xảy ra khi đăng ký khóa học.");
       }
@@ -658,6 +665,9 @@ export default function DocsDetailPage() {
                 canAccess={currentLesson?.canAccess}
                 isFreePreview={currentLesson?.isFreePreview}
                 courseSlug={course?.slug}
+                coursePrice={course?.price}
+                onEnrollClick={handleEnrollClick}
+                isEnrollingFree={isEnrollingFree}
                 completed={isCurrentLessonCompleted}
                 onToggleComplete={handleToggleComplete}
                 onAutoComplete={handleAutoComplete}

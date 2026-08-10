@@ -302,20 +302,28 @@ export default function LearnCoursePage() {
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-xl w-full bg-white dark:bg-slate-800 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-2xl p-8 text-center relative z-10 overflow-hidden">
-          {/* Header Lock Icon */}
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 dark:bg-accent/20 rounded-2xl text-accent mb-6 border border-accent/20 shadow-sm">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
+          {/* Header Icon */}
+          {!course.price || course.price === 0 ? (
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-2xl text-emerald-600 dark:text-emerald-400 mb-6 border border-emerald-500/20 shadow-sm">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+            </div>
+          ) : (
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 dark:bg-accent/20 rounded-2xl text-accent mb-6 border border-accent/20 shadow-sm">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+          )}
 
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-            Nội dung này đã được khóa
+            {!course.price || course.price === 0 ? "Tham gia khóa học miễn phí" : "Nội dung này đã được khóa"}
           </h1>
 
           <p className="text-slate-600 dark:text-slate-450 mb-6 text-sm sm:text-base leading-relaxed">
             Để bắt đầu học khóa &quot;<span className="font-semibold text-gray-900 dark:text-white">{course.title}</span>&quot;, 
-            vui lòng đăng ký mua khóa học để mở khóa toàn bộ hệ thống bài giảng video, bài tập thực hành và nhận hỗ trợ 1-1 từ giảng viên.
+            vui lòng {!course.price || course.price === 0 ? "đăng ký tham gia khóa học" : "đăng ký mua khóa học"} để mở khóa toàn bộ hệ thống bài giảng video, bài tập thực hành và nhận hỗ trợ 1-1 từ giảng viên.
           </p>
 
           {course.thumbnailUrl && (
@@ -333,12 +341,16 @@ export default function LearnCoursePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <Link
               href={`/courses/${slug}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 font-semibold rounded-xl transition-all text-sm cursor-pointer shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
+                !course.price || course.price === 0
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20 hover:shadow-emerald-600/30"
+                  : "bg-accent hover:bg-accent-600 text-white shadow-accent/20 hover:shadow-accent/30"
+              }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={!course.price || course.price === 0 ? "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" : "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"} />
               </svg>
-              Mua khóa học để truy cập
+              {!course.price || course.price === 0 ? "Tham gia khóa học miễn phí" : "Mua khóa học để truy cập"}
             </Link>
           </div>
 
