@@ -25,12 +25,13 @@ export function useBlogDetail(blogSlug: string) {
 
         const relatedData = await blogService.getBlogs({
           page: 1,
+          size: 10,
           blogType: blogData.blogType,
         });
 
         const filtered = relatedData.data?.data
           ?.filter((b) => b.slug !== blogSlug)
-          ?.slice(0, 3) || [];
+          ?.slice(0, 6) || [];
         setRelatedBlogs(filtered);
         setIsLoadingRelated(false);
       } catch {

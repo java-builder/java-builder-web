@@ -275,11 +275,13 @@ export default function BlogDetailPage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 order-2">
-            <BlogSidebar 
-              blog={blog} 
-              relatedBlogs={relatedBlogs}
-              isLoadingRelated={isLoadingRelated}
-            />
+            <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto custom-scrollbar lg:pr-1">
+              <BlogSidebar 
+                blog={blog} 
+                relatedBlogs={relatedBlogs}
+                isLoadingRelated={isLoadingRelated}
+              />
+            </div>
           </div>
         </div>
       </div>

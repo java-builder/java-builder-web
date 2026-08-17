@@ -49,7 +49,7 @@ export default function BlogSidebar({ blog, relatedBlogs, isLoadingRelated = fal
           </h3>
           {isLoadingRelated ? (
             <div className="space-y-2 sm:space-y-3">
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="flex space-x-2 animate-pulse">
                   <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-md bg-gray-200 dark:bg-slate-700"></div>
                   <div className="flex-1 min-w-0 space-y-2">
