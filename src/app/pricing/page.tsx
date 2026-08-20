@@ -90,7 +90,11 @@ export default function PricingPage() {
         ? [
             ...baseFeatures,
             { 
-              text: locale === "vi" ? "Ôn tập toàn bộ câu hỏi phỏng vấn" : "Practice all interview questions", 
+              text: locale === "vi" ? "Mở khóa toàn bộ các khóa học trên hệ thống" : "Unlock all courses on the platform", 
+              included: true 
+            },
+            { 
+              text: locale === "vi" ? "Ôn tập toàn bộ câu hỏi phỏng vấn chuyên sâu" : "Practice all interview questions", 
               included: true 
             }
           ]
@@ -184,99 +188,99 @@ export default function PricingPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-background text-foreground pt-4">
+      <main className="min-h-screen bg-background text-foreground pt-2">
         {/* Hero Section */}
-        <section className="pt-8 pb-8 px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-3">
-            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-sm font-semibold rounded-full border border-accent/20">
+        <section className="pt-5 pb-5 px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-2">
+            <span className="inline-block px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full border border-accent/20">
               {t("pricingPage.heroBadge")}
             </span>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
               {t("pricingPage.heroTitle")}
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
               {t("pricingPage.heroDesc")}
             </p>
           </div>
         </section>
 
         {/* Pricing Cards */}
-        <section className="pb-12 px-4">
-          <div className="max-w-6xl mx-auto">
+        <section className="pb-8 px-4">
+          <div className="max-w-5xl mx-auto">
             {isLoading ? (
-              <div className="grid md:grid-cols-3 gap-6 lg:gap-8 animate-pulse">
+              <div className="grid md:grid-cols-3 gap-4 sm:gap-5 animate-pulse">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-card border border-border rounded-2xl p-6 lg:p-8 space-y-6">
-                    <div className="space-y-2">
-                      <div className="h-6 bg-muted rounded w-1/3" />
-                      <div className="h-4 bg-muted rounded w-2/3" />
+                  <div key={i} className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-4">
+                    <div className="space-y-1.5">
+                      <div className="h-5 bg-muted rounded w-1/3" />
+                      <div className="h-3.5 bg-muted rounded w-2/3" />
                     </div>
-                    <div className="h-10 bg-muted rounded w-1/2" />
-                    <div className="space-y-3 pt-4 border-t border-border">
-                      {[1, 2, 3, 4, 5].map((j) => (
-                        <div key={j} className="flex items-center gap-3">
-                          <div className="w-4 h-4 rounded-full bg-muted" />
-                          <div className="h-4 bg-muted rounded flex-1" />
+                    <div className="h-8 bg-muted rounded w-1/2" />
+                    <div className="space-y-2 pt-3 border-t border-border">
+                      {[1, 2, 3, 4].map((j) => (
+                        <div key={j} className="flex items-center gap-2">
+                          <div className="w-3.5 h-3.5 rounded-full bg-muted" />
+                          <div className="h-3.5 bg-muted rounded flex-1" />
                         </div>
                       ))}
                     </div>
-                    <div className="h-11 bg-muted rounded-xl w-full mt-6" />
+                    <div className="h-9 bg-muted rounded-xl w-full mt-4" />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+              <div className="grid md:grid-cols-3 gap-4 sm:gap-5 items-stretch">
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative bg-card text-card-foreground border rounded-2xl p-6 lg:p-8 flex flex-col justify-between transition-all duration-300 ${plan.popular
-                        ? "border-accent ring-1 ring-accent/20 shadow-xl scale-[1.02] md:scale-105 z-10"
-                        : "border-border hover:border-accent/40 hover:shadow-md"
+                    className={`relative bg-card text-card-foreground border rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 ${plan.popular
+                        ? "border-accent ring-1 ring-accent/20 shadow-lg scale-[1.01] md:scale-[1.02] z-10"
+                        : "border-border hover:border-accent/40 hover:shadow-sm"
                       }`}
                   >
                     {plan.popular && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <span className="bg-accent text-white text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full shadow-lg">
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <span className="bg-accent text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md">
                           {t("pricingPage.popularBadge")}
                         </span>
                       </div>
                     )}
 
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       <div className="text-center">
-                        <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
-                        <p className="text-xs sm:text-sm text-muted-foreground min-h-[40px] flex items-center justify-center">{plan.description}</p>
+                        <h3 className="text-base sm:text-lg font-bold text-foreground mb-0.5">{plan.name}</h3>
+                        <p className="text-[11px] sm:text-xs text-muted-foreground min-h-[30px] flex items-center justify-center">{plan.description}</p>
 
-                        <div className="flex items-baseline justify-center gap-1 mt-4">
+                        <div className="flex items-baseline justify-center gap-1 mt-2.5">
                           {plan.originalPrice && (
-                            <span className="text-sm text-muted-foreground line-through mr-2">
+                            <span className="text-xs text-muted-foreground line-through mr-1.5">
                               {formatPrice(plan.originalPrice)}đ
                             </span>
                           )}
-                          <span className="text-3xl sm:text-4xl font-extrabold text-foreground">
+                          <span className="text-2xl sm:text-3xl font-extrabold text-foreground">
                             {plan.price === 0 ? "0" : formatPrice(plan.price)}
                           </span>
-                          <span className="text-sm text-muted-foreground">đ{plan.period}</span>
+                          <span className="text-xs text-muted-foreground">đ{plan.period}</span>
                         </div>
 
                         {plan.monthlyEquivalent && (
-                          <p className="text-xs text-green-600 dark:text-green-400 font-semibold mt-1">
+                          <p className="text-[11px] text-green-600 dark:text-green-400 font-semibold mt-0.5">
                             {plan.monthlyEquivalent}
                           </p>
                         )}
                       </div>
 
-                      <div className="border-t border-border my-2" />
+                      <div className="border-t border-border my-1" />
 
-                      <ul className="space-y-3.5">
+                      <ul className="space-y-2">
                         {plan.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2.5">
+                          <li key={idx} className="flex items-start gap-2">
                             {feature.included ? (
-                              <Check className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                              <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             ) : (
-                              <X className="w-5 h-5 text-muted-foreground/30 shrink-0 mt-0.5" />
+                              <X className="w-4 h-4 text-muted-foreground/30 shrink-0 mt-0.5" />
                             )}
-                            <span className={`text-sm ${feature.included
+                            <span className={`text-xs sm:text-[13px] leading-snug ${feature.included
                                 ? "text-foreground/90 font-medium"
                                 : "text-muted-foreground/50 line-through"
                               }`}>
@@ -287,24 +291,24 @@ export default function PricingPage() {
                       </ul>
                     </div>
 
-                    <div className="mt-8">
+                    <div className="mt-5">
                       <button
                         onClick={() => handleSubscribe(plan)}
                         disabled={plan.disabled || loadingPlan === plan.id}
-                        className={`w-full py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${plan.disabled
+                        className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${plan.disabled
                             ? "bg-muted text-muted-foreground cursor-not-allowed"
                             : plan.popular
-                              ? "bg-accent hover:bg-accent-600 text-white shadow-lg shadow-accent/20 hover:scale-[1.01]"
-                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground hover:scale-[1.01]"
+                              ? "bg-accent hover:bg-accent-600 text-white shadow-md shadow-accent/20 hover:shadow-lg"
+                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
                           }`}
                       >
                         {loadingPlan === plan.id ? (
                           <>
-                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
-                            {t("pricingPage.processing")}
+                            <span>{t("pricingPage.processing")}</span>
                           </>
                         ) : (
                           plan.buttonText

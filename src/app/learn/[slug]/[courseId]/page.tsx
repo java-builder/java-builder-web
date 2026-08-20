@@ -93,7 +93,7 @@ export default function LearnCoursePage() {
 
       setCourse(courseResult.data);
 
-      const canAccess = courseResult.data.isEnrolled;
+      const canAccess = Boolean(courseResult.data.isEnrolled || courseResult.data.isPremiumUser);
       if (!canAccess) {
         setAccessDenied(true);
         return;

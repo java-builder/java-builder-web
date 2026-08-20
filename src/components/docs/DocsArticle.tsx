@@ -323,34 +323,40 @@ export default function DocsArticle({
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  Nội dung này đã được khóa
+                  Nội dung bài học này đang được khóa
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-                  Bài học này thuộc chương trình đào tạo chuyên sâu. Vui lòng đăng ký mua khóa học để mở khóa toàn bộ nội dung lý thuyết, bài tập thực hành, mã nguồn dự án mẫu và nhận sự hỗ trợ 1-1 từ giảng viên.
+                  Bài học này thuộc chương trình chuyên sâu. Bạn có thể <span className="font-semibold text-gray-900 dark:text-white">mua lẻ khóa học để sở hữu vĩnh viễn</span> hoặc <span className="font-semibold text-accent">nâng cấp gói Premium</span> để mở khóa toàn bộ khóa học & câu hỏi phỏng vấn.
                 </p>
-                <div className="flex justify-center items-center">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
                   {onEnrollClick ? (
                     <button
                       type="button"
                       onClick={onEnrollClick}
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-bold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
-                      Mua khóa học để truy cập
+                      <span>Mở khóa bài học ngay</span>
                     </button>
                   ) : courseSlug ? (
                     <Link
                       href={`/courses/${courseSlug}`}
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-bold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
-                      Mua khóa học để truy cập
+                      <span>Mở khóa bài học ngay</span>
                     </Link>
                   ) : null}
+                  <Link
+                    href="/pricing"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700/70 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 font-semibold rounded-xl transition-all text-sm"
+                  >
+                    <span>Xem các gói Premium</span>
+                  </Link>
                 </div>
                 
                 <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700/50 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-xs font-semibold text-slate-500 dark:text-slate-400">
@@ -358,19 +364,19 @@ export default function DocsArticle({
                     <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span>Sở hữu trọn đời</span>
+                    <span>Mua lẻ: Sở hữu trọn đời</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Premium: Toàn bộ Courses & Phỏng vấn</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
                     <span>Hỗ trợ học tập 24/7</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Mã nguồn & Tài liệu đi kèm</span>
                   </div>
                 </div>
               </div>

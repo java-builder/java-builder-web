@@ -25,6 +25,7 @@ import CourseInstructor from "@/components/courses/CourseInstructor";
 import CourseSidebar from "@/components/courses/CourseSidebar";
 import VideoPreviewModal from "@/components/courses/VideoPreviewModal";
 import PaymentModal from "@/components/courses/PaymentModal";
+import CourseUnlockModal from "@/components/courses/CourseUnlockModal";
 import { useI18n } from "@/contexts/I18nContext";
 
 export default function CourseDetailPage() {
@@ -84,6 +85,7 @@ export default function CourseDetailPage() {
     isLoading: false,
     data: null,
   });
+  const [unlockModalOpen, setUnlockModalOpen] = useState(false);
   const [rateLimitModalOpen, setRateLimitModalOpen] = useState(false);
 
   useEffect(() => {
@@ -99,7 +101,7 @@ export default function CourseDetailPage() {
           const courseData = result.data;
           setCourse(courseData);
           setIsFavorite(courseData.isFavorite ?? false);
-          setIsEnrolled(courseData.isEnrolled ?? false);
+          setIsEnrolled(Boolean(courseData.isEnrolled || courseData.isPremiumUser));
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : t("courseDetail.loadError");
@@ -111,6 +113,20 @@ export default function CourseDetailPage() {
 
     fetchData();
   }, [slug, t]);
+
+  useEffect(() => {
+    const handlePaymentSuccess = () => {
+      setIsEnrolled(true);
+      setUnlockModalOpen(false);
+      setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      setCourse(prev => prev ? { ...prev, isEnrolled: true, isPremiumUser: true } : null);
+    };
+
+    window.addEventListener('payment:success', handlePaymentSuccess);
+    return () => {
+      window.removeEventListener('payment:success', handlePaymentSuccess);
+    };
+  }, []);
 
   const handleToggleFavorite = async () => {
     if (!course?.id) return;
@@ -198,6 +214,22 @@ export default function CourseDetailPage() {
     } else {
       toast.error(t("courseDetail.enrollToWatch"));
     }
+  };
+
+  const handleOpenUnlockModal = () => {
+    if (!course?.price || course.price === 0) {
+      handleEnrollFree();
+      return;
+    }
+    if (!currentUser) {
+      setAuthModal({
+        isOpen: true,
+        title: t("courseDetail.enrollLoginTitle"),
+        message: t("courseDetail.enrollLoginMessage"),
+      });
+      return;
+    }
+    setUnlockModalOpen(true);
   };
 
   const handlePayment = async () => {
@@ -468,7 +500,7 @@ export default function CourseDetailPage() {
               isFavorite={isFavorite}
               favoriteLoading={favoriteLoading}
               isEnrollingFree={isEnrollingFree}
-              onPayment={handlePayment}
+              onPayment={handleOpenUnlockModal}
               onEnrollFree={handleEnrollFree}
               onToggleFavorite={handleToggleFavorite}
               formatPrice={formatPrice}
@@ -487,8 +519,20 @@ export default function CourseDetailPage() {
         onClose={() => setPreviewModal({ isOpen: false, lesson: null })}
         onEnroll={() => {
           setPreviewModal({ isOpen: false, lesson: null });
-          handlePayment();
+          handleOpenUnlockModal();
         }}
+      />
+
+      <CourseUnlockModal
+        isOpen={unlockModalOpen}
+        onClose={() => setUnlockModalOpen(false)}
+        courseTitle={course?.title || ""}
+        coursePrice={course?.price}
+        onBuySingleCourse={async () => {
+          setUnlockModalOpen(false);
+          await handlePayment();
+        }}
+        isCreatingPayment={paymentModal.isLoading}
       />
 
       <PaymentModal

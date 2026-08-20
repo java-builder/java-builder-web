@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useWebSocket } from '@/components/providers/PresenceProvider';
 import { subscribeToPaymentSuccess, PaymentSuccessNotification } from '@/lib/websocket';
+import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-
 import { clearInterviewQuestionsCache } from '@/hooks/useInterviewQuestions';
 
 export const usePaymentWebSocket = (courseId?: string) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
   const { client, isConnected } = useWebSocket();
 
   useEffect(() => {
@@ -16,6 +18,17 @@ export const usePaymentWebSocket = (courseId?: string) => {
     }
 
     const subscription = subscribeToPaymentSuccess(client, (notification: PaymentSuccessNotification) => {
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('payment:success', { detail: notification }));
+      }
+
+      const isLearningPage =
+        pathname?.startsWith('/docs') ||
+        pathname?.startsWith('/learn') ||
+        pathname?.startsWith('/courses') ||
+        pathname?.startsWith('/interview');
+
       if (notification.transactionType === 'SUBSCRIPTION') {
         clearInterviewQuestionsCache();
 
@@ -31,10 +44,14 @@ export const usePaymentWebSocket = (courseId?: string) => {
           },
         });
 
-        setTimeout(() => {
-          router.push('/profile/subscription');
+        if (isLearningPage) {
           router.refresh();
-        }, 2000);
+        } else {
+          setTimeout(() => {
+            router.push('/profile/subscription');
+            router.refresh();
+          }, 1500);
+        }
 
       } else if (notification.transactionType === 'PAYIN') {
         toast.success('🎉 Thanh toán khóa học thành công!', {
@@ -42,10 +59,14 @@ export const usePaymentWebSocket = (courseId?: string) => {
           position: 'top-center',
         });
 
-        setTimeout(() => {
-          router.push('/my-courses');
+        if (isLearningPage) {
           router.refresh();
-        }, 2000);
+        } else {
+          setTimeout(() => {
+            router.push('/my-courses');
+            router.refresh();
+          }, 1500);
+        }
       }
     });
 
@@ -54,7 +75,7 @@ export const usePaymentWebSocket = (courseId?: string) => {
         subscription.unsubscribe();
       }
     };
-  }, [client, isConnected, router, courseId]);
+  }, [client, isConnected, router, pathname, queryClient, courseId]);
 
   return client;
 };

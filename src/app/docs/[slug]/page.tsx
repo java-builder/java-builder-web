@@ -10,6 +10,7 @@ import DocsTableOfContents from "@/components/docs/DocsTableOfContents";
 import CourseOverview from "@/components/docs/CourseOverview";
 import ReviewSection from "@/components/courses/ReviewSection";
 import PaymentModal from "@/components/courses/PaymentModal";
+import CourseUnlockModal from "@/components/courses/CourseUnlockModal";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { enrollmentApi } from "@/services/enrollment.service";
@@ -48,6 +49,8 @@ export default function DocsDetailPage() {
   const [isLoadingLesson, setIsLoadingLesson] = useState(!!lessonIdFromUrl);
   const lessonCacheRef = useRef<Record<string, LessonDetailResponse>>({});
 
+  const hasAccess = Boolean(course?.isEnrolled || course?.isPremiumUser);
+
   usePaymentWebSocket(course?.id);
   const createPaymentMutation = useCreatePaymentLink();
 
@@ -60,6 +63,8 @@ export default function DocsDetailPage() {
     isLoading: false,
     data: null,
   });
+
+  const [unlockModalOpen, setUnlockModalOpen] = useState(false);
 
   const [authModal, setAuthModal] = useState<{
     isOpen: boolean;
@@ -138,7 +143,15 @@ export default function DocsDetailPage() {
     if (!course?.price || course.price === 0) {
       handleEnrollFree();
     } else {
-      handlePayment();
+      if (!currentUser) {
+        setAuthModal({
+          isOpen: true,
+          title: "Đăng nhập để tiếp tục",
+          message: "Bạn cần đăng nhập để mua khóa học hoặc nâng cấp gói Premium.",
+        });
+        return;
+      }
+      setUnlockModalOpen(true);
     }
   };
 
@@ -227,6 +240,25 @@ export default function DocsDetailPage() {
     }
     return null;
   }, [course?.description]);
+
+  useEffect(() => {
+    const handlePaymentSuccess = async () => {
+      setUnlockModalOpen(false);
+      setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      setCourse(prev => prev ? { ...prev, isEnrolled: true, isPremiumUser: true } : null);
+      lessonCacheRef.current = {};
+      if (selectedChapter) {
+        setIsLoadingLesson(true);
+        await loadLessonContent(selectedChapter);
+        setIsLoadingLesson(false);
+      }
+    };
+
+    window.addEventListener('payment:success', handlePaymentSuccess);
+    return () => {
+      window.removeEventListener('payment:success', handlePaymentSuccess);
+    };
+  }, [selectedChapter, loadLessonContent]);
 
   useEffect(() => {
     if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0) return;
@@ -599,7 +631,7 @@ export default function DocsDetailPage() {
               {course && (
                 <>
                   <CourseOverview
-                    course={course}
+                    course={{ ...course, isEnrolled: hasAccess }}
                     chapterLessons={chapterLessons}
                     onLessonClick={handleLessonClick}
                     onEnrollClick={handleEnrollClick}
@@ -617,7 +649,7 @@ export default function DocsDetailPage() {
                     </div>
                     <ReviewSection
                       courseId={course.id}
-                      isEnrolled={course.isEnrolled ?? false}
+                      isEnrolled={hasAccess}
                     />
                   </div>
                 </>
@@ -690,6 +722,18 @@ export default function DocsDetailPage() {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
+
+      <CourseUnlockModal
+        isOpen={unlockModalOpen}
+        onClose={() => setUnlockModalOpen(false)}
+        courseTitle={course?.title || ""}
+        coursePrice={course?.price}
+        onBuySingleCourse={async () => {
+          setUnlockModalOpen(false);
+          await handlePayment();
+        }}
+        isCreatingPayment={createPaymentMutation.isPending}
+      />
 
       <PaymentModal
         isOpen={paymentModal.isOpen}
