@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Blog } from "@/types/blog";
 import { blogService } from "@/services/blog.service";
 
@@ -8,7 +8,6 @@ export function useBlogDetail(blogSlug: string) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingRelated, setIsLoadingRelated] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const hasIncrementedViewRef = useRef(false);
 
   useEffect(() => {
     const fetchBlogDetail = async () => {
@@ -43,25 +42,6 @@ export function useBlogDetail(blogSlug: string) {
 
     fetchBlogDetail();
   }, [blogSlug]);
-
-  useEffect(() => {
-    const incrementView = async () => {
-      if (!blogSlug || !blog || hasIncrementedViewRef.current) return;
-      try {
-        hasIncrementedViewRef.current = true;
-        const newCount = await blogService.incrementView(blogSlug);
-        setBlog((prev) =>
-          prev
-            ? {
-              ...prev,
-              viewCount: typeof newCount === "number" ? newCount : prev.viewCount + 1,
-            }
-            : prev,
-        );
-      } catch {}
-    };
-    incrementView();
-  }, [blogSlug, blog]);
 
   return {
     blog,
