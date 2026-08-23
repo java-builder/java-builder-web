@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import {
   BlogType,
@@ -15,6 +15,8 @@ import { Tag } from "@/types/tag";
 import MarkdownEditor from "./MarkdownEditor";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import BlogTypeIcon from "./BlogTypeIcon";
 import {
   X,
   Upload,
@@ -107,6 +109,29 @@ export default function UpdateBlogModal({
       console.error("Error loading categories:", error);
     }
   };
+
+  const blogTypeOptions: SelectOption[] = useMemo(() => {
+    return Object.entries(BlogTypeDisplayNames).map(([key, displayName]) => ({
+      value: key,
+      label: displayName,
+      icon: (
+        <BlogTypeIcon
+          blogType={key as BlogType}
+          className="w-4 h-4 text-accent"
+        />
+      ),
+    }));
+  }, []);
+
+  const categoryOptions: SelectOption[] = useMemo(() => {
+    return [
+      { value: "", label: "-- Chọn danh mục --" },
+      ...categories.map((cat) => ({
+        value: cat.id,
+        label: cat.name,
+      })),
+    ];
+  }, [categories]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -398,22 +423,16 @@ export default function UpdateBlogModal({
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Loại bài viết <span className="text-destructive">*</span>
                   </label>
-                  <select
+                  <CustomSelect
                     value={formData.blogType}
-                    onChange={(e) =>
-                      handleInputChange("blogType", e.target.value as BlogType)
+                    onChange={(val) =>
+                      handleInputChange("blogType", val as BlogType)
                     }
-                    className={`w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm transition-colors duration-200 ${errors.blogType ? "border-destructive bg-destructive/10" : "border-input"
+                    options={blogTypeOptions}
+                    placeholder="Chọn loại bài viết"
+                    triggerClassName={`h-[46px] rounded-lg text-sm ${errors.blogType ? "border-destructive bg-destructive/10" : ""
                       }`}
-                  >
-                    {Object.entries(BlogTypeDisplayNames).map(
-                      ([key, displayName]) => (
-                        <option key={key} value={key}>
-                          {displayName}
-                        </option>
-                      ),
-                    )}
-                  </select>
+                  />
                   {errors.blogType && (
                     <p className="mt-1.5 text-xs text-destructive">{errors.blogType}</p>
                   )}
@@ -428,25 +447,17 @@ export default function UpdateBlogModal({
                     <FolderOpen className="w-4 h-4 mr-1.5 text-accent" />
                     Danh mục
                   </label>
-                  <div className="relative">
-                    <select
-                      value={formData.categoryId || ""}
-                      onChange={(e) =>
-                        handleInputChange("categoryId", e.target.value || undefined)
-                      }
-                      className="w-full px-4 py-3 pr-10 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm appearance-none cursor-pointer hover:border-accent/50"
-                    >
-                      <option value="" className="text-muted-foreground">-- Chọn danh mục --</option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id} className="text-foreground">
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
-                      <FolderOpen className="w-4 h-4" />
-                    </div>
-                  </div>
+                  <CustomSelect
+                    value={formData.categoryId || ""}
+                    onChange={(val) =>
+                      handleInputChange("categoryId", val ? String(val) : undefined)
+                    }
+                    options={categoryOptions}
+                    placeholder="-- Chọn danh mục --"
+                    searchable={true}
+                    searchPlaceholder="Tìm kiếm danh mục..."
+                    triggerClassName="h-[46px] rounded-lg text-sm"
+                  />
                   <p className="mt-1.5 text-xs text-muted-foreground">
                     Chọn danh mục phù hợp cho bài viết
                   </p>

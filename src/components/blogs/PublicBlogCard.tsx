@@ -3,15 +3,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { Blog, BlogTypeDisplayNames } from "@/types/blog";
 import BlogTypeIcon from "@/components/admin/blogs/BlogTypeIcon";
-import { formatApiDateOnly } from "@/utils/dateUtils";
+import { formatRelativeTime } from "@/utils/dateUtils";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface PublicBlogCardProps {
   blog: Blog;
 }
 
 export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
+  const { t } = useI18n();
   const { data: currentUser } = useCurrentUser();
 
   const [authModal, setAuthModal] = useState<{
@@ -69,7 +71,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
             </span>
           </div>
           <time className="text-xs text-gray-500 dark:text-slate-400" dateTime={blog.createdAt}>
-            {formatApiDateOnly(blog.createdAt)}
+            {formatRelativeTime(blog.createdAt, t)}
           </time>
         </div>
 
