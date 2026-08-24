@@ -6,8 +6,8 @@ import { CourseLevel, CourseFormat, UpdateCourseRequest, UpdateLessonRequest } f
 import { LessonFormat } from "@/types/lesson";
 
 export const useCourses = (
-  page = 1, 
-  size = 10, 
+  page?: number, 
+  size?: number, 
   title?: string, 
   level?: CourseLevel,
   courseFormat?: CourseFormat
@@ -37,7 +37,7 @@ export const useCourseDetail = (courseId: string) => {
 };
 
 export const useFeaturedCourses = () => {
-  return useCourses(1, 3, undefined, undefined, undefined);
+  return useCourses();
 };
 
 // Helper functions for course edit operations

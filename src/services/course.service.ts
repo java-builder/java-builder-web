@@ -34,13 +34,21 @@ export const courseApi = {
 
   // Lấy danh sách khóa học
   getCourses: async (
-    page: number = 1,
-    size: number = 10,
+    page?: number,
+    size?: number,
     title?: string,
     level?: CourseLevel,
     courseFormat?: CourseFormat,
   ) => {
-    const params: Record<string, string | number> = { page, size };
+    const params: Record<string, string | number> = {};
+
+    if (page !== undefined) {
+      params.page = page;
+    }
+
+    if (size !== undefined) {
+      params.size = size;
+    }
 
     if (title) {
       params.title = title;
