@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useState, useRef, useEffect, useCallback } from "react";
 import LessonNotes from "@/components/learn/LessonNotes";
 import DocsAiAssistant from "@/components/docs/DocsAiAssistant";
-import { Check, X, FileText, Bot } from "lucide-react";
+import { Check, X, FileText, Bot, Lock, Crown, ShoppingCart, UserPlus, Sparkles } from "lucide-react";
 
 const READ_TIME_THRESHOLD_MS = 90 * 1000; // 1 minute 30 seconds (90,000 ms)
 
@@ -217,6 +217,47 @@ export default function DocsArticle({
         </div>
       </header>
 
+      {/* Free Preview Banner if Not Enrolled */}
+      {isFreePreview && canAccess === false && (
+        <div className="mb-6 rounded-2xl border border-amber-200/80 bg-amber-50/60 p-4 sm:p-5 shadow-xs dark:border-amber-900/40 dark:bg-amber-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 px-2.5 py-0.5 text-xs font-semibold text-amber-800 dark:text-amber-300">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Xem trước miễn phí</span>
+            </div>
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+              Bạn đang xem bài học thử miễn phí. Mua khóa học hoặc đăng ký gói Premium để mở khóa toàn bộ bài học.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            {coursePrice && coursePrice > 0 ? (
+              <button
+                onClick={onEnrollClick}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-accent/90 cursor-pointer"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Mua ngay ({coursePrice.toLocaleString("vi-VN")} đ)</span>
+              </button>
+            ) : (
+              <button
+                onClick={onEnrollClick}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-accent/90 cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Tham gia miễn phí</span>
+              </button>
+            )}
+            <Link
+              href="/pricing"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-700 px-3.5 py-2 text-xs sm:text-sm font-semibold text-amber-700 dark:text-amber-300 transition shadow-xs"
+            >
+              <Crown className="w-4 h-4 text-amber-500" />
+              <span>Hoặc đăng ký gói Premium</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
       <PublicMarkdownRenderer
         content={content}
         className="prose prose-lg dark:prose-invert max-w-none"
@@ -318,15 +359,13 @@ export default function DocsArticle({
             ) : (
               <div className="relative z-10">
                 <div className="inline-flex items-center justify-center w-14 h-14 bg-accent/10 dark:bg-accent/20 rounded-2xl text-accent mb-4 border border-accent/20 shadow-sm">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
+                  <Lock className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                   Nội dung bài học này đang được khóa
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-                  Bài học này thuộc chương trình chuyên sâu. Bạn có thể <span className="font-semibold text-gray-900 dark:text-white">mua lẻ khóa học để sở hữu vĩnh viễn</span> hoặc <span className="font-semibold text-accent">nâng cấp gói Premium</span> để mở khóa toàn bộ khóa học & câu hỏi phỏng vấn.
+                  Bài học này thuộc chương trình chuyên sâu. Bạn có thể <span className="font-semibold text-gray-900 dark:text-white">mua lẻ khóa học để sở hữu vĩnh viễn</span> hoặc <span className="font-semibold text-amber-600 dark:text-amber-400">nâng cấp gói Premium</span> để mở khóa toàn bộ khóa học & câu hỏi phỏng vấn.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
                   {onEnrollClick ? (
@@ -335,27 +374,24 @@ export default function DocsArticle({
                       onClick={onEnrollClick}
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-bold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                      </svg>
-                      <span>Mở khóa bài học ngay</span>
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>Mua ngay {coursePrice ? `(${coursePrice.toLocaleString("vi-VN")} đ)` : ""}</span>
                     </button>
                   ) : courseSlug ? (
                     <Link
                       href={`/courses/${courseSlug}`}
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-bold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                      </svg>
-                      <span>Mở khóa bài học ngay</span>
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>Mua ngay {coursePrice ? `(${coursePrice.toLocaleString("vi-VN")} đ)` : ""}</span>
                     </Link>
                   ) : null}
                   <Link
                     href="/pricing"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700/70 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 font-semibold rounded-xl transition-all text-sm"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-300 font-semibold rounded-xl transition-all text-sm shadow-xs"
                   >
-                    <span>Xem các gói Premium</span>
+                    <Crown className="w-4 h-4 text-amber-500" />
+                    <span>Hoặc đăng ký gói Premium</span>
                   </Link>
                 </div>
                 

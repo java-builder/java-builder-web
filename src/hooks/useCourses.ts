@@ -6,9 +6,9 @@ import { CourseLevel, CourseFormat, UpdateCourseRequest, UpdateLessonRequest } f
 import { LessonFormat } from "@/types/lesson";
 
 export const useCourses = (
-  page?: number, 
-  size?: number, 
-  title?: string, 
+  page?: number,
+  size?: number,
+  title?: string,
   level?: CourseLevel,
   courseFormat?: CourseFormat
 ) => {

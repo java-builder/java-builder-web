@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Check, X } from "lucide-react";
+import { Check, X, Crown, BookOpen, MessageSquare, Zap, HelpCircle, ShieldCheck } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
@@ -65,7 +65,9 @@ export default function PricingPage() {
         { text: t("pricingPage.freeFeature1"), included: true },
         { text: t("pricingPage.freeFeature2"), included: true },
         { text: t("pricingPage.freeFeature3"), included: true },
-        { text: t("pricingPage.freeFeature4"), included: true },
+        { text: t("pricingPage.freeFeature4"), included: false },
+        { text: t("pricingPage.freeFeature5"), included: false },
+        { text: t("pricingPage.freeFeature6"), included: false },
       ],
       buttonText: t("pricingPage.statusUsing"),
       popular: false,
@@ -86,19 +88,30 @@ export default function PricingPage() {
 
       const isPremium = plan.name.toLowerCase().includes("premium") || plan.id.toLowerCase().includes("premium");
 
-      const features = isPremium
-        ? [
-            ...baseFeatures,
-            { 
-              text: locale === "vi" ? "Mở khóa toàn bộ các khóa học trên hệ thống" : "Unlock all courses on the platform", 
-              included: true 
-            },
-            { 
-              text: locale === "vi" ? "Ôn tập toàn bộ câu hỏi phỏng vấn chuyên sâu" : "Practice all interview questions", 
-              included: true 
-            }
-          ]
-        : baseFeatures;
+      const premiumFeatures = [
+        { 
+          text: locale === "vi" ? "Mở khóa 100% tất cả khóa học & tài liệu trên hệ thống" : "Unlock 100% of all courses and docs on platform", 
+          included: true 
+        },
+        { 
+          text: locale === "vi" ? "Tự động truy cập mọi khóa học & bài học mới cập nhật" : "Access all newly released courses and updates", 
+          included: true 
+        },
+        { 
+          text: locale === "vi" ? "Ôn luyện toàn bộ ngân hàng câu hỏi phỏng vấn chuyên sâu" : "Practice full bank of advanced interview questions", 
+          included: true 
+        },
+        { 
+          text: locale === "vi" ? "Hỗ trợ ưu tiên 1-1 và giải đáp thắc mắc từ mentor" : "1-on-1 priority mentor support & Q&A", 
+          included: true 
+        },
+        { 
+          text: locale === "vi" ? "Tải mã nguồn dự án mẫu & tài nguyên độc quyền" : "Download sample project source code & assets", 
+          included: true 
+        },
+      ];
+
+      const features = isPremium ? premiumFeatures : baseFeatures;
 
       return {
         id: plan.id,
@@ -109,7 +122,7 @@ export default function PricingPage() {
           : isYearly
             ? t("pricingPage.periodYearly")
             : t("pricingPage.periodDays").replace("{days}", plan.durationDays.toString()),
-        description: plan.description || "",
+        description: plan.description || (locale === "vi" ? "Truy cập toàn bộ tài liệu Premium & quyền lợi đặc biệt" : "Full access to Premium docs and perks"),
         features,
         buttonText: t("pricingPage.subscribeBtn"),
         popular: isMonthly,
@@ -319,6 +332,143 @@ export default function PricingPage() {
                 ))}
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Benefits Section */}
+        <section className="py-10 px-4 border-t border-border/50 bg-muted/20">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full border border-amber-500/20">
+                <Crown className="w-3.5 h-3.5" />
+                {locale === "vi" ? "Quyền Lợi Đặc Quyền" : "Exclusive Perks"}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                {locale === "vi" ? "Tại sao bạn nên nâng cấp gói Premium?" : "Why Upgrade to Premium Membership?"}
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {locale === "vi"
+                  ? "Tiết kiệm tối đa chi phí học tập và sở hữu trọn bộ kiến thức công nghệ thực chiến."
+                  : "Maximize your learning value and access complete real-world tech stacks."}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-bold text-foreground">
+                  {locale === "vi" ? "Mở khóa toàn bộ khóa học" : "Unlock All Courses"}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {locale === "vi"
+                    ? "Truy cập không giới hạn mọi bài học, video và tài liệu chuyên sâu mà không cần mua lẻ từng khóa."
+                    : "Unlimited access to all lessons, videos, and deep-dive documentation without paying per course."}
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-bold text-foreground">
+                  {locale === "vi" ? "Ngân hàng câu hỏi phỏng vấn" : "Interview Question Bank"}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {locale === "vi"
+                    ? "Ôn tập bộ câu hỏi phỏng vấn thực tế từ Fresher đến Senior có lời giải chi tiết và chuyên sâu."
+                    : "Practice real interview questions from Fresher to Senior with comprehensive explanations."}
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-bold text-foreground">
+                  {locale === "vi" ? "Hỗ trợ ưu tiên 1-1" : "1-on-1 Priority Support"}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {locale === "vi"
+                    ? "Được mentor trực tiếp hỗ trợ giải đáp thắc mắc và sửa lỗi code nhanh chóng khi làm dự án."
+                    : "Direct mentor assistance for troubleshooting code and answering learning questions."}
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-bold text-foreground">
+                  {locale === "vi" ? "Cập nhật liên tục miễn phí" : "Continuous Free Updates"}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {locale === "vi"
+                    ? "Tự động truy cập mọi khóa học, tài liệu và mã nguồn mới được phát hành trong thời hạn gói."
+                    : "Auto access to all newly released courses and source codes throughout your active plan."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-10 px-4">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="text-center space-y-1.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full border border-accent/20">
+                <HelpCircle className="w-3.5 h-3.5" />
+                {locale === "vi" ? "Giải Đáp Thắc Mắc" : "FAQ"}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                {locale === "vi" ? "Câu hỏi thường gặp về gói Premium" : "Frequently Asked Questions"}
+              </h2>
+            </div>
+
+            <div className="grid gap-3.5">
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-1.5">
+                <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  {locale === "vi"
+                    ? "Gói Premium khác gì so với việc mua lẻ từng khóa học?"
+                    : "How does Premium differ from buying single courses?"}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground pl-4 leading-relaxed">
+                  {locale === "vi"
+                    ? "Khi mua lẻ, bạn chỉ sở hữu một khóa học duy nhất đó. Khi đăng ký gói Premium, bạn được mở khóa TOÀN BỘ tất cả các khóa học & tài liệu chuyên sâu hiện có và mới phát hành trên hệ thống, kèm theo quyền truy cập ngân hàng câu hỏi phỏng vấn và kênh hỗ trợ ưu tiên 1-1 từ mentor."
+                    : "Buying a single course grants lifetime access to only that course. A Premium subscription unlocks ALL courses, all advanced documents, interview question banks, and priority 1-on-1 mentor support."}
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-1.5">
+                <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  {locale === "vi"
+                    ? "Trong thời gian Premium, tôi có được học các khóa học mới không?"
+                    : "Can I access newly released courses during my Premium period?"}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground pl-4 leading-relaxed">
+                  {locale === "vi"
+                    ? "Có! Bạn có toàn quyền truy cập tất cả các khóa học mới, bài giảng cập nhật và tài liệu mới được phát hành trong thời hạn gói Premium của bạn mà không phải trả thêm bất kỳ chi phí nào."
+                    : "Yes! You have full access to all newly published courses, updated lectures, and new docs without paying anything extra while your subscription is active."}
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-1.5">
+                <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  {locale === "vi"
+                    ? "Hệ thống thanh toán và kích hoạt gói như thế nào?"
+                    : "How does payment and plan activation work?"}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground pl-4 leading-relaxed">
+                  {locale === "vi"
+                    ? "Bạn có thể thanh toán tức thì bằng cách quét mã VietQR qua PayOS từ bất kỳ ứng dụng ngân hàng hoặc ví điện tử nào. Gói Premium sẽ được hệ thống tự động kích hoạt ngay lập tức sau khi giao dịch thành công."
+                    : "You can pay instantly using VietQR via PayOS from any banking app or e-wallet. Your Premium subscription activates automatically as soon as payment is confirmed."}
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
