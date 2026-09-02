@@ -47,4 +47,18 @@ export const paymentApi = {
     );
     return response.data;
   },
+
+  deleteExpiredPayment: async (paymentId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `${API.PAYMENT_DELETE}/${paymentId}`
+    );
+    return response.data;
+  },
+
+  deleteAllExpiredPayments: async () => {
+    const response = await apiClient.delete<ApiResponse<number>>(
+      API.PAYMENT_DELETE_ALL_EXPIRED
+    );
+    return response.data;
+  },
 };

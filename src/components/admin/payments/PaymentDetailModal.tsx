@@ -8,6 +8,7 @@ import {
   Mail,
   Package,
   ScrollText,
+  Trash2,
   User,
   Wallet,
   X,
@@ -24,6 +25,7 @@ import { formatApiDate } from "@/utils/dateUtils";
 interface PaymentDetailModalProps {
   payment: PaymentDetailResponse;
   onClose: () => void;
+  onDelete?: (payment: PaymentDetailResponse) => void;
 }
 
 const STATUS_CONFIG: Record<
@@ -89,7 +91,11 @@ const getPaymentGatewayText = (gateway: PaymentGateWay) => {
   }
 };
 
-export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps) => {
+export const PaymentDetailModal = ({
+  payment,
+  onClose,
+  onDelete,
+}: PaymentDetailModalProps) => {
   // Lock body scroll while open
   useEffect(() => {
     const original = document.body.style.overflow;
@@ -259,6 +265,23 @@ export const PaymentDetailModal = ({ payment, onClose }: PaymentDetailModalProps
                 </div>
               </Section>
             </div>
+
+            {/* Footer action if EXPIRED */}
+            {payment.paymentStatus === PaymentStatus.EXPIRED && onDelete && (
+              <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/10 px-5 py-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onDelete(payment);
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/50"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Xóa giao dịch hết hạn
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -309,9 +332,8 @@ function Field({
       <div className="mt-1 flex items-center gap-1.5">
         {icon}
         <p
-          className={`text-sm font-medium text-foreground ${
-            breakAll ? "break-all" : ""
-          } ${mono ? "font-mono tabular-nums" : ""}`}
+          className={`text-sm font-medium text-foreground ${breakAll ? "break-all" : ""
+            } ${mono ? "font-mono tabular-nums" : ""}`}
         >
           {value}
         </p>

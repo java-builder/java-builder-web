@@ -44,12 +44,16 @@ const TYPE_TONE: Record<TransactionType, string> = {
     "bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-400",
 };
 
+import { Trash2 } from "lucide-react";
+
 interface PaymentMobileCardProps {
   payment: PaymentDetailResponse;
   onClick: (payment: PaymentDetailResponse) => void;
+  onDelete?: (payment: PaymentDetailResponse) => void;
 }
 
-export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) => {
+export const PaymentMobileCard = ({ payment, onClick, onDelete }: PaymentMobileCardProps) => {
+  const isExpired = payment.paymentStatus === PaymentStatus.EXPIRED;
   const productName =
     payment.courseTitle || payment.subscriptionPlanName || "—";
   const formattedAmount = new Intl.NumberFormat("vi-VN", {
@@ -58,10 +62,9 @@ export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) 
   }).format(payment.totalPrice);
 
   return (
-    <button
-      type="button"
+    <div
       onClick={() => onClick(payment)}
-      className="block w-full rounded-xl border border-border bg-card p-4 text-left transition hover:border-accent hover:shadow-sm"
+      className="cursor-pointer block w-full rounded-xl border border-border bg-card p-4 text-left transition hover:border-accent hover:shadow-sm"
     >
       {/* Top row: order code + status */}
       <div className="flex items-start justify-between gap-3">
@@ -76,11 +79,26 @@ export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) 
             {payment.userEmail}
           </div>
         </div>
-        <span
-          className={`inline-flex flex-shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1 ${STATUS_TONE[payment.paymentStatus] ?? STATUS_TONE.DEFAULT}`}
-        >
-          {STATUS_LABEL[payment.paymentStatus] ?? payment.paymentStatus}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            className={`inline-flex flex-shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1 ${STATUS_TONE[payment.paymentStatus] ?? STATUS_TONE.DEFAULT}`}
+          >
+            {STATUS_LABEL[payment.paymentStatus] ?? payment.paymentStatus}
+          </span>
+          {isExpired && onDelete && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(payment);
+              }}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+              title="Xóa giao dịch hết hạn"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Detail rows */}
@@ -114,6 +132,6 @@ export const PaymentMobileCard = ({ payment, onClick }: PaymentMobileCardProps) 
           </dd>
         </div>
       </dl>
-    </button>
+    </div>
   );
 };

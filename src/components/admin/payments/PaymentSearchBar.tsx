@@ -58,6 +58,11 @@ export const PaymentSearchBar = ({
       label: t("admin.payments.statusCancelled"),
       badge: <span className="h-2 w-2 rounded-full bg-gray-400" />,
     },
+    {
+      value: PaymentStatus.EXPIRED,
+      label: t("admin.payments.statusExpired"),
+      badge: <span className="h-2 w-2 rounded-full bg-orange-500" />,
+    },
   ];
 
   const activeFilterCount = [orderCode, startDate, endDate, status].filter(

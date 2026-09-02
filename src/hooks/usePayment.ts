@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { paymentApi, PaymentSearchParams } from "@/services/payment.service";
 
 export const useMyPaymentHistory = (page: number = 1, size: number = 10) => {
@@ -28,5 +28,25 @@ export const useAllPayments = (params: PaymentSearchParams) => {
 export const useCreatePaymentLink = () => {
   return useMutation({
     mutationFn: (courseId: string) => paymentApi.createPaymentLink(courseId),
+  });
+};
+
+export const useDeleteExpiredPayment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (paymentId: string) => paymentApi.deleteExpiredPayment(paymentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allPayments"] });
+    },
+  });
+};
+
+export const useDeleteAllExpiredPayments = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => paymentApi.deleteAllExpiredPayments(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allPayments"] });
+    },
   });
 };

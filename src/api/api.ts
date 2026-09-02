@@ -74,6 +74,8 @@ export const API = {
     PAYMENT_CREATE_LINK: "/api/v1/payments/create-link",
     PAYMENT_MY_HISTORY: "/api/v1/payments/my-history",
     PAYMENT_ALL: "/api/v1/payments/all",
+    PAYMENT_DELETE: "/api/v1/payments", // + /:id
+    PAYMENT_DELETE_ALL_EXPIRED: "/api/v1/payments/expired",
 
     // NOTIFICATION
     GET_NOTIFICATIONS: "/api/v1/notifications",

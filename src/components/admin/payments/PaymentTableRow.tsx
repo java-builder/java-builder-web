@@ -91,12 +91,17 @@ const TransactionTypeBadge = ({ type }: { type: TransactionType }) => {
   );
 };
 
+import { Trash2 } from "lucide-react";
+
 interface PaymentTableRowProps {
   payment: PaymentDetailResponse;
   onClick: (payment: PaymentDetailResponse) => void;
+  onDelete?: (payment: PaymentDetailResponse) => void;
 }
 
-export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
+export const PaymentTableRow = ({ payment, onClick, onDelete }: PaymentTableRowProps) => {
+  const isExpired = payment.paymentStatus === PaymentStatus.EXPIRED;
+
   return (
     <tr
       className="cursor-pointer transition-colors hover:bg-muted/25"
@@ -132,6 +137,18 @@ export const PaymentTableRow = ({ payment, onClick }: PaymentTableRowProps) => {
       </td>
       <td className="hidden whitespace-nowrap px-4 py-3 text-xs tabular-nums text-muted-foreground xl:table-cell">
         {formatLocaleString(payment.createdAt)}
+      </td>
+      <td className="whitespace-nowrap px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+        {isExpired && onDelete && (
+          <button
+            type="button"
+            onClick={() => onDelete(payment)}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+            title="Xóa giao dịch hết hạn"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
       </td>
     </tr>
   );
