@@ -1,15 +1,16 @@
-
 import Image from "next/image";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
 import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface ContributionDetailModalProps {
   contribution: QuestionContributionDetailResponse;
   onClose: () => void;
   onApprove: () => void;
   onReject: () => void;
+  onDelete: () => void;
 }
 
 export default function ContributionDetailModal({
@@ -17,6 +18,7 @@ export default function ContributionDetailModal({
   onClose,
   onApprove,
   onReject,
+  onDelete,
 }: ContributionDetailModalProps) {
 
   const getStatusConfig = (status: string) => {
@@ -209,30 +211,50 @@ export default function ContributionDetailModal({
             )}
           </div>
 
-          {contribution.status === "PENDING" && (
-            <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex items-center justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={onReject}
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
-              >
-                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Từ chối
-              </Button>
-              <Button
-                variant="outline"
-                onClick={onApprove}
-                className="text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-600 hover:border-emerald-500/20"
-              >
-                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Duyệt
-              </Button>
+          <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex items-center justify-between gap-3">
+            <Button
+              variant="outline"
+              onClick={onDelete}
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
+            >
+              <Trash2 className="w-4 h-4 mr-1.5" />
+              Xóa
+            </Button>
+            <div className="flex items-center gap-3">
+              {contribution.status === "PENDING" ? (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={onReject}
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
+                  >
+                    <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Từ chối
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={onApprove}
+                    className="text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-600 hover:border-emerald-500/20"
+                  >
+                    <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Duyệt
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={onClose}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Đóng
+                </Button>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

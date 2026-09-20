@@ -8,6 +8,7 @@ import ContributionCard from "@/components/admin/question-contributions/Contribu
 import ContributionDetailModal from "@/components/admin/question-contributions/ContributionDetailModal";
 import RejectModal from "@/components/admin/question-contributions/RejectModal";
 import ApproveModal from "@/components/admin/question-contributions/ApproveModal";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, SlidersHorizontal, Layers, Clock, CheckCircle2, XCircle, RotateCw } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
@@ -24,6 +25,16 @@ export default function QuestionContributionsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    id: string;
+    question: string;
+  }>({
+    isOpen: false,
+    id: "",
+    question: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchContributions = useCallback(async () => {
     try {
@@ -71,6 +82,33 @@ export default function QuestionContributionsPage() {
       fetchContributions();
     } catch {
       toast.error("Không thể từ chối câu hỏi");
+    }
+  };
+
+  const handleDelete = (contribution: QuestionContributionDetailResponse) => {
+    setDeleteModal({
+      isOpen: true,
+      id: contribution.id,
+      question: contribution.question,
+    });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteModal.id) return;
+    try {
+      setIsDeleting(true);
+      await questionContributionService.deleteContribution(deleteModal.id);
+      toast.success("Đã xóa câu hỏi đóng góp!");
+      setDeleteModal({ isOpen: false, id: "", question: "" });
+      if (showDetailModal) {
+        setShowDetailModal(false);
+        setSelectedContribution(null);
+      }
+      fetchContributions();
+    } catch {
+      toast.error("Không thể xóa câu hỏi đóng góp");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -263,6 +301,7 @@ export default function QuestionContributionsPage() {
                 setSelectedContribution(contribution);
                 setShowRejectModal(true);
               }}
+              onDelete={() => handleDelete(contribution)}
             />
           ))
         )}
@@ -307,6 +346,7 @@ export default function QuestionContributionsPage() {
             setShowDetailModal(false);
             setShowRejectModal(true);
           }}
+          onDelete={() => handleDelete(selectedContribution)}
         />
       )}
 
@@ -333,6 +373,19 @@ export default function QuestionContributionsPage() {
           setRejectReason={setRejectReason}
         />
       )}
+
+      {/* Delete Confirm Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, id: "", question: "" })}
+        onConfirm={confirmDelete}
+        title="Xóa câu hỏi đóng góp"
+        message={`Bạn có chắc chắn muốn xóa câu hỏi đóng góp <strong>${deleteModal.question}</strong>? Thao tác này không thể hoàn tác.`}
+        confirmText="Xóa"
+        cancelText="Hủy"
+        isLoading={isDeleting}
+        type="danger"
+      />
     </div>
   );
 }

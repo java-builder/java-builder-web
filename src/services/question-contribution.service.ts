@@ -42,6 +42,10 @@ export const questionContributionService = {
   async rejectContribution(id: string, reason: string) {
     return apiClient.put(`${API.REJECT_CONTRIBUTION}/${id}/reject`, { reason });
   },
+
+  async deleteContribution(id: string) {
+    return apiClient.delete(`${API.DELETE_QUESTION_CONTRIBUTION}/${id}`);
+  },
 };
 
 export type { QuestionContributionDetailResponse };

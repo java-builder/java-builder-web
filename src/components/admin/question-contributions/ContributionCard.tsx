@@ -2,12 +2,14 @@ import Image from "next/image";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface ContributionCardProps {
   contribution: QuestionContributionDetailResponse;
   onViewDetail: () => void;
   onApprove: () => void;
   onReject: () => void;
+  onDelete: () => void;
 }
 
 export default function ContributionCard({
@@ -15,6 +17,7 @@ export default function ContributionCard({
   onViewDetail,
   onApprove,
   onReject,
+  onDelete,
 }: ContributionCardProps) {
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -177,6 +180,15 @@ export default function ContributionCard({
               </Button>
             </>
           )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onDelete}
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 ml-auto"
+          >
+            <Trash2 className="w-4 h-4 mr-1.5" />
+            Xóa
+          </Button>
         </div>
       </div>
     </div>
