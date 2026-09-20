@@ -11,11 +11,12 @@ export const useUserActivities = (
   enabled: boolean = true
 ) => {
   const isAuthenticated = authApi.isAuthenticated();
+  const formattedDate = date ? date.split(/[ T]/)[0] : undefined;
 
   return useQuery({
-    queryKey: ["user-activities", page, size, date],
+    queryKey: ["user-activities", page, size, formattedDate],
     queryFn: async () => {
-      const response = await userActivityService.getMyActivities(page, size, date);
+      const response = await userActivityService.getMyActivities(page, size, formattedDate);
       return response.data;
     },
     enabled: Boolean(enabled && isAuthenticated),

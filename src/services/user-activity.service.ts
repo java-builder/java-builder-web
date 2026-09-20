@@ -24,7 +24,7 @@ export const userActivityService = {
     };
 
     if (date) {
-      params.date = date;
+      params.date = date.split(/[ T]/)[0];
     }
 
     const response = await apiClient.get(API_ENDPOINTS.MY_ACTIVITIES, {

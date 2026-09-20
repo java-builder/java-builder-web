@@ -77,7 +77,7 @@ export default function StudyProgressClient() {
         targetDate = new Date(year, month - 6, day);
         break;
       case "custom":
-        return selectedDate;
+        return selectedDate ? selectedDate.split(/[ T]/)[0] : "";
       default:
         return "";
     }
@@ -88,13 +88,17 @@ export default function StudyProgressClient() {
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  const filterDate =
-    dateFilter === "custom" ? selectedDate : getFilterDate(dateFilter);
+  const filterDate = useMemo(() => {
+    const rawDate =
+      dateFilter === "custom" ? selectedDate : getFilterDate(dateFilter);
+    if (!rawDate) return undefined;
+    return rawDate.split(/[ T]/)[0];
+  }, [dateFilter, selectedDate]);
 
   const { data, isLoading, isFetching } = useUserActivities(
     currentPage,
     PAGE_SIZE,
-    filterDate || undefined
+    filterDate
   );
 
   const activities = useMemo(() => data?.data || [], [data?.data]);
