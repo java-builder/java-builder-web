@@ -157,10 +157,8 @@ export default function AboutClient() {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
 
-        {/* 1. TOP 2-COLUMN SECTION: Java Developer & AWS Certified Solutions Architect */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch">
-          
-          {/* Col 1: Java Developer Profile */}
+
           <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-xs hover:border-accent/30 transition-all flex flex-col justify-between">
             <div>
               <div className="flex items-start sm:items-center justify-between gap-2.5 mb-3.5 sm:mb-4">
@@ -210,7 +208,6 @@ export default function AboutClient() {
                 .
               </p>
 
-              {/* Focus tags */}
               <div className="flex flex-wrap gap-1.5 mt-3.5 sm:mt-4">
                 {[
                   "Java Core",
@@ -251,7 +248,6 @@ export default function AboutClient() {
             </div>
           </div>
 
-          {/* Col 2: AWS Certified Solutions Architect – Associate */}
           <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-xs hover:border-accent/30 transition-all flex flex-col justify-between">
             <div>
               <div className="flex items-start justify-between gap-2.5 mb-3.5 sm:mb-4">
@@ -293,7 +289,6 @@ export default function AboutClient() {
                 Chứng nhận năng lực toàn diện trong việc thiết kế các giải pháp điện toán đám mây an toàn, bền vững, tối ưu chi phí và đạt tính sẵn sàng cao (High Availability) trên AWS.
               </p>
 
-              {/* AWS tags */}
               <div className="flex flex-wrap gap-1.5 mt-3.5">
                 {[
                   "AWS Cloud",
