@@ -99,8 +99,10 @@ export default function PostList({
   const [fetchedPosts, setFetchedPosts] = useState<PostDetail[]>([]);
   const [loading, setLoading] = useState(posts === undefined);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const loadingMoreRef = useRef(false);
+  const hasMoreRef = useRef(false);
 
   useEffect(() => {
     let mounted = true;
@@ -108,6 +110,7 @@ export default function PostList({
     if (posts !== undefined) {
       setFetchedPosts(posts);
       setHasMore(false);
+      hasMoreRef.current = false;
       setLoading(false);
       return;
     }
@@ -115,7 +118,8 @@ export default function PostList({
     setLoading(true);
     setFetchedPosts([]);
     setPage(1);
-    setHasMore(true);
+    setHasMore(false);
+    hasMoreRef.current = false;
 
     const timer = setTimeout(async () => {
       try {
@@ -131,13 +135,19 @@ export default function PostList({
         const items: PostDetail[] = Array.isArray(pageData?.data) ? pageData.data : [];
         if (!mounted) return;
         setFetchedPosts(items);
-        setHasMore(items.length === pageSize);
+        const canLoadMore = items.length > 0 && items.length === pageSize;
+        setHasMore(canLoadMore);
+        hasMoreRef.current = canLoadMore;
       } catch (e) {
         console.error("Failed to load posts for Q&A", e);
+        if (mounted) {
+          setHasMore(false);
+          hasMoreRef.current = false;
+        }
       } finally {
         if (mounted) setLoading(false);
       }
-    }, 500);
+    }, 400);
 
     return () => {
       mounted = false;
@@ -146,12 +156,13 @@ export default function PostList({
   }, [posts, searchQuery, filterTag, statusFilter, sortBy, pageSize]);
 
   const loadMore = useCallback(async (nextPage: number) => {
-    if (loadingMore) return;
+    if (loadingMoreRef.current || !hasMoreRef.current) return;
+    loadingMoreRef.current = true;
     setLoadingMore(true);
     try {
       const params: Record<string, unknown> = { page: nextPage, size: pageSize };
       if (searchQuery) params.search = searchQuery;
-      if (filterTag && filterTag !== "all") params.categoryName = filterTag;
+      if (filterTag && filterTag !== "all") params.category = filterTag;
       if (statusFilter === "resolved") params.isSolved = true;
       if (statusFilter === "unanswered") params.isSolved = false;
       if (sortBy) params.sortBy = sortBy;
@@ -160,21 +171,26 @@ export default function PostList({
       const pageData = resp.data?.data;
       const items: PostDetail[] = Array.isArray(pageData?.data) ? pageData.data : [];
       setFetchedPosts((prev) => [...prev, ...items]);
-      setHasMore(items.length === pageSize);
+      const canLoadMore = items.length > 0 && items.length === pageSize;
+      setHasMore(canLoadMore);
+      hasMoreRef.current = canLoadMore;
       setPage(nextPage);
     } catch (e) {
       console.error("Failed to load more posts for Q&A", e);
+      setHasMore(false);
+      hasMoreRef.current = false;
     } finally {
+      loadingMoreRef.current = false;
       setLoadingMore(false);
     }
-  }, [loadingMore, pageSize, searchQuery, filterTag, statusFilter, sortBy]);
+  }, [pageSize, searchQuery, filterTag, statusFilter, sortBy]);
 
   useEffect(() => {
     if (!("IntersectionObserver" in window)) return;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && hasMore && !loading && !loadingMore) {
+          if (entry.isIntersecting && hasMoreRef.current && !loadingMoreRef.current) {
             loadMore(page + 1);
           }
         });
@@ -187,7 +203,7 @@ export default function PostList({
     return () => {
       observer.disconnect();
     };
-  }, [hasMore, loading, loadingMore, page, loadMore]);
+  }, [hasMore, loading, page, loadMore]);
 
   const displayPosts = posts && posts.length > 0 ? posts : fetchedPosts ?? [];
 
@@ -497,7 +513,7 @@ export default function PostList({
       })}
 
       {/* Sentinel element for infinite scroll loading */}
-      {hasMore && !loading && (
+      {hasMore && !loading && displayPosts.length > 0 && (
         <div id="qna-posts-sentinel" className="py-4 text-center">
           {loadingMore && (
             <div className="inline-flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">

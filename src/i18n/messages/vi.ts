@@ -216,6 +216,7 @@ export const vi = {
     settings: "Cài đặt",
     profile: "Thông tin cá nhân",
     theme: "Giao diện",
+    about: "Về tác giả",
   },
   leaderboardPage: {
     badge: "BXH CHĂM CHỈ HỌC TẬP",

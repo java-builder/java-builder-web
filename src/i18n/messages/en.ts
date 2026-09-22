@@ -216,6 +216,7 @@ export const en = {
     settings: "Settings",
     profile: "Profile",
     theme: "Theme",
+    about: "About Author",
   },
   leaderboardPage: {
     badge: "STUDY STREAK LEADERBOARD",

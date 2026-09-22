@@ -90,6 +90,17 @@ export const menuGroups: MenuGroup[] = [
         color: "text-indigo-600 dark:text-indigo-400",
       },
       {
+        href: "/qna",
+        label: "Hỏi đáp",
+        labelKey: "sidebar.qna",
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        color: "text-cyan-600 dark:text-cyan-400",
+      },
+      {
         href: "/mentor",
         label: "Đào tạo Mentor 1-1",
         labelKey: "sidebar.mentor",
@@ -100,31 +111,16 @@ export const menuGroups: MenuGroup[] = [
         ),
         color: "text-pink-600 dark:text-pink-400",
       },
-      // Temporarily hidden - Lộ trình cá nhân hóa
-      // {
-      //   href: "/personalized-roadmap",
-      //   label: "Lộ trình cá nhân hóa",
-      //   labelKey: "sidebar.personalizedRoadmap",
-      //   icon: (
-      //     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      //       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z" />
-      //       <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z" />
-      //       <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z" />
-      //     </svg>
-      //   ),
-      //   color: "text-emerald-600 dark:text-emerald-400",
-      //   requireAuth: true,
-      // },
       {
-        href: "/qna",
-        label: "Hỏi đáp",
-        labelKey: "sidebar.qna",
+        href: "/about",
+        label: "Về tác giả",
+        labelKey: "sidebar.about",
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         ),
-        color: "text-cyan-600 dark:text-cyan-400",
+        color: "text-amber-500 dark:text-amber-400",
       },
 
       {

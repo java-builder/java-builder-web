@@ -214,8 +214,9 @@ export const ja = {
     myPremium: "マイPremiumプラン",
     paymentHistory: "支払い履歴",
     settings: "設定",
-    profile: "プロフィール",
+    profile: "個人情報",
     theme: "テーマ",
+    about: "著者について",
   },
   leaderboardPage: {
     badge: "学習ストリークランキング",
