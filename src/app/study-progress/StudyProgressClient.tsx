@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useUserActivities } from "@/hooks/useUserActivities";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 import {
@@ -50,50 +50,53 @@ export default function StudyProgressClient() {
     [dailyQuote, locale]
   );
 
-  const getFilterDate = (filter: DateFilterId): string => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    const day = today.getDate();
+  const getFilterDate = useCallback(
+    (filter: DateFilterId): string => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const day = today.getDate();
 
-    let targetDate: Date;
-    switch (filter) {
-      case "today":
-        targetDate = new Date(year, month, day);
-        break;
-      case "yesterday":
-        targetDate = new Date(year, month, day - 1);
-        break;
-      case "days3":
-        targetDate = new Date(year, month, day - 3);
-        break;
-      case "week":
-        targetDate = new Date(year, month, day - 7);
-        break;
-      case "month":
-        targetDate = new Date(year, month - 1, day);
-        break;
-      case "6months":
-        targetDate = new Date(year, month - 6, day);
-        break;
-      case "custom":
-        return selectedDate ? selectedDate.split(/[ T]/)[0] : "";
-      default:
-        return "";
-    }
+      let targetDate: Date;
+      switch (filter) {
+        case "today":
+          targetDate = new Date(year, month, day);
+          break;
+        case "yesterday":
+          targetDate = new Date(year, month, day - 1);
+          break;
+        case "days3":
+          targetDate = new Date(year, month, day - 3);
+          break;
+        case "week":
+          targetDate = new Date(year, month, day - 7);
+          break;
+        case "month":
+          targetDate = new Date(year, month - 1, day);
+          break;
+        case "6months":
+          targetDate = new Date(year, month - 6, day);
+          break;
+        case "custom":
+          return selectedDate ? selectedDate.split(/[ T]/)[0] : "";
+        default:
+          return "";
+      }
 
-    const yyyy = targetDate.getFullYear();
-    const mm = String(targetDate.getMonth() + 1).padStart(2, "0");
-    const dd = String(targetDate.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  };
+      const yyyy = targetDate.getFullYear();
+      const mm = String(targetDate.getMonth() + 1).padStart(2, "0");
+      const dd = String(targetDate.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    },
+    [selectedDate]
+  );
 
   const filterDate = useMemo(() => {
     const rawDate =
       dateFilter === "custom" ? selectedDate : getFilterDate(dateFilter);
     if (!rawDate) return undefined;
     return rawDate.split(/[ T]/)[0];
-  }, [dateFilter, selectedDate]);
+  }, [dateFilter, selectedDate, getFilterDate]);
 
   const { data, isLoading, isFetching } = useUserActivities(
     currentPage,

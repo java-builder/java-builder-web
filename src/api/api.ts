@@ -283,4 +283,7 @@ export const API = {
     CERTIFICATES: "/api/v1/certificates",
     CERTIFICATES_MY: "/api/v1/certificates/my-certificates",
     CERTIFICATES_CREATE: "/api/v1/certificates",
+
+    // CACHE MANAGEMENT
+    ADMIN_CACHES: "/api/v1/admin/caches",
 }

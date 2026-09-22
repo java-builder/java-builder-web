@@ -4,25 +4,28 @@ import { useState } from "react";
 import Image from "next/image";
 import { QuestionContributionDetailResponse } from "@/types/interview";
 import { formatApiDate } from "@/utils/dateUtils";
+import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trash2, Check, X, FolderGit2, Calendar, MoreHorizontal } from "lucide-react";
+import { Check, X, Trash2, FolderGit2, Calendar, MoreHorizontal } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 
-interface ContributionCardProps {
+interface ContributionTableRowProps {
   contribution: QuestionContributionDetailResponse;
+  isDeleting: boolean;
   onViewDetail: () => void;
   onApprove: () => void;
   onReject: () => void;
   onDelete: () => void;
 }
 
-export default function ContributionCard({
+export const ContributionTableRow = ({
   contribution,
+  isDeleting,
   onViewDetail,
   onApprove,
   onReject,
   onDelete,
-}: ContributionCardProps) {
+}: ContributionTableRowProps) => {
   const { t } = useI18n();
   const [avatarError, setAvatarError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,7 +34,7 @@ export default function ContributionCard({
     switch (status) {
       case "PENDING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
             <span className="relative flex h-2 w-2 mr-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
@@ -41,21 +44,21 @@ export default function ContributionCard({
         );
       case "APPROVED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5" />
             {t("admin.questionContributions.tabApproved")}
           </span>
         );
       case "REJECTED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
             <span className="h-1.5 w-1.5 rounded-full bg-rose-500 mr-1.5" />
             {t("admin.questionContributions.tabRejected")}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-muted text-muted-foreground border border-border">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-muted text-muted-foreground border border-border">
             {status}
           </span>
         );
@@ -66,25 +69,25 @@ export default function ContributionCard({
     switch (difficulty) {
       case "EASY":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
             {t("admin.questionContributions.difficultyEasy")}
           </span>
         );
       case "MEDIUM":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
             {t("admin.questionContributions.difficultyMedium")}
           </span>
         );
       case "HARD":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
             {t("admin.questionContributions.difficultyHard")}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-muted text-muted-foreground">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-muted text-muted-foreground">
             {difficulty}
           </span>
         );
@@ -93,11 +96,11 @@ export default function ContributionCard({
 
   const contributorInitials = contribution.contributorName
     ? contribution.contributorName
-        .split(" ")
-        .map((p) => p[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
+      .split(" ")
+      .map((p) => p[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
     : "CB";
 
   const isValidAvatar =
@@ -108,94 +111,86 @@ export default function ContributionCard({
     !avatarError;
 
   return (
-    <div
+    <TableRow
       onClick={onViewDetail}
-      className="bg-card rounded-xl border border-border shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group cursor-pointer"
+      className="hover:bg-muted/50 transition-colors group cursor-pointer"
     >
-      <div className="p-5 space-y-4 flex-1">
-        {/* Header: Contributor Profile & Status Badge */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            {isValidAvatar ? (
-              <Image
-                src={contribution.contributorAvatar!}
-                alt={contribution.contributorName || "Avatar"}
-                width={40}
-                height={40}
-                onError={() => setAvatarError(true)}
-                className="h-10 w-10 rounded-full object-cover border border-border shrink-0"
-              />
-            ) : (
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                {contributorInitials}
-              </div>
-            )}
-            <div className="min-w-0">
-              <h4 className="text-sm font-semibold text-foreground truncate leading-snug">
-                {contribution.contributorName || "Ẩn danh"}
-              </h4>
-              <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5" title={contribution.contributorEmail}>
-                {contribution.contributorEmail}
-              </p>
-              <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-1">
-                <Calendar className="h-3 w-3 shrink-0" />
-                <span>{formatApiDate(contribution.createdAt)}</span>
-              </div>
+      {/* Contributor */}
+      <TableCell className="py-3.5 px-4 align-middle">
+        <div className="flex items-center gap-3">
+          {isValidAvatar ? (
+            <Image
+              src={contribution.contributorAvatar!}
+              alt={contribution.contributorName || "Avatar"}
+              width={36}
+              height={36}
+              onError={() => setAvatarError(true)}
+              className="h-9 w-9 rounded-full object-cover border border-border shrink-0"
+            />
+          ) : (
+            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+              {contributorInitials}
             </div>
-          </div>
-
-          <div className="shrink-0">
-            {getStatusBadge(contribution.status)}
+          )}
+          <div className="min-w-0 max-w-[170px]">
+            <p className="text-sm font-semibold text-foreground truncate leading-snug">
+              {contribution.contributorName || "Ẩn danh"}
+            </p>
+            <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5" title={contribution.contributorEmail}>
+              {contribution.contributorEmail}
+            </p>
           </div>
         </div>
+      </TableCell>
 
-        {/* Tags Row: Topic / Difficulty / Level */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-muted text-muted-foreground border border-border px-2.5 py-0.5 rounded-md">
-            <FolderGit2 className="h-3.5 w-3.5" />
-            <span className="truncate max-w-[180px]">
-              {contribution.questionSetTitle || t("admin.questionContributions.unassigned")}
+      {/* Question & Question Set */}
+      <TableCell className="py-3.5 px-4 align-middle">
+        <div className="max-w-[320px] lg:max-w-[420px] space-y-1.5">
+          <p
+            className="text-sm font-medium text-foreground line-clamp-2 leading-relaxed group-hover:text-accent transition-colors"
+            title={contribution.question}
+          >
+            {contribution.question}
+          </p>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/50 border border-border/70 px-2 py-0.5 rounded">
+              <FolderGit2 className="h-3 w-3 text-accent/80" />
+              <span className="truncate max-w-[200px]">
+                {contribution.questionSetTitle || t("admin.questionContributions.unassigned")}
+              </span>
             </span>
-          </span>
+          </div>
+        </div>
+      </TableCell>
 
+      {/* Difficulty & Level */}
+      <TableCell className="py-3.5 px-4 align-middle whitespace-nowrap">
+        <div className="flex flex-col gap-1 items-start">
           {getDifficultyBadge(contribution.difficulty)}
-
           {contribution.level && (
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-muted text-muted-foreground border border-border uppercase">
+            <span className="px-1.5 py-0.2 rounded text-[10px] font-bold tracking-wider bg-muted text-muted-foreground border border-border/80 uppercase">
               {contribution.level}
             </span>
           )}
         </div>
+      </TableCell>
 
-        {/* Question Title */}
-        <div className="space-y-2">
-          <h3
-            className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors"
-            title={contribution.question}
-          >
-            {contribution.question}
-          </h3>
+      {/* Status */}
+      <TableCell className="py-3.5 px-4 align-middle whitespace-nowrap">
+        {getStatusBadge(contribution.status)}
+      </TableCell>
 
-          {/* Answer Preview Box (if present) */}
-          {contribution.answer && (
-            <div className="bg-muted/40 border border-border rounded-lg p-3">
-              <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                <span className="font-semibold text-foreground mr-1">Trả lời:</span>
-                {contribution.answer.replace(/[#*`_\[\]]/g, "")}
-              </p>
-            </div>
-          )}
+      {/* Submission Date */}
+      <TableCell className="py-3.5 px-4 align-middle whitespace-nowrap text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5">
+          <Calendar className="h-3.5 w-3.5 text-muted-foreground/60" />
+          <span>{formatApiDate(contribution.createdAt)}</span>
         </div>
-      </div>
+      </TableCell>
 
-      {/* Footer Details & Ellipsis Action Menu */}
-      <div className="px-5 py-3 bg-muted/15 border-t border-border/70 flex items-center justify-between gap-2">
-        <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1">
-          Nhấn vào thẻ để xem chi tiết
-        </span>
-
-        {/* Action Menu Trigger Button (using system Button) */}
-        <div className="relative">
+      {/* Actions (Using system Button for trigger and dropdown menu) */}
+      <TableCell className="py-3.5 px-4 align-middle text-right whitespace-nowrap">
+        <div className="relative inline-block text-right">
           <Button
             type="button"
             variant="outline"
@@ -221,7 +216,7 @@ export default function ContributionCard({
               />
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="absolute right-0 bottom-full mb-1.5 min-w-[170px] bg-popover text-popover-foreground rounded-xl shadow-xl border border-border p-1 z-40 animate-in zoom-in-95 duration-150 space-y-0.5"
+                className="absolute right-0 top-full mt-1.5 min-w-[170px] bg-popover text-popover-foreground rounded-xl shadow-xl border border-border p-1 z-40 animate-in zoom-in-95 duration-150 space-y-0.5 text-left"
               >
                 {contribution.status === "PENDING" && (
                   <>
@@ -265,6 +260,7 @@ export default function ContributionCard({
                     setIsMenuOpen(false);
                     onDelete();
                   }}
+                  disabled={isDeleting}
                   className="w-full justify-start text-xs font-medium h-8.5 px-2.5 gap-2 cursor-pointer"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -274,7 +270,7 @@ export default function ContributionCard({
             </>
           )}
         </div>
-      </div>
-    </div>
+      </TableCell>
+    </TableRow>
   );
-}
+};
