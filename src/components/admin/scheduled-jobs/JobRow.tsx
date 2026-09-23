@@ -4,12 +4,15 @@ import { formatJobDate } from "./helpers";
 
 interface JobRowProps {
   job: ScheduledJobResponse;
+  onClick?: () => void;
 }
 
-export default function JobRow({ job }: JobRowProps) {
+export default function JobRow({ job, onClick }: JobRowProps) {
   return (
-    <tr className="transition hover:bg-muted/50">
-      {/* Job */}
+    <tr
+      onClick={onClick}
+      className={`transition hover:bg-muted/50 ${onClick ? "cursor-pointer" : ""}`}
+    >
       <td className="px-4 py-3">
         <div className="line-clamp-1 text-sm font-semibold text-foreground" title={job.title}>
           {job.title || job.jobName}

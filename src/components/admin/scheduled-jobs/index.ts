@@ -2,6 +2,8 @@ export { default as JobStatsStrip } from "./JobStatsStrip";
 export { default as JobFilters } from "./JobFilters";
 export { default as JobTable } from "./JobTable";
 export { default as JobRow } from "./JobRow";
+export { default as JobMobileCard } from "./JobMobileCard";
+export { default as JobDetailModal } from "./JobDetailModal";
 export { default as JobStatusPill } from "./JobStatusPill";
 export {
   STATUS_LABELS,
