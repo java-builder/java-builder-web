@@ -179,6 +179,33 @@ export default function MarkdownEditor({
                 tooltip="Code Block"
               />
               <ToolbarButton
+                onClick={() =>
+                  insertMarkdown(
+                    "```mermaid\ngraph TD\n    A[Bắt đầu] --> B[Xử lý]\n    B --> C[Kết thúc]\n```\n",
+                    ""
+                  )
+                }
+                icon={
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="18" cy="18" r="3" />
+                    <circle cx="6" cy="6" r="3" />
+                    <circle cx="18" cy="6" r="3" />
+                    <path d="M6 9v6" />
+                    <path d="M9 6h6" />
+                    <path d="M15 18H9" />
+                  </svg>
+                }
+                tooltip="Sơ đồ Mermaid"
+              />
+              <ToolbarButton
                 onClick={() => insertMarkdown("---\n", "")}
                 icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>}
                 tooltip="Divider"

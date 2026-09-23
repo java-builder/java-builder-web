@@ -13,6 +13,7 @@ import React, { useMemo, useState } from "react";
 import type { Components } from "react-markdown";
 import { slugify } from "@/utils/markdown";
 import { Check, Copy, Info, Lightbulb, AlertTriangle, AlertCircle, AlertOctagon } from "lucide-react";
+import MermaidBlock from "@/components/markdown/MermaidBlock";
 
 interface PublicMarkdownRendererProps {
   content: string;
@@ -99,13 +100,18 @@ export default function PublicMarkdownRenderer({
       
       if (match) {
         const rawLanguage = match[1];
+        const codeString = String(children).replace(/\n$/, "");
+
+        if (rawLanguage.toLowerCase() === "mermaid") {
+          return <MermaidBlock chart={codeString} />;
+        }
+
         const languageMap: Record<string, string> = {
           springboot: "java",
           js: "javascript",
           ts: "typescript",
         };
         const highlightLanguage = languageMap[rawLanguage.toLowerCase()] || rawLanguage.toLowerCase();
-        const codeString = String(children).replace(/\n$/, "");
         const codeId = `code-${hashString(codeString)}`;
         
         return (
@@ -172,6 +178,10 @@ export default function PublicMarkdownRenderer({
           {children}
         </code>
       );
+    },
+    pre(props) {
+      const { children } = props;
+      return <>{children}</>;
     },
     blockquote(props) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
