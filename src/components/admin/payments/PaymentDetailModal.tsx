@@ -124,11 +124,11 @@ export const PaymentDetailModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-gray-950/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-gray-950/40 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="relative my-6 w-full max-w-3xl"
+        className="relative my-auto w-full max-w-3xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
