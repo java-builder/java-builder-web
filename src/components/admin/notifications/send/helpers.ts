@@ -196,14 +196,14 @@ export const PRIORITIES: PriorityOption[] = [
 
 export const STEPS: { id: ActiveTab; label: string; description: string }[] = [
   {
-    id: "config",
-    label: "Thiết lập",
-    description: "Tiêu đề, preheader và thông tin người gửi",
+    id: "mode",
+    label: "Hình thức",
+    description: "Chọn gửi theo template có sẵn hoặc soạn email mới",
   },
   {
     id: "content",
     label: "Nội dung",
-    description: "Chọn template hoặc soạn email HTML tuỳ chỉnh",
+    description: "Cấu hình tiêu đề, thông tin gửi và nội dung thư",
   },
   {
     id: "audience",

@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { 
+import {
   vscDarkPlus,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -97,7 +97,7 @@ export default function PublicMarkdownRenderer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, className, children, ...rest } = props;
       const match = /language-(\w+)/.exec(className || "");
-      
+
       if (match) {
         const rawLanguage = match[1];
         const codeString = String(children).replace(/\n$/, "");
@@ -113,7 +113,7 @@ export default function PublicMarkdownRenderer({
         };
         const highlightLanguage = languageMap[rawLanguage.toLowerCase()] || rawLanguage.toLowerCase();
         const codeId = `code-${hashString(codeString)}`;
-        
+
         return (
           <div className="relative my-3 rounded-2xl border border-gray-300 dark:border-slate-800 overflow-hidden shadow-xs">
             {/* Header bar */}
@@ -187,12 +187,12 @@ export default function PublicMarkdownRenderer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, children, ...rest } = props;
       const text = getTextFromChildren(children);
-      
+
       // Parse GitHub style alerts: [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION]
       const match = /^\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i.exec(text);
       if (match) {
         const type = match[1].toUpperCase();
-        
+
         // Strip out the [!TYPE] prefix from children content
         const cleanChildren = React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {

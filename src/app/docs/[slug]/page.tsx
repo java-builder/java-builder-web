@@ -606,17 +606,16 @@ export default function DocsDetailPage() {
                   <button
                     onClick={handleToggleFavorite}
                     disabled={favoriteLoading}
-                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-semibold rounded-xl border transition-all duration-150 cursor-pointer shrink-0 ${
-                      isFavorite
-                        ? "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-450 dark:hover:bg-rose-950/40"
-                        : "bg-white border-gray-205 text-gray-755 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-750"
-                    }`}
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-semibold rounded-xl border transition-all duration-150 cursor-pointer shrink-0 ${isFavorite
+                      ? "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-450 dark:hover:bg-rose-950/40"
+                      : "bg-white border-gray-205 text-gray-755 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-750"
+                      }`}
                   >
                     <Heart className={`w-4 h-4 ${isFavorite ? "fill-rose-500 text-rose-500" : ""}`} />
                     <span className="font-semibold">{isFavorite ? "Đã yêu thích" : "Thêm yêu thích"}</span>
                   </button>
                 </h1>
-                
+
                 {course?.updatedAt && (
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-6">
                     Cập nhật {formatDate(course.updatedAt)}
@@ -637,7 +636,7 @@ export default function DocsDetailPage() {
                     onEnrollClick={handleEnrollClick}
                     selectedLessonId={selectedChapter}
                   />
-                  
+
                   <div className="mt-12 pt-10 border-t border-border space-y-6">
                     <div className="space-y-1">
                       <h2 className="text-xl sm:text-2xl font-bold text-foreground">

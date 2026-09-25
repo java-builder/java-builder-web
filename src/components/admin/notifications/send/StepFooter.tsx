@@ -18,14 +18,28 @@ export default function StepFooter({
   isFinal,
   isSubmitting,
 }: StepFooterProps) {
+  const handleBack = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    onBack?.();
+  };
+
+  const handleNext = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    onNext?.();
+  };
+
   return (
     <div className="flex items-center justify-between gap-3">
       {onBack ? (
         <Button
           type="button"
           variant="outline"
-          onClick={onBack}
-          className="gap-1.5"
+          onClick={handleBack}
+          className="gap-1.5 cursor-pointer"
         >
           <ArrowLeft className="h-4 w-4" />
           Quay lại
@@ -38,9 +52,9 @@ export default function StepFooter({
         <Button
           type="button"
           variant="accent"
-          onClick={onNext}
+          onClick={handleNext}
           disabled={isSubmitting}
-          className="gap-1.5 font-semibold"
+          className="gap-1.5 font-semibold cursor-pointer"
         >
           {isFinal ? <Send className="h-4 w-4" /> : null}
           {nextLabel}

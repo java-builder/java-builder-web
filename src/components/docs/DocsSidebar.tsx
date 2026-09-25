@@ -43,7 +43,7 @@ function toRoman(num: number): string {
     [4, 'IV'],
     [1, 'I']
   ];
-  
+
   let result = '';
   let tempNum = num;
   for (const [value, numeral] of romanNumerals) {
@@ -55,9 +55,9 @@ function toRoman(num: number): string {
   return result;
 }
 
-export default function DocsSidebar({ 
-  categories, 
-  openCategories, 
+export default function DocsSidebar({
+  categories,
+  openCategories,
   onCategoryToggle,
   onOverviewClick,
   onLessonClick,
@@ -66,7 +66,7 @@ export default function DocsSidebar({
   loadedChapters = new Set(),
   selectedLessonId = null
 }: DocsSidebarProps) {
-  
+
   const handleCategoryClick = (categoryId: string) => {
     if (categoryId === "overview" && onOverviewClick) {
       onOverviewClick();
@@ -81,7 +81,7 @@ export default function DocsSidebar({
       onLessonClick(topicId);
     }
   };
-  
+
   const isOverviewActive = !selectedLessonId;
 
   return (
@@ -95,59 +95,55 @@ export default function DocsSidebar({
         <nav className="space-y-1.5">
           {categories.map((category, categoryIndex) => {
             const isOverview = category.id === "overview";
-            
+
             // Determine if this chapter is currently active (contains the active lesson)
             const isCategoryActive = isOverview
               ? isOverviewActive
               : category.topics.some(t => t.id === selectedLessonId);
-              
+
             const isExpanded = openCategories.includes(category.id);
-            
+
             // Calculate Roman numeral index for chapters
             const chapterIndex = isOverview ? -1 : categoryIndex;
             const romanNumeral = chapterIndex > 0 ? toRoman(chapterIndex) : null;
-            
+
             // Strip emoji from overview title for clean typography
-            const cleanTitle = isOverview 
+            const cleanTitle = isOverview
               ? category.title.replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, "").trim()
               : category.title;
-            
+
             return (
               <div key={category.id} className="space-y-1">
                 {/* Chapter Header / Overview Button */}
                 <button
                   onClick={() => handleCategoryClick(category.id)}
                   title={cleanTitle}
-                  className={`w-full flex items-start justify-between gap-2 px-3 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer group ${
-                    isCategoryActive
-                      ? "bg-accent/5 dark:bg-accent/10 text-accent dark:text-sky-400 border-l-2 border-accent rounded-r-xl rounded-l-none"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/40 hover:text-gray-900 dark:hover:text-white rounded-xl"
-                  }`}
+                  className={`w-full flex items-start justify-between gap-2 px-3 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer group ${isCategoryActive
+                    ? "bg-accent/5 dark:bg-accent/10 text-accent dark:text-sky-400 border-l-2 border-accent rounded-r-xl rounded-l-none"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/40 hover:text-gray-900 dark:hover:text-white rounded-xl"
+                    }`}
                 >
                   <span className="flex items-start gap-2 min-w-0 flex-1">
                     {isOverview ? (
-                      <BookOpen className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
-                        isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
-                      }`} />
+                      <BookOpen className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
+                        }`} />
                     ) : (
                       romanNumeral && (
-                        <span className={`font-bold flex-shrink-0 text-xs mt-0.5 ${
-                          isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
-                        }`}>{romanNumeral}.</span>
+                        <span className={`font-bold flex-shrink-0 text-xs mt-0.5 ${isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
+                          }`}>{romanNumeral}.</span>
                       )
                     )}
                     <span className="line-clamp-2 leading-tight text-left">{cleanTitle}</span>
                   </span>
-                  
+
                   {!isOverview && (
-                    <ChevronDown 
-                      className={`w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-250 flex-shrink-0 mt-0.5 ${
-                        isExpanded ? 'rotate-180 text-accent dark:text-sky-400' : 'group-hover:text-gray-600 dark:group-hover:text-slate-350'
-                      }`}
+                    <ChevronDown
+                      className={`w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-250 flex-shrink-0 mt-0.5 ${isExpanded ? 'rotate-180 text-accent dark:text-sky-400' : 'group-hover:text-gray-600 dark:group-hover:text-slate-350'
+                        }`}
                     />
                   )}
                 </button>
-              
+
                 {/* Lessons Nested Timeline List */}
                 {isExpanded && !isOverview && (
                   <ul className="relative mt-1 ml-4 pl-3.5 border-l border-gray-150 dark:border-slate-700/60 space-y-1 animate-in fade-in duration-200">
@@ -162,38 +158,38 @@ export default function DocsSidebar({
                     ) : category.topics.length > 0 ? (
                       category.topics.map((topic, index) => {
                         const isTopicActive = selectedLessonId === topic.id;
-                        
+
                         return (
                           <li key={topic.id} id={`lesson-${topic.id}`} className="relative group/item">
                             {/* Inner bullet timeline dot */}
-                            <div className={`absolute -left-[18px] top-3.5 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-200 z-10 ${
-                              isTopicActive 
-                                ? "bg-accent dark:bg-sky-400 scale-125 shadow-sm shadow-accent/50" 
-                                : topic.completed
-                                  ? "bg-emerald-500 dark:bg-emerald-400 scale-110 shadow-sm"
-                                  : "bg-gray-300 dark:bg-slate-600 group-hover/item:bg-accent/60"
-                            }`} />
-                            
+                            <div className={`absolute top-3.5 -translate-y-1/2 rounded-full transition-all duration-200 z-10 ${isTopicActive
+                              ? "w-2.5 h-2.5 -left-[19px] bg-accent dark:bg-sky-400 ring-4 ring-accent/25 dark:ring-sky-400/25 shadow-sm shadow-accent/50"
+                              : topic.completed
+                                ? "w-1.5 h-1.5 -left-[18px] bg-emerald-500 dark:bg-emerald-400 scale-110 shadow-sm"
+                                : "w-1.5 h-1.5 -left-[18px] bg-gray-300 dark:bg-slate-600 group-hover/item:bg-accent/60"
+                              }`} />
+
                             <button
                               onClick={(e) => handleTopicClick(e, topic.id)}
                               title={topic.title}
-                              className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-all duration-200 flex items-start gap-2 cursor-pointer ${
-                                isTopicActive
-                                  ? "bg-accent/10 text-accent font-semibold dark:text-sky-400"
-                                  : topic.completed
-                                    ? "text-emerald-600 dark:text-emerald-450 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/10"
-                                    : "text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/30"
-                              }`}
+                              className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg transition-all duration-200 flex items-start gap-2 cursor-pointer ${isTopicActive
+                                ? "text-accent dark:text-sky-400 font-bold"
+                                : topic.completed
+                                  ? "text-emerald-600 dark:text-emerald-450 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/10"
+                                  : "text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/30"
+                                }`}
                             >
-                              <span className={`font-semibold mt-0.5 ${
-                                isTopicActive
-                                  ? "text-accent dark:text-sky-400"
-                                  : topic.completed
-                                    ? "text-emerald-500 dark:text-emerald-400"
-                                    : "text-gray-400 dark:text-slate-500"
-                              }`}>{index + 1}.</span>
-                              <span className="leading-tight text-left mt-0.5 flex-1">{topic.title}</span>
-                              {topic.completed && (
+                              <span className={`mt-0.5 flex-shrink-0 ${isTopicActive
+                                ? "text-accent dark:text-sky-400 font-bold"
+                                : topic.completed
+                                  ? "text-emerald-500 dark:text-emerald-400 font-semibold"
+                                  : "text-gray-400 dark:text-slate-500 font-semibold"
+                                }`}>{index + 1}.</span>
+                              <span className="leading-tight text-left mt-0.5 flex-1 break-words [overflow-wrap:anywhere] min-w-0">{topic.title}</span>
+                              {isTopicActive && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent dark:bg-sky-400 flex-shrink-0 mt-1.5 animate-pulse" />
+                              )}
+                              {topic.completed && !isTopicActive && (
                                 <svg className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-450 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                 </svg>
@@ -214,7 +210,7 @@ export default function DocsSidebar({
           })}
         </nav>
       </div>
- 
+
       {/* Back button - Fixed at bottom */}
       <div className="p-4 border-t border-gray-200 dark:border-slate-700/60 bg-gray-50/50 dark:bg-slate-900/40">
         <button
