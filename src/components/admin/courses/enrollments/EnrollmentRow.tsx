@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
-import type { CourseEnrollmentResponse } from "@/types/enrollment";
+import type { EnrolledStudentResponse } from "@/types/enrollment";
 import EnrollmentStatusPill from "./EnrollmentStatusPill";
 import { formatEnrollmentDate, getProgressTone } from "./helpers";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
 interface EnrollmentRowProps {
-  enrollment: CourseEnrollmentResponse;
+  enrollment: EnrolledStudentResponse;
   onRemove: (enrollmentId: string, username: string) => void;
 }
 

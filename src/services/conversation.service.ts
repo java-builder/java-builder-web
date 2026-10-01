@@ -5,6 +5,7 @@ import {
   CreateConversationRequest,
   CreateConversationResponse,
   ConversationDetailResponse,
+  MessagingContactResponse,
 } from "@/types/conversation";
 
 export const conversationApi = {
@@ -44,4 +45,18 @@ export const conversationApi = {
     );
     return response.data;
   },
+
+  searchContacts: async (params?: {
+    page?: number;
+    size?: number;
+    courseId?: string;
+    query?: string;
+  }) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<MessagingContactResponse>>>(
+      API.CONVERSATION_CONTACTS,
+      { params }
+    );
+    return response.data;
+  },
 };
+

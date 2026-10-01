@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Plus, PanelLeftClose } from "lucide-react";
-import { EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 
 interface ConversationHeaderProps {
-  currentUser: EnrolledUserResponse;
+  currentUser: MessagingContactResponse;
   onOpenNewChatModal: () => void;
   onToggleSidebar?: () => void;
 }

@@ -1,33 +1,13 @@
 import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
-import { MyEnrolledCourseResponse } from "@/types/course";
-import { CourseEnrollmentResponse } from "@/types/enrollment";
+import { EnrolledCourseResponse } from "@/types/course";
+import { EnrolledStudentResponse } from "@/types/enrollment";
 import { API } from "@/api/api";
 
-export interface EnrolledUserResponse {
-  id: string;
-  username: string;
-  email?: string;
-  avatar?: string;
-  role?: string;
-  courseName?: string;
-  status?: string;
-  lastActive?: string;
-}
-
 export const enrollmentApi = {
-  // Tìm kiếm học viên/người dùng theo khóa học hoặc từ khóa
-  searchEnrolledUsers: async (params?: { page?: number; size?: number; courseId?: string; query?: string }) => {
-    const response = await apiClient.get<ApiResponse<PageResponse<EnrolledUserResponse>>>(
-      API.ENROLLMENTS_SEARCH_USERS,
-      { params }
-    );
-    return response.data;
-  },
-
   // Lấy danh sách khóa học đã đăng ký
   getMyCourses: async (page: number = 1, size: number = 10) => {
-    const response = await apiClient.get<ApiResponse<PageResponse<MyEnrolledCourseResponse>>>(
+    const response = await apiClient.get<ApiResponse<PageResponse<EnrolledCourseResponse>>>(
       API.ENROLLMENTS_MY_COURSES,
       { params: { page, size } },
     );
@@ -65,7 +45,7 @@ export const enrollmentApi = {
 
   // Admin lấy danh sách học viên của khóa học
   getCourseEnrollments: async (courseId: string, page: number = 1, size: number = 20) => {
-    const response = await apiClient.get<ApiResponse<PageResponse<CourseEnrollmentResponse>>>(
+    const response = await apiClient.get<ApiResponse<PageResponse<EnrolledStudentResponse>>>(
       `${API.GET_ENROLLMENTS_BY_COURSE}/${courseId}`,
       { params: { page, size } },
     );

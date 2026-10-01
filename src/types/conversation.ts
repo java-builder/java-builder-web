@@ -1,5 +1,15 @@
-import { EnrolledUserResponse } from "@/services/enrollment.service";
 import { ChatMessage } from "./chatMessage";
+
+export interface MessagingContactResponse {
+  id: string;
+  username: string;
+  email?: string;
+  avatar?: string;
+  role?: string;
+  courseName?: string;
+  status?: string;
+  lastActive?: string;
+}
 
 export type ConversationType = "PRIVATE" | "GROUP";
 
@@ -8,7 +18,7 @@ export interface Conversation {
   type: ConversationType;
   name: string;
   avatar?: string;
-  members: EnrolledUserResponse[];
+  members: MessagingContactResponse[];
   unreadCount: number;
   lastMessage?: ChatMessage;
   isPinned?: boolean;

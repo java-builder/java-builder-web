@@ -101,7 +101,6 @@ export const API = {
     ENROLLMENTS_ADMIN: "/api/v1/enrollments/admin/enroll",
     GET_ENROLLMENTS_BY_COURSE: "/api/v1/enrollments/course", // + /:courseId
     UNENROLL_STUDENT: "/api/v1/enrollments", // + /:enrollmentId
-    ENROLLMENTS_SEARCH_USERS: "/api/v1/enrollments/users",
 
     // DOCUMENT
     CREATE_DOCUMENT: "/api/v1/documents",
@@ -269,11 +268,12 @@ export const API = {
     CLOUDFLARE: "/api/cloudflare",
 
     // CONVERSATION
-    CONVERSATION: "/api/v1/conversation",
-    CONVERSATION_MY: "/api/v1/conversation/my-conversations",
-    CONVERSATION_UNREAD_COUNT: "/api/v1/conversation/unread-count",
-    CONVERSATION_MARK_READ: (id: string) => `/api/v1/conversation/${id}/read`,
-    CONVERSATION_CLEAR_HISTORY: (id: string) => `/api/v1/conversation/${id}/clear-history`,
+    CONVERSATION: "/api/v1/conversations",
+    CONVERSATION_MY: "/api/v1/conversations/my-conversations",
+    CONVERSATION_UNREAD_COUNT: "/api/v1/conversations/unread-count",
+    CONVERSATION_MARK_READ: (id: string) => `/api/v1/conversations/${id}/read`,
+    CONVERSATION_CLEAR_HISTORY: (id: string) => `/api/v1/conversations/${id}/clear-history`,
+    CONVERSATION_CONTACTS: "/api/v1/conversations/contacts",
 
     // CHAT MESSAGES
     CHAT_MESSAGES_SEND: "/api/v1/chat-messages/send",

@@ -13,12 +13,12 @@ import {
 import {
   CourseFormat,
   CourseLevel,
-  MyEnrolledCourseResponse,
+  EnrolledCourseResponse,
 } from "@/types/course";
 import { getLevelTone, getProgressTone } from "./helpers";
 
 interface MyCourseCardProps {
-  course: MyEnrolledCourseResponse;
+  course: EnrolledCourseResponse;
   enrolledAtDate: string;
   levelLabel: string;
   statusCompletedLabel: string;

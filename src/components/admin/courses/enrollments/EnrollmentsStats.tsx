@@ -1,11 +1,11 @@
 "use client";
 
-import type { CourseEnrollmentResponse } from "@/types/enrollment";
+import type { EnrolledStudentResponse } from "@/types/enrollment";
 import { Card } from "@/components/ui/card";
 
 interface EnrollmentsStatsProps {
   totalElements: number;
-  enrollments: CourseEnrollmentResponse[];
+  enrollments: EnrolledStudentResponse[];
 }
 
 export default function EnrollmentsStats({

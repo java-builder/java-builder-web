@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { enrollmentApi } from "@/services/enrollment.service";
 import {
   CourseLevel,
-  MyEnrolledCourseResponse,
+  EnrolledCourseResponse,
 } from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { formatShortDate } from "@/utils/dateUtils";
@@ -29,7 +29,7 @@ export default function MyCoursesClient() {
   const router = useRouter();
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
 
-  const [courses, setCourses] = useState<MyEnrolledCourseResponse[]>([]);
+  const [courses, setCourses] = useState<EnrolledCourseResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

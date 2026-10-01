@@ -55,7 +55,7 @@ export interface CourseDetailResponse {
   isPremiumUser?: boolean;
 }
 
-export interface MyEnrolledCourseResponse {
+export interface EnrolledCourseResponse {
   id: string;
   title: string;
   slug: string;
@@ -72,7 +72,7 @@ export interface MyEnrolledCourseResponse {
   completedLessons: number;
 }
 
-export interface CourseEnrollmentResponse {
+export interface EnrolledStudentResponse {
   enrollmentId: string;
   userId: string;
   username: string;

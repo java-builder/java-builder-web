@@ -4,8 +4,9 @@ import { Users, UserPlus, X, Check, Search, MessageSquare, ShieldCheck, Upload, 
 import { Conversation, ConversationType, ChatUser } from "./types";
 import { useChatCurrentUser } from "@/hooks/useCurrentUser";
 import { conversationApi } from "@/services/conversation.service";
-import { enrollmentApi, EnrolledUserResponse } from "@/services/enrollment.service";
-import { MyEnrolledCourseResponse } from "@/types/course";
+import { enrollmentApi } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
+import { EnrolledCourseResponse } from "@/types/course";
 import { useDebounce } from "@/hooks/useDebounce";
 import toast from "react-hot-toast";
 
@@ -29,7 +30,7 @@ export default function NewChatModal({
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("ALL");
-  const [myCourses, setMyCourses] = useState<MyEnrolledCourseResponse[]>([]);
+  const [myCourses, setMyCourses] = useState<EnrolledCourseResponse[]>([]);
   const debouncedSearch = useDebounce(searchQuery, 400);
   const [apiUsers, setApiUsers] = useState<ChatUser[]>([]);
   const [isSearchingApi, setIsSearchingApi] = useState(false);
@@ -61,8 +62,8 @@ export default function NewChatModal({
 
     const courseIdParam = selectedCourseId !== "ALL" ? selectedCourseId : undefined;
 
-    enrollmentApi
-      .searchEnrolledUsers({
+    conversationApi
+      .searchContacts({
         page: 1,
         size: 20,
         courseId: courseIdParam,
@@ -70,7 +71,7 @@ export default function NewChatModal({
       })
       .then((res) => {
         if (isMounted) {
-          const list: EnrolledUserResponse[] = res?.data?.data || [];
+          const list: MessagingContactResponse[] = res?.data?.data || [];
           const uniqueList = Array.from(new Map(list.map((u) => [u.id, u])).values());
           const converted: ChatUser[] = uniqueList
             .filter((u) => u.id !== currentUserId)
@@ -130,7 +131,7 @@ export default function NewChatModal({
       });
 
       const selectedUsers = allContacts.filter((u) => selectedUserIds.includes(u.id));
-      const allMembers: EnrolledUserResponse[] = [
+      const allMembers: MessagingContactResponse[] = [
         currentUser,
         ...selectedUsers.map((u) => ({
           id: u.id,

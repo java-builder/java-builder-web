@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ChatMessage, ChatUser } from "./types";
-import { EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 import { useChatCurrentUser } from "@/hooks/useCurrentUser";
 import EmojiPickerPopover from "./EmojiPickerPopover";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
@@ -34,7 +34,7 @@ import toast from "react-hot-toast";
 
 interface ChatMessageItemProps {
   message: ChatMessage;
-  sender?: EnrolledUserResponse | ChatUser;
+  sender?: MessagingContactResponse | ChatUser;
   onAddReaction: (messageId: string, emoji: string) => void;
   onDeleteMessage?: (messageId: string) => void;
 }
@@ -217,7 +217,7 @@ export default function ChatMessageItem({
         {/* Sender Name (Only for incoming messages) */}
         {!isMe && (
           <span className="text-[11px] font-bold text-muted-foreground mb-1 ml-1 truncate max-w-full">
-            {message.senderName || (sender as EnrolledUserResponse)?.username || (sender as ChatUser)?.name || "Thành viên"}
+            {message.senderName || (sender as MessagingContactResponse)?.username || (sender as ChatUser)?.name || "Thành viên"}
           </span>
         )}
 

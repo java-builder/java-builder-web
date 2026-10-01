@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 
 interface EnrolledUserItemProps {
-  user: EnrolledUserResponse;
-  onSelectUser: (user: EnrolledUserResponse) => void;
+  user: MessagingContactResponse;
+  onSelectUser: (user: MessagingContactResponse) => void;
 }
 
 export default function EnrolledUserItem({

@@ -6,7 +6,7 @@ import { Users, X, Check, Search, MessageSquare, ShieldCheck, Upload, Camera, Lo
 import { Conversation, ConversationType, ChatUser } from "@/components/messages/types";
 import { useChatCurrentUser } from "@/hooks/useCurrentUser";
 import { conversationApi } from "@/services/conversation.service";
-import { enrollmentApi, EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 import { courseApi } from "@/services/course.service";
 import { useDebounce } from "@/hooks/useDebounce";
 import toast from "react-hot-toast";
@@ -22,7 +22,7 @@ export interface CourseSelectItem {
 interface AdminNewChatModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectUser?: (user: EnrolledUserResponse) => void;
+  onSelectUser?: (user: MessagingContactResponse) => void;
   onCreateConversation?: (newConv: Partial<Conversation>) => void;
 }
 
@@ -43,7 +43,7 @@ export default function AdminNewChatModal({
   const [isLoadingCourses, setIsLoadingCourses] = useState(false);
   const debouncedSearch = useDebounce(searchQuery, 400);
   const [apiUsers, setApiUsers] = useState<ChatUser[]>([]);
-  const [rawEnrolledUsers, setRawEnrolledUsers] = useState<EnrolledUserResponse[]>([]);
+  const [rawEnrolledUsers, setRawEnrolledUsers] = useState<MessagingContactResponse[]>([]);
   const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -85,8 +85,8 @@ export default function AdminNewChatModal({
 
     const courseIdParam = selectedCourseId !== "ALL" ? selectedCourseId : undefined;
 
-    enrollmentApi
-      .searchEnrolledUsers({
+    conversationApi
+      .searchContacts({
         page: 1,
         size: 30,
         courseId: courseIdParam,
@@ -94,7 +94,7 @@ export default function AdminNewChatModal({
       })
       .then((res) => {
         if (isMounted) {
-          const list: EnrolledUserResponse[] = res?.data?.data || [];
+          const list: MessagingContactResponse[] = res?.data?.data || [];
           const uniqueList = Array.from(new Map(list.map((u) => [u.id, u])).values());
           setRawEnrolledUsers(uniqueList);
 
@@ -158,7 +158,7 @@ export default function AdminNewChatModal({
       });
 
       const selectedUsers = apiUsers.filter((u) => selectedUserIds.includes(u.id));
-      const allMembers: EnrolledUserResponse[] = [
+      const allMembers: MessagingContactResponse[] = [
         currentUser,
         ...selectedUsers.map((u) => ({
           id: u.id,

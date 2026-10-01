@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Conversation, UserPresenceStatus } from "./types";
 import { useChatCurrentUser } from "@/hooks/useCurrentUser";
-import { enrollmentApi, EnrolledUserResponse } from "@/services/enrollment.service";
+import { conversationApi } from "@/services/conversation.service";
+import { enrollmentApi } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 import { userApi } from "@/services/user.service";
-import { MyEnrolledCourseResponse } from "@/types/course";
+import { EnrolledCourseResponse } from "@/types/course";
 import { useDebounce } from "@/hooks/useDebounce";
 import ConversationHeader from "./ConversationHeader";
 import ConversationSearchBar from "./ConversationSearchBar";
@@ -17,7 +19,7 @@ interface ConversationListProps {
   conversations: Conversation[];
   activeConversationId: string | null;
   onSelectConversation: (conv: Conversation) => void;
-  onSelectEnrolledUser: (user: EnrolledUserResponse) => void;
+  onSelectEnrolledUser: (user: MessagingContactResponse) => void;
   onOpenNewChatModal: () => void;
   onToggleSidebar?: () => void;
   onDeleteConversation?: (convId: string) => void;
@@ -45,7 +47,7 @@ export default function ConversationList({
   const currentUser = useChatCurrentUser();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 400);
-  const [searchResults, setSearchResults] = useState<EnrolledUserResponse[]>([]);
+  const [searchResults, setSearchResults] = useState<MessagingContactResponse[]>([]);
   const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
   const [hasMoreSearch, setHasMoreSearch] = useState(false);
@@ -62,7 +64,7 @@ export default function ConversationList({
   const [isCourseDropdownOpen, setIsCourseDropdownOpen] = useState(false);
 
   // Admin user state for "Quản trị" tab
-  const [adminUser, setAdminUser] = useState<EnrolledUserResponse | null>(null);
+  const [adminUser, setAdminUser] = useState<MessagingContactResponse | null>(null);
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
 
   const [menuOpenConvId, setMenuOpenConvId] = useState<string | null>(null);
@@ -90,7 +92,7 @@ export default function ConversationList({
           const list = res?.data?.data || [];
           if (list.length > 0) {
             setMyCourses(
-              list.map((item: MyEnrolledCourseResponse) => ({
+              list.map((item: EnrolledCourseResponse) => ({
                 id: item.id || String(Math.random()),
                 title: item.title || "Khóa học",
                 thumbnailUrl: item.thumbnailUrl,
@@ -166,15 +168,16 @@ export default function ConversationList({
 
     const courseIdParam = selectedCourseId !== "ALL" ? selectedCourseId : undefined;
 
-    enrollmentApi.searchEnrolledUsers({
-      page: 1,
-      size: 20,
-      courseId: courseIdParam,
-      query: debouncedSearch.trim() ? debouncedSearch.trim() : undefined,
-    })
+    conversationApi
+      .searchContacts({
+        page: 1,
+        size: 20,
+        courseId: courseIdParam,
+        query: debouncedSearch.trim() ? debouncedSearch.trim() : undefined,
+      })
       .then((res) => {
         if (isMounted) {
-          const list: EnrolledUserResponse[] = res?.data?.data || [];
+          const list: MessagingContactResponse[] = res?.data?.data || [];
           const uniqueList = Array.from(new Map(list.map((u) => [u.id, u])).values());
           setSearchResults(uniqueList);
           const currentPage = res?.data?.currentPage || 1;
@@ -207,14 +210,14 @@ export default function ConversationList({
     const courseIdParam = selectedCourseId !== "ALL" ? selectedCourseId : undefined;
 
     try {
-      const res = await enrollmentApi.searchEnrolledUsers({
+      const res = await conversationApi.searchContacts({
         page: nextPage,
         size: 20,
         courseId: courseIdParam,
         query: debouncedSearch.trim() ? debouncedSearch.trim() : undefined,
       });
 
-      const list: EnrolledUserResponse[] = res?.data?.data || [];
+      const list: MessagingContactResponse[] = res?.data?.data || [];
       if (list.length > 0) {
         setSearchResults((prev) => {
           const combined = [...prev, ...list];

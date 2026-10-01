@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 import Image from "next/image";
 import { Conversation } from "./types";
-import { EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 import {
   Pin,
   Bell,
@@ -14,7 +14,7 @@ import {
 
 interface ConversationItemProps {
   conversation: Conversation;
-  currentUser: EnrolledUserResponse;
+  currentUser: MessagingContactResponse;
   isActive: boolean;
   isMuted: boolean;
   menuOpenConvId: string | null;

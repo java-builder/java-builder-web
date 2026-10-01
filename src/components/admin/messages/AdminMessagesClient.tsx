@@ -16,7 +16,7 @@ import ChatDetailDrawer from "@/components/messages/ChatDetailDrawer";
 import CodeSnippetModal from "@/components/messages/CodeSnippetModal";
 import AdminNewChatModal from "@/components/admin/messages/AdminNewChatModal";
 import EmptyChatState from "@/components/messages/EmptyChatState";
-import { EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 import { conversationApi } from "@/services/conversation.service";
 import { chatMessageApi } from "@/services/chatMessage.service";
 import { BEMessageType, ChatMessageResponse, MessageAttachmentRequest } from "@/types/chatMessage";
@@ -421,7 +421,7 @@ export default function AdminMessagesClient() {
       });
   };
 
-  const handleSelectEnrolledUser = async (user: EnrolledUserResponse) => {
+  const handleSelectEnrolledUser = async (user: MessagingContactResponse) => {
     try {
       const res = await conversationApi.createConversation({
         conversationType: "PRIVATE",

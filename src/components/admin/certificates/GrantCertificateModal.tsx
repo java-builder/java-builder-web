@@ -9,7 +9,7 @@ import { courseApi } from "@/services/course.service";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { certificateApi } from "@/services/certificate.service";
 import { CourseDetailResponse } from "@/types/course";
-import { CourseEnrollmentResponse } from "@/types/enrollment";
+import { EnrolledStudentResponse } from "@/types/enrollment";
 import { useDebounce } from "@/hooks/useDebounce";
 import toast from "react-hot-toast";
 
@@ -28,8 +28,8 @@ export default function GrantCertificateModal({
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [isLoadingCourses, setIsLoadingCourses] = useState(false);
 
-  const [students, setStudents] = useState<CourseEnrollmentResponse[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<CourseEnrollmentResponse | null>(null);
+  const [students, setStudents] = useState<EnrolledStudentResponse[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<EnrolledStudentResponse | null>(null);
   const [studentSearchTerm, setStudentSearchTerm] = useState("");
   const debouncedStudentSearch = useDebounce(studentSearchTerm, 300);
   const [isLoadingStudents, setIsLoadingStudents] = useState(false);

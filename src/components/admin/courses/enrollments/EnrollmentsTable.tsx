@@ -1,7 +1,7 @@
 "use client";
 
 import { Users, Loader2 } from "lucide-react";
-import type { CourseEnrollmentResponse } from "@/types/enrollment";
+import type { EnrolledStudentResponse } from "@/types/enrollment";
 import EnrollmentRow from "./EnrollmentRow";
 import { Card } from "@/components/ui/card";
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 
 interface EnrollmentsTableProps {
-  enrollments: CourseEnrollmentResponse[];
+  enrollments: EnrolledStudentResponse[];
   isLoading: boolean;
   totalElements: number;
   hasFilter: boolean;

@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { userApi } from "@/services/user.service";
 import { useAuth } from "@/contexts/AuthContext";
-import { EnrolledUserResponse } from "@/services/enrollment.service";
+import { MessagingContactResponse } from "@/types/conversation";
 
 export const useCurrentUser = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -20,7 +20,7 @@ export const useCurrentUser = () => {
   });
 };
 
-export const useChatCurrentUser = (): EnrolledUserResponse => {
+export const useChatCurrentUser = (): MessagingContactResponse => {
   const { data: user } = useCurrentUser();
 
   if (user && user.id) {

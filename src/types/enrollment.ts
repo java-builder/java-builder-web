@@ -1,4 +1,4 @@
-export interface CourseEnrollmentResponse {
+export interface EnrolledStudentResponse {
   enrollmentId: string;
   userId: string;
   username: string;
@@ -10,9 +10,11 @@ export interface CourseEnrollmentResponse {
 }
 
 export interface EnrollmentPageResponse {
-  data: CourseEnrollmentResponse[];
+  data: EnrolledStudentResponse[];
   currentPage: number;
   totalPages: number;
   totalElements: number;
   pageSize: number;
 }
+
+

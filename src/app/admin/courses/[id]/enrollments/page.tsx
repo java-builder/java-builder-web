@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { courseApi } from "@/services/course.service";
-import { CourseEnrollmentResponse } from "@/types/enrollment";
+import { EnrolledStudentResponse } from "@/types/enrollment";
 import { Pagination } from "@/components/ui/Pagination";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import {
@@ -22,7 +22,7 @@ export default function CourseEnrollmentsPage() {
   const courseId = params.id as string;
 
   const [courseTitle, setCourseTitle] = useState<string>("");
-  const [enrollments, setEnrollments] = useState<CourseEnrollmentResponse[]>([]);
+  const [enrollments, setEnrollments] = useState<EnrolledStudentResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
