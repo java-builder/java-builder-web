@@ -44,10 +44,21 @@ export const enrollmentApi = {
   },
 
   // Admin lấy danh sách học viên của khóa học
-  getCourseEnrollments: async (courseId: string, page: number = 1, size: number = 20) => {
+  getCourseEnrollments: async (
+    courseId: string,
+    page: number = 1,
+    size: number = 20,
+    search?: string
+  ) => {
     const response = await apiClient.get<ApiResponse<PageResponse<EnrolledStudentResponse>>>(
       `${API.GET_ENROLLMENTS_BY_COURSE}/${courseId}`,
-      { params: { page, size } },
+      {
+        params: {
+          page,
+          size,
+          ...(search ? { search } : {}),
+        },
+      }
     );
     return response.data;
   },

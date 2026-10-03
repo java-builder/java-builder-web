@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { enrollmentApi } from "@/services/enrollment.service";
@@ -8,6 +8,7 @@ import { courseApi } from "@/services/course.service";
 import { EnrolledStudentResponse } from "@/types/enrollment";
 import { Pagination } from "@/components/ui/Pagination";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   EnrollmentsHeader,
   EnrollmentsSearchBar,
@@ -25,6 +26,7 @@ export default function CourseEnrollmentsPage() {
   const [enrollments, setEnrollments] = useState<EnrolledStudentResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 400);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -55,41 +57,51 @@ export default function CourseEnrollmentsPage() {
   }, [courseId]);
 
   // Fetch enrollments
-  useEffect(() => {
+  const fetchEnrollments = useCallback(async () => {
     if (!courseId) return;
-    const fetchEnrollments = async () => {
-      try {
-        setIsLoading(true);
-        const response = await enrollmentApi.getCourseEnrollments(
-          courseId,
-          currentPage,
-          PAGE_SIZE
-        );
-        if (response.data) {
-          setEnrollments(response.data.data || []);
-          setTotalPages(response.data.totalPages || 1);
-          setTotalElements(response.data.totalElements || 0);
-        }
-      } catch (error) {
-        console.error("Error fetching enrollments:", error);
-        toast.error("Không thể tải danh sách học viên");
-      } finally {
-        setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const trimmedSearch = debouncedSearch.trim();
+      const response = await enrollmentApi.getCourseEnrollments(
+        courseId,
+        currentPage,
+        PAGE_SIZE,
+        trimmedSearch || undefined
+      );
+      if (response.data) {
+        setEnrollments(response.data.data || []);
+        setTotalPages(response.data.totalPages || 1);
+        setTotalElements(response.data.totalElements || 0);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching enrollments:", error);
+      toast.error("Không thể tải danh sách học viên");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [courseId, currentPage, debouncedSearch]);
+
+  useEffect(() => {
     fetchEnrollments();
-  }, [courseId, currentPage]);
+  }, [fetchEnrollments]);
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setCurrentPage(1);
+  };
+
+  const handleClearSearch = () => {
+    setSearch("");
+    setCurrentPage(1);
+  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
       await enrollmentApi.unenrollStudent(deleteModal.enrollmentId);
       toast.success("Đã xoá học viên khỏi khoá học");
-      setEnrollments((prev) =>
-        prev.filter((e) => e.enrollmentId !== deleteModal.enrollmentId)
-      );
-      setTotalElements((prev) => Math.max(0, prev - 1));
       setDeleteModal({ isOpen: false, enrollmentId: "", username: "" });
+      fetchEnrollments();
     } catch (error) {
       console.error("Error deleting enrollment:", error);
       toast.error("Không thể xoá học viên");
@@ -98,11 +110,7 @@ export default function CourseEnrollmentsPage() {
     }
   };
 
-  const filteredEnrollments = enrollments.filter(
-    (enrollment) =>
-      enrollment.username.toLowerCase().includes(search.toLowerCase()) ||
-      enrollment.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const hasFilter = debouncedSearch.trim().length > 0;
 
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
@@ -112,21 +120,23 @@ export default function CourseEnrollmentsPage() {
 
       <EnrollmentsSearchBar
         search={search}
-        onChange={setSearch}
-        onClear={() => setSearch("")}
+        debouncedSearch={debouncedSearch}
+        isLoading={isLoading}
+        onChange={handleSearchChange}
+        onClear={handleClearSearch}
       />
 
       <EnrollmentsTable
-        enrollments={filteredEnrollments}
+        enrollments={enrollments}
         isLoading={isLoading}
         totalElements={totalElements}
-        hasFilter={search.length > 0}
+        hasFilter={hasFilter}
         onRemove={(enrollmentId, username) =>
           setDeleteModal({ isOpen: true, enrollmentId, username })
         }
       />
 
-      {totalPages > 0 && filteredEnrollments.length > 0 && (
+      {totalPages > 0 && enrollments.length > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
