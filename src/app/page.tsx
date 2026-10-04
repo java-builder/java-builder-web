@@ -60,19 +60,19 @@ export default function Home() {
                   <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-semibold">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-slate-800 border border-blue-200/60 dark:border-slate-700 text-blue-700 dark:text-blue-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                      Lộ trình từ Zero đến Hero
+                      {t("home.pillZeroToHero")}
                     </span>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-slate-800 border border-emerald-200/60 dark:border-slate-700 text-emerald-700 dark:text-emerald-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      Dự án thực chiến
+                      {t("home.pillRealProjects")}
                     </span>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-slate-800 border border-purple-200/60 dark:border-slate-700 text-purple-700 dark:text-purple-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                      Ôn luyện phỏng vấn sát đề
+                      {t("home.pillInterviewPrep")}
                     </span>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-slate-800 border border-amber-200/60 dark:border-slate-700 text-amber-700 dark:text-amber-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                      Trắc nghiệm & Bài tập
+                      {t("home.pillQuizzes")}
                     </span>
                   </div>
 
@@ -82,13 +82,13 @@ export default function Home() {
                       href="/courses"
                       className={buttonVariants({ variant: "accent" })}
                     >
-                      Khám phá khóa học
+                      {t("home.exploreCourses")}
                     </Link>
                     <Link
                       href="/interview"
                       className={buttonVariants({ variant: "outline" })}
                     >
-                      <span>Ôn tập phỏng vấn</span>
+                      <span>{t("home.prepInterview")}</span>
                       <ArrowRight className="w-4 h-4 ml-1" />
                     </Link>
                   </div>
@@ -139,10 +139,10 @@ export default function Home() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="text-[11px] font-bold text-gray-900 dark:text-white truncate">
-                        Discord học tập
+                        {t("home.discordStudy")}
                       </div>
                       <div className="text-[10px] text-gray-500 dark:text-gray-400">
-                        Hỏi đáp & Review
+                        {t("home.discordReview")}
                       </div>
                     </div>
                   </a>

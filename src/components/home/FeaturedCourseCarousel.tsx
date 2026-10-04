@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { CourseDetailResponse, CourseFormat, CourseLevel } from "@/types/course";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface FeaturedCourseSlide {
   id: string;
@@ -87,6 +88,7 @@ export default function FeaturedCourseCarousel({
   courses,
   isLoading = false,
 }: FeaturedCourseCarouselProps) {
+  const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -103,9 +105,30 @@ export default function FeaturedCourseCarousel({
             ? `/docs/${course.slug}`
             : `/courses/${course.slug}`;
 
-        const levelLabel = course.level ? LEVEL_LABELS[course.level] || course.level : "Thực chiến";
+        let levelLabel = "Thực chiến";
+        if (course.level) {
+          switch (course.level) {
+            case CourseLevel.BEGINNER:
+              levelLabel = t("courseDetail.beginner");
+              break;
+            case CourseLevel.INTERMEDIATE:
+              levelLabel = t("courseDetail.intermediate");
+              break;
+            case CourseLevel.ADVANCED:
+              levelLabel = t("courseDetail.advanced");
+              break;
+            case CourseLevel.EXPERT:
+              levelLabel = t("courseDetail.expert");
+              break;
+            default:
+              levelLabel = LEVEL_LABELS[course.level] || course.level;
+          }
+        }
+
         const formatLabel =
-          course.courseFormat === CourseFormat.TEXT ? "Tài liệu chuyên sâu" : "Video khóa học";
+          course.courseFormat === CourseFormat.TEXT
+            ? (t("sidebar.documents") || "Tài liệu")
+            : (t("sidebar.courses") || "Khóa học");
 
         const bannerImage =
           course.thumbnailUrl || FALLBACK_BANNERS[idx % FALLBACK_BANNERS.length];
@@ -127,7 +150,7 @@ export default function FeaturedCourseCarousel({
 
     // Courses mà null hoặc rỗng -> mới hiện data set hiện tại
     return DEFAULT_FEATURED_SLIDES;
-  }, [courses, hasApiCourses]);
+  }, [courses, hasApiCourses, t]);
 
   const totalSlides = slides.length;
 
@@ -293,7 +316,7 @@ export default function FeaturedCourseCarousel({
             href={current.href}
             className="group/link inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
           >
-            <span>Xem chi tiết</span>
+            <span>{t("home.viewDetails")}</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
           </Link>
         </div>
