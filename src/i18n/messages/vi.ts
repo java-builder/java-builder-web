@@ -1731,7 +1731,7 @@ export const vi = {
       responseTime: "Độ trễ API",
       dbTitle: "Cơ sở dữ liệu",
       dbType: "Loại CSDL",
-      dbValidation: "Truy vấn kiểm tra (Validation Query)",
+      dbValidation: "Truy vấn kiểm tra",
       diskTitle: "Dung lượng ổ đĩa",
       diskUsed: "Đã dùng",
       diskFree: "Còn trống",

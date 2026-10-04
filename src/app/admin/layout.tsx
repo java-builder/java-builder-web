@@ -1010,11 +1010,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className={`h-full flex flex-col overflow-hidden transition-all duration-300 ${isCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>
             {/* Top header - Fixed */}
             <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
-              <div className="flex items-center justify-between h-16 px-6">
-                <div className="flex items-center">
+              <div className="flex items-center justify-between h-16 px-4 sm:px-6">
+                <div className="flex items-center min-w-0 mr-2 sm:mr-4">
                   <button
                     onClick={() => setSidebarOpen(true)}
-                    className="lg:hidden text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
+                    className="lg:hidden text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 flex-shrink-0 p-1 -ml-1 rounded-md"
+                    aria-label="Open sidebar"
                   >
                     <svg
                       className="w-6 h-6"
@@ -1030,7 +1031,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       />
                     </svg>
                   </button>
-                  <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900 dark:text-white">
+                  <h1 className="ml-2.5 sm:ml-4 lg:ml-0 text-base sm:text-xl font-semibold text-gray-900 dark:text-white truncate whitespace-nowrap">
                     {(() => {
                       let currentItem: NavItem | undefined;
                       for (const group of navGroups) {
@@ -1047,7 +1048,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   </h1>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
                   <LanguageSwitcher variant="minimal" />
                   <ThemeToggle />
                   <AdminNotificationDropdown />

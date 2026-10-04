@@ -45,7 +45,7 @@ export default function Providers({ children, initialLocale = "en" }: { children
  
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <I18nProvider initialLocale={initialLocale}>
           <AuthProvider>
             <PresenceProvider>

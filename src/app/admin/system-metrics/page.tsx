@@ -7,10 +7,9 @@ import { SystemHealthResponse, HealthCheckHistoryItem } from "@/types/system-met
 import { ComponentCardsGrid } from "@/components/admin/system-metrics/ComponentCardsGrid";
 import { ServerEnvironmentCard } from "@/components/admin/system-metrics/ServerEnvironmentCard";
 import { HealthHistoryWidget } from "@/components/admin/system-metrics/HealthHistoryWidget";
-import { DiagnosticInspectorModal } from "@/components/admin/system-metrics/DiagnosticInspectorModal";
 import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Code2, ShieldAlert } from "lucide-react";
+import { RefreshCw, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function AdminSystemMetricsPage() {
@@ -20,7 +19,6 @@ export default function AdminSystemMetricsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(30); // 30s default
-  const [isDiagnosticOpen, setIsDiagnosticOpen] = useState(false);
   const [history, setHistory] = useState<HealthCheckHistoryItem[]>([]);
   const [lastResponseTime, setLastResponseTime] = useState<number | undefined>(undefined);
 
@@ -85,7 +83,6 @@ export default function AdminSystemMetricsPage() {
     }
   }, [t]);
 
-  // Initial fetch
   useEffect(() => {
     isMountedRef.current = true;
     fetchMetrics();
@@ -94,7 +91,6 @@ export default function AdminSystemMetricsPage() {
     };
   }, [fetchMetrics]);
 
-  // Auto-refresh timer
   useEffect(() => {
     if (!autoRefreshInterval || autoRefreshInterval <= 0) return;
 
@@ -108,49 +104,43 @@ export default function AdminSystemMetricsPage() {
   const isUp = metrics?.status === "UP";
 
   return (
-    <div className="p-6 min-h-screen bg-background text-foreground transition-colors duration-200">
-      {/* Page Header (Matching standard admin pages: Caches, Users, etc.) */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-background text-foreground transition-colors duration-200">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8 gap-4 pb-4 border-b border-border/60">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-            {t("admin.systemMetrics.pageTitle")}
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex flex-wrap items-center gap-2.5">
+            <span>{t("admin.systemMetrics.pageTitle")}</span>
             {metrics && (
               <span
-                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
-                  isUp
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${isUp
                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                     : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
-                }`}
+                  }`}
               >
                 <span className="relative flex h-2 w-2">
                   <span
-                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                      isUp ? "bg-emerald-400" : "bg-rose-400"
-                    }`}
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isUp ? "bg-emerald-400" : "bg-rose-400"
+                      }`}
                   />
                   <span
-                    className={`relative inline-flex rounded-full h-2 w-2 ${
-                      isUp ? "bg-emerald-500" : "bg-rose-500"
-                    }`}
+                    className={`relative inline-flex rounded-full h-2 w-2 ${isUp ? "bg-emerald-500" : "bg-rose-500"
+                      }`}
                   />
                 </span>
                 {metrics.status}
               </span>
             )}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-2xl">
             {t("admin.systemMetrics.pageSubtitle")}
           </p>
         </div>
 
-        {/* Header Action Controls (No overflow-hidden, clean CustomSelect) */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Auto Refresh Dropdown */}
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 w-full md:w-auto">
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground whitespace-nowrap">
               {t("admin.systemMetrics.autoRefresh")}:
             </span>
-            <div className="w-[125px]">
+            <div className="w-[115px] sm:w-[130px]">
               <CustomSelect
                 value={autoRefreshInterval}
                 onChange={(val) => setAutoRefreshInterval(Number(val))}
@@ -162,32 +152,21 @@ export default function AdminSystemMetricsPage() {
             </div>
           </div>
 
-          {/* Diagnostic JSON Viewer Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsDiagnosticOpen(true)}
-            className="cursor-pointer gap-2"
-          >
-            <Code2 className="w-4 h-4 text-primary" />
-            <span className="hidden sm:inline">JSON</span>
-          </Button>
-
-          {/* Refresh Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchMetrics()}
-            disabled={isLoading}
-            className="cursor-pointer gap-2"
-          >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-            <span>{t("admin.systemMetrics.refreshBtn")}</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchMetrics()}
+              disabled={isLoading}
+              className="cursor-pointer gap-1.5 h-8 sm:h-9 text-xs"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-primary" : ""}`} />
+              <span>{t("admin.systemMetrics.refreshBtn")}</span>
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Loading Skeleton */}
       {isLoading && !metrics && (
         <div className="space-y-6 animate-pulse">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -198,7 +177,6 @@ export default function AdminSystemMetricsPage() {
         </div>
       )}
 
-      {/* Error State */}
       {error && !metrics && (
         <div className="p-8 rounded-xl border border-destructive/30 bg-destructive/5 text-center flex flex-col items-center justify-center space-y-4">
           <div className="p-3 rounded-full bg-destructive/10 text-destructive">
@@ -217,30 +195,18 @@ export default function AdminSystemMetricsPage() {
         </div>
       )}
 
-      {/* Main Content (Single set of cards with logos, no duplicate) */}
       {metrics && (
         <div className="space-y-6">
-          {/* Detailed Component Monitoring Cards (PostgreSQL, Redis, Disk, Ping) */}
           <ComponentCardsGrid
             components={metrics.components}
             groups={metrics.groups}
             responseTimeMs={lastResponseTime}
           />
 
-          {/* Server & Runtime Environment (AWS EC2 / App Info) */}
           <ServerEnvironmentCard info={metrics.info} appInfo={metrics.appInfo} />
-
-          {/* Session Health Check History Timeline */}
           <HealthHistoryWidget history={history} />
         </div>
       )}
-
-      {/* Raw Diagnostic JSON Modal */}
-      <DiagnosticInspectorModal
-        isOpen={isDiagnosticOpen}
-        onClose={() => setIsDiagnosticOpen(false)}
-        data={metrics}
-      />
     </div>
   );
 }

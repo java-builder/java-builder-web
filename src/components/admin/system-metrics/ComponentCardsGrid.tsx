@@ -87,12 +87,12 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
   return (
     <div className="space-y-6">
       {/* 4 Core Monitoring Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* 1. PostgreSQL Database Card */}
-        <div className="bg-card border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-blue-500/40 transition-all">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-blue-500/40 transition-all">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30 p-2 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-white dark:bg-card border border-border/80 shadow-2xs p-2 flex items-center justify-center">
                 <Image
                   src="/logos/logo-posgtres.png"
                   alt="PostgreSQL"
@@ -114,16 +114,16 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
             </div>
 
             <div className="space-y-2.5 mt-4 pt-3 border-t border-border/60 text-xs">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">{t("admin.systemMetrics.dbType")}:</span>
-                <span className="font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md">
+                <span className="font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md flex-shrink-0">
                   {db?.details?.database || "PostgreSQL"}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">{t("admin.systemMetrics.dbValidation")}:</span>
-                <code className="font-mono text-primary text-[11px] bg-primary/10 px-2 py-0.5 rounded-md">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground truncate">{t("admin.systemMetrics.dbValidation")}:</span>
+                <code className="font-mono text-primary text-[11px] bg-primary/10 px-2 py-0.5 rounded-md flex-shrink-0">
                   {db?.details?.validationQuery || "isValid()"}
                 </code>
               </div>
@@ -140,10 +140,10 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
         </div>
 
         {/* 2. Redis Cache Card */}
-        <div className="bg-card border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-rose-500/40 transition-all">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-rose-500/40 transition-all">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/30 p-2 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-white dark:bg-card border border-border/80 shadow-2xs p-2 flex items-center justify-center">
                 <Image
                   src="/logos/logo-redis.jpg"
                   alt="Redis"
@@ -163,16 +163,16 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
             </div>
 
             <div className="space-y-2.5 mt-4 pt-3 border-t border-border/60 text-xs">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">{t("admin.systemMetrics.redisVersion")}:</span>
-                <span className="font-mono font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md">
+                <span className="font-mono font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md flex-shrink-0">
                   v{redis?.details?.version || "8.x"}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">Cache Driver:</span>
-                <span className="font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md">
+                <span className="font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md flex-shrink-0">
                   Lettuce / Redis
                 </span>
               </div>
@@ -192,10 +192,10 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
         </div>
 
         {/* 3. Disk Space Card */}
-        <div className="bg-card border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-purple-500/40 transition-all">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-purple-500/40 transition-all">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                 <HardDrive className="w-6 h-6" />
               </div>
               {renderStatusBadge(disk?.status)}
@@ -232,21 +232,21 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
           </div>
 
           <div className="mt-4 pt-3 border-t border-border/50 text-xs space-y-1.5">
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground flex items-center gap-1">
+            <div className="flex items-center justify-between text-[11px] gap-2">
+              <span className="text-muted-foreground flex items-center gap-1 flex-shrink-0">
                 <FolderOpen className="w-3 h-3" />
                 {t("admin.systemMetrics.diskPath")}:
               </span>
-              <span className="font-mono text-foreground bg-secondary px-1.5 py-0.5 rounded-sm truncate max-w-[120px]" title={disk?.details?.path}>
+              <span className="font-mono text-foreground bg-secondary px-1.5 py-0.5 rounded-sm truncate max-w-[150px]" title={disk?.details?.path}>
                 {disk?.details?.path || "Root"}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground flex items-center gap-1">
+            <div className="flex items-center justify-between text-[11px] gap-2">
+              <span className="text-muted-foreground flex items-center gap-1 flex-shrink-0">
                 <Gauge className="w-3 h-3" />
                 {t("admin.systemMetrics.diskThreshold")}:
               </span>
-              <span className="font-mono text-muted-foreground">
+              <span className="font-mono text-muted-foreground flex-shrink-0">
                 {formatBytes(diskThreshold)}
               </span>
             </div>
@@ -254,10 +254,10 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
         </div>
 
         {/* 4. Ping & Heartbeat Card */}
-        <div className="bg-card border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-teal-500/40 transition-all">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-teal-500/40 transition-all">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-950/30 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                 <Wifi className="w-6 h-6" />
               </div>
               {renderStatusBadge(ping?.status)}
@@ -271,17 +271,17 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
             </div>
 
             <div className="space-y-2.5 mt-4 pt-3 border-t border-border/60 text-xs">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">{t("admin.systemMetrics.responseTime")}:</span>
-                <span className="font-mono font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md flex items-center gap-1">
+                <span className="font-mono font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-md flex items-center gap-1 flex-shrink-0">
                   <Zap className="w-3 h-3 text-amber-500" />
                   {responseTimeMs !== undefined ? `${responseTimeMs}ms` : "Active"}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">Heartbeat:</span>
-                <span className="font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                <span className="font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 flex-shrink-0">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -301,10 +301,10 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
 
       {/* Lifecycle & Readiness Group Bar */}
       {((groups && groups.length > 0) || liveness || readiness) && (
-        <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
                 <Activity className="w-5 h-5" />
               </div>
               <div>
@@ -317,7 +317,7 @@ export function ComponentCardsGrid({ components, groups, responseTimeMs }: Compo
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {/* Readiness status */}
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-secondary/50">
                 <span className="text-xs text-muted-foreground font-medium">Readiness:</span>

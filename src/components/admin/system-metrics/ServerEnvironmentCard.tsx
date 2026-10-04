@@ -33,14 +33,14 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
   const osArch = osData?.arch || appInfo?.os?.arch || "amd64";
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
+    <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/60">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
             <Server className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-sm sm:text-base text-foreground flex items-center gap-2">
+            <h3 className="font-bold text-sm sm:text-base text-foreground flex flex-wrap items-center gap-2">
               <span>Môi trường máy chủ & Ứng dụng</span>
               <span className="text-[11px] font-semibold font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 AWS EC2
