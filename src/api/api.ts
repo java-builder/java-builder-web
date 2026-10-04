@@ -286,4 +286,7 @@ export const API = {
 
     // CACHE MANAGEMENT
     ADMIN_CACHES: "/api/v1/admin/caches",
+
+    // SYSTEM METRICS
+    SYSTEM_METRICS: "/api/v1/system-metrics",
 }

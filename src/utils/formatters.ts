@@ -34,3 +34,14 @@ export const parsePriceInput = (value: string): number => {
 export const formatPercent = (val: number): string => {
   return val % 1 === 0 ? val.toString() : val.toFixed(2);
 };
+
+export const formatBytes = (bytes?: number | null, decimals = 2): string => {
+  if (bytes === undefined || bytes === null || bytes <= 0) return "0 B";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const idx = Math.min(i, sizes.length - 1);
+  return `${parseFloat((bytes / Math.pow(k, idx)).toFixed(dm))} ${sizes[idx]}`;
+};
+
