@@ -6,6 +6,7 @@ import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";
 import ViewAllLink from "@/components/ui/ViewAllLink";
+import FeaturedCourseCarousel from "@/components/home/FeaturedCourseCarousel";
 import { useFeaturedCourses } from "@/hooks/useCourses";
 import { useFeaturedBlogs } from "@/hooks/useBlogs";
 import { useFeaturedDocuments } from "@/hooks/useDocuments";
@@ -54,110 +55,57 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right: Community Banners */}
-              <div className="lg:col-span-5 space-y-4">
-                {/* Facebook Group Card */}
-                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-4 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
-                  <div className="flex items-start space-x-3 mb-3">
-                    {/* Facebook Icon */}
-                    <div className="flex-shrink-0">
-                      <div className="w-9 h-9 bg-accent rounded-full flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                        </svg>
+              {/* Right: Featured Course Carousel & Community Links */}
+              <div className="lg:col-span-5 space-y-3.5">
+                <FeaturedCourseCarousel courses={coursesData?.data} isLoading={isLoadingCourses} />
+
+                {/* Compact Community Access */}
+                <div className="grid grid-cols-2 gap-2.5">
+                  <a
+                    href="https://www.facebook.com/groups/779508281889441"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2.5 p-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/60 dark:border-slate-700/60 hover:border-accent hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 group shadow-xs"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 text-accent group-hover:scale-105 transition-transform">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[11px] font-bold text-gray-900 dark:text-white truncate">
+                        {t("home.communityBadge")} Facebook
+                      </div>
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                        {t("home.fbMembers")}
                       </div>
                     </div>
+                  </a>
 
-                    {/* Content */}
-                    <div className="flex-1">
-                      <div className="inline-flex items-center bg-accent/10 dark:bg-accent/20 text-accent px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
-                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                        </svg>
-                        {t("home.communityBadge")}
-                      </div>
-
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
-                        {t("home.fbGroupTitle")}
-                      </h3>
-
-                      <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
-                        {t("home.fbGroupDesc")}
-                      </p>
-
-                      {/* Stats */}
-                      <div className="flex items-center space-x-4 mb-3 text-xs text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center">
-                          <svg className="w-3.5 h-3.5 mr-1 text-accent" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                          </svg>
-                          <span className="font-medium">{t("home.fbMembers")}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <svg className="w-3.5 h-3.5 mr-1 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          <span className="font-medium">{t("home.fbActive")}</span>
-                        </div>
-                      </div>
-
-                      {/* CTA Button */}
-                      <a
-                        href="https://www.facebook.com/groups/779508281889441"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full px-4 py-2 bg-accent text-white text-xs font-semibold rounded-lg shadow hover:bg-accent-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
-                      >
-                        <svg className="w-3.5 h-3.5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                        </svg>
-                        {t("home.fbJoin")}
-                        <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                      </a>
+                  <a
+                    href="https://discord.gg/DfTsStwT"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2.5 p-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/60 dark:border-slate-700/60 hover:border-accent hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 group shadow-xs"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+                      <Image
+                        src="/logos/discord.png"
+                        alt="Discord"
+                        width={20}
+                        height={20}
+                        className="w-4 h-4 object-contain"
+                      />
                     </div>
-                  </div>
-                </div>
-
-                {/* Discord Group Card */}
-                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-slate-700/50 p-4 hover:bg-white dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-9 h-9 bg-accent/10 dark:bg-accent/20 rounded-full flex items-center justify-center overflow-hidden">
-                        <Image
-                          src="/logos/discord.png"
-                          alt="Discord"
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 object-contain"
-                        />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[11px] font-bold text-gray-900 dark:text-white truncate">
+                        Discord học tập
+                      </div>
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                        Hỏi đáp & Review
                       </div>
                     </div>
-
-                    <div className="flex-1">
-                      <div className="inline-flex items-center bg-accent/10 dark:bg-accent/20 text-accent px-2 py-0.5 rounded-full text-xs font-semibold mb-2">
-                        {t("home.discordBadge")}
-                      </div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
-                        {t("home.discordTitle")}
-                      </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
-                        {t("home.discordDesc")}
-                      </p>
-                      <a
-                        href="https://discord.gg/DfTsStwT"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full px-4 py-2 bg-accent text-white text-xs font-semibold rounded-lg shadow hover:bg-accent-600 hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
-                      >
-                        {t("home.discordJoin")}
-                        <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
+                  </a>
                 </div>
               </div>
             </div>
