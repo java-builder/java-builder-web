@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
 import { SettingsData } from "@/types/settings";
@@ -27,14 +27,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         document.title = appName;
       }
 
-      const defaultTheme = settingsService.getSetting<string>(s, "display", "theme", "default-theme");
-      // Only apply the default theme if the user hasn't explicitly chosen a theme.
+      const defaultTheme = settingsService.getSetting<string>(s, "display", "theme", "default-theme") || "light";
       const savedTheme = localStorage.getItem("theme");
-      if (!savedTheme && defaultTheme) {
+      if (!savedTheme) {
         if (defaultTheme === "dark") {
           localStorage.setItem("theme", "dark");
           document.documentElement.classList.add("dark");
-        } else if (defaultTheme === "light") {
+        } else {
           localStorage.setItem("theme", "light");
           document.documentElement.classList.remove("dark");
         }
@@ -88,7 +87,7 @@ export function useSettingsContext() {
   if (!ctx) {
     return {
       settings: {},
-      loadSettings: async () => {},
+      loadSettings: async () => { },
       updateSetting: async () => false,
     } as SettingsContextType;
   }
