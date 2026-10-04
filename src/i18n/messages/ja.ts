@@ -217,6 +217,7 @@ export const ja = {
     profile: "個人情報",
     theme: "テーマ",
     about: "著者について",
+    donate: "寄付",
   },
   leaderboardPage: {
     badge: "学習ストリークランキング",

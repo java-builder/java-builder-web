@@ -217,6 +217,7 @@ export const ko = {
     profile: "프로필",
     theme: "테마",
     about: "저자 소개",
+    donate: "후원하기",
   },
   leaderboardPage: {
     badge: "학습 스트릭 리더보드",
