@@ -150,7 +150,7 @@ export default function PublicMarkdownRenderer({
               </button>
             </div>
             {/* Code highlighter */}
-            <div className={`text-sm overflow-x-auto relative bg-[#fafafa] dark:bg-[#1e1e1e] ${resolvedTheme === "dark" ? "" : "font-medium"}`}>
+            <div className="text-sm overflow-x-auto relative bg-[#fafafa] dark:bg-[#1e1e1e]">
               <SyntaxHighlighter
                 language={highlightLanguage}
                 style={codeStyle}
@@ -158,18 +158,11 @@ export default function PublicMarkdownRenderer({
                 showLineNumbers={false}
                 wrapLines={true}
                 wrapLongLines={true}
-                codeTagProps={{
-                  style: {
-                    fontFamily: "inherit",
-                    fontWeight: resolvedTheme === "dark" ? 400 : 500,
-                  },
-                }}
                 customStyle={{
                   margin: 0,
                   padding: "1.25rem",
                   background: "transparent",
                   fontSize: "0.875rem",
-                  fontWeight: resolvedTheme === "dark" ? 400 : 500,
                   fontFamily: 'JetBrains Mono, Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                 }}
               >
