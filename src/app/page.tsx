@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import MotionWrapper from "@/components/common/MotionWrapper";
 import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";
 import ViewAllLink from "@/components/ui/ViewAllLink";
+import { buttonVariants } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import FeaturedCourseCarousel from "@/components/home/FeaturedCourseCarousel";
 import { useFeaturedCourses } from "@/hooks/useCourses";
 import { useFeaturedBlogs } from "@/hooks/useBlogs";
@@ -44,13 +47,50 @@ export default function Home() {
                     </span>
                   </h1>
 
-                  <div className="text-sm md:text-base text-gray-700 max-w-xl">
-                    <p className="leading-relaxed mb-2">
+                  <div className="text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-xl">
+                    <p className="leading-relaxed mb-2 font-medium text-gray-900 dark:text-white">
                       {t("home.heroDesc1")}
                     </p>
-                    <p className="leading-relaxed">
+                    <p className="leading-relaxed text-gray-600 dark:text-gray-300">
                       {t("home.heroDesc2")}
                     </p>
+                  </div>
+
+                  {/* Feature Highlights */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-slate-800 border border-blue-200/60 dark:border-slate-700 text-blue-700 dark:text-blue-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                      Lộ trình từ Zero đến Hero
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-slate-800 border border-emerald-200/60 dark:border-slate-700 text-emerald-700 dark:text-emerald-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      Dự án thực chiến
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-slate-800 border border-purple-200/60 dark:border-slate-700 text-purple-700 dark:text-purple-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                      Ôn luyện phỏng vấn sát đề
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-slate-800 border border-amber-200/60 dark:border-slate-700 text-amber-700 dark:text-amber-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      Trắc nghiệm & Bài tập
+                    </span>
+                  </div>
+
+                  {/* Quick CTAs */}
+                  <div className="flex items-center gap-3 pt-2">
+                    <Link
+                      href="/courses"
+                      className={buttonVariants({ variant: "accent" })}
+                    >
+                      Khám phá khóa học
+                    </Link>
+                    <Link
+                      href="/interview"
+                      className={buttonVariants({ variant: "outline" })}
+                    >
+                      <span>Ôn tập phỏng vấn</span>
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </Link>
                   </div>
                 </div>
               </div>
