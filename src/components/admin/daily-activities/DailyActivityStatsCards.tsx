@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { UserDailyActivity, ActivityType, UserDailyActivityStats } from "@/types/user-activity";
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity, BookOpen, FileText, HelpCircle, Code2 } from "lucide-react";
+import { Activity, BookOpen, FileText, Code2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface DailyActivityStatsCardsProps {
@@ -26,7 +26,6 @@ export const DailyActivityStatsCards = ({
   const fallbackCounts = useMemo(() => {
     let lessons = 0;
     let blogs = 0;
-    let interviews = 0;
     let exercises = 0;
 
     for (const item of activities) {
@@ -37,22 +36,18 @@ export const DailyActivityStatsCards = ({
         case ActivityType.READ_BLOG:
           blogs++;
           break;
-        case ActivityType.READ_INTERVIEW:
-          interviews++;
-          break;
         case ActivityType.SUBMIT_EXERCISE:
           exercises++;
           break;
       }
     }
 
-    return { lessons, blogs, interviews, exercises };
+    return { lessons, blogs, exercises };
   }, [activities]);
 
   const totalVal = stats ? stats.totalActivities : totalElements;
   const lessonsVal = stats ? stats.lessonViews : fallbackCounts.lessons;
   const blogsVal = stats ? stats.blogReads : fallbackCounts.blogs;
-  const interviewsVal = stats ? stats.interviewReads : fallbackCounts.interviews;
   const exercisesVal = stats ? stats.exerciseSubmissions : fallbackCounts.exercises;
 
   const totalSubtext = stats
@@ -90,15 +85,6 @@ export const DailyActivityStatsCards = ({
       valueClass: "text-purple-600 dark:text-purple-400",
     },
     {
-      label: t("admin.dailyActivities.statInterviews"),
-      value: interviewsVal.toLocaleString("vi-VN"),
-      subtext: "Luyện phỏng vấn",
-      icon: <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
-      bg: "bg-blue-50 dark:bg-blue-950/30",
-      accent: "border-blue-100 dark:border-blue-900/30",
-      valueClass: "text-blue-600 dark:text-blue-400",
-    },
-    {
       label: t("admin.dailyActivities.statExercises"),
       value: exercisesVal.toLocaleString("vi-VN"),
       subtext: "Nộp bài tập code",
@@ -111,8 +97,8 @@ export const DailyActivityStatsCards = ({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {[1, 2, 3, 4, 5].map((idx) => (
+      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((idx) => (
           <Card key={idx} className="border border-border/50">
             <CardContent className="flex items-center justify-between p-4">
               <div className="space-y-2 flex-1 mr-3">
@@ -129,7 +115,7 @@ export const DailyActivityStatsCards = ({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
       {items.map((item) => (
         <Card
           key={item.label}

@@ -41,6 +41,5 @@ export interface UserDailyActivityStats {
   totalActivities: number;
   lessonViews: number;
   blogReads: number;
-  interviewReads: number;
   exerciseSubmissions: number;
 }

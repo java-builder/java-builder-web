@@ -41,7 +41,6 @@ export const DailyActivitySearchBar = ({
     { label: t("admin.dailyActivities.filterAllTypes"), value: "ALL" },
     { label: t("admin.dailyActivities.statLessons"), value: ActivityType.VIEW_LESSON },
     { label: t("admin.dailyActivities.statBlogs"), value: ActivityType.READ_BLOG },
-    { label: t("admin.dailyActivities.statInterviews"), value: ActivityType.READ_INTERVIEW },
     { label: t("admin.dailyActivities.statExercises"), value: ActivityType.SUBMIT_EXERCISE },
   ];
 

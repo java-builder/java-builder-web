@@ -222,7 +222,6 @@ export const API = {
     // QUESTION SET
     CREATE_QUESTION_SET: "/api/v1/question-sets/topic", // + /:interviewTopicId
     GET_QUESTION_SETS: "/api/v1/question-sets",
-    GET_QUESTION_SET_BY_SLUG: "/api/v1/question-sets/slug", // + /:slug
     GET_QUESTION_SET_FOR_ADMIN: "/api/v1/question-sets/admin", // + /:questionSetId
     UPDATE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId
     DELETE_QUESTION_SET: "/api/v1/question-sets", // + /:questionSetId

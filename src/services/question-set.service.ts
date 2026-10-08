@@ -30,12 +30,6 @@ export const questionSetService = {
     return response.data;
   },
 
-  getQuestionSetBySlug: async (slug: string) => {
-    const response = await apiClient.get<ApiResponse<QuestionSetDetailResponse>>(
-      `${API.GET_QUESTION_SET_BY_SLUG}/${slug}`
-    );
-    return response.data;
-  },
 
   // Lấy đầy đủ translations cho admin edit
   getQuestionSetForAdmin: async (questionSetId: string) => {
