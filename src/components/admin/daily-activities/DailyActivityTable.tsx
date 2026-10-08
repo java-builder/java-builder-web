@@ -146,18 +146,13 @@ export const DailyActivityTable = ({
                         <p className="font-semibold text-foreground truncate group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                           {activity.resourceTitle}
                         </p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          {activity.resourceSlug && (
+                        {activity.resourceSlug && (
+                          <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-[11px] font-mono text-muted-foreground truncate">
                               /{activity.resourceSlug}
                             </span>
-                          )}
-                          {activity.resourceId && (
-                            <span className="text-[10px] text-muted-foreground/70 hidden sm:inline">
-                              ID: {activity.resourceId.slice(0, 8)}...
-                            </span>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>
