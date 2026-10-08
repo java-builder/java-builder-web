@@ -34,6 +34,9 @@ export const API = {
     // USER SESSION
     GET_USER_SESSIONS: "/api/v1/user-sessions",
     REVOKE_SESSION: "/api/v1/tokens/session", // + /:sessionId
+    REVOKE_ALL_USER_SESSIONS: "/api/v1/tokens/users", // + /:userId
+    USER_SESSION_STATISTICS: "/api/v1/user-sessions/statistics",
+    USER_SESSION_MY: "/api/v1/user-sessions/me",
     ACTIVE_USERS: "/api/v1/active-users",
 
     // TWO FACTOR
@@ -58,6 +61,18 @@ export const API = {
     USER_SUBSCRIPTION_ADMIN_ASSIGN: "/api/v1/user-subscriptions/admin/assign",
     USER_SUBSCRIPTION_ADMIN_ALL: "/api/v1/user-subscriptions/admin/all",
     USER_SUBSCRIPTION_ADMIN_STATS: "/api/v1/user-subscriptions/admin/stats",
+
+    // USER STREAK
+    USER_STREAK_MY: "/api/v1/user-streak/me",
+    USER_STREAK_LEADERBOARD: "/api/v1/user-streak/leaderboard",
+    USER_STREAK_ADMIN_ALL: "/api/v1/user-streak/admin/all",
+    USER_STREAK_ADMIN_STATS: "/api/v1/user-streak/admin/stats",
+    USER_STREAK_ADMIN_REMIND: "/api/v1/user-streak/admin/remind",
+
+    // USER DAILY ACTIVITY
+    USER_DAILY_ACTIVITY_MY: "/api/v1/user-daily-activity/me",
+    USER_DAILY_ACTIVITY_ALL: "/api/v1/user-daily-activity",
+    USER_DAILY_ACTIVITY_ADMIN_STATS: "/api/v1/user-daily-activity/admin/stats",
 
     // REVIEW
     CREATE_REVIEW: "/api/v1/reviews",
@@ -289,4 +304,4 @@ export const API = {
 
     // SYSTEM METRICS
     SYSTEM_METRICS: "/api/v1/system-metrics",
-}
+};

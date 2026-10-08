@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { apiClient } from "@/api/axios";
+import { API } from "@/api/api";
 import { formatDistanceToNow } from "date-fns";
 import { vi, enUS, ja, ko } from "date-fns/locale";
 import { PostDetail } from "@/types/post";
@@ -130,7 +131,7 @@ export default function PostList({
         if (statusFilter === "unanswered") params.isSolved = false;
         if (sortBy) params.sortBy = sortBy;
 
-        const resp = await apiClient.get("/api/v1/posts", { params });
+        const resp = await apiClient.get(API.GET_POSTS, { params });
         const pageData = resp.data?.data;
         const items: PostDetail[] = Array.isArray(pageData?.data) ? pageData.data : [];
         if (!mounted) return;
@@ -167,7 +168,7 @@ export default function PostList({
       if (statusFilter === "unanswered") params.isSolved = false;
       if (sortBy) params.sortBy = sortBy;
 
-      const resp = await apiClient.get("/api/v1/posts", { params });
+      const resp = await apiClient.get(API.GET_POSTS, { params });
       const pageData = resp.data?.data;
       const items: PostDetail[] = Array.isArray(pageData?.data) ? pageData.data : [];
       setFetchedPosts((prev) => [...prev, ...items]);

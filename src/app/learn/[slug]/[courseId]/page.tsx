@@ -9,6 +9,7 @@ import { CourseDetailResponse, LessonDetailResponse, ChapterDetailResponse } fro
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useAuth } from "@/contexts/AuthContext";
 import { LearnSidebar, LearnHeader, LessonContent } from "@/components/learn";
+import { API } from "@/api/api";
 
 export default function LearnCoursePage() {
   const params = useParams();
@@ -136,7 +137,7 @@ export default function LearnCoursePage() {
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (currentLesson && currentTimeRef.current > 0) {
-        navigator.sendBeacon("/api/v1/lessons/progress", JSON.stringify({
+        navigator.sendBeacon(API.LESSON_PROGRESS, JSON.stringify({
           lessonId: currentLesson.id,
           watchedSeconds: currentTimeRef.current,
         }));

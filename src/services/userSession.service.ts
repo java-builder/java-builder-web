@@ -1,13 +1,12 @@
 import { apiClient } from "@/api/axios";
 import { ApiResponse, PageResponse } from "@/types/api";
 import { UserSessionDetailResponse, UserSessionStatisticsResponse } from "@/types/userSession";
-
-const API_BASE = "/api/v1/user-sessions";
+import { API } from "@/api/api";
 
 export const userSessionService = {
   getMySessions: async (page: number = 1, size: number = 20) => {
     const response = await apiClient.get<ApiResponse<PageResponse<UserSessionDetailResponse>>>(
-      `${API_BASE}/me`,
+      API.USER_SESSION_MY,
       { params: { page, size } }
     );
     return response.data;
@@ -15,14 +14,14 @@ export const userSessionService = {
 
   revokeSession: async (sessionId: string) => {
     const response = await apiClient.delete<ApiResponse<void>>(
-      `${API_BASE}/${sessionId}`
+      `${API.GET_USER_SESSIONS}/${sessionId}`
     );
     return response.data;
   },
 
   getUserSessions: async (page: number = 1, size: number = 20, filters?: string) => {
     const response = await apiClient.get<ApiResponse<PageResponse<UserSessionDetailResponse>>>(
-      API_BASE,
+      API.GET_USER_SESSIONS,
       { params: { page, size, filters } }
     );
     return response.data;
@@ -30,7 +29,7 @@ export const userSessionService = {
 
   getStatistics: async () => {
     const response = await apiClient.get<ApiResponse<UserSessionStatisticsResponse>>(
-      `${API_BASE}/statistics`
+      API.USER_SESSION_STATISTICS
     );
     return response.data;
   },

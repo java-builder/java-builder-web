@@ -28,11 +28,19 @@ export const ActivityTypeBarColors: Record<ActivityType, string> = {
 
 export interface UserDailyActivity {
   id: string;
-  userId: string;
+  userId?: string;
   activityType: ActivityType;
   resourceId?: string;
   resourceTitle: string;
   resourceSlug?: string;
   resourceThumbnailUrl?: string | null;
   activityDateTime: string;
+}
+
+export interface UserDailyActivityStats {
+  totalActivities: number;
+  lessonViews: number;
+  blogReads: number;
+  interviewReads: number;
+  exerciseSubmissions: number;
 }

@@ -13,17 +13,26 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface DateTimePickerProps {
-  value: string; // YYYY-MM-DDTHH:mm or ISO or ""
+export interface DateTimePickerProps {
+  value: string; // YYYY-MM-DDTHH:mm or ISO or YYYY-MM-DD or ""
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
   align?: "left" | "right";
   presetType?: "start" | "end";
+  showTime?: boolean;
 }
 
 const parseValueToDate = (val: string): Date | null => {
   if (!val) return null;
+  const dateOnlyMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(val);
+  if (dateOnlyMatch) {
+    return new Date(
+      Number(dateOnlyMatch[1]),
+      Number(dateOnlyMatch[2]) - 1,
+      Number(dateOnlyMatch[3])
+    );
+  }
   const d = new Date(val);
   if (!isNaN(d.getTime())) return d;
   const formatted = val.replace(" ", "T");
@@ -31,21 +40,27 @@ const parseValueToDate = (val: string): Date | null => {
   return isNaN(d2.getTime()) ? null : d2;
 };
 
-const formatDateToValue = (d: Date): string => {
+const formatDateToValue = (d: Date, showTime: boolean = true): string => {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
+  if (!showTime) {
+    return `${year}-${month}-${day}`;
+  }
   const hours = String(d.getHours()).padStart(2, "0");
   const minutes = String(d.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
-const formatDisplay = (val: string): string => {
+const formatDisplay = (val: string, showTime: boolean = true): string => {
   const d = parseValueToDate(val);
   if (!d) return "";
   const day = String(d.getDate()).padStart(2, "0");
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const year = d.getFullYear();
+  if (!showTime) {
+    return `${day}/${month}/${year}`;
+  }
   const hours = String(d.getHours()).padStart(2, "0");
   const minutes = String(d.getMinutes()).padStart(2, "0");
   return `${day}/${month}/${year} ${hours}:${minutes}`;
@@ -148,11 +163,14 @@ function MiniDropdown({
 export const DateTimePicker = ({
   value,
   onChange,
-  placeholder = "Chọn ngày giờ...",
+  placeholder,
   className = "",
   align = "left",
   presetType = "start",
+  showTime = true,
 }: DateTimePickerProps) => {
+  const defaultPlaceholder = showTime ? "Chọn ngày giờ..." : "Chọn ngày...";
+  const resolvedPlaceholder = placeholder || defaultPlaceholder;
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -243,61 +261,76 @@ export const DateTimePicker = ({
 
   const handleSelectDay = (targetDate: Date) => {
     const newDate = new Date(targetDate);
-    if (selectedDate) {
-      newDate.setHours(selectedDate.getHours());
-      newDate.setMinutes(selectedDate.getMinutes());
-    } else {
-      if (presetType === "end") {
-        newDate.setHours(23, 59, 0, 0);
+    if (showTime) {
+      if (selectedDate) {
+        newDate.setHours(selectedDate.getHours());
+        newDate.setMinutes(selectedDate.getMinutes());
       } else {
-        newDate.setHours(0, 0, 0, 0);
+        if (presetType === "end") {
+          newDate.setHours(23, 59, 0, 0);
+        } else {
+          newDate.setHours(0, 0, 0, 0);
+        }
       }
     }
-    onChange(formatDateToValue(newDate));
+    onChange(formatDateToValue(newDate, showTime));
+    if (!showTime) {
+      setIsOpen(false);
+    }
   };
 
   const handleHourChange = (hours: number) => {
     const baseDate = selectedDate ? new Date(selectedDate) : new Date();
     baseDate.setHours(hours);
-    onChange(formatDateToValue(baseDate));
+    onChange(formatDateToValue(baseDate, showTime));
   };
 
   const handleMinuteChange = (minutes: number) => {
     const baseDate = selectedDate ? new Date(selectedDate) : new Date();
     baseDate.setMinutes(minutes);
-    onChange(formatDateToValue(baseDate));
+    onChange(formatDateToValue(baseDate, showTime));
   };
 
   const setNow = () => {
     const now = new Date();
-    onChange(formatDateToValue(now));
+    onChange(formatDateToValue(now, showTime));
     setViewDate(now);
+    if (!showTime) setIsOpen(false);
   };
 
   const setTodayStart = () => {
     const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    onChange(formatDateToValue(now));
+    if (showTime) {
+      now.setHours(0, 0, 0, 0);
+    }
+    onChange(formatDateToValue(now, showTime));
     setViewDate(now);
+    if (!showTime) setIsOpen(false);
   };
 
   const setTodayEnd = () => {
     const now = new Date();
-    now.setHours(23, 59, 0, 0);
-    onChange(formatDateToValue(now));
+    if (showTime) {
+      now.setHours(23, 59, 0, 0);
+    }
+    onChange(formatDateToValue(now, showTime));
     setViewDate(now);
+    if (!showTime) setIsOpen(false);
   };
 
   const setYesterday = () => {
     const now = new Date();
     now.setDate(now.getDate() - 1);
-    if (presetType === "end") {
-      now.setHours(23, 59, 0, 0);
-    } else {
-      now.setHours(0, 0, 0, 0);
+    if (showTime) {
+      if (presetType === "end") {
+        now.setHours(23, 59, 0, 0);
+      } else {
+        now.setHours(0, 0, 0, 0);
+      }
     }
-    onChange(formatDateToValue(now));
+    onChange(formatDateToValue(now, showTime));
     setViewDate(now);
+    if (!showTime) setIsOpen(false);
   };
 
   const handleClear = (e: React.MouseEvent) => {
@@ -360,9 +393,9 @@ export const DateTimePicker = ({
         <div className="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
           <CalendarIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/70" />
           {value ? (
-            <span className="font-medium text-foreground">{formatDisplay(value)}</span>
+            <span className="font-medium text-foreground">{formatDisplay(value, showTime)}</span>
           ) : (
-            <span className="text-muted-foreground/60">{placeholder}</span>
+            <span className="text-muted-foreground/60">{resolvedPlaceholder}</span>
           )}
         </div>
 
@@ -376,7 +409,7 @@ export const DateTimePicker = ({
               <X className="h-3 w-3" />
             </span>
           )}
-          <Clock className="h-3.5 w-3.5 text-muted-foreground/50" />
+          {showTime && <Clock className="h-3.5 w-3.5 text-muted-foreground/50" />}
         </div>
       </button>
 
@@ -409,15 +442,17 @@ export const DateTimePicker = ({
               >
                 Hôm qua
               </Button>
-              <Button
-                type="button"
-                variant="accent"
-                size="xs"
-                onClick={setNow}
-                className="h-6 px-2 text-[11px]"
-              >
-                Bây giờ
-              </Button>
+              {showTime && (
+                <Button
+                  type="button"
+                  variant="accent"
+                  size="xs"
+                  onClick={setNow}
+                  className="h-6 px-2 text-[11px]"
+                >
+                  Bây giờ
+                </Button>
+              )}
             </div>
           </div>
 
@@ -499,65 +534,67 @@ export const DateTimePicker = ({
           </div>
 
           {/* Time Picker Section */}
-          <div className="pt-2.5 border-t border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                <Clock className="h-3.5 w-3.5 text-accent" />
-                <span>Giờ : Phút</span>
+          {showTime && (
+            <div className="pt-2.5 border-t border-border">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5 text-accent" />
+                  <span>Giờ : Phút</span>
+                </div>
+
+                {/* Hour & Minute Pickers */}
+                <div className="flex items-center gap-1">
+                  <MiniDropdown
+                    value={currentHour}
+                    options={hourOptions}
+                    onChange={(h) => handleHourChange(Number(h))}
+                    minWidth="55px"
+                  />
+                  <span className="font-bold text-muted-foreground">:</span>
+                  <MiniDropdown
+                    value={currentMinute}
+                    options={minuteOptions}
+                    onChange={(m) => handleMinuteChange(Number(m))}
+                    minWidth="55px"
+                  />
+                </div>
               </div>
 
-              {/* Hour & Minute Pickers */}
-              <div className="flex items-center gap-1">
-                <MiniDropdown
-                  value={currentHour}
-                  options={hourOptions}
-                  onChange={(h) => handleHourChange(Number(h))}
-                  minWidth="55px"
-                />
-                <span className="font-bold text-muted-foreground">:</span>
-                <MiniDropdown
-                  value={currentMinute}
-                  options={minuteOptions}
-                  onChange={(m) => handleMinuteChange(Number(m))}
-                  minWidth="55px"
-                />
+              {/* Time Shortcuts */}
+              <div className="mt-2 flex items-center justify-between gap-1 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleHourChange(0);
+                    handleMinuteChange(0);
+                  }}
+                  className="rounded px-1.5 py-0.5 border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  00:00
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleHourChange(12);
+                    handleMinuteChange(0);
+                  }}
+                  className="rounded px-1.5 py-0.5 border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  12:00
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleHourChange(23);
+                    handleMinuteChange(59);
+                  }}
+                  className="rounded px-1.5 py-0.5 border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  23:59
+                </button>
               </div>
             </div>
-
-            {/* Time Shortcuts */}
-            <div className="mt-2 flex items-center justify-between gap-1 text-[11px]">
-              <button
-                type="button"
-                onClick={() => {
-                  handleHourChange(0);
-                  handleMinuteChange(0);
-                }}
-                className="rounded px-1.5 py-0.5 border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                00:00
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  handleHourChange(12);
-                  handleMinuteChange(0);
-                }}
-                className="rounded px-1.5 py-0.5 border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                12:00
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  handleHourChange(23);
-                  handleMinuteChange(59);
-                }}
-                className="rounded px-1.5 py-0.5 border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                23:59
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Action Footer */}
           <div className="mt-3 flex items-center justify-between border-t border-border pt-2.5">
@@ -569,7 +606,7 @@ export const DateTimePicker = ({
                 handleClear(e);
                 setIsOpen(false);
               }}
-              className="gap-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              className="gap-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Đặt lại
@@ -579,7 +616,7 @@ export const DateTimePicker = ({
               variant="accent"
               size="xs"
               onClick={() => setIsOpen(false)}
-              className="px-3 font-semibold"
+              className="px-3 font-semibold cursor-pointer"
             >
               Hoàn tất
             </Button>
@@ -589,3 +626,7 @@ export const DateTimePicker = ({
     </div>
   );
 };
+
+export const DatePicker = (props: Omit<DateTimePickerProps, "showTime">) => (
+  <DateTimePicker {...props} showTime={false} />
+);

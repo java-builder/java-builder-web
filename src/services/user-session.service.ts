@@ -34,12 +34,12 @@ export const userSessionApi = {
   },
 
   revokeAllUserSessions: async (userId: string) => {
-    const response = await apiClient.delete<ApiResponse<void>>(`/api/v1/tokens/users/${userId}`);
+    const response = await apiClient.delete<ApiResponse<void>>(`${API.REVOKE_ALL_USER_SESSIONS}/${userId}`);
     return response.data;
   },
 
   getStatistics: async () => {
-    const response = await apiClient.get<ApiResponse<UserSessionStatistics>>('/api/v1/user-sessions/statistics');
+    const response = await apiClient.get<ApiResponse<UserSessionStatistics>>(API.USER_SESSION_STATISTICS);
     return response.data;
   },
 };

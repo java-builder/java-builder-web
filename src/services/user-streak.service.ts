@@ -8,20 +8,14 @@ import {
   StreakLeaderboard,
 } from "@/types/user-streak";
 import { fcmService } from "@/services/fcm.service";
-
-const API_ENDPOINTS = {
-  MY_STREAK: "/api/v1/user-streak/me",
-  ADMIN_ALL: "/api/v1/user-streak/admin/all",
-  ADMIN_STATS: "/api/v1/user-streak/admin/stats",
-  LEADERBOARD: "/api/v1/user-streak/leaderboard",
-};
+import { API } from "@/api/api";
 
 export const userStreakService = {
   /**
    * Lấy thông tin streak học tập của user hiện tại
    */
   async getMyStreak(): Promise<ApiResponse<UserStreak>> {
-    const response = await apiClient.get(API_ENDPOINTS.MY_STREAK);
+    const response = await apiClient.get(API.USER_STREAK_MY);
     return response.data;
   },
 
@@ -29,7 +23,7 @@ export const userStreakService = {
    * Lấy Bảng xếp hạng Top 10 Streak & Hạng của user hiện tại
    */
   async getLeaderboard(): Promise<ApiResponse<StreakLeaderboard>> {
-    const response = await apiClient.get(API_ENDPOINTS.LEADERBOARD);
+    const response = await apiClient.get(API.USER_STREAK_LEADERBOARD);
     return response.data;
   },
 
@@ -42,7 +36,7 @@ export const userStreakService = {
     query?: string,
     status?: StreakStatus | "ALL"
   ): Promise<ApiResponse<PageResponse<AdminUserStreak>>> {
-    const response = await apiClient.get(API_ENDPOINTS.ADMIN_ALL, {
+    const response = await apiClient.get(API.USER_STREAK_ADMIN_ALL, {
       params: { page, size, query, status },
     });
     return response.data;
@@ -52,7 +46,7 @@ export const userStreakService = {
    * Lấy tổng quan thống kê streak (Admin)
    */
   async getStreakStats(): Promise<ApiResponse<UserStreakStats>> {
-    const response = await apiClient.get(API_ENDPOINTS.ADMIN_STATS);
+    const response = await apiClient.get(API.USER_STREAK_ADMIN_STATS);
     return response.data;
   },
 
