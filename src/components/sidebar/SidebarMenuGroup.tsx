@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronDown, Flame, Sparkles } from "lucide-react";
 import { MenuItem, MenuGroup } from "./types";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -21,6 +22,50 @@ export default function SidebarMenuGroup({
 }: SidebarMenuGroupProps) {
   const { t } = useI18n();
 
+  const renderTag = (item: MenuItem) => {
+    if (item.tag) {
+      if (item.tagVariant === "hot") {
+        return (
+          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-extrabold rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 text-white shadow-xs tracking-wider animate-pulse uppercase leading-none">
+            <Flame className="w-2.5 h-2.5 fill-current" />
+            {item.tag}
+          </span>
+        );
+      }
+      if (item.tagVariant === "pro") {
+        return (
+          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs tracking-wider uppercase leading-none">
+            <Sparkles className="w-2.5 h-2.5 text-amber-300 fill-amber-300" />
+            {item.tag}
+          </span>
+        );
+      }
+      if (item.tagVariant === "new") {
+        return (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 tracking-wider uppercase leading-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+            {item.tag}
+          </span>
+        );
+      }
+      return (
+        <span className="inline-flex items-center px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase leading-none">
+          {item.tag}
+        </span>
+      );
+    }
+
+    if (item.highlight) {
+      return (
+        <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
+          NEW
+        </span>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="space-y-1 mt-6 first:mt-0">
       {!isCollapsed && (
@@ -39,15 +84,10 @@ export default function SidebarMenuGroup({
               {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
             </span>
           </div>
-          <svg
+          <ChevronDown
             className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
               }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-          </svg>
+          />
         </button>
       )}
 
@@ -93,18 +133,29 @@ export default function SidebarMenuGroup({
                         }`}>
                         {displayedLabel}
                       </span>
-                      {item.highlight && (
-                        <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
-                          NEW
-                        </span>
-                      )}
+                      {renderTag(item)}
                     </>
                   )}
                   {isCollapsed && (
-                    <div className="absolute left-full ml-6 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg">
-                      {displayedLabel}
-                      {item.highlight && (
-                        <span className="ml-2 px-1.5 py-0.5 text-xs font-bold rounded bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                    <div className="absolute left-full ml-6 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center gap-2">
+                      <span>{displayedLabel}</span>
+                      {item.tag && (
+                        <span
+                          className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${
+                            item.tagVariant === "hot"
+                              ? "bg-gradient-to-r from-rose-500 to-amber-500 text-white"
+                              : item.tagVariant === "pro"
+                              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                              : item.tagVariant === "new"
+                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+                              : "bg-blue-500/20 text-blue-300"
+                          }`}
+                        >
+                          {item.tag}
+                        </span>
+                      )}
+                      {!item.tag && item.highlight && (
+                        <span className="px-1.5 py-0.5 text-xs font-bold rounded bg-gradient-to-r from-purple-500 to-blue-500 text-white">
                           NEW
                         </span>
                       )}

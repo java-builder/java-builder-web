@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { Check } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { locales, localeOptions, Locale } from "@/i18n/config";
 
@@ -70,9 +71,7 @@ export default function LanguageTab() {
                 {isSelected && (
                   <div className="absolute top-4 right-4">
                     <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-sm">
-                      <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                     </div>
                   </div>
                 )}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/contexts/I18nContext";
+import { Sun, Moon, Monitor, Check, Info } from "lucide-react";
 
 export default function AppearanceTab() {
   const { t } = useI18n();
@@ -38,33 +39,21 @@ export default function AppearanceTab() {
       id: "light",
       name: t("themePage.lightName"),
       description: t("themePage.lightDesc"),
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
+      icon: <Sun className="w-8 h-8" />,
       preview: "bg-white border-gray-200",
     },
     {
       id: "dark",
       name: t("themePage.darkName"),
       description: t("themePage.darkDesc"),
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      ),
+      icon: <Moon className="w-8 h-8" />,
       preview: "bg-slate-800 border-slate-700",
     },
     {
       id: "system",
       name: t("themePage.systemName"),
       description: t("themePage.systemDesc"),
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
+      icon: <Monitor className="w-8 h-8" />,
       preview: "bg-gradient-to-br from-white to-slate-800 border-gray-400",
     },
   ];
@@ -110,9 +99,7 @@ export default function AppearanceTab() {
               {theme === themeOption.id && (
                 <div className="absolute top-3 right-3">
                   <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
                   </div>
                 </div>
               )}
@@ -143,9 +130,7 @@ export default function AppearanceTab() {
           <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/20">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-accent/10 dark:bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <Info className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">
@@ -188,9 +173,7 @@ export default function AppearanceTab() {
                 {accentTheme === item.id && (
                   <div className="absolute top-3 right-3">
                     <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center shadow-sm">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
+                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
                     </div>
                   </div>
                 )}

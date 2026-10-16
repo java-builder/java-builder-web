@@ -17,6 +17,15 @@ import UpdateQuestionSetModal from "@/components/admin/interview/UpdateQuestionS
 import toast from "react-hot-toast";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  ChevronLeft,
+  Loader2,
+  Plus,
+  HelpCircle,
+  Pencil,
+  ExternalLink,
+  Trash2,
+} from "lucide-react";
 
 export default function EditInterviewTopicPage() {
   const params = useParams();
@@ -210,9 +219,7 @@ export default function EditInterviewTopicPage() {
             className="h-9 w-9 text-muted-foreground hover:text-foreground flex-shrink-0"
             aria-label="Quay lại"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+            <ChevronLeft className="w-5 h-5" />
           </Button>
           <div className="min-w-0 flex-1">
             <h1 className="text-lg sm:text-xl font-semibold text-foreground truncate">Chỉnh sửa chủ đề</h1>
@@ -225,12 +232,7 @@ export default function EditInterviewTopicPage() {
           variant="accent"
           className="h-10 gap-2 flex-shrink-0"
         >
-          {isSaving && (
-            <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-          )}
+          {isSaving && <Loader2 className="animate-spin w-4 h-4" />}
           <span className="hidden sm:inline">Lưu thay đổi</span>
           <span className="sm:hidden">Lưu</span>
         </Button>
@@ -322,9 +324,7 @@ export default function EditInterviewTopicPage() {
                   variant="accent"
                   className="h-9 gap-1.5 sm:gap-2 flex-shrink-0 text-xs sm:text-sm"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
+                  <Plus className="w-4 h-4" />
                   <span className="hidden sm:inline">Thêm bộ câu hỏi</span>
                   <span className="sm:hidden">Thêm</span>
                 </Button>
@@ -334,9 +334,7 @@ export default function EditInterviewTopicPage() {
             <div className="p-4 sm:p-6">
               {questionSets.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
-                  <svg className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <HelpCircle className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" />
                   <p className="font-semibold text-sm">Chưa có bộ câu hỏi nào</p>
                   <p className="text-xs">Nhấn &quot;Thêm bộ câu hỏi&quot; để bắt đầu</p>
                 </div>
@@ -382,9 +380,7 @@ export default function EditInterviewTopicPage() {
                               {getLevelBadge(set.level)}
                               {getDifficultyBadge(set.difficulty)}
                               <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground font-medium">
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                                <HelpCircle className="w-3.5 h-3.5" />
                                 {set.totalQuestions || 0} câu hỏi
                               </span>
                             </div>
@@ -421,9 +417,7 @@ export default function EditInterviewTopicPage() {
                               className="h-8 w-8 text-muted-foreground hover:text-accent hover:bg-accent/10"
                               title="Chỉnh sửa"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
+                              <Pencil className="w-4 h-4" />
                             </Button>
                             <Link
                               href={`/admin/question-sets/${set.id}/edit`}
@@ -433,9 +427,7 @@ export default function EditInterviewTopicPage() {
                               )}
                               title="Quản lý câu hỏi"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
+                              <ExternalLink className="w-4 h-4" />
                             </Link>
                             <Button
                               variant="ghost"
@@ -446,14 +438,9 @@ export default function EditInterviewTopicPage() {
                               title="Xóa"
                             >
                               {deletingSetId === set.id ? (
-                                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                                <Loader2 className="w-4 h-4 animate-spin" />
                               ) : (
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                <Trash2 className="w-4 h-4" />
                               )}
                             </Button>
                           </div>

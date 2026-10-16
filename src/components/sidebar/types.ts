@@ -8,6 +8,8 @@ export interface MenuItem {
   requireAuth?: boolean;
   highlight?: boolean;
   color?: string;
+  tag?: string;
+  tagVariant?: "hot" | "pro" | "new" | "popular";
 }
 
 export interface MenuGroup {

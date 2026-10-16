@@ -4,6 +4,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   BookCopy,
+  Plus,
   RotateCcw,
   Search,
   SlidersHorizontal,
@@ -180,9 +181,7 @@ export default function ExercisesPage() {
             variant="accent"
             className="h-10 gap-2 shadow-sm cursor-pointer"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <Plus className="h-5 w-5" />
             {t("admin.exercises.createExerciseBtn")}
           </Button>
         </div>

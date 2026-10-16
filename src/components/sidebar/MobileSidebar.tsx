@@ -13,7 +13,7 @@ import { useSettingsContext } from "@/contexts/SettingsContext";
 import { menuGroups } from "./menuData";
 import { MenuItem, MenuGroup } from "./types";
 import { useI18n } from "@/contexts/I18nContext";
-import { Bell, BellOff, Loader2 } from "lucide-react";
+import { Bell, BellOff, Loader2, X, LogOut, Flame, Sparkles } from "lucide-react";
 import { fcmService } from "@/services/fcm.service";
 import toast from "react-hot-toast";
 
@@ -250,19 +250,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
             aria-label={t("common.close") || "Đóng"}
           >
-            <svg
-              className="w-6 h-6 text-gray-600 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
 
@@ -315,9 +303,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               title={t("auth.logout") || "Đăng xuất"}
               aria-label={t("auth.logout") || "Đăng xuất"}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <LogOut className="w-5 h-5" />
             </button>
           </div>
         ) : (
@@ -389,11 +375,32 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                               }`}>
                               {displayedLabel}
                             </span>
-                            {item.highlight && (
+                            {item.tag ? (
+                              item.tagVariant === "hot" ? (
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-extrabold rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 text-white shadow-xs tracking-wider animate-pulse uppercase leading-none">
+                                  <Flame className="w-2.5 h-2.5 fill-current" />
+                                  {item.tag}
+                                </span>
+                              ) : item.tagVariant === "pro" ? (
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs tracking-wider uppercase leading-none">
+                                  <Sparkles className="w-2.5 h-2.5 text-amber-300 fill-amber-300" />
+                                  {item.tag}
+                                </span>
+                              ) : item.tagVariant === "new" ? (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 tracking-wider uppercase leading-none">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                                  {item.tag}
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase leading-none">
+                                  {item.tag}
+                                </span>
+                              )
+                            ) : item.highlight ? (
                               <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
                                 NEW
                               </span>
-                            )}
+                            ) : null}
                             {item.badge && (
                               <span className={`px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none ${
                                 item.href === "/notifications"
@@ -470,9 +477,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-medium"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <LogOut className="w-4 h-4" />
               {t("auth.logout") || "Đăng xuất"}
             </button>
           </div>

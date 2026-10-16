@@ -9,6 +9,7 @@ import {
   Monitor,
   Smartphone,
   X,
+  Ban,
 } from "lucide-react";
 import { UserSession } from "@/types/session";
 import { formatReadableDate } from "@/utils/dateUtils";
@@ -181,9 +182,7 @@ export const SessionDetailModal = ({
                 }}
                 className="gap-1.5 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white border-transparent cursor-pointer"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                </svg>
+                <Ban className="w-4 h-4" />
                 Chặn IP
               </Button>
             )}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CloudflareAccessRule } from "@/types/cloudflare";
-import { X, Check } from "lucide-react";
+import { X, Check, ChevronDown } from "lucide-react";
 
 const MODE_OPTIONS = [
   { value: "block", label: "Chặn truy cập (Block)", desc: "Từ chối mọi yêu cầu từ nguồn này ngay lập tức" },
@@ -91,9 +91,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
                   className="w-full flex items-center justify-between px-4 py-2.5 bg-background border border-input rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-ring transition-all text-foreground cursor-pointer"
                 >
                   <span className="font-semibold text-sm">{MODE_OPTIONS.find(o => o.value === formData.mode)?.label}</span>
-                  <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </button>
 
                 {isEditModeDropdownOpen && (

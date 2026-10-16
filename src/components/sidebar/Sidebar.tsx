@@ -17,7 +17,7 @@ import SidebarUserProfile from "./SidebarUserProfile";
 import MobileSidebar from "./MobileSidebar";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { useSidebar } from "@/contexts/SidebarContext";
-import { Bell, BellOff, Loader2 } from "lucide-react";
+import { Bell, BellOff, Loader2, ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { fcmService } from "@/services/fcm.service";
 import toast from "react-hot-toast";
 
@@ -226,19 +226,7 @@ export default function Sidebar() {
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Mở menu"
           >
-            <svg
-              className="w-6 h-6 text-gray-600 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+            <Menu className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           </button>
 
           {/* Logo */}
@@ -314,33 +302,9 @@ export default function Sidebar() {
             aria-label={isCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
           >
             {isCollapsed ? (
-              <svg
-                className="w-5 h-5 text-gray-600 dark:text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             ) : (
-              <svg
-                className="w-5 h-5 text-gray-600 dark:text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             )}
           </button>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import {
   PieChart,
   Pie,
@@ -56,18 +57,48 @@ export default function SessionAnalyticsPage() {
       ]
     : [];
 
+  const getProviderMeta = (key: string) => {
+    const k = key.toUpperCase();
+    switch (k) {
+      case "GOOGLE":
+        return {
+          name: "Google",
+          icon: "/social/google.webp",
+          color: "#ea4335",
+        };
+      case "GITHUB":
+        return {
+          name: "GitHub",
+          icon: "/social/github.png",
+          color: isDark ? "#cbd5e1" : "#24292e",
+        };
+      case "LINKEDIN":
+        return {
+          name: "LinkedIn",
+          icon: "/social/linkedin.webp",
+          color: "#0a66c2",
+        };
+      case "USERNAME_PASSWORD":
+      default:
+        return {
+          name: k === "USERNAME_PASSWORD" ? "Mật khẩu" : key,
+          icon: "/social/password.png",
+          color: "#8b5cf6",
+        };
+    }
+  };
+
   const sessionProviderData = sessionStats
-    ? Object.entries(sessionStats.sessionsByProvider).map(([key, value]) => ({
-        name:
-          key === "USERNAME_PASSWORD"
-            ? "Mật khẩu"
-            : key === "GOOGLE"
-            ? "Google"
-            : key === "GITHUB"
-            ? "GitHub"
-            : "LinkedIn",
-        value,
-      }))
+    ? Object.entries(sessionStats.sessionsByProvider).map(([key, value]) => {
+        const meta = getProviderMeta(key);
+        return {
+          key,
+          name: meta.name,
+          icon: meta.icon,
+          color: meta.color,
+          value,
+        };
+      })
     : [];
 
   const sessionDeviceData = sessionStats
@@ -267,10 +298,9 @@ export default function SessionAnalyticsPage() {
                         startAngle={90} endAngle={-270}
                         stroke="none"
                       >
-                        {sessionProviderData.map((_, index) => {
-                          const colors = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
-                          return <Cell key={index} fill={colors[index % colors.length]} />;
-                        })}
+                        {[...sessionProviderData].sort((a, b) => b.value - a.value).map((entry, index) => (
+                          <Cell key={index} fill={entry.color} />
+                        ))}
                       </Pie>
                       <Tooltip
                         contentStyle={{ backgroundColor: chartColors.tooltipBg, border: "none", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)", color: chartColors.tooltipText, padding: "10px 14px" }}
@@ -283,19 +313,29 @@ export default function SessionAnalyticsPage() {
                     <span className="text-xs text-muted-foreground mt-0.5">phiên</span>
                   </div>
                 </div>
-                <div className="space-y-3">
-                  {[...sessionProviderData].sort((a, b) => b.value - a.value).map((item, index) => {
-                    const colors = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
+                <div className="space-y-2.5">
+                  {[...sessionProviderData].sort((a, b) => b.value - a.value).map((item) => {
                     const pct = sessionStats.totalSessions > 0 ? (item.value / sessionStats.totalSessions) * 100 : 0;
                     return (
-                      <div key={item.name} className="flex items-center justify-between group">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: colors[index % colors.length] }} />
-                          <span className="text-sm text-muted-foreground truncate">{item.name}</span>
+                      <div key={item.name} className="flex items-center justify-between group p-1.5 rounded-xl hover:bg-muted/40 transition-colors">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-lg bg-muted/50 p-1.5 flex items-center justify-center flex-shrink-0 border border-border/60 shadow-xs">
+                            <Image
+                              src={item.icon}
+                              alt={item.name}
+                              width={20}
+                              height={20}
+                              className="w-5 h-5 object-contain"
+                            />
+                          </div>
+                          <div>
+                            <span className="text-sm font-semibold text-foreground truncate block">{item.name}</span>
+                            <span className="text-[11px] text-muted-foreground">{formatPercent(pct)}% tổng phiên</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-3 flex-shrink-0">
-                          <span className="text-sm font-semibold text-foreground tabular-nums">{item.value.toLocaleString()}</span>
-                          <span className="text-xs text-muted-foreground tabular-nums w-12 text-right">{formatPercent(pct)}%</span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-sm font-bold text-foreground tabular-nums">{item.value.toLocaleString()}</span>
+                          <span className="text-xs text-muted-foreground">phiên</span>
                         </div>
                       </div>
                     );

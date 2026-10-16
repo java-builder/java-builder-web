@@ -32,7 +32,7 @@ export const SessionsHeader = ({ totalCount }: SessionsHeaderProps) => {
           </span>
         )}
         <Link
-          href="/admin/reports#session-analytics"
+          href="/admin/sessions/analytics"
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <BarChart3 className="h-4 w-4 mr-1.5" />

@@ -7,6 +7,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import SecurityTab from "@/components/profile/SecurityTab";
 import AppearanceTab from "@/components/admin/settings/AppearanceTab";
 import LanguageTab from "@/components/admin/settings/LanguageTab";
+import { ShieldCheck, Palette, Languages, AlertTriangle, Home, ChevronRight } from "lucide-react";
 
 type Tab = "security" | "appearance" | "language";
 
@@ -19,29 +20,17 @@ export default function AdminSettingsPage() {
     {
       id: "security",
       label: t("admin.settings.tabSecurity"),
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-      ),
+      icon: <ShieldCheck className="w-5 h-5" />,
     },
     {
       id: "appearance",
       label: t("admin.settings.tabAppearance"),
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      ),
+      icon: <Palette className="w-5 h-5" />,
     },
     {
       id: "language",
       label: t("admin.settings.tabLanguage"),
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5c-.347 2.225-1.512 4.417-3.239 6.275zM8.5 13H5m3.5-3.5a18.022 18.022 0 01-2.088-3.5" />
-        </svg>
-      ),
+      icon: <Languages className="w-5 h-5" />,
     },
   ];
 
@@ -77,9 +66,7 @@ export default function AdminSettingsPage() {
       <div className="p-6 max-w-7xl mx-auto">
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-8 text-center">
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
+            <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
           </div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             {t("admin.settings.loadUserError")}
@@ -105,18 +92,14 @@ export default function AdminSettingsPage() {
               href="/admin"
               className="inline-flex items-center text-sm font-medium hover:text-accent"
             >
-              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-              </svg>
+              <Home className="w-4 h-4 mr-2" />
               {t("admin.settings.breadcrumbDashboard")}
             </Link>
           </li>
           <li aria-current="page">
             <div className="flex items-center">
-              <svg className="w-6 h-6 text-muted-foreground/60" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
-              <span className="ml-1 text-sm font-medium text-muted-foreground/80 md:ml-2">
+              <ChevronRight className="w-4 h-4 text-muted-foreground/60 mx-1" />
+              <span className="text-sm font-medium text-muted-foreground/80">
                 {t("admin.settings.breadcrumbSettings")}
               </span>
             </div>

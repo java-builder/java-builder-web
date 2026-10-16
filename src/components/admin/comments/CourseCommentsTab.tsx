@@ -9,6 +9,7 @@ import CommentCard from "./CommentCard";
 import { commentApi } from "@/services/comment.service";
 import { CommentDetailResponse } from "@/types/comment";
 import { Pagination } from "@/components/ui/Pagination";
+import { MessageSquare } from "lucide-react";
 
 type CommentStatus = "ACTIVE" | "DELETED" | "ALL";
 
@@ -194,19 +195,7 @@ export default function CourseCommentsTab() {
         <div className="space-y-4">
           {filteredComments.length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
-              <svg
-                className="w-20 h-20 text-muted-foreground/40 mx-auto mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                />
-              </svg>
+              <MessageSquare className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
               <p className="text-muted-foreground text-base font-semibold">Không có bình luận nào</p>
               <p className="text-muted-foreground/80 text-xs mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm</p>
             </div>

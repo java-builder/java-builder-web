@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { X } from "lucide-react";
 
 interface ReplyModalProps {
   isOpen: boolean;
@@ -64,19 +65,7 @@ export default function ReplyModal({
               onClick={handleClose}
               className="p-2 hover:bg-muted rounded-lg transition-colors"
             >
-              <svg
-                className="w-5 h-5 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
 

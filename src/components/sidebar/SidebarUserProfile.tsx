@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { LogIn, UserPlus, LogOut } from "lucide-react";
 
 interface SidebarUserProfileProps {
   currentUser: { username: string; email: string; avatar?: string } | undefined;
@@ -23,9 +24,7 @@ export default function SidebarUserProfile({
                 className="w-9 h-9 rounded-lg bg-accent hover:bg-accent-600 text-white flex items-center justify-center transition-colors border border-transparent"
                 title="Đăng nhập"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
+                <LogIn className="w-4 h-4" />
               </Link>
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none shadow-xl z-[9999]">
                 Đăng nhập
@@ -39,9 +38,7 @@ export default function SidebarUserProfile({
                 className="w-9 h-9 rounded-lg border border-accent text-accent hover:bg-accent/10 flex items-center justify-center transition-colors bg-white dark:bg-slate-800"
                 title="Đăng ký"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
+                <UserPlus className="w-4 h-4" />
               </Link>
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none shadow-xl z-[9999]">
                 Đăng ký
@@ -55,9 +52,7 @@ export default function SidebarUserProfile({
               href="/login"
               className="w-full h-10 border border-transparent bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold text-sm shadow-xs"
             >
-              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-              </svg>
+              <LogIn className="w-4 h-4 flex-shrink-0" />
               <span>Đăng nhập</span>
             </Link>
 
@@ -65,9 +60,7 @@ export default function SidebarUserProfile({
               href="/register"
               className="w-full h-10 bg-white dark:bg-slate-800 border border-accent text-accent hover:bg-accent/10 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 font-semibold text-sm shadow-xs"
             >
-              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
+              <UserPlus className="w-4 h-4 flex-shrink-0" />
               <span>Đăng ký</span>
             </Link>
           </div>
@@ -103,9 +96,7 @@ export default function SidebarUserProfile({
               onClick={onLogout}
               className="mt-2 w-full px-3 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded transition-colors flex items-center justify-center gap-1.5 pointer-events-auto"
             >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <LogOut className="w-3.5 h-3.5" />
               Đăng xuất
             </button>
             <div className="absolute right-full top-1/2 -translate-y-1/2 border-[6px] border-transparent border-r-gray-900 dark:border-r-slate-700"></div>
@@ -144,9 +135,7 @@ export default function SidebarUserProfile({
             className="w-7 h-7 flex-shrink-0 rounded-lg bg-transparent hover:bg-red-50 dark:hover:bg-red-950/20 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 flex items-center justify-center transition-all duration-150 border border-transparent hover:border-red-100 dark:hover:border-red-950/30"
             title="Đăng xuất"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       )}

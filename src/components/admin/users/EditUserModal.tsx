@@ -7,7 +7,7 @@ import { userApi } from "@/services/user.service";
 import { roleService } from "@/services/role.service";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShieldAlert, Check, X } from "lucide-react";
+import { Loader2, ShieldAlert, Check, X, ChevronDown } from "lucide-react";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -305,9 +305,7 @@ export default function EditUserModal({
                     <span>
                       {formData.userStatus === UserStatus.ACTIVE ? "Hoạt động" : "Không hoạt động"}
                     </span>
-                    <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {isDropdownOpen && (
