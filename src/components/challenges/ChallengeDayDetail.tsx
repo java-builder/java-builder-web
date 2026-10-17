@@ -198,8 +198,8 @@ export function ChallengeDayDetail({
             type="button"
             onClick={() => onCompleteDay(activeDay.day)}
             className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-[0.98] ${isAllTasksCompleted
-                ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20 shadow-md ring-2 ring-emerald-500/30"
-                : "bg-accent hover:bg-accent-600"
+              ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20 shadow-md ring-2 ring-emerald-500/30"
+              : "bg-accent hover:bg-accent-600"
               }`}
           >
             <CheckCircle2 className="w-4 h-4" />
