@@ -288,7 +288,7 @@ export default function AboutClient() {
                 <div className="flex items-center gap-3">
                   <div className="relative w-12 h-12 sm:w-14 sm:h-14 shrink-0 flex items-center justify-center">
                     <Image
-                      src="/ssa-c03.webp"
+                      src="/certificates/ssa-c03.webp"
                       alt="AWS Certified Solutions Architect Associate"
                       width={56}
                       height={56}

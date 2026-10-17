@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "DevOps",
       "JavaBuilder Founder",
     ],
-    image: `${SITE_URL}/ssa-c03.webp`,
+    image: `${SITE_URL}/certificates/ssa-c03.webp`,
     useTemplate: true,
   }),
 };
