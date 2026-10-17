@@ -1,7 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import {
+  Heart,
+  Coffee,
+  QrCode,
+  Smartphone,
+  Download,
+  Server,
   Sparkles,
   ExternalLink,
   ShieldCheck,
@@ -15,7 +22,25 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+type PaymentMethod = "mb" | "momo";
+
+interface SupportTier {
+  amount: string;
+  label: string;
+  icon: string;
+}
+
+const SUPPORT_TIERS: SupportTier[] = [
+  { amount: "20.000đ", label: "Ly cà phê sáng", icon: "☕" },
+  { amount: "50.000đ", label: "Ly trà sữa tiếp sức", icon: "🧋" },
+  { amount: "100.000đ", label: "Bữa ăn ấm lòng", icon: "🍕" },
+  { amount: "Tùy tâm", label: "Tấm lòng yêu quý", icon: "💖" },
+];
+
 export default function AboutClient() {
+  const [method, setMethod] = useState<PaymentMethod>("mb");
+  const [selectedTier, setSelectedTier] = useState<SupportTier>(SUPPORT_TIERS[0]);
+
   const credlyUrl =
     "https://www.credly.com/earner/earned/badge/9f9b7ac4-845d-46cb-a2d5-277e0f0c7baf";
 
@@ -241,10 +266,19 @@ export default function AboutClient() {
                   javabuilder.online
                 </a>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Active
-              </span>
+              <div className="flex items-center gap-2">
+                <a
+                  href="#donate"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-all cursor-pointer active:scale-95"
+                >
+                  <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
+                  <span>Ủng hộ dự án</span>
+                </a>
+                <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Active
+                </span>
+              </div>
             </div>
           </div>
 
@@ -373,6 +407,182 @@ export default function AboutClient() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* 3. DONATE & SUPPORT SECTION - Tiếp sức cho tác giả & JavaBuilder */}
+        <div id="donate" className="pt-4 sm:pt-6 scroll-mt-20">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl shadow-accent/5 relative overflow-hidden">
+            {/* Ambient Background Accent Glow */}
+            <div className="absolute -top-24 -right-24 w-60 h-60 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-12">
+              {/* Left Column: Intro & Mission */}
+              <div className="w-full lg:w-5/12 text-left space-y-4 sm:space-y-5">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold">
+                  <Coffee className="w-3.5 h-3.5" />
+                  <span>Tiếp sức cho tác giả</span>
+                  <Heart className="w-3 h-3 fill-rose-500 text-rose-500 ml-0.5" />
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight leading-tight">
+                  Tiếp Sức Cho <br className="hidden sm:inline" />
+                  <span className="text-accent">JavaBuilder</span>
+                </h2>
+
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  Mỗi sự đóng góp — dù chỉ là một ly cà phê — đều trực tiếp giúp Đức duy trì hạ tầng máy chủ,
+                  database và tiếp tục cung cấp nội dung học lập trình Java Backend chất lượng cao hoàn toàn miễn phí tới cộng đồng.
+                </p>
+
+                {/* Mission points */}
+                <div className="pt-2 sm:pt-4 space-y-3.5 border-t border-border/70">
+                  <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0 border border-blue-500/20">
+                      <Server className="w-4 h-4" />
+                    </div>
+                    <span>Duy trì máy chủ & hạ tầng cloud 24/7</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 border border-emerald-500/20">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    <span>100% ủng hộ tự nguyện, không ràng buộc</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 border border-rose-500/20">
+                      <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                    </div>
+                    <span>Chân thành cảm ơn sự đồng hành và tin tưởng của bạn</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Payment Station Card */}
+              <div className="w-full lg:w-7/12 max-w-lg mx-auto lg:max-w-none">
+                <div className="bg-muted/30 dark:bg-muted/20 border border-border/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs">
+                  {/* Method Tabs */}
+                  <div className="flex items-center justify-center p-1 bg-muted/80 dark:bg-muted/50 rounded-2xl border border-border max-w-xs mx-auto mb-5">
+                    <button
+                      type="button"
+                      onClick={() => setMethod("mb")}
+                      className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        method === "mb"
+                          ? "bg-card text-foreground shadow-xs border border-border/60"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+                      <QrCode className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                      <span className="whitespace-nowrap">MB Bank</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setMethod("momo")}
+                      className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        method === "momo"
+                          ? "bg-card text-foreground shadow-xs border border-border/60"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-pink-500 shrink-0" />
+                      <Smartphone className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+                      <span className="whitespace-nowrap">Ví MoMo</span>
+                    </button>
+                  </div>
+
+                  {/* Method Header: Bank Name & Badge */}
+                  <div className="flex items-center justify-between gap-3 pb-3 mb-5 border-b border-border">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm sm:text-base font-bold text-foreground truncate">
+                        {method === "mb" ? "Ngân hàng Quân Đội (MB Bank)" : "Ví Điện Tử MoMo"}
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                        {method === "mb"
+                          ? "Quét bằng app ngân hàng bất kỳ để chuyển khoản 24/7"
+                          : "Quét bằng app MoMo để chuyển tiền tức thì"}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                        method === "mb"
+                          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                          : "bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20"
+                      }`}
+                    >
+                      {method === "mb" ? "VietQR 24/7" : "MoMo Pay"}
+                    </span>
+                  </div>
+
+                  {/* QR Code Container */}
+                  <div className="flex flex-col items-center mb-5">
+                    <div className="relative p-2.5 bg-white rounded-2xl border border-border shadow-xs group">
+                      {/* Camera Viewfinder Corners */}
+                      <span className="absolute top-1.5 left-1.5 w-3 h-3 border-t-2 border-l-2 border-accent rounded-tl-md pointer-events-none" />
+                      <span className="absolute top-1.5 right-1.5 w-3 h-3 border-t-2 border-r-2 border-accent rounded-tr-md pointer-events-none" />
+                      <span className="absolute bottom-1.5 left-1.5 w-3 h-3 border-b-2 border-l-2 border-accent rounded-bl-md pointer-events-none" />
+                      <span className="absolute bottom-1.5 right-1.5 w-3 h-3 border-b-2 border-r-2 border-accent rounded-br-md pointer-events-none" />
+
+                      <div className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-xl overflow-hidden">
+                        <Image
+                          src={method === "mb" ? "/donate/qrcode.jpg" : "/donate/momo-qr.jpg"}
+                          alt={method === "mb" ? "MB Bank VietQR" : "MoMo QR"}
+                          fill
+                          className="object-contain"
+                          sizes="(max-width: 640px) 176px, 192px"
+                        />
+                      </div>
+                    </div>
+
+                    <a
+                      href={method === "mb" ? "/donate/qrcode.jpg" : "/donate/momo-qr.jpg"}
+                      download={method === "mb" ? "JavaBuilder-MB-VietQR.jpg" : "JavaBuilder-MoMo-QR.jpg"}
+                      className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-accent transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải ảnh mã QR</span>
+                    </a>
+                  </div>
+
+                  {/* Coffee Tiers */}
+                  <div className="space-y-2">
+                    <div className="text-[11px] font-medium text-muted-foreground flex items-center justify-center gap-1">
+                      <Sparkles className="w-3 h-3 text-amber-500" />
+                      <span>Chọn mức tiếp sức yêu thích:</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {SUPPORT_TIERS.map((tier) => {
+                        const isSelected = selectedTier.amount === tier.amount;
+                        return (
+                          <button
+                            key={tier.amount}
+                            type="button"
+                            onClick={() => setSelectedTier(tier)}
+                            className={`text-center p-2 rounded-xl border transition-all text-xs cursor-pointer ${
+                              isSelected
+                                ? "bg-accent/10 border-accent/50 text-foreground ring-1 ring-accent/30 shadow-xs font-semibold"
+                                : "bg-card hover:bg-muted/60 border-border text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center gap-1 font-bold text-foreground">
+                              <span>{tier.icon}</span>
+                              <span className="whitespace-nowrap">{tier.amount}</span>
+                            </div>
+                            <div className="text-[10px] text-muted-foreground truncate mt-0.5">
+                              {tier.label}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import { GOOGLE_CONFIG } from "@/configuration/googleConfiguration";
 import { LINKEDIN_CONFIG } from "@/configuration/linkedinConfiguration";
+import { GITHUB_CONFIG } from "@/configuration/githubConfiguration";
 
 export const generateGoogleAuthUrl = (): string => {
   const params = new URLSearchParams({
@@ -23,4 +24,15 @@ export const generateLinkedinAuthUrl = (): string => {
   });
 
   return `https://www.linkedin.com/oauth/v2/authorization?${params.toString()}`;
+};
+
+export const generateGithubAuthUrl = (): string => {
+  const params = new URLSearchParams({
+    client_id: GITHUB_CONFIG.client_id,
+    redirect_uri: GITHUB_CONFIG.redirect_uri,
+    scope: GITHUB_CONFIG.scope,
+    state: "github",
+  });
+
+  return `https://github.com/login/oauth/authorize?${params.toString()}`;
 };

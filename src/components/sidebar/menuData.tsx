@@ -125,17 +125,10 @@ export const menuGroups: MenuGroup[] = [
       },
       {
         href: "/about",
-        label: "Về tác giả",
+        label: "Về tác giả & Ủng hộ",
         labelKey: "sidebar.about",
         icon: <User className="w-5 h-5" />,
         color: "text-amber-500 dark:text-amber-400",
-      },
-      {
-        href: "/donate",
-        label: "Ủng hộ dự án",
-        labelKey: "sidebar.donate",
-        icon: <Heart className="w-5 h-5" />,
-        color: "text-rose-500 dark:text-rose-450",
       },
     ],
   },

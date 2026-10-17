@@ -1,7 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { exerciseSubmissionApi } from "@/services/exercise-submission.service";
 import { 
   CheckCircle, 
   XCircle, 
@@ -11,7 +14,8 @@ import {
   FileCheck,
   Percent,
   CheckCheck,
-  ClipboardCheck
+  ClipboardCheck,
+  Loader2
 } from "lucide-react";
 import {
   PieChart,
@@ -30,9 +34,27 @@ import { useMyExercises } from "@/hooks/useMyExercises";
 import { useI18n } from "@/contexts/I18nContext";
 
 export default function MyExercisesClient() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { t, locale } = useI18n();
   const quote = useMemo(() => getRandomQuote(), []);
   const { submissions, statistics, loading, error } = useMyExercises(1);
+  const [loadingSubmissionId, setLoadingSubmissionId] = useState<string | null>(null);
+
+  const handleViewSubmission = async (submissionId: string) => {
+    if (loadingSubmissionId) return;
+    setLoadingSubmissionId(submissionId);
+    try {
+      await queryClient.prefetchQuery({
+        queryKey: ['submission', submissionId],
+        queryFn: () => exerciseSubmissionApi.getSubmissionById(submissionId),
+      });
+    } catch {
+      // Ignored: review page will fetch if prefetch fails
+    } finally {
+      router.push(`/my-exercises/review/${submissionId}`);
+    }
+  };
 
   const stats = useMemo(() => {
     if (!statistics) {
@@ -581,15 +603,34 @@ export default function MyExercisesClient() {
 
                     {/* Action Button */}
                     <div className="flex-shrink-0 w-full sm:w-auto text-right mt-2 sm:mt-0">
-                      <Link
-                        href={`/my-exercises/review/${submission.submissionId}`}
-                        className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 sm:w-auto"
+                      <button
+                        type="button"
+                        disabled={loadingSubmissionId !== null}
+                        onClick={() => handleViewSubmission(submission.submissionId)}
+                        className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition sm:w-auto cursor-pointer active:scale-95 ${
+                          loadingSubmissionId === submission.submissionId
+                            ? "border-accent bg-accent/10 text-accent cursor-wait shadow-xs"
+                            : "border-gray-200 bg-white text-gray-700 hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200"
+                        } ${
+                          loadingSubmissionId !== null && loadingSubmissionId !== submission.submissionId
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
                       >
-                        <span>{t("myExercisesPage.btnView")}</span>
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
+                        {loadingSubmissionId === submission.submissionId ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-accent shrink-0" />
+                            <span>Đang tải...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>{t("myExercisesPage.btnView")}</span>
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>

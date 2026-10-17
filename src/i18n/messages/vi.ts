@@ -216,7 +216,7 @@ export const vi = {
     settings: "Cài đặt",
     profile: "Thông tin cá nhân",
     theme: "Giao diện",
-    about: "Về tác giả",
+    about: "Về tác giả & Ủng hộ",
     donate: "Ủng hộ dự án",
   },
   leaderboardPage: {

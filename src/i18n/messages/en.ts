@@ -216,7 +216,7 @@ export const en = {
     settings: "Settings",
     profile: "Profile",
     theme: "Theme",
-    about: "About Author",
+    about: "About & Support",
     donate: "Support Us",
   },
   leaderboardPage: {
