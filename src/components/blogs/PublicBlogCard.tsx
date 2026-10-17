@@ -223,6 +223,7 @@ export default function PublicBlogCard({ blog }: PublicBlogCardProps) {
       <AuthRequiredModal
         isOpen={authModal.isOpen}
         onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+        redirectTo={`/blogs/${blog.slug}`}
         title={authModal.title}
         message={authModal.message}
       />

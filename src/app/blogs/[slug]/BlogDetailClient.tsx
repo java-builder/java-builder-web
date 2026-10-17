@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useComments } from "@/hooks/useComments";
@@ -21,6 +21,7 @@ import BlogActions from "@/components/blogs/BlogActions";
 import BlogSidebar from "@/components/blogs/BlogSidebar";
 
 export default function BlogDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const blogSlug = params.slug as string;
   const { data: currentUser } = useCurrentUser();
@@ -109,10 +110,11 @@ export default function BlogDetailPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <AuthRequiredModal
           isOpen={true}
-          onClose={() => {}}
+          onClose={() => router.push("/blogs")}
+          redirectTo={`/blogs/${blogSlug}`}
           title="Đăng nhập để đọc bài viết"
           message="Bạn cần đăng nhập để đọc bài viết này. Vui lòng đăng nhập để tiếp tục."
-          showLater={false}
+          showLater={true}
         />
       </div>
     );
@@ -290,6 +292,7 @@ export default function BlogDetailPage() {
       <AuthRequiredModal
         isOpen={authModal.isOpen}
         onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+        redirectTo={`/blogs/${blogSlug}`}
         title={authModal.title}
         message={authModal.message}
       />

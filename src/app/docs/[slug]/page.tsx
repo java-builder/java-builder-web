@@ -530,13 +530,19 @@ export default function DocsDetailPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
-                onClick={() => router.push('/login')}
+                onClick={() => {
+                  const target = typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : `/docs/${slug}`;
+                  router.push(`/login?redirect=${encodeURIComponent(target)}`);
+                }}
                 className="px-5 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors text-sm"
               >
                 Đăng nhập
               </button>
               <button
-                onClick={() => router.push('/register')}
+                onClick={() => {
+                  const target = typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : `/docs/${slug}`;
+                  router.push(`/register?redirect=${encodeURIComponent(target)}`);
+                }}
                 className="px-5 py-2.5 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors text-sm"
               >
                 Đăng ký
@@ -746,6 +752,7 @@ export default function DocsDetailPage() {
         isOpen={authModal.isOpen}
         title={authModal.title}
         message={authModal.message}
+        redirectTo={`/docs/${slug}`}
         onClose={() => setAuthModal({ isOpen: false, title: "", message: "" })}
       />
     </div>

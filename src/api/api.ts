@@ -303,4 +303,26 @@ export const API = {
 
     // SYSTEM METRICS
     SYSTEM_METRICS: "/api/v1/system-metrics",
+
+    // CHALLENGES
+    CHALLENGES: "/api/v1/challenges",
+    CHALLENGE_BY_ID: (id: string) => `/api/v1/challenges/${id}`,
+    CHALLENGE_BY_SLUG: (slug: string) => `/api/v1/challenges/slug/${slug}`,
+
+    // CHALLENGE PHASES
+    CHALLENGE_PHASES: "/api/v1/challenge-phases",
+    CHALLENGE_PHASE_BY_ID: (id: string) => `/api/v1/challenge-phases/${id}`,
+    CHALLENGE_PHASES_BY_CHALLENGE: (challengeId: string) => `/api/v1/challenge-phases/challenge/${challengeId}`,
+
+    // CHALLENGE DAYS
+    CHALLENGE_DAYS: "/api/v1/challenge-days",
+    CHALLENGE_DAY_BY_ID: (id: string) => `/api/v1/challenge-days/${id}`,
+    CHALLENGE_DAY_DETAIL: (slug: string, dayNumber: number) => `/api/v1/challenge-days/slug/${slug}/day/${dayNumber}`,
+    CHALLENGE_DAYS_BY_CHALLENGE: (challengeId: string) => `/api/v1/challenge-days/challenge/${challengeId}`,
+
+    // CHALLENGE TASKS
+    CHALLENGE_TASKS: "/api/v1/challenge-tasks",
+    CHALLENGE_TASK_BY_ID: (id: string) => `/api/v1/challenge-tasks/${id}`,
+    CHALLENGE_TASKS_BY_DAY: (dayId: string) => `/api/v1/challenge-tasks/day/${dayId}`,
 };
+

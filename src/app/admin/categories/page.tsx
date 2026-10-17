@@ -26,6 +26,9 @@ export default function CategoriesPage() {
   const [blogCategories, setBlogCategories] = useState<CategoryDetailResponse[]>(
     []
   );
+  const [challengeCategories, setChallengeCategories] = useState<CategoryDetailResponse[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CategoryType>(CategoryType.BLOG);
@@ -34,12 +37,14 @@ export default function CategoriesPage() {
   const fetchAll = async () => {
     setIsLoading(true);
     try {
-      const [postRes, blogRes] = await Promise.all([
+      const [postRes, blogRes, challengeRes] = await Promise.all([
         categoryService.getAll(CategoryType.POST),
         categoryService.getAll(CategoryType.BLOG),
+        categoryService.getAll(CategoryType.CHALLENGE),
       ]);
       setPostCategories(postRes.data || []);
       setBlogCategories(blogRes.data || []);
+      setChallengeCategories(challengeRes.data || []);
     } catch (e) {
       console.error(e);
     } finally {
@@ -80,11 +85,15 @@ export default function CategoriesPage() {
   };
 
   const categories =
-    activeTab === CategoryType.BLOG ? blogCategories : postCategories;
-  const totalCount = postCategories.length + blogCategories.length;
+    activeTab === CategoryType.CHALLENGE
+      ? challengeCategories
+      : activeTab === CategoryType.BLOG
+      ? blogCategories
+      : postCategories;
+  const totalCount = postCategories.length + blogCategories.length + challengeCategories.length;
 
   return (
-    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
+    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 lg:p-8">
       <CategoriesHeader
         totalCount={totalCount}
         onCreate={() => setIsCreateOpen(true)}
@@ -94,6 +103,7 @@ export default function CategoriesPage() {
         activeTab={activeTab}
         postCount={postCategories.length}
         blogCount={blogCategories.length}
+        challengeCount={challengeCategories.length}
         onChange={setActiveTab}
       />
 

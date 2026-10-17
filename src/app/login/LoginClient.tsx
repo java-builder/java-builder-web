@@ -54,6 +54,32 @@ export default function LoginClient() {
     },
   });
 
+  const navigateAfterLogin = (authorities?: string[]) => {
+    const isAdmin = authorities?.includes("ADMIN");
+    if (isAdmin) {
+      router.push("/admin");
+      return;
+    }
+
+    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    let target = urlParams?.get("redirect") || urlParams?.get("callbackUrl");
+    if (!target && typeof window !== "undefined") {
+      try {
+        target = sessionStorage.getItem("auth_redirect");
+      } catch {}
+    }
+
+    if (target && target.startsWith("/")) {
+      try {
+        sessionStorage.removeItem("auth_redirect");
+      } catch {}
+      router.push(target);
+      return;
+    }
+
+    router.push("/");
+  };
+
   const handlePasskeyLogin = async () => {
     setError("");
     setIsPasskeyLoading(true);
@@ -71,8 +97,7 @@ export default function LoginClient() {
       if (loginResult.code === 200 && loginResult.data?.accessToken) {
         setAuthFromLogin(loginResult.data);
         await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-        const isAdmin = loginResult.data?.authorities?.includes("ADMIN");
-        router.push(isAdmin ? "/admin" : "/");
+        navigateAfterLogin(loginResult.data?.authorities);
       } else {
         throw new Error(loginResult.message || t("auth.passkeyLoginFailed"));
       }
@@ -89,6 +114,13 @@ export default function LoginClient() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const redirectParam = urlParams.get("redirect") || urlParams.get("callbackUrl");
+    if (redirectParam && redirectParam.startsWith("/")) {
+      try {
+        sessionStorage.setItem("auth_redirect", redirectParam);
+      } catch {}
+    }
+
     const message = urlParams.get("message");
     if (message === "registration-success") {
       setSuccessMessage(t("auth.registrationSuccess"));
@@ -124,8 +156,7 @@ export default function LoginClient() {
         } else if (result.data?.accessToken) {
           setAuthFromLogin(result.data);
           await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-          const isAdmin = result.data?.authorities?.includes("ADMIN");
-          router.push(isAdmin ? "/admin" : "/");
+          navigateAfterLogin(result.data?.authorities);
         }
       }
     } catch (error) {
@@ -138,8 +169,7 @@ export default function LoginClient() {
 
   const handleTwoFactorSuccess = async (data?: { authorities?: string[]; accessToken?: string; userId?: string }) => {
     await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    const isAdmin = data?.authorities?.includes("ADMIN");
-    router.push(isAdmin ? "/admin" : "/");
+    navigateAfterLogin(data?.authorities);
   };
 
   const handleGoogleLogin = () => {

@@ -78,13 +78,6 @@ export const authApi = {
     localStorage.removeItem("user_id");
   },
 
-  /**
-   * Gọi introspect bằng axios raw (không qua apiClient) để tránh gắn
-   * Authorization header — Spring Security reject expired token ở header
-   * dù endpoint là permitAll.
-   *
-   * Nếu token hết hạn (isValid: false) → tự refresh rồi introspect lại.
-   */
   introspect: async (): Promise<IntrospectResponse | null> => {
     const token = authApi.getAccessToken();
     if (!token) return null;
@@ -97,8 +90,6 @@ export const authApi = {
         { headers: { "Content-Type": "application/json" } },
       );
       const data = response.data.data;
-
-      // Token hết hạn → refresh → introspect lại với token mới
       if (data && !data.isValid) {
         const newToken = await authApi.refreshToken();
         if (!newToken) return null;
@@ -117,10 +108,6 @@ export const authApi = {
     }
   },
 
-  /**
-   * Gọi refresh bằng axios raw — refresh token nằm trong cookie (withCredentials).
-   * Không cần Authorization header.
-   */
   refreshToken: async (): Promise<string | null> => {
     try {
       const response = await axios.post<ApiResponse<LoginResponse>>(

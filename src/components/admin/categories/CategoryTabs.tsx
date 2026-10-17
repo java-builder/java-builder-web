@@ -2,12 +2,13 @@
 
 import { CategoryType } from "@/types/category";
 import { useI18n } from "@/contexts/I18nContext";
-import { SlidersHorizontal, BookOpen, FileText } from "lucide-react";
+import { SlidersHorizontal, BookOpen, FileText, Flame } from "lucide-react";
 
 interface CategoryTabsProps {
   activeTab: CategoryType;
   blogCount: number;
   postCount: number;
+  challengeCount: number;
   onChange: (tab: CategoryType) => void;
 }
 
@@ -15,6 +16,7 @@ export default function CategoryTabs({
   activeTab,
   blogCount,
   postCount,
+  challengeCount,
   onChange,
 }: CategoryTabsProps) {
   const { t } = useI18n();
@@ -22,6 +24,7 @@ export default function CategoryTabs({
   const tabs = [
     { id: CategoryType.BLOG, label: t("admin.categories.tabBlog"), count: blogCount, icon: BookOpen },
     { id: CategoryType.POST, label: t("admin.categories.tabPost"), count: postCount, icon: FileText },
+    { id: CategoryType.CHALLENGE, label: "Thử thách", count: challengeCount, icon: Flame },
   ];
 
   return (
@@ -58,8 +61,10 @@ export default function CategoryTabs({
                 />
                 <span className="whitespace-nowrap">{tab.label}</span>
                 <span
-                  className={`ml-1 text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
-                    isActive ? "bg-accent/15 text-accent" : "bg-muted text-muted-foreground"
+                  className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                    isActive
+                      ? "bg-accent/10 text-accent"
+                      : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {tab.count}

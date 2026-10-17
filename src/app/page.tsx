@@ -13,17 +13,27 @@ import FeaturedCourseCarousel from "@/components/home/FeaturedCourseCarousel";
 import { useFeaturedCourses } from "@/hooks/useCourses";
 import { useFeaturedBlogs } from "@/hooks/useBlogs";
 import { useFeaturedDocuments } from "@/hooks/useDocuments";
+import { useChallenges } from "@/hooks/useChallenges";
+import { ChallengeCard } from "@/components/challenges";
+import { adaptChallengeResponseToUi } from "@/app/challenges/data/challengeAdapter";
 import { useI18n } from "@/contexts/I18nContext";
+import { useMemo } from "react";
 
 export default function Home() {
   const { t } = useI18n();
   const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useFeaturedCourses();
   const { data: blogsData, isLoading: isLoadingBlogs, error: blogsError } = useFeaturedBlogs();
   const { data: documentsData, isLoading: isLoadingDocuments, error: documentsError } = useFeaturedDocuments();
+  const { data: challengesData, isLoading: isLoadingChallenges } = useChallenges("ACTIVE", 1, 6);
 
   const courses = coursesData?.data || [];
   const blogs = blogsData?.data || [];
   const documents = documentsData?.data?.data || [];
+
+  const challenges = useMemo(() => {
+    const apiList = challengesData?.data || [];
+    return apiList.map((c) => adaptChallengeResponseToUi(c));
+  }, [challengesData]);
 
   return (
     <>
@@ -246,6 +256,64 @@ export default function Home() {
                 <p className="text-gray-600">{t("home.noCourses")}</p>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Challenges Section */}
+      <section className="py-14 bg-gradient-to-b from-gray-50/70 to-white dark:from-slate-900/60 dark:to-slate-950 border-t border-gray-100 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-6">
+          <MotionWrapper animation="fadeInUp" duration={0.8}>
+            <div className="mx-auto mb-12 max-w-3xl text-center">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                {t("home.featuredChallengesBadge")}
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
+                {t("home.featuredChallenges")}
+              </h2>
+              <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                {t("home.featuredChallengesDesc")}
+              </p>
+            </div>
+          </MotionWrapper>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {isLoadingChallenges ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full col-span-full">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-80 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl animate-pulse p-6 space-y-4"
+                  >
+                    <div className="aspect-video bg-muted rounded-xl w-full" />
+                    <div className="h-5 bg-muted rounded w-2/3" />
+                    <div className="h-4 bg-muted rounded w-full" />
+                  </div>
+                ))}
+              </div>
+            ) : challenges.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-sm text-muted-foreground">
+                Chưa có thử thách nào đang mở.
+              </div>
+            ) : (
+              challenges.map((challenge, index) => (
+                <MotionWrapper
+                  key={challenge.id}
+                  animation="fadeInUp"
+                  delay={0.15 * (index + 1)}
+                  duration={0.6}
+                >
+                  <ChallengeCard challenge={challenge} />
+                </MotionWrapper>
+              ))
+            )}
+          </div>
+
+          <div className="text-center mt-12">
+            <ViewAllLink href="/challenges">
+              {t("home.viewAllChallenges")}
+            </ViewAllLink>
           </div>
         </div>
       </section>

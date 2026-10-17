@@ -1,6 +1,7 @@
 export enum CategoryType {
   BLOG = "BLOG",
   POST = "POST",
+  CHALLENGE = "CHALLENGE",
 }
 
 export interface CreateCategoryRequest {

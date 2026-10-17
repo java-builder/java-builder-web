@@ -81,10 +81,11 @@ export default function CategoryFormFields({
         <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
           {t("admin.categories.colType")}
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {[
             { value: CategoryType.BLOG, label: t("admin.categories.tabBlog"), desc: "Bài viết blog & tin tức" },
             { value: CategoryType.POST, label: t("admin.categories.tabPost"), desc: "Bài đăng Q&A & thảo luận" },
+            { value: CategoryType.CHALLENGE, label: "Thử thách", desc: "Thử thách lập trình" },
           ].map((opt) => {
             const isActive = categoryType === opt.value;
             return (

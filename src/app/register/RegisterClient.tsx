@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { userApi } from "@/services/user.service";
 import { CreateUserRequest } from "@/types/user";
@@ -29,6 +29,18 @@ export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const turnstileRef = useRef<TurnstileInstance | null>(null);
+  const [redirectParam, setRedirectParam] = useState<string>("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get("redirect") || urlParams.get("callbackUrl");
+    if (redirect && redirect.startsWith("/")) {
+      setRedirectParam(redirect);
+      try {
+        sessionStorage.setItem("auth_redirect", redirect);
+      } catch {}
+    }
+  }, []);
 
   const {
     register,
@@ -57,7 +69,10 @@ export default function RegisterClient() {
 
       if (result.code === 201) {
         toast.success(t("auth.registrationSuccess"));
-        router.push("/login?message=registration-success");
+        const targetLogin = redirectParam
+          ? `/login?message=registration-success&redirect=${encodeURIComponent(redirectParam)}`
+          : "/login?message=registration-success";
+        router.push(targetLogin);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t("auth.registerFailed");
@@ -290,7 +305,7 @@ export default function RegisterClient() {
             <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-slate-400 mt-3 sm:mt-4">
               {t("auth.alreadyHaveAccount")}{" "}
               <Link
-                href="/login"
+                href={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login"}
                 className="font-semibold text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {t("auth.loginNow")}

@@ -46,6 +46,10 @@ const isPublicEndpoint = (url: string | undefined, method?: string): boolean => 
     "/api/v1/user-subscriptions/check-premium",
     "/api/v1/documents",
     "/api/v1/certificates/public/verify",
+    "/api/v1/challenges",
+    "/api/v1/challenge-phases",
+    "/api/v1/challenge-days",
+    "/api/v1/challenge-tasks",
   ];
 
   const isGetMethod = !method || method.toUpperCase() === "GET";

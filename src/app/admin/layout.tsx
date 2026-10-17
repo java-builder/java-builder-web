@@ -308,6 +308,12 @@ const navGroups: NavGroup[] = [
         icon: <BookOpen className="w-5 h-5" />,
       },
       {
+        nameKey: "admin.layout.challenges",
+        href: "/admin/challenges",
+        colorKey: "amber",
+        icon: <Flame className="w-5 h-5" />,
+      },
+      {
         nameKey: "admin.layout.certificates",
         href: "/admin/certificates",
         colorKey: "amber",

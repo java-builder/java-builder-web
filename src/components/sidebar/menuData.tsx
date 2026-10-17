@@ -28,6 +28,7 @@ import {
   Settings,
   Palette,
   Languages,
+  Trophy,
 } from "lucide-react";
 
 export const menuGroups: MenuGroup[] = [
@@ -44,6 +45,15 @@ export const menuGroups: MenuGroup[] = [
         labelKey: "sidebar.home",
         icon: <Home className="w-5 h-5" />,
         color: "text-blue-600 dark:text-blue-400",
+      },
+      {
+        href: "/challenges",
+        label: "Thử thách",
+        labelKey: "sidebar.challenges",
+        icon: <Trophy className="w-5 h-5" />,
+        color: "text-rose-500 dark:text-rose-400",
+        tag: "HOT",
+        tagVariant: "hot",
       },
       {
         href: "/leaderboard",

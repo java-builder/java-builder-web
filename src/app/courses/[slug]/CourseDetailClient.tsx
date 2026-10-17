@@ -546,6 +546,7 @@ export default function CourseDetailPage() {
       <AuthRequiredModal
         isOpen={authModal.isOpen}
         onClose={() => setAuthModal({ ...authModal, isOpen: false })}
+        redirectTo={`/courses/${slug}`}
         title={authModal.title}
         message={authModal.message}
       />

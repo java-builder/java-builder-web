@@ -48,7 +48,13 @@ const GithubCallbackContent = () => {
             setAuthFromLogin(response.data);
             await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
             const isAdmin = response.data?.authorities?.includes("ADMIN");
-            router.push(isAdmin ? "/admin" : "/");
+            const savedRedirect = typeof window !== "undefined" ? sessionStorage.getItem("auth_redirect") : null;
+            if (!isAdmin && savedRedirect && savedRedirect.startsWith("/")) {
+              try { sessionStorage.removeItem("auth_redirect"); } catch {}
+              router.push(savedRedirect);
+            } else {
+              router.push(isAdmin ? "/admin" : "/");
+            }
           } else {
             setError("Không nhận được thông tin đăng nhập từ GitHub");
             setIsProcessing(false);
@@ -70,7 +76,13 @@ const GithubCallbackContent = () => {
 
   const handleTwoFactorSuccess = async () => {
     await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    router.push("/");
+    const savedRedirect = typeof window !== "undefined" ? sessionStorage.getItem("auth_redirect") : null;
+    if (savedRedirect && savedRedirect.startsWith("/")) {
+      try { sessionStorage.removeItem("auth_redirect"); } catch {}
+      router.push(savedRedirect);
+    } else {
+      router.push("/");
+    }
   };
 
   if (error) {

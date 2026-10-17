@@ -152,11 +152,11 @@ export const FilterSelect = <T extends string | number = string | number>({
       {isOpen && (
         <div
           className={`absolute ${align === "right" ? "right-0 left-auto" : "left-0 sm:left-0 max-sm:right-0"
-            } top-full z-50 mt-1.5 min-w-full w-max max-w-[calc(100vw-2rem)] sm:max-w-[320px] rounded-xl border border-border bg-card p-1.5 shadow-2xl backdrop-blur-md animate-in fade-in-50 zoom-in-95`}
+            } top-full z-50 mt-1.5 min-w-full w-max max-w-[calc(100vw-2rem)] sm:max-w-[320px] rounded-lg border border-border bg-card p-1 shadow-xl backdrop-blur-md animate-in fade-in-50 zoom-in-95`}
         >
           {/* Optional Live Search Box */}
           {isSearchEnabled && (
-            <div className="relative mb-1.5 p-1">
+            <div className="relative mb-1 p-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
               <input
                 ref={searchInputRef}
@@ -164,7 +164,7 @@ export const FilterSelect = <T extends string | number = string | number>({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full rounded-lg border border-input bg-background py-1 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+                className="w-full rounded-md border border-input bg-background py-1 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
               />
             </div>
           )}
@@ -178,7 +178,7 @@ export const FilterSelect = <T extends string | number = string | number>({
                   <div
                     key={String(opt.value)}
                     onClick={() => handleSelect(opt.value, opt.disabled)}
-                    className={`flex items-center justify-between gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${opt.disabled
+                    className={`flex items-center justify-between gap-3 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${opt.disabled
                         ? "opacity-50 cursor-not-allowed"
                         : isSelected
                           ? "bg-accent/15 text-accent font-semibold"

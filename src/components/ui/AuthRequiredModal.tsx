@@ -10,6 +10,7 @@ interface AuthRequiredModalProps {
   title?: string;
   message?: string;
   showLater?: boolean;
+  redirectTo?: string;
 }
 
 export default function AuthRequiredModal({
@@ -18,10 +19,15 @@ export default function AuthRequiredModal({
   title,
   message,
   showLater = true,
+  redirectTo,
 }: AuthRequiredModalProps) {
   const { t } = useI18n();
 
   if (!isOpen) return null;
+
+  const loginHref = redirectTo
+    ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+    : "/login";
 
   return (
     <div
@@ -55,7 +61,7 @@ export default function AuthRequiredModal({
               </button>
             )}
             <Link
-              href="/login"
+              href={loginHref}
               className="flex-1 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white border border-transparent transition hover:bg-accent-600 text-center"
             >
               {t("auth.login")}
