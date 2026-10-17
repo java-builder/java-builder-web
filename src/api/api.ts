@@ -324,5 +324,10 @@ export const API = {
     CHALLENGE_TASKS: "/api/v1/challenge-tasks",
     CHALLENGE_TASK_BY_ID: (id: string) => `/api/v1/challenge-tasks/${id}`,
     CHALLENGE_TASKS_BY_DAY: (dayId: string) => `/api/v1/challenge-tasks/day/${dayId}`,
+
+    // CHALLENGE PROGRESS
+    CHALLENGE_PROGRESS_BY_SLUG: (slug: string) => `/api/v1/challenge-progress/slug/${slug}`,
+    CHALLENGE_PROGRESS_TOGGLE_TASK: (taskId: string) => `/api/v1/challenge-progress/tasks/${taskId}/toggle`,
+    CHALLENGE_PROGRESS_COMPLETE_DAY: (slug: string, dayNumber: number) => `/api/v1/challenge-progress/slug/${slug}/days/${dayNumber}/complete`,
 };
 

@@ -48,13 +48,17 @@ export default function DayModal({
       setDayNumber(initialData.dayNumber);
       setTitle(initialData.title || "");
       setCoreMission(initialData.coreMission || "");
-      setWhyLearn("");
-      setContent("");
+      setWhyLearn(initialData.whyLearn || "");
+      setContent(initialData.content || "");
       const matchedPhase = phases.find((p) => p.phaseNumber === initialData.phaseNumber);
       setPhaseId(matchedPhase?.id || "");
-      setKeyConceptsText("");
-      setTasksList([]);
-      setIsFreePreview(Boolean(initialData.isFreePreview));
+      setKeyConceptsText(initialData.keyConcepts?.join(", ") || "");
+      setTasksList(
+        initialData.tasks && initialData.tasks.length > 0
+          ? initialData.tasks.map((t) => t.title)
+          : [""]
+      );
+      setIsFreePreview(Boolean(initialData.freePreview ?? initialData.isFreePreview));
     } else {
       setDayNumber(nextDayNumber);
       setTitle("");
@@ -115,6 +119,7 @@ export default function DayModal({
           content: content.trim() || coreMission.trim(),
           whyLearn: whyLearn.trim() || coreMission.trim(),
           keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : undefined,
+          isFreePreview,
         } as UpdateChallengeDayRequest);
       } else {
         await onSubmit({
@@ -127,6 +132,7 @@ export default function DayModal({
           whyLearn: whyLearn.trim() || coreMission.trim(),
           keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : undefined,
           tasks: validTasks.length > 0 ? validTasks : undefined,
+          isFreePreview,
         } as CreateChallengeDayRequest);
       }
       onClose();
@@ -198,14 +204,14 @@ export default function DayModal({
           {/* Tên thử thách trong ngày */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Tên thử thách trong ngày <span className="text-destructive">*</span>
+              Tiêu đề bài học <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="VD: Bản chất JVM, JDK & JRE hoặc Cấu hình Spring Boot IoC/DI"
+              placeholder="VD: Cấu hình Spring Boot và kết nối PostgreSQL"
               className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
             />
           </div>
@@ -213,14 +219,14 @@ export default function DayModal({
           {/* Nhiệm vụ cốt lõi (Core Mission) */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Nhiệm vụ trọng tâm trong ngày (Core Mission) <span className="text-destructive">*</span>
+              Mục tiêu chính của bài (Core Mission) <span className="text-destructive">*</span>
             </label>
             <textarea
               required
               rows={2}
               value={coreMission}
               onChange={(e) => setCoreMission(e.target.value)}
-              placeholder="VD: Phân biệt rõ ràng vai trò của JDK, JRE, JVM và thực hành biên dịch mã Bytecode."
+              placeholder="VD: Khởi tạo project và kết nối thành công với PostgreSQL."
               className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground resize-none"
             />
           </div>
@@ -228,13 +234,13 @@ export default function DayModal({
           {/* Tại sao cần học (Why Learn) */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Lý do cần chinh phục ngày này (Why Learn)
+              Tại sao cần học bài này? (Why Learn)
             </label>
             <textarea
               rows={2}
               value={whyLearn}
               onChange={(e) => setWhyLearn(e.target.value)}
-              placeholder="VD: 80% câu hỏi phỏng vấn Junior Java mở đầu bằng kiến trúc JVM và Memory Management."
+              placeholder="VD: Làm backend thì phải lưu dữ liệu vào database thật ngay từ đầu."
               className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground resize-none"
             />
           </div>
@@ -242,7 +248,7 @@ export default function DayModal({
           {/* Nội dung bài học (Content) */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
+              Nội dung hướng dẫn (Markdown)
             </label>
             <textarea
               rows={4}

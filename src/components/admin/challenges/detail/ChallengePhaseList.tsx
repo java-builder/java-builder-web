@@ -1,12 +1,12 @@
 "use client";
 
-import { Layers, Edit2, Trash2, Plus, Calendar } from "lucide-react";
+import { Layers, Edit2, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeDayResponse, ChallengePhaseResponse } from "@/types/challenge";
 
 interface ChallengePhaseListProps {
   phases: ChallengePhaseResponse[];
-  days: ChallengeDayResponse[];
+  days?: ChallengeDayResponse[];
   onCreatePhase: () => void;
   onEditPhase: (phase: ChallengePhaseResponse) => void;
   onDeletePhase: (id: string, title: string) => void;
@@ -14,7 +14,7 @@ interface ChallengePhaseListProps {
 
 export default function ChallengePhaseList({
   phases,
-  days,
+  days: _days,
   onCreatePhase,
   onEditPhase,
   onDeletePhase,
@@ -60,62 +60,43 @@ export default function ChallengePhaseList({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {phases.map((phase) => {
-          const phaseDays = days.filter((d) => d.phaseNumber === phase.phaseNumber);
-          const dayNumbers = phaseDays.map((d) => d.dayNumber);
-          const minDay = dayNumbers.length > 0 ? Math.min(...dayNumbers) : phase.startDay;
-          const maxDay = dayNumbers.length > 0 ? Math.max(...dayNumbers) : phase.endDay;
-
-          return (
-            <div
-              key={phase.id}
-              className="bg-card border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-accent/40 transition-colors"
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-accent/10 text-accent border border-accent/20">
-                    Chặng {phase.phaseNumber}
-                  </span>
-                  {minDay !== undefined && maxDay !== undefined && (
-                    <span className="text-xs font-medium text-muted-foreground bg-muted/60 px-2.5 py-0.5 rounded-md border border-border">
-                      Ngày {minDay} - {maxDay} ({phaseDays.length} ngày)
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="text-base font-bold text-foreground">{phase.title}</h3>
-
-                <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-accent" />
-                  <span>
-                    Số ngày thử thách đã biên soạn: <strong>{phaseDays.length}</strong> ngày
-                  </span>
-                </p>
+        {phases.map((phase) => (
+          <div
+            key={phase.id}
+            className="bg-card border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-accent/40 transition-colors"
+          >
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-accent/10 text-accent border border-accent/20">
+                  Chặng {phase.phaseNumber}
+                </span>
               </div>
 
-              <div className="flex items-center justify-end gap-2 mt-4 pt-3 border-t border-border">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onEditPhase(phase)}
-                  className="h-8 gap-1 text-xs"
-                >
-                  <Edit2 className="h-3.5 w-3.5" />
-                  <span>Sửa chặng</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDeletePhase(phase.id, phase.title)}
-                  className="h-8 gap-1 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  <span>Xóa</span>
-                </Button>
-              </div>
+              <h3 className="text-base font-bold text-foreground leading-snug">{phase.title}</h3>
             </div>
-          );
-        })}
+
+            <div className="flex items-center justify-end gap-2 mt-4 pt-3 border-t border-border">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onEditPhase(phase)}
+                className="h-8 gap-1 text-xs"
+              >
+                <Edit2 className="h-3.5 w-3.5" />
+                <span>Sửa chặng</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDeletePhase(phase.id, phase.title)}
+                className="h-8 gap-1 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Xóa</span>
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -23,9 +23,11 @@ export interface DayChallenge {
   estimatedMinutes: number;
   whyLearn: string;
   coreMission: string;
+  content?: string;
+  isFreePreview?: boolean;
   tasks: TaskItem[];
   keyConcepts: string[];
-  mentorTip: string;
+  mentorTip?: string;
   resources?: ResourceLink[];
   status: "completed" | "in_progress" | "locked";
 }

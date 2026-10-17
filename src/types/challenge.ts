@@ -18,9 +18,14 @@ export interface ChallengeDayResponse {
   dayNumber: number;
   title: string;
   coreMission?: string;
+  content?: string;
+  whyLearn?: string;
+  keyConcepts?: string[];
   phaseNumber?: number;
   phaseTitle?: string;
-  isFreePreview: boolean;
+  freePreview?: boolean;
+  isFreePreview?: boolean;
+  tasks?: ChallengeTaskResponse[];
 }
 
 export interface ChallengeDayDetailResponse {
@@ -36,7 +41,8 @@ export interface ChallengeDayDetailResponse {
   phaseId?: string;
   phaseNumber?: number;
   phaseTitle?: string;
-  isFreePreview: boolean;
+  freePreview?: boolean;
+  isFreePreview?: boolean;
   tasks: ChallengeTaskResponse[];
 }
 
@@ -114,6 +120,7 @@ export interface CreateChallengeDayRequest {
   whyLearn: string;
   keyConcepts?: string[];
   tasks?: string[];
+  isFreePreview?: boolean;
 }
 
 export interface UpdateChallengeDayRequest {
@@ -124,6 +131,7 @@ export interface UpdateChallengeDayRequest {
   content?: string;
   whyLearn?: string;
   keyConcepts?: string[];
+  isFreePreview?: boolean;
 }
 
 export interface CreateChallengeTaskRequest {
@@ -135,4 +143,14 @@ export interface CreateChallengeTaskRequest {
 export interface UpdateChallengeTaskRequest {
   title?: string;
   orderIndex?: number;
+}
+
+export interface ChallengeProgressResponse {
+  challengeId: string;
+  challengeSlug: string;
+  completedTaskIds: string[];
+  completedDayNumbers: number[];
+  completedDaysCount: number;
+  totalDaysCount: number;
+  progressPercent: number;
 }

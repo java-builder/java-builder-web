@@ -3,13 +3,14 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { FilterOption } from "@/components/ui/FilterSelect";
 import { Challenge, DayChallenge } from "../types";
 import { adaptChallengeDetailResponseToUi } from "../data/challengeAdapter";
 import { useChallengeBySlug } from "@/hooks/useChallenges";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { challengeService } from "@/services/challenge.service";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import {
   ChallengeHeader,
@@ -17,6 +18,7 @@ import {
   ChallengeDaysGrid,
   ChallengeDayDetail,
   ChallengePaywallCard,
+  ChallengeSideDrawer,
 } from "@/components/challenges";
 
 interface Props {
@@ -45,13 +47,11 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return null;
   }, [initialChallenge, challengeData]);
 
-  const storageKey = `jb_challenge_${slug}`;
-
   const [days, setDays] = useState<DayChallenge[]>([]);
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [activePhaseFilter, setActivePhaseFilter] = useState<number | "all">("all");
-  const [viewMode, setViewMode] = useState<"matrix" | "list">("matrix");
   const [isUnlockedAll, setIsUnlockedAll] = useState<boolean>(false);
+  const [isSideDrawerOpen, setIsSideDrawerOpen] = useState<boolean>(false);
 
   // Sync days when challenge loads
   useEffect(() => {
@@ -60,46 +60,49 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   }, [challenge]);
 
-  // Load unlock state
+  // Load progress from DB when user and challenge are ready (NO LOCALSTORAGE)
   useEffect(() => {
-    if (!slug) return;
-    try {
-      const savedUnlock = localStorage.getItem(`jb_challenge_unlocked_${slug}`);
-      if (savedUnlock === "true") {
-        setIsUnlockedAll(true);
-      }
-    } catch {
-      // Ignore
-    }
-  }, [slug]);
+    if (!currentUser || !slug) return;
+    let isMounted = true;
 
-  // Load from localStorage on client
-  useEffect(() => {
-    if (!challenge) return;
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === challenge.totalDays) {
-          setDays(parsed);
-        }
-      }
-    } catch {
-      // Ignore
-    }
-  }, [storageKey, challenge]);
+    challengeService
+      .getProgress(slug)
+      .then((res) => {
+        if (!isMounted || !res.data) return;
+        const { completedTaskIds, completedDayNumbers } = res.data;
+        const taskSet = new Set(completedTaskIds || []);
+        const daySet = new Set(completedDayNumbers || []);
 
-  // Save to localStorage
-  const saveDays = (newDays: DayChallenge[]) => {
-    setDays(newDays);
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(newDays));
-      } catch {
-        // Ignore quota errors
-      }
-    }
-  };
+        setDays((prevDays) =>
+          prevDays.map((d) => {
+            const isDayCompleted = daySet.has(d.day);
+            const updatedTasks = d.tasks.map((t) => ({
+              ...t,
+              isCompleted: isDayCompleted || taskSet.has(t.id),
+            }));
+            const prevDayCompleted = daySet.has(d.day - 1);
+            const isUnlocked = d.day === 1 || d.day <= 3 || prevDayCompleted;
+
+            return {
+              ...d,
+              status: isDayCompleted
+                ? ("completed" as const)
+                : isUnlocked
+                ? ("in_progress" as const)
+                : ("locked" as const),
+              tasks: updatedTasks,
+            };
+          })
+        );
+      })
+      .catch((err) => {
+        console.error("Failed to load challenge progress from DB:", err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUser, slug, challenge]);
 
   // Stats
   const completedCount = useMemo(() => {
@@ -120,8 +123,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return [
       {
         value: "all",
-        label: `Tất cả ${challenge.totalDays} ngày (${challenge.phases.length} chặng)`,
-        description: `Hiển thị toàn bộ lộ trình ${challenge.totalDays} ngày`,
+        label: `Tất cả (${days.length} ngày)`,
+        description: `Hiển thị toàn bộ ${days.length} ngày học đã có`,
       },
       ...challenge.phases.map((p) => ({
         value: p.id,
@@ -129,7 +132,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         description: `${p.dayRange} (${p.weekRange})`,
       })),
     ];
-  }, [challenge]);
+  }, [challenge, days.length]);
 
   // Filtered days list
   const filteredDays = useMemo(() => {
@@ -138,69 +141,117 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     });
   }, [days, activePhaseFilter]);
 
-  // Toggle single task
-  const handleToggleTask = (taskId: string) => {
+  // Toggle single task & persist to DB immediately
+  const handleToggleTask = async (taskId: string) => {
     if (!activeDay) return;
-    const newDays = days.map((d) => {
-      if (d.day === activeDay.day) {
-        const updatedTasks = d.tasks.map((t) =>
-          t.id === taskId ? { ...t, isCompleted: !t.isCompleted } : t
-        );
-        return { ...d, tasks: updatedTasks };
-      }
-      return d;
-    });
-    saveDays(newDays);
-  };
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập để lưu tiến độ bài tập!");
+      return;
+    }
 
-  // Mark current day complete & unlock next
-  const handleCompleteDay = (dayNum: number) => {
-    if (!challenge) return;
-    const newDays = days.map((d) => {
-      if (d.day === dayNum) {
-        return {
-          ...d,
-          status: "completed" as const,
-          tasks: d.tasks.map((t) => ({ ...t, isCompleted: true })),
-        };
-      }
-      if (d.day === dayNum + 1 && d.status === "locked") {
-        return { ...d, status: "in_progress" as const };
-      }
-      return d;
-    });
+    // Optimistic UI update
+    setDays((prevDays) =>
+      prevDays.map((d) => {
+        if (d.day === activeDay.day) {
+          const updatedTasks = d.tasks.map((t) =>
+            t.id === taskId ? { ...t, isCompleted: !t.isCompleted } : t
+          );
+          const hasUncompleted = updatedTasks.some((t) => !t.isCompleted);
+          return {
+            ...d,
+            status: hasUncompleted && d.status === "completed" ? ("in_progress" as const) : d.status,
+            tasks: updatedTasks,
+          };
+        }
+        return d;
+      })
+    );
 
-    saveDays(newDays);
-    toast.success(`🎉 Xuất sắc! Bạn đã hoàn thành Ngày ${dayNum}!`);
-
-    if (dayNum < challenge.totalDays) {
-      setSelectedDayNumber(dayNum + 1);
+    try {
+      await challengeService.toggleTask(taskId);
+    } catch {
+      toast.error("Không thể lưu trạng thái nhiệm vụ. Vui lòng thử lại!");
+      // Revert optimistic update
+      setDays((prevDays) =>
+        prevDays.map((d) => {
+          if (d.day === activeDay.day) {
+            const updatedTasks = d.tasks.map((t) =>
+              t.id === taskId ? { ...t, isCompleted: !t.isCompleted } : t
+            );
+            return { ...d, tasks: updatedTasks };
+          }
+          return d;
+        })
+      );
     }
   };
 
-  // Reset all progress
+  // Toggle day complete status & unlock next in DB
+  const handleCompleteDay = async (dayNum: number) => {
+    if (!challenge) return;
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập để lưu tiến độ hoàn thành!");
+      return;
+    }
+
+    const targetDay = days.find((d) => d.day === dayNum);
+    const isCurrentlyCompleted = targetDay?.status === "completed";
+    const nextStatus = isCurrentlyCompleted ? ("in_progress" as const) : ("completed" as const);
+    const nextTaskCompletedState = !isCurrentlyCompleted;
+
+    // Optimistic UI update
+    setDays((prevDays) =>
+      prevDays.map((d) => {
+        if (d.day === dayNum) {
+          return {
+            ...d,
+            status: nextStatus,
+            tasks: d.tasks.map((t) => ({ ...t, isCompleted: nextTaskCompletedState })),
+          };
+        }
+        if (!isCurrentlyCompleted && d.day === dayNum + 1 && d.status === "locked") {
+          return { ...d, status: "in_progress" as const };
+        }
+        return d;
+      })
+    );
+
+    if (isCurrentlyCompleted) {
+      toast.success(`Đã hủy hoàn thành Ngày ${dayNum}`);
+    } else {
+      toast.success(`🎉 Xuất sắc! Bạn đã hoàn thành Ngày ${dayNum}!`);
+    }
+
+    try {
+      await challengeService.completeDay(slug, dayNum, !isCurrentlyCompleted);
+    } catch {
+      toast.error("Không thể lưu tiến độ ngày vào cơ sở dữ liệu.");
+      // Revert if error
+      setDays((prevDays) =>
+        prevDays.map((d) => {
+          if (d.day === dayNum) {
+            return {
+              ...d,
+              status: isCurrentlyCompleted ? ("completed" as const) : ("in_progress" as const),
+              tasks: d.tasks.map((t) => ({ ...t, isCompleted: isCurrentlyCompleted })),
+            };
+          }
+          return d;
+        })
+      );
+    }
+  };
+
   const handleResetProgress = () => {
     if (!challenge) return;
-    if (
-      confirm("Bạn có chắc chắn muốn đặt lại toàn bộ tiến độ của thử thách này không?")
-    ) {
-      saveDays(challenge.days);
-      setSelectedDayNumber(1);
-      toast.success("Đã đặt lại tiến độ thử thách!");
-    }
+    setDays(challenge.days);
+    setSelectedDayNumber(1);
+    toast.success("Đã làm mới hiển thị tiến độ!");
   };
 
   const handleUnlockStandalone = () => {
-    if (!challenge) return;
     setIsUnlockedAll(true);
-    try {
-      localStorage.setItem(`jb_challenge_unlocked_${challenge.slug}`, "true");
-    } catch {
-      // Ignore
-    }
-    toast.success(
-      `Đã kích hoạt mua lẻ thành công lộ trình "${challenge.title}"!`
-    );
+    toast.success("Đã mở khóa lộ trình!");
   };
 
   if (!mounted || isUserLoading || isLoading) {
@@ -251,7 +302,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   }
 
   const isLockedByPaywall =
-    !isUnlockedAll && selectedDayNumber > (challenge.freePreviewDays || 3);
+    !isUnlockedAll && !activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays || 3);
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
@@ -264,52 +315,76 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
 
       {/* 2. Main Workspace */}
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:px-8 space-y-6">
-        {/* Toolbar */}
-        <ChallengeToolbar
-          challenge={challenge}
-          activePhaseFilter={activePhaseFilter}
-          setActivePhaseFilter={setActivePhaseFilter}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          onResetProgress={handleResetProgress}
-          phaseOptions={phaseOptions}
-        />
+        {/* Roadmap Navigator (Unified Single Card) */}
+        <div className="rounded-2xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
+          <ChallengeToolbar
+            challenge={challenge}
+            activePhaseFilter={activePhaseFilter}
+            setActivePhaseFilter={setActivePhaseFilter}
+            onResetProgress={handleResetProgress}
+            phaseOptions={phaseOptions}
+            filteredCount={filteredDays.length}
+          />
 
-        {/* 3. Split Workspace: Left = Days Grid/List, Right = Day Compass / Paywall */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Days Selector */}
-          <div className="lg:col-span-5 space-y-3">
-            <ChallengeDaysGrid
-              days={filteredDays}
-              totalDays={challenge.totalDays}
-              freePreviewDays={challenge.freePreviewDays}
-              selectedDayNumber={selectedDayNumber}
-              onSelectDay={setSelectedDayNumber}
-              viewMode={viewMode}
-              isUnlockedAll={isUnlockedAll}
+          <ChallengeDaysGrid
+            days={filteredDays}
+            totalDays={challenge.totalDays}
+            freePreviewDays={challenge.freePreviewDays}
+            selectedDayNumber={selectedDayNumber}
+            onSelectDay={setSelectedDayNumber}
+            isUnlockedAll={isUnlockedAll}
+          />
+        </div>
+
+        {/* Bottom Workspace: Active Day Content or Paywall (Full Width) */}
+        <div className="w-full">
+          {isLockedByPaywall ? (
+            <ChallengePaywallCard
+              challenge={challenge}
+              activeDay={activeDay}
+              onUnlockStandalone={handleUnlockStandalone}
             />
-          </div>
-
-          {/* Right Column: Active Day Compass Detail or Paywall */}
-          <div className="lg:col-span-7">
-            {isLockedByPaywall ? (
-              <ChallengePaywallCard
-                challenge={challenge}
-                activeDay={activeDay}
-                onUnlockStandalone={handleUnlockStandalone}
-              />
-            ) : (
-              <ChallengeDayDetail
-                activeDay={activeDay}
-                totalDays={challenge.totalDays}
-                onToggleTask={handleToggleTask}
-                onCompleteDay={handleCompleteDay}
-                onSelectDay={setSelectedDayNumber}
-              />
-            )}
-          </div>
+          ) : (
+            <ChallengeDayDetail
+              activeDay={activeDay}
+              totalDays={challenge.totalDays}
+              onToggleTask={handleToggleTask}
+              onCompleteDay={handleCompleteDay}
+              onSelectDay={setSelectedDayNumber}
+              onOpenDrawer={() => setIsSideDrawerOpen(true)}
+            />
+          )}
         </div>
       </div>
+
+      {/* Floating Right Button to Open Drawer */}
+      {activeDay && !isLockedByPaywall && (
+        <button
+          type="button"
+          onClick={() => setIsSideDrawerOpen(true)}
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-accent hover:bg-accent/90 text-white pl-2.5 pr-2 py-3 rounded-l-xl shadow-lg hover:pl-3.5 transition-all flex flex-col items-center gap-1.5 cursor-pointer group border border-r-0 border-white/20 active:scale-95"
+          title="Mở danh sách nhiệm vụ"
+        >
+          <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
+          <span className="text-[10px] font-bold tracking-wider uppercase [writing-mode:vertical-rl] rotate-180">
+            Nhiệm vụ
+          </span>
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+        </button>
+      )}
+
+      {/* Side-over Right Drawer (Roadmap.sh Style) */}
+      {activeDay && (
+        <ChallengeSideDrawer
+          isOpen={isSideDrawerOpen}
+          onClose={() => setIsSideDrawerOpen(false)}
+          activeDay={activeDay}
+          totalDays={challenge.totalDays}
+          onToggleTask={handleToggleTask}
+          onCompleteDay={handleCompleteDay}
+          onSelectDay={setSelectedDayNumber}
+        />
+      )}
     </main>
   );
 }

@@ -69,7 +69,7 @@ export default function ChallengeDayItem({
               <h3 className="text-sm sm:text-base font-bold text-foreground">
                 Thử thách Ngày {day.dayNumber}: {day.title}
               </h3>
-              {day.isFreePreview && (
+              {(day.freePreview ?? day.isFreePreview) && (
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                   Học thử miễn phí
                 </span>

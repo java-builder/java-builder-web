@@ -29,70 +29,51 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
 
   const phases: PhaseInfo[] = (res.phases || []).map((p) => {
     const startDay = p.startDay || 1;
-    const endDay = p.endDay || 10;
+    const endDay = p.endDay || startDay;
     const startWeek = Math.floor((startDay - 1) / 7) + 1;
     const endWeek = Math.floor((endDay - 1) / 7) + 1;
     return {
       id: p.phaseNumber,
       title: p.title,
       weekRange: `Tuần ${startWeek} - ${endWeek}`,
-      dayRange: `Ngày ${startDay} - ${endDay}`,
+      dayRange: startDay === endDay ? `Ngày ${startDay}` : `Ngày ${startDay} - ${endDay}`,
       color: "from-blue-600 to-indigo-600",
       description: "",
       badge: `Chặng ${p.phaseNumber}`,
     };
   });
 
-  const days: DayChallenge[] =
-    res.days && res.days.length > 0
-      ? res.days.map((d) => {
-          const phaseNumber = d.phaseNumber || 1;
-          const phaseName = d.phaseTitle || `Chặng ${phaseNumber}`;
-          const week = Math.floor((d.dayNumber - 1) / 7) + 1;
+  const days: DayChallenge[] = (res.days || []).map((d) => {
+    const phaseNumber = d.phaseNumber || 1;
+    const phaseName = d.phaseTitle || `Chặng ${phaseNumber}`;
+    const week = Math.floor((d.dayNumber - 1) / 7) + 1;
+    const isFree = d.freePreview ?? d.isFreePreview ?? (d.dayNumber <= (res.freePreviewDays ?? 3));
 
-          return {
-            day: d.dayNumber,
-            week,
-            phaseId: phaseNumber,
-            phaseName,
-            title: d.title,
-            tagline: d.coreMission || `Thực hành ngày ${d.dayNumber}`,
-            estimatedMinutes: 60,
-            whyLearn: "Nắm vững kỹ năng thực tế",
-            coreMission: d.coreMission || d.title,
-            tasks: [
-              { id: `t1-${d.id}`, title: d.title, isCompleted: false },
-            ],
-            keyConcepts: ["Architecture", "Best Practices"],
-            mentorTip: "Đọc kỹ yêu cầu trước khi bắt tay vào code.",
-            resources: [],
-            status: d.dayNumber === 1 ? "in_progress" : "locked",
-          };
-        })
-      : Array.from({ length: res.totalDays || 30 }, (_, i) => {
-          const dayNumber = i + 1;
-          const phaseNumber = Math.floor((dayNumber - 1) / 10) + 1;
-          const week = Math.floor((dayNumber - 1) / 7) + 1;
-          return {
-            day: dayNumber,
-            week,
-            phaseId: phaseNumber,
-            phaseName: `Chặng ${phaseNumber}`,
-            title: `Ngày ${dayNumber}: Nội dung lộ trình thử thách`,
-            tagline: `Nhiệm vụ rèn luyện ngày ${dayNumber}`,
-            estimatedMinutes: 60,
-            whyLearn: "Rèn luyện tư duy thực tế và kỷ luật viết code mỗi ngày",
-            coreMission: `Hoàn thành bài tập thực hành ngày ${dayNumber}`,
-            tasks: [
-              { id: `t1-${dayNumber}`, title: `Nắm vững mục tiêu ngày ${dayNumber}`, isCompleted: false },
-              { id: `t2-${dayNumber}`, title: `Thực hành code và commit mã nguồn`, isCompleted: false },
-            ],
-            keyConcepts: ["Hands-on", "Clean Code"],
-            mentorTip: "Đọc kỹ yêu cầu và thực hành code trực tiếp.",
-            resources: [],
-            status: dayNumber === 1 ? "in_progress" : "locked",
-          };
-        });
+    return {
+      day: d.dayNumber,
+      week,
+      phaseId: phaseNumber,
+      phaseName,
+      title: d.title,
+      tagline: d.coreMission || `Thực hành ngày ${d.dayNumber}`,
+      estimatedMinutes: 60,
+      whyLearn: d.whyLearn || "Nắm vững kỹ năng thực tế",
+      coreMission: d.coreMission || d.title,
+      content: d.content || "",
+      isFreePreview: Boolean(isFree),
+      tasks:
+        d.tasks && d.tasks.length > 0
+          ? d.tasks.map((t) => ({ id: t.id, title: t.title, isCompleted: false }))
+          : [{ id: `t1-${d.id || d.dayNumber}`, title: d.title, isCompleted: false }],
+      keyConcepts:
+        d.keyConcepts && d.keyConcepts.length > 0
+          ? d.keyConcepts
+          : ["Architecture", "Best Practices"],
+      mentorTip: "Đọc kỹ yêu cầu trước khi bắt tay vào code.",
+      resources: [],
+      status: d.dayNumber === 1 ? ("in_progress" as const) : ("locked" as const),
+    };
+  });
 
   return {
     ...base,

@@ -17,6 +17,7 @@ import {
   CreateChallengeTaskRequest,
   UpdateChallengeTaskRequest,
   ChallengeStatus,
+  ChallengeProgressResponse,
 } from "@/types/challenge";
 
 export const challengeService = {
@@ -118,6 +119,30 @@ export const challengeService = {
 
   getTasksByDayId: async (dayId: string) => {
     const response = await apiClient.get<ApiResponse<ChallengeTaskResponse[]>>(API.CHALLENGE_TASKS_BY_DAY(dayId));
+    return response.data;
+  },
+
+  // PROGRESS (PERSISTED TO DB)
+  getProgress: async (slug: string) => {
+    const response = await apiClient.get<ApiResponse<ChallengeProgressResponse>>(
+      API.CHALLENGE_PROGRESS_BY_SLUG(slug)
+    );
+    return response.data;
+  },
+
+  toggleTask: async (taskId: string) => {
+    const response = await apiClient.put<ApiResponse<boolean>>(
+      API.CHALLENGE_PROGRESS_TOGGLE_TASK(taskId)
+    );
+    return response.data;
+  },
+
+  completeDay: async (slug: string, dayNumber: number, completed?: boolean) => {
+    const response = await apiClient.put<ApiResponse<boolean>>(
+      API.CHALLENGE_PROGRESS_COMPLETE_DAY(slug, dayNumber),
+      null,
+      completed !== undefined ? { params: { completed } } : undefined
+    );
     return response.data;
   },
 };
