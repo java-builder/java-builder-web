@@ -21,6 +21,7 @@ export interface ChallengeDayResponse {
   content?: string;
   whyLearn?: string;
   keyConcepts?: string[];
+  phaseId?: string;
   phaseNumber?: number;
   phaseTitle?: string;
   freePreview?: boolean;
