@@ -172,27 +172,35 @@ export function ChallengeCard({ challenge, userProgress }: ChallengeCardProps) {
                 JavaBuilder
               </span>
               <p className="text-[11px] text-muted-foreground truncate">
-                {challenge.phases.length} Chặng định hướng
+                {challenge.phases.length} Giai đoạn định hướng
               </p>
             </div>
           </div>
 
           {/* Right: Pricing & Action Link */}
           <div className="text-right shrink-0">
-            <div className="flex items-center justify-end gap-1.5 text-xs font-bold">
-              <span className="text-gray-900 dark:text-white">
-                {(challenge.price || 149000).toLocaleString("vi-VN")} đ
-              </span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">
-                hoặc Premium
-              </span>
-            </div>
+            {challenge.isFree ? (
+              <div className="flex items-center justify-end gap-1.5 text-xs font-bold">
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs border border-emerald-500/20">
+                  Miễn phí 100%
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-end gap-1.5 text-xs font-bold">
+                <span className="text-gray-900 dark:text-white">
+                  {(challenge.price || 149000).toLocaleString("vi-VN")} đ
+                </span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">
+                  hoặc Premium
+                </span>
+              </div>
+            )}
             <Link
               href={`/challenges/${challenge.slug}`}
               className="inline-flex items-center gap-1 text-xs font-bold text-accent transition-transform duration-200 group-hover:translate-x-0.5 cursor-pointer mt-0.5"
             >
               <span className="whitespace-nowrap">
-                {isEnrolled ? "Tiếp tục học" : "Học thử miễn phí"}
+                {isEnrolled ? "Tiếp tục học" : challenge.isFree ? "Bắt đầu học ngay" : "Học thử miễn phí"}
               </span>
               <svg
                 className="h-3.5 w-3.5"

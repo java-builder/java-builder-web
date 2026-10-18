@@ -302,7 +302,7 @@ export const vi = {
     featuredCoursesDesc: "Chọn lộ trình phù hợp với mục tiêu và trình độ của bạn",
     featuredChallengesBadge: "Rèn luyện kỷ luật mỗi ngày",
     featuredChallenges: "Thử thách lập trình theo ngày",
-    featuredChallengesDesc: "Lộ trình học tập phân chặng rõ ràng, nhiệm vụ cụ thể từng ngày giúp bạn duy trì thói quen học tập bền bỉ",
+    featuredChallengesDesc: "Lộ trình học tập chia theo từng giai đoạn rõ ràng, nhiệm vụ cụ thể từng ngày giúp bạn duy trì thói quen học tập bền bỉ",
     viewAllChallenges: "Xem tất cả thử thách",
     featuredDocsBadge: "Thư viện học tập chọn lọc",
     featuredDocs: "Tài liệu nổi bật",

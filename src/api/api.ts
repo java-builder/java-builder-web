@@ -317,7 +317,6 @@ export const API = {
     // CHALLENGE DAYS
     CHALLENGE_DAYS: "/api/v1/challenge-days",
     CHALLENGE_DAY_BY_ID: (id: string) => `/api/v1/challenge-days/${id}`,
-    CHALLENGE_DAY_DETAIL: (slug: string, dayNumber: number) => `/api/v1/challenge-days/slug/${slug}/day/${dayNumber}`,
     CHALLENGE_DAYS_BY_CHALLENGE: (challengeId: string) => `/api/v1/challenge-days/challenge/${challengeId}`,
 
     // CHALLENGE TASKS
@@ -329,5 +328,11 @@ export const API = {
     CHALLENGE_PROGRESS_BY_SLUG: (slug: string) => `/api/v1/challenge-progress/slug/${slug}`,
     CHALLENGE_PROGRESS_TOGGLE_TASK: (taskId: string) => `/api/v1/challenge-progress/tasks/${taskId}/toggle`,
     CHALLENGE_PROGRESS_COMPLETE_DAY: (slug: string, dayNumber: number) => `/api/v1/challenge-progress/slug/${slug}/days/${dayNumber}/complete`,
+
+    // CHALLENGE ENROLLMENT
+    CHALLENGE_ENROLLMENT_CHECK: (challengeId: string) => `/api/v1/challenge-enrollments/check/${challengeId}`,
+    CHALLENGE_ENROLL_FREE: (challengeId: string) => `/api/v1/challenge-enrollments/free/${challengeId}`,
+    CHALLENGE_ENROLLMENT_STUDENTS: (challengeId: string) => `/api/v1/challenge-enrollments/challenge/${challengeId}`,
+    CHALLENGE_UNENROLL: (enrollmentId: string) => `/api/v1/challenge-enrollments/${enrollmentId}`,
 };
 

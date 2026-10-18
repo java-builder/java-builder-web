@@ -6,8 +6,7 @@ import {
   Edit2,
   Trash2,
   CheckSquare,
-  ChevronDown,
-  ChevronUp,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,9 +32,10 @@ export default function ChallengeDayItem({
   onEditTask,
   onDeleteTask,
 }: ChallengeDayItemProps) {
-  const [tasks, setTasks] = useState<ChallengeTaskResponse[]>([]);
+  const [tasks, setTasks] = useState<ChallengeTaskResponse[]>(day.tasks || []);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [hasFetched, setHasFetched] = useState(Boolean(day.tasks && day.tasks.length > 0));
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -43,6 +43,7 @@ export default function ChallengeDayItem({
       const res = await challengeService.getTasksByDayId(day.id);
       if (res.data) {
         setTasks(res.data);
+        setHasFetched(true);
       }
     } catch {
       // Ignore
@@ -52,105 +53,129 @@ export default function ChallengeDayItem({
   }, [day.id]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    if (isExpanded && !hasFetched) {
+      fetchTasks();
+    }
+  }, [isExpanded, hasFetched, fetchTasks]);
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-xs overflow-hidden transition-all hover:border-accent/30">
-      {/* Day Header Row */}
-      <div className="p-4 sm:p-5 bg-muted/20 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border">
-        <div className="flex items-start sm:items-center gap-3.5 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center font-bold text-accent text-sm shrink-0">
+    <div className="bg-card border border-border rounded-xl shadow-xs overflow-hidden transition-all hover:border-accent/40">
+      {/* Day Header Row - Click to expand/collapse */}
+      <div
+        className="p-3.5 sm:p-4 bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 cursor-pointer hover:bg-muted/30 transition-colors select-none"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <ChevronRight
+            className={`w-4 h-4 text-muted-foreground transition-transform shrink-0 ${
+              isExpanded ? "rotate-90 text-accent" : ""
+            }`}
+          />
+
+          <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center font-bold text-accent text-xs shrink-0">
             D{day.dayNumber}
           </div>
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm sm:text-base font-bold text-foreground">
+              <h3 className="text-sm font-semibold text-foreground">
                 Thử thách Ngày {day.dayNumber}: {day.title}
               </h3>
               {(day.freePreview ?? day.isFreePreview) && (
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                   Học thử miễn phí
                 </span>
               )}
               {day.phaseNumber && (
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-muted text-muted-foreground border border-border">
-                  Chặng {day.phaseNumber}{day.phaseTitle ? `: ${day.phaseTitle}` : ""}
+                <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground border border-border/60">
+                  Giai đoạn {day.phaseNumber}{day.phaseTitle ? `: ${day.phaseTitle}` : ""}
                 </span>
               )}
             </div>
 
             {day.coreMission && (
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                <strong className="text-foreground font-medium">Nhiệm vụ:</strong> {day.coreMission}
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                <span className="font-medium text-foreground/80">Nhiệm vụ:</span> {day.coreMission}
               </p>
             )}
           </div>
         </div>
 
-        {/* Header Actions */}
-        <div className="flex items-center gap-1.5 self-end md:self-center shrink-0">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onCreateTask({ id: day.id, dayNumber: day.dayNumber })}
-            className="h-8 gap-1.5 text-xs font-semibold"
+        {/* Action Buttons */}
+        <div
+          className="flex items-center gap-1.5 self-end sm:self-center shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              onCreateTask({ id: day.id, dayNumber: day.dayNumber });
+              if (!isExpanded) setIsExpanded(true);
+            }}
+            className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10 rounded-lg transition-colors border border-border/40 cursor-pointer"
+            title="Thêm bài tập"
           >
-            <Plus className="h-3.5 w-3.5" />
-            <span>Thêm bài tập</span>
-          </Button>
+            <Plus className="w-4 h-4" />
+          </button>
 
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
             onClick={() => onEditDay(day)}
-            className="h-8 w-8 p-0"
+            className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors border border-border/40 cursor-pointer"
             title="Sửa thử thách ngày"
           >
-            <Edit2 className="h-3.5 w-3.5" />
-          </Button>
+            <Edit2 className="w-4 h-4" />
+          </button>
 
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
             onClick={() => onDeleteDay(day.id, day.dayNumber, day.title)}
-            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors border border-border/40 cursor-pointer"
             title="Xóa ngày"
           >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="h-8 w-8 p-0 text-muted-foreground"
-            title={isExpanded ? "Thu gọn" : "Mở rộng"}
-          >
-            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      {/* Day Tasks List */}
+      {/* Day Tasks List (Collapsible) */}
       {isExpanded && (
-        <div className="p-4 sm:p-5 space-y-2.5 bg-card">
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-            <span className="font-semibold flex items-center gap-1.5">
-              <CheckSquare className="h-3.5 w-3.5 text-accent" />
+        <div className="p-4 sm:p-5 space-y-3 bg-card border-t border-border/50">
+          <div className="flex items-center justify-between text-xs text-muted-foreground pb-2 border-b border-border/60">
+            <span className="font-semibold flex items-center gap-1.5 text-foreground">
+              <CheckSquare className="h-4 w-4 text-accent" />
               Nhiệm vụ & Bài tập ({tasks.length})
             </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onCreateTask({ id: day.id, dayNumber: day.dayNumber })}
+              className="gap-1.5 cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Thêm bài tập</span>
+            </Button>
           </div>
 
           {isLoadingTasks ? (
-            <div className="py-3 text-xs text-muted-foreground animate-pulse">
+            <div className="py-4 text-xs text-muted-foreground animate-pulse text-center">
               Đang tải danh sách bài tập...
             </div>
           ) : tasks.length === 0 ? (
-            <p className="text-xs text-muted-foreground italic py-2">
-              Chưa có bài tập nào cho ngày này. Nhấn &quot;Thêm bài tập&quot; để thiết lập nhiệm vụ cho học viên.
-            </p>
+            <div className="text-center py-6 border border-dashed border-border rounded-lg bg-muted/10">
+              <p className="text-xs text-muted-foreground">
+                Chưa có bài tập nào cho ngày này.
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onCreateTask({ id: day.id, dayNumber: day.dayNumber })}
+                className="mt-2 text-xs text-accent hover:text-accent cursor-pointer"
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Thêm bài tập đầu tiên
+              </Button>
+            </div>
           ) : (
             <div className="space-y-2">
               {tasks.map((task, idx) => (
@@ -174,19 +199,19 @@ export default function ChallengeDayItem({
                       onClick={() =>
                         onEditTask({ id: day.id, dayNumber: day.dayNumber }, task)
                       }
-                      className="h-7 w-7 p-0"
+                      className="h-8 w-8 p-0 cursor-pointer text-muted-foreground hover:text-foreground"
                       title="Sửa bài tập"
                     >
-                      <Edit2 className="h-3 w-3" />
+                      <Edit2 className="h-3.5 w-3.5" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onDeleteTask(task.id, task.title, fetchTasks)}
-                      className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 cursor-pointer"
                       title="Xóa bài tập"
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>

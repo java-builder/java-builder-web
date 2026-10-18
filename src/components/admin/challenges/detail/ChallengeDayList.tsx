@@ -60,9 +60,9 @@ export default function ChallengeDayList({
           variant="accent"
           size="sm"
           onClick={onCreateDay}
-          className="gap-1.5 h-8 text-xs font-semibold"
+          className="gap-2 cursor-pointer font-medium"
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4" />
           <span>Thêm ngày học</span>
         </Button>
       </div>

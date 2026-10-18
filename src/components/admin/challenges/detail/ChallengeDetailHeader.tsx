@@ -8,6 +8,7 @@ import {
   Plus,
   RefreshCw,
   ExternalLink,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeResponse } from "@/types/challenge";
@@ -53,15 +54,22 @@ export default function ChallengeDetailHeader({
             size="sm"
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="gap-1.5 h-8 text-xs font-semibold"
+            className="gap-2 cursor-pointer"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
             <span>Làm mới</span>
           </Button>
 
+          <Link href={`/admin/challenges/${challenge.id}/enrollments`}>
+            <Button variant="outline" size="sm" className="gap-2 cursor-pointer">
+              <Users className="h-4 w-4 text-accent" />
+              <span>Học viên</span>
+            </Button>
+          </Link>
+
           <Link href={`/challenges/${challenge.slug}`} target="_blank">
-            <Button variant="ghost" size="sm" className="gap-1.5 h-8 text-xs font-semibold">
-              <ExternalLink className="h-3.5 w-3.5" />
+            <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
+              <ExternalLink className="h-4 w-4" />
               <span>Xem trang học viên</span>
             </Button>
           </Link>
@@ -105,7 +113,7 @@ export default function ChallengeDetailHeader({
             </div>
 
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate">
-              {challenge.name}
+              {challenge.title}
             </h1>
             <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed max-w-3xl">
               {challenge.description}
@@ -125,8 +133,8 @@ export default function ChallengeDetailHeader({
               </p>
             </div>
             <div className="p-3 bg-muted/30 border border-border rounded-xl min-w-[90px]">
-              <span className="text-[11px] text-muted-foreground font-medium block">Chặng</span>
-              <p className="text-lg font-bold text-foreground mt-0.5">{phasesCount} chặng</p>
+              <span className="text-[11px] text-muted-foreground font-medium block">Giai đoạn</span>
+              <p className="text-lg font-bold text-foreground mt-0.5">{phasesCount} giai đoạn</p>
             </div>
             <div className="p-3 bg-muted/30 border border-border rounded-xl min-w-[90px]">
               <span className="text-[11px] text-muted-foreground font-medium block">Đã soạn</span>
@@ -137,30 +145,48 @@ export default function ChallengeDetailHeader({
 
         {/* Action Toolbar */}
         <div className="px-6 py-3.5 bg-muted/20 border-t border-border flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
+          <div className="flex h-9 items-center gap-1 rounded-lg border border-input bg-muted/40 p-1 shadow-xs">
             <button
               type="button"
               onClick={() => onTabChange("days")}
-              className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 ${
+              className={`flex h-7 items-center gap-1.5 px-3 text-xs sm:text-sm font-medium rounded-md transition-all cursor-pointer ${
                 activeTab === "days"
-                  ? "bg-accent text-white shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
               }`}
             >
-              <Calendar className="h-3.5 w-3.5" />
-              <span>Lộ trình theo ngày ({daysCount})</span>
+              <Calendar className={`h-4 w-4 ${activeTab === "days" ? "text-accent" : "text-muted-foreground/70"}`} />
+              <span>Lộ trình theo ngày</span>
+              <span
+                className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                  activeTab === "days"
+                    ? "bg-accent/10 text-accent"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {daysCount}
+              </span>
             </button>
             <button
               type="button"
               onClick={() => onTabChange("phases")}
-              className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 ${
+              className={`flex h-7 items-center gap-1.5 px-3 text-xs sm:text-sm font-medium rounded-md transition-all cursor-pointer ${
                 activeTab === "phases"
-                  ? "bg-accent text-white shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
               }`}
             >
-              <Layers className="h-3.5 w-3.5" />
-              <span>Chặng kiến trúc ({phasesCount})</span>
+              <Layers className={`h-4 w-4 ${activeTab === "phases" ? "text-accent" : "text-muted-foreground/70"}`} />
+              <span>Giai đoạn</span>
+              <span
+                className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                  activeTab === "phases"
+                    ? "bg-accent/10 text-accent"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {phasesCount}
+              </span>
             </button>
           </div>
 
@@ -169,19 +195,19 @@ export default function ChallengeDetailHeader({
               variant="outline"
               size="sm"
               onClick={onCreatePhase}
-              className="gap-1.5 h-8 text-xs font-semibold"
+              className="gap-2 cursor-pointer font-medium"
             >
-              <Layers className="h-3.5 w-3.5" />
-              <span>Thêm chặng</span>
+              <Layers className="h-4 w-4" />
+              <span>Thêm giai đoạn</span>
             </Button>
             <Button
               variant="accent"
               size="sm"
               onClick={onCreateDay}
-              className="gap-1.5 h-8 text-xs font-semibold"
+              className="gap-2 cursor-pointer font-medium"
             >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Thêm thử thách ngày</span>
+              <Plus className="h-4 w-4" />
+              <span>Thêm ngày học</span>
             </Button>
           </div>
         </div>

@@ -16,7 +16,15 @@ export const paymentApi = {
   createPaymentLink: async (courseId: string) => {
     const response = await apiClient.post<ApiResponse<CreatePaymentResponse>>(
       API.PAYMENT_CREATE_LINK,
-      { courserId: courseId }
+      { courseId }
+    );
+    return response.data;
+  },
+
+  createChallengePaymentLink: async (challengeId: string) => {
+    const response = await apiClient.post<ApiResponse<CreatePaymentResponse>>(
+      API.PAYMENT_CREATE_LINK,
+      { challengeId }
     );
     return response.data;
   },

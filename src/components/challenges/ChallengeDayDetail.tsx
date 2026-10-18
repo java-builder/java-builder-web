@@ -17,6 +17,7 @@ import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 interface ChallengeDayDetailProps {
   activeDay?: DayChallenge;
   totalDays: number;
+  isChallengeFree?: boolean;
   onToggleTask?: (taskId: string) => void;
   onCompleteDay: (dayNum: number) => void;
   onSelectDay: (dayNum: number) => void;
@@ -26,7 +27,7 @@ interface ChallengeDayDetailProps {
 export function ChallengeDayDetail({
   activeDay,
   totalDays,
-  onToggleTask: _onToggleTask,
+  isChallengeFree,
   onCompleteDay,
   onSelectDay,
   onOpenDrawer,
@@ -62,7 +63,7 @@ export function ChallengeDayDetail({
             </span>
             {activeDay.isFreePreview && (
               <span className="rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold border border-emerald-500/20">
-                Học thử miễn phí
+                {isChallengeFree ? "Miễn phí" : "Học thử miễn phí"}
               </span>
             )}
           </div>

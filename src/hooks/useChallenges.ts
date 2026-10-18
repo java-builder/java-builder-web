@@ -57,13 +57,13 @@ export const useChallengeDays = (challengeId: string) => {
   });
 };
 
-export const useChallengeDayDetail = (slug: string, dayNumber: number) => {
+export const useChallengeDayDetail = (dayId: string) => {
   return useQuery({
-    queryKey: ["challenge-day-detail", slug, dayNumber],
+    queryKey: ["challenge-day-detail", dayId],
     queryFn: async () => {
-      const res = await challengeService.getDayDetail(slug, dayNumber);
+      const res = await challengeService.getDayDetailById(dayId);
       return res.data;
     },
-    enabled: Boolean(slug) && dayNumber > 0,
+    enabled: Boolean(dayId),
   });
 };

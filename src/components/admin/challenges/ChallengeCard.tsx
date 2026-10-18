@@ -9,6 +9,7 @@ import {
   CreditCard,
   Layers,
   ArrowRight,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeLevel, ChallengeResponse } from "@/types/challenge";
@@ -16,7 +17,7 @@ import { ChallengeLevel, ChallengeResponse } from "@/types/challenge";
 interface ChallengeCardProps {
   challenge: ChallengeResponse;
   onEdit: (challenge: ChallengeResponse) => void;
-  onDelete: (id: string, name: string) => void;
+  onDelete: (id: string, title: string) => void;
 }
 
 const LEVEL_CONFIG: Record<
@@ -113,9 +114,9 @@ export default function ChallengeCard({
           >
             <h3
               className="text-base font-bold text-foreground line-clamp-2 leading-snug tracking-tight"
-              title={challenge.name}
+              title={challenge.title}
             >
-              {challenge.name}
+              {challenge.title}
             </h3>
           </Link>
 
@@ -175,6 +176,17 @@ export default function ChallengeCard({
         </Link>
 
         <div className="flex items-center gap-1">
+          <Link href={`/admin/challenges/${challenge.id}/enrollments`}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-accent cursor-pointer"
+              title="Danh sách học viên tham gia"
+            >
+              <Users className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
+
           <Button
             variant="ghost"
             size="sm"
@@ -188,7 +200,7 @@ export default function ChallengeCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onDelete(challenge.id, challenge.name)}
+            onClick={() => onDelete(challenge.id, challenge.title)}
             className="h-8 w-8 p-0 text-destructive/80 hover:text-destructive hover:bg-destructive/10 cursor-pointer"
             title="Xóa thử thách"
           >

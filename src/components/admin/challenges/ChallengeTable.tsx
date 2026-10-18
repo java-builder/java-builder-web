@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Edit2, Trash2, Calendar, Eye, Layers } from "lucide-react";
+import { Edit2, Trash2, Calendar, Eye, Layers, Users, MoreVertical, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeLevel, ChallengeResponse } from "@/types/challenge";
 
@@ -9,7 +10,7 @@ interface ChallengeTableProps {
   challenges: ChallengeResponse[];
   isLoading: boolean;
   onEdit: (challenge: ChallengeResponse) => void;
-  onDelete: (id: string, name: string) => void;
+  onDelete: (id: string, title: string) => void;
   onCreateNew?: () => void;
 }
 
@@ -51,6 +52,8 @@ export default function ChallengeTable({
   onDelete,
   onCreateNew,
 }: ChallengeTableProps) {
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
   if (isLoading) {
     return (
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
@@ -96,8 +99,8 @@ export default function ChallengeTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
-      <div className="overflow-x-auto">
+    <div className="rounded-xl border border-border bg-card shadow-xs">
+      <div className="overflow-x-auto min-h-[280px]">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-xs uppercase font-semibold text-muted-foreground">
             <tr>
@@ -149,9 +152,9 @@ export default function ChallengeTable({
                           <Link
                             href={`/admin/challenges/${c.id}`}
                             className="font-semibold text-foreground hover:text-accent transition-colors line-clamp-1 text-sm group-hover:underline"
-                            title={c.name}
+                            title={c.title}
                           >
-                            {c.name}
+                            {c.title}
                           </Link>
                           {c.category && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-muted text-muted-foreground border border-border/60">
@@ -187,7 +190,9 @@ export default function ChallengeTable({
                       </span>
                       <span className="text-muted-foreground mt-0.5 flex items-center gap-1">
                         <Eye className="h-3 w-3 text-emerald-500" />
-                        {c.freePreviewDays ?? 0} ngày miễn phí
+                        {c.isFree || !c.price || c.price === 0
+                          ? "Toàn bộ miễn phí"
+                          : `${c.freePreviewDays ?? 0} ngày miễn phí`}
                       </span>
                     </div>
                   </td>
@@ -227,37 +232,90 @@ export default function ChallengeTable({
 
                   {/* Actions */}
                   <td className="px-5 py-4 text-right whitespace-nowrap">
-                    <div className="inline-flex items-center gap-1.5 justify-end">
-                      <Link href={`/admin/challenges/${c.id}`}>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 gap-1.5 text-xs font-medium hover:border-accent hover:text-accent hover:bg-accent/5 cursor-pointer"
-                        >
-                          <Layers className="h-3.5 w-3.5 text-accent" />
-                          <span>Chi tiết & Lộ trình</span>
-                        </Button>
-                      </Link>
-
+                    <div className="relative inline-flex items-center justify-end">
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => onEdit(c)}
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground cursor-pointer"
-                        title="Chỉnh sửa thông tin"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === c.id ? null : c.id);
+                        }}
+                        className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+                        title="Thao tác"
                       >
-                        <Edit2 className="h-3.5 w-3.5" />
+                        <MoreVertical className="h-4 w-4" />
                       </Button>
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(c.id, c.name)}
-                        className="h-8 w-8 p-0 text-destructive/80 hover:text-destructive hover:bg-destructive/10 cursor-pointer"
-                        title="Xóa thử thách"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      {openMenuId === c.id && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-30"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuId(null);
+                            }}
+                          />
+                          <div className="absolute right-0 top-full mt-1 w-52 bg-card rounded-lg shadow-xl border border-border py-1.5 z-40 text-left animate-in fade-in zoom-in-95 duration-100">
+                            <Link
+                              href={`/admin/challenges/${c.id}`}
+                              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                              onClick={() => setOpenMenuId(null)}
+                            >
+                              <Layers className="w-4 h-4 text-accent" />
+                              <span>Chi tiết & Lộ trình</span>
+                            </Link>
+
+                            <Link
+                              href={`/admin/challenges/${c.id}/enrollments`}
+                              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                              onClick={() => setOpenMenuId(null)}
+                            >
+                              <Users className="w-4 h-4 text-blue-500" />
+                              <span>Danh sách học viên</span>
+                            </Link>
+
+                            {c.slug && (
+                              <Link
+                                href={`/challenges/${c.slug}`}
+                                target="_blank"
+                                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                                onClick={() => setOpenMenuId(null)}
+                              >
+                                <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                                <span>Xem trang học viên</span>
+                              </Link>
+                            )}
+
+                            <div className="border-t border-border my-1" />
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMenuId(null);
+                                onEdit(c);
+                              }}
+                              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
+                            >
+                              <Edit2 className="w-4 h-4 text-muted-foreground" />
+                              <span>Chỉnh sửa thông tin</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMenuId(null);
+                                onDelete(c.id, c.title);
+                              }}
+                              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors text-left cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              <span>Xóa thử thách</span>
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

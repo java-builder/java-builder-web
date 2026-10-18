@@ -14,10 +14,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (challenge) {
       return {
-        title: `${challenge.name} - JavaBuilder`,
+        title: `${challenge.title} - JavaBuilder`,
         description:
           challenge.description ||
-          `Thử thách lập trình ${challenge.name} tại JavaBuilder`,
+          `Thử thách lập trình ${challenge.title} tại JavaBuilder`,
       };
     }
   } catch (error) {

@@ -14,7 +14,7 @@ interface ChallengePhaseListProps {
 
 export default function ChallengePhaseList({
   phases,
-  days: _days,
+  days,
   onCreatePhase,
   onEditPhase,
   onDeletePhase,
@@ -25,9 +25,9 @@ export default function ChallengePhaseList({
         <div className="mx-auto w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-3">
           <Layers className="h-6 w-6" />
         </div>
-        <h3 className="text-base font-semibold text-foreground">Chưa có chặng kiến trúc nào</h3>
+        <h3 className="text-base font-semibold text-foreground">Chưa có giai đoạn nào</h3>
         <p className="mt-1 text-sm text-muted-foreground max-w-sm mx-auto">
-          Phân chia lộ trình thành các chặng giúp học viên có đích đến cụ thể sau mỗi giai đoạn.
+          Phân chia lộ trình thành các giai đoạn giúp học viên có đích đến cụ thể sau mỗi chặng đường học tập.
         </p>
         <Button
           variant="accent"
@@ -35,7 +35,7 @@ export default function ChallengePhaseList({
           onClick={onCreatePhase}
           className="mt-4 text-xs font-semibold"
         >
-          Tạo chặng đầu tiên
+          Tạo giai đoạn đầu tiên
         </Button>
       </div>
     );
@@ -46,16 +46,16 @@ export default function ChallengePhaseList({
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-foreground flex items-center gap-2">
           <Layers className="h-4 w-4 text-accent" />
-          <span>Danh sách các chặng kiến trúc ({phases.length})</span>
+          <span>Danh sách giai đoạn ({phases.length})</span>
         </h2>
         <Button
           variant="outline"
           size="sm"
           onClick={onCreatePhase}
-          className="gap-1.5 h-8 text-xs font-semibold"
+          className="gap-2 cursor-pointer font-medium"
         >
-          <Plus className="h-3.5 w-3.5" />
-          <span>Thêm chặng</span>
+          <Plus className="h-4 w-4" />
+          <span>Thêm giai đoạn</span>
         </Button>
       </div>
 
@@ -68,8 +68,16 @@ export default function ChallengePhaseList({
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-accent/10 text-accent border border-accent/20">
-                  Chặng {phase.phaseNumber}
+                  Giai đoạn {phase.phaseNumber}
                 </span>
+                {(phase.days || days) && (
+                  <span className="text-xs text-muted-foreground font-medium">
+                    {phase.days?.length ??
+                      days?.filter((d) => d.phaseNumber === phase.phaseNumber).length ??
+                      0}{" "}
+                    ngày học
+                  </span>
+                )}
               </div>
 
               <h3 className="text-base font-bold text-foreground leading-snug">{phase.title}</h3>
@@ -83,7 +91,7 @@ export default function ChallengePhaseList({
                 className="h-8 gap-1 text-xs"
               >
                 <Edit2 className="h-3.5 w-3.5" />
-                <span>Sửa chặng</span>
+                <span>Chỉnh sửa</span>
               </Button>
               <Button
                 variant="ghost"

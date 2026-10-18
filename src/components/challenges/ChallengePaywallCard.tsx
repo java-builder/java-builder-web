@@ -26,13 +26,13 @@ export function ChallengePaywallCard({
         </div>
         <div className="space-y-1">
           <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase text-accent bg-accent/10 px-2.5 py-0.5 rounded-md">
-            Chặn truy cập từ Ngày {(challenge.freePreviewDays || 3) + 1}
+            Chặn truy cập từ Ngày {(challenge.freePreviewDays ?? 0) + 1}
           </span>
           <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">
             Mở Khóa Ngày {activeDay.day}: {activeDay.title}
           </h2>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Bạn đã hoàn thành {challenge.freePreviewDays || 3} ngày trải nghiệm miễn phí! Hãy lựa chọn hình thức kích hoạt dưới đây để tiếp tục toàn bộ lộ trình {challenge.totalDays} ngày cùng mentor:
+            Bạn đã hoàn thành {challenge.freePreviewDays ?? 0} ngày trải nghiệm học thử! Hãy lựa chọn hình thức kích hoạt dưới đây để tiếp tục toàn bộ lộ trình {challenge.totalDays} ngày cùng mentor:
           </p>
         </div>
       </div>

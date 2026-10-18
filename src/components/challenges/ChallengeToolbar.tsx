@@ -54,7 +54,7 @@ export function ChallengeToolbar({
                   setActivePhaseFilter(val === "all" ? "all" : Number(val))
                 }
                 options={phaseOptions}
-                placeholder="Chọn chặng lộ trình..."
+                placeholder="Chọn giai đoạn..."
                 icon={<Layers className="h-4 w-4 text-accent shrink-0" />}
                 size="sm"
                 triggerClassName="bg-gray-50/80 dark:bg-slate-800/80 border-gray-200 dark:border-slate-700 rounded-lg text-xs"

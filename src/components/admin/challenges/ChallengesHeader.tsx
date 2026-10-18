@@ -20,7 +20,7 @@ export default function ChallengesHeader({
           <span>Quản lý Thử thách Lập trình</span>
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Thiết lập lộ trình thử thách thực chiến, phân chặng kiến thức và nhiệm vụ rèn luyện hàng ngày
+          Thiết lập lộ trình thử thách thực chiến, phân chia theo từng giai đoạn và nhiệm vụ rèn luyện hàng ngày
         </p>
       </div>
 

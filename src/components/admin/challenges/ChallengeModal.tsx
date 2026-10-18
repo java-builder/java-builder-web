@@ -52,13 +52,14 @@ export default function ChallengeModal({
 }: ChallengeModalProps) {
   const isEdit = Boolean(initialData);
 
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [level, setLevel] = useState<ChallengeLevel>("JUNIOR");
   const [totalDays, setTotalDays] = useState(60);
-  const [freePreviewDays, setFreePreviewDays] = useState(3);
+  const [freePreviewDays, setFreePreviewDays] = useState(0);
   const [price, setPrice] = useState<number | undefined>(undefined);
   const [priceDisplay, setPriceDisplay] = useState("");
+  const [isFreeChallenge, setIsFreeChallenge] = useState(false);
   const [status, setStatus] = useState<ChallengeStatus>("ACTIVE");
   const [colorGradient, setColorGradient] = useState(GRADIENT_PRESETS[0].value);
   const [categoryId, setCategoryId] = useState<string>("");
@@ -79,24 +80,32 @@ export default function ChallengeModal({
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name || "");
+      setTitle(initialData.title || "");
       setDescription(initialData.description || "");
       setLevel(initialData.level || "JUNIOR");
       setTotalDays(initialData.totalDays || 60);
-      setFreePreviewDays(initialData.freePreviewDays ?? 3);
+      setFreePreviewDays(initialData.freePreviewDays ?? 0);
       setPrice(initialData.price ?? undefined);
       setPriceDisplay(initialData.price !== undefined && initialData.price !== null ? formatPriceInput(String(initialData.price)) : "");
+      const isFree = Boolean(
+        initialData.isFree ??
+          (initialData.price === 0 ||
+            initialData.price === null ||
+            initialData.price === undefined)
+      );
+      setIsFreeChallenge(isFree);
       setStatus(initialData.status || "ACTIVE");
       setColorGradient(initialData.colorGradient || GRADIENT_PRESETS[0].value);
       setCategoryId(initialData.category?.id || "");
     } else {
-      setName("");
+      setTitle("");
       setDescription("");
       setLevel("JUNIOR");
       setTotalDays(60);
-      setFreePreviewDays(3);
+      setFreePreviewDays(0);
       setPrice(undefined);
       setPriceDisplay("");
+      setIsFreeChallenge(false);
       setStatus("ACTIVE");
       setColorGradient(GRADIENT_PRESETS[0].value);
       setCategoryId("");
@@ -127,18 +136,21 @@ export default function ChallengeModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !description.trim()) return;
+    if (!title.trim() || !description.trim()) return;
 
     setIsSubmitting(true);
     try {
+      const finalPrice = isFreeChallenge ? 0 : (price !== undefined && price >= 0 ? price : undefined);
+      const finalFreeDays = isFreeChallenge ? totalDays : (freePreviewDays && freePreviewDays > 0 ? freePreviewDays : undefined);
+
       if (isEdit) {
         const updatePayload: UpdateChallengeRequest = {
-          name: name.trim(),
+          title: title.trim(),
           description: description.trim(),
           level,
           totalDays,
-          freePreviewDays,
-          price: price !== undefined && price >= 0 ? price : undefined,
+          freePreviewDays: finalFreeDays,
+          price: finalPrice,
           status,
           colorGradient,
           categoryId: categoryId || undefined,
@@ -146,12 +158,12 @@ export default function ChallengeModal({
         await onSubmit(updatePayload);
       } else {
         const createPayload: CreateChallengeRequest = {
-          name: name.trim(),
+          title: title.trim(),
           description: description.trim(),
           level,
           totalDays,
-          freePreviewDays,
-          price: price !== undefined && price >= 0 ? price : undefined,
+          freePreviewDays: finalFreeDays,
+          price: finalPrice,
           colorGradient,
           categoryId: categoryId || undefined,
         };
@@ -200,8 +212,8 @@ export default function ChallengeModal({
             <input
               type="text"
               required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder="VD: 60 Ngày Chinh Phục Spring Boot Backend"
               className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
             />
@@ -248,49 +260,103 @@ export default function ChallengeModal({
             </div>
           </div>
 
-          {/* Grid 3 cột: Tổng ngày, Ngày Free, Giá */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">
-                Tổng số ngày <span className="text-destructive">*</span>
+          {/* Lộ trình Miễn phí / Có phí Toggle Card */}
+          <div className="flex items-center justify-between p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+            <div className="space-y-0.5">
+              <label htmlFor="free-challenge-toggle" className="text-xs font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer">
+                Lộ trình miễn phí 100% (Free Challenge)
               </label>
-              <input
-                type="number"
-                min={1}
-                required
-                value={totalDays}
-                onChange={(e) => setTotalDays(parseInt(e.target.value) || 1)}
-                className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-              />
+              <p className="text-[11px] text-muted-foreground">
+                Tất cả các ngày đều mở khóa miễn phí cho học viên, không yêu cầu thanh toán hay trả phí.
+              </p>
             </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">
-                Số ngày học thử miễn phí
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={totalDays}
-                value={freePreviewDays}
-                onChange={(e) => setFreePreviewDays(parseInt(e.target.value) || 0)}
-                className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">
-                Giá mua lẻ (VNĐ)
-              </label>
-              <input
-                type="text"
-                value={priceDisplay}
-                onChange={handlePriceChange}
-                placeholder="0 = Miễn phí"
-                className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-              />
-            </div>
+            <input
+              id="free-challenge-toggle"
+              type="checkbox"
+              checked={isFreeChallenge}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setIsFreeChallenge(checked);
+                if (checked) {
+                  setPrice(0);
+                  setPriceDisplay("0");
+                } else {
+                  setPrice(undefined);
+                  setPriceDisplay("");
+                }
+              }}
+              className="w-4 h-4 rounded-[4px] accent-emerald-600 cursor-pointer shrink-0"
+            />
           </div>
+
+          {/* Cấu hình ngày & chi phí */}
+          {isFreeChallenge ? (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Tổng số ngày <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  required
+                  value={totalDays}
+                  onChange={(e) => setTotalDays(parseInt(e.target.value) || 1)}
+                  className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                />
+              </div>
+
+              <div className="sm:col-span-2 rounded-lg border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 p-3 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                <span className="font-semibold shrink-0">✨ Miễn phí 100%:</span>
+                <span>Mở khóa toàn bộ {totalDays} ngày học cho tất cả học viên (không áp dụng số ngày học thử hay thanh toán).</span>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Tổng số ngày <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  required
+                  value={totalDays}
+                  onChange={(e) => setTotalDays(parseInt(e.target.value) || 1)}
+                  className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Số ngày học thử miễn phí
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  max={totalDays}
+                  value={freePreviewDays}
+                  onChange={(e) => setFreePreviewDays(parseInt(e.target.value) || 0)}
+                  placeholder="VD: 3 ngày"
+                  className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Giá mua lẻ (VNĐ) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={priceDisplay}
+                  onChange={handlePriceChange}
+                  placeholder="VD: 149.000"
+                  className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Trạng thái (khi sửa hoặc tạo) */}
           <div className="space-y-1.5">

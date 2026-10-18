@@ -91,10 +91,10 @@ export default function AdminChallengeDetailPage() {
   ) => {
     if (editingPhase) {
       await challengeService.updatePhase(editingPhase.id, formData as UpdateChallengePhaseRequest);
-      toast.success("Cập nhật chặng thành công!");
+      toast.success("Cập nhật giai đoạn thành công!");
     } else {
       await challengeService.createPhase(formData as CreateChallengePhaseRequest);
-      toast.success("Thêm chặng mới thành công!");
+      toast.success("Thêm giai đoạn mới thành công!");
     }
     setIsPhaseModalOpen(false);
     setEditingPhase(null);
@@ -105,12 +105,12 @@ export default function AdminChallengeDetailPage() {
     confirm(
       async () => {
         await challengeService.deletePhase(id);
-        toast.success("Đã xóa chặng!");
+        toast.success("Đã xóa giai đoạn!");
         refetchPhases();
       },
       {
-        title: "Xóa chặng kiến trúc?",
-        message: `Bạn có chắc muốn xóa chặng "<strong>${title}</strong>"?`,
+        title: "Xóa giai đoạn?",
+        message: `Bạn có chắc muốn xóa giai đoạn "<strong>${title}</strong>"?`,
         type: "error",
       }
     );

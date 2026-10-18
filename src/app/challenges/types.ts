@@ -14,6 +14,7 @@ export interface ResourceLink {
 }
 
 export interface DayChallenge {
+  id?: string;
   day: number;
   week: number;
   phaseId: number;
@@ -51,7 +52,7 @@ export interface Challenge {
   totalDays: number;
   estimatedMinutesPerDay: number;
   level: ChallengeLevel;
-  category: "Spring Boot" | "Java Core" | "Security" | "Database & JPA" | "DevOps & Cloud";
+  category: string;
   tag: "HOT" | "NEW" | "PRO" | "RECOMMENDED";
   tagVariant: "hot" | "new" | "pro";
   colorGradient: string;
@@ -59,6 +60,7 @@ export interface Challenge {
   enrolledCount: number;
   price?: number;
   freePreviewDays?: number;
+  isFree?: boolean;
   phases: PhaseInfo[];
   days: DayChallenge[];
 }

@@ -57,13 +57,14 @@ export interface ChallengePhaseResponse {
 
 export interface ChallengeResponse {
   id: string;
-  name: string;
+  title: string;
   slug: string;
   description: string;
   level: ChallengeLevel;
   totalDays: number;
   price?: number;
   freePreviewDays: number;
+  isFree?: boolean;
   status: ChallengeStatus;
   colorGradient: string;
   category?: CategorySummary;
@@ -77,7 +78,7 @@ export interface ChallengeDetailResponse extends ChallengeResponse {
 }
 
 export interface CreateChallengeRequest {
-  name: string;
+  title: string;
   description: string;
   level: ChallengeLevel;
   totalDays: number;
@@ -88,7 +89,7 @@ export interface CreateChallengeRequest {
 }
 
 export interface UpdateChallengeRequest {
-  name?: string;
+  title?: string;
   description?: string;
   level?: ChallengeLevel;
   totalDays?: number;

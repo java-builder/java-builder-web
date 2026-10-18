@@ -11,6 +11,9 @@ import { adaptChallengeDetailResponseToUi } from "../data/challengeAdapter";
 import { useChallengeBySlug } from "@/hooks/useChallenges";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { challengeService } from "@/services/challenge.service";
+import { paymentApi } from "@/services/payment.service";
+import { CreatePaymentResponse } from "@/types/payment";
+import PaymentModal from "@/components/courses/PaymentModal";
 import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
 import {
   ChallengeHeader,
@@ -52,6 +55,17 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const [activePhaseFilter, setActivePhaseFilter] = useState<number | "all">("all");
   const [isUnlockedAll, setIsUnlockedAll] = useState<boolean>(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState<boolean>(false);
+  const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
+  const [isDayForbidden, setIsDayForbidden] = useState<boolean>(false);
+  const [paymentModal, setPaymentModal] = useState<{
+    isOpen: boolean;
+    isLoading: boolean;
+    data: CreatePaymentResponse | null;
+  }>({
+    isOpen: false,
+    isLoading: false,
+    data: null,
+  });
 
   // Sync days when challenge loads
   useEffect(() => {
@@ -59,6 +73,40 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       setDays(challenge.days);
     }
   }, [challenge]);
+
+  // Check enrollment status
+  useEffect(() => {
+    if (!currentUser || !challenge?.id) return;
+    challengeService
+      .checkEnrollment(challenge.id)
+      .then((res) => {
+        if (res.data) setIsEnrolled(true);
+      })
+      .catch(() => {});
+  }, [currentUser, challenge?.id]);
+
+  // Auto enroll if challenge is free
+  useEffect(() => {
+    if (!currentUser || !challenge?.id || !challenge.isFree || isEnrolled) return;
+    challengeService
+      .enrollFree(challenge.id)
+      .then(() => setIsEnrolled(true))
+      .catch(() => {});
+  }, [currentUser, challenge?.id, challenge?.isFree, isEnrolled]);
+
+  // Listen to WebSocket payment success
+  useEffect(() => {
+    const handlePaymentSuccess = () => {
+      setIsEnrolled(true);
+      setIsUnlockedAll(true);
+      setIsDayForbidden(false);
+      setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      toast.success("🎉 Kích hoạt thử thách thành công!");
+    };
+
+    window.addEventListener("payment:success", handlePaymentSuccess);
+    return () => window.removeEventListener("payment:success", handlePaymentSuccess);
+  }, []);
 
   // Load progress from DB when user and challenge are ready (NO LOCALSTORAGE)
   useEffect(() => {
@@ -249,9 +297,79 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     toast.success("Đã làm mới hiển thị tiến độ!");
   };
 
-  const handleUnlockStandalone = () => {
-    setIsUnlockedAll(true);
-    toast.success("Đã mở khóa lộ trình!");
+  // Fetch full day details by ID with authorization check
+  useEffect(() => {
+    if (!activeDay?.id) return;
+    let isMounted = true;
+
+    challengeService
+      .getDayDetailById(activeDay.id)
+      .then((res) => {
+        if (!isMounted || !res.data) return;
+        const detail = res.data;
+        setIsDayForbidden(false);
+
+        setDays((prevDays) =>
+          prevDays.map((d) => {
+            if (d.day === detail.dayNumber) {
+              const taskMap = new Map(d.tasks.map((t) => [t.id, t.isCompleted]));
+              return {
+                ...d,
+                title: detail.title,
+                content: detail.content,
+                coreMission: detail.coreMission,
+                whyLearn: detail.whyLearn,
+                keyConcepts:
+                  detail.keyConcepts && detail.keyConcepts.length > 0
+                    ? detail.keyConcepts
+                    : d.keyConcepts,
+                tasks:
+                  detail.tasks && detail.tasks.length > 0
+                    ? detail.tasks.map((t) => ({
+                        id: t.id,
+                        title: t.title,
+                        isCompleted: Boolean(taskMap.get(t.id)),
+                      }))
+                    : d.tasks,
+              };
+            }
+            return d;
+          })
+        );
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        if (err?.response?.status === 403) {
+          setIsDayForbidden(true);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeDay?.id, isUnlockedAll, isEnrolled]);
+
+  const handleUnlockStandalone = async () => {
+    if (!challenge) return;
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập để thanh toán lộ trình!");
+      return;
+    }
+
+    setPaymentModal({ isOpen: true, isLoading: true, data: null });
+    try {
+      const res = await paymentApi.createChallengePaymentLink(challenge.id);
+      if (res.code === 200 || res.code === 201) {
+        setPaymentModal({ isOpen: true, isLoading: false, data: res.data ?? null });
+      } else {
+        toast.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
+        setPaymentModal({ isOpen: false, isLoading: false, data: null });
+      }
+    } catch (err) {
+      console.error("Payment error:", err);
+      toast.error("Lỗi khi kết nối đến cổng thanh toán PayOS.");
+      setPaymentModal({ isOpen: false, isLoading: false, data: null });
+    }
   };
 
   if (!mounted || isUserLoading || isLoading) {
@@ -301,8 +419,15 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     );
   }
 
+  const isUserAdminOrPremium = (currentUser?.authorities || []).some(
+    (role) => role === "ADMIN" || role.toUpperCase().includes("PREMIUM")
+  );
   const isLockedByPaywall =
-    !isUnlockedAll && !activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays || 3);
+    !challenge.isFree &&
+    !isUnlockedAll &&
+    !isEnrolled &&
+    !isUserAdminOrPremium &&
+    (isDayForbidden || (!activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays ?? 0)));
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
@@ -348,6 +473,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             <ChallengeDayDetail
               activeDay={activeDay}
               totalDays={challenge.totalDays}
+              isChallengeFree={challenge.isFree}
               onToggleTask={handleToggleTask}
               onCompleteDay={handleCompleteDay}
               onSelectDay={setSelectedDayNumber}
@@ -385,6 +511,15 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
           onSelectDay={setSelectedDayNumber}
         />
       )}
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={paymentModal.isOpen}
+        isLoading={paymentModal.isLoading}
+        data={paymentModal.data}
+        courseTitle={challenge.title}
+        onClose={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
+      />
     </main>
   );
 }

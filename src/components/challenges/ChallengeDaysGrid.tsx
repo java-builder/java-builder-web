@@ -14,8 +14,7 @@ interface ChallengeDaysGridProps {
 
 export function ChallengeDaysGrid({
   days,
-  totalDays: _totalDays,
-  freePreviewDays = 3,
+  freePreviewDays = 0,
   selectedDayNumber,
   onSelectDay,
   isUnlockedAll,
@@ -35,7 +34,7 @@ export function ChallengeDaysGrid({
           const isSelected = d.day === selectedDayNumber;
           const isCompleted = d.status === "completed";
           const isInProgress = d.status === "in_progress";
-          const isFreeDay = Boolean(d.isFreePreview) || d.day <= freePreviewDays;
+          const isFreeDay = Boolean(d.isFreePreview) || (freePreviewDays > 0 && d.day <= freePreviewDays);
           const isLockedByPaywall = !isUnlockedAll && !isFreeDay;
 
           let buttonClass =

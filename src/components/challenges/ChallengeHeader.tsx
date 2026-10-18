@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Flame, CheckCircle2, Clock } from "lucide-react";
+import { ArrowLeft, Flame, CheckCircle2, Clock, Sparkles } from "lucide-react";
 import { Challenge } from "@/app/challenges/types";
 import { LEVEL_STYLES } from "./ChallengeCard";
 
@@ -46,10 +46,23 @@ export function ChallengeHeader({
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             {/* Title & Info */}
             <div className="max-w-3xl space-y-3">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/20">
-                <Flame className="h-3 w-3 text-amber-500 fill-amber-500" />
-                Thử Thách {challenge.totalDays} Ngày
-              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/20">
+                  <Flame className="h-3 w-3 text-amber-500 fill-amber-500" />
+                  Thử Thách {challenge.totalDays} Ngày
+                </span>
+
+                {challenge.isFree ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
+                    <Sparkles className="h-3 w-3 text-emerald-500" />
+                    Lộ trình Miễn phí 100%
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+                    PRO • {(challenge.price || 149000).toLocaleString("vi-VN")} đ
+                  </span>
+                )}
+              </div>
 
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {challenge.title}

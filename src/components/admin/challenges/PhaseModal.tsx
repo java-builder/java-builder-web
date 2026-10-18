@@ -79,10 +79,10 @@ export default function PhaseModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-foreground">
-                {isEdit ? "Chỉnh sửa chặng kiến trúc" : "Thêm chặng kiến trúc mới"}
+                {isEdit ? "Chỉnh sửa giai đoạn" : "Thêm giai đoạn mới"}
               </h2>
               <p className="text-xs text-muted-foreground">
-                Gom nhóm các ngày học thành từng chặng mục tiêu rõ ràng
+                Gom nhóm các ngày học thành từng giai đoạn mục tiêu rõ ràng
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function PhaseModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Số thứ tự chặng (Phase Number) <span className="text-destructive">*</span>
+              Số thứ tự giai đoạn (Phase Number) <span className="text-destructive">*</span>
             </label>
             <input
               type="number"
@@ -113,7 +113,7 @@ export default function PhaseModal({
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Tiêu đề chặng <span className="text-destructive">*</span>
+              Tiêu đề giai đoạn <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
@@ -149,7 +149,7 @@ export default function PhaseModal({
               ) : (
                 <>
                   <Sparkles className="h-4 w-4" />
-                  <span>{isEdit ? "Cập nhật chặng" : "Tạo chặng mới"}</span>
+                  <span>{isEdit ? "Cập nhật giai đoạn" : "Tạo giai đoạn mới"}</span>
                 </>
               )}
             </Button>

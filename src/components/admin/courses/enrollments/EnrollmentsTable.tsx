@@ -19,6 +19,9 @@ interface EnrollmentsTableProps {
   totalElements: number;
   hasFilter: boolean;
   onRemove: (enrollmentId: string, username: string) => void;
+  title?: string;
+  subtitle?: string;
+  emptyMessage?: string;
 }
 
 const COLUMN_HEADERS: { label: string; align?: "left" | "right" }[] = [
@@ -35,16 +38,19 @@ export default function EnrollmentsTable({
   totalElements,
   hasFilter,
   onRemove,
+  title = "Danh sách học viên",
+  subtitle = "Theo dõi tiến độ và quản lý từng học viên",
+  emptyMessage = "Học viên đăng ký sẽ hiển thị tại đây",
 }: EnrollmentsTableProps) {
   return (
     <Card>
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
-            Danh sách học viên
+            {title}
           </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Theo dõi tiến độ và quản lý từng học viên trong khoá học
+            {subtitle}
           </p>
         </div>
         {totalElements > 0 && (
@@ -96,7 +102,7 @@ export default function EnrollmentsTable({
                 <p className="mt-1 text-xs text-muted-foreground">
                   {hasFilter
                     ? "Thử thay đổi từ khoá tìm kiếm"
-                    : "Học viên đăng ký khoá học sẽ hiển thị tại đây"}
+                    : emptyMessage}
                 </p>
               </TableCell>
             </TableRow>

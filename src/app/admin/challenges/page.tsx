@@ -57,7 +57,7 @@ export default function AdminChallengesPage() {
     return rawChallenges.filter((item) => {
       const matchSearch =
         !search.trim() ||
-        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.title.toLowerCase().includes(search.toLowerCase()) ||
         item.slug.toLowerCase().includes(search.toLowerCase()) ||
         (item.description && item.description.toLowerCase().includes(search.toLowerCase()));
 
@@ -89,7 +89,7 @@ export default function AdminChallengesPage() {
     refetch();
   };
 
-  const handleDelete = (id: string, name: string) => {
+  const handleDelete = (id: string, title: string) => {
     confirm(
       async () => {
         await challengeService.deleteChallenge(id);
@@ -98,7 +98,7 @@ export default function AdminChallengesPage() {
       },
       {
         title: "Xóa thử thách theo ngày?",
-        message: `Bạn có chắc chắn muốn xóa lộ trình thử thách "<strong>${name}</strong>"? Toàn bộ các chặng kiến trúc, ngày học và bài tập liên quan cũng sẽ bị xóa vĩnh viễn.`,
+        message: `Bạn có chắc chắn muốn xóa lộ trình thử thách "<strong>${title}</strong>"? Toàn bộ các giai đoạn, ngày học và bài tập liên quan cũng sẽ bị xóa vĩnh viễn.`,
         confirmText: "Xóa vĩnh viễn",
         cancelText: "Hủy",
         type: "error",

@@ -75,10 +75,10 @@ export default function DayModal({
   if (!isOpen) return null;
 
   const phaseOptions: SelectOption[] = [
-    { value: "", label: "-- Không thuộc chặng nào --" },
+    { value: "", label: "-- Không thuộc giai đoạn nào --" },
     ...phases.map((p) => ({
       value: p.id,
-      label: `Chặng ${p.phaseNumber}: ${p.title}`,
+      label: `Giai đoạn ${p.phaseNumber}: ${p.title}`,
     })),
   ];
 
@@ -190,13 +190,13 @@ export default function DayModal({
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-foreground">
-                Thuộc chặng kiến trúc (Phase)
+                Thuộc giai đoạn (Phase)
               </label>
               <CustomSelect
                 value={phaseId}
                 onChange={(val) => setPhaseId(String(val))}
                 options={phaseOptions}
-                placeholder="Chọn chặng"
+                placeholder="Chọn giai đoạn"
               />
             </div>
           </div>

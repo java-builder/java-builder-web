@@ -1,6 +1,7 @@
 import { apiClient } from "@/api/axios";
 import { API } from "@/api/api";
 import { ApiResponse, PageResponse } from "@/types/api";
+import { EnrolledStudentResponse } from "@/types/enrollment";
 import {
   ChallengeResponse,
   ChallengeDetailResponse,
@@ -91,11 +92,6 @@ export const challengeService = {
     return response.data;
   },
 
-  getDayDetail: async (slug: string, dayNumber: number) => {
-    const response = await apiClient.get<ApiResponse<ChallengeDayDetailResponse>>(API.CHALLENGE_DAY_DETAIL(slug, dayNumber));
-    return response.data;
-  },
-
   getDaysByChallengeId: async (challengeId: string) => {
     const response = await apiClient.get<ApiResponse<ChallengeDayResponse[]>>(API.CHALLENGE_DAYS_BY_CHALLENGE(challengeId));
     return response.data;
@@ -142,6 +138,53 @@ export const challengeService = {
       API.CHALLENGE_PROGRESS_COMPLETE_DAY(slug, dayNumber),
       null,
       completed !== undefined ? { params: { completed } } : undefined
+    );
+    return response.data;
+  },
+
+  getDayDetailById: async (id: string) => {
+    const response = await apiClient.get<ApiResponse<ChallengeDayDetailResponse>>(
+      API.CHALLENGE_DAY_BY_ID(id)
+    );
+    return response.data;
+  },
+
+  checkEnrollment: async (challengeId: string) => {
+    const response = await apiClient.get<ApiResponse<boolean>>(
+      API.CHALLENGE_ENROLLMENT_CHECK(challengeId)
+    );
+    return response.data;
+  },
+
+  enrollFree: async (challengeId: string) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.CHALLENGE_ENROLL_FREE(challengeId)
+    );
+    return response.data;
+  },
+
+  getChallengeEnrollments: async (
+    challengeId: string,
+    page: number = 1,
+    size: number = 20,
+    search?: string
+  ) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<EnrolledStudentResponse>>>(
+      API.CHALLENGE_ENROLLMENT_STUDENTS(challengeId),
+      {
+        params: {
+          page,
+          size,
+          ...(search ? { search } : {}),
+        },
+      }
+    );
+    return response.data;
+  },
+
+  unenrollStudent: async (enrollmentId: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      API.CHALLENGE_UNENROLL(enrollmentId)
     );
     return response.data;
   },
