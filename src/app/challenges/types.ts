@@ -1,10 +1,11 @@
-import { ChallengeLevel } from "@/types/challenge";
+import { ChallengeLevel, TaskResourceLink } from "@/types/challenge";
 
 export interface TaskItem {
   id: string;
   title: string;
   description?: string;
   isCompleted: boolean;
+  resourceLinks?: TaskResourceLink[];
 }
 
 export interface ResourceLink {
@@ -61,6 +62,7 @@ export interface Challenge {
   price?: number;
   freePreviewDays?: number;
   isFree?: boolean;
+  isEnrolled?: boolean;
   phases: PhaseInfo[];
   days: DayChallenge[];
 }

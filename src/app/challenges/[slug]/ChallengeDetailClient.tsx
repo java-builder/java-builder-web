@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
@@ -22,6 +22,7 @@ import {
   ChallengeDayDetail,
   ChallengePaywallCard,
   ChallengeSideDrawer,
+  ChallengeJoinSection,
 } from "@/components/challenges";
 
 interface Props {
@@ -29,7 +30,6 @@ interface Props {
 }
 
 export default function ChallengeDetailClient({ challenge: initialChallenge }: Props) {
-  const router = useRouter();
   const params = useParams();
   const slug = (params?.slug as string) || initialChallenge?.slug || "";
 
@@ -56,6 +56,9 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const [isUnlockedAll, setIsUnlockedAll] = useState<boolean>(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState<boolean>(false);
   const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
+  const [isCheckingEnrollment, setIsCheckingEnrollment] = useState<boolean>(true);
+  const [isEnrolling, setIsEnrolling] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isDayForbidden, setIsDayForbidden] = useState<boolean>(false);
   const [paymentModal, setPaymentModal] = useState<{
     isOpen: boolean;
@@ -74,25 +77,50 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   }, [challenge]);
 
-  // Check enrollment status
+  // Sync enrollment status from challenge data when loaded
   useEffect(() => {
-    if (!currentUser || !challenge?.id) return;
+    if (challenge?.isEnrolled !== undefined) {
+      if (challenge.isEnrolled) {
+        setIsEnrolled(true);
+        setIsCheckingEnrollment(false);
+      }
+    }
+  }, [challenge?.isEnrolled]);
+
+  // Check enrollment status (never auto-enroll on load)
+  useEffect(() => {
+    if (!currentUser) {
+      setIsCheckingEnrollment(false);
+      setIsEnrolled(false);
+      return;
+    }
+    if (!challenge?.id) return;
+
+    if (challenge.isEnrolled) {
+      setIsEnrolled(true);
+      setIsCheckingEnrollment(false);
+      return;
+    }
+
+    let isMounted = true;
+    setIsCheckingEnrollment(true);
     challengeService
       .checkEnrollment(challenge.id)
       .then((res) => {
-        if (res.data) setIsEnrolled(true);
+        if (!isMounted) return;
+        setIsEnrolled(Boolean(res.data));
       })
-      .catch(() => {});
-  }, [currentUser, challenge?.id]);
+      .catch(() => {
+        if (!isMounted) return;
+      })
+      .finally(() => {
+        if (isMounted) setIsCheckingEnrollment(false);
+      });
 
-  // Auto enroll if challenge is free
-  useEffect(() => {
-    if (!currentUser || !challenge?.id || !challenge.isFree || isEnrolled) return;
-    challengeService
-      .enrollFree(challenge.id)
-      .then(() => setIsEnrolled(true))
-      .catch(() => {});
-  }, [currentUser, challenge?.id, challenge?.isFree, isEnrolled]);
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUser, challenge?.id, challenge?.isEnrolled]);
 
   // Listen to WebSocket payment success
   useEffect(() => {
@@ -101,16 +129,15 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       setIsUnlockedAll(true);
       setIsDayForbidden(false);
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
-      toast.success("🎉 Kích hoạt thử thách thành công!");
     };
 
     window.addEventListener("payment:success", handlePaymentSuccess);
     return () => window.removeEventListener("payment:success", handlePaymentSuccess);
   }, []);
 
-  // Load progress from DB when user and challenge are ready (NO LOCALSTORAGE)
+  // Load progress from DB when user and challenge are ready and enrolled
   useEffect(() => {
-    if (!currentUser || !slug) return;
+    if (!currentUser || !slug || !isEnrolled) return;
     let isMounted = true;
 
     challengeService
@@ -150,7 +177,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return () => {
       isMounted = false;
     };
-  }, [currentUser, slug, challenge]);
+  }, [currentUser, slug, challenge, isEnrolled]);
 
   // Stats
   const completedCount = useMemo(() => {
@@ -264,12 +291,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       })
     );
 
-    if (isCurrentlyCompleted) {
-      toast.success(`Đã hủy hoàn thành Ngày ${dayNum}`);
-    } else {
-      toast.success(`🎉 Xuất sắc! Bạn đã hoàn thành Ngày ${dayNum}!`);
-    }
-
     try {
       await challengeService.completeDay(slug, dayNum, !isCurrentlyCompleted);
     } catch {
@@ -297,9 +318,9 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     toast.success("Đã làm mới hiển thị tiến độ!");
   };
 
-  // Fetch full day details by ID with authorization check
+  // Fetch full day details by ID with authorization check (only if enrolled)
   useEffect(() => {
-    if (!activeDay?.id) return;
+    if (!activeDay?.id || !isEnrolled) return;
     let isMounted = true;
 
     challengeService
@@ -329,6 +350,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                         id: t.id,
                         title: t.title,
                         isCompleted: Boolean(taskMap.get(t.id)),
+                        resourceLinks: t.resourceLinks || [],
                       }))
                     : d.tasks,
               };
@@ -352,7 +374,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const handleUnlockStandalone = async () => {
     if (!challenge) return;
     if (!currentUser) {
-      toast.error("Vui lòng đăng nhập để thanh toán lộ trình!");
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -372,6 +394,42 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   };
 
+  const handleEnroll = async () => {
+    if (!challenge) return;
+
+    if (!currentUser) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
+    if (isEnrolled) return;
+
+    const isUserAdminOrPremium = (currentUser?.authorities || []).some(
+      (role) => role === "ADMIN" || role.toUpperCase().includes("PREMIUM")
+    );
+
+    if (challenge.isFree || isUserAdminOrPremium) {
+      setIsEnrolling(true);
+      try {
+        await challengeService.enrollFree(challenge.id);
+        setIsEnrolled(true);
+        setIsUnlockedAll(true);
+        setIsDayForbidden(false);
+      } catch (err: unknown) {
+        const errorResponse = err as { response?: { data?: { message?: string } } };
+        const msg =
+          errorResponse?.response?.data?.message ||
+          "Không thể đăng ký tham gia thử thách. Vui lòng thử lại!";
+        toast.error(msg);
+      } finally {
+        setIsEnrolling(false);
+      }
+      return;
+    }
+
+    handleUnlockStandalone();
+  };
+
   if (!mounted || isUserLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gray-50/50 dark:bg-slate-900 p-8 animate-pulse space-y-8">
@@ -383,21 +441,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
           </div>
         </div>
       </div>
-    );
-  }
-
-  // Yêu cầu đăng nhập để xem chi tiết
-  if (mounted && !isUserLoading && !currentUser) {
-    return (
-      <main className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
-        <AuthRequiredModal
-          isOpen={true}
-          onClose={() => router.push("/challenges")}
-          redirectTo={`/challenges/${slug}`}
-          title="Đăng nhập để xem chi tiết"
-          message="Vui lòng đăng nhập tài khoản JavaBuilder để xem toàn bộ lộ trình và bắt đầu thử thách này."
-        />
-      </main>
     );
   }
 
@@ -422,20 +465,25 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const isUserAdminOrPremium = (currentUser?.authorities || []).some(
     (role) => role === "ADMIN" || role.toUpperCase().includes("PREMIUM")
   );
+
+  const shouldShowJoinSection = !isEnrolled;
+
   const isLockedByPaywall =
     !challenge.isFree &&
     !isUnlockedAll &&
-    !isEnrolled &&
     !isUserAdminOrPremium &&
     (isDayForbidden || (!activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays ?? 0)));
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
-      {/* 1. Header (Breadcrumb, Hero, Progress) */}
+      {/* 1. Header (Breadcrumb, Hero, Progress or CTA) */}
       <ChallengeHeader
         challenge={challenge}
         completedCount={completedCount}
         progressPercent={progressPercent}
+        isEnrolled={isEnrolled}
+        onEnroll={handleEnroll}
+        isEnrolling={isEnrolling}
       />
 
       {/* 2. Main Workspace */}
@@ -449,6 +497,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             onResetProgress={handleResetProgress}
             phaseOptions={phaseOptions}
             filteredCount={filteredDays.length}
+            isEnrolled={isEnrolled}
           />
 
           <ChallengeDaysGrid
@@ -458,12 +507,27 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             selectedDayNumber={selectedDayNumber}
             onSelectDay={setSelectedDayNumber}
             isUnlockedAll={isUnlockedAll}
+            isChallengeFree={challenge.isFree}
+            isEnrolled={isEnrolled}
           />
         </div>
 
-        {/* Bottom Workspace: Active Day Content or Paywall (Full Width) */}
+        {/* Bottom Workspace: Join Section (if not enrolled), or Day Content / Paywall */}
         <div className="w-full">
-          {isLockedByPaywall ? (
+          {isCheckingEnrollment && currentUser ? (
+            <div className="rounded-2xl border border-gray-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900 animate-pulse space-y-4">
+              <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded-lg w-1/3" />
+              <div className="h-20 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
+              <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
+            </div>
+          ) : shouldShowJoinSection ? (
+            <ChallengeJoinSection
+              challenge={challenge}
+              activeDay={activeDay}
+              onEnroll={handleEnroll}
+              isEnrolling={isEnrolling}
+            />
+          ) : isLockedByPaywall ? (
             <ChallengePaywallCard
               challenge={challenge}
               activeDay={activeDay}
@@ -483,8 +547,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         </div>
       </div>
 
-      {/* Floating Right Button to Open Drawer */}
-      {activeDay && !isLockedByPaywall && (
+      {/* Floating Right Button to Open Drawer (Only if enrolled & not locked) */}
+      {activeDay && isEnrolled && !isLockedByPaywall && (
         <button
           type="button"
           onClick={() => setIsSideDrawerOpen(true)}
@@ -500,7 +564,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       )}
 
       {/* Side-over Right Drawer (Roadmap.sh Style) */}
-      {activeDay && (
+      {activeDay && isEnrolled && (
         <ChallengeSideDrawer
           isOpen={isSideDrawerOpen}
           onClose={() => setIsSideDrawerOpen(false)}
@@ -519,6 +583,15 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         data={paymentModal.data}
         courseTitle={challenge.title}
         onClose={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
+      />
+
+      {/* Auth Required Modal */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        redirectTo={`/challenges/${slug}`}
+        title="Đăng nhập để tham gia thử thách"
+        message="Vui lòng đăng nhập tài khoản JavaBuilder để tham gia thử thách và bắt đầu lộ trình học tập."
       />
     </main>
   );

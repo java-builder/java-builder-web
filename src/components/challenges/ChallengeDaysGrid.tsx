@@ -10,6 +10,8 @@ interface ChallengeDaysGridProps {
   selectedDayNumber: number;
   onSelectDay: (dayNumber: number) => void;
   isUnlockedAll: boolean;
+  isChallengeFree?: boolean;
+  isEnrolled?: boolean;
 }
 
 export function ChallengeDaysGrid({
@@ -18,6 +20,7 @@ export function ChallengeDaysGrid({
   selectedDayNumber,
   onSelectDay,
   isUnlockedAll,
+  isChallengeFree = false,
 }: ChallengeDaysGridProps) {
   if (days.length === 0) {
     return (
@@ -34,8 +37,8 @@ export function ChallengeDaysGrid({
           const isSelected = d.day === selectedDayNumber;
           const isCompleted = d.status === "completed";
           const isInProgress = d.status === "in_progress";
-          const isFreeDay = Boolean(d.isFreePreview) || (freePreviewDays > 0 && d.day <= freePreviewDays);
-          const isLockedByPaywall = !isUnlockedAll && !isFreeDay;
+          const isFreeDay = isChallengeFree || Boolean(d.isFreePreview) || (freePreviewDays > 0 && d.day <= freePreviewDays);
+          const isLockedByPaywall = !isChallengeFree && !isUnlockedAll && !isFreeDay;
 
           let buttonClass =
             "bg-gray-50/70 border-gray-200/90 text-gray-600 hover:bg-gray-100/80 hover:border-accent/40 dark:bg-slate-800/50 dark:border-slate-700/80 dark:text-gray-300 dark:hover:bg-slate-800";

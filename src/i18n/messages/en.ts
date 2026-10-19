@@ -1895,6 +1895,45 @@ export const en = {
     forCompleting: "for successfully mastering the advanced curriculum of",
     platformFounder: "JavaBuilder Founder",
     issueDate: "Issue Date"
-  }
+  },
+  taskResourceLinks: {
+    types: {
+      OFFICIAL: "Official Documentation",
+      ARTICLE: "Article & Guide",
+      DOCUMENTATION: "Technical Documentation",
+      YOUTUBE: "YouTube Video",
+      GITHUB: "GitHub Repository",
+    },
+    defaultTitles: {
+      OFFICIAL: "Official Documentation",
+      ARTICLE: "Article / Guide",
+      DOCUMENTATION: "Technical Documentation",
+      YOUTUBE: "Video Tutorial",
+      GITHUB: "Source Code (GitHub)",
+      fallback: "Reference Resource",
+    },
+    presets: {
+      officialDoc: "Official Documentation",
+      guide: "Step-by-step Guide",
+      deepDive: "Deep Dive Article",
+      videoTutorial: "Hands-on Video Tutorial",
+      sourceCode: "Source Code (GitHub)",
+      architecture: "Architecture & Workflow Diagram",
+      cheatSheet: "Notes & Cheat Sheet",
+    },
+    ui: {
+      defaultOption: "-- Default by type ({type}) --",
+      customOption: "✏️ Custom title...",
+      customLabel: "Custom title:",
+      customPlaceholder: "e.g. Spring Cloud Gateway Quickstart",
+      typeLabel: "Resource type",
+      titleLabel: "Display title (optional)",
+      urlLabel: "Resource URL",
+      addLink: "Add link",
+      deleteTitle: "Delete this link",
+      sectionTitle: "Reference Resources & Videos",
+      emptyState: "No reference links yet. Click \"Add link\" to attach documentation or video tutorials.",
+    },
+  },
 } as const;
 

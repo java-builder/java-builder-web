@@ -11,6 +11,7 @@ interface ChallengeToolbarProps {
   onResetProgress: () => void;
   phaseOptions: FilterOption<string | number>[];
   filteredCount?: number;
+  isEnrolled?: boolean;
 }
 
 export function ChallengeToolbar({
@@ -20,6 +21,7 @@ export function ChallengeToolbar({
   onResetProgress,
   phaseOptions,
   filteredCount,
+  isEnrolled = false,
 }: ChallengeToolbarProps) {
   const currentPhase =
     activePhaseFilter !== "all"
@@ -85,18 +87,21 @@ export function ChallengeToolbar({
             </span>
           </div>
 
-          <div className="h-4 w-px bg-gray-200 dark:bg-slate-700 hidden sm:block" />
-
           {/* Reset progress */}
-          <button
-            type="button"
-            onClick={onResetProgress}
-            className="h-8 px-2.5 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50/70 text-xs text-muted-foreground hover:text-foreground hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800/60 transition cursor-pointer shrink-0"
-            title="Làm mới hiển thị tiến độ"
-          >
-            <RotateCcw className="h-3 w-3" />
-            <span className="text-[11px] font-medium hidden sm:inline">Làm mới</span>
-          </button>
+          {isEnrolled && (
+            <>
+              <div className="h-4 w-px bg-gray-200 dark:bg-slate-700 hidden sm:block" />
+              <button
+                type="button"
+                onClick={onResetProgress}
+                className="h-8 px-2.5 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50/70 text-xs text-muted-foreground hover:text-foreground hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800/60 transition cursor-pointer shrink-0"
+                title="Làm mới hiển thị tiến độ"
+              >
+                <RotateCcw className="h-3 w-3" />
+                <span className="text-[11px] font-medium hidden sm:inline">Làm mới</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 

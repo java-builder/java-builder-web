@@ -1884,6 +1884,45 @@ export const ko = {
     forCompleting: "위 사람은 다음의 전문적이고 우수한 백엔드 교육 과정을 마스터하고 수료하였음을 증명합니다",
     platformFounder: "JavaBuilder 설립자",
     issueDate: "발급일"
-  }
+  },
+  taskResourceLinks: {
+    types: {
+      OFFICIAL: "공식 문서",
+      ARTICLE: "기술 아티클",
+      DOCUMENTATION: "기술 문서",
+      YOUTUBE: "YouTube 영상",
+      GITHUB: "GitHub 저장소",
+    },
+    defaultTitles: {
+      OFFICIAL: "공식 문서",
+      ARTICLE: "튜토리얼 아티클",
+      DOCUMENTATION: "기술 문서",
+      YOUTUBE: "실습 영상",
+      GITHUB: "소스 코드 (GitHub)",
+      fallback: "참고 자료",
+    },
+    presets: {
+      officialDoc: "공식 문서",
+      guide: "단계별 가이드",
+      deepDive: "심층 분석 아티클",
+      videoTutorial: "실습 동영상 튜토리얼",
+      sourceCode: "예제 코드 (GitHub)",
+      architecture: "아키텍처 및 플로우 다이어그램",
+      cheatSheet: "요약 치트시트",
+    },
+    ui: {
+      defaultOption: "-- 유형별 기본값 ({type}) --",
+      customOption: "✏️ 사용자 정의 제목...",
+      customLabel: "사용자 정의 제목:",
+      customPlaceholder: "예: Spring Cloud Gateway 빠른 시작",
+      typeLabel: "리소스 유형",
+      titleLabel: "표시 제목 (선택)",
+      urlLabel: "리소스 URL",
+      addLink: "링크 추가",
+      deleteTitle: "이 링크 삭제",
+      sectionTitle: "참고 자료 및 영상",
+      emptyState: "참고 링크가 없습니다. \"링크 추가\"를 클릭하여 문서나 실습 영상을 첨부하세요.",
+    },
+  },
 } as const;
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Edit2, Trash2, Calendar, Eye, Layers, Users, MoreVertical, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,28 @@ export default function ChallengeTable({
   onDelete,
   onCreateNew,
 }: ChallengeTableProps) {
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [openMenu, setOpenMenu] = useState<{
+    id: string;
+    challenge: ChallengeResponse;
+    top: number;
+    right: number;
+  } | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!openMenu) return;
+    const handleClose = () => setOpenMenu(null);
+    window.addEventListener("scroll", handleClose, true);
+    window.addEventListener("resize", handleClose);
+    return () => {
+      window.removeEventListener("scroll", handleClose, true);
+      window.removeEventListener("resize", handleClose);
+    };
+  }, [openMenu]);
 
   if (isLoading) {
     return (
@@ -100,7 +122,7 @@ export default function ChallengeTable({
 
   return (
     <div className="rounded-xl border border-border bg-card shadow-xs">
-      <div className="overflow-x-auto min-h-[280px]">
+      <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-xs uppercase font-semibold text-muted-foreground">
             <tr>
@@ -232,91 +254,31 @@ export default function ChallengeTable({
 
                   {/* Actions */}
                   <td className="px-5 py-4 text-right whitespace-nowrap">
-                    <div className="relative inline-flex items-center justify-end">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenMenuId(openMenuId === c.id ? null : c.id);
-                        }}
-                        className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
-                        title="Thao tác"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-
-                      {openMenuId === c.id && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-30"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setOpenMenuId(null);
-                            }}
-                          />
-                          <div className="absolute right-0 top-full mt-1 w-52 bg-card rounded-lg shadow-xl border border-border py-1.5 z-40 text-left animate-in fade-in zoom-in-95 duration-100">
-                            <Link
-                              href={`/admin/challenges/${c.id}`}
-                              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
-                              onClick={() => setOpenMenuId(null)}
-                            >
-                              <Layers className="w-4 h-4 text-accent" />
-                              <span>Chi tiết & Lộ trình</span>
-                            </Link>
-
-                            <Link
-                              href={`/admin/challenges/${c.id}/enrollments`}
-                              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
-                              onClick={() => setOpenMenuId(null)}
-                            >
-                              <Users className="w-4 h-4 text-blue-500" />
-                              <span>Danh sách học viên</span>
-                            </Link>
-
-                            {c.slug && (
-                              <Link
-                                href={`/challenges/${c.slug}`}
-                                target="_blank"
-                                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
-                                onClick={() => setOpenMenuId(null)}
-                              >
-                                <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                                <span>Xem trang học viên</span>
-                              </Link>
-                            )}
-
-                            <div className="border-t border-border my-1" />
-
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setOpenMenuId(null);
-                                onEdit(c);
-                              }}
-                              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
-                            >
-                              <Edit2 className="w-4 h-4 text-muted-foreground" />
-                              <span>Chỉnh sửa thông tin</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setOpenMenuId(null);
-                                onDelete(c.id, c.title);
-                              }}
-                              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors text-left cursor-pointer"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              <span>Xóa thử thách</span>
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (openMenu?.id === c.id) {
+                          setOpenMenu(null);
+                          return;
+                        }
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const dropdownHeight = 220;
+                        const spaceBelow = window.innerHeight - rect.bottom;
+                        const showAbove = spaceBelow < dropdownHeight && rect.top > dropdownHeight;
+                        setOpenMenu({
+                          id: c.id,
+                          challenge: c,
+                          top: showAbove ? rect.top - dropdownHeight - 4 : rect.bottom + 4,
+                          right: Math.max(16, window.innerWidth - rect.right),
+                        });
+                      }}
+                      className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+                      title="Thao tác"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
                   </td>
                 </tr>
               );
@@ -324,6 +286,87 @@ export default function ChallengeTable({
           </tbody>
         </table>
       </div>
+
+      {mounted && openMenu && createPortal(
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenu(null);
+            }}
+          />
+          <div
+            style={{
+              position: "fixed",
+              top: `${openMenu.top}px`,
+              right: `${openMenu.right}px`,
+            }}
+            className="w-52 bg-card rounded-lg shadow-xl border border-border py-1.5 z-50 text-left animate-in fade-in zoom-in-95 duration-100"
+          >
+            <Link
+              href={`/admin/challenges/${openMenu.challenge.id}`}
+              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+              onClick={() => setOpenMenu(null)}
+            >
+              <Layers className="w-4 h-4 text-accent" />
+              <span>Chi tiết & Lộ trình</span>
+            </Link>
+
+            <Link
+              href={`/admin/challenges/${openMenu.challenge.id}/enrollments`}
+              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+              onClick={() => setOpenMenu(null)}
+            >
+              <Users className="w-4 h-4 text-blue-500" />
+              <span>Danh sách học viên</span>
+            </Link>
+
+            {openMenu.challenge.slug && (
+              <Link
+                href={`/challenges/${openMenu.challenge.slug}`}
+                target="_blank"
+                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                onClick={() => setOpenMenu(null)}
+              >
+                <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                <span>Xem trang học viên</span>
+              </Link>
+            )}
+
+            <div className="border-t border-border my-1" />
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                const target = openMenu.challenge;
+                setOpenMenu(null);
+                onEdit(target);
+              }}
+              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
+            >
+              <Edit2 className="w-4 h-4 text-muted-foreground" />
+              <span>Chỉnh sửa thông tin</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                const target = openMenu.challenge;
+                setOpenMenu(null);
+                onDelete(target.id, target.title);
+              }}
+              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors text-left cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Xóa thử thách</span>
+            </button>
+          </div>
+        </>,
+        document.body
+      )}
     </div>
   );
 }

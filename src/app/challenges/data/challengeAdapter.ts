@@ -25,6 +25,7 @@ export function adaptChallengeResponseToUi(res: ChallengeResponse): Challenge {
     price: res.price,
     freePreviewDays: res.freePreviewDays ?? 0,
     isFree,
+    isEnrolled: Boolean(res.isEnrolled),
     phases: [],
     days: [],
   };
@@ -70,8 +71,13 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
       isFreePreview: Boolean(isFreePreview),
       tasks:
         d.tasks && d.tasks.length > 0
-          ? d.tasks.map((t) => ({ id: t.id, title: t.title, isCompleted: false }))
-          : [{ id: `t1-${d.id || d.dayNumber}`, title: d.title, isCompleted: false }],
+          ? d.tasks.map((t) => ({
+              id: t.id,
+              title: t.title,
+              isCompleted: false,
+              resourceLinks: t.resourceLinks || [],
+            }))
+          : [{ id: `t1-${d.id || d.dayNumber}`, title: d.title, isCompleted: false, resourceLinks: [] }],
       keyConcepts:
         d.keyConcepts && d.keyConcepts.length > 0
           ? d.keyConcepts

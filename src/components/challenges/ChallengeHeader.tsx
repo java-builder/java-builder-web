@@ -9,12 +9,16 @@ interface ChallengeHeaderProps {
   challenge: Challenge;
   completedCount: number;
   progressPercent: number;
+  isEnrolled?: boolean;
+  onEnroll?: () => void;
+  isEnrolling?: boolean;
 }
 
 export function ChallengeHeader({
   challenge,
   completedCount,
   progressPercent,
+  isEnrolled = false,
 }: ChallengeHeaderProps) {
   return (
     <>
@@ -73,39 +77,47 @@ export function ChallengeHeader({
               </p>
             </div>
 
-            {/* Quick Stats Pill Panel */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800/80 shrink-0 min-w-[260px] space-y-2 shadow-xs">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-medium text-gray-600 dark:text-gray-400">Tiến độ</span>
-                <span className="font-semibold tabular-nums text-gray-900 dark:text-white">
-                  {progressPercent}%
-                </span>
+            {/* Right Panel: Stats if enrolled */}
+            {isEnrolled && (
+              <div className="p-4 rounded-xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800/80 shrink-0 min-w-[260px] space-y-2 shadow-xs">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] border border-emerald-500/20">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                      Đã tham gia
+                    </span>
+                    <span className="font-medium text-gray-600 dark:text-gray-400">Tiến độ</span>
+                  </div>
+                  <span className="font-semibold tabular-nums text-gray-900 dark:text-white">
+                    {progressPercent}%
+                  </span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      progressPercent >= 100
+                        ? "bg-emerald-500"
+                        : progressPercent >= 50
+                          ? "bg-accent"
+                          : progressPercent > 0
+                            ? "bg-amber-500"
+                            : "bg-gray-300 dark:bg-slate-600"
+                    }`}
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+                <div className="mt-1.5 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                  <span className="inline-flex items-center gap-1 tabular-nums">
+                    <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                    {completedCount} / {challenge.totalDays} ngày hoàn thành
+                  </span>
+                  <span className="inline-flex items-center gap-1 tabular-nums">
+                    <Clock className="h-3 w-3" />
+                    ~{challenge.estimatedMinutesPerDay} phút/ngày
+                  </span>
+                </div>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    progressPercent >= 100
-                      ? "bg-emerald-500"
-                      : progressPercent >= 50
-                        ? "bg-accent"
-                        : progressPercent > 0
-                          ? "bg-amber-500"
-                          : "bg-gray-300 dark:bg-slate-600"
-                  }`}
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-              <div className="mt-1.5 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
-                <span className="inline-flex items-center gap-1 tabular-nums">
-                  <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                  {completedCount} / {challenge.totalDays} ngày hoàn thành
-                </span>
-                <span className="inline-flex items-center gap-1 tabular-nums">
-                  <Clock className="h-3 w-3" />
-                  ~{challenge.estimatedMinutesPerDay} phút/ngày
-                </span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

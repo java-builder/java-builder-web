@@ -1884,6 +1884,45 @@ export const ja = {
     forCompleting: "上記の者は、以下の高度な専門カリキュラムを優秀な成績で修了したことを証明します",
     platformFounder: "JavaBuilder 設立者",
     issueDate: "発行日"
-  }
+  },
+  taskResourceLinks: {
+    types: {
+      OFFICIAL: "公式ドキュメント",
+      ARTICLE: "解説記事",
+      DOCUMENTATION: "技術資料",
+      YOUTUBE: "YouTube動画",
+      GITHUB: "GitHubリポジトリ",
+    },
+    defaultTitles: {
+      OFFICIAL: "公式ドキュメント",
+      ARTICLE: "解説記事 / チュートリアル",
+      DOCUMENTATION: "技術仕様書",
+      YOUTUBE: "実践動画",
+      GITHUB: "ソースコード (GitHub)",
+      fallback: "参考リソース",
+    },
+    presets: {
+      officialDoc: "公式ドキュメント",
+      guide: "ステップバイステップガイド",
+      deepDive: "詳細解説記事",
+      videoTutorial: "実践動画チュートリアル",
+      sourceCode: "サンプルコード (GitHub)",
+      architecture: "アーキテクチャ・フロー図",
+      cheatSheet: "メモ・チートシート",
+    },
+    ui: {
+      defaultOption: "-- 種類によるデフォルト ({type}) --",
+      customOption: "✏️ カスタムタイトル...",
+      customLabel: "カスタムタイトル:",
+      customPlaceholder: "例: Spring Cloud Gateway クイックスタート",
+      typeLabel: "リソースの種類",
+      titleLabel: "表示タイトル (任意)",
+      urlLabel: "リソースURL",
+      addLink: "リンク追加",
+      deleteTitle: "このリンクを削除",
+      sectionTitle: "参考資料・動画",
+      emptyState: "参考リンクはまだありません。「リンク追加」をクリックしてドキュメントや動画を追加してください。",
+    },
+  },
 } as const;
 

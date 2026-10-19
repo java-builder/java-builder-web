@@ -1895,6 +1895,45 @@ export const vi = {
     forCompleting: "vì đã hoàn thành xuất sắc chương trình đào tạo chuyên sâu về",
     platformFounder: "Sáng lập JavaBuilder",
     issueDate: "Ngày cấp"
-  }
+  },
+  taskResourceLinks: {
+    types: {
+      OFFICIAL: "Official (Tài liệu gốc)",
+      ARTICLE: "Article (Bài viết)",
+      DOCUMENTATION: "Docs (Tài liệu)",
+      YOUTUBE: "YouTube (Video)",
+      GITHUB: "GitHub (Mã nguồn)",
+    },
+    defaultTitles: {
+      OFFICIAL: "Tài liệu chính thức",
+      ARTICLE: "Bài viết hướng dẫn",
+      DOCUMENTATION: "Tài liệu kỹ thuật",
+      YOUTUBE: "Video hướng dẫn",
+      GITHUB: "Source code GitHub",
+      fallback: "Tài liệu tham khảo",
+    },
+    presets: {
+      officialDoc: "Tài liệu chính thức",
+      guide: "Bài viết hướng dẫn",
+      deepDive: "Bài viết phân tích chuyên sâu",
+      videoTutorial: "Video hướng dẫn thực hành",
+      sourceCode: "Source code mẫu (GitHub)",
+      architecture: "Kiến trúc & Sơ đồ luồng",
+      cheatSheet: "Ghi chú & Cheat sheet",
+    },
+    ui: {
+      defaultOption: "-- Mặc định theo loại ({type}) --",
+      customOption: "✏️ Tự nhập tiêu đề riêng...",
+      customLabel: "Tiêu đề riêng:",
+      customPlaceholder: "VD: Spring Cloud Gateway Quickstart",
+      typeLabel: "Loại tài nguyên",
+      titleLabel: "Tiêu đề hiển thị (tùy chọn)",
+      urlLabel: "Đường dẫn URL",
+      addLink: "Thêm link",
+      deleteTitle: "Xóa link này",
+      sectionTitle: "Tài liệu & Video tham khảo",
+      emptyState: "Chưa có link tham khảo nào. Bấm \"Thêm link\" nếu muốn đính kèm tài liệu docs hoặc video YouTube cho task này.",
+    },
+  },
 } as const;
 

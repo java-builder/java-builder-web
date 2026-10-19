@@ -7,7 +7,9 @@ import {
   Trash2,
   CheckSquare,
   ChevronRight,
+  BookOpen,
 } from "lucide-react";
+import { FaYoutube } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import {
   ChallengeDayResponse,
@@ -187,9 +189,33 @@ export default function ChallengeDayItem({
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-[10px] shrink-0">
                       {task.orderIndex || idx + 1}
                     </span>
-                    <span className="text-xs font-semibold text-foreground truncate">
-                      {task.title}
-                    </span>
+                    <div className="min-w-0 flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold text-foreground truncate">
+                        {task.title}
+                      </span>
+                      {task.resourceLinks && task.resourceLinks.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          {task.resourceLinks.map((link, lIdx) => (
+                            <span
+                              key={lIdx}
+                              title={`${link.type}: ${link.title || link.url}`}
+                              className={`inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-semibold border ${
+                                link.type === "YOUTUBE"
+                                  ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                                  : "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                              }`}
+                            >
+                              {link.type === "YOUTUBE" ? (
+                                <FaYoutube className="w-2.5 h-2.5" />
+                              ) : (
+                                <BookOpen className="w-2.5 h-2.5" />
+                              )}
+                              <span>{link.type === "YOUTUBE" ? "YT" : "Doc"}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">

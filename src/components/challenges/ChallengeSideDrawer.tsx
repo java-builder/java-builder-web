@@ -1,7 +1,9 @@
 "use client";
 
-import { Check, X, ListTodo, CheckCircle2 } from "lucide-react";
+import { Check, X, ListTodo, ExternalLink } from "lucide-react";
 import { DayChallenge } from "@/app/challenges/types";
+import { TASK_LINK_TYPE_CONFIG, getLinkDisplayTitle } from "@/types/challenge";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface ChallengeSideDrawerProps {
   isOpen: boolean;
@@ -9,7 +11,7 @@ interface ChallengeSideDrawerProps {
   activeDay: DayChallenge;
   totalDays: number;
   onToggleTask: (taskId: string) => void;
-  onCompleteDay: (dayNum: number) => void;
+  onCompleteDay?: (dayNum: number) => void;
   onSelectDay: (dayNum: number) => void;
 }
 
@@ -20,6 +22,7 @@ export function ChallengeSideDrawer({
   onToggleTask,
   onCompleteDay,
 }: ChallengeSideDrawerProps) {
+  const { t } = useI18n();
   const tasks = activeDay.tasks || [];
   const completedTasksCount = tasks.filter((t) => t.isCompleted).length;
   const progressPercent = tasks.length > 0 ? Math.round((completedTasksCount / tasks.length) * 100) : 0;
@@ -29,17 +32,15 @@ export function ChallengeSideDrawer({
     <>
       {/* Backdrop overlay */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
         onClick={onClose}
       />
 
       {/* Drawer Panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] md:w-[520px] max-w-[94vw] bg-card text-card-foreground shadow-2xl border-l border-border flex flex-col transition-transform duration-300 ease-out transform ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] md:w-[520px] max-w-[94vw] bg-card text-card-foreground shadow-2xl border-l border-border flex flex-col transition-transform duration-300 ease-out transform ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* 1. TOP HEADER */}
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border bg-card shrink-0">
@@ -58,34 +59,35 @@ export function ChallengeSideDrawer({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => onCompleteDay(activeDay.day)}
-              title={
-                activeDay.status === "completed"
-                  ? "Bấm để hủy hoàn thành Ngày " + activeDay.day
-                  : "Đánh dấu hoàn thành Ngày " + activeDay.day
-              }
-              className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer active:scale-95 shadow-xs ${
-                activeDay.status === "completed"
-                  ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive"
-                  : "border border-border bg-card hover:bg-muted text-foreground"
-              }`}
-            >
-              {activeDay.status === "completed" ? (
-                <>
-                  <Check className="w-3.5 h-3.5 stroke-[2.5] group-hover:hidden" />
-                  <X className="w-3.5 h-3.5 stroke-[2.5] hidden group-hover:inline" />
-                  <span className="group-hover:hidden">Đã hoàn thành</span>
-                  <span className="hidden group-hover:inline">Hủy hoàn thành</span>
-                </>
-              ) : (
-                <>
-                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Hoàn thành ngày</span>
-                </>
-              )}
-            </button>
+            {onCompleteDay && (
+              <button
+                type="button"
+                onClick={() => onCompleteDay(activeDay.day)}
+                title={
+                  activeDay.status === "completed"
+                    ? "Bấm để hủy hoàn thành Ngày " + activeDay.day
+                    : "Đánh dấu hoàn thành Ngày " + activeDay.day
+                }
+                className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer active:scale-95 shadow-xs ${activeDay.status === "completed"
+                    ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive"
+                    : "border border-border bg-card hover:bg-muted text-foreground"
+                  }`}
+              >
+                {activeDay.status === "completed" ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 stroke-[2.5] group-hover:hidden" />
+                    <X className="w-3.5 h-3.5 stroke-[2.5] hidden group-hover:inline" />
+                    <span className="group-hover:hidden">Đã hoàn thành</span>
+                    <span className="hidden group-hover:inline">Hủy hoàn thành</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Hoàn thành ngày</span>
+                  </>
+                )}
+              </button>
+            )}
 
             <button
               type="button"
@@ -126,9 +128,8 @@ export function ChallengeSideDrawer({
             </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <div
-                className={`h-full transition-all duration-300 rounded-full ${
-                  isAllTasksCompleted ? "bg-emerald-500" : "bg-accent"
-                }`}
+                className={`h-full transition-all duration-300 rounded-full ${isAllTasksCompleted ? "bg-emerald-500" : "bg-accent"
+                  }`}
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -150,71 +151,77 @@ export function ChallengeSideDrawer({
             ) : (
               <div className="space-y-1.5">
                 {tasks.map((task) => (
-                  <label
+                  <div
                     key={task.id}
                     onClick={() => onToggleTask(task.id)}
-                    className={`flex items-start gap-2.5 py-2 px-3 rounded-lg border text-xs transition cursor-pointer select-none ${
-                      task.isCompleted
+                    className={`flex items-start gap-2.5 py-2.5 px-3 rounded-lg border text-xs transition cursor-pointer select-none ${task.isCompleted
                         ? "bg-muted/30 border-border/70 text-muted-foreground"
                         : "bg-card border-border text-foreground hover:border-accent/40 hover:bg-muted/20 shadow-2xs"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`w-4 h-4 mt-0.5 rounded-[4px] flex items-center justify-center shrink-0 border transition-all ${
-                        task.isCompleted
+                      className={`w-4 h-4 mt-0.5 rounded-[4px] flex items-center justify-center shrink-0 border transition-all ${task.isCompleted
                           ? "bg-emerald-600 border-emerald-600 text-white"
                           : "border-muted-foreground/40 bg-card hover:border-accent"
-                      }`}
+                        }`}
                     >
                       {task.isCompleted && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
 
-                    <span className={`leading-normal ${task.isCompleted ? "line-through opacity-60" : "font-medium"}`}>
-                      {task.title}
-                    </span>
-                  </label>
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <span className={`leading-normal block ${task.isCompleted ? "line-through opacity-60" : "font-medium"}`}>
+                        {task.title}
+                      </span>
+
+                      {task.resourceLinks && task.resourceLinks.length > 0 && (
+                        <div
+                          className="flex flex-col gap-1.5 pt-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {task.resourceLinks.map((link, idx) => {
+                            const meta =
+                              TASK_LINK_TYPE_CONFIG[link.type] ||
+                              TASK_LINK_TYPE_CONFIG.DOCUMENTATION;
+                            const displayTitle = getLinkDisplayTitle(link, t);
+
+                            return (
+                              <a
+                                key={idx}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 group text-xs w-fit max-w-full"
+                              >
+                                <span
+                                  className={`px-1.5 py-0.5 rounded text-[10px] font-bold tracking-tight uppercase shrink-0 leading-none shadow-xs ${meta.badgeClass}`}
+                                >
+                                  {meta.badgeLabel}
+                                </span>
+                                <span className="text-blue-600 dark:text-blue-400 underline underline-offset-2 decoration-blue-500/40 hover:decoration-blue-600 font-medium text-xs truncate">
+                                  {displayTitle}
+                                </span>
+                                <ExternalLink className="w-2.5 h-2.5 text-blue-500/70 shrink-0" />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* 3. FOOTER ACTIONS */}
-        <div className="p-4 border-t border-border bg-card shrink-0 flex items-center justify-between gap-3">
-          <span className="text-xs text-muted-foreground">
+        {/* 3. FOOTER */}
+        <div className="p-4 border-t border-border bg-card shrink-0 flex items-center justify-between">
+          <span className="text-xs font-medium text-muted-foreground">
             {completedTasksCount}/{tasks.length} task đã xong
           </span>
-
-          {activeDay.status === "completed" ? (
-            <button
-              type="button"
-              onClick={() => onCompleteDay(activeDay.day)}
-              className="group inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 font-semibold text-xs border border-emerald-500/20 transition cursor-pointer active:scale-95"
-              title="Bấm để hủy hoàn thành"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5 group-hover:hidden" />
-              <X className="w-3.5 h-3.5 hidden group-hover:inline" />
-              <span className="group-hover:hidden">Đã hoàn thành Ngày {activeDay.day}</span>
-              <span className="hidden group-hover:inline">Hủy hoàn thành Ngày {activeDay.day}</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => onCompleteDay(activeDay.day)}
-              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-bold text-xs text-white transition cursor-pointer active:scale-95 shadow-sm ${
-                isAllTasksCompleted
-                  ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20 ring-2 ring-emerald-500/30"
-                  : "bg-accent hover:bg-accent/90"
-              }`}
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>
-                {isAllTasksCompleted
-                  ? `Xác nhận xong Ngày ${activeDay.day} 🚀`
-                  : `Xong Ngày ${activeDay.day}`}
-              </span>
-            </button>
-          )}
+          <span className="text-xs font-semibold text-muted-foreground">
+            {progressPercent}%
+          </span>
         </div>
       </div>
     </>
