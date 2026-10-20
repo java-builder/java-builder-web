@@ -87,6 +87,8 @@ export function ChallengeDaysGrid({
                   <Lock className="w-3 h-3 text-amber-500/80 group-hover:text-amber-500 transition-colors" />
                 ) : isInProgress ? (
                   <Zap className="w-3.5 h-3.5 text-accent fill-accent animate-pulse" />
+                ) : isFreeDay ? (
+                  <Zap className="w-3 h-3 text-emerald-500/70 group-hover:text-emerald-500 transition-colors" />
                 ) : (
                   <Lock className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
                 )}

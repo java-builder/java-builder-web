@@ -172,7 +172,9 @@ export function ChallengeCard({ challenge, userProgress }: ChallengeCardProps) {
                 JavaBuilder
               </span>
               <p className="text-[11px] text-muted-foreground truncate">
-                {challenge.phases.length} Giai đoạn định hướng
+                {challenge.phases.length > 0
+                  ? `${challenge.phases.length} Giai đoạn định hướng`
+                  : `${challenge.totalDays} ngày học`}
               </p>
             </div>
           </div>

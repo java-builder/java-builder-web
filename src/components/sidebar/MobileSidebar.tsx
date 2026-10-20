@@ -349,79 +349,78 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                     const active = isActive(item.href);
                     const displayedLabel = item.labelKey ? t(item.labelKey as Parameters<typeof t>[0]) : item.label;
 
-                      return (
-                        <li key={item.href}>
-                          <Link
-                            href={item.href}
-                            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${item.highlight
-                              ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${item.highlight
+                            ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
+                            : active
+                              ? "bg-accent/8 dark:bg-accent/15 text-accent dark:text-accent-on-dark font-semibold shadow-xs"
+                              : "text-gray-700 dark:text-gray-200 hover:bg-gray-150/55 dark:hover:bg-slate-800"
+                            }`}
+                          onClick={onClose}
+                        >
+                          <span
+                            className={`w-5 h-5 flex-shrink-0 flex items-center justify-center [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 ${item.highlight
+                              ? "text-purple-600 dark:text-purple-300"
                               : active
-                                ? "bg-accent/8 dark:bg-accent/15 text-accent dark:text-accent-on-dark font-semibold shadow-xs"
-                                : "text-gray-700 dark:text-gray-200 hover:bg-gray-150/55 dark:hover:bg-slate-800"
+                                ? "text-accent dark:text-accent-on-dark [&_svg]:text-accent dark:[&_svg]:text-accent-on-dark"
+                                : item.color || "text-gray-500 dark:text-gray-300"
                               }`}
-                            onClick={onClose}
                           >
-                            <span
-                              className={`w-5 h-5 flex-shrink-0 flex items-center justify-center [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 ${item.highlight
-                                ? "text-purple-600 dark:text-purple-300"
-                                : active
-                                  ? "text-accent dark:text-accent-on-dark [&_svg]:text-accent dark:[&_svg]:text-accent-on-dark"
-                                  : item.color || "text-gray-500 dark:text-gray-300"
-                                }`}
-                            >
-                              {item.icon}
-                            </span>
-                            <span className={`flex-1 font-medium text-sm ${item.highlight ? "font-semibold" : ""
-                              }`}>
-                              {displayedLabel}
-                            </span>
-                            {item.tag ? (
-                              item.tagVariant === "hot" ? (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-extrabold rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 text-white shadow-xs tracking-wider animate-pulse uppercase leading-none">
-                                  <Flame className="w-2.5 h-2.5 fill-current" />
-                                  {item.tag}
-                                </span>
-                              ) : item.tagVariant === "pro" ? (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs tracking-wider uppercase leading-none">
-                                  <Sparkles className="w-2.5 h-2.5 text-amber-300 fill-amber-300" />
-                                  {item.tag}
-                                </span>
-                              ) : item.tagVariant === "new" ? (
-                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 tracking-wider uppercase leading-none">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-                                  {item.tag}
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase leading-none">
-                                  {item.tag}
-                                </span>
-                              )
-                            ) : item.highlight ? (
-                              <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
-                                NEW
+                            {item.icon}
+                          </span>
+                          <span className={`flex-1 font-medium text-sm ${item.highlight ? "font-semibold" : ""
+                            }`}>
+                            {displayedLabel}
+                          </span>
+                          {item.tag ? (
+                            item.tagVariant === "hot" ? (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-extrabold rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 text-white shadow-xs tracking-wider animate-pulse uppercase leading-none">
+                                <Flame className="w-2.5 h-2.5 fill-current" />
+                                {item.tag}
                               </span>
-                            ) : null}
-                            {item.badge && (
-                              <span className={`px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none ${
-                                item.href === "/notifications"
-                                  ? "bg-red-500 text-white dark:bg-red-600 dark:text-white"
-                                  : item.href === "/messages"
+                            ) : item.tagVariant === "pro" ? (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs tracking-wider uppercase leading-none">
+                                <Sparkles className="w-2.5 h-2.5 text-amber-300 fill-amber-300" />
+                                {item.tag}
+                              </span>
+                            ) : item.tagVariant === "new" ? (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 tracking-wider uppercase leading-none">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                                {item.tag}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase leading-none">
+                                {item.tag}
+                              </span>
+                            )
+                          ) : item.highlight ? (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
+                              NEW
+                            </span>
+                          ) : null}
+                          {item.badge && (
+                            <span className={`px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none ${item.href === "/notifications"
+                                ? "bg-red-500 text-white dark:bg-red-600 dark:text-white"
+                                : item.href === "/messages"
                                   ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
                                   : item.badgeColor
-                                  ? `${item.badgeColor} text-white`
-                                  : "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                                }`}>
-                                {item.badge}
-                              </span>
-                            )}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              );
-            })}
+                                    ? `${item.badgeColor} text-white`
+                                    : "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                              }`}>
+                              {item.badge}
+                            </span>
+                          )}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
         </nav>
 
         {/* Quick Notification Settings Toggle Panel */}
@@ -437,20 +436,18 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   )}
                   <span>Nhận thông báo</span>
                 </div>
-                
+
                 {/* Custom Toggle Switch */}
                 <button
                   onClick={handleTogglePush}
                   disabled={isToggling}
                   type="button"
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    isPushEnabled ? "bg-accent" : "bg-gray-200 dark:bg-slate-700"
-                  } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isPushEnabled ? "bg-accent" : "bg-gray-200 dark:bg-slate-700"
+                    } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                      isPushEnabled ? "translate-x-4" : "translate-x-0"
-                    } flex items-center justify-center`}
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${isPushEnabled ? "translate-x-4" : "translate-x-0"
+                      } flex items-center justify-center`}
                   >
                     {isToggling && <Loader2 className="w-2.5 h-2.5 animate-spin text-accent" />}
                   </span>

@@ -114,10 +114,10 @@ export default function SidebarMenuGroup({
                 >
                   <span
                     className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all duration-200 [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 relative ${item.highlight
-                        ? "text-purple-600 dark:text-purple-300"
-                        : active
-                          ? "text-blue-600 dark:text-blue-400 scale-105"
-                          : `${item.color || "text-slate-400 dark:text-slate-500"} opacity-70 group-hover:opacity-100 group-hover:scale-105`
+                      ? "text-purple-600 dark:text-purple-300"
+                      : active
+                        ? "text-blue-600 dark:text-blue-400 scale-105"
+                        : `${item.color || "text-slate-400 dark:text-slate-500"} opacity-70 group-hover:opacity-100 group-hover:scale-105`
                       }`}
                   >
                     {item.icon}
@@ -141,15 +141,14 @@ export default function SidebarMenuGroup({
                       <span>{displayedLabel}</span>
                       {item.tag && (
                         <span
-                          className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${
-                            item.tagVariant === "hot"
+                          className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${item.tagVariant === "hot"
                               ? "bg-gradient-to-r from-rose-500 to-amber-500 text-white"
                               : item.tagVariant === "pro"
-                              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-                              : item.tagVariant === "new"
-                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
-                              : "bg-blue-500/20 text-blue-300"
-                          }`}
+                                ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                                : item.tagVariant === "new"
+                                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+                                  : "bg-blue-500/20 text-blue-300"
+                            }`}
                         >
                           {item.tag}
                         </span>
