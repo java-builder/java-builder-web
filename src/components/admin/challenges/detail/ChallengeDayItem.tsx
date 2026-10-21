@@ -37,7 +37,6 @@ export default function ChallengeDayItem({
   const [tasks, setTasks] = useState<ChallengeTaskResponse[]>(day.tasks || []);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [hasFetched, setHasFetched] = useState(Boolean(day.tasks && day.tasks.length > 0));
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -45,7 +44,6 @@ export default function ChallengeDayItem({
       const res = await challengeService.getTasksByDayId(day.id);
       if (res.data) {
         setTasks(res.data);
-        setHasFetched(true);
       }
     } catch {
       // Ignore
@@ -55,10 +53,16 @@ export default function ChallengeDayItem({
   }, [day.id]);
 
   useEffect(() => {
-    if (isExpanded && !hasFetched) {
+    if (day.tasks) {
+      setTasks(day.tasks);
+    }
+  }, [day.tasks]);
+
+  useEffect(() => {
+    if (isExpanded) {
       fetchTasks();
     }
-  }, [isExpanded, hasFetched, fetchTasks]);
+  }, [isExpanded, fetchTasks]);
 
   return (
     <div className="bg-card border border-border rounded-xl shadow-xs overflow-hidden transition-all hover:border-accent/40">
@@ -69,9 +73,8 @@ export default function ChallengeDayItem({
       >
         <div className="flex items-center gap-3 min-w-0">
           <ChevronRight
-            className={`w-4 h-4 text-muted-foreground transition-transform shrink-0 ${
-              isExpanded ? "rotate-90 text-accent" : ""
-            }`}
+            className={`w-4 h-4 text-muted-foreground transition-transform shrink-0 ${isExpanded ? "rotate-90 text-accent" : ""
+              }`}
           />
 
           <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center font-bold text-accent text-xs shrink-0">
@@ -199,11 +202,10 @@ export default function ChallengeDayItem({
                             <span
                               key={lIdx}
                               title={`${link.type}: ${link.title || link.url}`}
-                              className={`inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-semibold border ${
-                                link.type === "YOUTUBE"
+                              className={`inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-semibold border ${link.type === "YOUTUBE"
                                   ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
                                   : "bg-blue-500/10 text-blue-600 border-blue-500/20"
-                              }`}
+                                }`}
                             >
                               {link.type === "YOUTUBE" ? (
                                 <FaYoutube className="w-2.5 h-2.5" />

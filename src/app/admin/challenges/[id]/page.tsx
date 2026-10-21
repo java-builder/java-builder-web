@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   useChallengeById,
@@ -32,6 +33,7 @@ import toast from "react-hot-toast";
 export default function AdminChallengeDetailPage() {
   const params = useParams();
   const challengeId = (params.id as string) || "";
+  const queryClient = useQueryClient();
 
   // Data fetching
   const {
@@ -89,16 +91,22 @@ export default function AdminChallengeDetailPage() {
   const handleSubmitPhase = async (
     formData: CreateChallengePhaseRequest | UpdateChallengePhaseRequest
   ) => {
-    if (editingPhase) {
-      await challengeService.updatePhase(editingPhase.id, formData as UpdateChallengePhaseRequest);
-      toast.success("Cập nhật giai đoạn thành công!");
-    } else {
-      await challengeService.createPhase(formData as CreateChallengePhaseRequest);
-      toast.success("Thêm giai đoạn mới thành công!");
+    try {
+      if (editingPhase) {
+        await challengeService.updatePhase(editingPhase.id, formData as UpdateChallengePhaseRequest);
+        toast.success("Cập nhật giai đoạn thành công!");
+      } else {
+        await challengeService.createPhase(formData as CreateChallengePhaseRequest);
+        toast.success("Thêm giai đoạn mới thành công!");
+      }
+      setIsPhaseModalOpen(false);
+      setEditingPhase(null);
+      refetchPhases();
+    } catch (err: unknown) {
+      const errorResponse = err as { response?: { data?: { message?: string } } };
+      const msg = errorResponse?.response?.data?.message || "Không thể lưu giai đoạn. Vui lòng thử lại!";
+      toast.error(msg);
     }
-    setIsPhaseModalOpen(false);
-    setEditingPhase(null);
-    refetchPhases();
   };
 
   const handleDeletePhase = (id: string, title: string) => {
@@ -130,16 +138,35 @@ export default function AdminChallengeDetailPage() {
   const handleSubmitDay = async (
     formData: CreateChallengeDayRequest | UpdateChallengeDayRequest
   ) => {
-    if (editingDay) {
-      await challengeService.updateDay(editingDay.id, formData as UpdateChallengeDayRequest);
-      toast.success("Cập nhật thử thách ngày thành công!");
-    } else {
-      await challengeService.createDay(formData as CreateChallengeDayRequest);
-      toast.success("Thêm thử thách ngày mới thành công!");
+    try {
+      if (editingDay) {
+        const res = await challengeService.updateDay(editingDay.id, formData as UpdateChallengeDayRequest);
+        const updatedDay = res.data;
+        if (updatedDay) {
+          queryClient.setQueryData<ChallengeDayResponse[]>(["challenge-days", challengeId], (oldDays = []) =>
+            oldDays.map((d) => (d.id === editingDay.id ? updatedDay : d))
+          );
+        }
+        toast.success("Cập nhật thử thách ngày thành công!");
+      } else {
+        const res = await challengeService.createDay(formData as CreateChallengeDayRequest);
+        const newDay = res.data;
+        if (newDay) {
+          queryClient.setQueryData<ChallengeDayResponse[]>(["challenge-days", challengeId], (oldDays = []) => [
+            ...oldDays,
+            newDay,
+          ]);
+        }
+        toast.success("Thêm thử thách ngày mới thành công!");
+      }
+      setIsDayModalOpen(false);
+      setEditingDay(null);
+      refetchDays();
+    } catch (err: unknown) {
+      const errorResponse = err as { response?: { data?: { message?: string } } };
+      const msg = errorResponse?.response?.data?.message || "Không thể lưu ngày thử thách. Vui lòng thử lại!";
+      toast.error(msg);
     }
-    setIsDayModalOpen(false);
-    setEditingDay(null);
-    refetchDays();
   };
 
   const handleDeleteDay = (id: string, dayNumber: number, title: string) => {
@@ -176,25 +203,78 @@ export default function AdminChallengeDetailPage() {
   const handleSubmitTask = async (
     formData: CreateChallengeTaskRequest | UpdateChallengeTaskRequest
   ) => {
-    if (editingTask) {
-      await challengeService.updateTask(editingTask.id, formData as UpdateChallengeTaskRequest);
-      toast.success("Cập nhật bài tập thành công!");
-    } else {
-      await challengeService.createTask(formData as CreateChallengeTaskRequest);
-      toast.success("Thêm bài tập mới thành công!");
+    try {
+      if (editingTask) {
+        const res = await challengeService.updateTask(editingTask.id, formData as UpdateChallengeTaskRequest);
+        const updatedTask = res.data;
+        if (updatedTask && activeTaskDay) {
+          queryClient.setQueryData<ChallengeDayResponse[]>(["challenge-days", challengeId], (oldDays = []) =>
+            oldDays.map((d) =>
+              d.id === activeTaskDay.id
+                ? {
+                    ...d,
+                    tasks: (d.tasks || []).map((t) => (t.id === editingTask.id ? updatedTask : t)),
+                  }
+                : d
+            )
+          );
+        }
+        toast.success("Cập nhật bài tập thành công!");
+      } else {
+        const res = await challengeService.createTask(formData as CreateChallengeTaskRequest);
+        const newTask = res.data;
+        if (newTask && activeTaskDay) {
+          queryClient.setQueryData<ChallengeDayResponse[]>(["challenge-days", challengeId], (oldDays = []) =>
+            oldDays.map((d) =>
+              d.id === activeTaskDay.id
+                ? {
+                    ...d,
+                    tasks: [...(d.tasks || []), newTask],
+                  }
+                : d
+            )
+          );
+        }
+        toast.success("Thêm bài tập mới thành công!");
+      }
+      setIsTaskModalOpen(false);
+      setEditingTask(null);
+      setActiveTaskDay(null);
+      refetchDays();
+    } catch (err: unknown) {
+      const errorResponse = err as { response?: { status?: number; data?: { message?: string } } };
+      if (errorResponse?.response?.status === 404) {
+        toast.error("Nhiệm vụ không còn tồn tại trên máy chủ (đã bị xóa hoặc tạo mới). Đang làm mới dữ liệu...");
+        setIsTaskModalOpen(false);
+        setEditingTask(null);
+        setActiveTaskDay(null);
+        refetchDays();
+      } else {
+        const msg = errorResponse?.response?.data?.message || "Không thể lưu bài tập. Vui lòng thử lại!";
+        toast.error(msg);
+      }
     }
-    setIsTaskModalOpen(false);
-    setEditingTask(null);
-    setActiveTaskDay(null);
-    refetchDays();
   };
 
   const handleDeleteTask = (taskId: string, title: string, onDone: () => void) => {
     confirm(
       async () => {
-        await challengeService.deleteTask(taskId);
-        toast.success("Đã xóa bài tập!");
-        onDone();
+        try {
+          await challengeService.deleteTask(taskId);
+          queryClient.setQueryData<ChallengeDayResponse[]>(["challenge-days", challengeId], (oldDays = []) =>
+            oldDays.map((d) => ({
+              ...d,
+              tasks: (d.tasks || []).filter((t) => t.id !== taskId),
+            }))
+          );
+          toast.success("Đã xóa bài tập!");
+          onDone();
+          refetchDays();
+        } catch (err: unknown) {
+          const errorResponse = err as { response?: { data?: { message?: string } } };
+          const msg = errorResponse?.response?.data?.message || "Không thể xóa bài tập. Vui lòng thử lại!";
+          toast.error(msg);
+        }
       },
       {
         title: "Xóa bài tập này?",

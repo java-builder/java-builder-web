@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle, Sparkles } from "lucide-react";
@@ -36,8 +36,29 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
   const [mounted, setMounted] = useState(false);
 
+  // Restore selected day from URL query param (?day=...)
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDay = Number(urlParams.get("day"));
+      if (urlDay && urlDay > 0) {
+        setSelectedDayNumber(urlDay);
+      }
+    }
+  }, []);
+
+  // Sync with browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDay = Number(urlParams.get("day"));
+      if (urlDay && urlDay > 0) {
+        setSelectedDayNumber(urlDay);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const { data: challengeData, isLoading, error } = useChallengeBySlug(
@@ -169,6 +190,15 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             };
           })
         );
+
+        // If no day specified in URL, automatically navigate to the latest in-progress day from API
+        if (typeof window !== "undefined") {
+          const urlParams = new URLSearchParams(window.location.search);
+          if (!urlParams.get("day") && completedDayNumbers && completedDayNumbers.length > 0) {
+            const nextDay = Math.max(...completedDayNumbers) + 1;
+            setSelectedDayNumber(nextDay);
+          }
+        }
       })
       .catch((err) => {
         console.error("Failed to load challenge progress from DB:", err);
@@ -311,12 +341,32 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   };
 
+  const handleSelectDay = useCallback((dayNum: number) => {
+    setSelectedDayNumber(dayNum);
+    if (typeof window !== "undefined") {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set("day", String(dayNum));
+        window.history.replaceState(null, "", url.toString());
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
   const handleResetProgress = () => {
     if (!challenge) return;
     setDays(challenge.days);
-    setSelectedDayNumber(1);
+    handleSelectDay(1);
     toast.success("Đã làm mới hiển thị tiến độ!");
   };
+
+  // Clamp selected day if it exceeds totalDays once challenge loads
+  useEffect(() => {
+    if (challenge && challenge.totalDays > 0 && selectedDayNumber > challenge.totalDays) {
+      handleSelectDay(challenge.totalDays);
+    }
+  }, [challenge, selectedDayNumber, handleSelectDay]);
 
   // Fetch full day details by ID with authorization check (only if enrolled)
   useEffect(() => {
@@ -505,7 +555,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             totalDays={challenge.totalDays}
             freePreviewDays={challenge.freePreviewDays}
             selectedDayNumber={selectedDayNumber}
-            onSelectDay={setSelectedDayNumber}
+            onSelectDay={handleSelectDay}
             isUnlockedAll={isUnlockedAll}
             isChallengeFree={challenge.isFree}
             isEnrolled={isEnrolled}
@@ -540,7 +590,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               isChallengeFree={challenge.isFree}
               onToggleTask={handleToggleTask}
               onCompleteDay={handleCompleteDay}
-              onSelectDay={setSelectedDayNumber}
+              onSelectDay={handleSelectDay}
               onOpenDrawer={() => setIsSideDrawerOpen(true)}
             />
           )}
@@ -572,7 +622,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
           totalDays={challenge.totalDays}
           onToggleTask={handleToggleTask}
           onCompleteDay={handleCompleteDay}
-          onSelectDay={setSelectedDayNumber}
+          onSelectDay={handleSelectDay}
         />
       )}
 
