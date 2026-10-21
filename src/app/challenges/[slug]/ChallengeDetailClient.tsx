@@ -489,7 +489,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       {/* 2. Main Workspace */}
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:px-8 space-y-6">
         {/* Roadmap Navigator (Unified Single Card) */}
-        <div className="rounded-2xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
+        <div className="relative z-20 rounded-2xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <ChallengeToolbar
             challenge={challenge}
             activePhaseFilter={activePhaseFilter}

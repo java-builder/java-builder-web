@@ -31,7 +31,7 @@ export function ChallengeDaysGrid({
   }
 
   return (
-    <div className="p-4 sm:p-5">
+    <div className="p-4 sm:p-5 rounded-b-2xl">
       <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
         {days.map((d) => {
           const isSelected = d.day === selectedDayNumber;

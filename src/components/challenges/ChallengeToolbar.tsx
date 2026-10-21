@@ -29,7 +29,7 @@ export function ChallengeToolbar({
       : null;
 
   return (
-    <div className="relative z-10 border-b border-gray-100 bg-white p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-900 transition-colors">
+    <div className="relative z-20 rounded-t-2xl border-b border-gray-100 bg-white p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-900 transition-colors">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         {/* Left: Title + Phase Dropdown */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
