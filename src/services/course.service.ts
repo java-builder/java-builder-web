@@ -101,11 +101,20 @@ export const courseApi = {
     return response.data;
   },
 
-  // Xóa khóa học
-  delete: async (id: string) => {
-    await apiClient.delete<ApiResponse<void>>(
-      `${API.DELETE_COURSE}/${id}`,
+  // Xóa tạm thời khóa học (Soft delete)
+  softDelete: async (id: string) => {
+    const response = await apiClient.delete<ApiResponse<string>>(
+      `${API.SOFT_DELETE_COURSE}/${id}/soft`,
     );
+    return response.data;
+  },
+
+  // Xóa vĩnh viễn khóa học (Permanently delete)
+  permanentlyDelete: async (id: string) => {
+    const response = await apiClient.delete<ApiResponse<string>>(
+      `${API.PERMANENT_DELETE_COURSE}/${id}/permanent`,
+    );
+    return response.data;
   },
 };
 

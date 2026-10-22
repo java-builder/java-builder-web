@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { isAxiosError } from "axios";
+import toast from "react-hot-toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { CourseDeleteType } from "@/types/admin";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
 import EnrollUserModal from "@/components/admin/courses/EnrollUserModal";
 import { CourseFilters } from "@/components/admin/courses/CourseFilters";
@@ -11,9 +14,8 @@ import { CourseCard } from "@/components/admin/courses/CourseCard";
 import { useCourses } from "@/hooks/useCourses";
 import { courseApi } from "@/services/course.service";
 import { reportApi } from "@/services/report.service";
-import { DeleteModalState } from "@/types/admin";
 import { formatCurrency } from "@/utils/formatters";
-import { CourseFormat, CourseLevel } from "@/types/course";
+import { CourseFormat, CourseLevel, CourseStatus } from "@/types/course";
 import { CourseOverviewResponse } from "@/types/report";
 import { Button } from "@/components/ui/button";
 import { Plus, RotateCw, AlertCircle, BookOpen } from "lucide-react";
@@ -29,10 +31,18 @@ export default function CoursesPage() {
   const [activeTab, setActiveTab] = useState<CourseFormatTab>("ALL");
   const [isDeleting, setIsDeleting] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    id: string;
+    title: string;
+    courseStatus?: CourseStatus;
+    deleteType: CourseDeleteType;
+  }>({
     isOpen: false,
     id: "",
     title: "",
+    courseStatus: undefined,
+    deleteType: "soft",
   });
   const [enrollModal, setEnrollModal] = useState<{ isOpen: boolean; courseId: string; courseTitle: string }>({
     isOpen: false,
@@ -78,18 +88,46 @@ export default function CoursesPage() {
     fetchCourseOverview();
   }, [fetchCourseOverview]);
 
-  const handleDelete = async (id: string, title: string) => {
-    setDeleteModal({ isOpen: true, id, title });
+  const handleDelete = (
+    id: string,
+    title: string,
+    type: CourseDeleteType = "soft",
+    courseStatus?: CourseStatus
+  ) => {
+    setDeleteModal({
+      isOpen: true,
+      id,
+      title,
+      courseStatus,
+      deleteType: type,
+    });
   };
 
   const confirmDelete = async () => {
-    const { id } = deleteModal;
+    const { id, title, deleteType } = deleteModal;
     setIsDeleting(id);
     try {
-      await courseApi.delete(id);
-      setDeleteModal({ isOpen: false, id: "", title: "" });
+      if (deleteType === "permanent") {
+        const response = await courseApi.permanentlyDelete(id);
+        toast.success(
+          response?.message || `Đã xóa vĩnh viễn khóa học "${title}" thành công!`
+        );
+      } else {
+        const response = await courseApi.softDelete(id);
+        toast.success(
+          response?.message || `Đã xóa tạm thời khóa học "${title}" thành công!`
+        );
+      }
+      setDeleteModal((prev) => ({ ...prev, isOpen: false }));
       refetch();
-    } catch {
+    } catch (err: unknown) {
+      const errorMsg =
+        isAxiosError<{ message?: string }>(err) && err.response?.data?.message
+          ? err.response.data.message
+          : deleteType === "permanent"
+          ? "Không thể xóa vĩnh viễn khóa học!"
+          : "Không thể xóa tạm thời khóa học!";
+      toast.error(errorMsg);
     } finally {
       setIsDeleting("");
     }
@@ -256,17 +294,31 @@ export default function CoursesPage() {
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Delete Confirm Modal */}
+      {/* Delete Course Confirm Modal */}
       <ConfirmModal
         isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: "", title: "" })}
+        onClose={() =>
+          setDeleteModal((prev) => ({ ...prev, isOpen: false }))
+        }
         onConfirm={confirmDelete}
-        title="Xóa khóa học"
-        message={`Bạn có chắc chắn muốn xóa khóa học <strong>${deleteModal.title}</strong>? Hành động này không thể hoàn tác.`}
-        confirmText="Xóa"
+        title={
+          deleteModal.deleteType === "permanent"
+            ? "Xóa vĩnh viễn khóa học"
+            : "Xóa tạm thời khóa học"
+        }
+        message={
+          deleteModal.deleteType === "permanent"
+            ? `Bạn có chắc chắn muốn xóa vĩnh viễn khóa học <strong>${deleteModal.title}</strong>? Hành động này không thể hoàn tác.`
+            : `Bạn có chắc chắn muốn xóa tạm thời khóa học <strong>${deleteModal.title}</strong>? Khóa học sẽ chuyển sang trạng thái đã xóa và bị ẩn khỏi học viên.`
+        }
+        confirmText={
+          deleteModal.deleteType === "permanent"
+            ? "Xóa vĩnh viễn"
+            : "Xóa tạm thời"
+        }
         cancelText="Hủy"
+        type={deleteModal.deleteType === "permanent" ? "danger" : "warning"}
         isLoading={isDeleting === deleteModal.id}
-        type="danger"
       />
 
       {/* Enroll User Modal */}

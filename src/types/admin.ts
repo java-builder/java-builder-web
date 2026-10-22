@@ -12,3 +12,14 @@ export interface DeleteModalState {
   id: string;
   title: string;
 }
+
+export type CourseDeleteType = "soft" | "permanent";
+
+export interface CourseDeleteModalState {
+  isOpen: boolean;
+  id: string;
+  title: string;
+  courseStatus?: import("./course").CourseStatus;
+  initialType?: CourseDeleteType;
+}
+

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { CourseDetailResponse, CourseLevel, CourseFormat } from "@/types/course";
+import { CourseDetailResponse, CourseLevel, CourseFormat, CourseStatus } from "@/types/course";
 import { LevelBadge } from "./LevelBadge";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { formatPrice } from "@/utils/formatters";
@@ -14,7 +14,8 @@ import {
   UserPlus,
   Edit,
   Trash2,
-  BookOpen
+  BookOpen,
+  Archive,
 } from "lucide-react";
 
 interface CourseCardProps {
@@ -22,7 +23,7 @@ interface CourseCardProps {
   openMenuId: string | null;
   isDeleting: string;
   onMenuToggle: (id: string) => void;
-  onDelete: (id: string, title: string) => void;
+  onDelete: (id: string, title: string, type?: "soft" | "permanent", status?: CourseStatus) => void;
   onEnroll: (courseId: string, courseTitle: string) => void;
 }
 
@@ -70,6 +71,32 @@ export const CourseCard = ({
                   <div className="flex items-center gap-1.5">
                     <LevelBadge level={course.level || CourseLevel.BEGINNER} />
                   </div>
+                  {course.courseStatus && (
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border inline-flex items-center gap-1.5 ${
+                        course.courseStatus === CourseStatus.DELETED
+                          ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                          : course.courseStatus === CourseStatus.INACTIVE
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          course.courseStatus === CourseStatus.DELETED
+                            ? "bg-rose-500 animate-pulse"
+                            : course.courseStatus === CourseStatus.INACTIVE
+                            ? "bg-amber-500"
+                            : "bg-emerald-500"
+                        }`}
+                      />
+                      {course.courseStatus === CourseStatus.DELETED
+                        ? "Đã xóa tạm thời"
+                        : course.courseStatus === CourseStatus.INACTIVE
+                        ? "Tạm ẩn"
+                        : "Hoạt động"}
+                    </span>
+                  )}
                   {course.courseFormat && (
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${course.courseFormat === CourseFormat.VIDEO
@@ -166,18 +193,33 @@ export const CourseCard = ({
                       <div className="border-t border-border my-1" />
                       <button
                         onClick={() => {
-                          onDelete(course.id, course.title);
+                          onDelete(course.id, course.title, "soft", course.courseStatus);
                           onMenuToggle("");
                         }}
                         disabled={isDeleting === course.id}
-                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 text-left"
+                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 transition-colors disabled:opacity-50 text-left cursor-pointer"
+                      >
+                        {isDeleting === course.id ? (
+                          <span className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Archive className="w-4 h-4" />
+                        )}
+                        Xóa tạm thời
+                      </button>
+                      <button
+                        onClick={() => {
+                          onDelete(course.id, course.title, "permanent", course.courseStatus);
+                          onMenuToggle("");
+                        }}
+                        disabled={isDeleting === course.id}
+                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 text-left cursor-pointer"
                       >
                         {isDeleting === course.id ? (
                           <span className="w-4 h-4 border-2 border-destructive border-t-transparent rounded-full animate-spin" />
                         ) : (
                           <Trash2 className="w-4 h-4" />
                         )}
-                        Xóa khóa học
+                        Xóa vĩnh viễn
                       </button>
                     </div>
                   </>

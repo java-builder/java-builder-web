@@ -127,7 +127,8 @@ export const API = {
     // COURSE
     CREATE_COURSE: "/api/v1/courses",
     UPDATE_COURSE: "/api/v1/courses", // + /:id
-    DELETE_COURSE: "/api/v1/courses", // + /:id
+    SOFT_DELETE_COURSE: "/api/v1/courses", // + /:id/soft
+    PERMANENT_DELETE_COURSE: "/api/v1/courses", // + /:id/permanent
     GET_COURSE_BY_ID: "/api/v1/courses", // + /:id
     GET_COURSE_BY_SLUG: "/api/v1/courses/slug", // + /:slug
     GET_COURSES: "/api/v1/courses",

@@ -119,25 +119,25 @@ export function ChallengeDayDetail({
       </div>
 
       {/* 2. WHY LEARN & CORE MISSION */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Why Learn */}
-        <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900/40 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
-            <Compass className="w-4 h-4 shrink-0" />
+        <div className="rounded-xl border border-border bg-muted/25 p-4 sm:p-5 space-y-2">
+          <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Compass className="w-4 h-4 text-accent shrink-0" />
             <span>Tại sao quan trọng trong thực tế?</span>
           </div>
-          <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {activeDay.whyLearn || "Nắm vững kỹ năng cốt lõi cho dự án thực tế."}
           </p>
         </div>
 
         {/* Core Mission */}
-        <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-100 dark:bg-amber-950/20 dark:border-amber-900/40 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
-            <Target className="w-4 h-4 shrink-0" />
+        <div className="rounded-xl border border-border bg-muted/25 p-4 sm:p-5 space-y-2">
+          <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Target className="w-4 h-4 text-accent shrink-0" />
             <span>Mục tiêu cốt lõi cần đạt</span>
           </div>
-          <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+          <p className="text-sm text-foreground/90 font-medium leading-relaxed">
             {activeDay.coreMission}
           </p>
         </div>
