@@ -18,6 +18,7 @@ interface ChallengeDayDetailProps {
   activeDay?: DayChallenge;
   totalDays: number;
   isChallengeFree?: boolean;
+  isEnrolled?: boolean;
   onToggleTask?: (taskId: string) => void;
   onCompleteDay: (dayNum: number) => void;
   onSelectDay: (dayNum: number) => void;
@@ -28,13 +29,14 @@ export function ChallengeDayDetail({
   activeDay,
   totalDays,
   isChallengeFree,
+  isEnrolled: _isEnrolled = true,
   onCompleteDay,
   onSelectDay,
   onOpenDrawer,
 }: ChallengeDayDetailProps) {
   if (!activeDay) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      <div className="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
         <Compass className="w-10 h-10 text-muted-foreground mx-auto opacity-50" />
         <h3 className="text-base font-bold text-foreground">Chưa có nội dung cho ngày này</h3>
         <p className="text-xs text-muted-foreground max-w-sm mx-auto">
@@ -49,39 +51,21 @@ export function ChallengeDayDetail({
   const isAllTasksCompleted = tasks.length > 0 && completedTasksCount === tasks.length;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-7 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-6">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-7 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-6">
       {/* 1. DAY HEADER */}
       <div className="space-y-3 border-b border-gray-100 dark:border-slate-800 pb-5">
         {/* Badges & Meta */}
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="rounded-lg bg-accent px-3 py-1 text-xs font-bold text-white shadow-xs">
-              NGÀY {activeDay.day}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="rounded-lg bg-accent px-3 py-1 text-xs font-bold text-white shadow-xs">
+            NGÀY {activeDay.day}
+          </span>
+          <span className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-slate-800 dark:text-gray-300 border border-gray-200/50 dark:border-slate-700">
+            Tuần {activeDay.week} • {activeDay.phaseName}
+          </span>
+          {activeDay.isFreePreview && (
+            <span className="rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold border border-emerald-500/20">
+              {isChallengeFree ? "Miễn phí" : "Học thử miễn phí"}
             </span>
-            <span className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-slate-800 dark:text-gray-300 border border-gray-200/50 dark:border-slate-700">
-              Tuần {activeDay.week} • {activeDay.phaseName}
-            </span>
-            {activeDay.isFreePreview && (
-              <span className="rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold border border-emerald-500/20">
-                {isChallengeFree ? "Miễn phí" : "Học thử miễn phí"}
-              </span>
-            )}
-          </div>
-
-          {onOpenDrawer && (
-            <button
-              type="button"
-              onClick={onOpenDrawer}
-              className="inline-flex items-center gap-2 text-sm font-bold bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-xl active:scale-95 transition cursor-pointer shadow-sm"
-            >
-              <ListTodo className="w-4 h-4" />
-              <span>Nhiệm vụ</span>
-              {tasks.length > 0 && (
-                <span className="ml-0.5 px-2 py-0.5 rounded-full bg-white/20 text-white text-xs font-bold">
-                  {completedTasksCount}/{tasks.length}
-                </span>
-              )}
-            </button>
           )}
         </div>
 
@@ -101,7 +85,7 @@ export function ChallengeDayDetail({
         {activeDay.keyConcepts && activeDay.keyConcepts.length > 0 && (
           <div className="pt-2 flex items-center gap-2 flex-wrap">
             <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-accent" />
+              <Sparkles className="w-3 text-accent" />
               Công nghệ:
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -143,6 +127,77 @@ export function ChallengeDayDetail({
         </div>
       </div>
 
+      {/* 3. DEDICATED TASK SUMMARY CARD */}
+      {tasks.length > 0 && (
+        <div
+          onClick={onOpenDrawer}
+          className="rounded-xl border border-accent/25 bg-gradient-to-r from-accent/[0.05] via-accent/[0.02] to-transparent p-4 sm:p-5 dark:border-accent/35 dark:from-accent/[0.09] dark:to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:border-accent/50 hover:shadow-xs cursor-pointer group"
+        >
+          <div className="space-y-2.5 flex-1 min-w-0">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <ListTodo className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">
+                    Nhiệm vụ thực hành Ngày {activeDay.day}
+                  </h3>
+                  {isAllTasksCompleted ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                      Đã hoàn thành
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-accent/15 text-accent border border-accent/30">
+                      {completedTasksCount}/{tasks.length} task
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Tích chọn hoàn thành từng bài tập để củng cố kỹ năng và ghi nhớ kiến thức
+                </p>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="space-y-1 pt-1 max-w-md">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-medium text-muted-foreground">Tiến độ nhiệm vụ</span>
+                <span className="font-bold tabular-nums text-foreground">
+                  {Math.round((completedTasksCount / tasks.length) * 100)}%
+                </span>
+              </div>
+              <div className="h-2 w-full bg-gray-200/80 dark:bg-slate-700/80 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 rounded-full ${
+                    isAllTasksCompleted ? "bg-emerald-500" : "bg-accent"
+                  }`}
+                  style={{
+                    width: `${Math.round((completedTasksCount / tasks.length) * 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="shrink-0 flex items-center sm:self-center">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onOpenDrawer) onOpenDrawer();
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent hover:bg-accent/90 text-white font-bold text-xs shadow-xs hover:shadow transition-all cursor-pointer group-hover:bg-accent-600 active:scale-95"
+            >
+              <ListTodo className="w-4 h-4" />
+              <span>Xem danh sách bài tập ({completedTasksCount}/{tasks.length})</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 3. DETAILED GUIDE CONTENT (MARKDOWN) - Học sinh đọc và làm theo trước */}
       {activeDay.content && (
         <div className="space-y-3 pt-2">
@@ -150,7 +205,7 @@ export function ChallengeDayDetail({
             <BookOpen className="w-4 h-4 text-accent" />
             <span>Nội dung hướng dẫn chi tiết</span>
           </div>
-          <div className="p-5 sm:p-6 rounded-2xl bg-gray-50/70 border border-gray-100 dark:bg-slate-900/40 dark:border-slate-800 text-sm leading-relaxed overflow-hidden">
+          <div className="p-5 sm:p-6 rounded-xl bg-gray-50/70 border border-gray-100 dark:bg-slate-900/40 dark:border-slate-800 text-sm leading-relaxed overflow-hidden">
             <PublicMarkdownRenderer content={activeDay.content} />
           </div>
         </div>
@@ -165,7 +220,7 @@ export function ChallengeDayDetail({
             type="button"
             disabled={activeDay.day <= 1}
             onClick={() => onSelectDay(Math.max(1, activeDay.day - 1))}
-            className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="p-2.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Ngày trước</span>
@@ -175,7 +230,7 @@ export function ChallengeDayDetail({
             type="button"
             disabled={activeDay.day >= totalDays}
             onClick={() => onSelectDay(Math.min(totalDays, activeDay.day + 1))}
-            className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="p-2.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <span>Ngày sau</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -186,7 +241,7 @@ export function ChallengeDayDetail({
           <button
             type="button"
             onClick={() => onCompleteDay(activeDay.day)}
-            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 dark:bg-emerald-950/40 dark:text-emerald-300 font-bold text-xs border border-emerald-200 dark:border-emerald-800 transition cursor-pointer active:scale-[0.98]"
+            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 dark:bg-emerald-950/40 dark:text-emerald-300 font-bold text-xs border border-emerald-200 dark:border-emerald-800 transition cursor-pointer active:scale-[0.98]"
             title="Bấm để hủy hoàn thành ngày này"
           >
             <CheckCircle2 className="w-4 h-4 text-emerald-500 group-hover:hidden" />
@@ -198,7 +253,7 @@ export function ChallengeDayDetail({
           <button
             type="button"
             onClick={() => onCompleteDay(activeDay.day)}
-            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-[0.98] ${isAllTasksCompleted
+            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-[0.98] ${isAllTasksCompleted
               ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20 shadow-md ring-2 ring-emerald-500/30"
               : "bg-accent hover:bg-accent-600"
               }`}

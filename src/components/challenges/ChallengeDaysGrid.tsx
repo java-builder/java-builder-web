@@ -31,7 +31,7 @@ export function ChallengeDaysGrid({
   }
 
   return (
-    <div className="p-4 sm:p-5 rounded-b-2xl">
+    <div className="p-4 sm:p-5 rounded-b-xl">
       <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
         {days.map((d) => {
           const isSelected = d.day === selectedDayNumber;
@@ -61,7 +61,7 @@ export function ChallengeDaysGrid({
               key={d.day}
               type="button"
               onClick={() => onSelectDay(d.day)}
-              className={`w-14 sm:w-16 h-12 sm:h-13 shrink-0 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer relative select-none group ${buttonClass}`}
+              className={`w-14 sm:w-16 h-12 sm:h-13 shrink-0 rounded-lg border flex flex-col items-center justify-center transition-all cursor-pointer relative select-none group ${buttonClass}`}
             >
               {/* Free preview badge */}
               {isFreeDay && (

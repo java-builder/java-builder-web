@@ -98,7 +98,7 @@ export default function DayModal({
       setKeyConceptsText("");
       setTasks([{ title: "", resourceLinks: [], isExpanded: false }]);
       setPhaseId(phases.length > 0 ? phases[0].id : "");
-      setIsFreePreview(nextDayNumber <= 3);
+      setIsFreePreview(false);
     }
   }, [initialData, isOpen, nextDayNumber, phases]);
 

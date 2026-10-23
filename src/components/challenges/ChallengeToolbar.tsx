@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, X, Layers, CalendarDays, CheckCircle2, Lock, Zap } from "lucide-react";
+import { RotateCcw, X, Layers, CalendarDays } from "lucide-react";
 import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
 import { Challenge } from "@/app/challenges/types";
 
@@ -29,27 +29,29 @@ export function ChallengeToolbar({
       : null;
 
   return (
-    <div className="relative z-20 rounded-t-2xl border-b border-gray-100 bg-white p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-900 transition-colors">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        {/* Left: Title + Phase Dropdown */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
-              <CalendarDays className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+    <div className="relative z-20 rounded-t-xl border-b border-gray-100 bg-white p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-900 transition-colors">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Left: Title & Day Count */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+            <CalendarDays className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">
                 Lộ trình ngày học
               </h2>
-              <p className="text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200/60 dark:border-slate-700 whitespace-nowrap">
                 {filteredCount ?? challenge.days.length} ngày đã phát hành
-              </p>
+              </span>
             </div>
           </div>
+        </div>
 
-          {/* Phase Filter Dropdown */}
+        {/* Right: Phase Dropdown Filter & Controls */}
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
           {challenge.phases.length > 0 && (
-            <div className="w-full sm:w-72">
+            <div className="w-full sm:w-56 md:w-64">
               <FilterSelect
                 value={activePhaseFilter}
                 onChange={(val) =>
@@ -58,49 +60,23 @@ export function ChallengeToolbar({
                 options={phaseOptions}
                 placeholder="Chọn giai đoạn..."
                 icon={<Layers className="h-4 w-4 text-accent shrink-0" />}
-                size="sm"
-                triggerClassName="bg-gray-50/80 dark:bg-slate-800/80 border-gray-200 dark:border-slate-700 rounded-lg text-xs"
+                size="md"
+                align="right"
+                triggerClassName="h-10 bg-gray-50/90 dark:bg-slate-800/90 border-gray-200 dark:border-slate-700 rounded-lg text-xs sm:text-sm px-3 shadow-2xs hover:bg-gray-100/90 dark:hover:bg-slate-800"
               />
             </div>
           )}
-        </div>
 
-        {/* Right: Legend Badges + Reset Controls */}
-        <div className="flex items-center justify-between lg:justify-end gap-3 flex-wrap">
-          {/* Status Indicators Legend */}
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-medium border border-emerald-200/60 dark:border-emerald-800/60">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Học thử (Free)
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 font-medium border border-amber-200/60 dark:border-amber-800/60">
-              <Lock className="w-2.5 h-2.5 text-amber-600" />
-              Gói Pro
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-accent dark:bg-blue-950/40 dark:text-blue-300 font-medium border border-blue-200/60 dark:border-blue-800/60">
-              <Zap className="w-2.5 h-2.5 text-accent fill-accent" />
-              Đang học
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-gray-300 font-medium">
-              <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
-              Đã xong
-            </span>
-          </div>
-
-          {/* Reset progress */}
           {isEnrolled && (
-            <>
-              <div className="h-4 w-px bg-gray-200 dark:bg-slate-700 hidden sm:block" />
-              <button
-                type="button"
-                onClick={onResetProgress}
-                className="h-8 px-2.5 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50/70 text-xs text-muted-foreground hover:text-foreground hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800/60 transition cursor-pointer shrink-0"
-                title="Làm mới hiển thị tiến độ"
-              >
-                <RotateCcw className="h-3 w-3" />
-                <span className="text-[11px] font-medium hidden sm:inline">Làm mới</span>
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={onResetProgress}
+              className="h-10 px-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50/70 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800/60 transition cursor-pointer shrink-0 shadow-2xs"
+              title="Làm mới hiển thị tiến độ"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Làm mới</span>
+            </button>
           )}
         </div>
       </div>

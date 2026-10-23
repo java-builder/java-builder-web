@@ -24,7 +24,7 @@ export function ChallengeJoinSection({
   isEnrolling,
 }: ChallengeJoinSectionProps) {
   const isFree = challenge.isFree;
-  const standalonePrice = challenge.price || 149000;
+  const standalonePrice = challenge.price ?? 0;
   const previewDay = activeDay || challenge.days[0];
 
   return (

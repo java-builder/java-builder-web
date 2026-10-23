@@ -6,3 +6,6 @@ export * from "./ChallengeDayDetail";
 export * from "./ChallengePaywallCard";
 export * from "./ChallengeSideDrawer";
 export * from "./ChallengeJoinSection";
+export * from "./ChallengeCurriculum";
+export * from "./ChallengePurchaseSidebar";
+export { default as PremiumUpgradeModal } from "./PremiumUpgradeModal";

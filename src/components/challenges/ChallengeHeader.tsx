@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeft, Flame, CheckCircle2, Clock, Sparkles } from "lucide-react";
 import { Challenge } from "@/app/challenges/types";
-import { LEVEL_STYLES } from "./ChallengeCard";
 
 interface ChallengeHeaderProps {
   challenge: Challenge;
@@ -32,10 +31,6 @@ export function ChallengeHeader({
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Quay lại danh sách thử thách</span>
           </Link>
-
-          <span className="text-gray-500 dark:text-gray-400 font-medium">
-            {challenge.category} • {LEVEL_STYLES[challenge.level]?.label || challenge.level}
-          </span>
         </div>
       </div>
 
@@ -63,7 +58,7 @@ export function ChallengeHeader({
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
-                    PRO • {(challenge.price || 149000).toLocaleString("vi-VN")} đ
+                    PRO • {(challenge.price ?? 0).toLocaleString("vi-VN")} đ
                   </span>
                 )}
               </div>

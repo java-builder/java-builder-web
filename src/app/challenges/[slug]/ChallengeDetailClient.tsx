@@ -22,7 +22,8 @@ import {
   ChallengeDayDetail,
   ChallengePaywallCard,
   ChallengeSideDrawer,
-  ChallengeJoinSection,
+  ChallengePurchaseSidebar,
+  PremiumUpgradeModal,
 } from "@/components/challenges";
 
 interface Props {
@@ -36,7 +37,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
   const [mounted, setMounted] = useState(false);
 
-  // Restore selected day from URL query param (?day=...)
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -81,6 +81,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const [isEnrolling, setIsEnrolling] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isDayForbidden, setIsDayForbidden] = useState<boolean>(false);
+  const [isDayDetailLoading, setIsDayDetailLoading] = useState<boolean>(false);
+  const [premiumUpgradeModalOpen, setPremiumUpgradeModalOpen] = useState<boolean>(false);
   const [paymentModal, setPaymentModal] = useState<{
     isOpen: boolean;
     isLoading: boolean;
@@ -176,16 +178,17 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               ...t,
               isCompleted: isDayCompleted || taskSet.has(t.id),
             }));
+            const freeDays = challenge?.freePreviewDays ?? 0;
             const prevDayCompleted = daySet.has(d.day - 1);
-            const isUnlocked = d.day === 1 || d.day <= 3 || prevDayCompleted;
+            const isUnlocked = d.day === 1 || d.day <= freeDays || Boolean(d.isFreePreview) || prevDayCompleted;
 
             return {
               ...d,
               status: isDayCompleted
                 ? ("completed" as const)
                 : isUnlocked
-                ? ("in_progress" as const)
-                : ("locked" as const),
+                  ? ("in_progress" as const)
+                  : ("locked" as const),
               tasks: updatedTasks,
             };
           })
@@ -368,10 +371,11 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   }, [challenge, selectedDayNumber, handleSelectDay]);
 
-  // Fetch full day details by ID with authorization check (only if enrolled)
+  // Fetch full day details by ID with authorization check on demand (for both free preview & enrolled users)
   useEffect(() => {
-    if (!activeDay?.id || !isEnrolled) return;
+    if (!activeDay?.id) return;
     let isMounted = true;
+    setIsDayDetailLoading(true);
 
     challengeService
       .getDayDetailById(activeDay.id)
@@ -397,11 +401,11 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 tasks:
                   detail.tasks && detail.tasks.length > 0
                     ? detail.tasks.map((t) => ({
-                        id: t.id,
-                        title: t.title,
-                        isCompleted: Boolean(taskMap.get(t.id)),
-                        resourceLinks: t.resourceLinks || [],
-                      }))
+                      id: t.id,
+                      title: t.title,
+                      isCompleted: Boolean(taskMap.get(t.id)),
+                      resourceLinks: t.resourceLinks || [],
+                    }))
                     : d.tasks,
               };
             }
@@ -411,8 +415,13 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       })
       .catch((err) => {
         if (!isMounted) return;
-        if (err?.response?.status === 403) {
+        if (err?.response?.status === 403 || err?.response?.status === 401) {
           setIsDayForbidden(true);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsDayDetailLoading(false);
         }
       });
 
@@ -442,6 +451,14 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       toast.error("Lỗi khi kết nối đến cổng thanh toán PayOS.");
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
     }
+  };
+
+  const handleOpenPremiumModal = () => {
+    if (!currentUser) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setPremiumUpgradeModalOpen(true);
   };
 
   const handleEnroll = async () => {
@@ -484,10 +501,10 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return (
       <div className="min-h-screen bg-gray-50/50 dark:bg-slate-900 p-8 animate-pulse space-y-8">
         <div className="max-w-7xl mx-auto space-y-6">
-          <div className="h-48 bg-gray-200 dark:bg-slate-800 rounded-2xl" />
+          <div className="h-48 bg-gray-200 dark:bg-slate-800 rounded-xl" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-5 h-96 bg-gray-200 dark:bg-slate-800 rounded-2xl" />
-            <div className="lg:col-span-7 h-96 bg-gray-200 dark:bg-slate-800 rounded-2xl" />
+            <div className="lg:col-span-5 h-96 bg-gray-200 dark:bg-slate-800 rounded-xl" />
+            <div className="lg:col-span-7 h-96 bg-gray-200 dark:bg-slate-800 rounded-xl" />
           </div>
         </div>
       </div>
@@ -516,12 +533,11 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     (role) => role === "ADMIN" || role.toUpperCase().includes("PREMIUM")
   );
 
-  const shouldShowJoinSection = !isEnrolled;
+  const hasFullAccess = isEnrolled || isUserAdminOrPremium || Boolean(challenge.isFree);
 
   const isLockedByPaywall =
-    !challenge.isFree &&
+    !hasFullAccess &&
     !isUnlockedAll &&
-    !isUserAdminOrPremium &&
     (isDayForbidden || (!activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays ?? 0)));
 
   return (
@@ -538,71 +554,138 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
 
       {/* 2. Main Workspace */}
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:px-8 space-y-6">
-        {/* Roadmap Navigator (Unified Single Card) */}
-        <div className="relative z-20 rounded-2xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <ChallengeToolbar
-            challenge={challenge}
-            activePhaseFilter={activePhaseFilter}
-            setActivePhaseFilter={setActivePhaseFilter}
-            onResetProgress={handleResetProgress}
-            phaseOptions={phaseOptions}
-            filteredCount={filteredDays.length}
-            isEnrolled={isEnrolled}
-          />
+        {!hasFullAccess ? (
+          /* PREVIEW MODE FOR GUEST / NON-PRO USERS: 2-COLUMN LAYOUT */
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* LEFT COLUMN (2 COLS): Bản đồ n ngày học + Lộ trình chi tiết theo Phase */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* 1. Bản đồ N ngày học (Roadmap Navigator Card chuẩn style hệ thống) */}
+              <div className="relative z-20 rounded-xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+                <ChallengeToolbar
+                  challenge={challenge}
+                  activePhaseFilter={activePhaseFilter}
+                  setActivePhaseFilter={setActivePhaseFilter}
+                  onResetProgress={handleResetProgress}
+                  phaseOptions={phaseOptions}
+                  filteredCount={filteredDays.length}
+                  isEnrolled={false}
+                />
 
-          <ChallengeDaysGrid
-            days={filteredDays}
-            totalDays={challenge.totalDays}
-            freePreviewDays={challenge.freePreviewDays}
-            selectedDayNumber={selectedDayNumber}
-            onSelectDay={handleSelectDay}
-            isUnlockedAll={isUnlockedAll}
-            isChallengeFree={challenge.isFree}
-            isEnrolled={isEnrolled}
-          />
-        </div>
+                <ChallengeDaysGrid
+                  days={filteredDays}
+                  totalDays={challenge.totalDays}
+                  freePreviewDays={challenge.freePreviewDays}
+                  selectedDayNumber={selectedDayNumber}
+                  onSelectDay={handleSelectDay}
+                  isUnlockedAll={isUnlockedAll}
+                  isChallengeFree={challenge.isFree}
+                  isEnrolled={false}
+                />
+              </div>
 
-        {/* Bottom Workspace: Join Section (if not enrolled), or Day Content / Paywall */}
-        <div className="w-full">
-          {isCheckingEnrollment && currentUser ? (
-            <div className="rounded-2xl border border-gray-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900 animate-pulse space-y-4">
-              <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded-lg w-1/3" />
-              <div className="h-20 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
-              <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
+              {/* 2. Nội dung bài học ngày đang chọn (Trực tiếp trên trang) */}
+              <div className="w-full">
+                {isDayDetailLoading ? (
+                  <div className="rounded-xl border border-gray-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900 animate-pulse space-y-4">
+                    <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded-lg w-1/4" />
+                    <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded-lg w-3/4" />
+                    <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
+                  </div>
+                ) : isLockedByPaywall ? (
+                  <ChallengePaywallCard
+                    challenge={challenge}
+                    activeDay={activeDay}
+                    onUnlockStandalone={handleUnlockStandalone}
+                    onOpenPremiumModal={handleOpenPremiumModal}
+                  />
+                ) : (
+                  <ChallengeDayDetail
+                    activeDay={activeDay}
+                    totalDays={challenge.totalDays}
+                    isChallengeFree={challenge.isFree}
+                    isEnrolled={false}
+                    onToggleTask={handleToggleTask}
+                    onCompleteDay={handleCompleteDay}
+                    onSelectDay={handleSelectDay}
+                    onOpenDrawer={() => setIsSideDrawerOpen(true)}
+                  />
+                )}
+              </div>
             </div>
-          ) : shouldShowJoinSection ? (
-            <ChallengeJoinSection
-              challenge={challenge}
-              activeDay={activeDay}
-              onEnroll={handleEnroll}
-              isEnrolling={isEnrolling}
-            />
-          ) : isLockedByPaywall ? (
-            <ChallengePaywallCard
-              challenge={challenge}
-              activeDay={activeDay}
-              onUnlockStandalone={handleUnlockStandalone}
-            />
-          ) : (
-            <ChallengeDayDetail
-              activeDay={activeDay}
-              totalDays={challenge.totalDays}
-              isChallengeFree={challenge.isFree}
-              onToggleTask={handleToggleTask}
-              onCompleteDay={handleCompleteDay}
-              onSelectDay={handleSelectDay}
-              onOpenDrawer={() => setIsSideDrawerOpen(true)}
-            />
-          )}
-        </div>
+
+            {/* RIGHT COLUMN (1 COL): Phần tham gia khóa học (Sticky Sidebar) */}
+            <div className="lg:col-span-1">
+              <ChallengePurchaseSidebar
+                challenge={challenge}
+                onUnlockStandalone={handleUnlockStandalone}
+                onOpenPremiumModal={handleOpenPremiumModal}
+              />
+            </div>
+          </div>
+        ) : (
+          /* ENROLLED / FULL ACCESS LEARNING WORKSPACE */
+          <>
+            {/* Roadmap Navigator (Unified Single Card) */}
+            <div className="relative z-20 rounded-xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+              <ChallengeToolbar
+                challenge={challenge}
+                activePhaseFilter={activePhaseFilter}
+                setActivePhaseFilter={setActivePhaseFilter}
+                onResetProgress={handleResetProgress}
+                phaseOptions={phaseOptions}
+                filteredCount={filteredDays.length}
+                isEnrolled={isEnrolled}
+              />
+
+              <ChallengeDaysGrid
+                days={filteredDays}
+                totalDays={challenge.totalDays}
+                freePreviewDays={challenge.freePreviewDays}
+                selectedDayNumber={selectedDayNumber}
+                onSelectDay={handleSelectDay}
+                isUnlockedAll={isUnlockedAll}
+                isChallengeFree={challenge.isFree}
+                isEnrolled={isEnrolled}
+              />
+            </div>
+
+            {/* Bottom Workspace: Day Content / Paywall */}
+            <div className="w-full">
+              {isCheckingEnrollment && currentUser ? (
+                <div className="rounded-xl border border-gray-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900 animate-pulse space-y-4">
+                  <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded-lg w-1/3" />
+                  <div className="h-20 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
+                  <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
+                </div>
+              ) : isLockedByPaywall ? (
+                <ChallengePaywallCard
+                  challenge={challenge}
+                  activeDay={activeDay}
+                  onUnlockStandalone={handleUnlockStandalone}
+                />
+              ) : (
+                <ChallengeDayDetail
+                  activeDay={activeDay}
+                  totalDays={challenge.totalDays}
+                  isChallengeFree={challenge.isFree}
+                  isEnrolled={true}
+                  onToggleTask={handleToggleTask}
+                  onCompleteDay={handleCompleteDay}
+                  onSelectDay={handleSelectDay}
+                  onOpenDrawer={() => setIsSideDrawerOpen(true)}
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Floating Right Button to Open Drawer (Only if enrolled & not locked) */}
-      {activeDay && isEnrolled && !isLockedByPaywall && (
+      {/* Floating Right Button to Open Drawer (When day is active & not locked) */}
+      {activeDay && !isLockedByPaywall && (
         <button
           type="button"
           onClick={() => setIsSideDrawerOpen(true)}
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-accent hover:bg-accent/90 text-white pl-2.5 pr-2 py-3 rounded-l-xl shadow-lg hover:pl-3.5 transition-all flex flex-col items-center gap-1.5 cursor-pointer group border border-r-0 border-white/20 active:scale-95"
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-accent hover:bg-accent/90 text-white pl-2.5 pr-2 py-3 rounded-l-lg shadow-lg hover:pl-3.5 transition-all flex flex-col items-center gap-1.5 cursor-pointer group border border-r-0 border-white/20 active:scale-95"
           title="Mở danh sách nhiệm vụ"
         >
           <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
@@ -614,7 +697,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       )}
 
       {/* Side-over Right Drawer (Roadmap.sh Style) */}
-      {activeDay && isEnrolled && (
+      {activeDay && (
         <ChallengeSideDrawer
           isOpen={isSideDrawerOpen}
           onClose={() => setIsSideDrawerOpen(false)}
@@ -633,6 +716,21 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         data={paymentModal.data}
         courseTitle={challenge.title}
         onClose={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
+      />
+
+      {/* Premium Upgrade Modal */}
+      <PremiumUpgradeModal
+        isOpen={premiumUpgradeModalOpen}
+        onClose={() => setPremiumUpgradeModalOpen(false)}
+        challengeTitle={challenge.title}
+        challengePrice={challenge.price}
+        onBuyStandalone={async () => {
+          setPremiumUpgradeModalOpen(false);
+          await handleUnlockStandalone();
+        }}
+        onSuccess={() => {
+          setIsEnrolled(true);
+        }}
       />
 
       {/* Auth Required Modal */}

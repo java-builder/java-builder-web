@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Lock, Crown, CheckCircle2, Sparkles } from "lucide-react";
 import { Challenge, DayChallenge } from "@/app/challenges/types";
 
@@ -8,20 +7,22 @@ interface ChallengePaywallCardProps {
   challenge: Challenge;
   activeDay: DayChallenge;
   onUnlockStandalone: () => void;
+  onOpenPremiumModal?: () => void;
 }
 
 export function ChallengePaywallCard({
   challenge,
   activeDay,
   onUnlockStandalone,
+  onOpenPremiumModal,
 }: ChallengePaywallCardProps) {
-  const standalonePrice = challenge.price || 149000;
+  const standalonePrice = challenge.price ?? 0;
 
   return (
     <div className="rounded-xl border border-dashed border-accent/40 bg-gradient-to-b from-accent/5 via-white to-white dark:from-accent/10 dark:via-slate-800 dark:to-slate-800 p-6 sm:p-8 text-center space-y-6 shadow-sm sticky top-20">
       {/* Lock Header */}
       <div className="space-y-3 max-w-md mx-auto">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 ring-8 ring-accent/5 dark:bg-accent/20">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-accent/10 ring-8 ring-accent/5 dark:bg-accent/20">
           <Lock className="h-7 w-7 text-accent" />
         </div>
         <div className="space-y-1">
@@ -70,13 +71,14 @@ export function ChallengePaywallCard({
             </ul>
           </div>
 
-          <Link
-            href="/pricing"
-            className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-4 py-2.5 text-xs font-bold text-white transition hover:bg-accent-600 shadow-sm text-center"
+          <button
+            type="button"
+            onClick={onOpenPremiumModal || onUnlockStandalone}
+            className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-4 py-2.5 text-xs font-bold text-white transition hover:bg-accent-600 shadow-sm text-center cursor-pointer"
           >
             <Crown className="w-4 h-4 text-amber-300" />
             <span>Nâng cấp gói Premium</span>
-          </Link>
+          </button>
         </div>
 
         {/* OPTION 2: BUY THIS CHALLENGE ONLY (Standalone) */}
@@ -98,6 +100,10 @@ export function ChallengePaywallCard({
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                 <span>Trọn bộ {challenge.totalDays} ngày định hướng</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                <span>Trợ lý AI Mentor 24/7 hỗ trợ code & debug</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

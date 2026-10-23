@@ -190,7 +190,7 @@ export function ChallengeCard({ challenge, userProgress }: ChallengeCardProps) {
             ) : (
               <div className="flex items-center justify-end gap-1.5 text-xs font-bold">
                 <span className="text-gray-900 dark:text-white">
-                  {(challenge.price || 149000).toLocaleString("vi-VN")} đ
+                  {(challenge.price ?? 0).toLocaleString("vi-VN")} đ
                 </span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">
                   hoặc Premium
