@@ -29,7 +29,6 @@ export function ChallengeDayDetail({
   activeDay,
   totalDays,
   isChallengeFree,
-  isEnrolled: _isEnrolled = true,
   onCompleteDay,
   onSelectDay,
   onOpenDrawer,

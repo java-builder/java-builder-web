@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
 import {
   ChallengeDayResponse,
   ChallengePhaseResponse,
@@ -26,6 +27,7 @@ import {
   TASK_LINK_TITLE_PRESETS,
   TASK_LINK_TITLE_PRESET_KEYS,
 } from "@/types/challenge";
+import { challengeService } from "@/services/challenge.service";
 import { useI18n, TranslationKey } from "@/contexts/I18nContext";
 
 interface TaskDraft {
@@ -67,7 +69,11 @@ export default function DayModal({
   const [isFreePreview, setIsFreePreview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+
   useEffect(() => {
+    if (!isOpen) return;
+
     if (initialData) {
       setDayNumber(initialData.dayNumber);
       setTitle(initialData.title || "");
@@ -89,6 +95,31 @@ export default function DayModal({
         setTasks([{ title: "", resourceLinks: [], isExpanded: false }]);
       }
       setIsFreePreview(Boolean(initialData.freePreview ?? initialData.isFreePreview));
+
+      // API list trả về content=null để bảo vệ bài học có phí.
+      // Khi mở modal edit, gọi getDayDetailById (yêu cầu quyền Admin/bản quyền) để lấy full content Markdown:
+      if (!initialData.content && initialData.id) {
+        let isSubscribed = true;
+        setIsLoadingDetail(true);
+        challengeService
+          .getDayDetailById(initialData.id)
+          .then((res) => {
+            if (isSubscribed && res?.data?.content) {
+              setContent(res.data.content);
+            }
+          })
+          .catch((err) => {
+            console.error("Lỗi tải chi tiết bài học:", err);
+          })
+          .finally(() => {
+            if (isSubscribed) {
+              setIsLoadingDetail(false);
+            }
+          });
+        return () => {
+          isSubscribed = false;
+        };
+      }
     } else {
       setDayNumber(nextDayNumber);
       setTitle("");
@@ -377,15 +408,23 @@ export default function DayModal({
 
           {/* Content (Markdown) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground">
-              Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
-            </label>
-            <textarea
-              rows={5}
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-foreground">
+                Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
+              </label>
+              {isLoadingDetail && (
+                <span className="flex items-center gap-1 text-[11px] text-primary animate-pulse">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Đang tải nội dung...
+                </span>
+              )}
+            </div>
+            <MarkdownEditor
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(val) => setContent(val)}
               placeholder="Nhập nội dung lý thuyết, hướng dẫn từng bước, code mẫu bằng cú pháp Markdown..."
-              className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-xs font-mono transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground resize-y"
+              height={320}
+              readOnly={isLoadingDetail}
             />
           </div>
 
