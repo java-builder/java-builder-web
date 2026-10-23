@@ -35,56 +35,75 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
   const base = adaptChallengeResponseToUi(res);
 
   const phases: PhaseInfo[] = (res.phases || []).map((p) => {
-    const startDay = p.startDay || 1;
-    const endDay = p.endDay || startDay;
-    const startWeek = Math.floor((startDay - 1) / 7) + 1;
-    const endWeek = Math.floor((endDay - 1) / 7) + 1;
     return {
       id: p.phaseNumber,
+      phaseId: p.id,
       title: p.title,
-      weekRange: `Tuần ${startWeek} - ${endWeek}`,
-      dayRange: startDay === endDay ? `Ngày ${startDay}` : `Ngày ${startDay} - ${endDay}`,
       color: "from-blue-600 to-indigo-600",
       description: "",
       badge: `Giai đoạn ${p.phaseNumber}`,
+      daysNumber: p.daysNumber,
     };
   });
 
-  const days: DayChallenge[] = (res.days || []).map((d) => {
-    const phaseNumber = d.phaseNumber || 1;
-    const phaseName = d.phaseTitle || `Giai đoạn ${phaseNumber}`;
-    const week = Math.floor((d.dayNumber - 1) / 7) + 1;
-    const isFreePreview = base.isFree || Boolean(d.freePreview ?? d.isFreePreview ?? (res.freePreviewDays != null && res.freePreviewDays > 0 && d.dayNumber <= res.freePreviewDays));
+  const rawDays = res.days && res.days.length > 0 ? res.days : res.day ? [res.day] : [];
+
+  const totalDays = res.totalDays || rawDays.length || 1;
+  const daysMap = new Map(rawDays.map((d) => [d.dayNumber, d]));
+
+  const dayToPhaseMap = new Map<number, { phaseNumber: number; phaseTitle: string }>();
+  (res.phases || []).forEach((p) => {
+    if (p.daysNumber && p.daysNumber.length > 0) {
+      p.daysNumber.forEach((dn) => {
+        dayToPhaseMap.set(dn, { phaseNumber: p.phaseNumber, phaseTitle: p.title });
+      });
+    }
+  });
+
+  const days: DayChallenge[] = Array.from({ length: totalDays }, (_, idx) => {
+    const dayNum = idx + 1;
+    const d = daysMap.get(dayNum);
+    const phaseInfo = dayToPhaseMap.get(dayNum);
+    const phaseNumber = d?.phaseNumber || phaseInfo?.phaseNumber;
+    const phaseName = d?.phaseTitle || phaseInfo?.phaseTitle || (phaseNumber ? `Giai đoạn ${phaseNumber}` : "");
+    const week = Math.floor((dayNum - 1) / 7) + 1;
+    const isFreePreview =
+      base.isFree ||
+      Boolean(
+        d?.freePreview ??
+        d?.isFreePreview ??
+        (res.freePreviewDays != null && res.freePreviewDays > 0 && dayNum <= res.freePreviewDays)
+      );
 
     return {
-      id: d.id,
-      day: d.dayNumber,
+      id: d?.id,
+      day: dayNum,
       week,
       phaseId: phaseNumber,
       phaseName,
-      title: d.title,
-      tagline: d.coreMission || `Thực hành ngày ${d.dayNumber}`,
+      title: d?.title || `Ngày ${dayNum}`,
+      tagline: d?.coreMission || `Thực hành ngày ${dayNum}`,
       estimatedMinutes: 60,
-      whyLearn: d.whyLearn || "Nắm vững kỹ năng thực tế",
-      coreMission: d.coreMission || d.title,
-      content: d.content || "",
+      whyLearn: d?.whyLearn || "Nắm vững kỹ năng thực tế",
+      coreMission: d?.coreMission || d?.title || `Nhiệm vụ Ngày ${dayNum}`,
+      content: d?.content || "",
       isFreePreview: Boolean(isFreePreview),
       tasks:
-        d.tasks && d.tasks.length > 0
+        d?.tasks && d.tasks.length > 0
           ? d.tasks.map((t) => ({
-              id: t.id,
-              title: t.title,
-              isCompleted: false,
-              resourceLinks: t.resourceLinks || [],
-            }))
+            id: t.id,
+            title: t.title,
+            isCompleted: false,
+            resourceLinks: t.resourceLinks || [],
+          }))
           : [],
       keyConcepts:
-        d.keyConcepts && d.keyConcepts.length > 0
+        d?.keyConcepts && d.keyConcepts.length > 0
           ? d.keyConcepts
           : ["Architecture", "Best Practices"],
       mentorTip: "Đọc kỹ yêu cầu trước khi bắt tay vào code.",
       resources: [],
-      status: d.dayNumber === 1 ? ("in_progress" as const) : ("locked" as const),
+      status: dayNum === 1 ? ("in_progress" as const) : ("locked" as const),
     };
   });
 

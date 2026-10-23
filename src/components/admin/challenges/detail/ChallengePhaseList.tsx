@@ -85,22 +85,20 @@ export default function ChallengePhaseList({
             </thead>
             <tbody className="divide-y divide-border">
               {phases.map((phase) => {
-                const phaseDays =
-                  phase.days ||
-                  days?.filter((d) => d.phaseNumber === phase.phaseNumber) ||
-                  [];
-                const daysCount = phaseDays.length;
+                const daysNum =
+                  phase.daysNumber && phase.daysNumber.length > 0
+                    ? phase.daysNumber
+                    : days
+                    ? days.filter((d) => d.phaseNumber === phase.phaseNumber).map((d) => d.dayNumber)
+                    : [];
+                const daysCount = daysNum.length;
 
                 let dayRangeText = "Chưa có ngày";
                 if (phase.startDay && phase.endDay) {
                   dayRangeText = `Ngày ${phase.startDay} - ${phase.endDay}`;
-                } else if (phaseDays.length > 0) {
-                  const sortedDays = [...phaseDays].sort(
-                    (a, b) => a.dayNumber - b.dayNumber
-                  );
-                  dayRangeText = `Ngày ${sortedDays[0].dayNumber} - ${
-                    sortedDays[sortedDays.length - 1].dayNumber
-                  }`;
+                } else if (daysNum.length > 0) {
+                  const sortedDays = [...daysNum].sort((a, b) => a - b);
+                  dayRangeText = `Ngày ${sortedDays[0]} - ${sortedDays[sortedDays.length - 1]}`;
                 }
 
                 return (

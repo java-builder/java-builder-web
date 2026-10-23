@@ -24,11 +24,11 @@ export const useChallengeById = (id: string) => {
   });
 };
 
-export const useChallengeBySlug = (slug: string) => {
+export const useChallengeBySlug = (slug: string, day?: number) => {
   return useQuery({
-    queryKey: ["challenge-slug", slug],
+    queryKey: ["challenge-slug", slug, day],
     queryFn: async () => {
-      const res = await challengeService.getChallengeBySlug(slug);
+      const res = await challengeService.getChallengeBySlug(slug, day);
       return res.data;
     },
     enabled: Boolean(slug),

@@ -35,8 +35,10 @@ export const challengeService = {
     return response.data;
   },
 
-  getChallengeBySlug: async (slug: string) => {
-    const response = await apiClient.get<ApiResponse<ChallengeDetailResponse>>(API.CHALLENGE_BY_SLUG(slug));
+  getChallengeBySlug: async (slug: string, day?: number) => {
+    const response = await apiClient.get<ApiResponse<ChallengeDetailResponse>>(API.CHALLENGE_BY_SLUG(slug), {
+      params: day ? { day } : undefined,
+    });
     return response.data;
   },
 
@@ -73,6 +75,11 @@ export const challengeService = {
 
   getPhasesByChallengeId: async (challengeId: string) => {
     const response = await apiClient.get<ApiResponse<ChallengePhaseResponse[]>>(API.CHALLENGE_PHASES_BY_CHALLENGE(challengeId));
+    return response.data;
+  },
+
+  getPhaseDetailById: async (phaseId: string) => {
+    const response = await apiClient.get<ApiResponse<ChallengePhaseResponse>>(API.CHALLENGE_PHASE_BY_ID(phaseId));
     return response.data;
   },
 

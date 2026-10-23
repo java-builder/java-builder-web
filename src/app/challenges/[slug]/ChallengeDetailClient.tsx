@@ -61,8 +61,12 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
+  const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
+  const [days, setDays] = useState<DayChallenge[]>([]);
+
   const { data: challengeData, isLoading, error } = useChallengeBySlug(
-    initialChallenge ? "" : slug
+    initialChallenge ? "" : slug,
+    selectedDayNumber
   );
 
   const challenge: Challenge | null = useMemo(() => {
@@ -71,8 +75,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return null;
   }, [initialChallenge, challengeData]);
 
-  const [days, setDays] = useState<DayChallenge[]>([]);
-  const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [activePhaseFilter, setActivePhaseFilter] = useState<number | "all">("all");
   const [isUnlockedAll, setIsUnlockedAll] = useState<boolean>(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState<boolean>(false);
@@ -93,10 +95,33 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     data: null,
   });
 
-  // Sync days when challenge loads
+  // Sync days when challenge loads & merge current day details
   useEffect(() => {
     if (challenge) {
-      setDays(challenge.days);
+      setDays((prevDays) => {
+        if (prevDays.length === 0) {
+          return challenge.days;
+        }
+        // Merge cập nhật thông tin bài học từ challenge mới fetch
+        return prevDays.map((d) => {
+          const freshDay = challenge.days.find((cd) => cd.day === d.day);
+          if (freshDay && freshDay.content) {
+            return {
+              ...d,
+              ...freshDay,
+              status: d.status,
+              tasks: freshDay.tasks.map((ft) => {
+                const prevTask = d.tasks.find((pt) => pt.id === ft.id);
+                return {
+                  ...ft,
+                  isCompleted: prevTask ? prevTask.isCompleted : ft.isCompleted,
+                };
+              }),
+            };
+          }
+          return d;
+        });
+      });
     }
   }, [challenge]);
 
@@ -237,7 +262,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       ...challenge.phases.map((p) => ({
         value: p.id,
         label: `${p.badge}: ${p.title}`,
-        description: `${p.dayRange} (${p.weekRange})`,
+        description: p.daysNumber && p.daysNumber.length > 0 ? `${p.daysNumber.length} ngày học` : undefined,
       })),
     ];
   }, [challenge, days.length]);
@@ -248,6 +273,64 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       return activePhaseFilter === "all" || d.phaseId === activePhaseFilter;
     });
   }, [days, activePhaseFilter]);
+
+  const handleSelectDay = useCallback((dayNum: number) => {
+    setSelectedDayNumber(dayNum);
+    if (typeof window !== "undefined") {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set("day", String(dayNum));
+        window.history.replaceState(null, "", url.toString());
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  // Khi chuyển phase filter, gọi API getPhaseDetailById để lấy danh sách ngày của phase và tự động chọn ngày đầu tiên
+  const handlePhaseFilterChange = useCallback(
+    async (newPhaseFilter: number | "all") => {
+      setActivePhaseFilter(newPhaseFilter);
+      if (newPhaseFilter === "all") {
+        if (days.length > 0 && !days.some((d) => d.day === selectedDayNumber)) {
+          handleSelectDay(days[0].day);
+        }
+      } else {
+        const targetPhase = challenge?.phases.find((p) => p.id === newPhaseFilter);
+        if (targetPhase?.phaseId) {
+          try {
+            const res = await challengeService.getPhaseDetailById(targetPhase.phaseId);
+            const phaseDetail = res.data;
+            if (phaseDetail?.daysNumber) {
+              const phaseDaysSet = new Set(phaseDetail.daysNumber);
+              // Gán phaseId cho các ngày thuộc phase này, và bỏ phaseId ở các ngày không thuộc
+              setDays((prevDays) =>
+                prevDays.map((d) => ({
+                  ...d,
+                  phaseId: phaseDaysSet.has(d.day) ? newPhaseFilter : undefined,
+                }))
+              );
+              if (phaseDetail.daysNumber.length > 0) {
+                const firstDay = Math.min(...phaseDetail.daysNumber);
+                handleSelectDay(firstDay);
+              }
+              return;
+            }
+          } catch (err) {
+            console.error("Lỗi khi tải chi tiết giai đoạn:", err);
+          }
+        }
+
+        // Fallback nếu đã có sẵn trong days state
+        const phaseDays = days.filter((d) => d.phaseId === newPhaseFilter);
+        if (phaseDays.length > 0) {
+          const firstDayOfPhase = Math.min(...phaseDays.map((d) => d.day));
+          handleSelectDay(firstDayOfPhase);
+        }
+      }
+    },
+    [challenge?.phases, days, selectedDayNumber, handleSelectDay]
+  );
 
   // Toggle single task & persist to DB immediately
   const handleToggleTask = async (taskId: string) => {
@@ -344,18 +427,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   };
 
-  const handleSelectDay = useCallback((dayNum: number) => {
-    setSelectedDayNumber(dayNum);
-    if (typeof window !== "undefined") {
-      try {
-        const url = new URL(window.location.href);
-        url.searchParams.set("day", String(dayNum));
-        window.history.replaceState(null, "", url.toString());
-      } catch {
-        // ignore
-      }
-    }
-  }, []);
 
   const handleResetProgress = () => {
     if (!challenge) return;
@@ -564,7 +635,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 <ChallengeToolbar
                   challenge={challenge}
                   activePhaseFilter={activePhaseFilter}
-                  setActivePhaseFilter={setActivePhaseFilter}
+                  setActivePhaseFilter={handlePhaseFilterChange}
                   onResetProgress={handleResetProgress}
                   phaseOptions={phaseOptions}
                   filteredCount={filteredDays.length}
@@ -630,7 +701,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               <ChallengeToolbar
                 challenge={challenge}
                 activePhaseFilter={activePhaseFilter}
-                setActivePhaseFilter={setActivePhaseFilter}
+                setActivePhaseFilter={handlePhaseFilterChange}
                 onResetProgress={handleResetProgress}
                 phaseOptions={phaseOptions}
                 filteredCount={filteredDays.length}

@@ -18,7 +18,7 @@ export interface DayChallenge {
   id?: string;
   day: number;
   week: number;
-  phaseId: number;
+  phaseId?: number;
   phaseName: string;
   title: string;
   tagline: string;
@@ -36,12 +36,12 @@ export interface DayChallenge {
 
 export interface PhaseInfo {
   id: number;
+  phaseId?: string;
   title: string;
-  weekRange: string;
-  dayRange: string;
   color: string;
   description: string;
   badge: string;
+  daysNumber?: number[];
 }
 
 export interface Challenge {

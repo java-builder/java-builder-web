@@ -91,9 +91,11 @@ export function ChallengeToolbar({
             <span className="font-semibold text-gray-900 dark:text-white truncate">
               {currentPhase.title}
             </span>
-            <span className="text-muted-foreground shrink-0 hidden sm:inline">
-              • {currentPhase.dayRange} ({currentPhase.weekRange})
-            </span>
+            {currentPhase.daysNumber && currentPhase.daysNumber.length > 0 && (
+              <span className="text-muted-foreground shrink-0 hidden sm:inline">
+                • {currentPhase.daysNumber.length} ngày học
+              </span>
+            )}
           </div>
           <button
             type="button"

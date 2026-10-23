@@ -149,7 +149,7 @@ export interface ChallengePhaseResponse {
   title: string;
   startDay?: number;
   endDay?: number;
-  days?: ChallengeDayResponse[];
+  daysNumber?: number[];
 }
 
 export interface ChallengeResponse {
@@ -172,7 +172,8 @@ export interface ChallengeResponse {
 
 export interface ChallengeDetailResponse extends ChallengeResponse {
   phases: ChallengePhaseResponse[];
-  days: ChallengeDayResponse[];
+  days?: ChallengeDayResponse[];
+  day?: ChallengeDayResponse;
 }
 
 export interface CreateChallengeRequest {
