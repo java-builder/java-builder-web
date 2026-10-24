@@ -268,8 +268,9 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   }, [completedCount, challenge]);
 
   const activeDay = useMemo(() => {
-    return days.find((d) => d.day === selectedDayNumber) || days[0];
-  }, [days, selectedDayNumber]);
+    const list = days.length > 0 ? days : challenge?.days || [];
+    return list.find((d) => d.day === selectedDayNumber) || list[0];
+  }, [days, challenge?.days, selectedDayNumber]);
 
   const phaseOptions: FilterOption<string | number>[] = useMemo(() => {
     if (!challenge) return [];
@@ -692,7 +693,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
 
               {/* 2. Nội dung bài học ngày đang chọn (Trực tiếp trên trang) */}
               <div className="w-full">
-                {isContentLoading ? (
+                {isContentLoading || !activeDay ? (
                   <ChallengeDayDetailSkeleton />
                 ) : isLockedByPaywall ? (
                   <ChallengePaywallCard
@@ -755,7 +756,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
 
             {/* Bottom Workspace: Day Content / Paywall */}
             <div className="w-full">
-              {isContentLoading || (isCheckingEnrollment && currentUser) ? (
+              {isContentLoading || (isCheckingEnrollment && currentUser) || !activeDay ? (
                 <ChallengeDayDetailSkeleton />
               ) : isLockedByPaywall ? (
                 <ChallengePaywallCard

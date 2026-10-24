@@ -5,7 +5,7 @@ import { Challenge, DayChallenge } from "@/app/challenges/types";
 
 interface ChallengePaywallCardProps {
   challenge: Challenge;
-  activeDay: DayChallenge;
+  activeDay?: DayChallenge;
   onUnlockStandalone: () => void;
   onOpenPremiumModal?: () => void;
 }
@@ -30,7 +30,7 @@ export function ChallengePaywallCard({
             Chặn truy cập từ Ngày {(challenge.freePreviewDays ?? 0) + 1}
           </span>
           <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">
-            Mở Khóa Ngày {activeDay.day}: {activeDay.title}
+            {activeDay ? `Mở Khóa Ngày ${activeDay.day}: ${activeDay.title}` : `Mở Khóa Thử Thách`}
           </h2>
           <p className="text-xs text-muted-foreground leading-relaxed">
             Bạn đã hoàn thành {challenge.freePreviewDays ?? 0} ngày trải nghiệm học thử! Hãy lựa chọn hình thức kích hoạt dưới đây để tiếp tục toàn bộ lộ trình {challenge.totalDays} ngày cùng mentor:
@@ -128,11 +128,13 @@ export function ChallengePaywallCard({
       </div>
 
       {/* Teaser Preview of Today's Lesson (Blurred) */}
-      <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 text-left max-w-2xl mx-auto opacity-60 filter blur-[1px] pointer-events-none select-none">
-        <div className="text-xs font-bold text-gray-400">Xem trước nội dung Ngày {activeDay.day}:</div>
-        <div className="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-1">{activeDay.title}</div>
-        <div className="text-xs text-gray-500 mt-1">{activeDay.tagline}</div>
-      </div>
+      {activeDay && (
+        <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 text-left max-w-2xl mx-auto opacity-60 filter blur-[1px] pointer-events-none select-none">
+          <div className="text-xs font-bold text-gray-400">Xem trước nội dung Ngày {activeDay.day}:</div>
+          <div className="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-1">{activeDay.title}</div>
+          <div className="text-xs text-gray-500 mt-1">{activeDay.tagline}</div>
+        </div>
+      )}
     </div>
   );
 }
