@@ -34,6 +34,11 @@ export const usePaymentWebSocket = (courseId?: string) => {
       if (notification.transactionType === 'SUBSCRIPTION') {
         clearInterviewQuestionsCache();
 
+        if (isChallengePage) {
+          window.location.reload();
+          return;
+        }
+
         toast.success('🎉 Đăng ký Premium thành công!', {
           duration: 5000,
           position: 'top-center',
@@ -46,9 +51,7 @@ export const usePaymentWebSocket = (courseId?: string) => {
           },
         });
 
-        if (isChallengePage) {
-          window.location.reload();
-        } else if (isLearningPage) {
+        if (isLearningPage) {
           router.refresh();
         } else {
           setTimeout(() => {
@@ -58,6 +61,11 @@ export const usePaymentWebSocket = (courseId?: string) => {
         }
 
       } else if (notification.transactionType === 'CHALLENGE' || (notification.transactionType === 'PAYIN' && isChallengePage)) {
+        if (isChallengePage) {
+          window.location.reload();
+          return;
+        }
+
         toast.success('🎉 Mở khóa thử thách thành công!', {
           duration: 4000,
           position: 'top-center',

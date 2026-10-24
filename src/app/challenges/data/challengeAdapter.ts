@@ -26,6 +26,7 @@ export function adaptChallengeResponseToUi(res: ChallengeResponse): Challenge {
     freePreviewDays: res.freePreviewDays ?? 0,
     isFree,
     isEnrolled: Boolean(res.isEnrolled),
+    isPremium: Boolean(res.isPremium),
     phases: [],
     days: [],
   };

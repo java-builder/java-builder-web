@@ -63,6 +63,7 @@ export interface Challenge {
   freePreviewDays?: number;
   isFree?: boolean;
   isEnrolled?: boolean;
+  isPremium?: boolean;
   phases: PhaseInfo[];
   days: DayChallenge[];
 }

@@ -163,6 +163,7 @@ export interface ChallengeResponse {
   freePreviewDays: number;
   isFree?: boolean;
   isEnrolled?: boolean;
+  isPremium?: boolean;
   status: ChallengeStatus;
   colorGradient: string;
   category?: CategorySummary;

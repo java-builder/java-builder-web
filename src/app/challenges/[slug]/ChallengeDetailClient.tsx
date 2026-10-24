@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
@@ -35,20 +35,20 @@ interface Props {
 
 export default function ChallengeDetailClient({ challenge: initialChallenge }: Props) {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = (params?.slug as string) || initialChallenge?.slug || "";
+
+  const dayParam = searchParams?.get("day");
+  const initialDayNumber = dayParam ? parseInt(dayParam, 10) : 1;
+  const [selectedDayNumber, setSelectedDayNumber] = useState<number>(
+    !isNaN(initialDayNumber) && initialDayNumber > 0 ? initialDayNumber : 1
+  );
 
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlDay = Number(urlParams.get("day"));
-      if (urlDay && urlDay > 0) {
-        setSelectedDayNumber(urlDay);
-      }
-    }
   }, []);
 
   // Sync with browser back/forward buttons
@@ -64,12 +64,10 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [days, setDays] = useState<DayChallenge[]>([]);
 
   const { data: challengeData, isLoading, isFetching, error } = useChallengeBySlug(
-    initialChallenge ? "" : slug,
-    selectedDayNumber
+    initialChallenge ? "" : slug
   );
 
   const challenge: Challenge | null = useMemo(() => {
@@ -496,6 +494,10 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         const detail = res.data;
         setIsDayForbidden(false);
 
+        if (!activeDay.isFreePreview && !challenge?.isFree) {
+          setIsUnlockedAll(true);
+        }
+
         setDays((prevDays) =>
           prevDays.map((d) => {
             if (d.day === detail.dayNumber) {
@@ -540,7 +542,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return () => {
       isMounted = false;
     };
-  }, [activeDay?.id, activeDay?.content, isUnlockedAll, isEnrolled]);
+  }, [activeDay?.id, activeDay?.content, activeDay?.isFreePreview, challenge?.isFree, isUnlockedAll, isEnrolled]);
 
   const handleUnlockStandalone = async () => {
     if (!challenge) return;
@@ -635,11 +637,18 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     );
   }
 
-  const isUserAdminOrPremium = (currentUser?.authorities || []).some(
-    (role) => role === "ADMIN" || role.toUpperCase().includes("PREMIUM")
-  );
+  const isUserAdminOrPremium =
+    Boolean(challenge?.isPremium) ||
+    Boolean(challengeData?.isPremium) ||
+    (currentUser?.authorities || []).some(
+      (role) => role === "ADMIN" || role.toUpperCase().includes("PREMIUM")
+    );
 
-  const hasFullAccess = isEnrolled || isUserAdminOrPremium || Boolean(challenge.isFree);
+  const hasFullAccess =
+    isEnrolled ||
+    isUserAdminOrPremium ||
+    isUnlockedAll ||
+    Boolean(challenge.isFree);
 
   const isActiveDayFree =
     Boolean(challenge.isFree) || Boolean(activeDay?.isFreePreview);
@@ -691,9 +700,9 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                   totalDays={challenge.totalDays}
                   selectedDayNumber={selectedDayNumber}
                   onSelectDay={handleSelectDay}
-                  isUnlockedAll={isUnlockedAll}
+                  isUnlockedAll={hasFullAccess || isUnlockedAll}
                   isChallengeFree={challenge.isFree}
-                  isEnrolled={false}
+                  isEnrolled={hasFullAccess || isEnrolled}
                   isLoading={isPhaseChanging}
                 />
               </div>
@@ -754,9 +763,9 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 totalDays={challenge.totalDays}
                 selectedDayNumber={selectedDayNumber}
                 onSelectDay={handleSelectDay}
-                isUnlockedAll={isUnlockedAll}
+                isUnlockedAll={hasFullAccess || isUnlockedAll}
                 isChallengeFree={challenge.isFree}
-                isEnrolled={isEnrolled}
+                isEnrolled={hasFullAccess || isEnrolled}
                 isLoading={isPhaseChanging}
               />
             </div>
