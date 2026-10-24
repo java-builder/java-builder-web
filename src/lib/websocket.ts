@@ -3,7 +3,7 @@ import { Client } from '@stomp/stompjs';
 export interface PaymentSuccessNotification {
   orderCode: number;
   totalPrice: number;
-  transactionType: 'PAYIN' | 'PAYOUT' | 'SUBSCRIPTION';
+  transactionType: 'PAYIN' | 'PAYOUT' | 'SUBSCRIPTION' | 'CHALLENGE';
   paymentStatus: string;
   redirectUrl: string;
   paidAt: string;

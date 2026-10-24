@@ -23,7 +23,9 @@ export const usePaymentWebSocket = (courseId?: string) => {
         window.dispatchEvent(new CustomEvent('payment:success', { detail: notification }));
       }
 
+      const isChallengePage = pathname?.startsWith('/challenges');
       const isLearningPage =
+        isChallengePage ||
         pathname?.startsWith('/docs') ||
         pathname?.startsWith('/learn') ||
         pathname?.startsWith('/courses') ||
@@ -44,7 +46,9 @@ export const usePaymentWebSocket = (courseId?: string) => {
           },
         });
 
-        if (isLearningPage) {
+        if (isChallengePage) {
+          window.location.reload();
+        } else if (isLearningPage) {
           router.refresh();
         } else {
           setTimeout(() => {
@@ -52,6 +56,14 @@ export const usePaymentWebSocket = (courseId?: string) => {
             router.refresh();
           }, 1500);
         }
+
+      } else if (notification.transactionType === 'CHALLENGE' || (notification.transactionType === 'PAYIN' && isChallengePage)) {
+        toast.success('🎉 Mở khóa thử thách thành công!', {
+          duration: 4000,
+          position: 'top-center',
+        });
+
+        window.location.reload();
 
       } else if (notification.transactionType === 'PAYIN') {
         toast.success('🎉 Thanh toán khóa học thành công!', {

@@ -10,6 +10,7 @@ import { Challenge, DayChallenge } from "../types";
 import { adaptChallengeDetailResponseToUi } from "../data/challengeAdapter";
 import { useChallengeBySlug } from "@/hooks/useChallenges";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import { challengeService } from "@/services/challenge.service";
 import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
@@ -76,6 +77,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     if (challengeData) return adaptChallengeDetailResponseToUi(challengeData);
     return null;
   }, [initialChallenge, challengeData]);
+
+  usePaymentWebSocket(challenge?.id);
 
   const [activePhaseFilter, setActivePhaseFilter] = useState<number | "all">("all");
   const [isPhaseChanging, setIsPhaseChanging] = useState<boolean>(false);
