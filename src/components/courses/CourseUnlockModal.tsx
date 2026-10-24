@@ -153,12 +153,12 @@ export default function CourseUnlockModal({
       {/* Modal Container */}
       <div className="flex min-h-full items-center justify-center p-3 sm:p-4 text-center">
         <div 
-          className={`relative w-full ${view === "PAYMENT" ? "max-w-lg" : "max-w-2xl"} max-h-[94vh] flex flex-col transform overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-850 text-left shadow-2xl transition-all border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-200`}
+          className={`relative w-full ${view === "PAYMENT" ? "max-w-lg" : "max-w-2xl"} max-h-[94vh] flex flex-col transform overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-200`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header for PAYMENT View (Identical to original PaymentModal style) */}
           {view === "PAYMENT" ? (
-            <div className="px-6 py-4 sm:py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-850">
+            <div className="px-6 py-4 sm:py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
@@ -439,7 +439,7 @@ export default function CourseUnlockModal({
                         className={`relative bg-card text-card-foreground border rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-300 ${
                           isPopular
                             ? "border-accent ring-1 ring-accent/20 bg-accent/[0.03] dark:bg-accent/[0.06] shadow-md scale-[1.01]"
-                            : "border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-850 hover:border-accent/40"
+                            : "border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900 hover:border-accent/40"
                         }`}
                       >
                         {isPopular && (

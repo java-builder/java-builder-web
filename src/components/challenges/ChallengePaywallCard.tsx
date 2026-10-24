@@ -41,7 +41,7 @@ export function ChallengePaywallCard({
       {/* 2 Activation Options */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
         {/* OPTION 1: ALL-ACCESS PREMIUM (Recommended) */}
-        <div className="relative rounded-xl border-2 border-accent bg-white dark:bg-slate-850 p-5 shadow-md flex flex-col justify-between space-y-4">
+        <div className="relative rounded-xl border-2 border-accent bg-white dark:bg-slate-900 p-5 shadow-md flex flex-col justify-between space-y-4">
           <span className="absolute -top-3 left-4 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
             ⭐ KHUYÊN DÙNG • TIẾT KIỆM NHẤT
           </span>

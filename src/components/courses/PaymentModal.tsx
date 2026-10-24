@@ -26,9 +26,9 @@ export default function PaymentModal({
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={() => !isLoading && onClose()}
       />
-      <div className="relative bg-white dark:bg-slate-850 border border-gray-100 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-850">
+        <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">

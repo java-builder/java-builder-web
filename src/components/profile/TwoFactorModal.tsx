@@ -99,7 +99,7 @@ export default function TwoFactorModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/50">
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-gray-200 dark:border-slate-800 animate-in fade-in-0 zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-850">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-gray-900 dark:text-white">
               {t("profilePage.twoFactorModal.modalTitle")}
@@ -263,7 +263,7 @@ export default function TwoFactorModal({
                   </div>
                 )}
 
-                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-gray-100 dark:border-slate-850">
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-gray-100 dark:border-slate-800">
                   <button
                     onClick={handleClose}
                     className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-350 bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-755 border border-gray-200 dark:border-slate-750 rounded-lg transition-colors cursor-pointer"

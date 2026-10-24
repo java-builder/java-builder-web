@@ -87,7 +87,7 @@ export function ChallengePurchaseSidebar({
         </div>
 
         {/* 2. Included Features List */}
-        <div className="p-5 sm:p-6 space-y-3.5 bg-gray-50/50 dark:bg-slate-850/30">
+        <div className="p-5 sm:p-6 space-y-3.5 bg-gray-50/60 dark:bg-slate-900/60 border-t border-gray-100 dark:border-slate-800">
           <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             Quyền lợi khi tham gia thử thách:
           </h4>

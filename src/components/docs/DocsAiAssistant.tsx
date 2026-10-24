@@ -295,7 +295,7 @@ export default function DocsAiAssistant({
                 }`}
             >
               {msg.role === "assistant" && (
-                <div className="w-7 h-7 rounded-lg bg-accent/10 dark:bg-slate-850 flex items-center justify-center flex-shrink-0 mt-1 border border-accent/20 dark:border-slate-700/50">
+                <div className="w-7 h-7 rounded-lg bg-accent/10 dark:bg-slate-900 flex items-center justify-center flex-shrink-0 mt-1 border border-accent/20 dark:border-slate-700/50">
                   <Bot className="w-4 h-4 text-accent" />
                 </div>
               )}

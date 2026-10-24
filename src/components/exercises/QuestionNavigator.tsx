@@ -55,9 +55,9 @@ export default function QuestionNavigator({
   return (
     <div className="bg-white dark:bg-slate-800/40 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800/80 p-4 sticky top-4">
       {/* Header with Exit button */}
-      <div className="flex items-start justify-between mb-3 pb-3 border-b border-gray-200 dark:border-slate-850">
+      <div className="flex items-start justify-between mb-3 pb-3 border-b border-gray-200 dark:border-slate-800">
         <div className="flex-1 min-w-0">
-          <h2 className="text-base font-bold text-slate-850 dark:text-slate-100 mb-2 line-clamp-2">{title}</h2>
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-2 line-clamp-2">{title}</h2>
           <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getDifficultyColor(difficulty)}`}>
             {getDifficultyLabel(difficulty)}
           </span>
@@ -82,7 +82,7 @@ export default function QuestionNavigator({
       </div>
 
       {/* Question List Title */}
-      <h3 className="text-sm font-bold text-slate-850 dark:text-slate-100 mb-3">Danh sách câu hỏi</h3>
+      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-3">Danh sách câu hỏi</h3>
       
       <div className="grid grid-cols-5 gap-2 mb-4">
         {Array.from({ length: totalQuestions }, (_, index) => {

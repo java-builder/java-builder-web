@@ -183,7 +183,7 @@ export default function Home() {
             {isLoadingCourses && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-850 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
                     <div className="aspect-video bg-muted rounded-xl w-full" />
                     <div className="h-5 bg-muted rounded w-2/3" />
                     <div className="space-y-2">
@@ -448,7 +448,7 @@ export default function Home() {
             {isLoadingDocuments && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-850 rounded-2xl p-6 space-y-4 animate-pulse">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 animate-pulse">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-muted" />
                       <div className="h-5 bg-muted rounded w-1/2" />

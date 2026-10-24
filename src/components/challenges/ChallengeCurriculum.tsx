@@ -119,7 +119,7 @@ export function ChallengeCurriculum({
                             ? "bg-accent/10 dark:bg-accent/15 border-l-2 border-l-accent"
                             : isFreeDay
                             ? "hover:bg-accent/5 dark:hover:bg-accent/10"
-                            : "hover:bg-gray-50 dark:hover:bg-slate-850/40"
+                            : "hover:bg-gray-50 dark:hover:bg-slate-800/50"
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">

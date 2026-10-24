@@ -31,10 +31,10 @@ export default function QuestionCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-2 mb-1">
-            <div className="flex-1 min-w-0 text-slate-850 dark:text-slate-100">
+            <div className="flex-1 min-w-0 text-slate-900 dark:text-slate-100">
               <PublicMarkdownRenderer
                 content={question.content}
-                className="prose-sm sm:prose max-w-none text-slate-850 dark:text-slate-100 font-bold [&>p]:my-1"
+                className="prose-sm sm:prose max-w-none text-slate-900 dark:text-slate-100 font-bold [&>p]:my-1"
               />
             </div>
             <span className="flex-shrink-0 px-2 py-0.5 bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent-400 text-xs font-semibold rounded-md border border-accent/10">

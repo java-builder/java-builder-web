@@ -99,7 +99,7 @@ export function ChallengeJoinSection({
       {/* 2. Locked Content Teaser */}
       {previewDay && (
         <div className="p-4 sm:p-5">
-          <div className="rounded-lg border border-dashed border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-850 p-3.5 space-y-2">
+          <div className="rounded-lg border border-dashed border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-900/60 p-3.5 space-y-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
