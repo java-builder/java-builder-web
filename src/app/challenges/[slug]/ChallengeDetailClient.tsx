@@ -633,10 +633,13 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
 
   const hasFullAccess = isEnrolled || isUserAdminOrPremium || Boolean(challenge.isFree);
 
+  const isActiveDayFree =
+    Boolean(challenge.isFree) || Boolean(activeDay?.isFreePreview);
+
   const isLockedByPaywall =
     !hasFullAccess &&
     !isUnlockedAll &&
-    (isDayForbidden || (!activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays ?? 0)));
+    (isDayForbidden || !isActiveDayFree);
 
   const isContentLoading =
     isPhaseChanging ||
@@ -678,7 +681,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 <ChallengeDaysGrid
                   days={filteredDays}
                   totalDays={challenge.totalDays}
-                  freePreviewDays={challenge.freePreviewDays}
                   selectedDayNumber={selectedDayNumber}
                   onSelectDay={handleSelectDay}
                   isUnlockedAll={isUnlockedAll}
@@ -742,7 +744,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               <ChallengeDaysGrid
                 days={filteredDays}
                 totalDays={challenge.totalDays}
-                freePreviewDays={challenge.freePreviewDays}
                 selectedDayNumber={selectedDayNumber}
                 onSelectDay={handleSelectDay}
                 isUnlockedAll={isUnlockedAll}

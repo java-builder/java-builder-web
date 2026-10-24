@@ -82,12 +82,7 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
       const week = Math.floor((dayNum - 1) / 7) + 1;
       const isFreePreview =
         base.isFree ||
-        Boolean(
-          summary.isFreePreview ??
-          d?.freePreview ??
-          d?.isFreePreview ??
-          (res.freePreviewDays != null && res.freePreviewDays > 0 && dayNum <= res.freePreviewDays)
-        );
+        Boolean(summary.isFreePreview ?? d?.freePreview ?? d?.isFreePreview);
 
       return {
         id: summary.id || d?.id,
@@ -144,11 +139,7 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
       const week = Math.floor((dayNum - 1) / 7) + 1;
       const isFreePreview =
         base.isFree ||
-        Boolean(
-          d?.freePreview ??
-          d?.isFreePreview ??
-          (res.freePreviewDays != null && res.freePreviewDays > 0 && dayNum <= res.freePreviewDays)
-        );
+        Boolean(d?.freePreview ?? d?.isFreePreview);
 
       return {
         id: d?.id,

@@ -105,10 +105,7 @@ export function ChallengeCurriculum({
               {isExpanded && (
                 <div className="divide-y divide-gray-100 dark:divide-slate-800/80">
                   {phaseDays.map((day) => {
-                    const isFreeDay =
-                      challenge.isFree ||
-                      Boolean(day.isFreePreview) ||
-                      ((challenge.freePreviewDays ?? 0) > 0 && day.day <= (challenge.freePreviewDays ?? 0));
+                    const isFreeDay = challenge.isFree || Boolean(day.isFreePreview);
                     const isLocked = !challenge.isFree && !isUnlockedAll && !isFreeDay;
 
                     const isSelected = day.day === selectedDayNumber;

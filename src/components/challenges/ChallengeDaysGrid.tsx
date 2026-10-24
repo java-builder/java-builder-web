@@ -6,7 +6,6 @@ import { DayChallenge } from "@/app/challenges/types";
 interface ChallengeDaysGridProps {
   days: DayChallenge[];
   totalDays?: number;
-  freePreviewDays?: number;
   selectedDayNumber: number;
   onSelectDay: (dayNumber: number) => void;
   isUnlockedAll: boolean;
@@ -17,7 +16,6 @@ interface ChallengeDaysGridProps {
 
 export function ChallengeDaysGrid({
   days,
-  freePreviewDays = 0,
   selectedDayNumber,
   onSelectDay,
   isUnlockedAll,
@@ -57,7 +55,7 @@ export function ChallengeDaysGrid({
           const isSelected = d.day === selectedDayNumber;
           const isCompleted = d.status === "completed";
           const isInProgress = d.status === "in_progress";
-          const isFreeDay = isChallengeFree || Boolean(d.isFreePreview) || (freePreviewDays > 0 && d.day <= freePreviewDays);
+          const isFreeDay = isChallengeFree || Boolean(d.isFreePreview);
           const isLockedByPaywall = !isChallengeFree && !isUnlockedAll && !isFreeDay;
 
           let buttonClass =
