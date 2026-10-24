@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { challengeService } from "@/services/challenge.service";
 import { ChallengeStatus } from "@/types/challenge";
 
@@ -32,6 +32,8 @@ export const useChallengeBySlug = (slug: string, day?: number) => {
       return res.data;
     },
     enabled: Boolean(slug),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000,
   });
 };
 

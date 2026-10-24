@@ -157,21 +157,21 @@ export default function TaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-card border border-border w-full max-w-2xl rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-accent/10 text-accent">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border bg-muted/30 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2 rounded-lg bg-accent/10 text-accent shrink-0">
               <CheckSquare className="h-5 w-5" />
             </div>
-            <div>
-              <h2 className="text-base font-bold text-foreground">
+            <div className="min-w-0">
+              <h2 className="text-sm sm:text-base font-bold text-foreground truncate">
                 {isEdit
                   ? `Chỉnh sửa bài tập Ngày ${dayNumber}`
                   : `Thêm bài tập mới cho Ngày ${dayNumber}`}
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
                 Nhiệm vụ hoặc bài tập thực hành học viên cần hoàn thành
               </p>
             </div>
@@ -179,14 +179,14 @@ export default function TaskModal({
           <button
             onClick={onClose}
             type="button"
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0 ml-2"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
               Tiêu đề bài tập / nhiệm vụ <span className="text-destructive">*</span>

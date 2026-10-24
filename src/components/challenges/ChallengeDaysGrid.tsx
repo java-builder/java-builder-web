@@ -12,6 +12,7 @@ interface ChallengeDaysGridProps {
   isUnlockedAll: boolean;
   isChallengeFree?: boolean;
   isEnrolled?: boolean;
+  isLoading?: boolean;
 }
 
 export function ChallengeDaysGrid({
@@ -21,7 +22,26 @@ export function ChallengeDaysGrid({
   onSelectDay,
   isUnlockedAll,
   isChallengeFree = false,
+  isLoading = false,
 }: ChallengeDaysGridProps) {
+  if (isLoading) {
+    return (
+      <div className="p-4 sm:p-5 rounded-b-xl animate-pulse">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          {Array.from({ length: 14 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="w-14 sm:w-16 h-12 sm:h-13 shrink-0 rounded-lg border border-gray-200/80 bg-gray-100/70 dark:border-slate-800 dark:bg-slate-800/50 flex flex-col items-center justify-center gap-1.5"
+            >
+              <div className="h-2.5 w-6 rounded bg-gray-200 dark:bg-slate-700" />
+              <div className="h-3 w-3 rounded-full bg-gray-200 dark:bg-slate-700" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (days.length === 0) {
     return (
       <div className="p-8 text-center text-xs text-muted-foreground">

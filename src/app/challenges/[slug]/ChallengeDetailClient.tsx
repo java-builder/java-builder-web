@@ -20,6 +20,8 @@ import {
   ChallengeToolbar,
   ChallengeDaysGrid,
   ChallengeDayDetail,
+  ChallengeDayDetailSkeleton,
+  ChallengePageSkeleton,
   ChallengePaywallCard,
   ChallengeSideDrawer,
   ChallengePurchaseSidebar,
@@ -64,7 +66,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [days, setDays] = useState<DayChallenge[]>([]);
 
-  const { data: challengeData, isLoading, error } = useChallengeBySlug(
+  const { data: challengeData, isLoading, isFetching, error } = useChallengeBySlug(
     initialChallenge ? "" : slug,
     selectedDayNumber
   );
@@ -76,6 +78,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   }, [initialChallenge, challengeData]);
 
   const [activePhaseFilter, setActivePhaseFilter] = useState<number | "all">("all");
+  const [isPhaseChanging, setIsPhaseChanging] = useState<boolean>(false);
   const [isUnlockedAll, setIsUnlockedAll] = useState<boolean>(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState<boolean>(false);
   const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
@@ -99,8 +102,24 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   useEffect(() => {
     if (challenge) {
       setDays((prevDays) => {
-        if (prevDays.length === 0) {
-          return challenge.days;
+        if (prevDays.length === 0 || prevDays.length !== challenge.days.length) {
+          const prevMap = new Map(prevDays.map((d) => [d.day, d]));
+          return challenge.days.map((cd) => {
+            const prev = prevMap.get(cd.day);
+            if (!prev) return cd;
+            return {
+              ...cd,
+              content: cd.content || prev.content,
+              status: prev.status,
+              tasks: cd.tasks.map((ft) => {
+                const prevTask = prev.tasks.find((pt) => pt.id === ft.id);
+                return {
+                  ...ft,
+                  isCompleted: prevTask ? prevTask.isCompleted : ft.isCompleted,
+                };
+              }),
+            };
+          });
         }
         // Merge cập nhật thông tin bài học từ challenge mới fetch
         return prevDays.map((d) => {
@@ -109,6 +128,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             return {
               ...d,
               ...freshDay,
+              phaseId: d.phaseId ?? freshDay.phaseId,
               status: d.status,
               tasks: freshDay.tasks.map((ft) => {
                 const prevTask = d.tasks.find((pt) => pt.id === ft.id);
@@ -287,49 +307,62 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   }, []);
 
-  // Khi chuyển phase filter, gọi API getPhaseDetailById để lấy danh sách ngày của phase và tự động chọn ngày đầu tiên
+  // Khi chuyển phase filter, lấy danh sách ngày của phase và tự động chọn ngày đầu tiên với skeleton mượt mà
   const handlePhaseFilterChange = useCallback(
     async (newPhaseFilter: number | "all") => {
+      if (newPhaseFilter === activePhaseFilter) return;
+
+      setIsPhaseChanging(true);
       setActivePhaseFilter(newPhaseFilter);
-      if (newPhaseFilter === "all") {
-        if (days.length > 0 && !days.some((d) => d.day === selectedDayNumber)) {
-          handleSelectDay(days[0].day);
-        }
-      } else {
-        const targetPhase = challenge?.phases.find((p) => p.id === newPhaseFilter);
-        if (targetPhase?.phaseId) {
-          try {
-            const res = await challengeService.getPhaseDetailById(targetPhase.phaseId);
-            const phaseDetail = res.data;
-            if (phaseDetail?.daysNumber) {
-              const phaseDaysSet = new Set(phaseDetail.daysNumber);
-              // Gán phaseId cho các ngày thuộc phase này, và bỏ phaseId ở các ngày không thuộc
-              setDays((prevDays) =>
-                prevDays.map((d) => ({
-                  ...d,
-                  phaseId: phaseDaysSet.has(d.day) ? newPhaseFilter : undefined,
-                }))
-              );
-              if (phaseDetail.daysNumber.length > 0) {
-                const firstDay = Math.min(...phaseDetail.daysNumber);
-                handleSelectDay(firstDay);
+
+      try {
+        if (newPhaseFilter === "all") {
+          if (days.length > 0 && !days.some((d) => d.day === selectedDayNumber)) {
+            handleSelectDay(days[0].day);
+          }
+        } else {
+          const targetPhase = challenge?.phases.find((p) => p.id === newPhaseFilter);
+          let phaseDaysNumbers: number[] = targetPhase?.daysNumber || [];
+
+          if (targetPhase?.phaseId && phaseDaysNumbers.length === 0) {
+            try {
+              const res = await challengeService.getPhaseDetailById(targetPhase.phaseId);
+              const phaseDetail = res.data;
+              if (phaseDetail?.daysNumber && phaseDetail.daysNumber.length > 0) {
+                phaseDaysNumbers = phaseDetail.daysNumber;
+                targetPhase.daysNumber = phaseDetail.daysNumber;
               }
-              return;
+            } catch (err) {
+              console.error("Lỗi khi tải chi tiết giai đoạn:", err);
             }
-          } catch (err) {
-            console.error("Lỗi khi tải chi tiết giai đoạn:", err);
+          }
+
+          if (phaseDaysNumbers.length > 0) {
+            const phaseDaysSet = new Set(phaseDaysNumbers);
+            setDays((prevDays) =>
+              prevDays.map((d) => ({
+                ...d,
+                phaseId: phaseDaysSet.has(d.day) ? newPhaseFilter : d.phaseId,
+              }))
+            );
+            const firstDay = Math.min(...phaseDaysNumbers);
+            handleSelectDay(firstDay);
+          } else {
+            // Fallback nếu đã có sẵn trong days state
+            const phaseDays = days.filter((d) => d.phaseId === newPhaseFilter);
+            if (phaseDays.length > 0) {
+              const firstDayOfPhase = Math.min(...phaseDays.map((d) => d.day));
+              handleSelectDay(firstDayOfPhase);
+            }
           }
         }
-
-        // Fallback nếu đã có sẵn trong days state
-        const phaseDays = days.filter((d) => d.phaseId === newPhaseFilter);
-        if (phaseDays.length > 0) {
-          const firstDayOfPhase = Math.min(...phaseDays.map((d) => d.day));
-          handleSelectDay(firstDayOfPhase);
-        }
+      } finally {
+        setTimeout(() => {
+          setIsPhaseChanging(false);
+        }, 120);
       }
     },
-    [challenge?.phases, days, selectedDayNumber, handleSelectDay]
+    [activePhaseFilter, challenge?.phases, days, selectedDayNumber, handleSelectDay]
   );
 
   // Toggle single task & persist to DB immediately
@@ -445,6 +478,10 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   // Fetch full day details by ID with authorization check on demand (for both free preview & enrolled users)
   useEffect(() => {
     if (!activeDay?.id) return;
+    if (activeDay.content) {
+      setIsDayForbidden(false);
+      return;
+    }
     let isMounted = true;
     setIsDayDetailLoading(true);
 
@@ -499,7 +536,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     return () => {
       isMounted = false;
     };
-  }, [activeDay?.id, isUnlockedAll, isEnrolled]);
+  }, [activeDay?.id, activeDay?.content, isUnlockedAll, isEnrolled]);
 
   const handleUnlockStandalone = async () => {
     if (!challenge) return;
@@ -568,18 +605,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     handleUnlockStandalone();
   };
 
-  if (!mounted || isUserLoading || isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50/50 dark:bg-slate-900 p-8 animate-pulse space-y-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="h-48 bg-gray-200 dark:bg-slate-800 rounded-xl" />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-5 h-96 bg-gray-200 dark:bg-slate-800 rounded-xl" />
-            <div className="lg:col-span-7 h-96 bg-gray-200 dark:bg-slate-800 rounded-xl" />
-          </div>
-        </div>
-      </div>
-    );
+  if (!mounted || isUserLoading || (isLoading && !challenge)) {
+    return <ChallengePageSkeleton />;
   }
 
   if (!challenge || error) {
@@ -611,6 +638,11 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     !isUnlockedAll &&
     (isDayForbidden || (!activeDay?.isFreePreview && selectedDayNumber > (challenge.freePreviewDays ?? 0)));
 
+  const isContentLoading =
+    isPhaseChanging ||
+    isDayDetailLoading ||
+    (isFetching && (!activeDay || !activeDay.content));
+
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
       {/* 1. Header (Breadcrumb, Hero, Progress or CTA) */}
@@ -640,6 +672,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                   phaseOptions={phaseOptions}
                   filteredCount={filteredDays.length}
                   isEnrolled={false}
+                  isLoading={isPhaseChanging}
                 />
 
                 <ChallengeDaysGrid
@@ -651,17 +684,14 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                   isUnlockedAll={isUnlockedAll}
                   isChallengeFree={challenge.isFree}
                   isEnrolled={false}
+                  isLoading={isPhaseChanging}
                 />
               </div>
 
               {/* 2. Nội dung bài học ngày đang chọn (Trực tiếp trên trang) */}
               <div className="w-full">
-                {isDayDetailLoading ? (
-                  <div className="rounded-xl border border-gray-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900 animate-pulse space-y-4">
-                    <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded-lg w-1/4" />
-                    <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded-lg w-3/4" />
-                    <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
-                  </div>
+                {isContentLoading ? (
+                  <ChallengeDayDetailSkeleton />
                 ) : isLockedByPaywall ? (
                   <ChallengePaywallCard
                     challenge={challenge}
@@ -706,6 +736,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 phaseOptions={phaseOptions}
                 filteredCount={filteredDays.length}
                 isEnrolled={isEnrolled}
+                isLoading={isPhaseChanging}
               />
 
               <ChallengeDaysGrid
@@ -717,17 +748,14 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 isUnlockedAll={isUnlockedAll}
                 isChallengeFree={challenge.isFree}
                 isEnrolled={isEnrolled}
+                isLoading={isPhaseChanging}
               />
             </div>
 
             {/* Bottom Workspace: Day Content / Paywall */}
             <div className="w-full">
-              {isCheckingEnrollment && currentUser ? (
-                <div className="rounded-xl border border-gray-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900 animate-pulse space-y-4">
-                  <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded-lg w-1/3" />
-                  <div className="h-20 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
-                  <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded-lg w-full" />
-                </div>
+              {isContentLoading || (isCheckingEnrollment && currentUser) ? (
+                <ChallengeDayDetailSkeleton />
               ) : isLockedByPaywall ? (
                 <ChallengePaywallCard
                   challenge={challenge}

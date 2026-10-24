@@ -170,10 +170,18 @@ export interface ChallengeResponse {
   updatedAt?: string;
 }
 
+export interface ChallengeDaySummary {
+  id: string;
+  dayNumber: number;
+  isFreePreview?: boolean;
+  phaseId?: string;
+}
+
 export interface ChallengeDetailResponse extends ChallengeResponse {
   phases: ChallengePhaseResponse[];
   days?: ChallengeDayResponse[];
   day?: ChallengeDayResponse;
+  challengeDaysSummaries?: ChallengeDaySummary[];
 }
 
 export interface CreateChallengeRequest {

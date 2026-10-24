@@ -8,4 +8,7 @@ export * from "./ChallengeSideDrawer";
 export * from "./ChallengeJoinSection";
 export * from "./ChallengeCurriculum";
 export * from "./ChallengePurchaseSidebar";
+export * from "./ChallengeDayDetailSkeleton";
+export * from "./ChallengePageSkeleton";
 export { default as PremiumUpgradeModal } from "./PremiumUpgradeModal";
+

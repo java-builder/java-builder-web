@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import {
   X,
   Loader2,
@@ -29,6 +27,8 @@ import {
 } from "@/types/challenge";
 import { challengeService } from "@/services/challenge.service";
 import { useI18n, TranslationKey } from "@/contexts/I18nContext";
+
+const MemoizedMarkdownEditor = memo(MarkdownEditor);
 
 interface TaskDraft {
   title: string;
@@ -70,6 +70,7 @@ export default function DayModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const handleContentChange = useCallback((val: string) => setContent(val), []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -305,19 +306,19 @@ export default function DayModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-card border border-border w-full max-w-4xl rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30 shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border bg-muted/30 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-lg bg-accent/10 text-accent">
               <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-foreground">
+              <h2 className="text-sm sm:text-base font-bold text-foreground">
                 {isEdit ? `Chỉnh sửa Ngày ${dayNumber}` : "Thêm ngày thử thách mới"}
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[11px] sm:text-xs text-muted-foreground">
                 Thiết lập lộ trình học và bài tập thực hành theo từng ngày
               </p>
             </div>
@@ -332,7 +333,7 @@ export default function DayModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           {/* Day number & Phase */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -419,9 +420,9 @@ export default function DayModal({
                 </span>
               )}
             </div>
-            <MarkdownEditor
+            <MemoizedMarkdownEditor
               value={content}
-              onChange={(val) => setContent(val)}
+              onChange={handleContentChange}
               placeholder="Nhập nội dung lý thuyết, hướng dẫn từng bước, code mẫu bằng cú pháp Markdown..."
               height={320}
               readOnly={isLoadingDetail}
@@ -559,9 +560,9 @@ export default function DayModal({
                             key={lIdx}
                             className="space-y-1.5"
                           >
-                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2">
                               {/* Type CustomSelect */}
-                              <div className="w-full sm:w-[190px] shrink-0">
+                              <div className="w-full md:w-44 shrink-0">
                                 <CustomSelect
                                   size="sm"
                                   triggerClassName="h-8 text-xs font-semibold"
@@ -580,7 +581,7 @@ export default function DayModal({
                               </div>
 
                               {/* Title CustomSelect */}
-                              <div className="w-full sm:w-[230px] shrink-0">
+                              <div className="w-full md:w-52 shrink-0">
                                 <CustomSelect
                                   size="sm"
                                   triggerClassName="h-8 text-xs"
@@ -604,8 +605,8 @@ export default function DayModal({
                                 />
                               </div>
 
-                              {/* URL Input */}
-                              <div className="flex-1 min-w-[180px]">
+                              {/* URL Input & Delete */}
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
                                 <input
                                   type="url"
                                   value={link.url}
@@ -613,16 +614,12 @@ export default function DayModal({
                                     handleUpdateTaskLink(idx, lIdx, "url", e.target.value)
                                   }
                                   placeholder="https://..."
-                                  className="w-full h-8 rounded-md border border-input bg-background/50 px-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 font-mono shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                  className="w-full min-w-0 h-8 rounded-md border border-input bg-background/50 px-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 font-mono shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                                 />
-                              </div>
-
-                              {/* Delete Link Button */}
-                              <div className="shrink-0 flex items-center">
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveTaskLink(idx, lIdx)}
-                                  className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition cursor-pointer"
+                                  className="h-8 w-8 shrink-0 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition cursor-pointer"
                                   title={t("taskResourceLinks.ui.deleteTitle" as TranslationKey)}
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />

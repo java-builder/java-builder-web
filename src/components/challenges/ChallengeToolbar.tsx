@@ -12,6 +12,7 @@ interface ChallengeToolbarProps {
   phaseOptions: FilterOption<string | number>[];
   filteredCount?: number;
   isEnrolled?: boolean;
+  isLoading?: boolean;
 }
 
 export function ChallengeToolbar({
@@ -22,6 +23,7 @@ export function ChallengeToolbar({
   phaseOptions,
   filteredCount,
   isEnrolled = false,
+  isLoading = false,
 }: ChallengeToolbarProps) {
   const currentPhase =
     activePhaseFilter !== "all"
@@ -42,7 +44,11 @@ export function ChallengeToolbar({
                 Lộ trình ngày học
               </h2>
               <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200/60 dark:border-slate-700 whitespace-nowrap">
-                {filteredCount ?? challenge.days.length} ngày đã phát hành
+                {isLoading ? (
+                  <span className="inline-block w-14 h-3 bg-gray-300/80 dark:bg-slate-600 rounded animate-pulse" />
+                ) : (
+                  `${filteredCount ?? challenge.days.length} ngày đã phát hành`
+                )}
               </span>
             </div>
           </div>
