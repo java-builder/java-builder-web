@@ -60,20 +60,35 @@ export function ChallengeDaysGrid({
           const isLockedByPaywall = !isUnlocked;
 
           let buttonClass = "";
+          let textClass = "";
+          let iconColor = "";
 
           if (isSelected) {
             buttonClass =
-              "bg-accent/10 border-accent text-accent font-bold ring-2 ring-accent ring-offset-2 ring-offset-white dark:bg-accent/20 dark:border-accent dark:text-accent dark:ring-accent dark:ring-offset-slate-900 shadow-sm scale-105 z-10";
+              "bg-accent border-accent text-white shadow-md scale-105 z-10 ring-2 ring-accent/40 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 font-extrabold";
+            textClass = "text-white font-black";
+            iconColor = "text-white";
           } else if (isCompleted) {
             buttonClass =
-              "bg-emerald-50/80 border-emerald-300/80 text-emerald-700 dark:bg-emerald-950/30 dark:border-emerald-800/60 dark:text-emerald-300 hover:border-emerald-400 dark:hover:border-emerald-700 font-semibold";
+              "bg-emerald-50 border-emerald-300/90 text-emerald-800 hover:bg-emerald-100/80 dark:bg-emerald-950/40 dark:border-emerald-700/70 dark:text-emerald-200 dark:hover:bg-emerald-950/60 shadow-2xs font-bold";
+            textClass = "text-emerald-700 dark:text-emerald-300 font-bold";
+            iconColor = "text-emerald-600 dark:text-emerald-400";
+          } else if (isFreeDay) {
+            buttonClass =
+              "bg-emerald-50/70 border-emerald-200/90 hover:bg-emerald-100/70 dark:bg-emerald-950/30 dark:border-emerald-800/60 dark:hover:bg-emerald-950/50 shadow-2xs font-bold";
+            textClass = "text-emerald-700 dark:text-emerald-300 font-bold";
+            iconColor = "text-emerald-600 dark:text-emerald-400";
           } else if (isLockedByPaywall) {
             buttonClass =
-              "bg-gray-50/60 border-gray-200/70 text-gray-400 dark:bg-slate-900/60 dark:border-slate-800 dark:text-slate-500 hover:bg-gray-100/60 dark:hover:bg-slate-800/40 opacity-75 hover:opacity-100";
+              "bg-gray-50/80 border-gray-200 text-gray-400 dark:bg-slate-900/70 dark:border-slate-800 dark:text-slate-500 hover:bg-gray-100/80 dark:hover:bg-slate-850 opacity-80 hover:opacity-100";
+            textClass = "text-gray-500 dark:text-slate-400 font-medium";
+            iconColor = "text-amber-500/80 dark:text-amber-500";
           } else {
-            // Đã mở khóa bình thường (sạch sẽ, dark mode chuẩn không bị neon chói)
+            // Đã mở khóa thông thường (mua hoặc có gói Premium)
             buttonClass =
-              "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 dark:bg-slate-800/60 dark:border-slate-700/80 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:border-slate-600 shadow-2xs font-medium";
+              "bg-blue-50/70 border-blue-200 hover:bg-blue-100/80 dark:bg-blue-950/30 dark:border-blue-900/60 dark:hover:bg-blue-950/50 shadow-2xs font-bold";
+            textClass = "text-blue-700 dark:text-blue-300 font-bold";
+            iconColor = "text-blue-600 dark:text-blue-400";
           }
 
           return (
@@ -85,28 +100,28 @@ export function ChallengeDaysGrid({
             >
               {/* Free preview badge */}
               {isFreeDay && (
-                <span className="absolute -top-1.5 -left-1 px-1.5 py-0.5 rounded-sm text-[8px] font-extrabold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-2xs leading-none">
+                <span className="absolute -top-1.5 -left-1 px-1.5 py-0.5 rounded-sm text-[8px] font-extrabold bg-emerald-500 text-white shadow-2xs leading-none">
                   FREE
                 </span>
               )}
               {/* Locked Pro badge */}
               {isLockedByPaywall && (
-                <span className="absolute -top-1.5 -right-1 px-1.5 py-0.5 rounded-sm text-[8px] font-extrabold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-2xs leading-none">
+                <span className="absolute -top-1.5 -right-1 px-1.5 py-0.5 rounded-sm text-[8px] font-extrabold bg-amber-500 text-white shadow-2xs leading-none">
                   PRO
                 </span>
               )}
 
-              <span className="text-[11px] uppercase tracking-tight leading-none">
+              <span className={`text-[11px] uppercase tracking-tight leading-none ${textClass}`}>
                 N{d.day}
               </span>
 
               <div className="mt-1 flex items-center justify-center">
                 {isCompleted ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                  <CheckCircle2 className={`w-3.5 h-3.5 ${iconColor}`} />
                 ) : isLockedByPaywall ? (
-                  <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-500 transition-colors" />
+                  <Lock className={`w-3.5 h-3.5 ${iconColor}`} />
                 ) : (
-                  <Unlock className="w-3.5 h-3.5 text-gray-400 dark:text-slate-400 group-hover:text-accent transition-colors" />
+                  <Unlock className={`w-3.5 h-3.5 ${iconColor} group-hover:scale-110 transition-transform`} />
                 )}
               </div>
             </button>
