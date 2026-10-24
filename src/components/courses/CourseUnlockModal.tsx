@@ -133,9 +133,13 @@ export default function CourseUnlockModal({
         toast.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại sau.");
         setView("PLANS");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Subscription error:", err);
-      toast.error("Có lỗi xảy ra khi tạo thanh toán.");
+      const errorResponse = err as { response?: { data?: { message?: string } } };
+      const msg =
+        errorResponse?.response?.data?.message ||
+        "Có lỗi xảy ra khi tạo thanh toán.";
+      toast.error(msg);
       setView("PLANS");
     } finally {
       setIsSubscribing(false);

@@ -558,9 +558,13 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         toast.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
         setPaymentModal({ isOpen: false, isLoading: false, data: null });
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Payment error:", err);
-      toast.error("Lỗi khi kết nối đến cổng thanh toán PayOS.");
+      const errorResponse = err as { response?: { data?: { message?: string } } };
+      const msg =
+        errorResponse?.response?.data?.message ||
+        "Lỗi khi kết nối đến cổng thanh toán PayOS.";
+      toast.error(msg);
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
     }
   };
