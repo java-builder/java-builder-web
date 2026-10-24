@@ -20,6 +20,7 @@ export function ChallengeDaysGrid({
   onSelectDay,
   isUnlockedAll,
   isChallengeFree = false,
+  isEnrolled = false,
   isLoading = false,
 }: ChallengeDaysGridProps) {
   if (isLoading) {
@@ -98,13 +99,15 @@ export function ChallengeDaysGrid({
                 N{d.day}
               </span>
 
-              <div className="mt-1">
+              <div className="mt-1 flex items-center justify-center">
                 {isCompleted ? (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                 ) : isLockedByPaywall ? (
                   <Lock className="w-3 h-3 text-amber-500/80 group-hover:text-amber-500 transition-colors" />
                 ) : isInProgress ? (
                   <Zap className="w-3.5 h-3.5 text-accent fill-accent animate-pulse" />
+                ) : isUnlockedAll || isEnrolled ? (
+                  <div className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-slate-600 group-hover:bg-accent transition-colors" />
                 ) : isFreeDay ? (
                   <Zap className="w-3 h-3 text-emerald-500/70 group-hover:text-emerald-500 transition-colors" />
                 ) : (
