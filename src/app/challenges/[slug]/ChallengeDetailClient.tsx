@@ -81,7 +81,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   usePaymentWebSocket(challenge?.id);
 
   const [activePhaseFilter, setActivePhaseFilter] = useState<number | "all">("all");
-  const [isPhaseChanging, setIsPhaseChanging] = useState<boolean>(false);
   const [isUnlockedAll, setIsUnlockedAll] = useState<boolean>(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState<boolean>(false);
   const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
@@ -311,62 +310,25 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     }
   }, []);
 
-  // Khi chuyển phase filter, lấy danh sách ngày của phase và tự động chọn ngày đầu tiên với skeleton mượt mà
+  // Khi chuyển phase filter, lọc trực tiếp trên dữ liệu days có sẵn mà không cần gọi thêm API
   const handlePhaseFilterChange = useCallback(
-    async (newPhaseFilter: number | "all") => {
+    (newPhaseFilter: number | "all") => {
       if (newPhaseFilter === activePhaseFilter) return;
 
-      setIsPhaseChanging(true);
       setActivePhaseFilter(newPhaseFilter);
 
-      try {
-        if (newPhaseFilter === "all") {
-          if (days.length > 0 && !days.some((d) => d.day === selectedDayNumber)) {
-            handleSelectDay(days[0].day);
-          }
-        } else {
-          const targetPhase = challenge?.phases.find((p) => p.id === newPhaseFilter);
-          let phaseDaysNumbers: number[] = targetPhase?.daysNumber || [];
-
-          if (targetPhase?.phaseId && phaseDaysNumbers.length === 0) {
-            try {
-              const res = await challengeService.getPhaseDetailById(targetPhase.phaseId);
-              const phaseDetail = res.data;
-              if (phaseDetail?.daysNumber && phaseDetail.daysNumber.length > 0) {
-                phaseDaysNumbers = phaseDetail.daysNumber;
-                targetPhase.daysNumber = phaseDetail.daysNumber;
-              }
-            } catch (err) {
-              console.error("Lỗi khi tải chi tiết giai đoạn:", err);
-            }
-          }
-
-          if (phaseDaysNumbers.length > 0) {
-            const phaseDaysSet = new Set(phaseDaysNumbers);
-            setDays((prevDays) =>
-              prevDays.map((d) => ({
-                ...d,
-                phaseId: phaseDaysSet.has(d.day) ? newPhaseFilter : d.phaseId,
-              }))
-            );
-            const firstDay = Math.min(...phaseDaysNumbers);
-            handleSelectDay(firstDay);
-          } else {
-            // Fallback nếu đã có sẵn trong days state
-            const phaseDays = days.filter((d) => d.phaseId === newPhaseFilter);
-            if (phaseDays.length > 0) {
-              const firstDayOfPhase = Math.min(...phaseDays.map((d) => d.day));
-              handleSelectDay(firstDayOfPhase);
-            }
-          }
+      if (newPhaseFilter === "all") {
+        if (days.length > 0 && !days.some((d) => d.day === selectedDayNumber)) {
+          handleSelectDay(days[0].day);
         }
-      } finally {
-        setTimeout(() => {
-          setIsPhaseChanging(false);
-        }, 120);
+      } else {
+        const phaseDays = days.filter((d) => d.phaseId === newPhaseFilter);
+        if (phaseDays.length > 0 && !phaseDays.some((d) => d.day === selectedDayNumber)) {
+          handleSelectDay(phaseDays[0].day);
+        }
       }
     },
-    [activePhaseFilter, challenge?.phases, days, selectedDayNumber, handleSelectDay]
+    [activePhaseFilter, days, selectedDayNumber, handleSelectDay]
   );
 
   // Toggle single task & persist to DB immediately
@@ -661,7 +623,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     (isDayForbidden || !isActiveDayFree);
 
   const isContentLoading =
-    isPhaseChanging ||
     isDayDetailLoading ||
     (isFetching && (!activeDay || !activeDay.content));
 
@@ -694,7 +655,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                   phaseOptions={phaseOptions}
                   filteredCount={filteredDays.length}
                   isEnrolled={false}
-                  isLoading={isPhaseChanging}
                 />
 
                 <ChallengeDaysGrid
@@ -705,7 +665,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                   isUnlockedAll={hasFullAccess || isUnlockedAll}
                   isChallengeFree={challenge.isFree}
                   isEnrolled={hasFullAccess || isEnrolled}
-                  isLoading={isPhaseChanging}
                 />
               </div>
 
@@ -764,7 +723,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 phaseOptions={phaseOptions}
                 filteredCount={filteredDays.length}
                 isEnrolled={isEnrolled}
-                isLoading={isPhaseChanging}
               />
 
               <ChallengeDaysGrid
@@ -775,7 +733,6 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 isUnlockedAll={hasFullAccess || isUnlockedAll}
                 isChallengeFree={challenge.isFree}
                 isEnrolled={hasFullAccess || isEnrolled}
-                isLoading={isPhaseChanging}
               />
             </div>
 
