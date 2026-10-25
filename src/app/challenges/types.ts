@@ -41,7 +41,14 @@ export interface PhaseInfo {
   color: string;
   description: string;
   badge: string;
+  totalDays?: number;
   daysNumber?: number[];
+  challengeDaysSummaries?: {
+    id: string;
+    dayNumber: number;
+    title: string;
+    isFreePreview?: boolean;
+  }[];
 }
 
 export interface Challenge {

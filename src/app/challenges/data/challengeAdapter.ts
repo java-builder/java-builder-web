@@ -42,11 +42,12 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
 
   const phases: PhaseInfo[] = (res.phases || []).map((p) => {
     let daysNumList = p.daysNumber;
-    if (res.challengeDaysSummaries && res.challengeDaysSummaries.length > 0) {
+    if (p.challengeDaysSummaries && p.challengeDaysSummaries.length > 0) {
+      daysNumList = p.challengeDaysSummaries.map((s) => s.dayNumber);
+    } else if (res.challengeDaysSummaries && res.challengeDaysSummaries.length > 0) {
       const matchedDays = res.challengeDaysSummaries
         .filter((s) => s.phaseId === p.id)
-        .map((s) => s.dayNumber)
-        .sort((a, b) => a - b);
+        .map((s) => s.dayNumber);
       if (matchedDays.length > 0) {
         daysNumList = matchedDays;
       }
@@ -59,24 +60,66 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
       color: "from-blue-600 to-indigo-600",
       description: "",
       badge: `Giai đoạn ${p.phaseNumber}`,
+      totalDays: p.totalDays || (daysNumList ? daysNumList.length : undefined),
       daysNumber: daysNumList,
+      challengeDaysSummaries: p.challengeDaysSummaries,
     };
   });
 
   const rawDays = res.days && res.days.length > 0 ? res.days : res.day ? [res.day] : [];
   const daysDetailMap = new Map(rawDays.map((d) => [d.dayNumber, d]));
 
+  // Flatten summaries from phases (new API) or root (old API)
+  const allSummaries: {
+    id: string;
+    dayNumber: number;
+    title?: string;
+    isFreePreview?: boolean;
+    phaseId?: string;
+    phaseNumber?: number;
+    phaseTitle?: string;
+  }[] = [];
+
+  (res.phases || []).forEach((p) => {
+    if (p.challengeDaysSummaries && p.challengeDaysSummaries.length > 0) {
+      p.challengeDaysSummaries.forEach((s) => {
+        allSummaries.push({
+          id: s.id,
+          dayNumber: s.dayNumber,
+          title: s.title,
+          isFreePreview: s.isFreePreview,
+          phaseId: p.id,
+          phaseNumber: p.phaseNumber,
+          phaseTitle: p.title,
+        });
+      });
+    }
+  });
+
+  if (allSummaries.length === 0 && res.challengeDaysSummaries && res.challengeDaysSummaries.length > 0) {
+    res.challengeDaysSummaries.forEach((s) => {
+      const pInfo = s.phaseId ? phaseMapById.get(s.phaseId) : undefined;
+      allSummaries.push({
+        id: s.id,
+        dayNumber: s.dayNumber,
+        isFreePreview: s.isFreePreview,
+        phaseId: s.phaseId,
+        phaseNumber: pInfo?.phaseNumber,
+        phaseTitle: pInfo?.title,
+      });
+    });
+  }
+
   let days: DayChallenge[] = [];
 
-  if (res.challengeDaysSummaries && res.challengeDaysSummaries.length > 0) {
-    const sortedSummaries = [...res.challengeDaysSummaries].sort((a, b) => a.dayNumber - b.dayNumber);
-
-    days = sortedSummaries.map((summary) => {
+  if (allSummaries.length > 0) {
+    days = allSummaries.map((summary) => {
       const dayNum = summary.dayNumber;
       const d = daysDetailMap.get(dayNum);
       const phaseInfo = summary.phaseId ? phaseMapById.get(summary.phaseId) : undefined;
-      const phaseNumber = d?.phaseNumber || phaseInfo?.phaseNumber;
+      const phaseNumber = summary.phaseNumber || d?.phaseNumber || phaseInfo?.phaseNumber;
       const phaseName =
+        summary.phaseTitle ||
         d?.phaseTitle ||
         phaseInfo?.title ||
         (phaseNumber ? `Giai đoạn ${phaseNumber}` : "");
@@ -91,11 +134,11 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         week,
         phaseId: phaseNumber,
         phaseName,
-        title: d?.title || `Thử thách Ngày ${dayNum}`,
+        title: d?.title || summary.title || `Thử thách Ngày ${dayNum}`,
         tagline: d?.coreMission || `Thực hành ngày ${dayNum}`,
         estimatedMinutes: 60,
         whyLearn: d?.whyLearn || "Nắm vững kỹ năng thực tế",
-        coreMission: d?.coreMission || d?.title || `Nhiệm vụ Ngày ${dayNum}`,
+        coreMission: d?.coreMission || d?.title || summary.title || `Nhiệm vụ Ngày ${dayNum}`,
         content: d?.content || "",
         isFreePreview: Boolean(isFreePreview),
         tasks:

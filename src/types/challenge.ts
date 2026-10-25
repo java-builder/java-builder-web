@@ -143,13 +143,22 @@ export interface ChallengeDayDetailResponse {
   tasks: ChallengeTaskResponse[];
 }
 
+export interface ChallengeDaySummaryResponse {
+  id: string;
+  dayNumber: number;
+  title: string;
+  isFreePreview?: boolean;
+}
+
 export interface ChallengePhaseResponse {
   id: string;
   phaseNumber: number;
   title: string;
+  totalDays?: number;
   startDay?: number;
   endDay?: number;
   daysNumber?: number[];
+  challengeDaysSummaries?: ChallengeDaySummaryResponse[];
 }
 
 export interface ChallengeResponse {

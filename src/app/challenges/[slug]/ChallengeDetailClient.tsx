@@ -26,6 +26,7 @@ import {
   ChallengePaywallCard,
   ChallengeSideDrawer,
   ChallengePurchaseSidebar,
+  ChallengeCurriculum,
   PremiumUpgradeModal,
 } from "@/components/challenges";
 
@@ -67,7 +68,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const [days, setDays] = useState<DayChallenge[]>([]);
 
   const { data: challengeData, isLoading, isFetching, error } = useChallengeBySlug(
-    initialChallenge ? "" : slug
+    initialChallenge ? "" : slug,
+    selectedDayNumber
   );
 
   const challenge: Challenge | null = useMemo(() => {
@@ -733,12 +735,19 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               </div>
             </div>
 
-            {/* RIGHT COLUMN (1 COL): Phần tham gia khóa học (Sticky Sidebar) */}
-            <div className="lg:col-span-1">
+            {/* RIGHT COLUMN (1 COL): Phần tham gia khóa học + Lộ trình nội dung */}
+            <div className="lg:col-span-1 space-y-6">
               <ChallengePurchaseSidebar
                 challenge={challenge}
                 onUnlockStandalone={handleUnlockStandalone}
                 onOpenPremiumModal={handleOpenPremiumModal}
+              />
+
+              <ChallengeCurriculum
+                challenge={challenge}
+                selectedDayNumber={selectedDayNumber}
+                onSelectDay={handleSelectDay}
+                isUnlockedAll={hasFullAccess || isUnlockedAll}
               />
             </div>
           </div>

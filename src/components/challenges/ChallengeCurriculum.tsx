@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Lock } from "lucide-react";
-import { Challenge, DayChallenge } from "@/app/challenges/types";
+import { ChevronDown, Terminal, Lock, CheckCircle2 } from "lucide-react";
+import { Challenge } from "@/app/challenges/types";
 
 interface ChallengeCurriculumProps {
   challenge: Challenge;
   selectedDayNumber: number;
-  onSelectDay: (day: DayChallenge) => void;
+  onSelectDay: (dayNumber: number) => void;
   isUnlockedAll?: boolean;
 }
 
@@ -17,7 +17,7 @@ export function ChallengeCurriculum({
   onSelectDay,
   isUnlockedAll = false,
 }: ChallengeCurriculumProps) {
-  // Expand phase 1 by default
+  // Mở tất cả các giai đoạn mặc định
   const [expandedPhases, setExpandedPhases] = useState<Set<number>>(() => {
     return new Set(challenge.phases.map((p) => p.id));
   });
@@ -34,127 +34,118 @@ export function ChallengeCurriculum({
     });
   };
 
-  const expandAll = () => {
-    setExpandedPhases(new Set(challenge.phases.map((p) => p.id)));
-  };
-
-  const collapseAll = () => {
-    setExpandedPhases(new Set());
-  };
+  const totalPhases = challenge.phases.length;
+  const totalDays = challenge.totalDays || challenge.days.length;
 
   return (
-    <div className="space-y-4">
-      {/* Title & Quick actions */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
-          Nội dung thử thách
-        </h3>
-
-        <div className="flex items-center gap-2 text-xs">
-          <button
-            type="button"
-            onClick={expandAll}
-            className="text-muted-foreground hover:text-accent font-medium transition cursor-pointer"
-          >
-            Mở tất cả
-          </button>
-          <span className="text-gray-300 dark:text-gray-700">•</span>
-          <button
-            type="button"
-            onClick={collapseAll}
-            className="text-muted-foreground hover:text-accent font-medium transition cursor-pointer"
-          >
-            Thu gọn
-          </button>
+    <div className="space-y-3">
+      {/* 1. Tiêu đề nhỏ gọn, chuẩn ngữ cảnh Thử Thách Lập Trình */}
+      <div className="flex items-center justify-between px-0.5">
+        <div>
+          <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+            Lộ trình thử thách
+          </h3>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+            {totalPhases} giai đoạn • {totalDays} ngày thực chiến
+          </p>
         </div>
       </div>
 
-      {/* Phases List */}
-      <div className="space-y-3">
-        {challenge.phases.map((phase, pIndex) => {
+      {/* 2. Danh sách giai đoạn (Gọn gàng, tinh tế) */}
+      <div className="space-y-2">
+        {challenge.phases.map((phase) => {
           const isExpanded = expandedPhases.has(phase.id);
-          const phaseDays = challenge.days.filter((d) => d.phaseId === phase.id);
+
+          // Lấy danh sách ngày thuộc phase này
+          let phaseDays = challenge.days.filter((d) => d.phaseId === phase.id);
+
+          if (phaseDays.length === 0 && phase.daysNumber && phase.daysNumber.length > 0) {
+            const daySet = new Set(phase.daysNumber);
+            phaseDays = challenge.days.filter((d) => daySet.has(d.day));
+          }
 
           return (
             <div
               key={phase.id}
-              className="border border-gray-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-900"
+              className="rounded-lg border border-gray-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs transition-all"
             >
-              {/* Phase Header */}
-              <div
+              {/* Phase Header - Gọn gàng */}
+              <button
+                type="button"
                 onClick={() => togglePhase(phase.id)}
-                className="flex items-center justify-between px-4 py-3.5 bg-gray-50/80 dark:bg-slate-800/50 hover:bg-gray-100/80 dark:hover:bg-slate-800 transition-colors cursor-pointer select-none"
+                className="w-full px-3 py-2.5 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50/80 dark:hover:bg-slate-800/60 transition-colors select-none"
               >
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
                   <ChevronDown
-                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0 ${
+                    className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform duration-200 shrink-0 ${
                       isExpanded ? "rotate-0" : "-rotate-90"
                     }`}
                   />
-                  <span className="text-xs font-semibold text-accent uppercase tracking-wider shrink-0">
-                    Giai đoạn {pIndex + 1}
+                  <span className="text-xs font-bold text-gray-800 dark:text-gray-200 line-clamp-1">
+                    {phase.id}. {phase.title}
                   </span>
-                  <span className="text-gray-300 dark:text-gray-700">•</span>
-                  <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
-                    {phase.title}
-                  </h4>
                 </div>
-              </div>
+                <span className="text-[11px] text-gray-400 dark:text-gray-500 shrink-0 ml-2">
+                  {phaseDays.length} ngày
+                </span>
+              </button>
 
-              {/* Days List in Phase */}
+              {/* Danh sách ngày trong Phase - Nhỏ gọn, dùng icon Terminal chuẩn lập trình */}
               {isExpanded && (
-                <div className="divide-y divide-gray-100 dark:divide-slate-800/80">
+                <div className="border-t border-gray-100 dark:border-slate-800 divide-y divide-gray-50 dark:divide-slate-800/50 bg-gray-50/20 dark:bg-slate-900/40">
                   {phaseDays.map((day) => {
                     const isFreeDay = challenge.isFree || Boolean(day.isFreePreview);
                     const isLocked = !challenge.isFree && !isUnlockedAll && !isFreeDay;
-
                     const isSelected = day.day === selectedDayNumber;
 
                     return (
                       <div
                         key={day.day}
-                        onClick={() => onSelectDay(day)}
-                        className={`group px-4 py-3 flex items-center justify-between gap-3 transition-colors cursor-pointer ${
+                        onClick={() => onSelectDay(day.day)}
+                        className={`px-3 py-2 flex items-center justify-between gap-2 transition-colors cursor-pointer group ${
                           isSelected
                             ? "bg-accent/10 dark:bg-accent/15 border-l-2 border-l-accent"
-                            : isFreeDay
-                            ? "hover:bg-accent/5 dark:hover:bg-accent/10"
                             : "hover:bg-gray-50 dark:hover:bg-slate-800/50"
                         }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                          {/* Day Number Box */}
-                          <span
-                            className={`w-7 h-7 flex items-center justify-center rounded-md text-xs font-bold shrink-0 transition-colors ${
-                              isFreeDay
-                                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
-                                : "bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-gray-400"
+                        {/* Icon Terminal & Tên bài học */}
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div
+                            className={`w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
+                              isSelected
+                                ? "bg-accent text-white"
+                                : "bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 group-hover:text-accent group-hover:bg-accent/10"
                             }`}
                           >
-                            {day.day}
-                          </span>
-
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-medium text-gray-800 dark:text-gray-200 group-hover:text-accent transition-colors line-clamp-1">
-                                {day.title}
-                              </span>
-
-                              {isFreeDay && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 rounded-full border border-emerald-200 dark:border-emerald-800 shrink-0">
-                                  Học thử
-                                </span>
-                              )}
-                            </div>
+                            <Terminal className="w-2.5 h-2.5" />
                           </div>
+
+                          <span
+                            className={`text-xs leading-snug line-clamp-1 transition-colors ${
+                              isSelected
+                                ? "font-semibold text-accent dark:text-accent-400"
+                                : "text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                            }`}
+                            title={`Ngày ${day.day}: ${day.title}`}
+                          >
+                            Ngày {day.day}: {day.title}
+                          </span>
                         </div>
 
-                        {/* Right State: Lock icon if locked */}
-                        {isLocked && (
-                          <div className="shrink-0 flex items-center gap-1.5 text-gray-400 dark:text-gray-500">
-                            <Lock className="w-3.5 h-3.5" />
-                          </div>
-                        )}
+                        {/* Badge Học Thử & Trạng Thái Khóa */}
+                        <div className="flex items-center gap-1.5 shrink-0 ml-1">
+                          {isFreeDay && (
+                            <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+                              Học thử
+                            </span>
+                          )}
+
+                          {isLocked ? (
+                            <Lock className="w-3 h-3 text-gray-400 dark:text-gray-500" />
+                          ) : (
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </div>
                       </div>
                     );
                   })}
