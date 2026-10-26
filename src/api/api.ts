@@ -335,5 +335,6 @@ export const API = {
     CHALLENGE_ENROLL_FREE: (challengeId: string) => `/api/v1/challenge-enrollments/free/${challengeId}`,
     CHALLENGE_ENROLLMENT_STUDENTS: (challengeId: string) => `/api/v1/challenge-enrollments/challenge/${challengeId}`,
     CHALLENGE_UNENROLL: (enrollmentId: string) => `/api/v1/challenge-enrollments/${enrollmentId}`,
+    CHALLENGE_ENROLL_ADMIN: "/api/v1/challenge-enrollments/admin/enroll",
 };
 

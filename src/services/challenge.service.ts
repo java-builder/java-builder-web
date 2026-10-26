@@ -195,4 +195,12 @@ export const challengeService = {
     );
     return response.data;
   },
+
+  adminEnrollUser: async (email: string, challengeId: string) => {
+    const response = await apiClient.post<ApiResponse<void>>(
+      API.CHALLENGE_ENROLL_ADMIN,
+      { email, challengeId }
+    );
+    return response.data;
+  },
 };

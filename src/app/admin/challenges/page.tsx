@@ -8,6 +8,7 @@ import {
   ChallengeTable,
   ChallengeModal,
   ChallengeStatsCards,
+  EnrollChallengeUserModal,
 } from "@/components/admin/challenges";
 import { useChallenges } from "@/hooks/useChallenges";
 import { challengeService } from "@/services/challenge.service";
@@ -34,6 +35,15 @@ export default function AdminChallengesPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingChallenge, setEditingChallenge] = useState<ChallengeResponse | null>(null);
+  const [enrollModal, setEnrollModal] = useState<{
+    isOpen: boolean;
+    challengeId: string;
+    challengeTitle: string;
+  }>({
+    isOpen: false,
+    challengeId: "",
+    challengeTitle: "",
+  });
 
   const { confirm } = useConfirm();
 
@@ -199,6 +209,9 @@ export default function AdminChallengesPage() {
             onEdit={handleOpenEdit}
             onDelete={handleDelete}
             onCreateNew={handleOpenCreate}
+            onEnroll={(challengeId, challengeTitle) =>
+              setEnrollModal({ isOpen: true, challengeId, challengeTitle })
+            }
           />
 
           {data && data.totalPages > 1 && (
@@ -258,6 +271,9 @@ export default function AdminChallengesPage() {
                 challenge={challenge}
                 onEdit={handleOpenEdit}
                 onDelete={handleDelete}
+                onEnroll={(challengeId, challengeTitle) =>
+                  setEnrollModal({ isOpen: true, challengeId, challengeTitle })
+                }
               />
             ))}
           </div>
@@ -285,6 +301,17 @@ export default function AdminChallengesPage() {
         }}
         onSubmit={handleSubmitModal}
         initialData={editingChallenge}
+      />
+
+      {/* Enroll User to Challenge Modal */}
+      <EnrollChallengeUserModal
+        isOpen={enrollModal.isOpen}
+        onClose={() =>
+          setEnrollModal({ isOpen: false, challengeId: "", challengeTitle: "" })
+        }
+        onSuccess={() => refetch()}
+        challengeId={enrollModal.challengeId}
+        challengeTitle={enrollModal.challengeTitle}
       />
     </div>
   );

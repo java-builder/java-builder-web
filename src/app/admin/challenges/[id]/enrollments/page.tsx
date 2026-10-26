@@ -8,6 +8,9 @@ import { EnrolledStudentResponse } from "@/types/enrollment";
 import { Pagination } from "@/components/ui/Pagination";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Button } from "@/components/ui/button";
+import { UserPlus } from "lucide-react";
+import { EnrollChallengeUserModal } from "@/components/admin/challenges";
 import {
   EnrollmentsHeader,
   EnrollmentsSearchBar,
@@ -39,6 +42,7 @@ export default function ChallengeEnrollmentsPage() {
     username: "",
   });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
   // Fetch challenge info
   useEffect(() => {
@@ -117,6 +121,17 @@ export default function ChallengeEnrollmentsPage() {
         title="Học viên thử thách"
         subtitle={challengeTitle ? `Thử thách: ${challengeTitle}` : "Đang tải thông tin thử thách..."}
         backHref="/admin/challenges"
+        action={
+          <Button
+            variant="accent"
+            size="sm"
+            onClick={() => setIsEnrollModalOpen(true)}
+            className="gap-2 cursor-pointer shadow-sm hover:shadow-md"
+          >
+            <UserPlus className="h-4 w-4" />
+            <span>Thêm học viên</span>
+          </Button>
+        }
       />
 
       <EnrollmentsStats totalElements={totalElements} enrollments={enrollments} />
@@ -163,6 +178,15 @@ export default function ChallengeEnrollmentsPage() {
         message={`Bạn có chắc chắn muốn xoá học viên <strong>${deleteModal.username}</strong> khỏi thử thách này? Hành động này không thể hoàn tác.`}
         confirmText="Xoá"
         isLoading={isDeleting}
+      />
+
+      {/* Enroll User to Challenge Modal */}
+      <EnrollChallengeUserModal
+        isOpen={isEnrollModalOpen}
+        onClose={() => setIsEnrollModalOpen(false)}
+        onSuccess={fetchEnrollments}
+        challengeId={challengeId}
+        challengeTitle={challengeTitle}
       />
     </div>
   );

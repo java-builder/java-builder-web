@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Edit2, Trash2, Calendar, Eye, Layers, Users, MoreVertical, ExternalLink } from "lucide-react";
+import { Edit2, Trash2, Calendar, Eye, Layers, Users, MoreVertical, ExternalLink, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeLevel, ChallengeResponse } from "@/types/challenge";
 
@@ -13,6 +13,7 @@ interface ChallengeTableProps {
   onEdit: (challenge: ChallengeResponse) => void;
   onDelete: (id: string, title: string) => void;
   onCreateNew?: () => void;
+  onEnroll?: (challengeId: string, challengeTitle: string) => void;
 }
 
 const LEVEL_CONFIG: Record<
@@ -52,6 +53,7 @@ export default function ChallengeTable({
   onEdit,
   onDelete,
   onCreateNew,
+  onEnroll,
 }: ChallengeTableProps) {
   const [mounted, setMounted] = useState(false);
   const [openMenu, setOpenMenu] = useState<{
@@ -321,6 +323,22 @@ export default function ChallengeTable({
               <Users className="w-4 h-4 text-blue-500" />
               <span>Danh sách học viên</span>
             </Link>
+
+            {onEnroll && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const target = openMenu.challenge;
+                  setOpenMenu(null);
+                  onEnroll(target.id, target.title);
+                }}
+                className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4 text-emerald-500" />
+                <span>Thêm học viên</span>
+              </button>
+            )}
 
             {openMenu.challenge.slug && (
               <Link

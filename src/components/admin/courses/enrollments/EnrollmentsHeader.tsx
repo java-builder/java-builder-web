@@ -8,6 +8,7 @@ interface EnrollmentsHeaderProps {
   subtitle?: string;
   courseTitle?: string;
   backHref?: string;
+  action?: React.ReactNode;
 }
 
 export default function EnrollmentsHeader({
@@ -15,6 +16,7 @@ export default function EnrollmentsHeader({
   subtitle,
   courseTitle,
   backHref = "/admin/courses",
+  action,
 }: EnrollmentsHeaderProps) {
   const displaySubtitle = subtitle ?? (courseTitle ? `Khóa học: ${courseTitle}` : "Đang tải thông tin...");
 
@@ -37,6 +39,7 @@ export default function EnrollmentsHeader({
           </p>
         </div>
       </div>
+      {action && <div className="flex items-center gap-3 shrink-0">{action}</div>}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   Layers,
   ArrowRight,
   Users,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeLevel, ChallengeResponse } from "@/types/challenge";
@@ -18,6 +19,7 @@ interface ChallengeCardProps {
   challenge: ChallengeResponse;
   onEdit: (challenge: ChallengeResponse) => void;
   onDelete: (id: string, title: string) => void;
+  onEnroll?: (challengeId: string, challengeTitle: string) => void;
 }
 
 const LEVEL_CONFIG: Record<
@@ -55,6 +57,7 @@ export default function ChallengeCard({
   challenge,
   onEdit,
   onDelete,
+  onEnroll,
 }: ChallengeCardProps) {
   const levelCfg =
     LEVEL_CONFIG[challenge.level as ChallengeLevel] || LEVEL_CONFIG.JUNIOR;
@@ -186,6 +189,18 @@ export default function ChallengeCard({
               <Users className="h-3.5 w-3.5" />
             </Button>
           </Link>
+
+          {onEnroll && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEnroll(challenge.id, challenge.title)}
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-emerald-500 cursor-pointer"
+              title="Thêm học viên vào thử thách"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+            </Button>
+          )}
 
           <Button
             variant="ghost"

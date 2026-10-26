@@ -7,3 +7,4 @@ export { default as ChallengeStatsCards } from "./ChallengeStatsCards";
 export { default as PhaseModal } from "./PhaseModal";
 export { default as DayModal } from "./DayModal";
 export { default as TaskModal } from "./TaskModal";
+export { default as EnrollChallengeUserModal } from "./EnrollChallengeUserModal";
