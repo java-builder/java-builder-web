@@ -4,7 +4,7 @@ import MentorClient from "./MentorClient";
 
 export const metadata: Metadata = {
   title: "Đào tạo Mentor 1-1 Java 25 & Spring Boot 4 - JavaBuilder",
-  description: "Chương trình đào tạo Mentor 1-1 Java 25 & Spring Boot 4 toàn diện, thực hành Git Flow, code review PR, thiết kế RESTful API chuẩn quốc tế và triển khai Cloud AWS.",
+  description: "Chương trình đào tạo Mentor 1-1 Java 25 & Spring Boot 4 thực chiến, thực hành Git Flow, code review PR, thiết kế RESTful API chuẩn quốc tế và triển khai Cloud AWS.",
 };
 
 export default function MentorPage() {

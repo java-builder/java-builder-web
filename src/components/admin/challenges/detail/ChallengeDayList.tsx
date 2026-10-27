@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Plus } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   ChallengeDayResponse,
@@ -51,20 +51,11 @@ export default function ChallengeDayList({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+      <div className="flex items-center justify-between pb-1">
+        <h2 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
           <Calendar className="h-4 w-4 text-accent" />
-          <span>Lộ trình theo ngày ({days.length} ngày)</span>
+          <span>Tất cả ngày học ({days.length} ngày)</span>
         </h2>
-        <Button
-          variant="accent"
-          size="sm"
-          onClick={onCreateDay}
-          className="gap-2 cursor-pointer font-medium"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Thêm ngày học</span>
-        </Button>
       </div>
 
       <div className="space-y-4">

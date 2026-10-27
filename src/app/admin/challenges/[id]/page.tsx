@@ -25,8 +25,7 @@ import {
 } from "@/types/challenge";
 import { PhaseModal, DayModal, TaskModal } from "@/components/admin/challenges";
 import ChallengeDetailHeader from "@/components/admin/challenges/detail/ChallengeDetailHeader";
-import ChallengePhaseList from "@/components/admin/challenges/detail/ChallengePhaseList";
-import ChallengeDayList from "@/components/admin/challenges/detail/ChallengeDayList";
+import ChallengeContentTab from "@/components/admin/challenges/detail/ChallengeContentTab";
 import { useConfirm } from "@/hooks/useConfirm";
 import toast from "react-hot-toast";
 
@@ -61,12 +60,11 @@ export default function AdminChallengeDetailPage() {
 
   const [isDayModalOpen, setIsDayModalOpen] = useState(false);
   const [editingDay, setEditingDay] = useState<ChallengeDayResponse | null>(null);
+  const [selectedPhaseIdForNewDay, setSelectedPhaseIdForNewDay] = useState<string | undefined>(undefined);
 
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<ChallengeTaskResponse | null>(null);
   const [activeTaskDay, setActiveTaskDay] = useState<{ id: string; dayNumber: number } | null>(null);
-
-  const [activeTab, setActiveTab] = useState<"days" | "phases">("days");
 
   const { confirm } = useConfirm();
 
@@ -125,7 +123,8 @@ export default function AdminChallengeDetailPage() {
   };
 
   // Day Actions
-  const handleOpenCreateDay = () => {
+  const handleOpenCreateDay = (phaseId?: string) => {
+    setSelectedPhaseIdForNewDay(phaseId);
     setEditingDay(null);
     setIsDayModalOpen(true);
   };
@@ -319,34 +318,25 @@ export default function AdminChallengeDetailPage() {
         challenge={challenge}
         phasesCount={phases.length}
         daysCount={days.length}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
         onRefresh={handleRefreshAll}
         isRefreshing={isFetchingChallenge}
-        onCreatePhase={handleOpenCreatePhase}
-        onCreateDay={handleOpenCreateDay}
       />
 
-      {/* Main Tab Content */}
-      {activeTab === "phases" ? (
-        <ChallengePhaseList
-          phases={phases}
-          days={days}
-          onCreatePhase={handleOpenCreatePhase}
-          onEditPhase={handleOpenEditPhase}
-          onDeletePhase={handleDeletePhase}
-        />
-      ) : (
-        <ChallengeDayList
-          days={days}
-          onCreateDay={handleOpenCreateDay}
-          onEditDay={handleOpenEditDay}
-          onDeleteDay={handleDeleteDay}
-          onCreateTask={handleOpenCreateTask}
-          onEditTask={handleOpenEditTask}
-          onDeleteTask={handleDeleteTask}
-        />
-      )}
+      {/* Challenge Content (Phases, Days & Tasks - Modeled after CourseContentTab) */}
+      <ChallengeContentTab
+        phases={phases}
+        days={days}
+        onAddPhase={handleOpenCreatePhase}
+        onEditPhase={handleOpenEditPhase}
+        onDeletePhase={handleDeletePhase}
+        onAddDay={handleOpenCreateDay}
+        onEditDay={handleOpenEditDay}
+        onDeleteDay={handleDeleteDay}
+        onAddTask={handleOpenCreateTask}
+        onEditTask={handleOpenEditTask}
+        onDeleteTask={handleDeleteTask}
+        onRefreshDays={refetchDays}
+      />
 
       {/* Phase Modal */}
       <PhaseModal
@@ -367,11 +357,13 @@ export default function AdminChallengeDetailPage() {
         onClose={() => {
           setIsDayModalOpen(false);
           setEditingDay(null);
+          setSelectedPhaseIdForNewDay(undefined);
         }}
         onSubmit={handleSubmitDay}
         initialData={editingDay}
         challengeId={challengeId}
         phases={phases}
+        defaultPhaseId={selectedPhaseIdForNewDay}
         nextDayNumber={nextDayNumber}
       />
 

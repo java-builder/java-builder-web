@@ -67,32 +67,47 @@ export default function SidebarMenuGroup({
   };
 
   return (
-    <div className="space-y-1 mt-6 first:mt-0">
+    <div className={`space-y-1 ${isCollapsed ? "pt-2.5 mt-2.5" : "pt-3.5 mt-3.5"} border-t border-slate-100 dark:border-slate-800/80 first:border-t-0 first:pt-0 first:mt-0`}>
       {!isCollapsed && (
-        <button
-          type="button"
-          onClick={onToggle}
-          className="group w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase select-none rounded-lg hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
-        >
-          <div className="flex items-center gap-2 min-w-0">
-            {group.icon && (
-              <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:flex-shrink-0">
-                {group.icon}
+        group.collapsible === false ? (
+          <div className="w-full flex items-center justify-between px-2.5 py-1.5 text-[10.5px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase select-none">
+            <div className="flex items-center gap-2.5 min-w-0">
+              {group.icon && (
+                <span className="w-5 h-5 flex-shrink-0 flex items-center justify-center opacity-80 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:flex-shrink-0">
+                  {group.icon}
+                </span>
+              )}
+              <span className="truncate">
+                {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
               </span>
-            )}
-            <span>
-              {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
-            </span>
+            </div>
           </div>
-          <ChevronDown
-            className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
-              }`}
-          />
-        </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onToggle}
+            className="group w-full flex items-center justify-between px-2.5 py-1.5 text-[10.5px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase select-none rounded-lg hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              {group.icon && (
+                <span className="w-5 h-5 flex-shrink-0 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:flex-shrink-0">
+                  {group.icon}
+                </span>
+              )}
+              <span className="truncate">
+                {group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}
+              </span>
+            </div>
+            <ChevronDown
+              className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
+                }`}
+            />
+          </button>
+        )
       )}
 
-      {(isCollapsed || isOpen) && (
-        <ul className={`space-y-0.5 ${!isCollapsed ? "pl-3 px-1" : ""}`}>
+      {(isCollapsed || group.collapsible === false || isOpen) && (
+        <ul className="space-y-0.5">
           {group.items.map((item) => {
             if (!shouldShowItem(item)) return null;
 
@@ -142,12 +157,12 @@ export default function SidebarMenuGroup({
                       {item.tag && (
                         <span
                           className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${item.tagVariant === "hot"
-                              ? "bg-gradient-to-r from-rose-500 to-amber-500 text-white"
-                              : item.tagVariant === "pro"
-                                ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-                                : item.tagVariant === "new"
-                                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
-                                  : "bg-blue-500/20 text-blue-300"
+                            ? "bg-gradient-to-r from-rose-500 to-amber-500 text-white"
+                            : item.tagVariant === "pro"
+                              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                              : item.tagVariant === "new"
+                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+                                : "bg-blue-500/20 text-blue-300"
                             }`}
                         >
                           {item.tag}

@@ -44,6 +44,7 @@ interface DayModalProps {
   challengeId: string;
   phases: ChallengePhaseResponse[];
   nextDayNumber: number;
+  defaultPhaseId?: string;
 }
 
 export default function DayModal({
@@ -54,6 +55,7 @@ export default function DayModal({
   challengeId,
   phases,
   nextDayNumber,
+  defaultPhaseId,
 }: DayModalProps) {
   const { t } = useI18n();
   const isEdit = Boolean(initialData);
@@ -129,10 +131,10 @@ export default function DayModal({
       setContent("");
       setKeyConceptsText("");
       setTasks([{ title: "", resourceLinks: [], isExpanded: false }]);
-      setPhaseId(phases.length > 0 ? phases[0].id : "");
+      setPhaseId(defaultPhaseId || (phases.length > 0 ? phases[0].id : ""));
       setIsFreePreview(false);
     }
-  }, [initialData, isOpen, nextDayNumber, phases]);
+  }, [initialData, isOpen, nextDayNumber, phases, defaultPhaseId]);
 
   if (!isOpen) return null;
 

@@ -1804,7 +1804,7 @@ export const vi = {
     },
     curriculum: {
       title: "Lộ Trình Đào Tạo Chi Tiết",
-      description: "Chương trình thực chiến 12 tuần bao phủ toàn diện công nghệ hiện đại nhất trên nền tảng Java 25 và Spring Boot 4.",
+      description: "Lộ trình thực chiến 12 tuần giúp bạn làm chủ trọn bộ công nghệ trên nền tảng Java 25 và Spring Boot 4.",
       module1: {
         title: "Module 1: Java 25, Spring Boot 4 & Architecture",
         item1: "Thiết kế RESTful API chuẩn quốc tế, DTO pattern và chuẩn hóa kiến trúc chuyên nghiệp.",

@@ -29,7 +29,13 @@ export default function Sidebar() {
   const { data: notifData } = useNotifications(1, "all");
   const { isCollapsed, setIsCollapsed } = useSidebar();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    const initialOpenState: Record<string, boolean> = {};
+    menuGroups.forEach((group) => {
+      initialOpenState[group.title] = group.defaultOpen ?? false;
+    });
+    return initialOpenState;
+  });
   const { settings } = useSettingsContext();
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
@@ -159,21 +165,6 @@ export default function Sidebar() {
     router.push("/login");
   };
 
-  useEffect(() => {
-    const initialOpenState: Record<string, boolean> = {};
-    menuGroupsWithBadge.forEach((group) => {
-      initialOpenState[group.title] = group.defaultOpen ?? false;
-    });
-    setOpenGroups(initialOpenState);
-  }, [menuGroupsWithBadge]);
-
-  const toggleGroup = (title: string) => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      [title]: !prev[title],
-    }));
-  };
-
   const allHrefs = useMemo(() => {
     const hrefs: string[] = [];
     menuGroupsWithBadge.forEach((group) =>
@@ -182,20 +173,49 @@ export default function Sidebar() {
     return hrefs;
   }, [menuGroupsWithBadge]);
 
-  const isActive = (href: string) => {
-    if (!pathname) return false;
-    if (href === "/") {
-      return pathname === "/";
-    }
-    if (pathname === href) return true;
-    // Only match startsWith if no other more-specific menu href matches
-    if (pathname.startsWith(`${href}/`)) {
-      const hasMoreSpecific = allHrefs.some(
-        (h) => h !== href && h.startsWith(`${href}/`) && pathname.startsWith(h)
-      );
-      return !hasMoreSpecific;
-    }
-    return false;
+  const isActive = useCallback(
+    (href: string) => {
+      if (!pathname) return false;
+      if (href === "/") {
+        return pathname === "/";
+      }
+      if (pathname === href) return true;
+      if (pathname.startsWith(`${href}/`)) {
+        const hasMoreSpecific = allHrefs.some(
+          (h) => h !== href && h.startsWith(`${href}/`) && pathname.startsWith(h)
+        );
+        return !hasMoreSpecific;
+      }
+      return false;
+    },
+    [pathname, allHrefs]
+  );
+
+  useEffect(() => {
+    setOpenGroups((prev) => {
+      let hasChange = false;
+      const next = { ...prev };
+      menuGroupsWithBadge.forEach((group) => {
+        if (next[group.title] === undefined) {
+          next[group.title] = group.defaultOpen ?? false;
+          hasChange = true;
+        }
+        // Auto-expand group if any child item is active
+        const hasActiveItem = group.items.some((item) => isActive(item.href));
+        if (hasActiveItem && !next[group.title]) {
+          next[group.title] = true;
+          hasChange = true;
+        }
+      });
+      return hasChange ? next : prev;
+    });
+  }, [menuGroupsWithBadge, isActive]);
+
+  const toggleGroup = (title: string) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
   };
 
   const shouldShowGroup = (group: MenuGroup) => {
@@ -312,7 +332,7 @@ export default function Sidebar() {
 
 
         {/* Menu Groups */}
-        <nav className="flex-1 overflow-y-auto py-2.5 px-2 space-y-1">
+        <nav className="flex-1 overflow-y-auto py-2.5 px-2.5 space-y-1">
           {menuGroupsWithBadge.map((group) => {
             if (!shouldShowGroup(group)) return null;
 

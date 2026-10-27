@@ -104,6 +104,11 @@ export const challengeService = {
     return response.data;
   },
 
+  getDayDetailById: async (dayId: string) => {
+    const response = await apiClient.get<ApiResponse<ChallengeDayDetailResponse>>(API.CHALLENGE_DAY_BY_ID(dayId));
+    return response.data;
+  },
+
   // TASKS
   createTask: async (data: CreateChallengeTaskRequest) => {
     const response = await apiClient.post<ApiResponse<ChallengeTaskResponse>>(API.CHALLENGE_TASKS, data);
@@ -145,13 +150,6 @@ export const challengeService = {
       API.CHALLENGE_PROGRESS_COMPLETE_DAY(slug, dayNumber),
       null,
       completed !== undefined ? { params: { completed } } : undefined
-    );
-    return response.data;
-  },
-
-  getDayDetailById: async (id: string) => {
-    const response = await apiClient.get<ApiResponse<ChallengeDayDetailResponse>>(
-      API.CHALLENGE_DAY_BY_ID(id)
     );
     return response.data;
   },

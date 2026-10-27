@@ -45,22 +45,13 @@ export default function ChallengePhaseList({
   return (
     <div className="space-y-3">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pb-1">
         <div className="flex items-center gap-2">
           <Layers className="h-4 w-4 text-accent" />
-          <h2 className="text-sm font-semibold text-foreground">
+          <h2 className="text-sm sm:text-base font-bold text-foreground">
             Danh sách giai đoạn ({phases.length})
           </h2>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCreatePhase}
-          className="h-8 gap-1.5 text-xs font-medium cursor-pointer"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          <span>Thêm giai đoạn</span>
-        </Button>
       </div>
 
       {/* Standard Admin Table */}

@@ -3,9 +3,6 @@
 import Link from "next/link";
 import {
   ArrowLeft,
-  Calendar,
-  Layers,
-  Plus,
   RefreshCw,
   ExternalLink,
   Users,
@@ -17,24 +14,16 @@ interface ChallengeDetailHeaderProps {
   challenge: ChallengeResponse;
   phasesCount: number;
   daysCount: number;
-  activeTab: "days" | "phases";
-  onTabChange: (tab: "days" | "phases") => void;
   onRefresh: () => void;
   isRefreshing?: boolean;
-  onCreatePhase: () => void;
-  onCreateDay: () => void;
 }
 
 export default function ChallengeDetailHeader({
   challenge,
   phasesCount,
   daysCount,
-  activeTab,
-  onTabChange,
   onRefresh,
   isRefreshing = false,
-  onCreatePhase,
-  onCreateDay,
 }: ChallengeDetailHeaderProps) {
   return (
     <div className="space-y-4">
@@ -140,75 +129,6 @@ export default function ChallengeDetailHeader({
               <span className="text-[11px] text-muted-foreground font-medium block">Đã soạn</span>
               <p className="text-lg font-bold text-accent mt-0.5">{daysCount} ngày</p>
             </div>
-          </div>
-        </div>
-
-        {/* Action Toolbar */}
-        <div className="px-6 py-3.5 bg-muted/20 border-t border-border flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex h-9 items-center gap-1 rounded-lg border border-input bg-muted/40 p-1 shadow-xs">
-            <button
-              type="button"
-              onClick={() => onTabChange("days")}
-              className={`flex h-7 items-center gap-1.5 px-3 text-xs sm:text-sm font-medium rounded-md transition-all cursor-pointer ${
-                activeTab === "days"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-              }`}
-            >
-              <Calendar className={`h-4 w-4 ${activeTab === "days" ? "text-accent" : "text-muted-foreground/70"}`} />
-              <span>Lộ trình theo ngày</span>
-              <span
-                className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                  activeTab === "days"
-                    ? "bg-accent/10 text-accent"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {daysCount}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => onTabChange("phases")}
-              className={`flex h-7 items-center gap-1.5 px-3 text-xs sm:text-sm font-medium rounded-md transition-all cursor-pointer ${
-                activeTab === "phases"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-              }`}
-            >
-              <Layers className={`h-4 w-4 ${activeTab === "phases" ? "text-accent" : "text-muted-foreground/70"}`} />
-              <span>Giai đoạn</span>
-              <span
-                className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                  activeTab === "phases"
-                    ? "bg-accent/10 text-accent"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {phasesCount}
-              </span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onCreatePhase}
-              className="gap-2 cursor-pointer font-medium"
-            >
-              <Layers className="h-4 w-4" />
-              <span>Thêm giai đoạn</span>
-            </Button>
-            <Button
-              variant="accent"
-              size="sm"
-              onClick={onCreateDay}
-              className="gap-2 cursor-pointer font-medium"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Thêm ngày học</span>
-            </Button>
           </div>
         </div>
       </div>

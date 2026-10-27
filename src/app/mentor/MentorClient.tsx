@@ -203,7 +203,7 @@ export default function MentorClient() {
               Lộ trình chuyên sâu 12 tuần làm chủ Java 25 & Spring Boot 4
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Bao phủ toàn diện từ RESTful API chuẩn quốc tế, Spring Security, Redis Caching chịu tải cao, Spring AI đến DevOps & triển khai Cloud AWS.
+              Thực chiến từ RESTful API chuẩn quốc tế, Spring Security, Redis Caching, Spring AI đến DevOps & triển khai Cloud AWS.
             </p>
           </div>
 

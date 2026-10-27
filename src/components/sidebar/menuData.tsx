@@ -7,7 +7,6 @@ import {
   Newspaper,
   FileText,
   Briefcase,
-  Map,
   HelpCircle,
   MessageSquare,
   Bell,
@@ -36,6 +35,7 @@ export const menuGroups: MenuGroup[] = [
     title: "Menu chính",
     titleKey: "sidebar.mainMenu",
     defaultOpen: true,
+    collapsible: false,
     borderColor: "border-blue-500",
     icon: <LayoutGrid className="w-4 h-4 text-blue-500" />,
     items: [
@@ -97,13 +97,6 @@ export const menuGroups: MenuGroup[] = [
         tagVariant: "hot",
       },
       {
-        href: "/roadmap",
-        label: "Lộ trình học tập",
-        labelKey: "sidebar.roadmap",
-        icon: <Map className="w-5 h-5" />,
-        color: "text-indigo-600 dark:text-indigo-400",
-      },
-      {
         href: "/qna",
         label: "Hỏi đáp",
         labelKey: "sidebar.qna",
@@ -146,7 +139,7 @@ export const menuGroups: MenuGroup[] = [
     title: "Học tập của tôi",
     titleKey: "sidebar.myLearning",
     requireAuth: true,
-    defaultOpen: true,
+    defaultOpen: false,
     borderColor: "border-teal-500",
     icon: <GraduationCap className="w-4 h-4 text-teal-500" />,
     items: [
@@ -227,7 +220,7 @@ export const menuGroups: MenuGroup[] = [
     title: "Premium & Thanh toán",
     titleKey: "sidebar.premiumPayment",
     requireAuth: true,
-    defaultOpen: true,
+    defaultOpen: false,
     borderColor: "border-yellow-500",
     icon: <Crown className="w-4 h-4 text-yellow-500" />,
     items: [
@@ -252,7 +245,7 @@ export const menuGroups: MenuGroup[] = [
   {
     title: "Cài đặt",
     titleKey: "sidebar.settings",
-    defaultOpen: true,
+    defaultOpen: false,
     borderColor: "border-purple-500",
     icon: <Settings className="w-4 h-4 text-purple-500" />,
     items: [

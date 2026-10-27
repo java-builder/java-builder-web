@@ -403,12 +403,12 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           ) : null}
                           {item.badge && (
                             <span className={`px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none ${item.href === "/notifications"
-                                ? "bg-red-500 text-white dark:bg-red-600 dark:text-white"
-                                : item.href === "/messages"
-                                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                                  : item.badgeColor
-                                    ? `${item.badgeColor} text-white`
-                                    : "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                              ? "bg-red-500 text-white dark:bg-red-600 dark:text-white"
+                              : item.href === "/messages"
+                                ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                                : item.badgeColor
+                                  ? `${item.badgeColor} text-white`
+                                  : "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
                               }`}>
                               {item.badge}
                             </span>
