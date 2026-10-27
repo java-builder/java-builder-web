@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, AlertCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUp, AlertCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { FilterOption } from "@/components/ui/FilterSelect";
 import { Challenge, DayChallenge } from "../types";
@@ -11,6 +11,7 @@ import { adaptChallengeDetailResponseToUi } from "../data/challengeAdapter";
 import { useChallengeBySlug } from "@/hooks/useChallenges";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
+import { useBackToTop } from "@/hooks/useBackToTop";
 import { challengeService } from "@/services/challenge.service";
 import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
@@ -46,6 +47,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   );
 
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
+  const { showBackToTop, scrollToTop } = useBackToTop();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -824,6 +826,18 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         title="Đăng nhập để tham gia thử thách"
         message="Vui lòng đăng nhập tài khoản JavaBuilder để tham gia thử thách và bắt đầu lộ trình học tập."
       />
+
+      {/* Scroll to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 z-40 p-3 bg-accent hover:bg-accent-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center group"
+          aria-label="Cuộn lên đầu trang"
+          title="Cuộn lên đầu trang"
+        >
+          <ArrowUp className="w-5 h-5 transition-transform group-hover:-translate-y-0.5" />
+        </button>
+      )}
     </main>
   );
 }
