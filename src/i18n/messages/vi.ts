@@ -1848,8 +1848,7 @@ export const vi = {
         item1: "Cơ sở hạ tầng mạng trên AWS Cloud: VPC, Subnet, Internet Gateway & Security Groups.",
         item2: "Triển khai Backend lên môi trường thực tế AWS EC2 với Docker container.",
         item3: "Nginx: Cấu hình Reverse Proxy.",
-        item4: "Bảo mật HTTPS: Tự động cài đặt và renew chứng chỉ SSL với Certbot.",
-        item5: "Cloudflare: Quản lý bản ghi DNS, phân giải tên miền, tối ưu lưu lượng và bảo mật HTTPS."
+        item4: "Cloudflare: Quản lý bản ghi DNS, phân giải tên miền, tối ưu lưu lượng và bảo mật HTTPS."
       }
     },
     contact: {

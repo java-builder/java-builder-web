@@ -1848,8 +1848,7 @@ export const en = {
         item1: "AWS Cloud networking infrastructure: VPC, Subnets, Internet Gateway & Security Groups.",
         item2: "Deploying backend services onto live AWS EC2 production environment with Docker.",
         item3: "Nginx: Reverse Proxy configuration.",
-        item4: "HTTPS Security: Automated SSL certificate issuing and renewal with Certbot.",
-        item5: "Cloudflare: Managing DNS records, domain resolution, traffic optimization, and HTTPS security."
+        item4: "Cloudflare: Managing DNS records, domain resolution, traffic optimization, and HTTPS security."
       }
     },
     contact: {
