@@ -1796,63 +1796,65 @@ export const en = {
   mentorPage: {
     hero: {
       badge: "Special 1-1 Mentorship Program",
-      title: "Backend Mentorship Program",
-      titleAccent: "Comprehensive Spring Boot",
-      description: "A special 1-1 coaching program designed to help you accelerate your learning, fast-track your career, and master advanced production topics (Spring AI, Passkey, TOTP, Caching Fallback, Cloud DevOps) that are rarely taught in typical courses.",
-      ctaContact: "Contact for consultancy",
-      ctaCurriculum: "View roadmap details"
+      title: "1-1 Mentorship Program",
+      titleAccent: "Java 25 & Spring Boot 4",
+      description: "An intensive personalized 1-1 mentorship program focusing on internationally standard RESTful API design, Redis Caching, Spring Security, Spring AI, enterprise Git & PR skills, and 24/7 cloud deployment on AWS.",
+      ctaContact: "Contact for 1-1 Consultation",
+      ctaCurriculum: "View Curriculum Details"
     },
     curriculum: {
-      title: "Training Curriculum Content",
-      description: "An in-depth, hands-on program covering all the essential knowledge that a professional Backend Developer needs to master.",
+      title: "Comprehensive 12-Week Roadmap",
+      description: "An in-depth hands-on program covering modern enterprise technologies on Java 25 and Spring Boot 4.",
       module1: {
-        title: "Module 1: Spring Boot & Architecture",
-        item1: "N-tier architecture & internationally standard RESTful API design.",
-        item2: "Comprehensive Data Validation & Global Exception Handling mechanisms.",
-        item3: "Spring Data JPA: Query optimization, N+1 query problem, indexing, and projection."
+        title: "Module 1: Java 25, Spring Boot 4 & Architecture",
+        item1: "Internationally standard RESTful API design, DTO pattern, and layered architecture.",
+        item2: "Modern Java 25: Virtual Threads (Project Loom), Pattern Matching, Scoped Values.",
+        item3: "Data Validation & centralized Global Exception Handling mechanism.",
+        item4: "Spring Data JPA: Query optimization, N+1 query problem, indexing, and projection."
       },
       module2: {
         title: "Module 2: Advanced Security & Auth",
-        item1: "Spring Security 6: Detailed filter chain execution mechanics.",
-        item2: "JWT (Json Web Token) & secure user session management.",
-        item3: "TOTP (Two-Factor Authentication) for robust dual-layer security.",
-        item4: "Biometric authentication with WebAuthn (Passkey)."
+        item1: "Spring Security: Deep dive into Filter Chain, SecurityContext, and AuthenticationManager.",
+        item2: "JWT (Json Web Token) with secure Access/Refresh Token rotation.",
+        item3: "TOTP (Two-Factor Authentication) with Google Authenticator.",
+        item4: "Modern biometric passwordless authentication with WebAuthn (Passkey)."
       },
       module3: {
         title: "Module 3: Caching, Storage & Core Utilities",
-        item1: "Token management & blacklisting utilizing Redis.",
-        item2: "Advanced Caching techniques & database fallback strategy when Redis goes offline.",
-        item3: "Basic & professional email delivery using HTML Email Templates.",
-        item4: "Spring Scheduler: Tasks planning and background automation.",
-        item5: "AWS S3 integration: Professional file uploading.",
-        item6: "Smart database-level Object Key storage strategies."
+        item1: "Token management, blacklisting, and high-performance caching with Redis.",
+        item2: "Advanced Caching techniques & automatic database fallback when Redis fails.",
+        item3: "Automated professional email delivery with HTML templates & async events.",
+        item4: "Spring Scheduler: Tasks planning and robust background job automation.",
+        item5: "AWS S3 integration: Professional file uploading with Pre-signed URLs & object key management."
       },
       module4: {
         title: "Module 4: Spring AI & Generative AI",
         item1: "Spring AI: LLM integration and production-grade parameter configurations.",
-        item2: "PromptTemplate: Designing and optimizing system input prompts.",
-        item3: "StructuredOutput: Formulating structured responses (JSON, DTO) from LLMs.",
-        item4: "ChatMemory: Context preservation and conversation history management for Chatbots.",
-        item5: "Tool Calling: Enacting programmatic callbacks from LLMs to service layers.",
-        item6: "RAG (Retrieval-Augmented Generation): Document indexing & custom knowledge base querying."
+        item2: "PromptTemplate & StructuredOutput: Enforcing structured output (JSON, DTO) from LLMs.",
+        item3: "ChatMemory: Context preservation and multi-user conversation history for Chatbots.",
+        item4: "Tool Calling: Enacting programmatic callbacks from LLMs to internal service APIs.",
+        item5: "RAG (Retrieval-Augmented Generation): Document indexing & custom knowledge base querying with pgvector."
       },
       module5: {
-        title: "Module 5: DevOps & Containerization",
-        item1: "Dockerfile: Writing and optimizing Dockerfiles for application packaging.",
-        item2: "Docker & Docker Compose: Multi-container orchestration and management."
+        title: "Module 5: Git Flow, Docker & CI/CD DevOps",
+        item1: "Enterprise Git Flow: Feature branching, conventional commits, rebase & merge conflict resolution.",
+        item2: "Pull Request standards, code review checklist & Clean Code/SOLID optimization.",
+        item3: "Dockerfile: Multi-stage build optimization for Java 25 ultra-lightweight image (~150MB).",
+        item4: "Docker & Docker Compose: Orchestrating Backend, Postgres, and Redis with a single command.",
+        item5: "GitHub Actions CI/CD: Automated testing, Docker image packaging & SonarQube quality gate."
       },
       module6: {
-        title: "Module 6: AWS Cloud Deployment",
-        item1: "Basic network infrastructure building on AWS Cloud.",
-        item2: "Deploying backend servers onto AWS EC2/ECS production environments.",
-        item3: "Nginx: Reverse Proxy setup for backend APIs.",
-        item4: "HTTPS Security: Automating SSL installation and updates using Certbot.",
-        item5: "Setting up CI/CD pipelines to automate the build and deployment process."
+        title: "Module 6: AWS Cloud Deployment & Production",
+        item1: "AWS Cloud networking infrastructure: VPC, Subnets, Internet Gateway & Security Groups.",
+        item2: "Deploying backend services onto live AWS EC2 production environment with Docker.",
+        item3: "Nginx: Reverse Proxy configuration.",
+        item4: "HTTPS Security: Automated SSL certificate issuing and renewal with Certbot.",
+        item5: "Cloudflare: Managing DNS records, domain resolution, traffic optimization, and HTTPS security."
       }
     },
     contact: {
       title: "Direct Contact for Syllabus & 1-1 Guidance",
-      description: "If you are interested in this comprehensive Spring Boot & DevOps roadmap, feel free to reach out to me via the communication channels below. I will personally advise you and map out the most suitable path.",
+      description: "If you are interested in this comprehensive Java 25, Spring Boot 4 & Cloud DevOps roadmap, feel free to reach out to me via the communication channels below. I will personally advise you and map out the most suitable path.",
       facebook: "Facebook",
       facebookAction: "Connect now",
       zalo: "Zalo",

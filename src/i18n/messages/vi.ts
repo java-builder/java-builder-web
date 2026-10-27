@@ -1796,63 +1796,65 @@ export const vi = {
   mentorPage: {
     hero: {
       badge: "Chương Trình Đào Tạo Đặc Biệt 1-1",
-      title: "Đào Tạo Mentor Backend",
-      titleAccent: "Spring Boot Toàn Diện",
-      description: "Chương trình đồng hành 1-1 giúp bạn bứt phá tốc độ, đi nhanh hơn và tiếp cận những kiến thức thực chiến nâng cao (Spring AI, Passkey, TOTP, Caching Fallback, Cloud DevOps) mà rất ít khóa học thông thường chia sẻ trên thị trường.",
-      ctaContact: "Liên hệ tư vấn ngay",
+      title: "Đào Tạo Mentor 1-1",
+      titleAccent: "Java 25 & Spring Boot 4",
+      description: "Chương trình đồng hành 1-1 chuyên sâu: Thiết kế RESTful API chuẩn quốc tế, tối ưu Redis Caching, Spring Security, Spring AI, kỹ năng Git & PR thực tế doanh nghiệp đến triển khai 24/7 trên Cloud AWS.",
+      ctaContact: "Liên hệ tư vấn 1-1",
       ctaCurriculum: "Xem chi tiết lộ trình"
     },
     curriculum: {
-      title: "Nội Dung Lộ Trình Huấn Luyện",
-      description: "Chương trình thực chiến chuyên sâu bao phủ toàn bộ kiến thức một Backend Developer cần làm chủ.",
+      title: "Lộ Trình Đào Tạo Chi Tiết",
+      description: "Chương trình thực chiến 12 tuần bao phủ toàn diện công nghệ hiện đại nhất trên nền tảng Java 25 và Spring Boot 4.",
       module1: {
-        title: "Module 1: Spring Boot & Architecture",
-        item1: "Kiến trúc n-tier & Thiết kế RESTful API chuẩn quốc tế.",
-        item2: "Data Validation & Cơ chế Global Exception Handling toàn diện.",
-        item3: "Spring Data JPA: Tối ưu hóa truy vấn, N+1 query problem, indexing, projection."
+        title: "Module 1: Java 25, Spring Boot 4 & Architecture",
+        item1: "Thiết kế RESTful API chuẩn quốc tế, DTO pattern và chuẩn hóa kiến trúc chuyên nghiệp.",
+        item2: "Java 25 hiện đại: Virtual Threads (Project Loom), Pattern Matching, Scoped Values.",
+        item3: "Data Validation & Cơ chế Global Exception Handling toàn diện.",
+        item4: "Spring Data JPA: Tối ưu hóa truy vấn, triệt tiêu lỗi N+1 query problem, indexing, projection."
       },
       module2: {
         title: "Module 2: Advanced Security & Auth",
-        item1: "Spring Security 6: Cơ chế lọc Filter Chain hoạt động thế nào?",
-        item2: "JWT (Json Web Token) & Quản lý phiên đăng nhập an toàn.",
-        item3: "TOTP (Two-Factor Authentication) bảo mật 2 lớp.",
-        item4: "Đăng nhập sinh trắc học với WebAuthn (Passkey)."
+        item1: "Spring Security: Cơ chế lọc Filter Chain, SecurityContext và AuthenticationManager.",
+        item2: "JWT (Json Web Token) an toàn với Access/Refresh Token rotation.",
+        item3: "TOTP (Two-Factor Authentication) bảo mật 2 lớp qua Google Authenticator.",
+        item4: "Đăng nhập sinh trắc học hiện đại không mật khẩu với WebAuthn (Passkey)."
       },
       module3: {
         title: "Module 3: Caching, Storage & Core Utilities",
-        item1: "Quản lý Token & Blacklisting với Redis.",
-        item2: "Kỹ thuật Caching nâng cao & Xử lý Fallback Database khi Redis gặp sự cố.",
-        item3: "Gửi Email cơ bản & chuyên nghiệp với HTML Email Templates.",
-        item4: "Spring Scheduler: Lập lịch và tự động hóa tác vụ ngầm (Scheduling tasks).",
-        item5: "Tích hợp AWS S3: Upload file chuyên nghiệp.",
-        item6: "Chiến lược lưu trữ Object Key thông minh trong Database."
+        item1: "Quản lý Token, Blacklisting & Caching hiệu năng cao với Redis.",
+        item2: "Kỹ thuật Caching nâng cao & Xử lý Fallback Database tự động khi Redis gặp sự cố.",
+        item3: "Gửi Email tự động chuyên nghiệp với HTML Email Templates & Async events.",
+        item4: "Spring Scheduler: Lập lịch và tự động hóa tác vụ ngầm (Background Jobs).",
+        item5: "Tích hợp AWS S3: Upload file chuyên nghiệp với Pre-signed URLs và quản trị Object Key."
       },
       module4: {
         title: "Module 4: Spring AI & Generative AI",
         item1: "Spring AI: Tích hợp LLM, cấu hình tham số AI chuyên nghiệp.",
-        item2: "PromptTemplate: Kỹ thuật thiết kế và tối ưu hóa Prompt đầu vào.",
-        item3: "StructuredOutput: Định cấu trúc dữ liệu đầu ra từ LLM (JSON, DTO).",
-        item4: "ChatMemory: Quản lý ngữ cảnh và lịch sử hội thoại cho Chatbot.",
-        item5: "Tool Calling: Cho phép LLM tự động gọi API/Service nghiệp vụ.",
-        item6: "RAG (Retrieval-Augmented Generation): Truy vấn thông tin trên kho tài liệu nội bộ."
+        item2: "PromptTemplate & StructuredOutput: Định cấu trúc dữ liệu đầu ra từ LLM (JSON, DTO).",
+        item3: "ChatMemory: Quản lý ngữ cảnh và lịch sử hội thoại nhiều người dùng cho Chatbot.",
+        item4: "Tool Calling: Cho phép LLM tự động gọi API/Service nghiệp vụ nội bộ.",
+        item5: "RAG (Retrieval-Augmented Generation): Truy vấn thông tin trên kho tri thức nội bộ với pgvector."
       },
       module5: {
-        title: "Module 5: DevOps & Containerization",
-        item1: "Dockerfile: Viết và tối ưu hóa Dockerfile đóng gói ứng dụng.",
-        item2: "Docker & Docker Compose: Quản lý và chạy nhiều container cùng lúc."
+        title: "Module 5: Git Flow, Docker & CI/CD DevOps",
+        item1: "Quy trình Git Flow thực tế: Quản lý nhánh feature, conventional commits, rebase & resolve conflict.",
+        item2: "Quy chuẩn mở Pull Request, checklist review code & tối ưu Clean Code/SOLID.",
+        item3: "Dockerfile: Tối ưu hóa Multi-stage Build cho Java 25 siêu nhẹ (~150MB).",
+        item4: "Docker & Docker Compose: Quản lý và khởi chạy cụm Backend, Postgres, Redis trọn gói.",
+        item5: "GitHub Actions CI/CD: Tự động hóa kiểm thử, build Docker image & SonarQube quality gate."
       },
       module6: {
-        title: "Module 6: AWS Cloud Deployment",
-        item1: "Cơ sở hạ tầng mạng cơ bản trên AWS Cloud.",
-        item2: "Triển khai Backend lên môi trường thực tế AWS EC2/ECS.",
-        item3: "Nginx: Cấu hình Reverse Proxy cho Backend.",
+        title: "Module 6: AWS Cloud Deployment & Production",
+        item1: "Cơ sở hạ tầng mạng trên AWS Cloud: VPC, Subnet, Internet Gateway & Security Groups.",
+        item2: "Triển khai Backend lên môi trường thực tế AWS EC2 với Docker container.",
+        item3: "Nginx: Cấu hình Reverse Proxy.",
         item4: "Bảo mật HTTPS: Tự động cài đặt và renew chứng chỉ SSL với Certbot.",
-        item5: "Thiết lập CI/CD pipeline tự động hóa quy trình deploy."
+        item5: "Cloudflare: Quản lý bản ghi DNS, phân giải tên miền, tối ưu lưu lượng và bảo mật HTTPS."
       }
     },
     contact: {
       title: "Liên Hệ Trực Tiếp Để Nhận Lộ Trình & Tư Vấn 1-1",
-      description: "Nếu bạn quan tâm đến lộ trình học Spring Boot & DevOps toàn diện, vui lòng liên hệ trực tiếp với mình qua các kênh bên dưới. Mình sẽ hỗ trợ tư vấn và định hướng phù hợp nhất cho bạn.",
+      description: "Nếu bạn quan tâm đến lộ trình học Java 25, Spring Boot 4 & Cloud DevOps toàn diện, vui lòng liên hệ trực tiếp với mình qua các kênh bên dưới. Mình sẽ hỗ trợ tư vấn và định hướng phù hợp nhất cho bạn.",
       facebook: "Facebook",
       facebookAction: "Kết nối ngay",
       zalo: "Zalo",
