@@ -16,7 +16,7 @@ interface SessionTableRowProps {
 export const SessionTableRow = ({ session, imageErrors, onImageError, onViewDetails }: SessionTableRowProps) => {
   return (
     <TableRow className="transition-colors duration-200">
-      <TableCell className="px-4 py-3 align-middle max-w-[200px] truncate">
+      <TableCell className="px-4 py-3 align-middle overflow-hidden">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex-shrink-0">
             {session.avatar && !imageErrors.has(session.sessionId) ? (
@@ -44,24 +44,24 @@ export const SessionTableRow = ({ session, imageErrors, onImageError, onViewDeta
           </div>
         </div>
       </TableCell>
-      <TableCell className="px-4 py-3 align-middle">{getProviderBadge(session.provider)}</TableCell>
-      <TableCell className="px-4 py-3 align-middle">{getStatusBadge(session.status)}</TableCell>
-      <TableCell className="px-4 py-3 align-middle text-foreground max-w-[130px] truncate" title={`${session.browser} ${session.browserVersion}`}>
+      <TableCell className="px-4 py-3 align-middle overflow-hidden">{getProviderBadge(session.provider)}</TableCell>
+      <TableCell className="px-4 py-3 align-middle overflow-hidden">{getStatusBadge(session.status)}</TableCell>
+      <TableCell className="px-4 py-3 align-middle text-foreground overflow-hidden truncate" title={`${session.browser} ${session.browserVersion}`}>
         {session.browser} {session.browserVersion}
       </TableCell>
-      <TableCell className="px-4 py-3 align-middle text-foreground max-w-[120px]">
-        <div className="max-w-[120px] text-sm min-w-0">
+      <TableCell className="px-4 py-3 align-middle text-foreground overflow-hidden">
+        <div className="text-sm min-w-0">
           <div className="truncate font-medium" title={session.device}>{session.device}</div>
           <div className="text-xs text-muted-foreground truncate" title={session.os}>{session.os}</div>
         </div>
       </TableCell>
-      <TableCell className="px-4 py-3 align-middle text-foreground text-sm max-w-[130px] truncate" title={session.ipAddress}>
+      <TableCell className="px-4 py-3 align-middle text-foreground text-sm overflow-hidden truncate" title={session.ipAddress}>
         {session.ipAddress}
       </TableCell>
-      <TableCell className="px-4 py-3 align-middle text-muted-foreground text-xs whitespace-nowrap">
+      <TableCell className="px-4 py-3 align-middle text-muted-foreground text-xs whitespace-nowrap overflow-hidden">
         {formatLocaleString(session.createdAt)}
       </TableCell>
-      <TableCell className="px-4 py-3 align-middle text-center">
+      <TableCell className="px-4 py-3 align-middle text-center overflow-hidden">
         <Button
           variant="outline"
           size="icon"

@@ -12,8 +12,10 @@ import {
   AlertTriangle,
   XCircle,
   Calendar,
+  RotateCcw,
 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
+import { useResizableColumns, ResizableColumn } from "@/hooks/useResizableColumns";
 
 interface UserStreakTableProps {
   streaks: AdminUserStreak[];
@@ -27,6 +29,28 @@ export const UserStreakTable = ({
   onSendReminder,
 }: UserStreakTableProps) => {
   const { t } = useI18n();
+
+  const columns: ResizableColumn[] = [
+    { id: "user", label: t("admin.userStreaks.colUser"), defaultWidth: 240, minWidth: 170 },
+    { id: "currentStreak", label: t("admin.userStreaks.colCurrentStreak"), defaultWidth: 160, minWidth: 120 },
+    { id: "longestStreak", label: t("admin.userStreaks.colLongestStreak"), defaultWidth: 150, minWidth: 120 },
+    { id: "lastActivity", label: t("admin.userStreaks.colLastActivity"), defaultWidth: 160, minWidth: 130 },
+    { id: "status", label: t("admin.userStreaks.colStatus"), defaultWidth: 160, minWidth: 130 },
+    { id: "actions", label: t("admin.userStreaks.colActions"), align: "right", defaultWidth: 100, minWidth: 80 },
+  ];
+
+  const {
+    columnWidths,
+    resizingColId,
+    handleMouseDown,
+    handleDoubleClick,
+    resetAllWidths,
+    isCustomized,
+    totalTableWidth,
+  } = useResizableColumns({
+    storageKey: "admin_user_streaks_table_column_widths_v1",
+    columns,
+  });
 
   const renderStatusBadge = (status: StreakStatus) => {
     switch (status) {
@@ -100,93 +124,146 @@ export const UserStreakTable = ({
       </div>
 
       {/* Desktop Table (Visible on md+ screens) */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
-        <table className="w-full text-left text-xs min-w-[700px]">
-          <thead className="bg-muted/40 border-b border-border text-muted-foreground font-semibold">
-            <tr>
-              <th className="px-5 py-3.5 whitespace-nowrap">{t("admin.userStreaks.colUser")}</th>
-              <th className="px-5 py-3.5 whitespace-nowrap">{t("admin.userStreaks.colCurrentStreak")}</th>
-              <th className="px-5 py-3.5 whitespace-nowrap">{t("admin.userStreaks.colLongestStreak")}</th>
-              <th className="px-5 py-3.5 whitespace-nowrap">{t("admin.userStreaks.colLastActivity")}</th>
-              <th className="px-5 py-3.5 whitespace-nowrap">{t("admin.userStreaks.colStatus")}</th>
-              <th className="px-5 py-3.5 text-right whitespace-nowrap">{t("admin.userStreaks.colActions")}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {streaks.map((user) => (
-              <tr key={user.userId} className="hover:bg-muted/20 transition-colors">
-                {/* User info */}
-                <td className="px-5 py-3.5">
-                  <div className="flex items-center gap-3 min-w-[180px]">
-                    <div className="relative w-9 h-9 rounded-full bg-muted overflow-hidden border border-border shrink-0">
-                      {user.avatar ? (
-                        <Image
-                          src={user.avatar}
-                          alt={user.username || "User"}
-                          width={36}
-                          height={36}
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-orange-500/10 text-orange-600 font-bold text-xs">
-                          {(user.username || user.userId).charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-foreground truncate max-w-[160px]">
-                        {user.username || "User ID: " + user.userId}
-                      </p>
-                      <p className="text-[11px] text-muted-foreground truncate max-w-[160px]">
-                        {user.email || user.userId}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-
-                {/* Current Streak */}
-                <td className="px-5 py-3.5 whitespace-nowrap">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl font-bold text-sm bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                    <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
-                    {user.currentStreak}
-                  </span>
-                </td>
-
-                {/* Longest Streak */}
-                <td className="px-5 py-3.5 whitespace-nowrap">
-                  <div className="flex items-center gap-1.5 font-semibold text-muted-foreground">
-                    <Trophy className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
-                    <span>{user.longestStreak}</span>
-                  </div>
-                </td>
-
-                {/* Last Activity */}
-                <td className="px-5 py-3.5 text-muted-foreground whitespace-nowrap">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
-                    <span>{user.lastActivityDate || "-"}</span>
-                  </div>
-                </td>
-
-                {/* Status badge */}
-                <td className="px-5 py-3.5 whitespace-nowrap">{renderStatusBadge(user.status)}</td>
-
-                {/* Actions */}
-                <td className="px-5 py-3.5 text-right whitespace-nowrap">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onSendReminder(user)}
-                    title={t("admin.userStreaks.sendReminderBtn")}
-                    className="h-8 w-8 p-0 rounded-lg hover:bg-amber-500/10 hover:text-amber-600 cursor-pointer"
+      <div className="hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        {isCustomized && (
+          <div className="flex justify-end border-b border-border px-5 py-2.5 bg-muted/20">
+            <button
+              type="button"
+              onClick={resetAllWidths}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+              title="Đặt lại độ rộng các cột về mặc định"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Đặt lại cột</span>
+            </button>
+          </div>
+        )}
+        <div className="overflow-x-auto">
+          <table
+            className="w-full text-left text-xs border-collapse"
+            style={{
+              tableLayout: "fixed",
+              minWidth: `${totalTableWidth}px`,
+              width: "100%",
+            }}
+          >
+            <colgroup>
+              {columns.map((col) => (
+                <col
+                  key={col.id}
+                  style={{ width: `${columnWidths[col.id] || col.defaultWidth}px` }}
+                />
+              ))}
+            </colgroup>
+            <thead className="bg-muted/40 border-b border-border text-muted-foreground font-semibold">
+              <tr>
+                {columns.map((col) => (
+                  <th
+                    key={col.id}
+                    style={{ width: `${columnWidths[col.id] || col.defaultWidth}px` }}
+                    className={`relative px-5 py-3.5 select-none overflow-visible ${
+                      col.align === "right" ? "text-right" : "text-left"
+                    }`}
                   >
-                    <Bell className="w-3.5 h-3.5" />
-                  </Button>
-                </td>
+                    <div className="truncate pr-2">{col.label}</div>
+
+                    {/* Resizer Handle */}
+                    <div
+                      onMouseDown={(e) => handleMouseDown(col.id, e)}
+                      onDoubleClick={() => handleDoubleClick(col.id)}
+                      title="Kéo sang trái/phải để chỉnh độ rộng cột, nhấp đúp để đặt lại"
+                      className={`absolute top-0 right-0 bottom-0 w-2.5 cursor-col-resize select-none touch-none z-10 flex items-center justify-center group/resizer hover:bg-accent/15 ${
+                        resizingColId === col.id ? "bg-accent/20" : ""
+                      }`}
+                    >
+                      <div
+                        className={`h-4 w-[1px] transition-all duration-150 ${
+                          resizingColId === col.id
+                            ? "h-full bg-accent w-[2px]"
+                            : "bg-border group-hover/resizer:h-full group-hover/resizer:bg-accent group-hover/resizer:w-[2px]"
+                        }`}
+                      />
+                    </div>
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {streaks.map((user) => (
+                <tr key={user.userId} className="hover:bg-muted/20 transition-colors">
+                  {/* User info */}
+                  <td className="px-5 py-3.5 overflow-hidden">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative w-9 h-9 rounded-full bg-muted overflow-hidden border border-border shrink-0">
+                        {user.avatar ? (
+                          <Image
+                            src={user.avatar}
+                            alt={user.username || "User"}
+                            width={36}
+                            height={36}
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-orange-500/10 text-orange-600 font-bold text-xs">
+                            {(user.username || user.userId).charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-foreground truncate" title={user.username || user.userId}>
+                          {user.username || "User ID: " + user.userId}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground truncate" title={user.email || user.userId}>
+                          {user.email || user.userId}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Current Streak */}
+                  <td className="px-5 py-3.5 whitespace-nowrap overflow-hidden">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl font-bold text-sm bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                      <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
+                      {user.currentStreak}
+                    </span>
+                  </td>
+
+                  {/* Longest Streak */}
+                  <td className="px-5 py-3.5 whitespace-nowrap overflow-hidden">
+                    <div className="flex items-center gap-1.5 font-semibold text-muted-foreground">
+                      <Trophy className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
+                      <span>{user.longestStreak}</span>
+                    </div>
+                  </td>
+
+                  {/* Last Activity */}
+                  <td className="px-5 py-3.5 text-muted-foreground whitespace-nowrap overflow-hidden truncate">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
+                      <span>{user.lastActivityDate || "-"}</span>
+                    </div>
+                  </td>
+
+                  {/* Status badge */}
+                  <td className="px-5 py-3.5 whitespace-nowrap overflow-hidden">{renderStatusBadge(user.status)}</td>
+
+                  {/* Actions */}
+                  <td className="px-5 py-3.5 text-right whitespace-nowrap overflow-hidden">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onSendReminder(user)}
+                      title={t("admin.userStreaks.sendReminderBtn")}
+                      className="h-8 w-8 p-0 rounded-lg hover:bg-amber-500/10 hover:text-amber-600 cursor-pointer"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

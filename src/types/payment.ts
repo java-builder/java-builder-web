@@ -1,3 +1,8 @@
+export interface PaymentItemResponse {
+  itemId: string;
+  itemName: string;
+}
+
 export interface PaymentDetailResponse {
   id: string;
   paymentCode: number;
@@ -9,8 +14,7 @@ export interface PaymentDetailResponse {
   transactionType: TransactionType;
   userName: string;
   userEmail: string;
-  courseTitle?: string;
-  subscriptionPlanName?: string;
+  paymentItem?: PaymentItemResponse | null;
   createdAt: string;
   updatedAt: string;
 }

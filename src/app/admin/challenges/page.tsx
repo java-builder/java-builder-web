@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   ChallengesHeader,
   ChallengeFilters,
@@ -26,7 +26,24 @@ import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/Pagination";
 
 export default function AdminChallengesPage() {
-  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+  const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("admin_challenges_view_mode");
+      if (saved === "table" || saved === "grid") {
+        setViewMode(saved);
+      }
+    } catch {}
+  }, []);
+
+  const handleSetViewMode = (mode: "table" | "grid") => {
+    setViewMode(mode);
+    try {
+      localStorage.setItem("admin_challenges_view_mode", mode);
+    } catch {}
+  };
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<ChallengeStatus | "">("");
   const [levelFilter, setLevelFilter] = useState<ChallengeLevel | "">("");
@@ -162,7 +179,7 @@ export default function AdminChallengesPage() {
             <div className="flex items-center bg-muted/60 p-0.5 rounded-lg border border-border/60">
               <button
                 type="button"
-                onClick={() => setViewMode("table")}
+                onClick={() => handleSetViewMode("table")}
                 className={`p-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                   viewMode === "table"
                     ? "bg-card text-foreground shadow-xs"
@@ -174,7 +191,7 @@ export default function AdminChallengesPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setViewMode("grid")}
+                onClick={() => handleSetViewMode("grid")}
                 className={`p-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                   viewMode === "grid"
                     ? "bg-card text-foreground shadow-xs"

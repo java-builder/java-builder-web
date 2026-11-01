@@ -101,49 +101,50 @@ interface PaymentTableRowProps {
 
 export const PaymentTableRow = ({ payment, onClick, onDelete }: PaymentTableRowProps) => {
   const isExpired = payment.paymentStatus === PaymentStatus.EXPIRED;
+  const itemName = payment.paymentItem?.itemName || "—";
 
   return (
     <tr
       className="cursor-pointer transition-colors hover:bg-muted/25"
       onClick={() => onClick(payment)}
     >
-      <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold tabular-nums text-foreground">
+      <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold tabular-nums text-foreground overflow-hidden truncate">
         #{payment.paymentCode}
       </td>
-      <td className="px-4 py-3">
-        <div className="truncate text-sm font-medium text-foreground">
+      <td className="px-4 py-3 overflow-hidden">
+        <div className="truncate text-sm font-medium text-foreground" title={payment.userName}>
           {payment.userName}
         </div>
-        <div className="truncate text-xs text-muted-foreground">
+        <div className="truncate text-xs text-muted-foreground" title={payment.userEmail}>
           {payment.userEmail}
         </div>
       </td>
-      <td className="px-4 py-3">
-        <div className="line-clamp-1 text-sm text-foreground">
-          {payment.courseTitle || payment.subscriptionPlanName || "—"}
+      <td className="px-4 py-3 overflow-hidden">
+        <div className="truncate text-sm text-foreground" title={itemName !== "—" ? itemName : ""}>
+          {itemName}
         </div>
       </td>
-      <td className="whitespace-nowrap px-4 py-3">
+      <td className="whitespace-nowrap px-4 py-3 overflow-hidden">
         <TransactionTypeBadge type={payment.transactionType} />
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold tabular-nums text-foreground">
+      <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold tabular-nums text-foreground overflow-hidden">
         {new Intl.NumberFormat("vi-VN", {
           style: "currency",
           currency: "VND",
         }).format(payment.totalPrice)}
       </td>
-      <td className="whitespace-nowrap px-4 py-3">
+      <td className="whitespace-nowrap px-4 py-3 overflow-hidden">
         <StatusBadge status={payment.paymentStatus} />
       </td>
-      <td className="hidden whitespace-nowrap px-4 py-3 text-xs tabular-nums text-muted-foreground xl:table-cell">
+      <td className="whitespace-nowrap px-4 py-3 text-xs tabular-nums text-muted-foreground overflow-hidden truncate" title={formatLocaleString(payment.createdAt)}>
         {formatLocaleString(payment.createdAt)}
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+      <td className="whitespace-nowrap px-4 py-3 text-right overflow-hidden" onClick={(e) => e.stopPropagation()}>
         {isExpired && onDelete && (
           <button
             type="button"
             onClick={() => onDelete(payment)}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30 dark:hover:text-rose-400 cursor-pointer"
             title="Xóa giao dịch hết hạn"
           >
             <Trash2 className="h-3.5 w-3.5" />

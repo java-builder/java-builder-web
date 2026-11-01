@@ -469,26 +469,39 @@ export default function ChallengeClient() {
                 </p>
               </div>
 
-              {/* 1. WHY LEARN THIS? (Tại sao cần học phần này trong thực tế?) */}
-              <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                  <Compass className="w-4 h-4" />
-                  <span>Tại sao phần này lại quan trọng trong thực tế?</span>
-                </div>
-                <p className="text-xs sm:text-sm text-foreground leading-relaxed">
-                  {activeDay.whyLearn}
-                </p>
-              </div>
+              {/* BẢNG ĐỊNH HƯỚNG BÀI HỌC (Why Learn & Core Mission) */}
+              <div className="rounded-lg border border-gray-200/90 bg-gray-50/50 dark:border-slate-800 dark:bg-slate-900/30 overflow-hidden shadow-2xs">
+                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200/90 dark:divide-slate-800">
+                  {/* Why Learn */}
+                  <div className="p-4 sm:p-5 flex items-start gap-3.5">
+                    <div className="w-8 h-8 rounded-md bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                      <Compass className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-snug">
+                        Tại sao quan trọng trong thực tế?
+                      </h3>
+                      <p className="text-xs sm:text-sm text-foreground/80 dark:text-slate-300 leading-relaxed">
+                        {activeDay.whyLearn || "Nắm vững kỹ năng cốt lõi cho dự án thực tế."}
+                      </p>
+                    </div>
+                  </div>
 
-              {/* 2. CORE MISSION (Mục tiêu cốt lõi hôm nay) */}
-              <div className="p-4 rounded-2xl bg-accent/5 border border-accent/20 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-accent uppercase tracking-wider">
-                  <Target className="w-4 h-4" />
-                  <span>Mục tiêu cốt lõi hôm nay cần đạt</span>
+                  {/* Core Mission */}
+                  <div className="p-4 sm:p-5 flex items-start gap-3.5">
+                    <div className="w-8 h-8 rounded-md bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                      <Target className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-snug">
+                        Mục tiêu ngày học này
+                      </h3>
+                      <p className="text-xs sm:text-sm text-foreground/80 dark:text-slate-300 leading-relaxed">
+                        {activeDay.coreMission || "Hoàn thành toàn bộ mục tiêu và yêu cầu bài học trong ngày."}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-foreground font-medium leading-relaxed">
-                  {activeDay.coreMission}
-                </p>
               </div>
 
               {/* 3. ACTIONABLE CHECKLIST (Danh sách việc cần làm hôm nay) */}

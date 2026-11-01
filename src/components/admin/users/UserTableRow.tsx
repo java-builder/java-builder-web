@@ -73,7 +73,7 @@ interface UserTableRowProps {
 export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRowProps) => {
   return (
     <TableRow className="transition-colors duration-200">
-      <TableCell className="px-4 py-3 max-w-[200px] truncate">
+      <TableCell className="px-4 py-3 overflow-hidden">
         <div className="flex items-center min-w-0">
           <div className="flex-shrink-0 h-9 w-9">
             {user.avatar ? (
@@ -103,13 +103,13 @@ export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRo
           </div>
         </div>
       </TableCell>
-      <TableCell className="px-4 py-3 max-w-[180px] truncate" title={user.email}>
+      <TableCell className="px-4 py-3 overflow-hidden truncate" title={user.email}>
         {user.email}
       </TableCell>
-      <TableCell className="px-4 py-3">
+      <TableCell className="px-4 py-3 overflow-hidden">
         <StatusBadge status={user.userStatus} />
       </TableCell>
-      <TableCell className="px-4 py-3 max-w-[200px]">
+      <TableCell className="px-4 py-3 overflow-hidden">
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           {(user.authorities || []).map((role) => (
             <span
@@ -121,15 +121,18 @@ export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRo
           ))}
         </div>
       </TableCell>
-      <TableCell className="px-4 py-3">
+      <TableCell className="px-4 py-3 overflow-hidden">
         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${user.mftEnable ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20" : "bg-muted text-muted-foreground border-border"}`}>
           {user.mftEnable ? "Bật" : "Tắt"}
         </span>
       </TableCell>
-      <TableCell className="px-4 py-3 text-sm text-muted-foreground">
+      <TableCell
+        className="px-4 py-3 text-sm text-muted-foreground overflow-hidden truncate"
+        title={user.createdAt ? formatLocaleString(user.createdAt) : "N/A"}
+      >
         {user.createdAt ? formatLocaleString(user.createdAt) : "N/A"}
       </TableCell>
-      <TableCell className="px-4 py-3 text-right">
+      <TableCell className="px-4 py-3 text-right overflow-hidden">
         <div className="flex items-center justify-end gap-2">
           <Button
             variant="outline"

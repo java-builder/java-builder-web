@@ -115,8 +115,11 @@ export const PaymentDetailModal = ({
   }, [onClose]);
 
   const statusCfg = STATUS_CONFIG[payment.paymentStatus] ?? STATUS_CONFIG.PENDING;
-  const productName = payment.courseTitle || payment.subscriptionPlanName;
-  const productLabel = payment.courseTitle ? "Khóa học" : "Gói đăng ký";
+  const productName = payment.paymentItem?.itemName;
+  const productLabel =
+    payment.transactionType === TransactionType.SUBSCRIPTION
+      ? "Gói đăng ký"
+      : "Khóa học";
   const formattedAmount = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
@@ -230,7 +233,12 @@ export const PaymentDetailModal = ({
                   icon={<Package className="h-3.5 w-3.5" />}
                   title="Sản phẩm"
                 >
-                  <Field label={productLabel} value={productName} />
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Field label={productLabel} value={productName} />
+                    {payment.paymentItem?.itemId && (
+                      <Field label="Mã sản phẩm (ID)" value={payment.paymentItem.itemId} mono breakAll />
+                    )}
+                  </div>
                 </Section>
               )}
 

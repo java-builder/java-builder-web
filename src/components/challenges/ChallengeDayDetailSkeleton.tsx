@@ -30,36 +30,44 @@ export function ChallengeDayDetailSkeleton() {
       </div>
 
       {/* 2. Why Learn & Core Mission Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/30 p-4 sm:p-5 space-y-3">
-          <div className="h-4 w-44 rounded bg-gray-200 dark:bg-slate-800" />
-          <div className="space-y-1.5">
-            <div className="h-3.5 w-full rounded bg-gray-100 dark:bg-slate-800/60" />
-            <div className="h-3.5 w-4/5 rounded bg-gray-100 dark:bg-slate-800/60" />
+      <div className="rounded-lg border border-gray-100 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/30 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-slate-800">
+          <div className="p-4 sm:p-5 flex items-start gap-3.5">
+            <div className="w-8 h-8 rounded-md bg-gray-200 dark:bg-slate-800 shrink-0 mt-0.5" />
+            <div className="space-y-2 flex-1 min-w-0">
+              <div className="h-4 w-44 rounded bg-gray-200 dark:bg-slate-800" />
+              <div className="space-y-1.5 pt-0.5">
+                <div className="h-3.5 w-full rounded bg-gray-100 dark:bg-slate-800/60" />
+                <div className="h-3.5 w-4/5 rounded bg-gray-100 dark:bg-slate-800/60" />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/30 p-4 sm:p-5 space-y-3">
-          <div className="h-4 w-40 rounded bg-gray-200 dark:bg-slate-800" />
-          <div className="space-y-1.5">
-            <div className="h-3.5 w-full rounded bg-gray-100 dark:bg-slate-800/60" />
-            <div className="h-3.5 w-3/4 rounded bg-gray-100 dark:bg-slate-800/60" />
+          <div className="p-4 sm:p-5 flex items-start gap-3.5">
+            <div className="w-8 h-8 rounded-md bg-gray-200 dark:bg-slate-800 shrink-0 mt-0.5" />
+            <div className="space-y-2 flex-1 min-w-0">
+              <div className="h-4 w-40 rounded bg-gray-200 dark:bg-slate-800" />
+              <div className="space-y-1.5 pt-0.5">
+                <div className="h-3.5 w-full rounded bg-gray-100 dark:bg-slate-800/60" />
+                <div className="h-3.5 w-3/4 rounded bg-gray-100 dark:bg-slate-800/60" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Task Summary Card Skeleton */}
-      <div className="rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/40 dark:bg-slate-800/20 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-3 flex-1">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gray-200 dark:bg-slate-800 shrink-0" />
-            <div className="space-y-1.5 flex-1">
-              <div className="h-4 w-48 rounded bg-gray-200 dark:bg-slate-800" />
-              <div className="h-3 w-64 rounded bg-gray-100 dark:bg-slate-800/60" />
-            </div>
+      {/* 3. Compact Task Summary Bar Skeleton */}
+      <div className="rounded-lg border border-gray-100 dark:border-slate-800 bg-gray-50/40 dark:bg-slate-800/20 p-3 sm:px-4 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-4.5 h-4.5 rounded bg-gray-200 dark:bg-slate-800 shrink-0" />
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-40 sm:w-48 rounded bg-gray-200 dark:bg-slate-800" />
+            <div className="h-4 w-14 rounded-md bg-gray-100 dark:bg-slate-800/60" />
           </div>
-          <div className="h-2 w-full max-w-md rounded-full bg-gray-200 dark:bg-slate-800" />
         </div>
-        <div className="h-10 w-full sm:w-52 rounded-lg bg-gray-200 dark:bg-slate-800" />
+        <div className="flex items-center gap-3 justify-between sm:justify-end">
+          <div className="h-1.5 w-24 sm:w-28 rounded-sm bg-gray-200 dark:bg-slate-800" />
+          <div className="h-7 w-24 rounded-md bg-gray-200 dark:bg-slate-800 shrink-0" />
+        </div>
       </div>
 
       {/* 4. Content Area Skeleton */}

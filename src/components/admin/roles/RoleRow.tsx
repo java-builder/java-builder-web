@@ -26,7 +26,7 @@ export default function RoleRow({
   return (
     <tr className="group transition hover:bg-gray-50/50 dark:hover:bg-slate-800/30">
       {/* Name Column */}
-      <td className="whitespace-nowrap px-6 py-4">
+      <td className="whitespace-nowrap px-6 py-4 overflow-hidden">
         <div className="flex items-center gap-2">
           {role.name === "ADMIN" ? (
             <ShieldAlert className="h-4 w-4 text-red-500" />
@@ -40,22 +40,22 @@ export default function RoleRow({
       </td>
 
       {/* Description Column */}
-      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate" title={role.description}>
+      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 overflow-hidden truncate" title={role.description}>
         {role.description || "-"}
       </td>
 
       {/* Created Date */}
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400 overflow-hidden truncate">
         {formatReadableDateTime(role.createdAt)}
       </td>
 
       {/* Updated Date */}
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400 overflow-hidden truncate">
         {formatReadableDateTime(role.updatedAt || role.createdAt)}
       </td>
 
       {/* Actions */}
-      <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+      <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium overflow-hidden">
         <div className="flex items-center justify-end gap-2">
           <button
             onClick={() => onEdit(role)}

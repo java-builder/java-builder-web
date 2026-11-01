@@ -14,7 +14,8 @@ import { Pagination } from "@/components/ui/Pagination";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { Button } from "@/components/ui/button";
 import { PaymentDetailResponse, PaymentStatus } from "@/types/payment";
-import { Trash2, CreditCard } from "lucide-react";
+import { Trash2, CreditCard, RotateCcw } from "lucide-react";
+import { useResizableColumns, ResizableColumn } from "@/hooks/useResizableColumns";
 import { toast } from "react-hot-toast";
 import { isAxiosError } from "axios";
 import { useI18n } from "@/contexts/I18nContext";
@@ -96,16 +97,29 @@ export default function PaymentsPage() {
   const payments = data?.data ?? [];
   const hasData = payments.length > 0;
 
-  const columnHeaders = [
-    { label: t("admin.payments.colOrderCode") },
-    { label: t("admin.payments.colUser") },
-    { label: t("admin.payments.colProduct") },
-    { label: t("admin.payments.colType") },
-    { label: t("admin.payments.colAmount"), align: "right" as const },
-    { label: t("admin.payments.colStatus") },
-    { label: t("admin.payments.colCreatedAt"), hiddenUntilXl: true },
-    { label: t("admin.payments.colActions"), align: "right" as const },
+  const columns: ResizableColumn[] = [
+    { id: "orderCode", label: t("admin.payments.colOrderCode"), defaultWidth: 130, minWidth: 100 },
+    { id: "user", label: t("admin.payments.colUser"), defaultWidth: 200, minWidth: 150 },
+    { id: "product", label: t("admin.payments.colProduct"), defaultWidth: 220, minWidth: 150 },
+    { id: "type", label: t("admin.payments.colType"), defaultWidth: 130, minWidth: 100 },
+    { id: "amount", label: t("admin.payments.colAmount"), align: "right", defaultWidth: 140, minWidth: 110 },
+    { id: "status", label: t("admin.payments.colStatus"), defaultWidth: 140, minWidth: 110 },
+    { id: "createdAt", label: t("admin.payments.colCreatedAt"), defaultWidth: 160, minWidth: 130 },
+    { id: "actions", label: t("admin.payments.colActions"), align: "right", defaultWidth: 90, minWidth: 80 },
   ];
+
+  const {
+    columnWidths,
+    resizingColId,
+    handleMouseDown,
+    handleDoubleClick,
+    resetAllWidths,
+    isCustomized,
+    totalTableWidth,
+  } = useResizableColumns({
+    storageKey: "admin_payments_table_column_widths_v1",
+    columns,
+  });
 
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
@@ -120,6 +134,17 @@ export default function PaymentsPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {isCustomized && (
+            <button
+              type="button"
+              onClick={resetAllWidths}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+              title="Đặt lại độ rộng các cột về mặc định"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Đặt lại cột</span>
+            </button>
+          )}
           {data && (
             <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
               {t("admin.payments.totalTransactions").replace(
@@ -235,42 +260,68 @@ export default function PaymentsPage() {
       {/* Desktop table (hiển thị >= md) */}
       {hasData && (
         <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
-          <table className="w-full table-fixed divide-y divide-border">
-            <colgroup>
-              <col className="w-[10%]" />
-              <col className="w-[18%]" />
-              <col className="w-[18%]" />
-              <col className="w-[10%]" />
-              <col className="w-[12%]" />
-              <col className="w-[12%]" />
-              <col className="hidden xl:table-column xl:w-[14%]" />
-              <col className="w-[6%]" />
-            </colgroup>
-            <thead className="bg-muted/40">
-              <tr>
-                {columnHeaders.map((col) => (
-                  <th
-                    key={col.label}
-                    className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ${
-                      col.align === "right" ? "text-right" : "text-left"
-                    } ${col.hiddenUntilXl ? "hidden xl:table-cell" : ""}`}
-                  >
-                    {col.label}
-                  </th>
+          <div className="overflow-x-auto">
+            <table
+              className="w-full divide-y divide-border border-collapse text-left"
+              style={{
+                tableLayout: "fixed",
+                minWidth: `${totalTableWidth}px`,
+                width: "100%",
+              }}
+            >
+              <colgroup>
+                {columns.map((col) => (
+                  <col
+                    key={col.id}
+                    style={{ width: `${columnWidths[col.id] || col.defaultWidth}px` }}
+                  />
                 ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border bg-transparent">
-              {payments.map((payment) => (
-                <PaymentTableRow
-                  key={payment.id}
-                  payment={payment}
-                  onClick={setSelectedPayment}
-                  onDelete={(p) => setSingleDeleteModal({ isOpen: true, payment: p })}
-                />
-              ))}
-            </tbody>
-          </table>
+              </colgroup>
+              <thead className="bg-muted/40">
+                <tr>
+                  {columns.map((col) => (
+                    <th
+                      key={col.id}
+                      style={{ width: `${columnWidths[col.id] || col.defaultWidth}px` }}
+                      className={`relative px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground select-none overflow-visible ${
+                        col.align === "right" ? "text-right" : "text-left"
+                      }`}
+                    >
+                      <div className="truncate pr-2">{col.label}</div>
+
+                      {/* Resizer handle (Excel-like drag bar) */}
+                      <div
+                        onMouseDown={(e) => handleMouseDown(col.id, e)}
+                        onDoubleClick={() => handleDoubleClick(col.id)}
+                        title="Kéo sang trái/phải để chỉnh độ rộng cột, nhấp đúp để đặt lại"
+                        className={`absolute top-0 right-0 bottom-0 w-2.5 cursor-col-resize select-none touch-none z-10 flex items-center justify-center group/resizer hover:bg-accent/15 ${
+                          resizingColId === col.id ? "bg-accent/20" : ""
+                        }`}
+                      >
+                        <div
+                          className={`h-4 w-[1px] transition-all duration-150 ${
+                            resizingColId === col.id
+                              ? "h-full bg-accent w-[2px]"
+                              : "bg-border group-hover/resizer:h-full group-hover/resizer:bg-accent group-hover/resizer:w-[2px]"
+                          }`}
+                        />
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border bg-transparent">
+                {payments.map((payment) => (
+                  <PaymentTableRow
+                    key={payment.id}
+                    payment={payment}
+                    onClick={setSelectedPayment}
+                    onDelete={(p) => setSingleDeleteModal({ isOpen: true, payment: p })}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

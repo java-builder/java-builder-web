@@ -54,8 +54,7 @@ interface PaymentMobileCardProps {
 
 export const PaymentMobileCard = ({ payment, onClick, onDelete }: PaymentMobileCardProps) => {
   const isExpired = payment.paymentStatus === PaymentStatus.EXPIRED;
-  const productName =
-    payment.courseTitle || payment.subscriptionPlanName || "—";
+  const productName = payment.paymentItem?.itemName || "—";
   const formattedAmount = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",

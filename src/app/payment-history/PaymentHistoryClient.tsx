@@ -272,7 +272,7 @@ export default function PaymentHistoryPage() {
                         <td className="px-6 py-4">
                           <div className="max-w-sm">
                             <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
-                              {payment.courseTitle || payment.subscriptionPlanName || payment.description || "-"}
+                              {payment.paymentItem?.itemName || payment.description || "-"}
                             </p>
                             {payment.description && (
                               <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">
@@ -311,7 +311,7 @@ export default function PaymentHistoryPage() {
                     </div>
                     <div className="mt-4">
                       <p className="font-medium text-gray-900 dark:text-gray-100">
-                        {payment.courseTitle || payment.subscriptionPlanName || payment.description || "-"}
+                        {payment.paymentItem?.itemName || payment.description || "-"}
                       </p>
                       {payment.description && (
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{payment.description}</p>
