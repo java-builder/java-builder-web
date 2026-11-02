@@ -94,43 +94,17 @@ export default function EmailTemplatesGrid({
         >
           {/* Header card info */}
           <div className="p-5 flex-1 flex flex-col">
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-lg border border-accent/20">
-                <FileCode className="w-3.5 h-3.5" />
-                {tpl.templateName}
+            <div className="mb-3">
+              <span
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 text-accent text-xs font-bold rounded-lg border border-accent/20 max-w-full truncate"
+                title={tpl.templateName}
+              >
+                <FileCode className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate font-mono">{tpl.templateName}</span>
               </span>
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1">
-                <Button
-                  size="icon-xs"
-                  variant="ghost"
-                  onClick={() => onPreview(tpl)}
-                  title="Xem trước"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Eye className="w-4 h-4" />
-                </Button>
-                <Button
-                  size="icon-xs"
-                  variant="ghost"
-                  onClick={() => onEdit(tpl)}
-                  title="Chỉnh sửa"
-                  className="text-muted-foreground hover:text-accent"
-                >
-                  <Edit3 className="w-4 h-4" />
-                </Button>
-                <Button
-                  size="icon-xs"
-                  variant="ghost"
-                  onClick={() => onDelete(tpl.templateName)}
-                  title="Xóa mẫu"
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
             </div>
 
-            <h3 className="font-bold text-foreground text-[15px] line-clamp-1 mb-2">
+            <h3 className="font-bold text-foreground text-[15px] line-clamp-1 mb-2" title={tpl.subject}>
               {tpl.subject}
             </h3>
             
@@ -141,19 +115,34 @@ export default function EmailTemplatesGrid({
 
           {/* Bottom quick actions */}
           <div className="px-5 py-3 bg-muted/40 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-            <span className="font-mono text-[10px] text-muted-foreground/60">AWS SES Template</span>
-            <div className="flex gap-4">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/70">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              AWS SES Template
+            </span>
+            <div className="flex items-center gap-1.5 shrink-0">
               <button
+                type="button"
                 onClick={() => onPreview(tpl)}
-                className="flex items-center gap-1 text-accent hover:underline font-semibold transition"
+                title="Xem trước mẫu email"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background text-muted-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/40 transition-colors cursor-pointer shadow-2xs"
               >
-                Xem mẫu
+                <Eye className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => onEdit(tpl)}
-                className="flex items-center gap-1 hover:text-foreground font-semibold transition"
+                title="Chỉnh sửa mẫu email"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500 hover:border-blue-500/40 transition-colors cursor-pointer shadow-2xs"
               >
-                Sửa
+                <Edit3 className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(tpl.templateName)}
+                title="Xóa mẫu email"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/40 transition-colors cursor-pointer shadow-2xs"
+              >
+                <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </div>

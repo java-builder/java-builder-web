@@ -3,12 +3,15 @@ export interface ChartData {
     value: number;
 }
 
-export interface CourseRevenue {
+export interface ItemRevenue {
     id: string;
-    name: string;
+    title: string;
     owners: number;
     revenue: number;
 }
+
+/** @deprecated Use ItemRevenue */
+export type CourseRevenue = ItemRevenue;
 
 export interface ReportStatsResponse {
     totalRevenue: number;
@@ -17,7 +20,8 @@ export interface ReportStatsResponse {
     totalEnrollments: number;
     revenueChart: ChartData[];
     userChart: ChartData[];
-    courseRevenues: CourseRevenue[];
+    courseRevenues: ItemRevenue[];
+    challengeRevenues: ItemRevenue[];
 }
 
 export enum TransactionType {
