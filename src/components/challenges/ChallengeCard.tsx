@@ -54,41 +54,56 @@ export function ChallengeCard({ challenge, userProgress }: ChallengeCardProps) {
         className="relative block aspect-[16/10] sm:aspect-[16/9] min-h-[195px] w-full overflow-hidden bg-[#181D28] flex-shrink-0 cursor-pointer"
       >
         <div
-          className="flex h-full w-full flex-col justify-between p-5 text-white transition-transform duration-500 group-hover:scale-105 bg-[#171717] border-b border-[#E8E8E8]/10"
+          className="relative flex h-full w-full flex-col justify-between p-5 text-white transition-transform duration-500 group-hover:scale-105 border-b border-black/10"
+          style={{
+            background:
+              challenge.colorGradient ||
+              "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+          }}
         >
+          {/* Subtle top-right highlight & bottom dark scrim for text contrast on any gradient */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-black/5"
+          />
+
           {/* Top Badges */}
-          <div className="flex items-center justify-between gap-2 z-10">
+          <div className="relative flex items-center justify-between gap-2 z-10">
             <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs">
+              <span className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-black/25 backdrop-blur-md px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs">
                 {challenge.tag}
               </span>
               {challenge.freePreviewDays && challenge.freePreviewDays > 0 ? (
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/20 backdrop-blur-md px-2 py-0.5 text-[10px] font-bold text-emerald-300 shadow-xs">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/20 backdrop-blur-md px-2.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
                   Học thử {challenge.freePreviewDays} ngày
                 </span>
               ) : null}
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/40 backdrop-blur-md px-2.5 py-0.5 text-xs font-bold text-white shadow-xs">
+            <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-black/35 backdrop-blur-md px-2.5 py-0.5 text-xs font-bold text-white shadow-xs">
               <Clock className="w-3.5 h-3.5" />
               {challenge.totalDays} Ngày
             </span>
           </div>
 
           {/* Banner Center Title */}
-          <div className="z-10">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-[#FF9900] block">
-              {challenge.category}
-            </span>
-            <h3 className="text-base sm:text-lg font-extrabold leading-snug line-clamp-2 mt-0.5 text-white">
+          <div className="relative z-10">
+            {challenge.category && (
+              <span className="inline-block rounded-md bg-black/25 backdrop-blur-xs px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase text-white/95 mb-1.5 border border-white/15">
+                {challenge.category}
+              </span>
+            )}
+            <h3 className="text-base sm:text-lg font-extrabold leading-snug line-clamp-2 text-white drop-shadow-xs">
               {challenge.title}
             </h3>
-            <p className="text-xs text-white/80 line-clamp-1 mt-1 font-medium">
+            <p className="text-xs text-white/90 line-clamp-1 mt-1 font-medium">
               {challenge.subtitle}
             </p>
           </div>
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
         </div>
       </Link>
 
