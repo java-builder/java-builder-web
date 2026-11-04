@@ -26,12 +26,12 @@ export default function PaymentModal({
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={() => !isLoading && onClose()}
       />
-      <div className="relative bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="px-6 py-5 border-b border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#FF5A1F]/10 text-[#FF5A1F] rounded-xl flex items-center justify-center">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -86,7 +86,7 @@ export default function PaymentModal({
                 <div className="absolute inset-0 rounded-full border-4 border-accent/20"></div>
                 <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-accent border-r-accent animate-spin"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-3 h-3 bg-accent rounded-full animate-pulse"></div>
+                  <div className="w-3 h-3 bg-accent rounded-full "></div>
                 </div>
               </div>
               <p className="text-gray-700 font-semibold text-lg mb-2">
@@ -118,7 +118,7 @@ export default function PaymentModal({
                   {courseTitle}
                 </h4>
                 <div className="flex items-center justify-center gap-2 mt-1.5">
-                  <span className="text-xl font-bold text-accent">
+                  <span className="text-xl font-bold text-[#FF5A1F]">
                     {new Intl.NumberFormat("vi-VN").format(data.totalPrice)}đ
                   </span>
                   <span className="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-750 dark:text-yellow-400 text-[10px] font-bold rounded-full border border-yellow-200 dark:border-yellow-900/40 uppercase tracking-wider">
@@ -130,14 +130,14 @@ export default function PaymentModal({
               {/* QR Code */}
               {data.qrCode && (
                 <div className="flex justify-center mb-6">
-                  <div className="p-4 bg-white rounded-xl border border-gray-100 dark:border-slate-800 shadow-xs">
+                  <div className="p-4 bg-white rounded-2xl border border-[#E8E8E8] dark:border-border shadow-xs">
                     <QRCodeSVG value={data.qrCode} size={200} level="M" />
                   </div>
                 </div>
               )}
 
               {/* Order Info */}
-              <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-slate-900/40 rounded-xl mb-4 border border-gray-100 dark:border-slate-800/80">
+              <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-surface/60 rounded-xl mb-4 border border-[#E8E8E8] dark:border-border">
                 <span className="text-sm text-gray-555 dark:text-slate-400">Mã đơn hàng</span>
                 <span className="font-mono font-bold text-gray-900 dark:text-white">
                   {data.orderCode}
@@ -150,7 +150,7 @@ export default function PaymentModal({
                   href={data.checkoutUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-[#FF5A1F] hover:bg-[#e04b16] text-white font-bold rounded-full shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
                 >
                   Thanh toán qua PayOS
                   <svg

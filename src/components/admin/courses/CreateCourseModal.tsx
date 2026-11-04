@@ -9,7 +9,7 @@ import { formatPriceInput, parsePriceInput } from "@/utils/formatters";
 import toast from "react-hot-toast";
 import { PlusCircle, X, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CustomSelect } from "@/components/ui/CustomSelect";
+import { CustomSelect } from "@/components/ui/select";
 
 interface CreateCourseModalProps {
   isOpen: boolean;
@@ -158,9 +158,9 @@ export default function CreateCourseModal({
 
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal */}
-        <div className="relative bg-card text-card-foreground border border-border rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col z-10 overflow-hidden">
+        <div className="relative bg-surface text-card-foreground border border-border rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col z-10 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-xl">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 dark:bg-surface">
             <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
               <PlusCircle className="w-5 h-5 text-accent dark:text-accent-on-dark" />
               Tạo khóa học mới
@@ -324,7 +324,7 @@ export default function CreateCourseModal({
                 ) : (
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full h-40 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-accent/40 hover:bg-accent/5 transition-all duration-200 bg-muted/30"
+                    className="w-full h-40 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-accent/5 transition-all duration-200 bg-muted/30"
                   >
                     <UploadCloud className="w-10 h-10 text-muted-foreground mb-2" />
                     <p className="text-foreground text-sm font-semibold">
@@ -349,13 +349,13 @@ export default function CreateCourseModal({
           </div>
 
           {/* Fixed Actions Footer */}
-          <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-xl">
+          <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 dark:bg-surface">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
               disabled={isLoading}
-              className="text-sm font-medium"
+              className="text-sm font-medium rounded-full cursor-pointer"
             >
               Hủy
             </Button>
@@ -364,7 +364,7 @@ export default function CreateCourseModal({
               variant="accent"
               onClick={handleSubmit(onSubmit)}
               disabled={isLoading}
-              className="text-sm font-medium"
+              className="text-sm font-medium rounded-full cursor-pointer"
             >
               {isLoading ? (
                 <>

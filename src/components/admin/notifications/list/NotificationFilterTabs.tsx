@@ -36,9 +36,9 @@ export default function NotificationFilterTabs({
             key={tab.id}
             type="button"
             onClick={() => onTabChange(tab.id)}
-            className={`inline-flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition cursor-pointer ${
+            className={`inline-flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-medium transition cursor-pointer ${
               isActive
-                ? "bg-accent/10 text-accent"
+                ? "bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 font-semibold"
                 : "text-muted-foreground hover:bg-muted"
             }`}
           >
@@ -46,7 +46,7 @@ export default function NotificationFilterTabs({
             <span
               className={`inline-flex items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums ${
                 isActive
-                  ? "bg-accent/20 text-accent"
+                  ? "bg-primary/20 text-primary"
                   : "bg-muted text-muted-foreground"
               }`}
             >

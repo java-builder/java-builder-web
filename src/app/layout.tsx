@@ -121,7 +121,7 @@ export default async function RootLayout({
       >
         <GoogleAnalytics />
         <Providers initialLocale={locale}>
-          <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+          <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
             <ConditionalSidebar />
             <ConditionalLayout>
               {children}

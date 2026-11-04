@@ -45,7 +45,7 @@ export function ChallengeSideDrawer({
         {/* 1. TOP HEADER */}
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border bg-card shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-[#FFF0E8] dark:bg-primary/15 text-[#FF5A1F] flex items-center justify-center shrink-0">
               <ListTodo className="w-4 h-4" />
             </div>
             <div>
@@ -68,7 +68,7 @@ export function ChallengeSideDrawer({
                     ? "Bấm để hủy hoàn thành Ngày " + activeDay.day
                     : "Đánh dấu hoàn thành Ngày " + activeDay.day
                 }
-                className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer active:scale-95 shadow-xs ${activeDay.status === "completed"
+                className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer active:scale-95 shadow-xs ${activeDay.status === "completed"
                     ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive"
                     : "border border-border bg-card hover:bg-muted text-foreground"
                   }`}
@@ -105,7 +105,7 @@ export function ChallengeSideDrawer({
           {/* Day Title & Tagline */}
           <div className="space-y-2">
             <div className="border-l-3 border-accent pl-3.5 py-0.5 space-y-0.5">
-              <span className="text-[11px] font-bold text-accent uppercase tracking-wider block">
+              <span className="text-[11px] font-bold text-[#FF5A1F] uppercase tracking-wider block">
                 Ngày {activeDay.day} • Tuần {activeDay.week}
               </span>
               <h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight leading-snug">
@@ -124,7 +124,7 @@ export function ChallengeSideDrawer({
           <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-2.5">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-foreground">Tiến độ nhiệm vụ</span>
-              <span className="font-bold text-accent">{progressPercent}%</span>
+              <span className="font-bold text-[#FF5A1F]">{progressPercent}%</span>
             </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <div
@@ -156,13 +156,13 @@ export function ChallengeSideDrawer({
                     onClick={() => onToggleTask(task.id)}
                     className={`flex items-start gap-2.5 py-2.5 px-3 rounded-lg border text-xs transition cursor-pointer select-none ${task.isCompleted
                         ? "bg-muted/30 border-border/70 text-muted-foreground"
-                        : "bg-card border-border text-foreground hover:border-accent/40 hover:bg-muted/20 shadow-2xs"
+                        : "bg-card border-border text-foreground hover:bg-muted/20 shadow-2xs"
                       }`}
                   >
                     <div
-                      className={`w-4 h-4 mt-0.5 rounded-[4px] flex items-center justify-center shrink-0 border transition-all ${task.isCompleted
+                      className={`w-4 h-4 mt-0.5 rounded-md flex items-center justify-center shrink-0 border transition-all ${task.isCompleted
                           ? "bg-emerald-600 border-emerald-600 text-white"
-                          : "border-muted-foreground/40 bg-card hover:border-accent"
+                          : "border-muted-foreground/40 bg-card"
                         }`}
                     >
                       {task.isCompleted && <Check className="w-3 h-3 stroke-[3]" />}
@@ -197,10 +197,10 @@ export function ChallengeSideDrawer({
                                 >
                                   {meta.badgeLabel}
                                 </span>
-                                <span className="text-blue-600 dark:text-blue-400 underline underline-offset-2 decoration-blue-500/40 hover:decoration-blue-600 font-medium text-xs truncate">
+                                <span className="text-[#FF5A1F] underline underline-offset-2 decoration-[#FF5A1F]/40 hover:decoration-[#FF5A1F] font-medium text-xs truncate">
                                   {displayTitle}
                                 </span>
-                                <ExternalLink className="w-2.5 h-2.5 text-blue-500/70 shrink-0" />
+                                <ExternalLink className="w-2.5 h-2.5 text-[#FF5A1F] shrink-0" />
                               </a>
                             );
                           })}

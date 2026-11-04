@@ -31,8 +31,9 @@ export const UserStreakHeader = ({
       <div className="flex items-center gap-3">
         <Button
           type="button"
+          variant="accent"
           onClick={onOpenReminder}
-          className="gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium shadow-sm transition-all rounded-xl cursor-pointer"
+          className="gap-2 cursor-pointer"
         >
           <Bell className="h-4 w-4" />
           {t("admin.userStreaks.sendReminderBtn")}
@@ -43,7 +44,7 @@ export const UserStreakHeader = ({
           size="sm"
           onClick={onRefresh}
           disabled={isRefreshing}
-          className="gap-1.5 shrink-0 rounded-xl h-9 cursor-pointer"
+          className="gap-1.5 shrink-0 rounded-full h-9 cursor-pointer"
         >
           <RotateCw className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
           {t("admin.questionContributions.refreshBtn")}

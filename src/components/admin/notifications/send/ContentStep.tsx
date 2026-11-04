@@ -154,7 +154,7 @@ export default function ContentStep({
         <button
           type="button"
           onClick={onChangeModeClick}
-          className="inline-flex items-center gap-1.5 flex-shrink-0 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground transition hover:border-accent/40 hover:bg-muted hover:text-foreground cursor-pointer"
+          className="inline-flex items-center gap-1.5 flex-shrink-0 rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground cursor-pointer"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>{isTemplateMode ? "Đổi mẫu khác" : "Chọn mẫu có sẵn"}</span>
@@ -304,7 +304,7 @@ export default function ContentStep({
           )}
 
           {/* Card 3: Optional Collapsible HTML Code Viewer */}
-          <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="rounded-2xl border border-border bg-surface shadow-xs overflow-hidden">
             <button
               type="button"
               onClick={() => setShowHtmlCode(!showHtmlCode)}
@@ -361,7 +361,7 @@ export default function ContentStep({
                     className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition cursor-pointer ${
                       isActive
                         ? "border-accent bg-accent/5 ring-1 ring-accent/30"
-                        : "border-border bg-card hover:border-accent/50 hover:bg-muted"
+                        : "border-border bg-card hover:bg-muted"
                     }`}
                   >
                     <span
@@ -475,14 +475,14 @@ export default function ContentStep({
                   <button
                     type="button"
                     onClick={() => onInsertTag("{{username}}")}
-                    className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-md text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95 cursor-pointer"
+                    className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-full text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95 cursor-pointer"
                   >
                     &#123;&#123;username&#125;&#125;
                   </button>
                   <button
                     type="button"
                     onClick={() => onInsertTag("{{email}}")}
-                    className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-md text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95 cursor-pointer"
+                    className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-full text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95 cursor-pointer"
                   >
                     &#123;&#123;email&#125;&#125;
                   </button>

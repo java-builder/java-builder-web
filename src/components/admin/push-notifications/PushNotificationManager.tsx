@@ -179,23 +179,25 @@ export default function PushNotificationManager() {
       />
 
       {/* System Standard Tabs */}
-      <div className="flex border-b border-border overflow-x-auto">
+      <div className="flex items-center gap-2 p-1.5 rounded-full border border-border bg-surface overflow-x-auto">
         <button
           onClick={() => setActiveTab("history")}
-          className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap transition-all cursor-pointer ${activeTab === "history"
-            ? "border-accent text-accent dark:text-accent-on-dark"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+          className={`py-2 px-4 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+            activeTab === "history"
+              ? "bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 shadow-xs"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
         >
           Lịch Sử Đã Gửi ({pushList.length})
         </button>
 
         <button
           onClick={() => setActiveTab("create")}
-          className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap transition-all cursor-pointer ${activeTab === "create"
-            ? "border-accent text-accent dark:text-accent-on-dark"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+          className={`py-2 px-4 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+            activeTab === "create"
+              ? "bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 shadow-xs"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
         >
           Soạn & Gửi Push Mới
         </button>
@@ -205,10 +207,11 @@ export default function PushNotificationManager() {
             setActiveTab("subscribers");
             fetchSubscribers(debouncedSearch);
           }}
-          className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap transition-all cursor-pointer ${activeTab === "subscribers"
-            ? "border-accent text-accent dark:text-accent-on-dark"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+          className={`py-2 px-4 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+            activeTab === "subscribers"
+              ? "bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 shadow-xs"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
         >
           Học Viên Đã Bật Push ({totalSubscribers})
         </button>

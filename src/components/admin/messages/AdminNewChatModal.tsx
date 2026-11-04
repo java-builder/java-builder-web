@@ -211,11 +211,11 @@ export default function AdminNewChatModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-card text-card-foreground rounded-2xl sm:rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="w-full max-w-lg bg-surface text-card-foreground rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/40">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-accent/15 text-accent border border-accent/30">
+            <div className="p-2.5 rounded-xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
@@ -235,16 +235,16 @@ export default function AdminNewChatModal({
 
         <form onSubmit={handleCreate} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           {/* Chat Type Switcher */}
-          <div className="flex p-1 bg-muted rounded-2xl">
+          <div className="flex p-1 bg-background/50 border border-border rounded-full">
             <button
               type="button"
               onClick={() => {
                 setChatType("PRIVATE");
                 setSelectedUserIds([]);
               }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
                 chatType === "PRIVATE"
-                  ? "bg-card text-accent shadow-xs"
+                  ? "bg-surface text-primary shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -280,7 +280,7 @@ export default function AdminNewChatModal({
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="Ví dụ: Nhóm Học Java Core Admin..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3.5 py-2.5 rounded-full border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
 
@@ -288,7 +288,7 @@ export default function AdminNewChatModal({
                 <label className="block text-xs font-bold text-foreground mb-1.5">
                   Ảnh đại diện nhóm
                 </label>
-                <div className="flex items-center gap-3.5 p-3 rounded-2xl border border-dashed border-border bg-muted/20 hover:border-accent/50 transition-all">
+                <div className="flex items-center gap-3.5 p-3 rounded-2xl border border-dashed border-border bg-muted/20 transition-all">
                   <div
                     onClick={() => avatarInputRef.current?.click()}
                     className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-accent/40 cursor-pointer group shrink-0 shadow-xs bg-background"
@@ -311,7 +311,7 @@ export default function AdminNewChatModal({
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
-                      className="mt-1.5 px-3 py-1 rounded-xl bg-accent/10 hover:bg-accent/20 text-xs font-bold text-accent flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="mt-1.5 px-3 py-1 rounded-full bg-accent/10 hover:bg-accent/20 text-xs font-bold text-accent flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       <span>{groupAvatar !== DEFAULT_GROUP_AVATAR ? "Đổi ảnh" : "Chọn ảnh từ máy"}</span>
@@ -344,7 +344,7 @@ export default function AdminNewChatModal({
 
             {/* Course Filter & Search Bar */}
             <div className="space-y-2 mb-3">
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50 border border-border">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted/50 border border-border">
                 <BookOpen className="w-4 h-4 text-accent shrink-0" />
                 <select
                   value={selectedCourseId}
@@ -437,14 +437,14 @@ export default function AdminNewChatModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:bg-muted transition-colors cursor-pointer border border-border"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || selectedUserIds.length === 0 || !groupName.trim()}
-                className="px-5 py-2 rounded-xl bg-accent text-accent-foreground text-xs font-bold hover:bg-accent/90 transition-all shadow-xs disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-hover transition-all shadow-xs disabled:opacity-50 flex items-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>

@@ -190,7 +190,7 @@ export default function EmojiPickerPopover({
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
                   title={cat.label}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium whitespace-nowrap shrink-0 transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                     isActive
                       ? "bg-accent text-white shadow-xs font-semibold"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
@@ -227,7 +227,7 @@ export default function EmojiPickerPopover({
                   if (onClose) onClose();
                 }}
                 title={`${item.name} (${item.emoji})`}
-                className="group relative flex items-center justify-center p-1.5 rounded-xl hover:bg-accent/15 hover:scale-125 active:scale-95 transition-all text-xl cursor-pointer"
+                className="group relative flex items-center justify-center p-1.5 rounded-full hover:bg-accent/15 hover:scale-125 active:scale-95 transition-all text-xl cursor-pointer"
               >
                 <span>{item.emoji}</span>
               </button>

@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="relative bg-[#FAFAFA] dark:bg-[#0B0F19] -mt-[54px] pt-[80px] pb-6 md:pb-10 overflow-hidden transition-colors">
+      <main className="relative bg-background pt-6 md:pt-8 pb-6 md:pb-10 overflow-hidden transition-colors">
         {/* Modern AWS Cloud Aesthetic Background: Tech Dot Grid + Ambient Orange Aura */}
         <div
           className="absolute inset-0 pointer-events-none select-none overflow-hidden"
@@ -92,43 +92,43 @@ export default function Home() {
                   </p>
 
                   {/* 3 Feature Highlights matching exact AWS mockup */}
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-5 pt-0.5 select-none">
+                  <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-2 sm:gap-5 pt-0.5 select-none">
                     {/* Item 1: Học mọi lúc mọi nơi */}
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF0E8] flex items-center justify-center flex-shrink-0 text-[#171717] font-extrabold text-sm tracking-tighter">
+                    <div className="flex items-center gap-2 sm:gap-2.5">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0 text-primary font-extrabold text-xs sm:text-sm tracking-tighter">
                         &lt;/&gt;
                       </div>
-                      <div className="text-xs sm:text-[13px] font-semibold text-[#171717] dark:text-slate-200 leading-tight">
+                      <div className="text-[11px] sm:text-[13px] font-semibold text-foreground leading-tight">
                         <p>{t("home.featureLearnAnytime") || "Học mọi lúc"}</p>
                         <p>{t("home.featureAnywhere") || "mọi nơi"}</p>
                       </div>
                     </div>
 
                     {/* Divider 1 */}
-                    <div className="h-7 w-px bg-slate-200/90 dark:bg-slate-700/80 hidden sm:block" />
+                    <div className="h-7 w-px bg-border hidden sm:block" />
 
                     {/* Item 2: Thực hành thực tế */}
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF0E8] flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-[#FF5A1F]" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="flex items-center gap-2 sm:gap-2.5">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
                           <rect x="3" y="14" width="4" height="7" rx="1" />
                           <rect x="10" y="8" width="4" height="13" rx="1" />
                           <rect x="17" y="3" width="4" height="18" rx="1" />
                         </svg>
                       </div>
-                      <div className="text-xs sm:text-[13px] font-semibold text-[#171717] dark:text-slate-200 leading-tight">
+                      <div className="text-[11px] sm:text-[13px] font-semibold text-foreground leading-tight">
                         <p>{t("home.featurePractice") || "Thực hành"}</p>
                         <p>{t("home.featureReal") || "thực tế"}</p>
                       </div>
                     </div>
 
                     {/* Divider 2 */}
-                    <div className="h-7 w-px bg-slate-200/90 dark:bg-slate-700/80 hidden sm:block" />
+                    <div className="h-7 w-px bg-border hidden sm:block" />
 
                     {/* Item 3: Cộng đồng hỗ trợ mạnh mẽ */}
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF0E8] flex items-center justify-center flex-shrink-0 text-[#FF5A1F]">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="flex items-center gap-2 sm:gap-2.5">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0 text-primary">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
                           <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
                           <path d="M4 22h16" />
@@ -137,7 +137,7 @@ export default function Home() {
                           <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
                         </svg>
                       </div>
-                      <div className="text-xs sm:text-[13px] font-semibold text-[#171717] dark:text-slate-200 leading-tight">
+                      <div className="text-[11px] sm:text-[13px] font-semibold text-foreground leading-tight">
                         <p>{t("home.featureCommunity") || "Cộng đồng"}</p>
                         <p>{t("home.featureSupport") || "hỗ trợ mạnh mẽ"}</p>
                       </div>
@@ -145,19 +145,19 @@ export default function Home() {
                   </div>
 
                   {/* Quick CTAs */}
-                  <div className="flex items-center gap-3 pt-2">
+                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-2">
                     <Link
                       href="/courses"
-                      className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold bg-[#FF5A1F] text-white hover:bg-[#e04b16] transition-all shadow-md shadow-[#FF5A1F]/25 active:scale-95 cursor-pointer"
+                      className="inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold bg-primary text-white hover:bg-primary-hover transition-all shadow-md shadow-primary/25 active:scale-95 cursor-pointer whitespace-nowrap"
                     >
                       <span>{t("home.exploreCourses") || "Khám phá khóa học"}</span>
                       <span className="text-base leading-none">→</span>
                     </Link>
                     <Link
                       href="/interview"
-                      className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-[#181d28] border border-[#E8E8E8] dark:border-[#262d3d] text-[#171717] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                      className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold bg-surface border border-border text-foreground hover:bg-muted transition-all active:scale-95 cursor-pointer shadow-2xs whitespace-nowrap"
                     >
-                      <svg className="w-2.5 h-2.5 fill-[#171717] dark:fill-white flex-shrink-0" viewBox="0 0 24 24">
+                      <svg className="w-2.5 h-2.5 fill-current shrink-0" viewBox="0 0 24 24">
                         <polygon points="6,3 20,12 6,21" />
                       </svg>
                       <span>{t("home.prepInterview") || "Ôn tập phỏng vấn"}</span>
@@ -181,9 +181,8 @@ export default function Home() {
         </div>
       </main>
 
-
-      {/* Course Cards Section */}
-      <section className="py-12 bg-white dark:bg-[#0f1117] border-b border-[#E8E8E8] dark:border-[#262d3d]">
+      {/* 1. Featured Courses Section */}
+      <section className="py-12 bg-surface border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
@@ -198,7 +197,7 @@ export default function Home() {
                   {t("home.featuredCoursesDesc")}
                 </p>
               </div>
-              <ViewAllLink href="/courses" variant="ghost">
+              <ViewAllLink href="/courses">
                 {t("home.viewAllCourses")}
               </ViewAllLink>
             </div>
@@ -207,18 +206,14 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Loading State */}
             {isLoadingCourses && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full col-span-full">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[6px] overflow-hidden p-6 space-y-4 ">
-                    <div className="aspect-video bg-muted rounded-xl w-full" />
-                    <div className="h-5 bg-muted rounded w-2/3" />
-                    <div className="space-y-2">
-                      <div className="h-4 bg-muted rounded w-full" />
-                      <div className="h-4 bg-muted rounded w-5/6" />
-                    </div>
-                    <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-slate-800">
-                      <div className="h-5 bg-muted rounded w-16" />
-                      <div className="h-5 bg-muted rounded w-20" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full col-span-full">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl overflow-hidden p-4 space-y-3">
+                    <div className="aspect-[16/10] bg-slate-100 dark:bg-slate-800 rounded-xl w-full animate-pulse" />
+                    <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded w-2/3 animate-pulse" />
+                    <div className="space-y-1.5">
+                      <div className="h-3.5 bg-slate-100 dark:bg-slate-800 rounded w-full animate-pulse" />
+                      <div className="h-3.5 bg-slate-100 dark:bg-slate-800 rounded w-5/6 animate-pulse" />
                     </div>
                   </div>
                 ))}
@@ -228,34 +223,24 @@ export default function Home() {
             {/* Error State */}
             {coursesError && !isLoadingCourses && (
               <div className="col-span-full text-center py-12">
-                <div className="text-red-600 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                <div className="text-red-500 mb-3">
+                  <svg className="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <p className="text-gray-600">{t("home.loadCoursesError")}</p>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">{t("home.loadCoursesError")}</p>
               </div>
             )}
 
-            {/* Course Cards from API */}
+            {/* Course Cards */}
             {!isLoadingCourses &&
               !coursesError &&
-              courses.map((course, index) => (
+              courses.slice(0, 4).map((course, index) => (
                 <MotionWrapper
                   key={course.id}
                   animation="fadeInUp"
-                  delay={0.2 * (index + 1)}
-                  duration={0.6}
+                  delay={0.1 * (index + 1)}
+                  duration={0.5}
                 >
                   <CourseCard course={course} index={index} />
                 </MotionWrapper>
@@ -264,66 +249,55 @@ export default function Home() {
             {/* Empty State */}
             {!isLoadingCourses && !coursesError && courses.length === 0 && (
               <div className="col-span-full text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </div>
-                <p className="text-gray-600">{t("home.noCourses")}</p>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">{t("home.noCourses")}</p>
               </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* Featured Challenges Section */}
-      <section className="py-14 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* 2. Featured Challenges Section */}
+      <section className="py-12 bg-background border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
-            <div className="mx-auto mb-12 max-w-3xl text-center">
-              <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1 text-xs font-mono font-medium text-slate-700 dark:text-slate-300 shadow-2xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                {t("home.featuredChallengesBadge")}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="w-1.5 h-6 bg-[#FF5A1F] rounded-full inline-block" />
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#171717] dark:text-white">
+                    {t("home.featuredChallenges")}
+                  </h2>
+                </div>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">
+                  {t("home.featuredChallengesDesc")}
+                </p>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
-                {t("home.featuredChallenges")}
-              </h2>
-              <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                {t("home.featuredChallengesDesc")}
-              </p>
+              <ViewAllLink href="/challenges">
+                {t("home.viewAllChallenges")}
+              </ViewAllLink>
             </div>
           </MotionWrapper>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {isLoadingChallenges ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full col-span-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="h-80 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[6px]  p-6 space-y-4"
+                    className="h-80 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl p-6 space-y-4"
                   >
-                    <div className="aspect-video bg-muted rounded-xl w-full" />
-                    <div className="h-5 bg-muted rounded w-2/3" />
-                    <div className="h-4 bg-muted rounded w-full" />
+                    <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl w-full animate-pulse" />
+                    <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded w-2/3 animate-pulse" />
+                    <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-full animate-pulse" />
                   </div>
                 ))}
               </div>
             ) : challenges.length === 0 ? (
-              <div className="col-span-full text-center py-12 text-sm text-muted-foreground">
-                ChÆ°a cÃ³ thá»­ thÃ¡ch nÃ o Ä‘ang má»Ÿ.
+              <div className="col-span-full text-center py-12 text-sm text-[#64748B] dark:text-slate-400">
+                Chưa có thử thách nào đang mở.
               </div>
             ) : (
-              challenges.map((challenge, index) => (
+              challenges.slice(0, 3).map((challenge, index) => (
                 <MotionWrapper
                   key={challenge.id}
                   animation="fadeInUp"
@@ -335,44 +309,42 @@ export default function Home() {
               ))
             )}
           </div>
-
-          <div className="text-center mt-12">
-            <ViewAllLink href="/challenges">
-              {t("home.viewAllChallenges")}
-            </ViewAllLink>
-          </div>
         </div>
       </section>
 
-      {/* Featured Blogs Section */}
-      <section className="py-14 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* 3. Featured Blogs Section */}
+      <section className="py-12 bg-surface border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                {t("home.featuredBlogs")}
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {t("home.featuredBlogsDesc")}
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="w-1.5 h-6 bg-[#FF5A1F] rounded-full inline-block" />
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#171717] dark:text-white">
+                    {t("home.featuredBlogs")}
+                  </h2>
+                </div>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">
+                  {t("home.featuredBlogsDesc")}
+                </p>
+              </div>
+              <ViewAllLink href="/blogs">
+                {t("home.viewAllBlogs")}
+              </ViewAllLink>
             </div>
           </MotionWrapper>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Loading State */}
             {isLoadingBlogs && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-855 rounded-[6px] overflow-hidden p-6 space-y-4 ">
-                    <div className="aspect-video bg-muted rounded-xl w-full" />
-                    <div className="h-5 bg-muted rounded w-2/3" />
+                  <div key={i} className="bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl overflow-hidden p-6 space-y-4">
+                    <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl w-full animate-pulse" />
+                    <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded w-2/3 animate-pulse" />
                     <div className="space-y-2">
-                      <div className="h-4 bg-muted rounded w-full" />
-                      <div className="h-4 bg-muted rounded w-5/6" />
-                    </div>
-                    <div className="flex gap-2 items-center pt-2">
-                      <div className="w-8 h-8 rounded-full bg-muted" />
-                      <div className="h-4 bg-muted rounded w-24" />
+                      <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-full animate-pulse" />
+                      <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-5/6 animate-pulse" />
                     </div>
                   </div>
                 ))}
@@ -382,33 +354,18 @@ export default function Home() {
             {/* Error State */}
             {blogsError && !isLoadingBlogs && (
               <div className="col-span-full text-center py-12">
-                <div className="text-red-650 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-gray-600">{t("home.loadBlogsError")}</p>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">{t("home.loadBlogsError")}</p>
               </div>
             )}
 
-            {/* Blog Cards from API */}
+            {/* Blog Cards */}
             {!isLoadingBlogs &&
               !blogsError &&
-              blogs.map((blog, index) => (
+              blogs.slice(0, 3).map((blog, index) => (
                 <MotionWrapper
                   key={blog.id}
                   animation="fadeInUp"
-                  delay={0.2 * (index + 1)}
+                  delay={0.15 * (index + 1)}
                   duration={0.6}
                 >
                   <PublicBlogCard blog={blog} />
@@ -418,74 +375,43 @@ export default function Home() {
             {/* Empty State */}
             {!isLoadingBlogs && !blogsError && blogs.length === 0 && (
               <div className="col-span-full text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-gray-600">{t("home.noBlogs")}</p>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">{t("home.noBlogs")}</p>
               </div>
             )}
           </div>
-
-          {!isLoadingBlogs && !blogsError && blogs.length > 0 && (
-            <div className="text-center mt-12">
-              <ViewAllLink href="/blogs">
-                {t("home.viewAllBlogs")}
-              </ViewAllLink>
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Featured Documents Section */}
-      <section className="relative overflow-hidden py-16 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-24 right-10 h-72 w-72 rounded-full bg-accent/10 blur-3xl"></div>
-          <div className="absolute bottom-10 -left-20 h-72 w-72 rounded-full bg-accent/10 blur-3xl"></div>
-        </div>
-        <div className="relative max-w-7xl mx-auto px-6">
+      {/* 4. Featured Documents Section */}
+      <section className="relative overflow-hidden py-12 bg-background">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
-            <div className="mx-auto mb-14 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1 text-xs font-mono font-medium text-slate-700 dark:text-slate-300 shadow-2xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                {t("home.featuredDocsBadge")}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="w-1.5 h-6 bg-[#FF5A1F] rounded-full inline-block" />
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#171717] dark:text-white">
+                    {t("home.featuredDocs")}
+                  </h2>
+                </div>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">
+                  {t("home.featuredDocsDesc")}
+                </p>
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-955 dark:text-white mb-5">
-                {t("home.featuredDocs")}
-              </h2>
-              <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                {t("home.featuredDocsDesc")}
-              </p>
+              <ViewAllLink href="/documents">
+                {t("home.viewAllDocs")}
+              </ViewAllLink>
             </div>
           </MotionWrapper>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {isLoadingDocuments && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[6px] p-6 space-y-4 ">
+                  <div key={i} className="bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl p-6 space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-muted" />
-                      <div className="h-5 bg-muted rounded w-1/2" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-muted rounded w-full" />
-                      <div className="h-4 bg-muted rounded w-5/6" />
-                    </div>
-                    <div className="flex justify-between items-center pt-4 border-t border-gray-150 dark:border-slate-800">
-                      <div className="h-4 bg-muted rounded w-16" />
-                      <div className="h-4 bg-muted rounded w-16" />
+                      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse" />
+                      <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded w-1/2 animate-pulse" />
                     </div>
                   </div>
                 ))}
@@ -494,44 +420,21 @@ export default function Home() {
 
             {documentsError && !isLoadingDocuments && (
               <div className="col-span-full text-center py-12">
-                <div className="text-red-650 mb-4">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-gray-600 dark:text-gray-300">{t("home.loadDocsError")}</p>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">{t("home.loadDocsError")}</p>
               </div>
             )}
 
-            {!isLoadingDocuments && !documentsError && documents.map((doc, index) => (
+            {!isLoadingDocuments && !documentsError && documents.slice(0, 6).map((doc, index) => (
               <MotionWrapper
                 key={doc.id}
                 animation="fadeInUp"
-                delay={0.2 * (index + 1)}
+                delay={0.15 * (index + 1)}
                 duration={0.6}
               >
                 <DocumentCard document={doc} index={index} />
               </MotionWrapper>
             ))}
           </div>
-
-          {!isLoadingDocuments && !documentsError && documents.length > 0 && (
-            <div className="text-center mt-12">
-              <ViewAllLink href="/documents">
-                {t("home.viewAllDocs")}
-              </ViewAllLink>
-            </div>
-          )}
         </div>
       </section>
     </>

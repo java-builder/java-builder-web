@@ -16,7 +16,7 @@ export const RevokeAllSessionsModal = ({ userId, username, isRevoking, onConfirm
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Container */}
-      <div className="relative w-full max-w-md bg-card border border-border text-foreground rounded-2xl shadow-2xl p-6 z-10">
+      <div className="relative w-full max-w-md bg-surface border border-border text-foreground rounded-2xl shadow-2xl p-6 z-10">
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-amber-500/10 rounded-full">
           <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-amber-500" />
         </div>
@@ -26,9 +26,9 @@ export const RevokeAllSessionsModal = ({ userId, username, isRevoking, onConfirm
           Người dùng sẽ bị đăng xuất khỏi tất cả thiết bị hiện tại.
         </p>
         
-        <div className="p-3 bg-muted/50 border border-border rounded-lg mb-4">
+        <div className="p-3 bg-muted/50 border border-border rounded-xl mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accent to-accent-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-warning flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
               {username?.charAt(0)?.toUpperCase() || 'U'}
             </div>
             <div className="min-w-0 flex-1">
@@ -47,7 +47,7 @@ export const RevokeAllSessionsModal = ({ userId, username, isRevoking, onConfirm
             variant="outline"
             onClick={onClose} 
             disabled={isRevoking}
-            className="flex-1"
+            className="flex-1 rounded-full border border-border cursor-pointer"
           >
             Hủy
           </Button>
@@ -55,7 +55,7 @@ export const RevokeAllSessionsModal = ({ userId, username, isRevoking, onConfirm
             variant="destructive"
             onClick={onConfirm} 
             disabled={isRevoking}
-            className="flex-1 gap-1.5"
+            className="flex-1 gap-1.5 rounded-full cursor-pointer"
           >
             {isRevoking && <Loader2 className="h-4 w-4 animate-spin" />}
             {isRevoking ? "Đang xử lý..." : "Thu hồi"}

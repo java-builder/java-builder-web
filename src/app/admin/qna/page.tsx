@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Search, HelpCircle, CheckCircle2, AlertCircle, Sparkles, MessageSquare, Eye, Edit3, Trash2, Tag, Calendar, Wand2, Clock, Bug, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FilterSelect } from "@/components/ui/FilterSelect";
-import { Pagination } from "@/components/ui/Pagination";
+import { FilterSelect } from "@/components/ui/select";
+import { Pagination } from "@/components/ui/pagination";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
@@ -89,17 +89,7 @@ export default function AdminQnAPage() {
       },
       {
         title: "Xác nhận xóa bài viết",
-        message: `
-          <div style="text-align: center; line-height: 1.5;">
-            <p style="margin-bottom: 8px;">Bạn có chắc chắn muốn xóa bài viết Q&A</p>
-            <p style="font-weight: 700; color: #dc2626; font-size: 14px; margin: 8px 0; padding: 6px 12px; background: #fef2f2; border-radius: 6px; display: inline-block; max-width: 280px; word-wrap: break-word;">
-              "${post.title}"
-            </p>
-            <p style="margin-top: 8px; font-size: 12px; color: #6b7280;">
-              Hành động này không thể hoàn tác
-            </p>
-          </div>
-        `,
+        message: `Bạn có chắc chắn muốn xóa bài viết Q&A <strong>"${post.title}"</strong>? Hành động này không thể hoàn tác.`,
         confirmText: "Xóa bài viết",
         cancelText: "Hủy bỏ",
         type: "error",
@@ -127,10 +117,10 @@ export default function AdminQnAPage() {
   return (
     <div className="p-4 sm:p-6">
       {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-6 rounded-2xl shadow-xs mb-6">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-accent" />
+            <MessageSquare className="h-6 w-6 text-primary" />
             <span>{t("admin.qna.pageTitle")}</span>
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -141,16 +131,16 @@ export default function AdminQnAPage() {
           <Button
             onClick={() => setIsAIModalOpen(true)}
             variant="outline"
-            className="gap-2 h-9 border-accent/40 text-accent hover:bg-accent/10 shadow-xs font-medium"
+            className="gap-2 h-9 border border-border text-primary hover:bg-primary-soft dark:hover:bg-orange-950/30 rounded-full shadow-xs font-medium cursor-pointer"
           >
-            <Wand2 className="h-4 w-4 text-accent" />
+            <Wand2 className="h-4 w-4 text-primary" />
             <span>{t("admin.qna.btnGenerateAI")}</span>
           </Button>
 
           <Button
             onClick={() => setIsCreateOpen(true)}
             variant="accent"
-            className="gap-2 h-9 shadow-xs font-semibold"
+            className="gap-2 h-9 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs font-semibold cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             <span>{t("admin.qna.btnCreateManual")}</span>
@@ -160,49 +150,49 @@ export default function AdminQnAPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-xs">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statTotal")}</p>
               <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">{totalElements}</p>
             </div>
-            <div className="p-2 bg-accent/10 border border-accent/20 rounded-lg">
-              <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
+            <div className="p-2 bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 rounded-xl">
+              <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-xs">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statSolved")}</p>
               <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{totalSolved}</p>
             </div>
-            <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+            <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
               <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-xs">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statChallenge")}</p>
               <p className="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{challengeCount}</p>
             </div>
-            <div className="p-2 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+            <div className="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-xs">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("admin.qna.statComments")}</p>
               <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">{totalComments}</p>
             </div>
-            <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-xl">
               <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" />
             </div>
           </div>
@@ -210,7 +200,7 @@ export default function AdminQnAPage() {
       </div>
 
       {/* Search and Custom Filters Bar */}
-      <div className="relative z-20 rounded-xl border border-border bg-card p-4 shadow-sm mb-6">
+      <div className="relative z-20 rounded-2xl border border-border bg-surface p-4 shadow-xs mb-6">
         <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
           {/* Search Input */}
           <div className="relative flex-1 w-full max-w-xl">
@@ -223,7 +213,7 @@ export default function AdminQnAPage() {
                 setPage(1);
               }}
               placeholder={t("admin.qna.searchPlaceholder")}
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 pl-9 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+              className="flex h-9 w-full rounded-xl border border-border bg-transparent px-3 pl-9 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
             />
           </div>
 
@@ -262,10 +252,10 @@ export default function AdminQnAPage() {
       </div>
 
       {/* Posts Table Container */}
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-2xl border border-border shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center text-muted-foreground flex flex-col items-center justify-center gap-3">
-            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <span>Đang tải dữ liệu bài viết...</span>
           </div>
         ) : filteredPosts.length === 0 ? (
@@ -277,7 +267,7 @@ export default function AdminQnAPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-muted/50 border-b border-border text-xs font-semibold uppercase text-muted-foreground">
+              <thead className="bg-background/50 border-b border-border text-xs font-semibold uppercase text-muted-foreground">
                 <tr>
                   <th className="px-6 py-4 w-12 text-center">{t("admin.qna.colIndex")}</th>
                   <th className="px-6 py-4">{t("admin.qna.colTitle")}</th>
@@ -395,28 +385,37 @@ export default function AdminQnAPage() {
 
                       {/* Actions */}
                       <td className="px-6 py-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
+                        <div className="inline-flex items-center justify-end gap-1.5">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
                             onClick={() => setPreviewPost(post)}
-                            title="Xem trước"
-                            className="p-1.5 text-muted-foreground hover:text-blue-500 rounded-lg hover:bg-muted transition"
+                            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
                           >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
+                            <Eye className="h-3.5 w-3.5" />
+                            <span>Xem</span>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
                             onClick={() => setEditingPost(post)}
-                            title="Chỉnh sửa"
-                            className="p-1.5 text-muted-foreground hover:text-accent rounded-lg hover:bg-muted transition"
+                            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
                           >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
+                            <Edit3 className="h-3.5 w-3.5" />
+                            <span>Sửa</span>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleDelete(post)}
-                            title="Xóa bài viết"
-                            className="p-1.5 text-muted-foreground hover:text-red-500 rounded-lg hover:bg-muted transition"
+                            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
                           >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Xóa</span>
+                          </Button>
                         </div>
                       </td>
                     </tr>

@@ -1,6 +1,6 @@
 export const ReportsSkeleton = () => {
   return (
-    <div className="p-6 space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
+    <div className="p-6 space-y-6 bg-background min-h-screen">
       {/* Header Skeleton */}
       <div className="flex justify-between items-center mb-6">
         <div className="space-y-2 flex-grow">
@@ -15,23 +15,22 @@ export const ReportsSkeleton = () => {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-5 space-y-3 h-28"
+            className="bg-surface border border-border rounded-2xl p-5 space-y-3 h-28"
           />
         ))}
       </div>
 
       {/* Charts Skeleton: Row 1 */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 h-96" />
-        <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 h-96" />
+        <div className="bg-surface border border-border rounded-2xl p-6 h-96" />
+        <div className="bg-surface border border-border rounded-2xl p-6 h-96" />
       </div>
 
       {/* Charts Skeleton: Row 2 */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 h-96" />
-        <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 h-96" />
+        <div className="bg-surface border border-border rounded-2xl p-6 h-96" />
+        <div className="bg-surface border border-border rounded-2xl p-6 h-96" />
       </div>
     </div>
   );
 };
-

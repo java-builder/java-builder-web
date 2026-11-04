@@ -10,12 +10,58 @@ import {
   pickQuestionSetTranslation,
 } from "@/types/interview";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/contexts/I18nContext";
-import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
-import ThemeToggle from "@/components/header-components/ThemeToggle";
-import { Crown, Sparkles, Gem, Lightbulb } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  Crown,
+  Gem,
+  HelpCircle,
+  Lightbulb,
+  ListFilter,
+  Lock,
+  Plus,
+  Search,
+  Sparkles,
+  X,
+} from "lucide-react";
 
 const COMPLETED_STORAGE_KEY = "interview_completed_questions";
+
+function cleanAnswerMarkdown(raw: string, questionTitle: string): string {
+  if (!raw) return "";
+  let cleaned = raw.trim();
+
+  // 1. Strip leading H1 (# ...) that duplicates the question title
+  cleaned = cleaned.replace(/^\s*#\s+[^\n]+\n*/, "").trim();
+
+  // 2. Strip leading "### Câu hỏi / Question" section that repeats the question
+  cleaned = cleaned
+    .replace(
+      /^\s*#{1,4}\s*(?:Câu hỏi|Question)\s*\n+([^\n]+\n+){1,2}/i,
+      ""
+    )
+    .trim();
+
+  // 3. If the first line still literally repeats questionTitle, strip it
+  if (
+    questionTitle &&
+    cleaned.toLowerCase().startsWith(questionTitle.trim().toLowerCase())
+  ) {
+    cleaned = cleaned.slice(questionTitle.trim().length).trim();
+  }
+
+  // 4. Strip redundant leading "### Trả lời / Answer" heading if it's at the very top
+  cleaned = cleaned
+    .replace(/^\s*#{1,4}\s*(?:Trả lời|Câu trả lời|Answer)\s*\n+/i, "")
+    .trim();
+
+  return cleaned;
+}
 
 export default function InterviewSetPage() {
   const params = useParams();
@@ -24,21 +70,23 @@ export default function InterviewSetPage() {
   const setSlug = params.setSlug as string;
   const { t, locale } = useI18n();
 
-  const { questions, isLoading: isLoadingQuestions } = useInterviewQuestionsByQuestionSetSlug(setSlug);
+  const { questions, isLoading: isLoadingQuestions } =
+    useInterviewQuestionsByQuestionSetSlug(setSlug);
   const { questionSets, isLoading: isLoadingSets } = useQuestionSets(topicSlug);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchText, setSearchText] = useState("");
-  const [difficultyFilter, setDifficultyFilter] = useState<"ALL" | "EASY" | "MEDIUM" | "HARD">("ALL");
+  const [filterMode, setFilterMode] = useState<
+    "ALL" | "EASY" | "MEDIUM" | "HARD" | "UNLEARNED"
+  >("ALL");
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
-  const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
   const [isMobileListOpen, setIsMobileListOpen] = useState(false);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(`${COMPLETED_STORAGE_KEY}_${setSlug}`);
       if (raw) setCompletedIds(new Set(JSON.parse(raw)));
-    } catch { }
+    } catch {}
   }, [setSlug]);
 
   useEffect(() => {
@@ -59,7 +107,7 @@ export default function InterviewSetPage() {
           `${COMPLETED_STORAGE_KEY}_${setSlug}`,
           JSON.stringify(Array.from(next))
         );
-      } catch { }
+      } catch {}
     },
     [setSlug]
   );
@@ -83,7 +131,10 @@ export default function InterviewSetPage() {
   );
 
   const setTitle = useMemo(
-    () => pickQuestionSetTranslation(questionSet?.translations, locale)?.title || questionSet?.slug || "",
+    () =>
+      pickQuestionSetTranslation(questionSet?.translations, locale)?.title ||
+      questionSet?.slug ||
+      "",
     [questionSet, locale]
   );
 
@@ -104,12 +155,18 @@ export default function InterviewSetPage() {
   const filteredQuestions = useMemo(() => {
     const q = searchText.trim().toLowerCase();
     return questionsView.filter((item) => {
-      if (difficultyFilter !== "ALL" && item.difficulty !== difficultyFilter) return false;
-      if (showOnlyUnlearned && completedIds.has(item.id)) return false;
+      if (filterMode === "UNLEARNED" && completedIds.has(item.id)) return false;
+      if (
+        (filterMode === "EASY" ||
+          filterMode === "MEDIUM" ||
+          filterMode === "HARD") &&
+        item.difficulty !== filterMode
+      )
+        return false;
       if (q && !item.displayQuestion.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [questionsView, searchText, difficultyFilter, showOnlyUnlearned, completedIds]);
+  }, [questionsView, searchText, filterMode, completedIds]);
 
   useEffect(() => {
     if (questionsView.length > 0 && !selectedId) {
@@ -118,19 +175,46 @@ export default function InterviewSetPage() {
   }, [questionsView, selectedId]);
 
   const selectedQuestion = useMemo(
-    () => questionsView.find((q) => q.id === selectedId) || questionsView[0] || null,
+    () =>
+      questionsView.find((q) => q.id === selectedId) ||
+      questionsView[0] ||
+      null,
     [questionsView, selectedId]
   );
 
   const selectedIndex = useMemo(
-    () => (selectedQuestion ? questionsView.findIndex((q) => q.id === selectedQuestion.id) : -1),
+    () =>
+      selectedQuestion
+        ? questionsView.findIndex((q) => q.id === selectedQuestion.id)
+        : -1,
     [questionsView, selectedQuestion]
   );
 
-  // Keyboard navigation (desktop only)
+  const prevQuestion =
+    selectedIndex > 0 ? questionsView[selectedIndex - 1] : null;
+  const nextQuestion =
+    selectedIndex >= 0 && selectedIndex < questionsView.length - 1
+      ? questionsView[selectedIndex + 1]
+      : null;
+
+  const cleanedAnswer = useMemo(
+    () =>
+      selectedQuestion
+        ? cleanAnswerMarkdown(
+            selectedQuestion.displayAnswer,
+            selectedQuestion.displayQuestion
+          )
+        : "",
+    [selectedQuestion]
+  );
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+        return;
       if (questionsView.length === 0) return;
       if (e.key === "j" || e.key === "ArrowDown") {
         e.preventDefault();
@@ -138,7 +222,8 @@ export default function InterviewSetPage() {
         setSelectedId(questionsView[next].id);
       } else if (e.key === "k" || e.key === "ArrowUp") {
         e.preventDefault();
-        const prev = (selectedIndex - 1 + questionsView.length) % questionsView.length;
+        const prev =
+          (selectedIndex - 1 + questionsView.length) % questionsView.length;
         setSelectedId(questionsView[prev].id);
       } else if (e.key === " " && selectedQuestion) {
         e.preventDefault();
@@ -161,13 +246,27 @@ export default function InterviewSetPage() {
 
   const difficultyBadge = (difficulty: string) => {
     const map: Record<string, { color: string; label: string }> = {
-      EASY: { color: "text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-500/10", label: t("exercisesPage.filterEasy") },
-      MEDIUM: { color: "text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10", label: t("exercisesPage.filterMedium") },
-      HARD: { color: "text-rose-700 bg-rose-50 dark:text-rose-400 dark:bg-rose-500/10", label: t("exercisesPage.filterHard") },
+      EASY: {
+        color: "text-success bg-success/10 border-success/25",
+        label: t("exercisesPage.filterEasy"),
+      },
+      MEDIUM: {
+        color: "text-warning bg-warning/10 border-warning/25",
+        label: t("exercisesPage.filterMedium"),
+      },
+      HARD: {
+        color: "text-error bg-error/10 border-error/25",
+        label: t("exercisesPage.filterHard"),
+      },
     };
-    const cfg = map[difficulty] || { color: "text-gray-600 bg-gray-100", label: difficulty };
+    const cfg = map[difficulty] || {
+      color: "text-text-muted bg-muted border-border",
+      label: difficulty,
+    };
     return (
-      <span className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded ${cfg.color}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full border ${cfg.color}`}
+      >
         {cfg.label}
       </span>
     );
@@ -177,173 +276,168 @@ export default function InterviewSetPage() {
     if (!isPremium) return null;
     if (isAccess === false) {
       return (
-        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold rounded bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50">
-          <svg className="w-2.5 h-2.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          {t("interviewPage.lockedBadge") || "Locked"}
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-error/10 text-error border border-error/20">
+          <Lock className="w-2.5 h-2.5 shrink-0" />
+          <span>{t("interviewPage.lockedBadge") || "Locked"}</span>
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50">
-        <Gem className="w-2.5 h-2.5 flex-shrink-0 text-amber-500" />
-        {t("interviewPage.premiumBadge") || "Premium"}
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-warning/10 text-warning border border-warning/25">
+        <Gem className="w-2.5 h-2.5 shrink-0" />
+        <span>{t("interviewPage.premiumBadge") || "Premium"}</span>
       </span>
     );
   };
 
   const handlePrev = () => {
-    if (selectedIndex > 0) setSelectedId(questionsView[selectedIndex - 1].id);
+    if (prevQuestion) setSelectedId(prevQuestion.id);
   };
   const handleNext = () => {
-    if (selectedIndex < questionsView.length - 1) setSelectedId(questionsView[selectedIndex + 1].id);
+    if (nextQuestion) setSelectedId(nextQuestion.id);
   };
 
-  // Sidebar list content (shared giữa desktop + mobile drawer)
   const renderSidebarContent = (onSelectExtra?: () => void) => (
-    <div className="flex flex-col h-full">
-      {/* Search + filter */}
-      <div className="p-3 border-b border-gray-200 dark:border-slate-700 space-y-2">
+    <div className="flex flex-col h-full bg-surface">
+      {/* Top Search & Compact Filter Pills */}
+      <div className="p-3.5 border-b border-border space-y-2.5 shrink-0">
         <div className="relative">
-          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            placeholder={t("interviewPage.searchPlaceholder") || "Tìm câu hỏi..."}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-accent/30 focus:border-accent text-gray-900 dark:text-white placeholder-gray-400 transition-colors"
+            placeholder="Tìm kiếm câu hỏi..."
+            className="w-full h-9 pl-9 pr-8 rounded-xl bg-background border border-border text-xs font-medium text-foreground placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
           />
-        </div>
-
-        <div className="grid grid-cols-4 gap-1.5">
-          {(["ALL", "EASY", "MEDIUM", "HARD"] as const).map((d) => (
+          {searchText && (
             <button
-              key={d}
-              onClick={() => setDifficultyFilter(d)}
-              className={`px-2 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap ${difficultyFilter === d
-                ? "bg-accent text-white"
-                : "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
-                }`}
+              type="button"
+              onClick={() => setSearchText("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground cursor-pointer"
             >
-              {d === "ALL" ? "Tất cả" : d === "EASY" ? "Dễ" : d === "MEDIUM" ? "TB" : "Khó"}
+              <X className="w-3.5 h-3.5" />
             </button>
-          ))}
+          )}
         </div>
 
-        <label className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={showOnlyUnlearned}
-            onChange={(e) => setShowOnlyUnlearned(e.target.checked)}
-            className="w-3.5 h-3.5 accent-accent rounded"
-          />
-          Chỉ hiện chưa học
-        </label>
+        {/* Single Clean Pill Filter Row */}
+        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
+          {(
+            [
+              { id: "ALL", label: "Tất cả" },
+              { id: "EASY", label: "Dễ" },
+              { id: "MEDIUM", label: "TB" },
+              { id: "HARD", label: "Khó" },
+              { id: "UNLEARNED", label: "Chưa học" },
+            ] as const
+          ).map((tab) => {
+            const active = filterMode === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setFilterMode(tab.id)}
+                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  active
+                    ? "bg-primary-soft text-primary"
+                    : "text-text-muted hover:text-foreground hover:bg-muted/70"
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* List */}
-      <div className="flex-1 overflow-y-auto overscroll-contain">
+      {/* Questions List */}
+      <div className="flex-1 overflow-y-auto p-2.5 scrollbar-thin">
         {filteredQuestions.length === 0 ? (
-          <div className="p-8 text-center text-sm text-gray-500 dark:text-gray-400">
-            Không tìm thấy câu hỏi
+          <div className="p-8 text-center text-xs text-text-muted">
+            Không tìm thấy câu hỏi phù hợp
           </div>
         ) : (
-          <ul className="py-2">
+          <ul className="space-y-1">
             {filteredQuestions.map((q) => {
               const isActive = selectedQuestion?.id === q.id;
               const isDone = completedIds.has(q.id);
               const realIndex = questionsView.findIndex((x) => x.id === q.id);
+
               return (
                 <li key={q.id}>
-                  <button
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
                       setSelectedId(q.id);
                       onSelectExtra?.();
                     }}
-                    className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-l-2 ${isActive
-                      ? "bg-accent/5 dark:bg-accent/10 border-accent"
-                      : "border-transparent hover:bg-gray-50 dark:hover:bg-slate-700/50"
-                      }`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedId(q.id);
+                        onSelectExtra?.();
+                      }
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-[13px] transition-all flex items-start gap-2.5 cursor-pointer group ${
+                      isActive
+                        ? "bg-primary-soft text-primary font-semibold"
+                        : "text-foreground/80 hover:bg-muted/70 hover:text-foreground font-medium"
+                    }`}
                   >
-                    <div className="flex items-start gap-2.5">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleCompleted(q.id);
-                        }}
-                        className={`flex-shrink-0 mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${isDone
-                          ? "bg-emerald-500 border-emerald-500"
-                          : "border-gray-300 dark:border-slate-600 hover:border-accent"
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCompleted(q.id);
+                      }}
+                      className="mt-0.5 shrink-0 cursor-pointer"
+                      title={isDone ? "Đã học" : "Đánh dấu đã học"}
+                    >
+                      {isDone ? (
+                        <CheckCircle2
+                          className={`w-4 h-4 ${
+                            isActive ? "text-primary" : "text-success"
                           }`}
-                        title={isDone ? "Đã học" : "Đánh dấu đã học"}
-                      >
-                        {isDone && (
-                          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </button>
+                        />
+                      ) : (
+                        <Circle
+                          className={`w-3.5 h-3.5 ${
+                            isActive
+                              ? "text-primary fill-primary/20"
+                              : "text-text-muted/50 group-hover:text-primary"
+                          }`}
+                        />
+                      )}
+                    </button>
 
-                      <span className={`flex-shrink-0 text-xs font-mono mt-0.5 ${isActive ? "text-accent font-bold" : "text-gray-400 dark:text-gray-500"
-                        }`}>
-                        {String(realIndex + 1).padStart(2, "0")}
-                      </span>
-
-                      <div className="flex-1 min-w-0">
-                        <p className={`line-clamp-2 leading-snug ${isActive
-                          ? "text-gray-900 dark:text-white font-medium"
-                          : isDone
-                            ? "text-gray-500 dark:text-gray-400"
-                            : "text-gray-700 dark:text-gray-200"
-                          }`}>
-                          {q.displayQuestion}
-                        </p>
+                    <div className="flex-1 min-w-0">
+                      <p className="leading-snug break-words">
+                        {realIndex + 1}. {q.displayQuestion}
+                      </p>
+                      {q.isPremium && (
                         <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-                          {difficultyBadge(q.difficulty)}
                           {premiumBadge(q.isPremium, q.isAccess)}
                         </div>
-                      </div>
+                      )}
                     </div>
-                  </button>
+                  </div>
                 </li>
               );
             })}
           </ul>
         )}
       </div>
-
-      {/* Keyboard hints (desktop only) */}
-      <div className="hidden lg:block p-3 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50">
-        <div className="text-[11px] text-gray-500 dark:text-gray-400 space-y-1">
-          <div className="flex items-center justify-between">
-            <span>Câu trước</span>
-            <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded text-[10px] font-mono">K</kbd>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Câu sau</span>
-            <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded text-[10px] font-mono">J</kbd>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Đánh dấu học</span>
-            <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded text-[10px] font-mono">Space</kbd>
-          </div>
-        </div>
-      </div>
     </div>
   );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
-        <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400">
-          <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          {t("common.loading")}
+      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center">
+        <div className="flex items-center gap-3 text-sm font-medium text-text-muted">
+          <div className="h-5 w-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <span>{t("common.loading")}</span>
         </div>
       </div>
     );
@@ -351,13 +445,18 @@ export default function InterviewSetPage() {
 
   if (!questionSet) {
     return (
-      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center px-4">
+        <div className="text-center p-8 rounded-2xl border border-border bg-surface max-w-md w-full">
+          <h1 className="text-lg font-bold text-foreground mb-3">
             {t("interviewPage.noQuestionSetTitle")}
           </h1>
-          <button onClick={() => router.back()} className="text-accent hover:underline text-sm font-medium">
-            {t("interviewPage.back")}
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>{t("interviewPage.back")}</span>
           </button>
         </div>
       </div>
@@ -365,320 +464,243 @@ export default function InterviewSetPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      {/* Top Bar */}
-      <div className="sticky top-0 z-30 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
-        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <button
-                onClick={() => router.back()}
-                className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors flex-shrink-0"
-                title={t("interviewPage.back")}
-              >
-                <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div className="min-w-0">
-                <h1 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                  {setTitle}
-                </h1>
-                <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
-                  <span>
-                    {selectedIndex >= 0 ? `Câu ${selectedIndex + 1}/${questionsView.length}` : `${questionsView.length} câu`}
-                  </span>
-                  <span>·</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                    {completedCount} đã học
-                  </span>
-                </div>
-              </div>
-            </div>
+    <div className="min-h-[calc(100vh-3.5rem)] bg-background text-foreground">
+      {/* Sticky Top Title & Actions Bar — follows scroll together with the Question List */}
+      <div className="sticky top-14 lg:top-16 z-20 bg-surface/95 backdrop-blur-md border-b border-border">
+        <div className="w-full px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Button asChild variant="outline" size="sm" className="shrink-0">
+              <Link href={`/interview/${topicSlug}`}>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{t("interviewPage.back")}</span>
+              </Link>
+            </Button>
 
-            {/* Desktop: progress bar */}
-            <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-              <div className="w-32 h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-accent to-accent-600 transition-all duration-500"
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
-              <span className="text-xs font-bold text-accent w-9 text-right">{progressPct}%</span>
-            </div>
-
-            <Link
-              href={`/interview/contribute?questionSetId=${questionSet.id}&questionSetTitle=${encodeURIComponent(setTitle)}`}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-gray-200 dark:border-slate-600 hover:border-accent hover:text-accent rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+            <h1
+              className="text-sm sm:text-base md:text-lg font-bold text-foreground truncate"
+              title={setTitle}
             >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              {t("interviewPage.addQuestion")}
-            </Link>
-
-            <div className="hidden sm:block">
-              <LanguageSwitcher variant="minimal" />
-            </div>
-
-            <ThemeToggle />
-
-            {/* Mobile: open list drawer */}
-            <button
-              onClick={() => setIsMobileListOpen(true)}
-              className="lg:hidden inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex-shrink-0"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-              </svg>
-              {questionsView.length}
-            </button>
+              {setTitle}
+            </h1>
           </div>
 
-          {/* Mobile progress */}
-          <div className="md:hidden mt-2 h-1 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-accent transition-all" style={{ width: `${progressPct}%` }} />
+          <div className="flex items-center gap-2 shrink-0">
+            {questionsView.length > 0 && (
+              <div className="hidden sm:flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-background border border-border text-xs font-medium text-text-muted">
+                <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                <span className="tabular-nums font-semibold text-foreground">
+                  {completedCount}/{questionsView.length}
+                </span>
+                <span className="text-[11px] text-text-muted">
+                  ({progressPct}%)
+                </span>
+              </div>
+            )}
+
+            <Button asChild size="sm">
+              <Link
+                href={`/interview/contribute?questionSetId=${questionSet.id}&questionSetTitle=${encodeURIComponent(setTitle)}`}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>{t("interviewPage.addQuestion")}</span>
+              </Link>
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsMobileListOpen(true)}
+              className="lg:hidden"
+            >
+              <ListFilter className="w-3.5 h-3.5" />
+              <span>
+                {completedCount}/{questionsView.length}
+              </span>
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-0">
-          {/* Desktop sidebar */}
-          <aside className="hidden lg:flex lg:sticky lg:top-[57px] lg:h-[calc(100vh-57px)] bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex-col">
+      <div className="w-full px-4 sm:px-6 py-5">
+        {/* 2-Column Card Workspace */}
+        <div className="flex flex-col lg:flex-row gap-5 items-start">
+          {/* Left Column: Question List Card */}
+          <aside className="hidden lg:flex lg:w-80 xl:w-88 shrink-0 lg:sticky lg:top-[8.25rem] lg:max-h-[calc(100vh-9.5rem)] rounded-2xl border border-border bg-surface overflow-hidden flex-col shadow-2xs">
             {renderSidebarContent()}
           </aside>
 
-          {/* Main reading area */}
-          <main className="min-w-0 bg-white dark:bg-slate-800 lg:bg-gray-50 lg:dark:bg-slate-900 pb-20 lg:pb-0">
+          {/* Right Column: Question & Answer Card */}
+          <main className="flex-1 w-full min-w-0">
             {selectedQuestion ? (
-              <article className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 py-5 sm:py-10">
-                <header className="mb-6 sm:mb-8">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-3 font-mono">
-                    <span>#{String(selectedIndex + 1).padStart(2, "0")}</span>
-                    <span>·</span>
-                    <span>{selectedIndex + 1} / {questionsView.length}</span>
-                  </div>
-                  <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                    {selectedQuestion.displayQuestion}
-                  </h2>
-                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                    {difficultyBadge(selectedQuestion.difficulty)}
-                    {selectedQuestion.isPremium && (
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${selectedQuestion.isAccess === false
-                        ? "bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50"
-                        : "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50"
-                        }`}>
-                        {selectedQuestion.isAccess === false ? (
-                          <>
-                            <span>🔒</span>
-                            <span>{t("interviewPage.lockedBadge") || "Locked"}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Gem className="w-3 h-3 text-amber-500 mr-0.5" />
-                            <span>{t("interviewPage.premiumBadge") || "Premium"}</span>
-                          </>
-                        )}
+              <article className="bg-surface rounded-2xl border border-border p-4 sm:p-6 md:p-8 shadow-2xs">
+                {/* Question Header */}
+                <header className="mb-6 pb-5 border-b border-border">
+                  <div className="flex items-center justify-between gap-3 flex-wrap mb-3.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary-soft text-primary">
+                        Câu {selectedIndex + 1}/{questionsView.length}
                       </span>
-                    )}
+                      {difficultyBadge(selectedQuestion.difficulty)}
+                      {premiumBadge(
+                        selectedQuestion.isPremium,
+                        selectedQuestion.isAccess
+                      )}
+                    </div>
+
                     <button
+                      type="button"
                       onClick={() => toggleCompleted(selectedQuestion.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full transition-all ${completedIds.has(selectedQuestion.id)
-                        ? "bg-emerald-500 text-white hover:bg-emerald-600"
-                        : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600"
-                        }`}
+                      className={`inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold rounded-full border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 ${
+                        completedIds.has(selectedQuestion.id)
+                          ? "bg-success-soft text-success border-success/30 hover:bg-success/15 focus-visible:ring-success/30"
+                          : "bg-surface text-text-muted hover:text-foreground hover:bg-muted/60 border-border focus-visible:ring-primary/20"
+                      }`}
                     >
                       {completedIds.has(selectedQuestion.id) ? (
-                        <>
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                          Đã học
-                        </>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
                       ) : (
-                        <>
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Đánh dấu đã học
-                        </>
+                        <Circle className="w-3.5 h-3.5 text-text-muted shrink-0" />
                       )}
+                      <span>
+                        {completedIds.has(selectedQuestion.id)
+                          ? "Đã học"
+                          : "Đánh dấu đã học"}
+                      </span>
                     </button>
                   </div>
+
+                  <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight leading-snug">
+                    {selectedQuestion.displayQuestion}
+                  </h2>
                 </header>
 
-                {selectedQuestion.isPremium && selectedQuestion.isAccess === false ? (
-                  <div className="my-8 rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800/80 sm:p-14">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+                {/* Question Answer / Locked State */}
+                {selectedQuestion.isPremium &&
+                selectedQuestion.isAccess === false ? (
+                  <div className="my-6 rounded-2xl border border-border bg-background/60 p-8 sm:p-12 text-center">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
                       <Crown className="h-7 w-7" />
                     </div>
 
-                    <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
-                      {t("interviewPage.premiumRequiredTitle") || "Nội dung dành cho tài khoản Premium 🔒"}
+                    <h3 className="mt-4 text-base sm:text-lg font-bold text-foreground">
+                      {t("interviewPage.premiumRequiredTitle") ||
+                        "Nội dung dành cho tài khoản Premium"}
                     </h3>
 
-                    <p className="mx-auto mt-2 max-w-md text-sm text-gray-600 dark:text-gray-400">
-                      {t("interviewPage.premiumRequiredDesc") || "Vui lòng nâng cấp tài khoản để xem câu trả lời mẫu và mẹo phỏng vấn."}
+                    <p className="mx-auto mt-2 max-w-md text-sm text-text-muted">
+                      {t("interviewPage.premiumRequiredDesc") ||
+                        "Vui lòng nâng cấp tài khoản để xem câu trả lời mẫu và mẹo phỏng vấn chuyên sâu."}
                     </p>
 
                     <Link
                       href="/pricing"
-                      className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+                      className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-white transition hover:bg-primary-hover shadow-xs"
                     >
                       <Sparkles className="h-4 w-4" />
-                      <span>{t("interviewPage.upgradeNowBtn") || "Nâng cấp ngay"}</span>
+                      <span>
+                        {t("interviewPage.upgradeNowBtn") || "Nâng cấp ngay"}
+                      </span>
                     </Link>
                   </div>
                 ) : (
-                  <>
-                    <section className="mb-8">
-                      <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                        <div className="w-1 h-5 sm:h-6 bg-accent rounded-full" />
-                        <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                          {t("interviewPage.sampleAnswer")}
-                        </h3>
-                      </div>
-                      <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-800 prose-headings:scroll-mt-20">
-                        <PublicMarkdownRenderer content={selectedQuestion.displayAnswer} />
-                      </div>
-                    </section>
+                  <div className="space-y-6">
+                    <PublicMarkdownRenderer
+                      content={cleanedAnswer}
+                      className="prose prose-slate dark:prose-invert max-w-none"
+                    />
 
                     {selectedQuestion.displayTips && (
-                      <section className="mb-8">
-                        <div className="rounded-2xl border border-amber-200/80 dark:border-amber-500/20 border-l-4 border-l-amber-500 bg-amber-50/40 dark:bg-amber-500/[0.03] p-5 sm:p-6 shadow-2xs">
-                          <div className="flex items-center gap-2 mb-3.5">
-                            <div className="text-amber-500 dark:text-amber-400">
-                              <Lightbulb className="w-5 h-5 flex-shrink-0" />
-                            </div>
-                            <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400">
-                              {t("interviewPage.goodTips")}
-                            </h3>
-                          </div>
-                          <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <PublicMarkdownRenderer content={selectedQuestion.displayTips} />
-                          </div>
+                      <section className="rounded-2xl border border-warning/30 border-l-4 border-l-warning bg-warning/5 p-5">
+                        <div className="flex items-center gap-2 mb-2.5">
+                          <Lightbulb className="w-4.5 h-4.5 text-warning shrink-0" />
+                          <h3 className="text-xs font-bold uppercase tracking-wider text-warning">
+                            {t("interviewPage.goodTips")}
+                          </h3>
                         </div>
+                        <PublicMarkdownRenderer
+                          content={selectedQuestion.displayTips}
+                          className="prose prose-sm dark:prose-invert max-w-none"
+                        />
                       </section>
                     )}
-                  </>
+                  </div>
                 )}
 
-                {/* Desktop nav */}
-                <nav className="hidden lg:flex mt-12 pt-6 border-t border-gray-200 dark:border-slate-700 items-center justify-between gap-3">
-                  <button
+                {/* Prev / Next Question Navigation Buttons */}
+                <div className="mt-8 pt-5 border-t border-border flex items-center justify-between gap-3">
+                  <Button
+                    type="button"
+                    variant="secondary"
                     onClick={handlePrev}
-                    disabled={selectedIndex <= 0}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 hover:border-accent hover:text-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    disabled={!prevQuestion}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Câu trước
-                  </button>
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Câu trước</span>
+                  </Button>
 
-                  <button
+                  <Button
+                    type="button"
                     onClick={handleNext}
-                    disabled={selectedIndex >= questionsView.length - 1}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-accent text-white hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    disabled={!nextQuestion}
                   >
-                    Câu tiếp theo
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </nav>
+                    <span>Câu tiếp theo</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
               </article>
             ) : (
-              <div className="flex items-center justify-center min-h-[60vh] px-6">
-                <div className="text-center max-w-sm">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
-                    {t("interviewPage.noQuestions")}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t("interviewPage.emptySetDesc")}
-                  </p>
+              <div className="bg-surface rounded-2xl border border-border p-12 text-center">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-background border border-border flex items-center justify-center text-text-muted">
+                  <HelpCircle className="w-7 h-7" />
                 </div>
+                <h3 className="text-base font-bold text-foreground mb-1.5">
+                  {t("interviewPage.noQuestions")}
+                </h3>
+                <p className="text-sm text-text-muted">
+                  {t("interviewPage.emptySetDesc")}
+                </p>
               </div>
             )}
           </main>
         </div>
       </div>
 
-      {/* Mobile bottom nav */}
-      {selectedQuestion && (
-        <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 px-3 py-2 grid grid-cols-3 gap-2 shadow-lg">
-          <button
-            onClick={handlePrev}
-            disabled={selectedIndex <= 0}
-            className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs font-semibold rounded-md border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Trước
-          </button>
-
-          <button
-            onClick={() => setIsMobileListOpen(true)}
-            className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs font-semibold rounded-md bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-            </svg>
-            Danh sách
-          </button>
-
-          <button
-            onClick={handleNext}
-            disabled={selectedIndex >= questionsView.length - 1}
-            className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs font-semibold rounded-md bg-accent text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            Sau
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      )}
-
-      {/* Mobile drawer */}
+      {/* Mobile Question List Drawer */}
       <div
-        className={`lg:hidden fixed inset-0 z-40 transition-opacity ${isMobileListOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
+        className={`lg:hidden fixed inset-0 z-50 transition-opacity ${
+          isMobileListOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
       >
         <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/50 backdrop-blur-xs"
           onClick={() => setIsMobileListOpen(false)}
         />
         <div
-          className={`absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white dark:bg-slate-800 shadow-xl transform transition-transform ${isMobileListOpen ? "translate-x-0" : "translate-x-full"
-            }`}
+          className={`absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-surface border-l border-border shadow-2xl transform transition-transform ${
+            isMobileListOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         >
-          <div className="flex items-center justify-between px-3 py-2.5 border-b border-gray-200 dark:border-slate-700">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-sm font-bold text-foreground">
                 Danh sách câu hỏi
               </h3>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                {completedCount}/{questionsView.length} đã học · {progressPct}%
+              <p className="text-[11px] text-text-muted">
+                Đã học {completedCount}/{questionsView.length} ({progressPct}%)
               </p>
             </div>
             <button
+              type="button"
               onClick={() => setIsMobileListOpen(false)}
-              className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              className="p-1.5 text-text-muted hover:text-foreground hover:bg-muted rounded-lg transition-colors cursor-pointer"
             >
-              <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-4 h-4" />
             </button>
           </div>
-          <div className="h-[calc(100%-60px)]">
+          <div className="h-[calc(100%-57px)]">
             {renderSidebarContent(() => setIsMobileListOpen(false))}
           </div>
         </div>

@@ -2,18 +2,17 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { conversationApi } from "@/services/conversation.service";
-import { authApi } from "@/services/auth.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useSettingsContext } from "@/contexts/SettingsContext";
 import { menuGroups } from "./menuData";
 import { MenuItem, MenuGroup } from "./types";
 import { useI18n } from "@/contexts/I18nContext";
-import { Bell, BellOff, Loader2, X, LogOut, Flame, Sparkles } from "lucide-react";
+import { Bell, BellOff, Loader2, X } from "lucide-react";
 import { fcmService } from "@/services/fcm.service";
 import toast from "react-hot-toast";
 
@@ -24,15 +23,12 @@ interface MobileSidebarProps {
 
 export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const { data: currentUser, isLoading } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
   const { data: notifData } = useNotifications(1, "all");
   const { settings } = useSettingsContext();
   const { t } = useI18n();
   const rawAppName = settings?.system?.["app-info"]?.["app-name"];
   const [clientTitle, setClientTitle] = useState<string | null>(null);
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   const [isPushEnabled, setIsPushEnabled] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
@@ -97,12 +93,6 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAuthChecked(true);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   const notifications = notifData?.data || [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -137,8 +127,6 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     }));
   }, [unreadCount, unreadChatCount]);
 
-
-
   useEffect(() => {
     if (!rawAppName && typeof document !== "undefined") {
       setClientTitle(document.title || null);
@@ -152,12 +140,10 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         ? clientTitle
         : "Java Builder";
 
-  // Close sidebar when route changes
   useEffect(() => {
     onClose();
   }, [pathname, onClose]);
 
-  // Prevent body scroll when sidebar is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -202,19 +188,13 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     return !!currentUser;
   };
 
-  const handleLogout = async () => {
-    onClose();
-    queryClient.clear();
-    await authApi.logout();
-    router.push("/login");
-  };
 
   return (
     <>
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden animate-in fade-in-0 duration-200"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -222,11 +202,12 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-50 lg:hidden transform transition-transform duration-300 flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 h-screen w-80 bg-surface border-r border-border z-50 lg:hidden transform transition-transform duration-300 flex flex-col ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
+        <div className="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
           <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
             <div className="relative w-9 h-9 flex-shrink-0">
               <Image
@@ -234,98 +215,26 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 alt={appName}
                 width={36}
                 height={36}
-                className="object-contain"
+                className="object-contain [filter:hue-rotate(16deg)_saturate(1.25)_brightness(1.05)]"
               />
             </div>
-            {(!rawAppName && clientTitle === null) ? (
-              <span className="w-24 h-4 rounded bg-gray-200 dark:bg-slate-700 animate-pulse inline-block" />
+            {!rawAppName && clientTitle === null ? (
+              <span className="w-24 h-4 rounded bg-muted inline-block" />
             ) : (
-              <span className="text-xs font-semibold text-gray-900 dark:text-white tracking-wider uppercase leading-tight">
+              <span className="text-xs font-bold text-foreground tracking-wider uppercase leading-tight">
                 {appName}
               </span>
             )}
           </Link>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-xl text-text-muted hover:text-primary hover:bg-primary-soft dark:hover:bg-slate-800 transition-colors"
             aria-label={t("common.close") || "Đóng"}
           >
-            <X className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+            <X className="w-5 h-5 text-foreground" />
           </button>
         </div>
 
-        {/* User / Auth Section */}
-        {!isAuthChecked || isLoading ? (
-          <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
-            <div className="flex items-center gap-3 p-3">
-              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 animate-pulse flex-shrink-0" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse w-24" />
-                <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded animate-pulse w-32" />
-              </div>
-            </div>
-          </div>
-        ) : currentUser ? (
-          <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0 flex items-center justify-between gap-3">
-            <Link
-              href="/profile"
-              className="flex-1 flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors min-w-0"
-              onClick={onClose}
-            >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                {currentUser.avatar ? (
-                  <Image
-                    src={currentUser.avatar}
-                    alt={currentUser.username || "User"}
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover w-full h-full"
-                  />
-                ) : (
-                  <span className="text-white font-medium">
-                    {currentUser.username?.charAt(0).toUpperCase() || "U"}
-                  </span>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {currentUser.username || "User"}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {t("userMenu.profile") || "Thông tin cá nhân"}
-                </p>
-              </div>
-            </Link>
-
-            <button
-              onClick={handleLogout}
-              className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors flex-shrink-0"
-              title={t("auth.logout") || "Đăng xuất"}
-              aria-label={t("auth.logout") || "Đăng xuất"}
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          </div>
-        ) : (
-          <div className="p-3 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
-            <div className="flex flex-col gap-1.5">
-              <Link
-                href="/login"
-                className="w-full px-3 py-2 bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors text-xs font-semibold text-center shadow-xs"
-                onClick={onClose}
-              >
-                {t("auth.login") || "Đăng nhập"}
-              </Link>
-              <Link
-                href="/register"
-                className="w-full px-3 py-2 border border-accent text-accent rounded-lg hover:bg-accent/10 transition-colors text-xs font-semibold text-center shadow-xs"
-                onClick={onClose}
-              >
-                {t("auth.register") || "Đăng ký"}
-              </Link>
-            </div>
-          </div>
-        )}
 
         {/* Menu Groups */}
         <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-4">
@@ -334,15 +243,15 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
             return (
               <div key={group.title} className="space-y-1">
-                <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <div className="flex items-center gap-2 px-2.5 py-1 mb-1 text-[11px] font-extrabold text-slate-800 dark:text-slate-100 uppercase tracking-wider">
                   {group.icon && (
-                    <div className="w-5.5 h-5.5 rounded bg-gray-100/70 dark:bg-slate-700/40 flex items-center justify-center text-gray-500 dark:text-gray-400 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:flex-shrink-0 flex-shrink-0">
+                    <div className="w-5 h-5 rounded-md bg-primary-soft dark:bg-primary/15 flex items-center justify-center text-primary [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:!text-primary flex-shrink-0">
                       {group.icon}
                     </div>
                   )}
                   <span>{group.titleKey ? t(group.titleKey as Parameters<typeof t>[0]) : group.title}</span>
                 </div>
-                <ul className="space-y-1 mt-1 pl-3.5 ml-4 border-l border-solid border-gray-150 dark:border-slate-800/60">
+                <ul className="space-y-1 mt-1">
                   {group.items.map((item) => {
                     if (!shouldShowItem(item)) return null;
 
@@ -353,63 +262,46 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${item.highlight
-                            ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
-                            : active
-                              ? "bg-accent/8 dark:bg-accent/15 text-accent dark:text-accent-on-dark font-semibold shadow-xs"
-                              : "text-gray-700 dark:text-gray-200 hover:bg-gray-150/55 dark:hover:bg-slate-800"
-                            }`}
+                          className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${
+                            item.highlight || active
+                              ? "bg-primary-soft dark:bg-primary/15 text-primary font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-5 before:rounded-r-full before:bg-primary"
+                              : "text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium"
+                          }`}
                           onClick={onClose}
                         >
                           <span
-                            className={`w-5 h-5 flex-shrink-0 flex items-center justify-center [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 ${item.highlight
-                              ? "text-purple-600 dark:text-purple-300"
-                              : active
-                                ? "text-accent dark:text-accent-on-dark [&_svg]:text-accent dark:[&_svg]:text-accent-on-dark"
-                                : item.color || "text-gray-500 dark:text-gray-300"
-                              }`}
+                            className={`w-[18px] h-[18px] flex-shrink-0 flex items-center justify-center [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg]:stroke-[2] [&_svg]:flex-shrink-0 ${
+                              active || item.highlight
+                                ? "text-primary"
+                                : "text-slate-700 dark:text-slate-300"
+                            }`}
                           >
                             {item.icon}
                           </span>
-                          <span className={`flex-1 font-medium text-sm ${item.highlight ? "font-semibold" : ""
-                            }`}>
+                          <span className={`flex-1 text-[14px] truncate ${active || item.highlight ? "font-semibold text-primary" : "font-medium text-slate-800 dark:text-slate-200"}`}>
                             {displayedLabel}
                           </span>
                           {item.tag ? (
                             item.tagVariant === "hot" ? (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-extrabold rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 text-white shadow-xs tracking-wider animate-pulse uppercase leading-none">
-                                <Flame className="w-2.5 h-2.5 fill-current" />
+                              <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground uppercase leading-none shadow-xs">
                                 {item.tag}
                               </span>
                             ) : item.tagVariant === "pro" ? (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs tracking-wider uppercase leading-none">
-                                <Sparkles className="w-2.5 h-2.5 text-amber-300 fill-amber-300" />
+                              <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-secondary-soft text-secondary border border-secondary-soft-border uppercase leading-none">
                                 {item.tag}
                               </span>
                             ) : item.tagVariant === "new" ? (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 tracking-wider uppercase leading-none">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                              <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-warning-soft text-warning border border-warning-border uppercase leading-none">
                                 {item.tag}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase leading-none">
+                              <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-primary-soft text-primary border border-primary-soft-border uppercase leading-none">
                                 {item.tag}
                               </span>
                             )
-                          ) : item.highlight ? (
-                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
-                              NEW
-                            </span>
                           ) : null}
                           {item.badge && (
-                            <span className={`px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none ${item.href === "/notifications"
-                              ? "bg-red-500 text-white dark:bg-red-600 dark:text-white"
-                              : item.href === "/messages"
-                                ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                                : item.badgeColor
-                                  ? `${item.badgeColor} text-white`
-                                  : "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                              }`}>
+                            <span className="px-2 py-0.5 text-[11px] font-extrabold rounded-full shadow-xs leading-none bg-primary text-primary-foreground">
                               {item.badge}
                             </span>
                           )}
@@ -425,14 +317,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
         {/* Quick Notification Settings Toggle Panel */}
         {currentUser && (
-          <div className="px-4 py-3 border-t border-gray-150 dark:border-slate-800/60">
+          <div className="px-4 py-3 border-t border-border">
             {fcmService.isSupported() ? (
-              <div className="p-3 rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/20 flex items-center justify-between shadow-xs">
-                <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
+              <div className="p-3 rounded-xl border border-border bg-background flex items-center justify-between shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
                   {isPushEnabled ? (
-                    <Bell className="w-4 h-4 text-emerald-500 animate-bounce" />
+                    <Bell className="w-4 h-4 text-primary" />
                   ) : (
-                    <BellOff className="w-4 h-4 text-gray-400" />
+                    <BellOff className="w-4 h-4 text-text-muted" />
                   )}
                   <span>Nhận thông báo</span>
                 </div>
@@ -442,43 +334,33 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   onClick={handleTogglePush}
                   disabled={isToggling}
                   type="button"
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isPushEnabled ? "bg-accent" : "bg-gray-200 dark:bg-slate-700"
-                    } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    isPushEnabled ? "bg-primary" : "bg-slate-200 dark:bg-slate-700"
+                  } ${isToggling ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${isPushEnabled ? "translate-x-4" : "translate-x-0"
-                      } flex items-center justify-center`}
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                      isPushEnabled ? "translate-x-4" : "translate-x-0"
+                    } flex items-center justify-center`}
                   >
-                    {isToggling && <Loader2 className="w-2.5 h-2.5 animate-spin text-accent" />}
+                    {isToggling && <Loader2 className="w-2.5 h-2.5 animate-spin text-primary" />}
                   </span>
                 </button>
               </div>
             ) : isIOS ? (
-              <div className="p-3 rounded-xl border border-dashed border-gray-200 dark:border-slate-800 bg-gray-50/30 dark:bg-slate-950/10 flex flex-col gap-1.5 shadow-xs">
-                <div className="flex items-center gap-2 text-xs font-semibold text-gray-650 dark:text-gray-400">
-                  <BellOff className="w-4 h-4 text-amber-500/80" />
+              <div className="p-3 rounded-xl border border-dashed border-border bg-background flex flex-col gap-1.5 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                  <BellOff className="w-4 h-4 text-warning" />
                   <span>Nhận thông báo (iOS)</span>
                 </div>
-                <p className="text-[10px] leading-normal text-gray-500 dark:text-gray-400">
-                  Nhấn <span className="font-semibold">Chia sẻ 📤</span> trên Safari &rarr; chọn <span className="font-semibold">&quot;Thêm vào MH chính&quot;</span> để bật thông báo.
+                <p className="text-[10px] leading-normal text-text-muted">
+                  Nhấn <span className="font-semibold text-foreground">Chia sẻ 📤</span> trên Safari &rarr; chọn <span className="font-semibold text-foreground">&quot;Thêm vào MH chính&quot;</span> để bật thông báo.
                 </p>
               </div>
             ) : null}
           </div>
         )}
 
-        {/* Logout Button - Only show if logged in */}
-        {isAuthChecked && currentUser && (
-          <div className="border-t border-gray-200 dark:border-slate-700 p-3 flex-shrink-0">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-medium"
-            >
-              <LogOut className="w-4 h-4" />
-              {t("auth.logout") || "Đăng xuất"}
-            </button>
-          </div>
-        )}
       </aside>
     </>
   );

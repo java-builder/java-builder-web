@@ -16,7 +16,7 @@ import {
   exerciseInputClassName,
 } from "@/components/admin/exercises/constants";
 import { Button } from "@/components/ui/button";
-import { FilterSelect } from "@/components/ui/FilterSelect";
+import { FilterSelect } from "@/components/ui/select";
 import {
   ChevronLeft,
   Sparkles,
@@ -187,20 +187,20 @@ export default function CreateExercisePage() {
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-6 rounded-2xl shadow-xs">
         <div className="flex items-center gap-3">
           <Button
             type="button"
             variant="outline"
             size="icon"
             onClick={() => router.back()}
-            className="h-9 w-9 rounded-lg border border-border hover:bg-muted text-muted-foreground hover:text-foreground shrink-0"
+            className="h-9 w-9 rounded-full border border-border hover:bg-muted text-muted-foreground hover:text-foreground shrink-0 cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl flex items-center gap-2">
-              <FileQuestion className="h-6 w-6 text-accent" />
+              <FileQuestion className="h-6 w-6 text-primary" />
               <span>Tạo bài tập mới</span>
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -214,7 +214,7 @@ export default function CreateExercisePage() {
             type="button"
             variant="accent"
             onClick={() => setIsAiModalOpen(true)}
-            className="gap-2 font-semibold h-9 shrink-0"
+            className="gap-2 font-semibold h-9 shrink-0 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
           >
             <Sparkles className="h-4 w-4" />
             <span>Tự động tạo bằng AI</span>
@@ -223,7 +223,7 @@ export default function CreateExercisePage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-card rounded-2xl shadow-sm border border-border p-6 space-y-5">
+        <div className="bg-surface rounded-2xl shadow-xs border border-border p-6 space-y-5">
           <h2 className="text-lg font-bold text-foreground border-b border-border pb-3">Thông tin cơ bản</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -353,16 +353,16 @@ export default function CreateExercisePage() {
         </div>
 
         {exerciseType === ExerciseType.MULTIPLE_CHOICE && (
-          <div className="bg-card rounded-2xl shadow-sm border border-border p-6 space-y-5">
+          <div className="bg-surface rounded-2xl shadow-xs border border-border p-6 space-y-5">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <h2 className="text-lg font-bold text-foreground">Câu hỏi trắc nghiệm</h2>
-              <span className="text-xs font-semibold px-2.5 py-1 bg-accent/15 text-accent rounded-full select-none">
+              <span className="text-xs font-semibold px-2.5 py-1 bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 rounded-full select-none">
                 Tổng số: {questions.length} câu hỏi
               </span>
             </div>
 
             {questions.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-2xl bg-muted/20 animate-in fade-in duration-300">
+              <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-2xl bg-background/50 animate-in fade-in duration-300">
                 <HelpCircle className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
                 <p className="text-sm font-semibold">Chưa có câu hỏi nào trong bài tập này</p>
                 <p className="text-xs text-muted-foreground mt-1">Nhấn nút &quot;Thêm câu hỏi&quot; bên dưới để bắt đầu soạn câu hỏi.</p>
@@ -386,9 +386,9 @@ export default function CreateExercisePage() {
                 type="button"
                 variant="outline"
                 onClick={addNewQuestion}
-                className="gap-2 font-semibold"
+                className="gap-2 font-semibold rounded-full border border-border"
               >
-                <Plus className="h-4 w-4 text-accent" />
+                <Plus className="h-4 w-4 text-primary" />
                 <span>Thêm câu hỏi</span>
               </Button>
             </div>
@@ -400,7 +400,7 @@ export default function CreateExercisePage() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            className="font-medium"
+            className="font-medium rounded-full border border-border"
           >
             Hủy
           </Button>
@@ -408,7 +408,7 @@ export default function CreateExercisePage() {
             type="submit"
             disabled={isSubmitting}
             variant="accent"
-            className="gap-2 font-semibold"
+            className="gap-2 font-semibold rounded-full bg-primary hover:bg-primary-hover text-white"
           >
             {isSubmitting ? (
               <>
@@ -425,11 +425,11 @@ export default function CreateExercisePage() {
       {/* AI Exercise Generation Modal */}
       {isAiModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-150">
+          <div className="bg-surface w-full max-w-md rounded-2xl border border-border shadow-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-150">
             {/* Header */}
             <div className="px-6 py-4 border-b border-border flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-accent/10">
-                <Sparkles className="h-5 w-5 text-accent" />
+              <div className="p-2 rounded-xl bg-primary-soft text-primary border border-primary/20">
+                <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-foreground">Tạo đề tự động bằng AI</h3>
@@ -527,7 +527,7 @@ export default function CreateExercisePage() {
                 variant="outline"
                 onClick={() => setIsAiModalOpen(false)}
                 disabled={isAiGenerating}
-                className="h-10 rounded-xl"
+                className="h-10 rounded-full border border-border"
               >
                 Hủy
               </Button>
@@ -536,7 +536,7 @@ export default function CreateExercisePage() {
                 variant="accent"
                 onClick={handleGenerateExerciseWithAi}
                 disabled={isAiGenerating}
-                className="h-10 gap-1.5 rounded-xl font-bold min-w-32"
+                className="h-10 gap-1.5 rounded-full font-bold min-w-32 bg-primary hover:bg-primary-hover text-white"
               >
                 {isAiGenerating ? (
                   <>

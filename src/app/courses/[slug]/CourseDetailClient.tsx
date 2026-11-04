@@ -1,17 +1,22 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
-import RateLimitModal from "@/components/ui/RateLimitModal";
+import AuthRequiredModal from "@/components/ui/auth-required-modal";
+import RateLimitModal from "@/components/ui/rate-limit-modal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { favoriteService } from "@/services/favorite.service";
 import { FavoriteTargetType } from "@/types/favorite";
 import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
-import { CourseDetailResponse, CourseLevel, CourseFormat, LessonDetailResponse } from "@/types/course";
+import {
+  CourseDetailResponse,
+  CourseLevel,
+  CourseFormat,
+  LessonDetailResponse,
+} from "@/types/course";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
 import { isRateLimitError } from "@/utils/apiError";
@@ -27,6 +32,7 @@ import VideoPreviewModal from "@/components/courses/VideoPreviewModal";
 import PaymentModal from "@/components/courses/PaymentModal";
 import CourseUnlockModal from "@/components/courses/CourseUnlockModal";
 import { useI18n } from "@/contexts/I18nContext";
+import { FileQuestion } from "lucide-react";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -45,8 +51,12 @@ export default function CourseDetailPage() {
 
   const hasFetched = useRef(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
-  const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
+  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
+    new Set()
+  );
+  const [chapterLessons, setChapterLessons] = useState<
+    Record<string, LessonDetailResponse[]>
+  >({});
   const [loadingLessons, setLoadingLessons] = useState<Set<string>>(new Set());
 
   const { reviews, totalReviews } = useReviews(course?.id || "");
@@ -88,6 +98,27 @@ export default function CourseDetailPage() {
   const [unlockModalOpen, setUnlockModalOpen] = useState(false);
   const [rateLimitModalOpen, setRateLimitModalOpen] = useState(false);
 
+  const fetchLessons = useCallback(async (chapterId: string) => {
+    setLoadingLessons((prev) => new Set(prev).add(chapterId));
+    try {
+      const response = await lessonApi.getByChapterId(chapterId);
+      if (response.data) {
+        setChapterLessons((prev) => ({
+          ...prev,
+          [chapterId]: response.data || [],
+        }));
+      }
+    } catch (err) {
+      console.error("Error fetching lessons:", err);
+    } finally {
+      setLoadingLessons((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(chapterId);
+        return newSet;
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (!slug || hasFetched.current) return;
     hasFetched.current = true;
@@ -101,10 +132,19 @@ export default function CourseDetailPage() {
           const courseData = result.data;
           setCourse(courseData);
           setIsFavorite(courseData.isFavorite ?? false);
-          setIsEnrolled(Boolean(courseData.isEnrolled || courseData.isPremiumUser));
+          setIsEnrolled(
+            Boolean(courseData.isEnrolled || courseData.isPremiumUser)
+          );
+
+          if (courseData.chapters && courseData.chapters.length > 0) {
+            const firstChapterId = courseData.chapters[0].id;
+            setExpandedChapters(new Set([firstChapterId]));
+            fetchLessons(firstChapterId);
+          }
         }
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : t("courseDetail.loadError");
+        const errorMessage =
+          err instanceof Error ? err.message : t("courseDetail.loadError");
         setError(errorMessage);
       } finally {
         setIsLoading(false);
@@ -112,19 +152,21 @@ export default function CourseDetailPage() {
     };
 
     fetchData();
-  }, [slug, t]);
+  }, [slug, t, fetchLessons]);
 
   useEffect(() => {
     const handlePaymentSuccess = () => {
       setIsEnrolled(true);
       setUnlockModalOpen(false);
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
-      setCourse(prev => prev ? { ...prev, isEnrolled: true, isPremiumUser: true } : null);
+      setCourse((prev) =>
+        prev ? { ...prev, isEnrolled: true, isPremiumUser: true } : null
+      );
     };
 
-    window.addEventListener('payment:success', handlePaymentSuccess);
+    window.addEventListener("payment:success", handlePaymentSuccess);
     return () => {
-      window.removeEventListener('payment:success', handlePaymentSuccess);
+      window.removeEventListener("payment:success", handlePaymentSuccess);
     };
   }, []);
 
@@ -143,11 +185,15 @@ export default function CourseDetailPage() {
     try {
       const result = await favoriteService.toggle({
         targetId: course.id,
-        targetType: FavoriteTargetType.COURSE
+        targetType: FavoriteTargetType.COURSE,
       });
       if (result.code === 200) {
         setIsFavorite(result.data ?? false);
-        toast.success(result.data ? t("courseDetail.addedFavorite") : t("courseDetail.removedFavorite"));
+        toast.success(
+          result.data
+            ? t("courseDetail.addedFavorite")
+            : t("courseDetail.removedFavorite")
+        );
       }
     } catch {
       toast.error(t("courseDetail.genericError"));
@@ -167,24 +213,6 @@ export default function CourseDetailPage() {
       }
     }
     setExpandedChapters(newExpanded);
-  };
-
-  const fetchLessons = async (chapterId: string) => {
-    setLoadingLessons(prev => new Set(prev).add(chapterId));
-    try {
-      const response = await lessonApi.getByChapterId(chapterId);
-      if (response.data) {
-        setChapterLessons(prev => ({ ...prev, [chapterId]: response.data || [] }));
-      }
-    } catch (error) {
-      console.error("Error fetching lessons:", error);
-    } finally {
-      setLoadingLessons(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(chapterId);
-        return newSet;
-      });
-    }
   };
 
   const handleLessonClick = async (lesson: LessonDetailResponse) => {
@@ -253,9 +281,9 @@ export default function CourseDetailPage() {
         toast.error(t("courseDetail.paymentLinkError"));
         setPaymentModal({ isOpen: false, isLoading: false, data: null });
       }
-    } catch (error) {
+    } catch (err) {
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
-      if (isRateLimitError(error)) {
+      if (isRateLimitError(err)) {
         setRateLimitModalOpen(true);
         return;
       }
@@ -281,15 +309,17 @@ export default function CourseDetailPage() {
       const result = await enrollmentApi.enrollFreeCourse(course.id);
       if (result.code === 200) {
         setIsEnrolled(true);
-        const targetUrl = course.courseFormat === CourseFormat.TEXT
-          ? `/docs/${course.slug}`
-          : `/learn/${course.slug}/${course.id}`;
+        const targetUrl =
+          course.courseFormat === CourseFormat.TEXT
+            ? `/docs/${course.slug}`
+            : `/learn/${course.slug}/${course.id}`;
         router.push(targetUrl);
       } else {
         toast.error(result.message || t("courseDetail.genericError"));
       }
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : t("courseDetail.genericError");
+      const errorMsg =
+        err instanceof Error ? err.message : t("courseDetail.genericError");
       toast.error(errorMsg);
     } finally {
       setIsEnrollingFree(false);
@@ -316,15 +346,13 @@ export default function CourseDetailPage() {
         parseInt(day),
         parseInt(hour),
         parseInt(minute),
-        parseInt(second),
+        parseInt(second)
       );
 
       return date.toLocaleDateString(locale === "vi" ? "vi-VN" : locale, {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
       });
     } catch {
       return dateString;
@@ -346,11 +374,12 @@ export default function CourseDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex justify-center items-center min-h-[60vh]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-11 w-11 border-2 border-primary border-t-transparent mx-auto mb-3.5" />
+          <p className="text-text-muted text-sm font-medium">
+            Đang tải thông tin khóa học...
+          </p>
         </div>
       </div>
     );
@@ -358,96 +387,35 @@ export default function CourseDetailPage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="text-center py-12">
-            <div className="text-red-600 dark:text-red-400 mb-4">
-              <svg
-                className="w-16 h-16 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {t("courseDetail.notFoundTitle")}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {error || t("courseDetail.notFoundMessage")}
-            </p>
-            <Link
-              href="/courses"
-              className="inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors duration-300"
-            >
-              {t("courseDetail.backToCourses")}
-            </Link>
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center p-8 rounded-2xl border border-border bg-surface shadow-xs max-w-md w-full">
+          <div className="w-14 h-14 bg-background border border-border rounded-2xl flex items-center justify-center mx-auto mb-4 text-text-muted">
+            <FileQuestion className="w-7 h-7" />
           </div>
+          <h2 className="text-lg font-bold text-foreground mb-2">
+            {t("courseDetail.notFoundTitle")}
+          </h2>
+          <p className="text-text-muted text-sm mb-6">
+            {error || t("courseDetail.notFoundMessage")}
+          </p>
+          <Link
+            href="/courses"
+            className="inline-flex items-center justify-center px-5 py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-full transition-colors"
+          >
+            {t("courseDetail.backToCourses")}
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      {/* Breadcrumb */}
-      <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link
-              href="/"
-              className="text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-400 transition-colors"
-            >
-              {t("common.home")}
-            </Link>
-            <svg
-              className="w-4 h-4 text-gray-400 dark:text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <Link
-              href="/courses"
-              className="text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-400 transition-colors"
-            >
-              {t("common.courses")}
-            </Link>
-            <svg
-              className="w-4 h-4 text-gray-400 dark:text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <span className="text-gray-900 dark:text-white font-medium">{course.title}</span>
-          </nav>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700">
+            <div className="bg-surface rounded-2xl overflow-hidden border border-border shadow-2xs">
               <CourseHeader
                 course={course}
                 formatDate={formatDate}
@@ -457,10 +425,10 @@ export default function CourseDetailPage() {
               <div className="p-6">
                 <CourseTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-                <div className="min-h-[300px]">
+                <div className="min-h-[260px]">
                   {activeTab === "description" && (
-                    <div className="prose dark:prose-invert max-w-none">
-                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+                    <div className="prose prose-slate dark:prose-invert max-w-none">
+                      <p className="text-text-muted leading-relaxed whitespace-pre-line text-sm sm:text-base">
                         {course.description}
                       </p>
                     </div>
@@ -478,13 +446,23 @@ export default function CourseDetailPage() {
                     />
                   )}
 
-                  {activeTab === "instructor" && <CourseInstructor instructor={course.instructor} />}
+                  {activeTab === "instructor" && (
+                    <CourseInstructor instructor={course.instructor} />
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Reviews Section always visible */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6">
+            {/* Reviews Section */}
+            <div className="bg-surface rounded-2xl border border-border p-6 shadow-2xs space-y-4">
+              <div className="space-y-1">
+                <h2 className="text-base sm:text-lg font-bold text-foreground">
+                  Đánh giá khóa học
+                </h2>
+                <p className="text-xs sm:text-sm text-text-muted">
+                  Ý kiến và đánh giá từ những học viên tham gia học tập
+                </p>
+              </div>
               <ReviewSection
                 courseId={course?.id || ""}
                 isEnrolled={isEnrolled}
@@ -540,7 +518,9 @@ export default function CourseDetailPage() {
         isLoading={paymentModal.isLoading}
         data={paymentModal.data}
         courseTitle={course?.title || ""}
-        onClose={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
+        onClose={() =>
+          setPaymentModal({ isOpen: false, isLoading: false, data: null })
+        }
       />
 
       <AuthRequiredModal
@@ -555,7 +535,6 @@ export default function CourseDetailPage() {
         isOpen={rateLimitModalOpen}
         onClose={() => setRateLimitModalOpen(false)}
       />
-
     </div>
   );
 }

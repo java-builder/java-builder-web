@@ -36,7 +36,7 @@ export function CacheStatsCards({
       </div>
 
       {/* Active Keys Card */}
-      <div className="bg-card border border-border rounded-xl p-5 shadow-xs transition-all hover:border-primary/30">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs transition-all">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">

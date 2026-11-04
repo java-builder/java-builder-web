@@ -1,6 +1,6 @@
 import { ExerciseSummaryResponse, ExerciseStatus, ExerciseType, Difficulty } from "@/types/exercise";
 import { PageResponse } from "@/types/api";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { ExerciseStatusBadge, ExerciseTypeBadge, DifficultyBadge } from "./ExerciseBadges";
 import { formatLocaleString } from "@/utils/dateUtils";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ const emptyStateIcon = (
 export const ExerciseTable = ({ isLoading, data, onPageChange, onCreateNew }: ExerciseTableProps) => {
   if (isLoading) {
     return (
-      <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+      <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-sm">
         <table className="w-full divide-y divide-border">
           <thead className="bg-muted/40">
             <tr>
@@ -35,7 +35,7 @@ export const ExerciseTable = ({ isLoading, data, onPageChange, onCreateNew }: Ex
           </thead>
           <tbody className="divide-y divide-border bg-transparent">
             {[1, 2, 3, 4, 5].map((i) => (
-              <tr key={i} className="animate-pulse">
+              <tr key={i} className="">
                 <td className="px-6 py-4">
                   <div className="h-4 bg-muted rounded w-2/3 mb-2" />
                   <div className="h-3 bg-muted rounded w-1/2" />
@@ -68,7 +68,7 @@ export const ExerciseTable = ({ isLoading, data, onPageChange, onCreateNew }: Ex
 
   if (!data || data.data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card/50 py-14 text-center">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface/50 py-14 text-center">
         {emptyStateIcon}
         <h3 className="mt-4 text-lg font-semibold text-foreground">Chưa có bài tập nào</h3>
         <p className="mt-2 max-w-md text-sm text-muted-foreground">
@@ -87,7 +87,7 @@ export const ExerciseTable = ({ isLoading, data, onPageChange, onCreateNew }: Ex
 
   return (
     <>
-      <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+      <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-sm">
         <table className="w-full divide-y divide-border">
           <thead className="bg-muted/40">
             <tr>

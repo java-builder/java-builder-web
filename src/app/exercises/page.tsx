@@ -5,7 +5,7 @@ import { useExercises } from '@/hooks/useExercises';
 import { useExerciseFilters } from '@/hooks/useExerciseFilters';
 import { useExerciseNavigation } from '@/hooks/useExerciseNavigation';
 import { ExerciseStatus } from '@/types/exercise';
-import { Pagination } from '@/components/ui/Pagination';
+import { Pagination } from '@/components/ui/pagination';
 import ExerciseListHeader from '@/components/exercises/ExerciseListHeader';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExerciseEmptyState from '@/components/exercises/ExerciseEmptyState';
@@ -25,7 +25,7 @@ export default function ExercisesPage() {
   ) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-900">
+    <div className="min-h-screen bg-[#F8F8F8] dark:bg-background transition-colors pb-16">
       {/* Header */}
       <ExerciseListHeader totalExercises={isLoading ? 0 : (exercisesData?.totalElements || 0)} quote={quote} />
 
@@ -34,24 +34,23 @@ export default function ExercisesPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden p-6 space-y-4 animate-pulse">
+              <div key={i} className="bg-white dark:bg-surface rounded-2xl shadow-xs border border-[#E8E8E8] dark:border-border overflow-hidden p-6 space-y-4 animate-pulse">
                 <div className="flex items-start justify-between">
-                  <div className="h-6 bg-muted rounded w-3/4 animate-pulse" />
-                  <div className="h-6 bg-muted rounded w-16 animate-pulse" />
+                  <div className="h-6 bg-slate-100 dark:bg-slate-800 rounded w-3/4" />
+                  <div className="h-6 bg-slate-100 dark:bg-slate-800 rounded-full w-16" />
                 </div>
                 <div className="space-y-2">
-                  <div className="h-4 bg-muted rounded w-full animate-pulse" />
-                  <div className="h-4 bg-muted rounded w-5/6 animate-pulse" />
-                  <div className="h-4 bg-muted rounded w-2/3 animate-pulse" />
+                  <div className="h-3.5 bg-slate-100 dark:bg-slate-800 rounded w-full" />
+                  <div className="h-3.5 bg-slate-100 dark:bg-slate-800 rounded w-5/6" />
                 </div>
-                <div className="h-6 bg-muted rounded w-24 animate-pulse" />
+                <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded-full w-24" />
                 <div className="grid grid-cols-2 gap-4 text-sm pt-2">
-                  <div className="h-5 bg-muted rounded w-2/3 animate-pulse" />
-                  <div className="h-5 bg-muted rounded w-2/3 animate-pulse" />
+                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-2/3" />
+                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-2/3" />
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
-                  <div className="h-4 bg-muted rounded w-24 animate-pulse" />
-                  <div className="h-4 bg-muted rounded w-16 animate-pulse" />
+                <div className="flex items-center justify-between pt-4 border-t border-[#E8E8E8] dark:border-border">
+                  <div className="h-3.5 bg-slate-100 dark:bg-slate-800 rounded w-24" />
+                  <div className="h-3.5 bg-slate-100 dark:bg-slate-800 rounded w-16" />
                 </div>
               </div>
             ))}
@@ -70,17 +69,15 @@ export default function ExercisesPage() {
 
             {/* Pagination */}
             {exercisesData && exercisesData.totalPages > 1 && (
-              <div className="flex justify-center">
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-4">
-                  <Pagination
-                    currentPage={exercisesData.currentPage}
-                    totalPages={exercisesData.totalPages}
-                    totalElements={exercisesData.totalElements}
-                    pageSize={exercisesData.pageSize}
-                    onPageChange={handlePageChange}
-                    itemName={t("exercisesPage.exerciseItemName")}
-                  />
-                </div>
+              <div className="flex justify-center mt-6">
+                <Pagination
+                  currentPage={exercisesData.currentPage}
+                  totalPages={exercisesData.totalPages}
+                  totalElements={exercisesData.totalElements}
+                  pageSize={exercisesData.pageSize}
+                  onPageChange={handlePageChange}
+                  itemName={t("exercisesPage.exerciseItemName")}
+                />
               </div>
             )}
           </>

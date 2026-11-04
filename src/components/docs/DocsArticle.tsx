@@ -5,12 +5,31 @@ import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import CommentList from "@/components/blogs/CommentList";
 import { useComments } from "@/hooks/useComments";
 import toast from "react-hot-toast";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import LessonNotes from "@/components/learn/LessonNotes";
 import DocsAiAssistant from "@/components/docs/DocsAiAssistant";
-import { Check, X, FileText, Bot, Lock, Crown, ShoppingCart, UserPlus, Sparkles } from "lucide-react";
+import {
+  Check,
+  X,
+  FileText,
+  Bot,
+  Lock,
+  Crown,
+  ShoppingCart,
+  UserPlus,
+  Sparkles,
+  Clock,
+  Calendar,
+  ChevronRight,
+} from "lucide-react";
 
-const READ_TIME_THRESHOLD_MS = 90 * 1000; // 1 minute 30 seconds (90,000 ms)
+const READ_TIME_THRESHOLD_MS = 90 * 1000;
+
+interface AdjacentLesson {
+  id: string;
+  title: string;
+  chapterTitle?: string;
+}
 
 interface DocsArticleProps {
   title: string;
@@ -18,7 +37,7 @@ interface DocsArticleProps {
   readTime: string;
   lastUpdated: string;
   content: string;
-  breadcrumbs: { label: string; href?: string }[];
+  breadcrumbs: { label: string; href?: string; onClick?: () => void }[];
   lessonId?: string;
   canAccess?: boolean;
   isFreePreview?: boolean;
@@ -29,6 +48,12 @@ interface DocsArticleProps {
   coursePrice?: number;
   onEnrollClick?: () => void;
   isEnrollingFree?: boolean;
+  prevLesson?: AdjacentLesson | null;
+  nextLesson?: AdjacentLesson | null;
+  onNavigateLesson?: (lessonId: string) => void;
+  drawerState?: { isOpen: boolean; tab: "notes" | "ai" };
+  onOpenDrawer?: (tab: "notes" | "ai") => void;
+  onCloseDrawer?: () => void;
 }
 
 export default function DocsArticle({
@@ -37,6 +62,7 @@ export default function DocsArticle({
   readTime,
   lastUpdated,
   content,
+  breadcrumbs,
   lessonId,
   canAccess = true,
   isFreePreview = false,
@@ -47,6 +73,9 @@ export default function DocsArticle({
   coursePrice,
   onEnrollClick,
   isEnrollingFree = false,
+  drawerState,
+  onOpenDrawer,
+  onCloseDrawer,
 }: DocsArticleProps) {
   const {
     comments,
@@ -60,40 +89,56 @@ export default function DocsArticle({
     loadMoreComments,
   } = useComments(lessonId || "", "DOCS");
 
-  const [isNotesOpen, setIsNotesOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"notes" | "ai">("notes");
+  const [internalOpen, setInternalOpen] = useState(false);
+  const [internalTab, setInternalTab] = useState<"notes" | "ai">("notes");
 
-  const completionRef = useRef<HTMLDivElement | null>(null);
+  const isNotesOpen = drawerState ? drawerState.isOpen : internalOpen;
+  const activeTab = drawerState ? drawerState.tab : internalTab;
+
+  const openDrawer = (tab: "notes" | "ai") => {
+    if (onOpenDrawer) {
+      onOpenDrawer(tab);
+    } else {
+      setInternalTab(tab);
+      setInternalOpen(true);
+    }
+  };
+
+  const closeDrawer = () => {
+    if (onCloseDrawer) {
+      onCloseDrawer();
+    } else {
+      setInternalOpen(false);
+    }
+  };
+
+  // Strip duplicate leading H1 markdown heading if present
+  const cleanedContent = useMemo(() => {
+    if (!content) return "";
+    return content.replace(/^\s*#\s+[^\n]+\n*/, "").trim();
+  }, [content]);
+
+  const completionRef = useRef<HTMLDivElement>(null);
   const startTimeRef = useRef<number>(Date.now());
   const hasAutoCompletedRef = useRef<boolean>(false);
   const isAtBottomRef = useRef<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const tryTriggerAutoComplete = useCallback(() => {
-    if (completed || hasAutoCompletedRef.current || !lessonId || canAccess === false) {
+    if (
+      completed ||
+      hasAutoCompletedRef.current ||
+      !onAutoComplete ||
+      canAccess === false
+    )
       return;
-    }
 
-    const elapsedTime = Date.now() - startTimeRef.current;
-    if (elapsedTime >= READ_TIME_THRESHOLD_MS && isAtBottomRef.current) {
+    const timeSpent = Date.now() - startTimeRef.current;
+    if (timeSpent >= READ_TIME_THRESHOLD_MS && isAtBottomRef.current) {
       hasAutoCompletedRef.current = true;
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
-      if (onAutoComplete) {
-        onAutoComplete();
-      } else if (onToggleComplete) {
-        onToggleComplete();
-      }
-    } else if (isAtBottomRef.current && elapsedTime < READ_TIME_THRESHOLD_MS) {
-      const remainingTime = READ_TIME_THRESHOLD_MS - elapsedTime;
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        tryTriggerAutoComplete();
-      }, remainingTime + 100);
+      onAutoComplete();
     }
-  }, [completed, lessonId, canAccess, onAutoComplete, onToggleComplete]);
+  }, [completed, onAutoComplete, canAccess]);
 
   useEffect(() => {
     if (!lessonId || completed || canAccess === false) return;
@@ -102,70 +147,50 @@ export default function DocsArticle({
     hasAutoCompletedRef.current = false;
     isAtBottomRef.current = false;
 
-    const twoMinTimer = setTimeout(() => {
+    const remainingTime = READ_TIME_THRESHOLD_MS;
+    timerRef.current = setTimeout(() => {
       tryTriggerAutoComplete();
-    }, READ_TIME_THRESHOLD_MS + 100);
+    }, remainingTime + 100);
 
-    const checkScrollBottom = () => {
-      const windowHeight = window.innerHeight;
-      const scrollY = window.scrollY || window.pageYOffset;
-      const bodyHeight = document.documentElement.scrollHeight;
-      return windowHeight + scrollY >= bodyHeight - 200;
-    };
-
-    const handleScroll = () => {
-      const atBottom = checkScrollBottom();
-      if (atBottom !== isAtBottomRef.current) {
-        isAtBottomRef.current = atBottom;
-        if (atBottom) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          isAtBottomRef.current = true;
           tryTriggerAutoComplete();
         }
-      }
-    };
+      },
+      { threshold: 0.5 }
+    );
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    let observer: IntersectionObserver | null = null;
-    const currentRef = completionRef.current;
-    if (currentRef) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          const entry = entries[0];
-          if (entry && entry.isIntersecting) {
-            isAtBottomRef.current = true;
-            tryTriggerAutoComplete();
-          }
-        },
-        { threshold: 0.1 }
-      );
-      observer.observe(currentRef);
+    const currentTarget = completionRef.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
     }
 
     return () => {
-      clearTimeout(twoMinTimer);
       if (timerRef.current) clearTimeout(timerRef.current);
-      window.removeEventListener("scroll", handleScroll);
-      if (observer && currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentTarget) observer.unobserve(currentTarget);
     };
   }, [lessonId, completed, canAccess, tryTriggerAutoComplete]);
 
-  const handleAddComment = async (content: string) => {
+  const handleAddComment = async (commentContent: string) => {
     if (!lessonId) return;
     try {
-      await addComment(content);
+      await addComment(commentContent);
       toast.success("Đăng bình luận thành công");
     } catch (err) {
       toast.error((err as Error).message || "Không thể đăng bình luận");
     }
   };
 
-  const handleReplyComment = async (commentId: string, content: string) => {
+  const handleReplyComment = async (
+    commentId: string,
+    replyContent: string
+  ) => {
     if (!lessonId) return;
     try {
-      await replyToComment(commentId, content);
+      await replyToComment(commentId, replyContent);
       toast.success("Đăng câu trả lời thành công");
     } catch (err) {
       toast.error((err as Error).message || "Không thể gửi trả lời");
@@ -191,229 +216,236 @@ export default function DocsArticle({
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+    <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
+      {/* Breadcrumb bar */}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <nav className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-text-muted mb-5">
+          {breadcrumbs.map((bc, idx) => {
+            const isLast = idx === breadcrumbs.length - 1;
+            return (
+              <span key={idx} className="inline-flex items-center gap-1.5 min-w-0">
+                {bc.onClick ? (
+                  <button
+                    type="button"
+                    onClick={bc.onClick}
+                    className="hover:text-primary transition-colors truncate max-w-[200px] cursor-pointer"
+                  >
+                    {bc.label}
+                  </button>
+                ) : bc.href ? (
+                  <Link
+                    href={bc.href}
+                    className="hover:text-primary transition-colors truncate max-w-[200px]"
+                  >
+                    {bc.label}
+                  </Link>
+                ) : (
+                  <span
+                    className={`truncate max-w-[260px] ${
+                      isLast ? "text-foreground font-semibold" : ""
+                    }`}
+                  >
+                    {bc.label}
+                  </span>
+                )}
+                {!isLast && <ChevronRight className="w-3.5 h-3.5 text-border shrink-0" />}
+              </span>
+            );
+          })}
+        </nav>
+      )}
+
+      {/* Article Header */}
+      <header className="mb-8 pb-6 border-b border-border">
+        <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-foreground tracking-tight leading-tight">
           {title}
         </h1>
+
         {description && (
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm sm:text-base text-text-muted mt-3 leading-relaxed">
             {description}
           </p>
         )}
-        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <span className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+
+        <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-text-muted mt-4">
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-primary" />
             {readTime}
           </span>
-          <span className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+          <span className="inline-flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 text-primary" />
             Cập nhật: {lastUpdated}
           </span>
         </div>
       </header>
 
-      {/* Free Preview Banner if Not Enrolled */}
+      {/* Free Preview Banner */}
       {isFreePreview && canAccess === false && (
-        <div className="mb-6 rounded-2xl border border-amber-200/80 bg-amber-50/60 p-4 sm:p-5 shadow-xs dark:border-amber-900/40 dark:bg-amber-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="mb-8 rounded-2xl border border-warning/30 bg-warning/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 px-2.5 py-0.5 text-xs font-semibold text-amber-800 dark:text-amber-300">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-0.5 text-xs font-semibold text-warning border border-warning/30">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Xem trước miễn phí</span>
             </div>
-            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-              Bạn đang xem bài học thử miễn phí. Mua khóa học hoặc đăng ký gói Premium để mở khóa toàn bộ bài học.
+            <p className="text-xs sm:text-sm text-foreground">
+              Bạn đang xem bài học thử. Đăng ký khóa học hoặc gói Premium để mở
+              khóa toàn bộ nội dung.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {coursePrice && coursePrice > 0 ? (
               <button
+                type="button"
                 onClick={onEnrollClick}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-accent/90 cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary hover:bg-primary/90 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm active:scale-95 transition cursor-pointer"
               >
-                <ShoppingCart className="w-4 h-4" />
+                <ShoppingCart className="w-3.5 h-3.5" />
                 <span>Mua ngay ({coursePrice.toLocaleString("vi-VN")} đ)</span>
               </button>
             ) : (
               <button
+                type="button"
                 onClick={onEnrollClick}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-accent/90 cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary hover:bg-primary/90 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm active:scale-95 transition cursor-pointer"
               >
-                <UserPlus className="w-4 h-4" />
+                <UserPlus className="w-3.5 h-3.5" />
                 <span>Tham gia miễn phí</span>
               </button>
             )}
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-700 px-3.5 py-2 text-xs sm:text-sm font-semibold text-amber-700 dark:text-amber-300 transition shadow-xs"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-surface px-3.5 py-2 text-xs sm:text-sm font-semibold text-foreground transition"
             >
-              <Crown className="w-4 h-4 text-amber-500" />
-              <span>Hoặc đăng ký gói Premium</span>
+              <Crown className="w-3.5 h-3.5 text-warning" />
+              <span>Gói Premium</span>
             </Link>
           </div>
         </div>
       )}
 
+      {/* Markdown Content */}
       <PublicMarkdownRenderer
-        content={content}
-        className="prose prose-lg dark:prose-invert max-w-none"
+        content={cleanedContent}
+        className="prose prose-slate dark:prose-invert max-w-none"
       />
 
-      {/* Lesson Completion Action Button */}
+      {/* Lesson Completion Card */}
       {lessonId && canAccess !== false && (
         <div
           ref={completionRef}
-          className="mt-8 flex items-center justify-between p-4 sm:p-5 bg-gradient-to-r from-gray-50/50 to-white dark:from-slate-900/30 dark:to-slate-800/10 border border-gray-200/80 dark:border-slate-800/80 rounded-2xl animate-in fade-in duration-300"
+          className="mt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-background border border-border rounded-2xl"
         >
-          <div className="text-left min-w-0 pr-4">
-            <h4 className="text-sm font-bold text-gray-900 dark:text-white">
-              {completed ? "Bạn đã hoàn thành bài học này" : "Hoàn thành bài học?"}
+          <div className="text-left min-w-0">
+            <h4 className="text-sm font-bold text-foreground">
+              {completed
+                ? "Bạn đã hoàn thành bài học này"
+                : "Đánh dấu hoàn thành bài học?"}
             </h4>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-              {completed 
-                ? "Bài học này đã được ghi nhận trong tiến độ học tập của bạn." 
-                : "Đánh dấu bài học này để lưu tiến độ và hiển thị dấu hoàn thành ở danh mục."}
+            <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
+              {completed
+                ? "Bài học đã được ghi nhận vào tiến độ học tập của bạn."
+                : "Lưu tiến độ để dễ dàng theo dõi các bài đã học trong chương trình."}
             </p>
           </div>
           <button
+            type="button"
             onClick={onToggleComplete}
-            className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl border transition-all duration-200 cursor-pointer flex-shrink-0 group ${
+            className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-full border transition-all duration-200 cursor-pointer shrink-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 ${
               completed
-                ? "bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30"
-                : "bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700/50 text-gray-700 dark:text-slate-350 border-gray-200 dark:border-slate-700 hover:border-emerald-500/40 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-xs hover:shadow-sm"
+                ? "bg-success-soft text-success border-success/30 hover:bg-success/15 focus-visible:ring-success/30"
+                : "bg-primary hover:bg-primary/90 text-white border-primary shadow-sm focus-visible:ring-primary/30"
             }`}
           >
-            {completed ? (
-              <Check className="w-4 h-4" strokeWidth={3} />
-            ) : (
-              <Check className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transition-colors" strokeWidth={2} />
-            )}
+            <Check className="w-4 h-4" strokeWidth={2.5} />
             <span>{completed ? "Đã hoàn thành" : "Hoàn thành bài học"}</span>
           </button>
         </div>
       )}
 
+      {/* Locked Lesson Prompt */}
       {!isFreePreview && canAccess === false && (
-        <div className="mt-8 relative">
-          <div className="relative text-center py-10 px-6 sm:px-8 bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-xl max-w-2xl mx-auto overflow-hidden">
-            {/* Soft background glow */}
-            <div className="absolute -top-24 -left-24 w-48 h-48 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
-
+        <div className="mt-8">
+          <div className="text-center py-10 px-6 sm:px-8 bg-background rounded-2xl border border-border shadow-sm max-w-2xl mx-auto">
             {!coursePrice || coursePrice === 0 ? (
-              <div className="relative z-10">
-                <div className="inline-flex items-center justify-center w-14 h-14 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-2xl text-emerald-600 dark:text-emerald-400 mb-4 border border-emerald-500/20 shadow-sm">
-                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                  </svg>
+              <div>
+                <div className="inline-flex items-center justify-center w-14 h-14 bg-success/10 rounded-full text-success mb-4 border border-success/25">
+                  <UserPlus className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
                   Tham gia khóa học miễn phí
                 </h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-                  Khóa học này hoàn toàn miễn phí. Vui lòng đăng ký tham gia khóa học để mở khóa toàn bộ nội dung lý thuyết, bài tập thực hành, mã nguồn dự án mẫu và nhận sự hỗ trợ 1-1 từ giảng viên.
+                <p className="text-text-muted mb-6 max-w-lg mx-auto text-xs sm:text-sm leading-relaxed">
+                  Khóa học này hoàn toàn miễn phí. Đăng ký tham gia ngay để mở
+                  khóa toàn bộ nội dung lý thuyết, bài tập thực hành và mã nguồn
+                  mẫu.
                 </p>
-                <div className="flex justify-center items-center">
-                  <button
-                    type="button"
-                    onClick={onEnrollClick}
-                    disabled={isEnrollingFree}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold rounded-xl transition-all shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer disabled:opacity-50"
-                  >
-                    {isEnrollingFree ? (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                      </svg>
-                    )}
-                    <span>{isEnrollingFree ? "Đang đăng ký..." : "Tham gia miễn phí"}</span>
-                  </button>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700/50 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Miễn phí 100%</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Hỗ trợ học tập 24/7</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Mã nguồn & Tài liệu đi kèm</span>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={onEnrollClick}
+                  disabled={isEnrollingFree}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 active:scale-95 text-white font-semibold rounded-full transition-all shadow-sm text-sm cursor-pointer disabled:opacity-50"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>
+                    {isEnrollingFree ? "Đang đăng ký..." : "Tham gia miễn phí"}
+                  </span>
+                </button>
               </div>
             ) : (
-              <div className="relative z-10">
-                <div className="inline-flex items-center justify-center w-14 h-14 bg-accent/10 dark:bg-accent/20 rounded-2xl text-accent mb-4 border border-accent/20 shadow-sm">
+              <div>
+                <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-soft rounded-full text-primary mb-4 border border-primary/20">
                   <Lock className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  Nội dung bài học này đang được khóa
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+                  Nội dung bài học đang được khóa
                 </h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-                  Bài học này thuộc chương trình chuyên sâu. Bạn có thể <span className="font-semibold text-gray-900 dark:text-white">mua lẻ khóa học để sở hữu vĩnh viễn</span> hoặc <span className="font-semibold text-amber-600 dark:text-amber-400">nâng cấp gói Premium</span> để mở khóa toàn bộ khóa học & câu hỏi phỏng vấn.
+                <p className="text-text-muted mb-6 max-w-lg mx-auto text-xs sm:text-sm leading-relaxed">
+                  Bạn có thể{" "}
+                  <strong className="font-semibold text-foreground">
+                    mua lẻ khóa học để sở hữu vĩnh viễn
+                  </strong>{" "}
+                  hoặc{" "}
+                  <strong className="font-semibold text-primary">
+                    nâng cấp gói Premium
+                  </strong>{" "}
+                  để mở khóa toàn bộ khóa học & câu hỏi phỏng vấn.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
                   {onEnrollClick ? (
                     <button
                       type="button"
                       onClick={onEnrollClick}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-bold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 active:scale-95 text-white font-semibold rounded-full transition-all shadow-sm text-sm cursor-pointer"
                     >
                       <ShoppingCart className="w-4 h-4" />
-                      <span>Mua ngay {coursePrice ? `(${coursePrice.toLocaleString("vi-VN")} đ)` : ""}</span>
+                      <span>
+                        Mua ngay{" "}
+                        {coursePrice
+                          ? `(${coursePrice.toLocaleString("vi-VN")} đ)`
+                          : ""}
+                      </span>
                     </button>
                   ) : courseSlug ? (
                     <Link
                       href={`/courses/${courseSlug}`}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-600 text-white font-bold rounded-xl transition-all shadow-md shadow-accent/20 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 active:translate-y-0 text-sm cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 active:scale-95 text-white font-semibold rounded-full transition-all shadow-sm text-sm cursor-pointer"
                     >
                       <ShoppingCart className="w-4 h-4" />
-                      <span>Mua ngay {coursePrice ? `(${coursePrice.toLocaleString("vi-VN")} đ)` : ""}</span>
+                      <span>
+                        Mua ngay{" "}
+                        {coursePrice
+                          ? `(${coursePrice.toLocaleString("vi-VN")} đ)`
+                          : ""}
+                      </span>
                     </Link>
                   ) : null}
                   <Link
                     href="/pricing"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-300 font-semibold rounded-xl transition-all text-sm shadow-xs"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-warning/10 border border-warning/30 text-warning font-semibold rounded-full transition-all text-sm"
                   >
-                    <Crown className="w-4 h-4 text-amber-500" />
-                    <span>Hoặc đăng ký gói Premium</span>
+                    <Crown className="w-4 h-4" />
+                    <span>Đăng ký gói Premium</span>
                   </Link>
-                </div>
-                
-                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700/50 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Mua lẻ: Sở hữu trọn đời</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Premium: Toàn bộ Courses & Phỏng vấn</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-4.5 h-4.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Hỗ trợ học tập 24/7</span>
-                  </div>
                 </div>
               </div>
             )}
@@ -421,10 +453,11 @@ export default function DocsArticle({
         </div>
       )}
 
+      {/* Comments Section */}
       {lessonId && (
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Bình luận
+        <div className="mt-12 pt-8 border-t border-border">
+          <h2 className="text-lg sm:text-xl font-bold text-foreground mb-6">
+            Bình luận & Thảo luận
           </h2>
           <CommentList
             comments={comments}
@@ -440,58 +473,44 @@ export default function DocsArticle({
         </div>
       )}
 
-      {/* Floating Action Button for Notes */}
-      {lessonId && canAccess !== false && (
-        <button
-          onClick={() => setIsNotesOpen(true)}
-          className="fixed bottom-6 right-6 z-40 flex items-center justify-center w-14 h-14 bg-gradient-to-r from-accent to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer"
-          title="Ghi chú cá nhân"
-        >
-          <FileText className="w-6 h-6 group-hover:rotate-6 transition-transform" />
-          <span className="absolute top-0 right-0 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 dark:bg-emerald-300 opacity-75" />
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 dark:bg-emerald-400 ring-2 ring-white dark:ring-slate-900" />
-          </span>
-        </button>
-      )}
-
-      {/* Slide-over Notes Drawer */}
+      {/* Slide-over Notes & AI Drawer */}
       {lessonId && canAccess !== false && (
         <>
-          {/* Backdrop overlay */}
           <div
             className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300 ${
-              isNotesOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+              isNotesOpen
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
             }`}
-            onClick={() => setIsNotesOpen(false)}
+            onClick={closeDrawer}
           />
 
-          {/* Drawer Panel */}
           <div
-            className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] lg:w-[680px] xl:w-[750px] max-w-[92vw] bg-white dark:bg-slate-900 shadow-2xl border-l border-gray-150 dark:border-slate-800/80 flex flex-col transition-transform duration-300 ease-out transform ${
+            className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] md:w-[560px] lg:w-[640px] max-w-[92vw] bg-surface shadow-2xl border-l border-border flex flex-col transition-transform duration-300 ease-out transform ${
               isNotesOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            {/* Drawer Header with Tabs */}
-            <div className="flex items-center justify-between px-6 border-b border-gray-150 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/20">
-              <div className="flex gap-4">
+            <div className="flex items-center justify-between px-6 border-b border-border bg-background/60">
+              <div className="flex gap-5">
                 <button
-                  onClick={() => setActiveTab("notes")}
-                  className={`py-4 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+                  type="button"
+                  onClick={() => openDrawer("notes")}
+                  className={`py-3.5 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
                     activeTab === "notes"
-                      ? "border-accent text-accent dark:text-sky-400"
-                      : "border-transparent text-gray-450 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
+                      ? "border-primary text-primary"
+                      : "border-transparent text-text-muted hover:text-foreground"
                   }`}
                 >
                   <FileText className="w-4 h-4" />
                   Ghi chú
                 </button>
                 <button
-                  onClick={() => setActiveTab("ai")}
-                  className={`py-4 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+                  type="button"
+                  onClick={() => openDrawer("ai")}
+                  className={`py-3.5 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
                     activeTab === "ai"
-                      ? "border-accent text-accent dark:text-sky-400"
-                      : "border-transparent text-gray-450 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
+                      ? "border-primary text-primary"
+                      : "border-transparent text-text-muted hover:text-foreground"
                   }`}
                 >
                   <Bot className="w-4 h-4" />
@@ -499,20 +518,32 @@ export default function DocsArticle({
                 </button>
               </div>
               <button
-                onClick={() => setIsNotesOpen(false)}
-                className="p-1.5 text-gray-450 hover:text-gray-750 dark:hover:text-slate-200 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                type="button"
+                onClick={closeDrawer}
+                className="p-1.5 text-text-muted hover:text-foreground rounded-full hover:bg-muted transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Drawer Body */}
-            <div className={`flex-1 flex flex-col min-h-0 ${activeTab === "notes" ? "overflow-y-auto px-6 pb-6" : "px-0 pb-0"}`}>
-              {isNotesOpen && (activeTab === "notes" ? (
-                <LessonNotes lessonId={lessonId} showTimestamp={false} />
-              ) : (
-                <DocsAiAssistant lessonId={lessonId} lessonName={title} lessonDescription={description} isInline={true} />
-              ))}
+            <div
+              className={`flex-1 flex flex-col min-h-0 ${
+                activeTab === "notes"
+                  ? "overflow-y-auto px-6 pb-6"
+                  : "px-0 pb-0"
+              }`}
+            >
+              {isNotesOpen &&
+                (activeTab === "notes" ? (
+                  <LessonNotes lessonId={lessonId} showTimestamp={false} />
+                ) : (
+                  <DocsAiAssistant
+                    lessonId={lessonId}
+                    lessonName={title}
+                    lessonDescription={description}
+                    isInline={true}
+                  />
+                ))}
             </div>
           </div>
         </>

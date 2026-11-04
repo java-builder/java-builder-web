@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Award, X, Loader2, Search, Mail, BookOpen, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
+import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { courseApi } from "@/services/course.service";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { certificateApi } from "@/services/certificate.service";
@@ -180,9 +180,9 @@ export default function GrantCertificateModal({
 
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal content */}
-        <div className="relative w-full max-w-xl bg-card text-card-foreground border border-border rounded-xl shadow-2xl z-10 transition-all duration-300">
+        <div className="relative w-full max-w-xl bg-surface text-foreground border border-border rounded-2xl shadow-2xl z-10 transition-all duration-300">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-xl">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-2xl">
             <div className="flex items-center space-x-3.5">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 border border-accent/15">
                 <Award className="h-5.5 w-5.5 text-accent dark:text-accent-on-dark" />
@@ -340,7 +340,7 @@ export default function GrantCertificateModal({
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-xl">
+            <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-2xl">
               <Button
                 type="button"
                 variant="outline"

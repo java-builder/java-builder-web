@@ -52,7 +52,7 @@ const getInitials = (name: string) =>
 
 export const LearnerPerformanceTable = ({ records }: LearnerPerformanceTableProps) => {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground">Hiệu suất học viên</h3>

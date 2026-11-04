@@ -221,7 +221,7 @@ export default function FilePreviewModal({
               <p>Định dạng tệp này không hỗ trợ xem trực tiếp.</p>
               <button
                 onClick={handleDownload}
-                className="px-4 py-2 rounded-xl bg-accent text-white font-bold text-xs hover:bg-accent/90 transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-full bg-accent text-white font-bold text-xs hover:bg-accent/90 transition-colors cursor-pointer"
               >
                 Tải tệp {fileName} về máy
               </button>

@@ -11,9 +11,9 @@ export const ExerciseTypeBadge = ({ type }: ExerciseTypeBadgeProps) => {
   const { t } = useI18n();
 
   const colors = {
-    [ExerciseType.MULTIPLE_CHOICE]: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-700',
-    [ExerciseType.ESSAY]: 'bg-green-100 text-green-800 border-green-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700',
-    [ExerciseType.CODING]: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-700',
+    [ExerciseType.MULTIPLE_CHOICE]: 'bg-[#FFF0E8] text-[#FF5A1F] border-[#FFD8C7] dark:bg-orange-950/40 dark:text-orange-400 dark:border-orange-900/50',
+    [ExerciseType.ESSAY]: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50',
+    [ExerciseType.CODING]: 'bg-[#26344D]/10 text-[#26344D] border-[#26344D]/20 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700',
   };
 
   const labels = {
@@ -41,7 +41,7 @@ export const ExerciseTypeBadge = ({ type }: ExerciseTypeBadgeProps) => {
   };
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full border ${colors[type]}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full border ${colors[type]}`}>
       {icons[type]}
       {labels[type]}
     </span>
@@ -56,9 +56,9 @@ export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
   const { t } = useI18n();
 
   const colors = {
-    [Difficulty.EASY]: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700',
-    [Difficulty.MEDIUM]: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-700',
-    [Difficulty.HARD]: 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-700',
+    [Difficulty.EASY]: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50',
+    [Difficulty.MEDIUM]: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/50',
+    [Difficulty.HARD]: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/50',
   };
 
   const labels = {
@@ -68,7 +68,7 @@ export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
   };
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full border ${colors[difficulty]}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full border ${colors[difficulty]}`}>
       {labels[difficulty]}
     </span>
   );

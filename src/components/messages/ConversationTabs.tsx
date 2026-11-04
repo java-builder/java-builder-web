@@ -20,7 +20,7 @@ export default function ConversationTabs({
       <button
         type="button"
         onClick={() => onSelectTab("all")}
-        className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all cursor-pointer ${
+        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer ${
           activeTab === "all"
             ? "bg-accent text-white shadow-xs"
             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -31,7 +31,7 @@ export default function ConversationTabs({
       <button
         type="button"
         onClick={() => onSelectTab("unread")}
-        className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
           activeTab === "unread"
             ? "bg-accent text-white shadow-xs"
             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -47,7 +47,7 @@ export default function ConversationTabs({
       <button
         type="button"
         onClick={() => onSelectTab("groups")}
-        className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all cursor-pointer ${
+        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer ${
           activeTab === "groups"
             ? "bg-accent text-white shadow-xs"
             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -58,7 +58,7 @@ export default function ConversationTabs({
       <button
         type="button"
         onClick={() => onSelectTab("admin")}
-        className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all cursor-pointer ${
+        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer ${
           activeTab === "admin"
             ? "bg-accent text-white shadow-xs"
             : "text-muted-foreground hover:bg-muted hover:text-foreground"

@@ -36,25 +36,25 @@ export default function AdminSettingsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 max-w-7xl mx-auto space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
+      <div className="p-6 max-w-7xl mx-auto space-y-6 bg-background min-h-screen">
         <div className="space-y-2">
-          <div className="h-7 bg-muted rounded w-48" />
-          <div className="h-4 bg-muted rounded w-72" />
+          <div className="h-7 bg-muted rounded-full w-48" />
+          <div className="h-4 bg-muted rounded-full w-72" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Tabs skeleton */}
-          <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-4 space-y-2 h-48" />
+          <div className="bg-surface border border-border rounded-2xl p-4 space-y-2 h-48" />
           {/* Form skeleton */}
-          <div className="md:col-span-3 bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-6 space-y-6">
+          <div className="md:col-span-3 bg-surface border border-border rounded-2xl p-6 space-y-6">
             <div className="space-y-2">
-              <div className="h-4 bg-muted rounded w-24" />
-              <div className="h-10 bg-muted rounded w-full" />
+              <div className="h-4 bg-muted rounded-full w-24" />
+              <div className="h-10 bg-muted rounded-xl w-full" />
             </div>
             <div className="space-y-2">
-              <div className="h-4 bg-muted rounded w-24" />
-              <div className="h-10 bg-muted rounded w-full" />
+              <div className="h-4 bg-muted rounded-full w-24" />
+              <div className="h-10 bg-muted rounded-xl w-full" />
             </div>
-            <div className="h-10 bg-muted rounded w-32 mt-6" />
+            <div className="h-10 bg-muted rounded-full w-32 mt-6" />
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function AdminSettingsPage() {
   if (error || !user) {
     return (
       <div className="p-6 max-w-7xl mx-auto">
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-8 text-center">
+        <div className="bg-surface rounded-2xl border border-border p-8 text-center">
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
           </div>
@@ -73,7 +73,7 @@ export default function AdminSettingsPage() {
           </h2>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors"
+            className="px-6 py-2 bg-primary text-white rounded-full font-medium hover:bg-primary-hover transition-colors cursor-pointer"
           >
             {t("admin.settings.retryBtn")}
           </button>
@@ -108,7 +108,7 @@ export default function AdminSettingsPage() {
       </nav>
 
       {/* Header */}
-      <div className="bg-card rounded-xl p-6 sm:p-8 border border-border shadow-sm">
+      <div className="bg-surface rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
         <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
           {t("admin.settings.pageTitle")}
         </h1>
@@ -121,7 +121,7 @@ export default function AdminSettingsPage() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar - Desktop */}
         <div className="hidden lg:block w-64 flex-shrink-0">
-          <div className="bg-card rounded-xl border border-border shadow-sm p-3 sticky top-6">
+          <div className="bg-surface rounded-2xl border border-border shadow-sm p-3 sticky top-6">
             <nav className="space-y-1">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
@@ -129,9 +129,9 @@ export default function AdminSettingsPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-3 ${
+                    className={`w-full text-left px-3.5 py-2.5 rounded-full text-sm font-medium transition-colors flex items-center gap-3 cursor-pointer ${
                       isActive
-                        ? "bg-accent text-white shadow-sm"
+                        ? "bg-primary text-white shadow-sm font-semibold"
                         : "text-foreground/90 hover:bg-muted"
                     }`}
                   >
@@ -148,7 +148,7 @@ export default function AdminSettingsPage() {
 
         {/* Mobile Tab Selector */}
         <div className="lg:hidden">
-          <div className="bg-card rounded-xl border border-border shadow-sm p-2">
+          <div className="bg-surface rounded-2xl border border-border shadow-sm p-2">
             <div className="flex gap-1">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
@@ -156,9 +156,9 @@ export default function AdminSettingsPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                    className={`flex-1 px-3 py-2 rounded-full text-sm font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer ${
                       isActive
-                        ? "bg-accent text-white shadow-sm"
+                        ? "bg-primary text-white shadow-sm font-semibold"
                         : "text-foreground/90 hover:bg-muted"
                     }`}
                   >

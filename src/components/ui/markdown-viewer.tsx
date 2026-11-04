@@ -169,7 +169,7 @@ export function MarkdownViewer({
               : rawLanguage.toUpperCase();
 
         return (
-          <div className="relative my-4 rounded-[6px] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+          <div className="relative my-4 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
             {/* Header bar - monochrome Vercel aesthetic, no traffic dots */}
             <div className="flex items-center justify-between px-3.5 py-1.5 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
               <span className="text-[11px] font-mono font-medium tracking-wider text-slate-600 dark:text-slate-400 uppercase select-none">
@@ -182,7 +182,7 @@ export function MarkdownViewer({
                   e.stopPropagation();
                   copyToClipboard(codeString, codeId);
                 }}
-                className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 rounded-[4px] px-2 py-0.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer select-none"
+                className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 rounded-full px-2.5 py-0.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer select-none"
                 title="Copy code"
               >
                 {copiedCode === codeId ? (
@@ -225,7 +225,7 @@ export function MarkdownViewer({
 
       return (
         <code
-          className="px-1.5 py-0.5 text-[0.875em] font-mono bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-[4px] text-slate-900 dark:text-slate-100 break-words"
+          className="px-1.5 py-0.5 text-[0.875em] font-mono bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-md text-slate-900 dark:text-slate-100 break-words"
           {...rest}
         >
           {children}
@@ -325,7 +325,7 @@ export function MarkdownViewer({
         return (
           <div
             className={cn(
-              "my-4 flex gap-3 p-4 rounded-[6px] border border-slate-200 dark:border-slate-800",
+              "my-4 flex gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800",
               alertStyles.border,
               alertStyles.bg,
               alertStyles.text
@@ -395,7 +395,7 @@ export function MarkdownViewer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, children, ...rest } = props;
       return (
-        <div className="my-4 w-full overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-[6px] shadow-xs">
+        <div className="my-4 w-full overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
           <table className="w-full border-collapse text-sm text-left" {...rest}>
             {children}
           </table>

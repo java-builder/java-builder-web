@@ -157,15 +157,15 @@ export default function CourseUnlockModal({
       {/* Modal Container */}
       <div className="flex min-h-full items-center justify-center p-3 sm:p-4 text-center">
         <div 
-          className={`relative w-full ${view === "PAYMENT" ? "max-w-lg" : "max-w-2xl"} max-h-[94vh] flex flex-col transform overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-200`}
+          className={`relative w-full ${view === "PAYMENT" ? "max-w-lg" : "max-w-2xl"} max-h-[94vh] flex flex-col transform overflow-hidden rounded-2xl bg-white dark:bg-surface text-left shadow-2xl transition-all border border-[#E8E8E8] dark:border-border animate-in zoom-in-95 duration-200`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header for PAYMENT View (Identical to original PaymentModal style) */}
           {view === "PAYMENT" ? (
-            <div className="px-6 py-4 sm:py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div className="px-6 py-4 sm:py-5 border-b border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[#FF5A1F]/10 text-[#FF5A1F] rounded-xl flex items-center justify-center">
                     <CreditCard className="w-5 h-5" />
                   </div>
                   <div>
@@ -234,13 +234,13 @@ export default function CourseUnlockModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-stretch">
                 
                 {/* Option 1: Standalone Course (Lifetime) */}
-                <div className="relative rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/40 p-3.5 sm:p-4 flex flex-col justify-between hover:border-gray-300 dark:hover:border-slate-700 transition-all">
+                <div className="relative rounded-2xl border border-border bg-background/60 p-4 flex flex-col justify-between transition-all shadow-xs">
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                         <BookOpen className="w-3.5 h-3.5" />
                       </div>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
                         <Infinity className="w-2.5 h-2.5" />
                         Sở hữu trọn đời
                       </span>
@@ -253,7 +253,7 @@ export default function CourseUnlockModal({
                       Thanh toán 1 lần, học không giới hạn thời gian.
                     </p>
 
-                    <div className="my-2.5 pt-2 border-t border-gray-200/70 dark:border-slate-700/60 flex items-baseline">
+                    <div className="my-2.5 pt-2 border-t border-[#E8E8E8] dark:border-border flex items-baseline">
                       <span className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
                         {formattedCoursePrice}
                       </span>
@@ -284,7 +284,7 @@ export default function CourseUnlockModal({
                       type="button"
                       onClick={onBuySingleCourse}
                       disabled={isCreatingPayment}
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg font-semibold text-xs bg-white dark:bg-slate-800 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
+                      className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full font-semibold text-xs bg-surface text-foreground border border-slate-300 dark:border-slate-600 hover:bg-muted dark:hover:bg-slate-700 transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
                     >
                       <span>Mua lẻ khóa học</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -293,10 +293,10 @@ export default function CourseUnlockModal({
                 </div>
 
                 {/* Option 2: Premium Subscription (Best Value) */}
-                <div className="relative rounded-xl border-2 border-accent/80 dark:border-accent/60 bg-gradient-to-b from-accent/[0.04] to-accent/[0.08] dark:from-accent/[0.12] dark:to-accent/[0.05] p-3.5 sm:p-4 flex flex-col justify-between shadow-md shadow-accent/5">
+                <div className="relative rounded-2xl border-2 border-[#FF5A1F] bg-gradient-to-b from-[#FF5A1F]/[0.05] to-[#FF5A1F]/[0.1] dark:from-[#FF5A1F]/[0.12] dark:to-[#FF5A1F]/[0.05] p-4 flex flex-col justify-between shadow-md shadow-[#FF5A1F]/10">
                   {/* Best Value Badge */}
                   <div className="absolute -top-2.5 right-3">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FF5A1F] text-white shadow-xs">
                       <Crown className="w-2.5 h-2.5" />
                       Khuyên Dùng • Tiết Kiệm
                     </span>
@@ -304,7 +304,7 @@ export default function CourseUnlockModal({
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-7 h-7 rounded-lg bg-accent text-white flex items-center justify-center font-bold shadow-xs">
+                      <div className="w-7 h-7 rounded-lg bg-[#FF5A1F] text-white flex items-center justify-center font-bold shadow-xs">
                         <Crown className="w-3.5 h-3.5" />
                       </div>
                     </div>
@@ -316,12 +316,12 @@ export default function CourseUnlockModal({
                       Hội viên VIP mở khóa toàn diện nền tảng.
                     </p>
 
-                    <div className="my-2.5 pt-2 border-t border-accent/20 dark:border-accent/20 flex items-baseline min-h-[36px]">
+                    <div className="my-2.5 pt-2 border-t border-[#FF5A1F]/20 dark:border-[#FF5A1F]/20 flex items-baseline min-h-[36px]">
                       {isLoadingPlans && !formattedMinPremiumPrice ? (
-                        <div className="h-6 w-28 bg-accent/20 animate-pulse rounded-md" />
+                        <div className="h-6 w-28 bg-[#FF5A1F]/20 rounded-md" />
                       ) : formattedMinPremiumPrice ? (
                         <>
-                          <span className="text-xl sm:text-2xl font-black text-accent">
+                          <span className="text-xl sm:text-2xl font-black text-[#FF5A1F]">
                             {formattedMinPremiumPrice}
                           </span>
                           <span className="text-[10px] text-gray-600 dark:text-gray-400 ml-1 font-medium">
@@ -329,7 +329,7 @@ export default function CourseUnlockModal({
                           </span>
                         </>
                       ) : (
-                        <span className="text-sm font-bold text-accent">
+                        <span className="text-sm font-bold text-[#FF5A1F]">
                           Gói Hội Viên VIP
                         </span>
                       )}
@@ -338,7 +338,7 @@ export default function CourseUnlockModal({
                     {/* Highlights */}
                     <ul className="space-y-1.5 text-[11px] sm:text-xs text-gray-700 dark:text-gray-200">
                       <li className="flex items-start gap-1.5">
-                        <div className="p-0.5 rounded bg-accent/20 text-accent dark:text-accent-400 mt-0.5 shrink-0">
+                        <div className="p-0.5 rounded bg-[#FF5A1F]/20 text-[#FF5A1F] mt-0.5 shrink-0">
                           <Zap className="w-2.5 h-2.5" />
                         </div>
                         <span className="font-semibold text-gray-900 dark:text-white">
@@ -346,13 +346,13 @@ export default function CourseUnlockModal({
                         </span>
                       </li>
                       <li className="flex items-start gap-1.5">
-                        <div className="p-0.5 rounded bg-accent/20 text-accent dark:text-accent-400 mt-0.5 shrink-0">
+                        <div className="p-0.5 rounded bg-[#FF5A1F]/20 text-[#FF5A1F] mt-0.5 shrink-0">
                           <Check className="w-2.5 h-2.5" />
                         </div>
                         <span>Toàn bộ <span className="font-semibold">ngân hàng câu hỏi phỏng vấn</span></span>
                       </li>
                       <li className="flex items-start gap-1.5">
-                        <div className="p-0.5 rounded bg-accent/20 text-accent dark:text-accent-400 mt-0.5 shrink-0">
+                        <div className="p-0.5 rounded bg-[#FF5A1F]/20 text-[#FF5A1F] mt-0.5 shrink-0">
                           <Check className="w-2.5 h-2.5" />
                         </div>
                         <span>Tự do học mọi lộ trình, tiết kiệm 80% chi phí</span>
@@ -364,7 +364,7 @@ export default function CourseUnlockModal({
                     <button
                       type="button"
                       onClick={() => setView("PLANS")}
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg font-bold text-xs bg-accent hover:bg-accent-600 text-white shadow-sm shadow-accent/20 hover:shadow-md transition-all cursor-pointer"
+                      className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full font-bold text-xs bg-[#FF5A1F] hover:bg-[#e04b16] text-white shadow-sm shadow-[#FF5A1F]/25 hover:shadow-md transition-all cursor-pointer"
                     >
                       <span>Nâng cấp Premium ngay</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -392,7 +392,7 @@ export default function CourseUnlockModal({
           {view === "PLANS" && (
             <div className="px-4 pb-4 sm:px-5 sm:pb-5 overflow-y-auto">
               <div className="text-center max-w-md mx-auto mb-4">
-                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-accent/10 text-accent font-semibold text-[11px] mb-1">
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 font-mono font-semibold text-[11px] mb-1">
                   <Crown className="w-3 h-3" />
                   <span>Gói Hội Viên VIP</span>
                 </div>
@@ -405,7 +405,7 @@ export default function CourseUnlockModal({
               </div>
 
               {isLoadingPlans ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 animate-pulse py-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4  py-2">
                   {[1, 2].map((i) => (
                     <div key={i} className="h-64 bg-gray-100 dark:bg-slate-800 rounded-2xl p-4 space-y-3" />
                   ))}
@@ -440,15 +440,15 @@ export default function CourseUnlockModal({
                     return (
                       <div
                         key={plan.id}
-                        className={`relative bg-card text-card-foreground border rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-300 ${
+                        className={`relative rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 shadow-xs ${
                           isPopular
-                            ? "border-accent ring-1 ring-accent/20 bg-accent/[0.03] dark:bg-accent/[0.06] shadow-md scale-[1.01]"
-                            : "border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900 hover:border-accent/40"
+                            ? "border-2 border-[#FF5A1F] ring-1 ring-[#FF5A1F]/20 bg-[#FF5A1F]/[0.03] dark:bg-[#FF5A1F]/[0.06] shadow-md scale-[1.01]"
+                            : "border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface"
                         }`}
                       >
                         {isPopular && (
                           <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
-                            <span className="bg-accent text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs">
+                            <span className="bg-[#FF5A1F] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs">
                               Phổ biến nhất
                             </span>
                           </div>
@@ -472,7 +472,7 @@ export default function CourseUnlockModal({
                             </p>
 
                             <div className="flex items-baseline justify-center gap-1 mt-2">
-                              <span className="text-xl sm:text-2xl font-extrabold text-foreground">
+                              <span className="text-xl sm:text-2xl font-extrabold text-[#171717] dark:text-white">
                                 {formatPlanPrice(plan.price)}
                               </span>
                               <span className="text-xs text-muted-foreground">đ {periodText}</span>
@@ -485,7 +485,7 @@ export default function CourseUnlockModal({
                             )}
                           </div>
 
-                          <div className="border-t border-border my-1" />
+                          <div className="border-t border-[#E8E8E8] dark:border-border my-1" />
 
                           <ul className="space-y-1.5">
                             {defaultFeatures.slice(0, 4).map((feat, idx) => (
@@ -503,11 +503,7 @@ export default function CourseUnlockModal({
                           <button
                             type="button"
                             onClick={() => handleSelectPlan(plan)}
-                            className={`w-full py-2 px-3 rounded-xl font-bold text-xs transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
-                              isPopular
-                                ? "bg-accent hover:bg-accent-600 text-white shadow-xs"
-                                : "bg-accent/90 hover:bg-accent text-white"
-                            }`}
+                            className="w-full py-2.5 px-3 rounded-full font-bold text-xs transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 text-white shadow-xs"
                           >
                             <span>Đăng ký ngay</span>
                             <ArrowRight className="w-3 h-3" />
@@ -536,7 +532,7 @@ export default function CourseUnlockModal({
                     <div className="absolute inset-0 rounded-full border-4 border-accent/20"></div>
                     <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-accent border-r-accent animate-spin"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-3 h-3 bg-accent rounded-full animate-pulse"></div>
+                      <div className="w-3 h-3 bg-accent rounded-full "></div>
                     </div>
                   </div>
                   <p className="text-gray-700 dark:text-gray-200 font-semibold text-lg mb-2">
@@ -586,7 +582,7 @@ export default function CourseUnlockModal({
                       href={paymentData.checkoutUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-[#FF5A1F] hover:bg-[#e04b16] text-white font-bold rounded-full shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
                     >
                       <span>Thanh toán qua PayOS</span>
                       <ArrowRight className="w-4 h-4" />
@@ -598,7 +594,7 @@ export default function CourseUnlockModal({
                     <button
                       type="button"
                       onClick={() => setView("PLANS")}
-                      className="text-accent hover:underline cursor-pointer font-medium"
+                      className="text-[#FF5A1F] hover:underline cursor-pointer font-medium"
                     >
                       ← Đổi gói khác
                     </button>

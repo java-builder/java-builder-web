@@ -11,7 +11,7 @@ import { SessionsTable } from "@/components/admin/sessions/SessionsTable";
 import { SessionDetailModal } from "@/components/admin/sessions/SessionDetailModal";
 import { RevokeSessionModal } from "@/components/admin/sessions/RevokeSessionModal";
 import { RevokeAllSessionsModal } from "@/components/admin/sessions/RevokeAllSessionsModal";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { useConfirm } from "@/hooks/useConfirm";
 import { cloudflareService } from "@/services/cloudflare.service";
 
@@ -52,7 +52,7 @@ export default function AdminSessionsPage() {
       },
       {
         title: t("admin.sessions.blockIpTitle"),
-        message: t("admin.sessions.blockIpMsg").replace("{ip}", ipAddress),
+        message: t("admin.sessions.blockIpMsg").replace("{ip}", `<strong>${ipAddress}</strong>`),
         confirmText: t("admin.sessions.blockIpBtn"),
         cancelText: t("admin.common.cancel"),
         type: "warning",

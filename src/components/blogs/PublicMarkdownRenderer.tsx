@@ -97,10 +97,12 @@ export default function PublicMarkdownRenderer({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, className, children, ...rest } = props;
       const match = /language-(\w+)/.exec(className || "");
+      const rawText = String(children);
+      const isMultiLine = rawText.includes("\n");
 
-      if (match) {
-        const rawLanguage = match[1];
-        const codeString = String(children).replace(/\n$/, "");
+      if (match || isMultiLine) {
+        const rawLanguage = match ? match[1] : "java";
+        const codeString = rawText.replace(/\n$/, "");
 
         if (rawLanguage.toLowerCase() === "mermaid") {
           return <MermaidBlock chart={codeString} />;
@@ -115,15 +117,15 @@ export default function PublicMarkdownRenderer({
         const codeId = `code-${hashString(codeString)}`;
 
         return (
-          <div className="relative my-3 rounded-2xl border border-gray-300 dark:border-slate-800 overflow-hidden shadow-xs">
+          <div className="relative my-3 rounded-2xl border border-border overflow-hidden shadow-xs font-normal">
             {/* Header bar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-slate-900 border-b border-gray-300 dark:border-slate-800">
+            <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-slate-800/90 border-b border-border">
               <div className="flex items-center gap-1.5 flex-shrink-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-400/80 dark:bg-red-500/60" />
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80 dark:bg-yellow-500/60" />
-                <span className="w-2.5 h-2.5 rounded-full bg-green-400/80 dark:bg-green-500/60" />
+                <span className="w-2.5 h-2.5 rounded-full bg-red-400/80 dark:bg-red-500/70" />
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80 dark:bg-yellow-500/70" />
+                <span className="w-2.5 h-2.5 rounded-full bg-green-400/80 dark:bg-green-500/70" />
               </div>
-              <span className="text-[10px] font-bold tracking-wider text-gray-500 dark:text-slate-500 uppercase font-mono select-none">
+              <span className="text-[10px] font-bold tracking-wider text-text-muted uppercase font-mono select-none">
                 {rawLanguage === "js" || rawLanguage === "javascript" ? "JS" : rawLanguage}
               </span>
               <button
@@ -133,7 +135,7 @@ export default function PublicMarkdownRenderer({
                   e.stopPropagation();
                   copyToClipboard(codeString, codeId);
                 }}
-                className="flex items-center gap-1 text-[11px] font-bold text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200 transition-colors duration-150 cursor-pointer"
+                className="flex items-center gap-1 text-[11px] font-bold text-text-muted hover:text-foreground transition-colors duration-150 cursor-pointer"
                 title="Copy code"
               >
                 {copiedCode === codeId ? (
@@ -150,7 +152,7 @@ export default function PublicMarkdownRenderer({
               </button>
             </div>
             {/* Code highlighter */}
-            <div className="text-sm overflow-x-auto relative bg-[#fafafa] dark:bg-[#1e1e1e]">
+            <div className="text-sm font-normal overflow-x-auto relative bg-[#fafafa] dark:bg-[#0f172a]">
               <SyntaxHighlighter
                 language={highlightLanguage}
                 style={codeStyle}

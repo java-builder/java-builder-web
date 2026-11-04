@@ -33,33 +33,33 @@ export default function QuestionSetItem({
   return (
     <Link
       href={`/interview/${topicSlug}/${set.slug ?? set.id}`}
-      className="group block rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
+      className="group block rounded-2xl border border-border bg-surface p-5 shadow-xs transition hover:shadow-md"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             {levelLabel && (
               <span
-                className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${levelTone.pill}`}
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${levelTone.pill}`}
               >
                 {levelLabel}
               </span>
             )}
             {set.difficulty && (
               <span
-                className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${difficultyTone.pill}`}
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${difficultyTone.pill}`}
               >
                 {difficultyLabel}
               </span>
             )}
           </div>
 
-          <h3 className="text-base font-semibold leading-snug text-gray-900 transition group-hover:text-accent dark:text-white sm:text-lg">
+          <h3 className="text-base font-semibold leading-snug text-foreground transition group-hover:text-primary sm:text-lg">
             {title}
           </h3>
 
           {description && (
-            <p className="mt-1.5 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1.5 line-clamp-2 text-sm text-text-secondary">
               {description}
             </p>
           )}
@@ -69,9 +69,9 @@ export default function QuestionSetItem({
               {topicTags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:bg-slate-700 dark:text-gray-300"
+                  className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2.5 py-0.5 text-[11px] font-medium text-text-secondary"
                 >
-                  <Hash className="h-2.5 w-2.5" />
+                  <Hash className="h-2.5 w-2.5 text-text-muted" />
                   {tag}
                 </span>
               ))}
@@ -80,16 +80,16 @@ export default function QuestionSetItem({
         </div>
 
         {/* Right stats */}
-        <div className="flex flex-shrink-0 flex-col items-end justify-between">
+        <div className="flex shrink-0 flex-col items-end justify-between">
           <div className="text-right">
-            <div className="text-2xl font-bold tabular-nums text-accent">
+            <div className="text-2xl font-bold tabular-nums text-primary">
               {set.totalQuestions || 0}
             </div>
-            <div className="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <div className="text-[10px] font-medium uppercase tracking-wider text-text-muted">
               {questionsLabel}
             </div>
           </div>
-          <ArrowRight className="mt-3 h-4 w-4 text-accent transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="mt-3 h-4 w-4 text-primary transition-transform group-hover:translate-x-1" />
         </div>
       </div>
     </Link>

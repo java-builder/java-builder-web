@@ -63,7 +63,7 @@ export const UserStreakTable = ({
         );
       case "AT_RISK":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20  whitespace-nowrap">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
             {t("admin.userStreaks.statAtRisk")}
           </span>
@@ -84,13 +84,13 @@ export const UserStreakTable = ({
     return (
       <div className="space-y-4">
         {/* Mobile Loading Skeleton */}
-        <div className="block md:hidden space-y-3 animate-pulse">
+        <div className="block md:hidden space-y-3 ">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-32 bg-card border border-border rounded-xl" />
           ))}
         </div>
         {/* Desktop Loading Skeleton */}
-        <div className="hidden md:block overflow-x-auto rounded-xl border border-border bg-card shadow-sm p-6 space-y-4 animate-pulse">
+        <div className="hidden md:block overflow-x-auto rounded-xl border border-border bg-card shadow-sm p-6 space-y-4 ">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="h-12 bg-muted/60 rounded-xl" />
           ))}
@@ -130,7 +130,7 @@ export const UserStreakTable = ({
             <button
               type="button"
               onClick={resetAllWidths}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
               title="Đặt lại độ rộng các cột về mặc định"
             >
               <RotateCcw className="w-3 h-3" />
@@ -254,7 +254,7 @@ export const UserStreakTable = ({
                       size="sm"
                       onClick={() => onSendReminder(user)}
                       title={t("admin.userStreaks.sendReminderBtn")}
-                      className="h-8 w-8 p-0 rounded-lg hover:bg-amber-500/10 hover:text-amber-600 cursor-pointer"
+                      className="h-8 w-8 p-0 rounded-full hover:bg-amber-500/10 hover:text-amber-600 cursor-pointer"
                     >
                       <Bell className="w-3.5 h-3.5" />
                     </Button>

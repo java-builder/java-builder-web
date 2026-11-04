@@ -94,13 +94,13 @@ export default function ChatDetailDrawer({
             className="w-16 h-16 rounded-full object-cover border-2 border-accent/40 shadow-md"
           />
           {conversation.type === "PRIVATE" && conversation.members[1]?.status === "online" && (
-            <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-background animate-pulse" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-background " />
           )}
         </div>
 
         <h4 className="text-base font-bold text-foreground">{conversation.name}</h4>
         {conversation.courseTag && (
-          <span className="mt-1.5 text-xs px-2.5 py-0.5 rounded-full bg-accent/10 text-accent font-extrabold">
+          <span className="mt-1.5 text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 font-mono font-extrabold">
             {conversation.courseTag}
           </span>
         )}
@@ -117,7 +117,7 @@ export default function ChatDetailDrawer({
             <button
               type="button"
               onClick={() => onToggleMute(conversation.id)}
-              className={`flex-1 py-2 px-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`flex-1 py-2 px-2 rounded-full border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 isMuted
                   ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400"
                   : "bg-muted/50 border-border text-foreground hover:bg-muted"
@@ -133,7 +133,7 @@ export default function ChatDetailDrawer({
             <button
               type="button"
               onClick={() => onTogglePin(conversation)}
-              className={`flex-1 py-2 px-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`flex-1 py-2 px-2 rounded-full border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 conversation.isPinned
                   ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 font-bold"
                   : "bg-muted/50 border-border text-foreground hover:bg-muted"
@@ -152,7 +152,7 @@ export default function ChatDetailDrawer({
                 onClose();
                 onDeleteConversation(conversation.id);
               }}
-              className="py-2 px-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-500/20 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              className="py-2 px-3 rounded-full border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-500/20 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               title="Xóa cuộc trò chuyện này"
             >
               <Trash2 className="w-3.5 h-3.5 shrink-0" />
@@ -176,13 +176,13 @@ export default function ChatDetailDrawer({
           {/* Online count button */}
           <button
             onClick={() => setFilterOnline(filterOnline === "online" ? "all" : "online")}
-            className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer ${filterOnline === "online"
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${filterOnline === "online"
               ? "bg-emerald-500/10 border-emerald-500/40 shadow-xs"
               : "bg-background border-border hover:border-emerald-500/50"
               }`}
           >
             <div className="flex items-center justify-between">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 " />
               <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">
                 {onlineMembers.length}
               </span>
@@ -193,7 +193,7 @@ export default function ChatDetailDrawer({
           {/* Offline count button */}
           <button
             onClick={() => setFilterOnline(filterOnline === "offline" ? "all" : "offline")}
-            className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer ${filterOnline === "offline"
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${filterOnline === "offline"
               ? "bg-muted border-border"
               : "bg-background border-border hover:border-muted-foreground/40"
               }`}
@@ -299,7 +299,7 @@ export default function ChatDetailDrawer({
                 setViewingResource("code");
                 setResourceSearchQuery("");
               }}
-              className="w-full flex items-center justify-between p-2.5 rounded-2xl border border-border bg-muted/30 hover:bg-accent/10 hover:border-accent/40 text-xs font-medium text-foreground transition-all cursor-pointer group"
+              className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border bg-muted/30 hover:bg-accent/10 text-xs font-medium text-foreground transition-all cursor-pointer group"
             >
               <div className="flex items-center gap-2">
                 <Code2 className="w-4 h-4 text-accent" />
@@ -319,7 +319,7 @@ export default function ChatDetailDrawer({
                 setFileCategoryFilter("all");
                 setResourceSearchQuery("");
               }}
-              className="w-full flex items-center justify-between p-2.5 rounded-2xl border border-border bg-muted/30 hover:bg-blue-500/10 hover:border-blue-500/40 text-xs font-medium text-foreground transition-all cursor-pointer group"
+              className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border bg-muted/30 hover:bg-blue-500/10 hover:border-blue-500/40 text-xs font-medium text-foreground transition-all cursor-pointer group"
             >
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-500" />
@@ -338,7 +338,7 @@ export default function ChatDetailDrawer({
       {viewingResource && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
           <div
-            className={`w-full bg-card text-card-foreground rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col h-[85vh] transition-all ${viewingResource === "code" ? "max-w-4xl" : "max-w-xl"
+            className={`w-full bg-card text-card-foreground rounded-2xl shadow-xl border border-border overflow-hidden flex flex-col h-[85vh] transition-all ${viewingResource === "code" ? "max-w-4xl" : "max-w-xl"
               }`}
           >
             {/* Modal Header */}
@@ -402,7 +402,7 @@ export default function ChatDetailDrawer({
                           key={lang}
                           type="button"
                           onClick={() => setCodeLangFilter(lang)}
-                          className={`px-2.5 py-1 rounded-xl text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${codeLangFilter === lang
+                          className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${codeLangFilter === lang
                             ? "bg-accent text-white font-bold shadow-xs"
                             : "bg-background border border-border text-muted-foreground hover:text-foreground"
                             }`}
@@ -445,7 +445,7 @@ export default function ChatDetailDrawer({
                             onClick={() => setSelectedCodeId(item.id)}
                             className={`w-full p-2.5 rounded-xl text-left border transition-all cursor-pointer ${isSelected
                               ? "bg-accent/15 border-accent text-foreground shadow-xs font-bold"
-                              : "bg-card border-border hover:border-accent/40 text-foreground"
+                              : "bg-card border-border text-foreground"
                               }`}
                           >
                             <div className="flex items-center justify-between gap-2">
@@ -549,7 +549,7 @@ export default function ChatDetailDrawer({
                         key={tab.id}
                         type="button"
                         onClick={() => setFileCategoryFilter(tab.id as "all" | "document" | "media" | "archive")}
-                        className={`px-3 py-1 rounded-xl font-medium whitespace-nowrap transition-all cursor-pointer ${fileCategoryFilter === tab.id
+                        className={`px-3 py-1 rounded-full font-medium whitespace-nowrap transition-all cursor-pointer ${fileCategoryFilter === tab.id
                           ? "bg-accent text-white font-bold shadow-xs"
                           : "bg-background border border-border text-muted-foreground hover:text-foreground"
                           }`}
@@ -623,7 +623,7 @@ export default function ChatDetailDrawer({
                           <button
                             type="button"
                             onClick={() => toast.success(`Đang tải file ${file.name}`)}
-                            className="px-3 py-1.5 rounded-xl bg-accent text-white hover:bg-accent/90 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                            className="px-3 py-1.5 rounded-full bg-accent text-white hover:bg-accent/90 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shrink-0"
                           >
                             <Download className="w-3.5 h-3.5" /> Tải về
                           </button>
@@ -640,7 +640,7 @@ export default function ChatDetailDrawer({
               <button
                 type="button"
                 onClick={() => setViewingResource(null)}
-                className="px-4 py-2 rounded-xl border border-border text-foreground text-xs font-semibold hover:bg-muted transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-full border border-border text-foreground text-xs font-semibold hover:bg-muted transition-colors cursor-pointer"
               >
                 Đóng
               </button>

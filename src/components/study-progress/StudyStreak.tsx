@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Flame } from "lucide-react";
+import { Flame, Clock, BarChart3 } from "lucide-react";
 import { UserDailyActivity, ActivityType } from "@/types/user-activity";
 import { TranslationKey } from "@/contexts/I18nContext";
 import { useUserStreak } from "@/hooks/useUserStreak";
@@ -120,7 +120,6 @@ export default function StudyStreak({
       }
     }
 
-    // Mock record streak (always at least the current streak, default 3 if user has active history)
     const recStreak = activeDates.size > 0 ? Math.max(currentStreak, 3) : currentStreak;
 
     // Today's minutes
@@ -136,7 +135,6 @@ export default function StudyStreak({
       const mins = dateToMinutes[dateStr] || 0;
       totalWeekMins += mins;
 
-      // Label: e.g. "5/7"
       const label = `${d.getDate()}/${d.getMonth() + 1}`;
       last7DaysData.push({
         dateStr,
@@ -205,39 +203,33 @@ export default function StudyStreak({
   if (showSkeleton) {
     return (
       <div className="flex flex-col gap-5">
-        {/* CARD 1 Skeleton */}
-        <div className="rounded-2xl border border-orange-100 bg-[#FFF9F2] p-4 sm:p-5 shadow-sm dark:border-amber-950/40 dark:bg-[#1E1A16] flex flex-col items-center justify-between min-h-[300px] animate-pulse">
-          <div className="w-16 h-16 rounded-full bg-orange-200 dark:bg-orange-950/60 my-3" />
-          <div className="h-5 w-32 bg-orange-200 dark:bg-orange-950/60 rounded mb-2" />
-          <div className="h-3 w-24 bg-orange-100 dark:bg-orange-950/40 rounded" />
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs flex flex-col items-center justify-between min-h-[300px] animate-pulse">
+          <div className="w-16 h-16 rounded-full bg-muted my-3" />
+          <div className="h-5 w-32 bg-muted rounded mb-2" />
+          <div className="h-3 w-24 bg-muted rounded" />
           <div className="grid grid-cols-7 gap-1.5 w-full mt-4 justify-items-center">
             {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-              <div key={i} className="w-8 h-8 rounded-full bg-orange-200/60 dark:bg-orange-950/40" />
+              <div key={i} className="w-8 h-8 rounded-full bg-muted" />
             ))}
           </div>
-          <div className="w-full border-t border-orange-100 dark:border-amber-950/20 my-3" />
+          <div className="w-full border-t border-border my-3" />
           <div className="grid grid-cols-2 w-full gap-2 text-center">
-            <div className="h-4 bg-orange-200/50 dark:bg-orange-950/40 rounded mx-2" />
-            <div className="h-4 bg-orange-200/50 dark:bg-orange-950/40 rounded mx-2" />
+            <div className="h-10 bg-muted rounded-xl" />
+            <div className="h-10 bg-muted rounded-xl" />
           </div>
         </div>
 
-        {/* CARD 2 Skeleton */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between min-h-[260px] animate-pulse">
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs flex flex-col justify-between min-h-[250px] animate-pulse">
           <div className="space-y-3">
-            <div className="h-5 w-36 bg-gray-200 dark:bg-slate-800 rounded" />
-            <div className="space-y-2 pt-2">
-              <div className="h-3 w-16 bg-gray-200 dark:bg-slate-800 rounded" />
-              <div className="h-7 w-24 bg-gray-300 dark:bg-slate-700 rounded" />
+            <div className="h-5 w-40 bg-muted rounded" />
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="h-16 bg-muted rounded-xl" />
+              <div className="h-16 bg-muted rounded-xl" />
             </div>
-            <div className="space-y-2">
-              <div className="h-3 w-16 bg-gray-200 dark:bg-slate-800 rounded" />
-              <div className="h-7 w-24 bg-gray-300 dark:bg-slate-700 rounded" />
-            </div>
-            <div className="w-full border-t border-gray-100 dark:border-slate-800 my-3" />
-            <div className="flex items-end justify-between gap-1 h-14 mt-2">
+            <div className="w-full border-t border-border my-3" />
+            <div className="flex items-end justify-between gap-1.5 h-16 mt-2">
               {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <div key={i} className="flex-1 bg-gray-200 dark:bg-slate-800 rounded-full h-10" />
+                <div key={i} className="flex-1 bg-muted rounded-full h-10" />
               ))}
             </div>
           </div>
@@ -248,8 +240,8 @@ export default function StudyStreak({
 
   return (
     <div className="flex flex-col gap-5">
-      {/* CARD 1: Streak học tập (Cream/Warm Card) */}
-      <div className="relative overflow-visible rounded-2xl border border-orange-100 bg-[#FFF9F2] p-4 sm:p-5 shadow-sm dark:border-amber-950/40 dark:bg-[#1E1A16] flex flex-col items-center justify-between min-h-[300px]">
+      {/* CARD 1: Streak học tập (with original Flame & Ribbon icons) */}
+      <div className="relative overflow-visible rounded-2xl border border-orange-200/70 dark:border-border bg-gradient-to-b from-[#FFF9F2] to-surface dark:from-surface dark:to-surface p-5 shadow-xs flex flex-col items-center justify-between min-h-[310px]">
         {/* Top-Right Red Ribbon with Gold Star */}
         <div className="absolute -top-1 right-4 z-10 select-none">
           <svg
@@ -269,7 +261,7 @@ export default function StudyStreak({
         {/* Large Fire Icon with Streak Number inside */}
         <div className="relative flex items-center justify-center my-2">
           <svg
-            className="h-20 w-20 drop-shadow-sm animate-pulse"
+            className="h-20 w-20 drop-shadow-sm"
             style={{ animationDuration: "3s" }}
             viewBox="0 0 100 110"
             fill="none"
@@ -301,34 +293,39 @@ export default function StudyStreak({
             />
           </svg>
           {/* Number centered inside the flame */}
-          <span className="absolute text-3xl font-black text-white select-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] mt-1.5">
+          <span className="absolute text-3xl font-black text-white select-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] mt-1.5 tabular-nums">
             {streakCount}
           </span>
         </div>
 
         {/* Heading & Subheading */}
         <div className="text-center space-y-0.5">
-          <h2 className="text-lg font-bold text-orange-800 dark:text-orange-300">
+          <h2 className="text-lg font-extrabold text-orange-800 dark:text-orange-400">
             {t("studyProgressPage.streakTitle")}
           </h2>
-          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+          <p className="text-xs font-semibold text-muted-foreground">
             {t("studyProgressPage.streakRecord").replace("{days}", String(recordStreak))}
           </p>
         </div>
 
         {/* Weekly Progress Dots */}
-        <div className="w-full mt-3">
-          <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-            {t("studyProgressPage.thisWeek")}
-          </p>
-          <div className="grid grid-cols-7 gap-1 justify-items-center">
+        <div className="w-full mt-3.5">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-muted-foreground">
+              {t("studyProgressPage.thisWeek")}
+            </p>
+            <span className="text-[11px] font-bold text-foreground tabular-nums">
+              {weekDaysStatus.filter((d) => d.isActive).length}/7
+            </span>
+          </div>
+          <div className="grid grid-cols-7 gap-1.5 justify-items-center">
             {weekDaysStatus.map((day, idx) => (
               <div key={idx} className="flex flex-col items-center gap-1">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-[10px] transition duration-300 ${
                     day.isActive
-                      ? "bg-gradient-to-br from-orange-500 to-amber-400 text-white shadow-sm ring-2 ring-orange-300 dark:ring-orange-950"
-                      : "bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border border-slate-200/50 dark:border-slate-800"
+                      ? "bg-gradient-to-br from-orange-500 to-amber-400 text-white shadow-xs ring-2 ring-orange-300 dark:ring-orange-950"
+                      : "bg-background text-muted-foreground border border-border"
                   }`}
                 >
                   {day.isActive ? (
@@ -343,97 +340,105 @@ export default function StudyStreak({
         </div>
 
         {/* Divider */}
-        <div className="w-full border-t border-orange-100/80 dark:border-amber-950/20 my-3" />
+        <div className="w-full border-t border-border my-3.5" />
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 w-full text-center divide-x divide-orange-100/80 dark:divide-amber-950/20">
-          <div>
-            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+        <div className="grid grid-cols-2 gap-3 w-full">
+          <div className="rounded-xl border border-border bg-background/70 p-2.5 text-center">
+            <p className="text-[10px] font-semibold text-muted-foreground">
               {t("studyProgressPage.avgPerSession")}
             </p>
-            <p className="text-base font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+            <p className="text-base font-extrabold text-foreground mt-0.5 tabular-nums">
               {t("studyProgressPage.minutesValue").replace("{minutes}", String(avgMinutesPerSession))}
             </p>
           </div>
-          <div>
-            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+          <div className="rounded-xl border border-border bg-background/70 p-2.5 text-center">
+            <p className="text-[10px] font-semibold text-muted-foreground">
               {t("studyProgressPage.avgExercisesPerSession")}
             </p>
-            <p className="text-base font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+            <p className="text-base font-extrabold text-foreground mt-0.5 tabular-nums">
               {avgExercisesPerSession.toFixed(1)}
             </p>
           </div>
         </div>
 
         {/* Bottom encouraging text */}
-        <p className="text-[10px] text-slate-500 dark:text-slate-400 text-center mt-2.5 italic font-medium">
+        <p className="text-[11px] text-muted-foreground text-center mt-2.5 italic font-medium">
           {t("studyProgressPage.keepStreakText")}
         </p>
       </div>
 
-      {/* CARD 2: Hôm nay & Tuần này (White/Dark-gray Card) */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between min-h-[260px]">
+      {/* CARD 2: Hôm nay & Tuần này */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs flex flex-col justify-between">
         <div>
-          <h2 className="text-base font-bold text-slate-800 dark:text-slate-100">
-            {t("studyProgressPage.todayAndThisWeek")}
-          </h2>
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary border border-primary/15">
+              <Clock className="h-4 w-4" />
+            </span>
+            <h2 className="text-sm font-bold text-foreground">
+              {t("studyProgressPage.todayAndThisWeek")}
+            </h2>
+          </div>
 
-          <div className="mt-3 space-y-2.5">
-            <div>
-              <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-border bg-background/60 p-3.5">
+              <p className="text-xs font-medium text-muted-foreground">
                 {t("studyProgressPage.todayLabel")}
               </p>
-              <p className="text-2xl font-black text-slate-900 dark:text-white mt-0.5">
+              <p className="text-xl font-black text-foreground mt-1 tabular-nums">
                 {t("studyProgressPage.minutesValue").replace("{minutes}", String(todayMinutes))}
               </p>
             </div>
 
-            <div>
-              <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+            <div className="rounded-xl border border-border bg-background/60 p-3.5">
+              <p className="text-xs font-medium text-muted-foreground">
                 {t("studyProgressPage.thisWeek")}
               </p>
-              <p className="text-2xl font-black text-slate-900 dark:text-white mt-0.5">
+              <p className="text-xl font-black text-primary mt-1 tabular-nums">
                 {t("studyProgressPage.minutesValue").replace("{minutes}", String(weekMinutes))}
               </p>
             </div>
           </div>
 
           {/* Divider */}
-          <div className="w-full border-t border-gray-100 dark:border-slate-800 my-3" />
+          <div className="w-full border-t border-border my-4" />
 
           {/* Daily Bar Chart */}
           <div>
-            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-2">
-              {t("studyProgressPage.byDay")}
-            </p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                {t("studyProgressPage.byDay")}
+              </p>
+            </div>
 
-            <div className="flex items-end justify-between gap-1 h-14 px-0.5 mt-2.5">
+            <div className="flex items-end justify-between gap-2 h-20 px-1 pt-2">
               {chartData.map((d) => {
                 const heightPercent =
                   maxMinutesInChart > 0 ? (d.minutes / maxMinutesInChart) * 100 : 0;
                 return (
                   <div
                     key={d.dateStr}
-                    className="flex flex-col items-center flex-1 gap-1 group relative"
+                    className="flex flex-col items-center flex-1 gap-1.5 group relative"
                   >
                     {/* Bar container */}
-                    <div className="w-full bg-slate-100/60 dark:bg-slate-800/40 rounded-full h-8 flex items-end relative overflow-visible">
+                    <div className="w-full bg-background border border-border/60 rounded-lg h-12 flex items-end p-0.5 relative overflow-visible">
                       {d.minutes > 0 ? (
                         <div
-                          className="w-full bg-gradient-to-t from-orange-500 to-amber-400 rounded-full transition-all duration-700 ease-out origin-bottom"
-                          style={{ height: `${Math.max(heightPercent, 15)}%` }}
+                          className="w-full bg-gradient-to-t from-orange-500 to-amber-400 rounded-md transition-all duration-500 ease-out origin-bottom"
+                          style={{ height: `${Math.max(heightPercent, 18)}%` }}
                         />
                       ) : (
-                        <div className="w-full bg-slate-200 dark:bg-slate-800 h-1 rounded-full mb-0.5" />
+                        <div className="w-full bg-muted h-1 rounded-sm" />
                       )}
 
                       {/* Tooltip on hover */}
-                      <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 bg-slate-800 dark:bg-slate-700 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none whitespace-nowrap z-20 shadow-md">
+                      <span className="absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-semibold px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition duration-150 pointer-events-none whitespace-nowrap z-20 shadow-sm">
                         {t("studyProgressPage.minutesValue").replace("{minutes}", String(d.minutes))}
                       </span>
                     </div>
                     {/* Date label */}
-                    <span className="text-[9px] font-medium text-slate-400 dark:text-slate-500 select-none">
+                    <span className="text-[10px] font-semibold text-muted-foreground tabular-nums select-none">
                       {d.label}
                     </span>
                   </div>
@@ -445,10 +450,10 @@ export default function StudyStreak({
 
         {/* Bottom Link: Xem chi tiết */}
         {onViewDetails && (
-          <div className="text-center mt-4">
+          <div className="text-center mt-4 pt-3 border-t border-border">
             <button
               onClick={onViewDetails}
-              className="text-red-800 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold text-sm hover:underline transition cursor-pointer select-none"
+              className="text-primary hover:text-primary-hover font-semibold text-xs hover:underline transition cursor-pointer select-none"
             >
               {t("studyProgressPage.viewDetails")}
             </button>

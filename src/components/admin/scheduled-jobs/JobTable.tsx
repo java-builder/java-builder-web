@@ -48,9 +48,9 @@ export default function JobTable({
 
   if (isLoading && jobs.length === 0) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-border bg-card p-12 text-center text-sm text-muted-foreground shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface p-12 text-center text-sm text-muted-foreground shadow-sm">
         <div className="flex items-center justify-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin text-accent" />
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
           Đang tải...
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function JobTable({
 
   if (jobs.length === 0) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-border bg-card p-12 text-center shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface p-12 text-center shadow-sm">
         <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
           <ListChecks className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -85,7 +85,7 @@ export default function JobTable({
             </p>
           </div>
           {totalElements > 0 && (
-            <span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+            <span className="whitespace-nowrap rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
               {totalElements.toLocaleString("vi-VN")} job
             </span>
           )}
@@ -103,7 +103,7 @@ export default function JobTable({
         </div>
 
         {/* Desktop Table (>= md) */}
-        <div className="hidden overflow-hidden rounded-2xl border border-border bg-card shadow-sm md:block">
+        <div className="hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-sm md:block">
           <div className="flex items-center justify-between border-b border-border px-5 py-3">
             <div>
               <h3 className="text-sm font-semibold text-foreground">
@@ -114,15 +114,15 @@ export default function JobTable({
               </p>
             </div>
             {totalElements > 0 && (
-              <span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+              <span className="whitespace-nowrap rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
                 {totalElements.toLocaleString("vi-VN")} job
               </span>
             )}
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full divide-y divide-border bg-card">
-              <thead className="bg-muted/50">
+            <table className="w-full divide-y divide-border bg-surface">
+              <thead className="bg-background dark:bg-surface/60">
                 <tr>
                   {COLUMN_HEADERS.map((col) => (
                     <th

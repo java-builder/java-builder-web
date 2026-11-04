@@ -199,8 +199,8 @@ export default function StudyProgressClient() {
 
   if (isLoading && currentPage === 1) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <div className="mx-auto max-w-6xl">
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <StudyLoadingState />
         </div>
       </div>
@@ -214,18 +214,23 @@ export default function StudyProgressClient() {
   const allFetchedActivities = activities;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <StudyHeader
           title={t("studyProgressPage.title")}
           subtitle={t("studyProgressPage.subtitle")}
           quote={localizedQuote}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          {/* Left Column: Timeline, Stats, Filter */}
-          <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
-
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Stats, Filter, Timeline */}
+          <div className="lg:col-span-8 space-y-5 order-2 lg:order-1">
+            <StudyStats
+              stats={stats}
+              totalElements={totalElements}
+              getActivityTypeName={getActivityTypeName}
+              isLoading={isLoading || isFetching}
+            />
 
             <StudyDateFilter
               filter={dateFilter}
@@ -239,13 +244,6 @@ export default function StudyProgressClient() {
               onQuickFilter={handleQuickFilter}
               onCustomDateChange={handleCustomDateChange}
               onClear={clearDateFilter}
-            />
-
-            <StudyStats
-              stats={stats}
-              totalElements={totalElements}
-              getActivityTypeName={getActivityTypeName}
-              isLoading={isLoading || isFetching}
             />
 
             {isEmpty ? (
@@ -288,7 +286,7 @@ export default function StudyProgressClient() {
           </div>
 
           {/* Right Column: Study Streak (Dashboard summary) */}
-          <div className="lg:col-span-1 order-1 lg:order-2">
+          <div className="lg:col-span-4 order-1 lg:order-2 lg:sticky lg:top-22">
             <StudyStreak
               activities={allFetchedActivities}
               locale={locale}

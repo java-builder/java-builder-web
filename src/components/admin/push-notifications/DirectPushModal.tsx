@@ -110,7 +110,7 @@ export default function DirectPushModal({
       />
 
       {/* Modal Content */}
-      <div className="relative w-full max-w-3xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+      <div className="relative w-full max-w-3xl bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
         {/* Left Side: Form */}
         <form onSubmit={handleSend} className="flex-1 p-6 flex flex-col gap-4 overflow-y-auto">
           <div className="flex items-center justify-between border-b border-border pb-3">
@@ -121,7 +121,7 @@ export default function DirectPushModal({
             <button
               type="button"
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-muted"
+              className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-muted cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -129,7 +129,7 @@ export default function DirectPushModal({
 
           {/* User Profile Summary */}
           <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border">
-            <div className="w-10 h-10 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-sm border border-accent/20 shrink-0">
+            <div className="w-10 h-10 rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 font-bold flex items-center justify-center text-sm shrink-0">
               {user.avatarUrl ? (
                 <Image
                   src={user.avatarUrl}
@@ -163,7 +163,7 @@ export default function DirectPushModal({
                   key={preset.id}
                   type="button"
                   onClick={() => handleApplyPreset(preset)}
-                  className="px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-accent/10 hover:border-accent hover:text-accent text-xs font-medium transition-all cursor-pointer shadow-sm text-foreground"
+                  className="px-3 py-1.5 rounded-full border border-border bg-background hover:bg-accent/10 hover:text-accent text-xs font-medium transition-all cursor-pointer shadow-sm text-foreground"
                 >
                   {preset.name}
                 </button>
@@ -179,7 +179,7 @@ export default function DirectPushModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Nhập tiêu đề..."
-              className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
+              className="w-full px-3 py-2 text-sm rounded-full border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
               required
             />
           </div>
@@ -217,7 +217,7 @@ export default function DirectPushModal({
               size="sm"
               onClick={onClose}
               disabled={isSending}
-              className="text-xs"
+              className="text-xs rounded-full border border-border cursor-pointer"
             >
               Hủy bỏ
             </Button>
@@ -226,7 +226,7 @@ export default function DirectPushModal({
               variant="accent"
               size="sm"
               disabled={isSending}
-              className="text-xs gap-1.5"
+              className="text-xs gap-1.5 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
             >
               {isSending ? (
                 <>
@@ -253,7 +253,7 @@ export default function DirectPushModal({
             <div className="w-16 h-4 bg-black rounded-full mx-auto mb-4" />
 
             {/* iOS Notification Banner */}
-            <div className="w-full bg-background/70 dark:bg-black/40 backdrop-blur-md border border-border/80 rounded-2xl p-3 shadow-lg flex flex-col gap-1 text-left">
+            <div className="w-full bg-background/70 dark:bg-black/40 backdrop-blur-md border border-border rounded-2xl p-3 shadow-lg flex flex-col gap-1 text-left">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <Image

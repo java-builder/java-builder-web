@@ -86,7 +86,7 @@ export default function PasswordTab() {
 
   if (isLoadingStatus) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:border-slate-700 dark:bg-slate-800">
         <Loader2 className="h-7 w-7 animate-spin text-accent" />
       </div>
     );
@@ -191,7 +191,7 @@ export default function PasswordTab() {
               formData.newPassword !== formData.confirmPassword ||
               !formData.newPassword
             }
-            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 shadow-md shadow-[#FF5A1F]/25"
           >
             {isSubmitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {isSubmitting
@@ -242,7 +242,7 @@ function PasswordField({
           placeholder={placeholder}
           required={required}
           minLength={minLength}
-          className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm text-gray-900 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+          className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 pr-10 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30"
         />
         <button
           type="button"

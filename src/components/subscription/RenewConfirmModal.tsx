@@ -50,16 +50,16 @@ export default function RenewConfirmModal({
       }}
     >
       <div
-        className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+        className="w-full max-w-md overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white shadow-2xl dark:bg-surface"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 border-b border-gray-200 px-5 py-4 dark:border-slate-700">
+        <div className="flex items-start justify-between gap-3 border-b border-[#E8E8E8] px-5 py-4 dark:border-border">
           <div className="min-w-0">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-base font-semibold text-[#171717] dark:text-white">
               {labels.title}
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-0.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
               {labels.description}
             </p>
           </div>
@@ -68,7 +68,7 @@ export default function RenewConfirmModal({
             onClick={onClose}
             disabled={isProcessing}
             aria-label={labels.close}
-            className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+            className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-[#FFF0E8] dark:bg-primary/15 hover:text-[#FF5A1F] disabled:opacity-50 dark:hover:bg-muted dark:hover:text-white cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -76,21 +76,21 @@ export default function RenewConfirmModal({
 
         {/* Body */}
         <div className="space-y-3 p-5">
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+          <div className="rounded-xl border border-[#E8E8E8] bg-[#F8F8F8] p-4 dark:border-border dark:bg-background">
             <dl className="space-y-2.5 text-sm">
               <div className="flex items-start justify-between gap-3">
-                <dt className="text-gray-500 dark:text-gray-400">
+                <dt className="text-[#64748B] dark:text-[#94A3B8]">
                   {labels.planLabel}
                 </dt>
-                <dd className="text-right font-semibold text-gray-900 dark:text-white">
+                <dd className="text-right font-semibold text-[#171717] dark:text-white">
                   {subscription.planName}
                 </dd>
               </div>
-              <div className="flex items-start justify-between gap-3 border-t border-gray-200 pt-2.5 dark:border-slate-700">
-                <dt className="text-gray-500 dark:text-gray-400">
+              <div className="flex items-start justify-between gap-3 border-t border-[#E8E8E8] pt-2.5 dark:border-border">
+                <dt className="text-[#64748B] dark:text-[#94A3B8]">
                   {labels.currentEndDateLabel}
                 </dt>
-                <dd className="text-right font-semibold tabular-nums text-gray-900 dark:text-white">
+                <dd className="text-right font-semibold tabular-nums text-[#171717] dark:text-white">
                   {endDateText}
                 </dd>
               </div>
@@ -99,12 +99,12 @@ export default function RenewConfirmModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50/50 px-5 py-3 dark:border-slate-700 dark:bg-slate-900/30">
+        <div className="flex items-center justify-end gap-2 border-t border-[#E8E8E8] bg-[#F8F8F8]/60 px-5 py-3 dark:border-border dark:bg-surface">
           <button
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
+            className="inline-flex items-center rounded-full border border-[#E8E8E8] bg-white px-3.5 py-1.5 text-sm font-semibold text-[#171717] transition hover:bg-[#FFF0E8] hover:text-[#FF5A1F] disabled:opacity-50 dark:border-border dark:bg-surface dark:text-slate-100 dark:hover:bg-muted cursor-pointer"
           >
             {labels.cancelBtn}
           </button>
@@ -112,7 +112,7 @@ export default function RenewConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={isProcessing}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3.5 py-1.5 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] px-4 py-2 text-sm font-semibold text-white transition active:scale-95 shadow-sm shadow-[#FF5A1F]/25 disabled:opacity-60"
           >
             {isProcessing ? (
               <>

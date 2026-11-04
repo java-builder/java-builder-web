@@ -4,7 +4,7 @@ import { RotateCw, SlidersHorizontal, X } from "lucide-react";
 import type { JobType } from "@/types/scheduled-job";
 import { JOB_TYPES } from "./helpers";
 import { Button } from "@/components/ui/button";
-import { FilterSelect } from "@/components/ui/FilterSelect";
+import { FilterSelect } from "@/components/ui/select";
 
 interface JobFiltersProps {
   jobType: JobType | "";
@@ -56,7 +56,7 @@ export default function JobFilters({
                   key={t.value}
                   type="button"
                   onClick={() => onJobTypeChange(isActive ? "" : (t.value as JobType))}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
                     isActive
                       ? "bg-accent text-white shadow-sm font-semibold"
                       : "bg-muted/60 text-muted-foreground hover:bg-accent/10 hover:text-accent"

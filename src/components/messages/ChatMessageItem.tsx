@@ -312,10 +312,10 @@ export default function ChatMessageItem({
                     <>
                       <div
                         onClick={() => setIsFileModalOpen(true)}
-                        className={`p-3 rounded-2xl border transition-all text-left flex items-center justify-between gap-3.5 shadow-xs cursor-pointer min-w-[260px] sm:min-w-[320px] group/filecard ${
+                        className={`p-3 rounded-xl border transition-all text-left flex items-center justify-between gap-3.5 shadow-xs cursor-pointer min-w-[260px] sm:min-w-[320px] group/filecard ${
                           isMe
                             ? "bg-white/10 dark:bg-white/10 border-white/20 hover:border-white/40 text-white backdrop-blur-md"
-                            : "bg-card/95 border-border/80 text-foreground hover:border-accent/40 shadow-2xs"
+                            : "bg-card/95 border-border/80 text-foreground shadow-2xs"
                         }`}
                       >
                         {/* Left Icon Badge Box */}
@@ -539,7 +539,7 @@ export default function ChatMessageItem({
                     toast.success("Đã sao chép nội dung tin nhắn");
                     setShowMessageMenu(false);
                   }}
-                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
                   <Copy className="w-3.5 h-3.5 text-accent shrink-0" />
                   <span>Sao chép tin nhắn</span>
@@ -551,7 +551,7 @@ export default function ChatMessageItem({
                   setShowEmojiPicker(true);
                   setShowMessageMenu(false);
                 }}
-                className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
               >
                 <Smile className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                 <span>Thả cảm xúc</span>
@@ -566,7 +566,7 @@ export default function ChatMessageItem({
                       toast.success("Đã xóa tin nhắn");
                       setShowMessageMenu(false);
                     }}
-                    className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
+                    className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
                     <span>Xóa tin nhắn</span>

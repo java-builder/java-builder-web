@@ -39,59 +39,71 @@ export default function MobileQuestionNav({
     const isCurrent = index === currentQuestion;
 
     if (isCurrent) {
-      return 'bg-blue-600 text-white border-blue-600';
+      return 'bg-primary text-primary-foreground border-primary';
     }
     if (isMarked) {
-      return 'bg-yellow-100 text-yellow-700 border-yellow-400';
+      return 'bg-warning-soft text-warning border-warning/30';
     }
     if (isAnswered) {
-      return 'bg-green-100 text-green-700 border-green-400';
+      return 'bg-success-soft text-success border-success/30';
     }
-    return 'bg-white text-gray-700 border-gray-300';
+    return 'bg-background text-text-secondary border-border';
   };
 
   const isLowTime = timeRemaining <= 300;
 
   return (
-    <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-30">
+    <div className="lg:hidden sticky top-14 bg-surface/95 backdrop-blur-md border-b border-border z-20">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-        <div className="flex-1 min-w-0 mr-2">
-          <h2 className="text-sm font-bold text-gray-900 truncate">{title}</h2>
-          <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-medium ${getDifficultyColor(difficulty)}`}>
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
+        <div className="flex items-center gap-2 flex-1 min-w-0 mr-2">
+          <h2 className="text-sm font-bold text-foreground truncate">{title}</h2>
+          <span
+            className={`shrink-0 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${getDifficultyColor(
+              difficulty
+            )}`}
+          >
             {getDifficultyLabel(difficulty)}
           </span>
         </div>
-        <div className={`flex items-center gap-1.5 px-2 py-1 rounded ${
-          isLowTime ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'
-        }`}>
-          <Clock className={`w-4 h-4 ${isLowTime ? 'animate-pulse' : ''}`} />
-          <span className="text-sm font-bold">{formatTime(timeRemaining)}</span>
+        <div
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold tabular-nums border ${
+            isLowTime
+              ? 'bg-error-soft text-error border-error/25'
+              : 'bg-muted text-foreground border-border'
+          }`}
+        >
+          <Clock className={`w-3.5 h-3.5 ${isLowTime ? 'text-error' : 'text-primary'}`} />
+          <span>{formatTime(timeRemaining)}</span>
         </div>
         <button
+          type="button"
           onClick={onExit}
-          className="ml-2 p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
+          className="ml-2 p-1.5 rounded-full hover:bg-muted text-text-muted hover:text-foreground transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Horizontal Question List */}
       <div className="overflow-x-auto px-4 py-2">
-        <div className="flex gap-2 min-w-max">
+        <div className="flex gap-1.5 min-w-max">
           {Array.from({ length: totalQuestions }, (_, index) => {
             const questionId = questionIds[index];
             const isMarked = markedQuestions.has(questionId);
-            
+
             return (
               <button
                 key={index}
+                type="button"
                 onClick={() => onQuestionClick(index)}
-                className={`relative flex-shrink-0 w-10 h-10 rounded-lg border-2 font-medium text-sm transition-all ${getQuestionStatus(index)}`}
+                className={`relative shrink-0 w-8 h-8 rounded-lg border font-semibold text-xs transition-colors ${getQuestionStatus(
+                  index
+                )}`}
               >
                 {index + 1}
                 {isMarked && (
-                  <Flag className="absolute -top-1 -right-1 w-3 h-3 text-yellow-600 fill-yellow-600" />
+                  <Flag className="absolute -top-1 -right-1 w-2.5 h-2.5 text-warning fill-current" />
                 )}
               </button>
             );

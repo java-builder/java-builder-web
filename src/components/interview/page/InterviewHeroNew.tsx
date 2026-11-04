@@ -39,11 +39,11 @@ export default function InterviewHeroNew({
   statLevelsLabel,
 }: InterviewHeroNewProps) {
   return (
-    <section className="relative overflow-hidden border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+    <section className="relative overflow-hidden border-b border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
       {/* Accent halo */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--accent-rgb),0.08),transparent_60%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,90,31,0.08),transparent_60%)]"
       />
 
       {/* Floating tech logos */}
@@ -127,62 +127,60 @@ export default function InterviewHeroNew({
         </div>
       </div>
 
-      <div className="relative mx-auto max-w-5xl px-4 py-10 text-center sm:px-6 sm:py-14 lg:px-8">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/20">
-          <Sparkles className="h-3 w-3" />
+      <div className="relative mx-auto max-w-5xl px-4 py-8 text-center sm:px-6 sm:py-14 lg:px-8">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
           {badgeLabel}
         </span>
 
-        <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl">
+        <h1 className="mx-auto mt-3.5 sm:mt-4 max-w-3xl text-2xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl leading-tight">
           {titleStart}{" "}
-          <span className="bg-gradient-to-r from-accent to-accent-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-purple-400">
-            {titleAccent}
-          </span>
+          <span className="text-primary">{titleAccent}</span>
         </h1>
 
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:text-lg">
+        <p className="mx-auto mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-text-muted">
           {description}
         </p>
 
-        {/* Stats strip */}
-        <div className="mx-auto mt-6 flex max-w-md flex-wrap items-center justify-center gap-6 rounded-2xl border border-gray-200 bg-white/70 px-5 py-3 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/40">
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10 text-accent">
-              <BookOpenCheck className="h-3.5 w-3.5" />
+        {/* Stats strip - Sleek 3-col on all screen sizes */}
+        <div className="mx-auto mt-5 sm:mt-6 grid max-w-md grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-background py-3 shadow-xs">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2.5 px-2 sm:px-4">
+            <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg sm:rounded-xl bg-primary-soft text-primary shrink-0">
+              <BookOpenCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </span>
-            <div className="text-left">
-              <div className="text-base font-bold tabular-nums text-gray-900 dark:text-white">
+            <div className="text-center sm:text-left">
+              <div className="text-sm sm:text-base font-black tabular-nums text-foreground">
                 {totalQuestions.toLocaleString("vi-VN")}+
               </div>
-              <div className="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 {statQuestionsLabel}
               </div>
             </div>
           </div>
-          <div className="h-7 w-px bg-gray-200 dark:bg-slate-700" />
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10 text-accent">
-              <Layers className="h-3.5 w-3.5" />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2.5 px-2 sm:px-4">
+            <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg sm:rounded-xl bg-primary-soft text-primary shrink-0">
+              <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </span>
-            <div className="text-left">
-              <div className="text-base font-bold tabular-nums text-gray-900 dark:text-white">
+            <div className="text-center sm:text-left">
+              <div className="text-sm sm:text-base font-black tabular-nums text-foreground">
                 {totalCategories.toLocaleString("vi-VN")}
               </div>
-              <div className="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 {statTopicsLabel}
               </div>
             </div>
           </div>
-          <div className="h-7 w-px bg-gray-200 dark:bg-slate-700" />
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10 text-accent">
-              <TrendingUp className="h-3.5 w-3.5" />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2.5 px-2 sm:px-4">
+            <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg sm:rounded-xl bg-primary-soft text-primary shrink-0">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </span>
-            <div className="text-left">
-              <div className="text-base font-bold tabular-nums text-gray-900 dark:text-white">
+            <div className="text-center sm:text-left">
+              <div className="text-sm sm:text-base font-black tabular-nums text-foreground">
                 3
               </div>
-              <div className="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 {statLevelsLabel}
               </div>
             </div>
@@ -190,15 +188,15 @@ export default function InterviewHeroNew({
         </div>
 
         {/* Search */}
-        <div className="relative mx-auto mt-6 max-w-xl">
+        <div className="relative mx-auto mt-5 sm:mt-6 max-w-xl">
           <label className="relative block">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
             <input
               type="search"
               value={searchText}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
-              className="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-xl border border-border bg-background py-3 pl-10 pr-4 text-xs sm:text-sm text-foreground placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-xs"
             />
           </label>
         </div>

@@ -9,7 +9,7 @@ import { tagService } from "@/services/tag.service";
 import { chatbotApi } from "@/services/chatbot.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { Tag as TagType } from "@/types/tag";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 
 interface GenerateQnAWithAIModalProps {
   isOpen: boolean;
@@ -338,17 +338,17 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-card border border-border rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-surface border border-border rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Sleek Minimal Header */}
         <div className="px-5 py-3.5 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-accent/10 rounded-xl text-accent">
+            <div className="p-2 bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 rounded-xl">
               <Wand2 className="w-4.5 h-4.5" />
             </div>
             <div>
               <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                 Tạo Thách Thức Bằng AI
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent/10 text-accent border border-accent/20">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20">
                   Spring AI
                 </span>
               </h2>
@@ -356,7 +356,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg transition"
+            className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg transition cursor-pointer"
           >
             <X className="w-4.5 h-4.5" />
           </button>
@@ -388,10 +388,10 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                       key={key}
                       type="button"
                       onClick={() => setPostType(key)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
                         isSelected
                           ? "bg-accent text-white border-accent shadow-sm"
-                          : "bg-background border-border text-muted-foreground hover:text-foreground hover:border-accent/40"
+                          : "bg-background border-border text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
@@ -413,7 +413,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                     key={lvl}
                     type="button"
                     onClick={() => setLevel(lvl)}
-                    className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold whitespace-nowrap transition-all border flex items-center justify-center gap-1 ${
+                    className={`flex-1 py-1.5 px-3 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center justify-center gap-1 ${
                       level === lvl
                         ? lvl === "EASY"
                           ? "bg-emerald-500 text-white border-emerald-500 shadow-sm"
@@ -449,7 +449,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                     key={group.id}
                     type="button"
                     onClick={() => setActiveGroupId(group.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
                       isActive
                         ? "bg-accent/10 border-accent text-accent font-semibold"
                         : "bg-background border-border text-muted-foreground hover:text-foreground"
@@ -474,7 +474,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                     className={`w-full p-2.5 rounded-xl border text-left text-xs transition-all flex items-center justify-between gap-3 ${
                       isSelected
                         ? "bg-accent/10 border-accent text-accent font-semibold shadow-sm"
-                        : "bg-background border-border/80 hover:border-accent/40 text-foreground hover:bg-accent/5"
+                        : "bg-background border-border/80 text-foreground hover:bg-accent/5"
                     }`}
                   >
                     <span className="font-medium text-foreground leading-snug">{tItem.title}</span>
@@ -505,7 +505,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="Chọn gợi ý trên hoặc tự nhập chủ đề..."
-                className="w-full px-3.5 py-2.5 bg-background border border-input rounded-xl text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm"
+                className="w-full px-3.5 py-2.5 bg-background border border-input rounded-full text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -524,7 +524,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Nhập bối cảnh dự án, yêu cầu cụ thể, gợi ý hướng tiếp cận hoặc cách bạn muốn AI thiết kế bài viết..."
-                className="w-full px-3.5 py-2.5 bg-background border border-input rounded-xl text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm resize-none"
+                className="w-full px-3.5 py-2.5 bg-background border border-input rounded-full text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm resize-none"
               />
             </div>
 
@@ -535,7 +535,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                 size="default"
                 onClick={handleGenerateAI}
                 disabled={isGeneratingAI || !topic.trim()}
-                className="w-full sm:w-auto gap-2 whitespace-nowrap text-xs h-10 px-6 font-bold shadow-sm rounded-xl"
+                className="w-full sm:w-auto gap-2 whitespace-nowrap text-xs h-10 px-6 font-bold shadow-sm rounded-full"
               >
                 {isGeneratingAI ? (
                   <>
@@ -594,7 +594,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                         key={t.id}
                         type="button"
                         onClick={() => handleAddTag(t.name)}
-                        className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-lg text-left text-foreground hover:bg-muted transition-colors"
+                        className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-full text-left text-foreground hover:bg-muted transition-colors"
                       >
                         <TagIcon className="w-3 h-3 text-accent shrink-0" />
                         <span>{t.name}</span>
@@ -640,7 +640,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Nhập tiêu đề bài viết..."
-                    className="w-full px-3.5 py-2.5 bg-background border border-input rounded-xl text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs shadow-sm"
+                    className="w-full px-3.5 py-2.5 bg-background border border-input rounded-full text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs shadow-sm"
                   />
                 </div>
 
@@ -653,7 +653,7 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
                     type="button"
                     onClick={() => setIsCatDropdownOpen(!isCatDropdownOpen)}
                     disabled={isLoadingCategories}
-                    className="w-full px-3 py-2.5 bg-background border border-input rounded-xl text-foreground flex items-center justify-between text-xs hover:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent shadow-sm"
+                    className="w-full px-3 py-2.5 bg-background border border-input rounded-full text-foreground flex items-center justify-between text-xs focus:outline-none focus:ring-2 focus:ring-accent shadow-sm"
                   >
                     <span className="truncate">
                       {isLoadingCategories
@@ -720,11 +720,11 @@ export default function GenerateQnAWithAIModal({ isOpen, onClose, onSuccess }: G
 
         {/* Modal Footer */}
         <div className="px-5 py-3.5 border-t border-border flex items-center justify-end gap-2.5 bg-muted/20">
-          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={isSubmitting || isGeneratingAI}>
+          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={isSubmitting || isGeneratingAI} className="rounded-full px-4 border border-border cursor-pointer">
             Hủy bỏ
           </Button>
           {hasGenerated && (
-            <Button type="button" variant="accent" size="sm" onClick={handleSubmit} disabled={isSubmitting || isGeneratingAI}>
+            <Button type="button" variant="accent" size="sm" onClick={handleSubmit} disabled={isSubmitting || isGeneratingAI} className="rounded-full px-5 bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer">
               {isSubmitting ? (
                 <div className="flex items-center gap-1.5">
                   <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

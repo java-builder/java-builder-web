@@ -1,6 +1,7 @@
 import { Shield, ShieldAlert, Pencil } from "lucide-react";
 import { RoleDetailResponse } from "@/types/role";
 import { formatReadableDateTime } from "@/utils/dateUtils";
+import { Button } from "@/components/ui/button";
 
 interface RoleRowProps {
   role: RoleDetailResponse;
@@ -19,7 +20,7 @@ export default function RoleRow({
       case "USER":
         return "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/10 dark:bg-emerald-950/20 dark:text-emerald-400 dark:ring-emerald-900/30";
       default:
-        return "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/10 dark:bg-indigo-950/20 dark:text-indigo-400 dark:ring-indigo-900/30";
+        return "bg-primary-soft text-primary ring-1 ring-inset ring-primary/20 dark:bg-orange-950/30 dark:text-orange-300 dark:ring-primary/30";
     }
   };
 
@@ -31,9 +32,9 @@ export default function RoleRow({
           {role.name === "ADMIN" ? (
             <ShieldAlert className="h-4 w-4 text-red-500" />
           ) : (
-            <Shield className={`h-4 w-4 ${role.name === "USER" ? "text-emerald-500" : "text-indigo-500"}`} />
+            <Shield className={`h-4 w-4 ${role.name === "USER" ? "text-emerald-500" : "text-primary"}`} />
           )}
-          <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ${getBadgeClass(role.name)}`}>
+          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getBadgeClass(role.name)}`}>
             {role.name}
           </span>
         </div>
@@ -56,14 +57,17 @@ export default function RoleRow({
 
       {/* Actions */}
       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium overflow-hidden">
-        <div className="flex items-center justify-end gap-2">
-          <button
+        <div className="flex items-center justify-end gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => onEdit(role)}
+            className="h-8 px-3 rounded-full text-xs font-semibold gap-1 hover:text-primary transition-all"
             title="Chỉnh sửa mô tả role"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700 dark:hover:text-white"
           >
-            <Pencil className="h-4 w-4" />
-          </button>
+            <Pencil className="h-3.5 w-3.5" />
+            Sửa
+          </Button>
         </div>
       </td>
     </tr>

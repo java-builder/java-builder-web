@@ -73,12 +73,12 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
         />
 
         {/* Modal */}
-        <div className={`relative w-full max-w-lg bg-card border border-border text-foreground rounded-2xl shadow-2xl transform transition-all duration-300 ease-out`}>
+        <div className={`relative w-full max-w-lg bg-surface border border-border text-foreground rounded-2xl shadow-2xl transform transition-all duration-300 ease-out`}>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-border">
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-                <Plus className="h-5 w-5 text-accent dark:text-accent-on-dark" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 shadow-xs">
+                <Plus className="h-5 w-5" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-foreground">
@@ -171,7 +171,7 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
 
             {/* Error Message */}
             {errors.submit && (
-              <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-2.5">
+              <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-full flex items-start gap-2.5">
                 <ShieldAlert className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
                 <span className="text-sm text-destructive font-medium">{errors.submit}</span>
               </div>
@@ -183,6 +183,7 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                 type="button"
                 variant="outline"
                 onClick={handleClose}
+                className="rounded-full border border-border cursor-pointer"
               >
                 Hủy
               </Button>
@@ -190,7 +191,7 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                 type="submit"
                 variant="accent"
                 disabled={isLoading}
-                className="gap-1.5"
+                className="gap-1.5 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

@@ -14,7 +14,7 @@ export default function ConversationHeader({
   onToggleSidebar,
 }: ConversationHeaderProps) {
   return (
-    <div className="p-4 border-b border-border bg-muted/30 flex items-center justify-between">
+    <div className="p-4 bg-muted/30 flex items-center justify-between">
       <div className="flex items-center gap-3">
         {/* User Avatar */}
         <div className="relative">

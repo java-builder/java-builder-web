@@ -53,9 +53,9 @@ export default function TagModalShell({
         className="relative w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
           {/* Header */}
-          <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-slate-700">
+          <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4 dark:border-border">
             <div className="min-w-0">
               <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                 {title}
@@ -71,7 +71,7 @@ export default function TagModalShell({
               onClick={onClose}
               disabled={isLocked}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50 dark:hover:bg-muted dark:hover:text-gray-200"
             >
               <X className="h-4 w-4" />
             </button>
@@ -82,7 +82,7 @@ export default function TagModalShell({
 
           {/* Footer */}
           {footer && (
-            <div className="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50/50 px-5 py-3 dark:border-slate-700 dark:bg-slate-900/30">
+            <div className="flex items-center justify-end gap-2 border-t border-border bg-gray-50/50 px-5 py-3 dark:border-border dark:bg-surface">
               {footer}
             </div>
           )}

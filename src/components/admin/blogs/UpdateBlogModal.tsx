@@ -12,10 +12,10 @@ import { categoryService } from "@/services/category.service";
 import { tagService } from "@/services/tag.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { Tag } from "@/types/tag";
-import MarkdownEditor from "./MarkdownEditor";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import { CustomSelect, SelectOption } from "@/components/ui/select";
 import BlogTypeIcon from "./BlogTypeIcon";
 import {
   X,
@@ -371,7 +371,7 @@ export default function UpdateBlogModal({
           onClick={handleClose}
         />
 
-        <div className="relative w-full max-w-5xl bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
+        <div className="relative w-full max-w-5xl bg-surface border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden">
           <div className="flex items-center justify-between p-6 border-b border-border">
             <div>
               <h2 className="text-2xl font-bold text-foreground">
@@ -385,7 +385,7 @@ export default function UpdateBlogModal({
               onClick={handleClose}
               variant="ghost"
               size="icon-sm"
-              className="hover:bg-muted text-muted-foreground"
+              className="hover:bg-muted text-muted-foreground cursor-pointer rounded-full"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -395,7 +395,7 @@ export default function UpdateBlogModal({
             {isLoadingBlog ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <Loader2 className="animate-spin h-8 w-8 text-accent mx-auto mb-3" />
+                  <Loader2 className="animate-spin h-8 w-8 text-primary mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">Đang tải nội dung bài viết...</p>
                 </div>
               </div>
@@ -411,7 +411,7 @@ export default function UpdateBlogModal({
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Nhập tiêu đề hấp dẫn cho bài viết..."
-                    className={`w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm transition-colors duration-200 ${errors.title ? "border-destructive bg-destructive/10" : "border-input"
+                    className={`w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-sm transition-colors duration-200 ${errors.title ? "border-destructive bg-destructive/10" : ""
                       }`}
                   />
                   {errors.title && (
@@ -512,7 +512,7 @@ export default function UpdateBlogModal({
                       {formData.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center px-3 py-1 bg-accent/15 border border-accent/20 text-accent rounded-lg text-xs font-semibold shadow-sm hover:bg-accent/20 transition-colors duration-200"
+                          className="inline-flex items-center px-3 py-1 bg-accent/15 border border-accent/20 text-accent rounded-full text-xs font-semibold shadow-sm hover:bg-accent/20 transition-colors duration-200"
                         >
                           <TagIcon className="w-3 h-3 mr-1.5" />
                           {tag}
@@ -541,7 +541,7 @@ export default function UpdateBlogModal({
                     value={formData.summary}
                     onChange={(e) => handleInputChange("summary", e.target.value)}
                     placeholder="Viết tóm tắt ngắn gọn về nội dung bài viết..."
-                    className="w-full h-[200px] px-4 py-3 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm resize-none"
+                    className="w-full h-[200px] px-4 py-3 bg-background border border-input rounded-full text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm resize-none"
                   />
                 </div>
 
@@ -557,7 +557,7 @@ export default function UpdateBlogModal({
                     className={`relative w-full h-[200px] rounded-lg border-2 border-dashed transition-all duration-200 overflow-hidden bg-muted/30 ${
                       isUploadingImage || isLoading
                         ? 'border-border cursor-not-allowed opacity-50'
-                        : 'border-border hover:border-accent hover:bg-accent/5 cursor-pointer'
+                        : 'border-border hover:bg-accent/5 cursor-pointer'
                     }`}
                   >
                     {imagePreview ? (
@@ -678,7 +678,7 @@ export default function UpdateBlogModal({
                           handleInputChange("featuredOrder", val);
                         }}
                         placeholder="Ví dụ: 1"
-                        className="w-full px-3 py-1.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm"
+                        className="w-full px-3 py-1.5 bg-background border border-input rounded-full text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm"
                         disabled={isLoading}
                         min={0}
                       />
@@ -700,6 +700,7 @@ export default function UpdateBlogModal({
                   onClick={handleClose}
                   variant="outline"
                   disabled={isLoading}
+                  className="rounded-full border border-border cursor-pointer"
                 >
                   Hủy bỏ
                 </Button>
@@ -707,7 +708,7 @@ export default function UpdateBlogModal({
                   type="submit"
                   disabled={isLoading}
                   variant="accent"
-                  className="gap-2"
+                  className="gap-2 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
                 >
                   {isLoading ? (
                     <>

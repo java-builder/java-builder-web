@@ -1,7 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useMemo } from "react";
 import { ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
+import {
+  CheckCircle2,
+  ChevronDown,
+  PlayCircle,
+  Search,
+  X,
+} from "lucide-react";
 
 interface LearnSidebarProps {
   courseTitle: string;
@@ -13,11 +20,13 @@ interface LearnSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   onToggleChapter: (chapter: ChapterDetailResponse) => void;
-  onSelectLesson: (lesson: LessonDetailResponse, chapter: ChapterDetailResponse) => void;
+  onSelectLesson: (
+    lesson: LessonDetailResponse,
+    chapter: ChapterDetailResponse
+  ) => void;
 }
 
 export default function LearnSidebar({
-  courseTitle,
   chapters,
   chapterLessons,
   expandedChapters,
@@ -28,280 +37,218 @@ export default function LearnSidebar({
   onToggleChapter,
   onSelectLesson,
 }: LearnSidebarProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredChapters = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) {
+      return chapters.map((chapter, index) => ({
+        chapter,
+        chapterIndex: index,
+        lessons: chapterLessons[chapter.id] || [],
+      }));
+    }
+
+    return chapters
+      .map((chapter, index) => {
+        const allLessons = chapterLessons[chapter.id] || [];
+        const matchedLessons = allLessons.filter((l) =>
+          l.lessonName.toLowerCase().includes(q)
+        );
+        const chapterMatches = chapter.chapterName.toLowerCase().includes(q);
+        if (chapterMatches || matchedLessons.length > 0) {
+          return {
+            chapter,
+            chapterIndex: index,
+            lessons: matchedLessons.length > 0 ? matchedLessons : allLessons,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean) as {
+      chapter: ChapterDetailResponse;
+      chapterIndex: number;
+      lessons: LessonDetailResponse[];
+    }[];
+  }, [chapters, chapterLessons, searchQuery]);
+
+  const renderSidebarContent = (showCloseButton = false) => (
+    <>
+      {/* Top Search Box */}
+      <div className="p-3.5 border-b border-border bg-surface shrink-0 flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm kiếm bài học..."
+            className="w-full h-9 pl-9 pr-8 rounded-xl bg-background border border-border text-xs font-medium text-foreground placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {showCloseButton && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="lg:hidden p-1.5 text-text-muted hover:text-foreground hover:bg-muted rounded-lg transition-colors cursor-pointer shrink-0"
+            aria-label="Đóng menu"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Chapters List */}
+      <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
+        <nav className="space-y-1.5">
+          {filteredChapters.map(({ chapter, chapterIndex, lessons }) => {
+            const isExpanded =
+              Boolean(searchQuery.trim()) || expandedChapters.has(chapter.id);
+            const isLoading = loadingChapters.has(chapter.id);
+            const completedCount = lessons.filter((l) => l.completed).length;
+            const cleanChapterTitle = chapter.chapterName.replace(
+              /^Chương\s+\d+\s*[:.-]\s*/i,
+              ""
+            );
+
+            return (
+              <div
+                key={chapter.id}
+                className="pt-2 first:pt-0 border-t border-border/60 first:border-t-0 space-y-1"
+              >
+                {/* Chapter Group Header */}
+                <button
+                  type="button"
+                  onClick={() => onToggleChapter(chapter)}
+                  title={chapter.chapterName}
+                  className="group w-full flex items-start justify-between gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-muted/70 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-start gap-2 min-w-0 flex-1">
+                    <span className="text-[13px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug shrink-0">
+                      {chapterIndex + 1}.
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                        {cleanChapterTitle}
+                      </p>
+                      {lessons.length > 0 && (
+                        <p className="text-[11px] font-medium text-text-muted mt-0.5">
+                          Đã học {completedCount}/{lessons.length} bài
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <ChevronDown
+                    className={`w-4 h-4 text-text-muted group-hover:text-primary transition-transform duration-200 shrink-0 mt-1 ${
+                      isExpanded ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Chapter Lessons */}
+                {isExpanded && (
+                  <ul className="ml-3.5 pl-2.5 border-l border-border space-y-1 py-0.5">
+                    {isLoading ? (
+                      <li className="px-3 py-2 text-xs text-text-muted flex items-center gap-2">
+                        <div className="h-3.5 w-3.5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                        <span>Đang tải bài học...</span>
+                      </li>
+                    ) : lessons.length > 0 ? (
+                      lessons.map((lesson, lessonIndex) => {
+                        const isActive = currentLessonId === lesson.id;
+                        const strippedTitle = lesson.lessonName.replace(
+                          /^\s*\d+[\.\)]\s*/,
+                          ""
+                        );
+
+                        return (
+                          <li key={lesson.id}>
+                            <button
+                              type="button"
+                              onClick={() => onSelectLesson(lesson, chapter)}
+                              title={lesson.lessonName}
+                              className={`w-full text-left px-3 py-2 rounded-xl text-[13px] transition-all flex items-start gap-2.5 cursor-pointer group/item ${
+                                isActive
+                                  ? "bg-primary-soft text-primary font-semibold"
+                                  : "text-foreground/80 hover:bg-muted/70 hover:text-foreground font-medium"
+                              }`}
+                            >
+                              {lesson.completed ? (
+                                <CheckCircle2
+                                  className={`w-4 h-4 shrink-0 mt-0.5 ${
+                                    isActive ? "text-primary" : "text-success"
+                                  }`}
+                                />
+                              ) : (
+                                <PlayCircle
+                                  className={`w-4 h-4 shrink-0 mt-0.5 ${
+                                    isActive
+                                      ? "text-primary"
+                                      : "text-text-muted/60 group-hover/item:text-primary"
+                                  }`}
+                                />
+                              )}
+                              <span className="flex-1 leading-snug break-words min-w-0">
+                                {lessonIndex + 1}. {strippedTitle}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <li className="px-3 py-1.5 text-xs text-text-muted italic">
+                        Chưa có bài học nào
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      </div>
+    </>
+  );
+
   return (
     <>
       {/* Mobile Overlay */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-[1px] z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar Wrapper - controls width transition (Desktop - Right Side) */}
-      <div 
-        className="hidden lg:block flex-shrink-0 overflow-hidden"
-        style={{
-          width: isOpen ? 320 : 0,
-          transition: "width 300ms ease-in-out"
-        }}
+      {/* Desktop Sidebar */}
+      <div
+        className="hidden lg:block shrink-0 overflow-hidden transition-[width] duration-300 ease-in-out"
+        style={{ width: isOpen ? 320 : 0 }}
       >
-        <aside className="w-80 h-full bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700/60 flex flex-col">
-          {/* Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-slate-700/60 flex-shrink-0">
-            <div className="flex items-center justify-between mb-3">
-              <Link href="/my-courses" className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-sky-400 text-sm font-semibold transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                </svg>
-                Quay lại
-              </Link>
-            </div>
-            <h2 className="font-bold text-gray-900 dark:text-white line-clamp-2 text-sm lg:text-base leading-snug">{courseTitle}</h2>
-          </div>
-
-          {/* Chapters List */}
-          <div className="flex-1 overflow-y-auto scrollbar-thin">
-            {chapters.map((chapter, chapterIndex) => (
-              <ChapterItem
-                key={chapter.id}
-                chapter={chapter}
-                chapterIndex={chapterIndex}
-                lessons={chapterLessons[chapter.id] || []}
-                isExpanded={expandedChapters.has(chapter.id)}
-                isLoading={loadingChapters.has(chapter.id)}
-                currentLessonId={currentLessonId}
-                onToggle={() => onToggleChapter(chapter)}
-                onSelectLesson={(lesson) => onSelectLesson(lesson, chapter)}
-              />
-            ))}
-          </div>
+        <aside className="w-80 h-full bg-surface border-r border-border flex flex-col">
+          {renderSidebarContent(false)}
         </aside>
       </div>
 
-      {/* Mobile Sidebar - Slides in from the Left */}
-      <aside className={`
-        fixed lg:hidden inset-y-0 left-0 z-50
-        w-[85%] max-w-[320px]
-        bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700/60 
-        flex flex-col h-screen shadow-2xl
-        transform transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-      `}>
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-slate-700/60 flex-shrink-0">
-          <div className="flex items-center justify-between mb-3">
-            <Link href="/my-courses" className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-sky-400 text-sm font-semibold transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-              </svg>
-              Quay lại
-            </Link>
-            <button 
-              onClick={onClose}
-              className="lg:hidden p-1.5 text-gray-500 dark:text-gray-400 hover:text-accent hover:bg-gray-100 dark:hover:bg-slate-700/60 rounded-xl transition-colors cursor-pointer"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <h2 className="font-bold text-gray-900 dark:text-white line-clamp-2 text-sm lg:text-base leading-snug">{courseTitle}</h2>
-        </div>
-
-        {/* Chapters List */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin">
-          {chapters.map((chapter, chapterIndex) => (
-            <ChapterItem
-              key={chapter.id}
-              chapter={chapter}
-              chapterIndex={chapterIndex}
-              lessons={chapterLessons[chapter.id] || []}
-              isExpanded={expandedChapters.has(chapter.id)}
-              isLoading={loadingChapters.has(chapter.id)}
-              currentLessonId={currentLessonId}
-              onToggle={() => onToggleChapter(chapter)}
-              onSelectLesson={(lesson) => onSelectLesson(lesson, chapter)}
-            />
-          ))}
-        </div>
-      </aside>
-    </>
-  );
-}
-
-interface ChapterItemProps {
-  chapter: ChapterDetailResponse;
-  chapterIndex: number;
-  lessons: LessonDetailResponse[];
-  isExpanded: boolean;
-  isLoading: boolean;
-  currentLessonId?: string;
-  onToggle: () => void;
-  onSelectLesson: (lesson: LessonDetailResponse) => void;
-}
-
-function ChapterItem({
-  chapter,
-  chapterIndex,
-  lessons,
-  isExpanded,
-  isLoading,
-  currentLessonId,
-  onToggle,
-  onSelectLesson,
-}: ChapterItemProps) {
-  const completedCount = lessons.filter(l => l.completed).length;
-  const totalLessons = lessons.length;
-  const isAllCompleted = totalLessons > 0 && completedCount === totalLessons;
-  
-  return (
-    <div className="border-b border-gray-150 dark:border-slate-700/50">
-      <button
-        onClick={onToggle}
-        className={`w-full px-4 py-3.5 transition-all text-left flex flex-col gap-1 cursor-pointer ${
-          isExpanded 
-            ? "bg-accent/5 dark:bg-accent/10 border-r-2 border-accent" 
-            : "hover:bg-gray-55 dark:hover:bg-slate-700/30"
+      {/* Mobile Sidebar */}
+      <aside
+        className={`fixed lg:hidden inset-y-0 left-0 z-50 w-[85%] max-w-[320px] bg-surface border-r border-border flex flex-col h-screen shadow-2xl transform transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Chapter Header */}
-        <div className="flex items-start gap-3 w-full">
-          {/* Chapter Number Badge */}
-          <div className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all ${
-            isAllCompleted
-              ? "bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30"
-              : isExpanded
-                ? "bg-accent/15 text-accent dark:bg-accent/20 dark:text-sky-400"
-                : "bg-gray-100 dark:bg-slate-700 text-gray-550 dark:text-slate-400"
-          }`}>
-            {isAllCompleted ? (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            ) : (
-              chapterIndex + 1
-            )}
-          </div>
-
-          {/* Chapter Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <span className={`text-[10px] font-bold uppercase tracking-widest ${
-                isExpanded ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
-              }`}>
-                Chương {chapterIndex + 1}
-              </span>
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                {totalLessons > 0 && (
-                  <span className="text-[11px] font-semibold text-gray-400 dark:text-slate-500">
-                    {completedCount}/{totalLessons} bài
-                  </span>
-                )}
-                <svg
-                  className={`w-3.5 h-3.5 text-gray-400 dark:text-slate-500 transition-transform duration-250 ${isExpanded ? "rotate-180 text-accent dark:text-sky-400" : ""}`}
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-            <p className={`text-xs sm:text-sm font-bold line-clamp-2 leading-snug ${
-              isExpanded 
-                ? "text-gray-900 dark:text-white" 
-                : "text-gray-700 dark:text-slate-200"
-            }`}>
-              {chapter.chapterName}
-            </p>
-          </div>
-        </div>
-      </button>
-
-      {/* Lessons List */}
-      {isExpanded && (
-        <div className="pb-2 bg-gray-50/50 dark:bg-slate-900/10">
-          {isLoading ? (
-            <div className="px-4 py-3 text-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent mx-auto"></div>
-            </div>
-          ) : lessons.length > 0 ? (
-            <div className="space-y-0.5 mt-0.5">
-              {lessons.map((lesson, lessonIndex) => (
-                <LessonItem
-                  key={lesson.id}
-                  lesson={lesson}
-                  lessonIndex={lessonIndex}
-                  isActive={currentLessonId === lesson.id}
-                  onSelect={() => onSelectLesson(lesson)}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="px-4 py-3 text-xs text-gray-400 dark:text-slate-500 italic text-center">Chưa có bài học</p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface LessonItemProps {
-  lesson: LessonDetailResponse;
-  lessonIndex: number;
-  isActive: boolean;
-  onSelect: () => void;
-}
-
-function LessonItem({ lesson, lessonIndex, isActive, onSelect }: LessonItemProps) {
-  const isCompleted = lesson.completed;
-  
-  return (
-    <button
-      onClick={onSelect}
-      className={`w-full px-4 py-2.5 flex items-start gap-3 text-left transition-all cursor-pointer ${
-        isActive 
-          ? "bg-accent/10 border-l-2 border-accent dark:bg-accent/15" 
-          : "hover:bg-gray-100 dark:hover:bg-slate-700/20"
-      }`}
-    >
-      <span className={`text-xs font-bold flex-shrink-0 mt-0.5 ${
-        isActive 
-          ? "text-accent dark:text-sky-400" 
-          : isCompleted 
-            ? "text-emerald-500 dark:text-emerald-400" 
-            : "text-gray-400 dark:text-slate-500"
-      }`}>
-        {lessonIndex + 1}.
-      </span>
-      <div className="flex-1 min-w-0">
-        <p className={`text-xs sm:text-sm leading-normal ${
-          isActive 
-            ? "text-accent dark:text-sky-400 font-bold" 
-            : isCompleted 
-              ? "text-emerald-600 dark:text-emerald-400 font-medium" 
-              : "text-gray-700 dark:text-slate-300"
-        }`}>
-          {lesson.lessonName}
-        </p>
-        
-        <div className="flex items-center gap-2 mt-1">
-          {isCompleted ? (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-500 dark:text-emerald-400">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-              Đã hoàn thành
-            </span>
-          ) : (
-            <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500 flex items-center gap-1">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Bài học video
-            </span>
-          )}
-        </div>
-      </div>
-    </button>
+        {renderSidebarContent(true)}
+      </aside>
+    </>
   );
 }

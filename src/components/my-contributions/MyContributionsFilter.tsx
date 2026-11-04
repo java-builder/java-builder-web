@@ -22,7 +22,7 @@ export default function MyContributionsFilter({
   counts,
 }: MyContributionsFilterProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-slate-700">
         <div className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
@@ -43,7 +43,7 @@ export default function MyContributionsFilter({
               key={id}
               type="button"
               onClick={() => onChange(id)}
-              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${isActive
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${isActive
                   ? "bg-accent text-white shadow-sm"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600"
                 }`}

@@ -23,7 +23,7 @@ export default function NotificationList({
     return (
       <div className="space-y-3">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex gap-4 p-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl animate-pulse">
+          <div key={i} className="flex gap-4 p-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl ">
             <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
             <div className="flex-1 space-y-2 py-1">
               <div className="h-4 bg-muted rounded w-1/3" />
@@ -65,7 +65,7 @@ export default function NotificationList({
       {isLoading && (
         <div className="space-y-3 pt-3">
           {[1, 2].map((i) => (
-            <div key={i} className="flex gap-4 p-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl animate-pulse opacity-60">
+            <div key={i} className="flex gap-4 p-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl  opacity-60">
               <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
               <div className="flex-1 space-y-2 py-1">
                 <div className="h-4 bg-muted rounded w-1/3" />

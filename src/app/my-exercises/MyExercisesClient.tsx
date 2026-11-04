@@ -5,17 +5,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { exerciseSubmissionApi } from "@/services/exercise-submission.service";
-import { 
-  CheckCircle, 
-  XCircle, 
-  Calendar, 
-  Trophy, 
+import {
+  CheckCircle,
+  XCircle,
+  Calendar,
+  Trophy,
   Target,
   FileCheck,
   Percent,
   CheckCheck,
   ClipboardCheck,
-  Loader2
+  Loader2,
+  Quote,
+  Clock,
+  HelpCircle,
+  ArrowRight,
+  Search,
+  PieChart as PieChartIcon,
+  BarChart3,
 } from "lucide-react";
 import {
   PieChart,
@@ -33,6 +40,8 @@ import { getRandomQuote } from "@/utils/motivationalQuotes";
 import { useMyExercises } from "@/hooks/useMyExercises";
 import { useI18n } from "@/contexts/I18nContext";
 
+type DifficultyFilter = "ALL" | "EASY" | "MEDIUM" | "HARD";
+
 export default function MyExercisesClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -40,13 +49,15 @@ export default function MyExercisesClient() {
   const quote = useMemo(() => getRandomQuote(), []);
   const { submissions, statistics, loading, error } = useMyExercises(1);
   const [loadingSubmissionId, setLoadingSubmissionId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>("ALL");
 
   const handleViewSubmission = async (submissionId: string) => {
     if (loadingSubmissionId) return;
     setLoadingSubmissionId(submissionId);
     try {
       await queryClient.prefetchQuery({
-        queryKey: ['submission', submissionId],
+        queryKey: ["submission", submissionId],
         queryFn: () => exerciseSubmissionApi.getSubmissionById(submissionId),
       });
     } catch {
@@ -78,6 +89,17 @@ export default function MyExercisesClient() {
     };
   }, [statistics]);
 
+  const filteredSubmissions = useMemo(() => {
+    return submissions.filter((sub) => {
+      const matchesDifficulty =
+        difficultyFilter === "ALL" || sub.difficulty === difficultyFilter;
+      const matchesSearch =
+        !searchQuery.trim() ||
+        sub.exerciseTitle.toLowerCase().includes(searchQuery.trim().toLowerCase());
+      return matchesDifficulty && matchesSearch;
+    });
+  }, [submissions, difficultyFilter, searchQuery]);
+
   const formatDate = (dateString: string) => {
     const localeMap: Record<string, string> = {
       vi: "vi-VN",
@@ -97,41 +119,50 @@ export default function MyExercisesClient() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 animate-pulse">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 animate-pulse">
           {/* Header skeleton */}
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-muted" />
-            <div className="space-y-2 flex-1">
-              <div className="h-6 bg-muted rounded w-1/4" />
-              <div className="h-4 bg-muted rounded w-1/3" />
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-muted shrink-0" />
+              <div className="space-y-2">
+                <div className="h-7 bg-muted rounded-lg w-48" />
+                <div className="h-4 bg-muted rounded w-72" />
+              </div>
             </div>
+            <div className="h-16 w-full max-w-md rounded-2xl bg-surface border border-border" />
           </div>
 
           {/* Stats grid skeleton */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-250 dark:border-slate-700/60 space-y-2 h-24" />
+              <div
+                key={i}
+                className="bg-surface rounded-2xl p-4 border border-border h-28"
+              />
             ))}
           </div>
 
           {/* Charts grid skeleton */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-250 dark:border-slate-700/60 h-80" />
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-250 dark:border-slate-700/60 h-80" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-surface rounded-2xl p-6 border border-border h-80" />
+            <div className="bg-surface rounded-2xl p-6 border border-border h-80" />
           </div>
 
           {/* List skeleton */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-250 dark:border-slate-700/60 space-y-4">
-            <div className="h-5 bg-muted rounded w-32 mb-6" />
+          <div className="bg-surface rounded-2xl p-6 border border-border space-y-4">
+            <div className="h-6 bg-muted rounded w-40 mb-4" />
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex gap-4 items-center py-4 border-b border-border/40 last:border-0">
-                <div className="w-10 h-10 rounded bg-muted shrink-0" />
+              <div
+                key={i}
+                className="flex gap-4 items-center p-4 rounded-xl border border-border"
+              >
+                <div className="w-14 h-14 rounded-full bg-muted shrink-0" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 bg-muted rounded w-1/3" />
                   <div className="h-3.5 bg-muted rounded w-1/2" />
                 </div>
-                <div className="w-16 h-6 rounded bg-muted" />
+                <div className="w-24 h-9 rounded-full bg-muted" />
               </div>
             ))}
           </div>
@@ -140,19 +171,20 @@ export default function MyExercisesClient() {
     );
   }
 
-  // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <XCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
+        <div className="text-center max-w-md rounded-2xl border border-border bg-surface p-8 shadow-xs">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500">
+            <XCircle className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-bold text-foreground mb-2">
             {t("coursesPage.errorTitle")}
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
+          <p className="text-sm text-muted-foreground mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors font-medium"
+            className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground text-sm rounded-full transition-colors font-semibold shadow-xs cursor-pointer"
           >
             {t("coursesPage.retryBtn")}
           </button>
@@ -161,180 +193,182 @@ export default function MyExercisesClient() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between gap-4 mb-4 flex-wrap sm:flex-nowrap">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center">
-                <ClipboardCheck className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                  {t("myExercisesPage.title")}
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                  {t("myExercisesPage.subtitle")}
-                </p>
-              </div>
-            </div>
+  const statCards = [
+    {
+      label: t("myExercisesPage.statsTotal"),
+      value: stats.total,
+      icon: FileCheck,
+      tone: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    },
+    {
+      label: t("myExercisesPage.statsAvgScore"),
+      value: `${stats.avgScore}%`,
+      icon: Percent,
+      tone: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    },
+    {
+      label: t("myExercisesPage.statsAccuracy"),
+      value: `${stats.accuracy}%`,
+      icon: Target,
+      tone: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+    },
+    {
+      label: t("myExercisesPage.statsPerfect"),
+      value: stats.perfectScores,
+      icon: Trophy,
+      tone: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    },
+    {
+      label: t("myExercisesPage.statsCorrect"),
+      value: stats.totalCorrect,
+      icon: CheckCheck,
+      tone: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    },
+    {
+      label: t("myExercisesPage.statsIncorrect"),
+      value: Math.max(0, stats.totalQuestions - stats.totalCorrect),
+      icon: XCircle,
+      tone: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+    },
+  ];
 
-            {/* Motivational Quote - Desktop */}
-            <div className="hidden lg:block max-w-xs">
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800/30">
-                <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-gray-900 dark:text-white italic leading-relaxed line-clamp-2">
-                      &ldquo;{quote.quote}&rdquo;
-                    </p>
-                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                      — {quote.author}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              {t("myExercisesPage.title")}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+              {t("myExercisesPage.subtitle")}
+            </p>
           </div>
 
-          {/* Motivational Quote - Mobile */}
-          <div className="lg:hidden mb-4">
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800/30">
-              <div className="flex items-start gap-2">
-                <svg className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-gray-900 dark:text-white italic leading-relaxed">
-                    &ldquo;{quote.quote}&rdquo;
-                  </p>
-                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                    — {quote.author}
-                  </p>
-                </div>
-              </div>
+          {/* Motivational Quote */}
+          <div className="flex max-w-md items-start gap-3 rounded-2xl border border-border bg-surface px-4 py-3 shadow-xs">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary border border-primary/15">
+              <Quote className="h-4 w-4" />
+            </span>
+            <div className="min-w-0">
+              <p className="line-clamp-2 text-xs italic leading-relaxed text-foreground/90 font-medium">
+                &ldquo;{quote.quote}&rdquo;
+              </p>
+              <p className="mt-1 text-[11px] font-semibold text-primary">
+                — {quote.author}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-blue-50/30 to-white dark:from-blue-950/5 dark:to-slate-800 rounded-2xl p-5 border border-blue-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="p-1.5 rounded-lg bg-blue-100/60 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
-                <FileCheck className="w-4 h-4" />
-              </span>
-              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsTotal")}</span>
-            </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.total}</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-emerald-50/30 to-white dark:from-emerald-950/5 dark:to-slate-800 rounded-2xl p-5 border border-emerald-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="p-1.5 rounded-lg bg-emerald-100/60 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
-                <Percent className="w-4 h-4" />
-              </span>
-              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsAvgScore")}</span>
-            </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.avgScore}%</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-50/30 to-white dark:from-purple-950/5 dark:to-slate-800 rounded-2xl p-5 border border-purple-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="p-1.5 rounded-lg bg-purple-100/60 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300">
-                <Target className="w-4.5 h-4.5" />
-              </span>
-              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsAccuracy")}</span>
-            </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.accuracy}%</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-amber-50/30 to-white dark:from-amber-950/5 dark:to-slate-800 rounded-2xl p-5 border border-amber-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="p-1.5 rounded-lg bg-amber-100/60 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300">
-                <Trophy className="w-4.5 h-4.5" />
-              </span>
-              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsPerfect")}</span>
-            </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.perfectScores}</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-emerald-50/30 to-white dark:from-emerald-950/5 dark:to-slate-800 rounded-2xl p-5 border border-emerald-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="p-1.5 rounded-lg bg-emerald-100/60 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
-                <CheckCheck className="w-4.5 h-4.5" />
-              </span>
-              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsCorrect")}</span>
-            </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">{stats.totalCorrect}</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-rose-50/30 to-white dark:from-rose-950/5 dark:to-slate-800 rounded-2xl p-5 border border-rose-100/50 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="p-1.5 rounded-lg bg-rose-100/60 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300">
-                <XCircle className="w-4.5 h-4.5" />
-              </span>
-              <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{t("myExercisesPage.statsIncorrect")}</span>
-            </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white pl-1">
-              {stats.totalQuestions - stats.totalCorrect}
-            </p>
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+          {statCards.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className="rounded-2xl border border-border bg-surface p-4 shadow-xs transition-all hover:border-primary/30 flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${item.tone}`}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </span>
+                  <span className="text-2xl font-extrabold tabular-nums text-foreground">
+                    {item.value}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs font-semibold text-muted-foreground truncate">
+                  {item.label}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Charts Section */}
         {stats.total > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Pie Chart - Tỷ lệ câu đúng/sai */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
-              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <span className="w-1 h-5 bg-gradient-to-b from-emerald-500 to-rose-500 rounded-full"></span>
-                {t("myExercisesPage.chartAnswersTitle")}
-              </h3>
-              <div className="relative h-64 flex items-center justify-center">
+            <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft border border-primary/15 text-primary">
+                    <PieChartIcon className="h-3.5 w-3.5" />
+                  </span>
+                  <h3 className="text-sm font-bold text-foreground">
+                    {t("myExercisesPage.chartAnswersTitle")}
+                  </h3>
+                </div>
+                <span className="text-xs font-semibold text-muted-foreground tabular-nums">
+                  {stats.totalQuestions} câu
+                </span>
+              </div>
+
+              <div className="relative h-60 flex items-center justify-center my-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <defs>
                       <linearGradient id="colorCorrect" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981"/>
-                        <stop offset="100%" stopColor="#059669"/>
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#059669" />
                       </linearGradient>
                       <linearGradient id="colorIncorrect" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#f43f5e"/>
-                        <stop offset="100%" stopColor="#e11d48"/>
+                        <stop offset="0%" stopColor="#f43f5e" />
+                        <stop offset="100%" stopColor="#e11d48" />
                       </linearGradient>
                     </defs>
                     <Pie
                       data={[
-                        { name: t("myExercisesPage.chartCorrect"), value: stats.totalCorrect, color: 'url(#colorCorrect)' },
-                        { name: t("myExercisesPage.chartIncorrect"), value: stats.totalQuestions - stats.totalCorrect, color: 'url(#colorIncorrect)' }
+                        {
+                          name: t("myExercisesPage.chartCorrect"),
+                          value: stats.totalCorrect,
+                          color: "url(#colorCorrect)",
+                        },
+                        {
+                          name: t("myExercisesPage.chartIncorrect"),
+                          value: Math.max(0, stats.totalQuestions - stats.totalCorrect),
+                          color: "url(#colorIncorrect)",
+                        },
                       ]}
                       cx="50%"
                       cy="50%"
-                      innerRadius={65}
-                      outerRadius={85}
+                      innerRadius={62}
+                      outerRadius={82}
                       paddingAngle={3}
                       dataKey="value"
                     >
                       <Cell fill="url(#colorCorrect)" />
                       <Cell fill="url(#colorIncorrect)" />
                     </Pie>
-                    <Tooltip 
+                    <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
-                          const isCorrect = payload[0].name === t("myExercisesPage.chartCorrect");
-                          const color = isCorrect ? '#10b981' : '#f43f5e';
+                          const isCorrect =
+                            payload[0].name === t("myExercisesPage.chartCorrect");
+                          const color = isCorrect ? "#10b981" : "#f43f5e";
                           return (
-                            <div className="bg-white dark:bg-slate-800 px-4 py-3 shadow-xl rounded-xl border border-slate-100 dark:border-slate-700">
-                              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">
+                            <div className="bg-surface px-3.5 py-2.5 shadow-lg rounded-xl border border-border">
+                              <p className="text-xs font-semibold text-muted-foreground mb-0.5">
                                 {payload[0].name}
                               </p>
-                              <p className="text-base font-black" style={{ color }}>
-                                {t("myExercisesPage.chartCorrectCount").replace("{count}", String(payload[0].value))} ({((payload[0].value as number / stats.totalQuestions) * 100).toFixed(1)}%)
+                              <p className="text-sm font-extrabold" style={{ color }}>
+                                {t("myExercisesPage.chartCorrectCount").replace(
+                                  "{count}",
+                                  String(payload[0].value)
+                                )}{" "}
+                                (
+                                {stats.totalQuestions > 0
+                                  ? (
+                                      ((payload[0].value as number) /
+                                        stats.totalQuestions) *
+                                      100
+                                    ).toFixed(1)
+                                  : 0}
+                                %)
                               </p>
                             </div>
                           );
@@ -347,76 +381,118 @@ export default function MyExercisesClient() {
 
                 {/* Center Stats overlay */}
                 <div className="absolute flex flex-col items-center justify-center text-center pointer-events-none select-none">
-                  <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t("myExercisesPage.statsAccuracy")}</span>
-                  <span className="text-3xl font-black text-slate-900 dark:text-white mt-0.5">{stats.accuracy}%</span>
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+                    {t("myExercisesPage.statsAccuracy")}
+                  </span>
+                  <span className="text-2xl font-black text-foreground mt-0.5 tabular-nums">
+                    {stats.accuracy}%
+                  </span>
                 </div>
               </div>
 
               {/* Legends Badges */}
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100/50 dark:border-emerald-900/30 shadow-sm">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">{t("myExercisesPage.chartCorrect")}: {stats.totalCorrect}</span>
+              <div className="flex items-center justify-center gap-3 pt-3 border-t border-border">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                    {t("myExercisesPage.chartCorrect")}: {stats.totalCorrect}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/20 border border-rose-100/50 dark:border-rose-900/30 shadow-sm">
-                  <div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
-                  <span className="text-xs font-bold text-rose-800 dark:text-rose-300">{t("myExercisesPage.chartIncorrect")}: {stats.totalQuestions - stats.totalCorrect}</span>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">
+                  <div className="w-2 h-2 rounded-full bg-rose-500" />
+                  <span className="text-xs font-bold text-rose-600 dark:text-rose-400 tabular-nums">
+                    {t("myExercisesPage.chartIncorrect")}:{" "}
+                    {Math.max(0, stats.totalQuestions - stats.totalCorrect)}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Bar Chart - Các chỉ số */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
-              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <span className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
-                {t("myExercisesPage.chartStatsTitle")}
-              </h3>
-              <div className="h-64">
+            <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft border border-primary/15 text-primary">
+                    <BarChart3 className="h-3.5 w-3.5" />
+                  </span>
+                  <h3 className="text-sm font-bold text-foreground">
+                    {t("myExercisesPage.chartStatsTitle")}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="h-60 my-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={[
-                      { name: t("myExercisesPage.chartAvgScore"), value: stats.avgScore, color: '#3b82f6' },
-                      { name: t("myExercisesPage.chartAccuracy"), value: stats.accuracy, color: '#8b5cf6' },
-                      { name: t("myExercisesPage.chartPerfect"), value: stats.total > 0 ? Math.round((stats.perfectScores / stats.total) * 100) : 0, color: '#f59e0b' }
+                      {
+                        name: t("myExercisesPage.chartAvgScore"),
+                        value: stats.avgScore,
+                        color: "#3b82f6",
+                      },
+                      {
+                        name: t("myExercisesPage.chartAccuracy"),
+                        value: stats.accuracy,
+                        color: "#8b5cf6",
+                      },
+                      {
+                        name: t("myExercisesPage.chartPerfect"),
+                        value:
+                          stats.total > 0
+                            ? Math.round((stats.perfectScores / stats.total) * 100)
+                            : 0,
+                        color: "#f59e0b",
+                      },
                     ]}
-                    margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                   >
                     <defs>
                       <linearGradient id="colorAvgScore" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#60a5fa"/>
-                        <stop offset="100%" stopColor="#2563eb"/>
+                        <stop offset="0%" stopColor="#60a5fa" />
+                        <stop offset="100%" stopColor="#2563eb" />
                       </linearGradient>
                       <linearGradient id="colorAccuracy" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#a78bfa"/>
-                        <stop offset="100%" stopColor="#7c3aed"/>
+                        <stop offset="0%" stopColor="#a78bfa" />
+                        <stop offset="100%" stopColor="#7c3aed" />
                       </linearGradient>
                       <linearGradient id="colorPerfect" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#fbbf24"/>
-                        <stop offset="100%" stopColor="#d97706"/>
+                        <stop offset="0%" stopColor="#fbbf24" />
+                        <stop offset="100%" stopColor="#d97706" />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E2E8F0" opacity={0.4} />
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: '#6B7280', fontSize: 11, fontWeight: 500 }}
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      horizontal={true}
+                      vertical={false}
+                      stroke="currentColor"
+                      className="text-border"
+                      opacity={0.5}
                     />
-                    <YAxis 
+                    <XAxis
+                      dataKey="name"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: '#6B7280', fontSize: 11, fontWeight: 500 }}
+                      tick={{ fill: "#64748B", fontSize: 11, fontWeight: 600 }}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748B", fontSize: 11, fontWeight: 600 }}
                       domain={[0, 100]}
                     />
                     <Tooltip
+                      cursor={{ fill: "rgba(148, 163, 184, 0.08)" }}
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           return (
-                            <div className="bg-white dark:bg-slate-800 px-4 py-3 shadow-xl rounded-xl border border-slate-100 dark:border-slate-700">
-                              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">
+                            <div className="bg-surface px-3.5 py-2.5 shadow-lg rounded-xl border border-border">
+                              <p className="text-xs font-semibold text-muted-foreground mb-0.5">
                                 {payload[0].payload.name}
                               </p>
-                              <p className="text-base font-black" style={{ color: payload[0].payload.color }}>
+                              <p
+                                className="text-sm font-extrabold"
+                                style={{ color: payload[0].payload.color }}
+                              >
                                 {payload[0].value}%
                               </p>
                             </div>
@@ -425,7 +501,7 @@ export default function MyExercisesClient() {
                         return null;
                       }}
                     />
-                    <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={45}>
+                    <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={44}>
                       <Cell fill="url(#colorAvgScore)" />
                       <Cell fill="url(#colorAccuracy)" />
                       <Cell fill="url(#colorPerfect)" />
@@ -433,28 +509,42 @@ export default function MyExercisesClient() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-gray-100 dark:border-slate-800/80">
+
+              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border">
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                    <div className="w-2.5 h-2.5 rounded bg-blue-500"></div>
-                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{t("myExercisesPage.chartAvgScore")}</p>
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    <p className="text-[11px] font-semibold text-muted-foreground truncate">
+                      {t("myExercisesPage.chartAvgScore")}
+                    </p>
                   </div>
-                  <p className="text-lg font-black text-blue-600 dark:text-blue-400">{stats.avgScore}%</p>
+                  <p className="text-base font-extrabold text-blue-600 dark:text-blue-400 tabular-nums">
+                    {stats.avgScore}%
+                  </p>
                 </div>
-                <div className="text-center border-l border-r border-gray-100 dark:border-slate-800/80">
+                <div className="text-center border-x border-border">
                   <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                    <div className="w-2.5 h-2.5 rounded bg-purple-500"></div>
-                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{t("myExercisesPage.chartAccuracy")}</p>
+                    <div className="w-2 h-2 rounded-full bg-purple-500" />
+                    <p className="text-[11px] font-semibold text-muted-foreground truncate">
+                      {t("myExercisesPage.chartAccuracy")}
+                    </p>
                   </div>
-                  <p className="text-lg font-black text-purple-600 dark:text-purple-400">{stats.accuracy}%</p>
+                  <p className="text-base font-extrabold text-purple-600 dark:text-purple-400 tabular-nums">
+                    {stats.accuracy}%
+                  </p>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                    <div className="w-2.5 h-2.5 rounded bg-amber-500"></div>
-                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{t("myExercisesPage.chartPerfectLabel")}</p>
+                    <div className="w-2 h-2 rounded-full bg-amber-500" />
+                    <p className="text-[11px] font-semibold text-muted-foreground truncate">
+                      {t("myExercisesPage.chartPerfectLabel")}
+                    </p>
                   </div>
-                  <p className="text-lg font-black text-amber-600 dark:text-amber-400">
-                    {stats.total > 0 ? Math.round((stats.perfectScores / stats.total) * 100) : 0}%
+                  <p className="text-base font-extrabold text-amber-600 dark:text-amber-400 tabular-nums">
+                    {stats.total > 0
+                      ? Math.round((stats.perfectScores / stats.total) * 100)
+                      : 0}
+                    %
                   </p>
                 </div>
               </div>
@@ -462,194 +552,302 @@ export default function MyExercisesClient() {
           </div>
         )}
 
-        {/* Submissions List */}
-        {submissions.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-12 text-center border border-gray-200 dark:border-slate-700 shadow-sm">
-            <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-gray-400 dark:text-gray-500" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              {t("myExercisesPage.emptyTitle")}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              {t("myExercisesPage.emptyDesc")}
-            </p>
-            <Link
-              href="/exercises"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shadow-sm"
-            >
-              {t("myExercisesPage.btnSolveNew")}
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {submissions.map((submission) => {
-              const scorePercentage = Math.round((submission.score / submission.maxScore) * 100);
-              
-              // Difficulty badge color
-              const getDifficultyColor = (difficulty: string) => {
-                switch (difficulty) {
-                  case 'EASY': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
-                  case 'MEDIUM': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
-                  case 'HARD': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-                  default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
-                }
-              };
+        {/* Submissions Section */}
+        <div className="rounded-2xl border border-border bg-surface shadow-xs overflow-hidden">
+          {/* Submissions Header & Filter Bar */}
+          <div className="flex flex-col gap-3.5 border-b border-border p-4 sm:px-6 sm:py-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft border border-primary/15 text-primary">
+                  <ClipboardCheck className="h-3.5 w-3.5" />
+                </span>
+                <h2 className="text-sm font-bold text-foreground">
+                  Lịch sử bài làm
+                </h2>
+                <span className="inline-flex items-center rounded-full bg-primary-soft border border-primary/15 px-2.5 py-0.5 text-xs font-bold text-primary tabular-nums">
+                  {filteredSubmissions.length}
+                </span>
+              </div>
 
-              // Exercise type label
-              const getExerciseTypeLabel = (type: string) => {
-                switch (type) {
-                  case 'MULTIPLE_CHOICE': return t("exercisesPage.typeMultipleChoice");
-                  case 'CODING': return t("exercisesPage.typeCoding");
-                  case 'ESSAY': return t("exercisesPage.typeEssay");
-                  default: return type;
-                }
-              };
-
-              // Difficulty label
-              const getDifficultyLabel = (difficulty: string) => {
-                switch (difficulty) {
-                  case 'EASY': return t("exercisesPage.filterEasy");
-                  case 'MEDIUM': return t("exercisesPage.filterMedium");
-                  case 'HARD': return t("exercisesPage.filterHard");
-                  default: return difficulty;
-                }
-              };
-              
-              return (
-                <div
-                  key={submission.submissionId}
-                  className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all"
+              {submissions.length > 0 && (
+                <Link
+                  href="/exercises"
+                  className="inline-flex lg:hidden items-center gap-1.5 rounded-full bg-primary hover:bg-primary-hover px-3.5 py-1.5 text-xs font-semibold text-primary-foreground transition shadow-xs"
                 >
-                  <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap">
-                    {/* Circular Progress */}
-                    <div className="flex-shrink-0 relative w-16 h-16">
-                      <svg className="w-16 h-16 transform -rotate-90">
-                        <circle
-                          cx="32"
-                          cy="32"
-                          r="28"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                          className="text-gray-200 dark:text-gray-700"
-                        />
-                        <circle
-                          cx="32"
-                          cy="32"
-                          r="28"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 28}`}
-                          strokeDashoffset={`${2 * Math.PI * 28 * (1 - scorePercentage / 100)}`}
-                          className={`transition-all duration-500 ${
-                            scorePercentage >= 80
-                              ? 'text-green-500'
-                              : scorePercentage >= 50
-                              ? 'text-yellow-500'
-                              : 'text-red-500'
-                          }`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className={`text-sm font-bold ${
-                          scorePercentage >= 80
-                            ? 'text-green-600 dark:text-green-400'
-                            : scorePercentage >= 50
-                            ? 'text-yellow-600 dark:text-yellow-400'
-                            : 'text-red-600 dark:text-red-400'
-                        }`}>
-                          {scorePercentage}%
-                        </span>
-                      </div>
-                    </div>
+                  <Trophy className="w-3.5 h-3.5" />
+                  <span>{t("myExercisesPage.btnSolveMore")}</span>
+                </Link>
+              )}
+            </div>
 
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-semibold rounded">
-                          {t("myExercisesPage.questionsCount").replace("{count}", String(submission.totalQuestions))}
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs font-semibold rounded">
-                          {t("myExercisesPage.durationMinutes").replace("{count}", String(submission.timeLimit))}
-                        </span>
-                        <span className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded ${getDifficultyColor(submission.difficulty)}`}>
-                          {getDifficultyLabel(submission.difficulty)}
-                        </span>
-                        <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-400 text-xs font-semibold rounded">
-                          {getExerciseTypeLabel(submission.exerciseType)}
-                        </span>
-                      </div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
-                        {submission.exerciseTitle}
-                      </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {formatDate(submission.submittedAt)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          {t("myExercisesPage.correctCount")
-                            .replace("{correct}", String(submission.correctCount))
-                            .replace("{total}", String(submission.totalQuestions))}
-                        </span>
-                      </div>
-                    </div>
+            {submissions.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* Search input */}
+                <div className="relative flex-1 sm:flex-initial sm:w-60">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Tìm tên bài tập..."
+                    className="h-9 w-full rounded-full border border-border bg-background pl-8 pr-3.5 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                  />
+                </div>
 
-                    {/* Action Button */}
-                    <div className="flex-shrink-0 w-full sm:w-auto text-right mt-2 sm:mt-0">
+                {/* Difficulty filter pills */}
+                <div className="flex items-center gap-1.5">
+                  {(
+                    [
+                      { id: "ALL", label: "Tất cả" },
+                      { id: "EASY", label: t("exercisesPage.filterEasy") },
+                      { id: "MEDIUM", label: t("exercisesPage.filterMedium") },
+                      { id: "HARD", label: t("exercisesPage.filterHard") },
+                    ] as const
+                  ).map((tab) => {
+                    const active = difficultyFilter === tab.id;
+                    return (
                       <button
+                        key={tab.id}
                         type="button"
-                        disabled={loadingSubmissionId !== null}
-                        onClick={() => handleViewSubmission(submission.submissionId)}
-                        className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition sm:w-auto cursor-pointer active:scale-95 ${
-                          loadingSubmissionId === submission.submissionId
-                            ? "border-accent bg-accent/10 text-accent cursor-wait shadow-xs"
-                            : "border-gray-200 bg-white text-gray-700 hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200"
-                        } ${
-                          loadingSubmissionId !== null && loadingSubmissionId !== submission.submissionId
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
+                        onClick={() => setDifficultyFilter(tab.id)}
+                        className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                          active
+                            ? "bg-primary text-primary-foreground shadow-xs"
+                            : "border border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
                         }`}
                       >
-                        {loadingSubmissionId === submission.submissionId ? (
-                          <>
-                            <Loader2 className="w-3.5 h-3.5 animate-spin text-accent shrink-0" />
-                            <span>Đang tải...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>{t("myExercisesPage.btnView")}</span>
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </>
-                        )}
+                        {tab.label}
                       </button>
+                    );
+                  })}
+                </div>
+
+                <Link
+                  href="/exercises"
+                  className="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-primary hover:bg-primary-hover px-4 py-1.5 text-xs font-semibold text-primary-foreground transition shadow-xs"
+                >
+                  <Trophy className="w-3.5 h-3.5" />
+                  <span>{t("myExercisesPage.btnSolveMore")}</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Submissions List */}
+          {submissions.length === 0 ? (
+            <div className="p-10 sm:p-14 text-center">
+              <div className="w-14 h-14 mx-auto mb-4 bg-primary-soft border border-primary/15 text-primary rounded-2xl flex items-center justify-center">
+                <CheckCircle className="w-7 h-7" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-1.5">
+                {t("myExercisesPage.emptyTitle")}
+              </h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+                {t("myExercisesPage.emptyDesc")}
+              </p>
+              <Link
+                href="/exercises"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground text-sm rounded-full transition font-semibold shadow-xs"
+              >
+                {t("myExercisesPage.btnSolveNew")}
+              </Link>
+            </div>
+          ) : filteredSubmissions.length === 0 ? (
+            <div className="p-10 text-center">
+              <p className="text-sm font-medium text-muted-foreground">
+                Không tìm thấy bài làm nào phù hợp với bộ lọc hiện tại.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {filteredSubmissions.map((submission) => {
+                const scorePercentage = Math.round(
+                  (submission.score / submission.maxScore) * 100
+                );
+
+                const getDifficultyBadge = (difficulty: string) => {
+                  switch (difficulty) {
+                    case "EASY":
+                      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+                    case "MEDIUM":
+                      return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
+                    case "HARD":
+                      return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20";
+                    default:
+                      return "bg-muted text-muted-foreground border-border";
+                  }
+                };
+
+                const getExerciseTypeLabel = (type: string) => {
+                  switch (type) {
+                    case "MULTIPLE_CHOICE":
+                      return t("exercisesPage.typeMultipleChoice");
+                    case "CODING":
+                      return t("exercisesPage.typeCoding");
+                    case "ESSAY":
+                      return t("exercisesPage.typeEssay");
+                    default:
+                      return type;
+                  }
+                };
+
+                const getDifficultyLabel = (difficulty: string) => {
+                  switch (difficulty) {
+                    case "EASY":
+                      return t("exercisesPage.filterEasy");
+                    case "MEDIUM":
+                      return t("exercisesPage.filterMedium");
+                    case "HARD":
+                      return t("exercisesPage.filterHard");
+                    default:
+                      return difficulty;
+                  }
+                };
+
+                const isCurrentLoading =
+                  loadingSubmissionId === submission.submissionId;
+
+                return (
+                  <div
+                    key={submission.submissionId}
+                    onClick={() => handleViewSubmission(submission.submissionId)}
+                    className="p-4 sm:px-6 sm:py-4.5 hover:bg-background/60 transition-colors cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap">
+                      {/* Circular Progress */}
+                      <div className="shrink-0 relative w-14 h-14 sm:w-15 sm:h-15">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="27"
+                            stroke="currentColor"
+                            strokeWidth="4.5"
+                            fill="none"
+                            className="text-muted"
+                          />
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="27"
+                            stroke="currentColor"
+                            strokeWidth="4.5"
+                            fill="none"
+                            strokeDasharray={`${2 * Math.PI * 27}`}
+                            strokeDashoffset={`${
+                              2 * Math.PI * 27 * (1 - scorePercentage / 100)
+                            }`}
+                            className={`transition-all duration-500 ${
+                              scorePercentage >= 80
+                                ? "text-emerald-500"
+                                : scorePercentage >= 50
+                                  ? "text-amber-500"
+                                  : "text-rose-500"
+                            }`}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span
+                            className={`text-xs font-extrabold tabular-nums ${
+                              scorePercentage >= 80
+                                ? "text-emerald-600 dark:text-emerald-400"
+                                : scorePercentage >= 50
+                                  ? "text-amber-600 dark:text-amber-400"
+                                  : "text-rose-600 dark:text-rose-400"
+                            }`}
+                          >
+                            {scorePercentage}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 text-[11px] font-semibold rounded-full border ${getDifficultyBadge(
+                              submission.difficulty
+                            )}`}
+                          >
+                            {getDifficultyLabel(submission.difficulty)}
+                          </span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 bg-background border border-border text-muted-foreground text-[11px] font-semibold rounded-full">
+                            {getExerciseTypeLabel(submission.exerciseType)}
+                          </span>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] font-semibold rounded-full">
+                            <HelpCircle className="w-3 h-3" />
+                            {t("myExercisesPage.questionsCount").replace(
+                              "{count}",
+                              String(submission.totalQuestions)
+                            )}
+                          </span>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-[11px] font-semibold rounded-full">
+                            <Clock className="w-3 h-3" />
+                            {t("myExercisesPage.durationMinutes").replace(
+                              "{count}",
+                              String(submission.timeLimit)
+                            )}
+                          </span>
+                        </div>
+
+                        <h3 className="text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                          {submission.exerciseTitle}
+                        </h3>
+
+                        <div className="mt-1.5 flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+                          <span className="inline-flex items-center gap-1.5 tabular-nums">
+                            <Calendar className="w-3.5 h-3.5 text-muted-foreground/80" />
+                            {formatDate(submission.submittedAt)}
+                          </span>
+                          <span className="inline-flex items-center gap-1.5 font-medium text-foreground/80">
+                            <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                            {t("myExercisesPage.correctCount")
+                              .replace("{correct}", String(submission.correctCount))
+                              .replace("{total}", String(submission.totalQuestions))}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="shrink-0 w-full sm:w-auto text-right">
+                        <button
+                          type="button"
+                          disabled={loadingSubmissionId !== null}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewSubmission(submission.submissionId);
+                          }}
+                          className={`inline-flex w-full sm:w-auto items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition cursor-pointer active:scale-95 ${
+                            isCurrentLoading
+                              ? "border-primary/30 bg-primary-soft text-primary cursor-wait"
+                              : "border-border bg-background text-foreground group-hover:border-primary/40 group-hover:bg-primary-soft group-hover:text-primary"
+                          } ${
+                            loadingSubmissionId !== null && !isCurrentLoading
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                        >
+                          {isCurrentLoading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-primary shrink-0" />
+                              <span>Đang tải...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>{t("myExercisesPage.btnView")}</span>
+                              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {submissions.length > 0 && (
-          <div className="mt-6 text-center">
-            <Link
-              href="/exercises"
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-sm rounded-lg transition-colors font-medium"
-            >
-              <Trophy className="w-4 h-4" />
-              {t("myExercisesPage.btnSolveMore")}
-            </Link>
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

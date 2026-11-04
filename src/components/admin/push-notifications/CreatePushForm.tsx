@@ -158,7 +158,7 @@ export default function CreatePushForm({
                 key={preset.name}
                 type="button"
                 onClick={() => onApplyPreset(preset)}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg border border-border bg-background hover:border-accent hover:bg-accent/10 hover:text-accent dark:hover:text-accent-on-dark text-foreground transition-all cursor-pointer"
+                className="px-3 py-1.5 text-xs font-medium rounded-full border border-border bg-background hover:bg-accent/10 hover:text-accent dark:hover:text-accent-on-dark text-foreground transition-all cursor-pointer"
               >
                 {preset.name}
               </button>
@@ -175,7 +175,7 @@ export default function CreatePushForm({
             <button
               type="button"
               onClick={() => setIsAudienceDropdownOpen(!isAudienceDropdownOpen)}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all cursor-pointer text-left"
+              className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all cursor-pointer text-left"
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 <SelectedIcon className="w-4 h-4 shrink-0 text-accent" />

@@ -23,7 +23,7 @@ export default function NotificationsToolbar({
   const { t } = useI18n();
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-2.5 shadow-sm">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-2.5 shadow-xs">
       <NotificationFilterTabs
         activeTab={activeTab}
         totalCount={totalCount}
@@ -36,9 +36,9 @@ export default function NotificationsToolbar({
           variant="outline"
           size="sm"
           onClick={onMarkAllRead}
-          className="gap-1.5 text-xs font-semibold cursor-pointer"
+          className="gap-1.5 text-xs font-semibold cursor-pointer rounded-full border border-border"
         >
-          <CheckCheck className="h-3.5 w-3.5" />
+          <CheckCheck className="h-3.5 w-3.5 text-primary" />
           {t("admin.notifications.markAllRead")}
         </Button>
       )}

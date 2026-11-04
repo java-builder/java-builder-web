@@ -67,13 +67,13 @@ export function ChallengeCurriculum({
           return (
             <div
               key={phase.id}
-              className="rounded-lg border border-gray-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs transition-all"
+              className="rounded-lg border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface overflow-hidden shadow-2xs transition-all"
             >
               {/* Phase Header - Gọn gàng */}
               <button
                 type="button"
                 onClick={() => togglePhase(phase.id)}
-                className="w-full px-3 py-2.5 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50/80 dark:hover:bg-slate-800/60 transition-colors select-none"
+                className="w-full px-3 py-2.5 flex items-center justify-between text-left cursor-pointer hover:bg-[#FFF0E8] dark:bg-primary/15/40 dark:hover:bg-muted/50 transition-colors select-none"
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <ChevronDown
@@ -81,7 +81,7 @@ export function ChallengeCurriculum({
                       isExpanded ? "rotate-0" : "-rotate-90"
                     }`}
                   />
-                  <span className="text-xs font-bold text-gray-800 dark:text-gray-200 line-clamp-1">
+                  <span className="text-xs font-bold text-[#171717] dark:text-white line-clamp-1">
                     {phase.id}. {phase.title}
                   </span>
                 </div>
@@ -92,7 +92,7 @@ export function ChallengeCurriculum({
 
               {/* Danh sách ngày trong Phase - Nhỏ gọn, dùng icon Terminal chuẩn lập trình */}
               {isExpanded && (
-                <div className="border-t border-gray-100 dark:border-slate-800 divide-y divide-gray-50 dark:divide-slate-800/50 bg-gray-50/20 dark:bg-slate-900/40">
+                <div className="border-t border-[#E8E8E8] dark:border-border divide-y divide-[#E8E8E8] dark:divide-border bg-[#F8F8F8]/50 dark:bg-background">
                   {phaseDays.map((day) => {
                     const isFreeDay = challenge.isFree || Boolean(day.isFreePreview);
                     const isLocked = !challenge.isFree && !isUnlockedAll && !isFreeDay;
@@ -104,8 +104,8 @@ export function ChallengeCurriculum({
                         onClick={() => onSelectDay(day.day)}
                         className={`px-3 py-2 flex items-center justify-between gap-2 transition-colors cursor-pointer group ${
                           isSelected
-                            ? "bg-accent/10 dark:bg-accent/15 border-l-2 border-l-accent"
-                            : "hover:bg-gray-50 dark:hover:bg-slate-800/50"
+                            ? "bg-[#FF5A1F]/10 dark:bg-[#FF5A1F]/15 border-l-2 border-l-accent"
+                            : "hover:bg-[#FFF0E8] dark:bg-primary/15/50 dark:hover:bg-surface"
                         }`}
                       >
                         {/* Icon Terminal & Tên bài học */}
@@ -113,8 +113,8 @@ export function ChallengeCurriculum({
                           <div
                             className={`w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
                               isSelected
-                                ? "bg-accent text-white"
-                                : "bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 group-hover:text-accent group-hover:bg-accent/10"
+                                ? "bg-[#FF5A1F] text-white"
+                                : "bg-[#F8F8F8] dark:bg-surface text-gray-400 dark:text-slate-400 group-hover:text-[#FF5A1F] group-hover:bg-[#FFF0E8]"
                             }`}
                           >
                             <Terminal className="w-2.5 h-2.5" />
@@ -123,7 +123,7 @@ export function ChallengeCurriculum({
                           <span
                             className={`text-xs leading-snug line-clamp-1 transition-colors ${
                               isSelected
-                                ? "font-semibold text-accent dark:text-accent-400"
+                                ? "font-semibold text-[#FF5A1F] dark:text-[#FF5A1F]-400"
                                 : "text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
                             }`}
                             title={`Ngày ${day.day}: ${day.title}`}

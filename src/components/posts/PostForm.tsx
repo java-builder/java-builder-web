@@ -6,7 +6,7 @@ import Image from "next/image";
 import { CreatePostRequest } from "@/types/post";
 import { useForm } from "react-hook-form";
 import { CategoryDetailResponse } from "@/types/category";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 import { fileApi } from "@/services/course.service";
 
 const POPULAR_TAGS = [
@@ -190,14 +190,14 @@ export default function PostForm({ onSubmit, categories = null, initialData }: P
           <div className="flex gap-4 pt-4 border-t border-gray-200 dark:border-slate-700">
             <button
               type="submit"
-              className="px-6 py-2 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-colors"
+              className="px-6 py-2 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-colors"
             >
               Đăng câu hỏi
             </button>
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-2 bg-gray-200 dark:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500 transition-colors"
+              className="px-6 py-2 bg-gray-200 dark:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium rounded-full hover:bg-gray-300 dark:hover:bg-slate-500 transition-colors"
             >
               Hủy
             </button>

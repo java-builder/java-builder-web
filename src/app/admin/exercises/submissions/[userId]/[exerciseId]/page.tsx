@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useUserExerciseSubmissions } from "@/hooks/useExerciseSubmissions";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { SubmissionStatus } from "@/types/exercise-submission";
 import {
   ExerciseInfoCard,
@@ -55,7 +55,7 @@ export default function UserExerciseSubmissionsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6 animate-pulse max-w-7xl mx-auto bg-gray-50 dark:bg-slate-900 min-h-screen">
+      <div className="p-6 space-y-6  max-w-7xl mx-auto bg-gray-50 dark:bg-slate-900 min-h-screen">
         <div className="flex justify-between items-center">
           <div className="space-y-2 flex-grow">
             <div className="h-7 bg-muted rounded w-1/4" />
@@ -64,8 +64,8 @@ export default function UserExerciseSubmissionsPage() {
           <div className="h-10 bg-muted rounded w-28 shrink-0" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-6 space-y-4 h-[500px]" />
-          <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-6 space-y-4 h-[500px]" />
+          <div className="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 space-y-4 h-[500px]" />
+          <div className="bg-surface border border-border rounded-2xl p-6 space-y-4 h-[500px]" />
         </div>
       </div>
     );

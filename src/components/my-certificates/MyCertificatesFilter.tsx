@@ -75,7 +75,7 @@ export default function MyCertificatesFilter({
               key={id}
               type="button"
               onClick={() => onChangeFilter(id)}
-              className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition active:scale-[0.98] cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition active:scale-[0.98] cursor-pointer ${
                 isActive
                   ? "bg-accent text-white shadow-xs"
                   : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"

@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import { Check, X, Crown, BookOpen, MessageSquare, Zap, HelpCircle, ShieldCheck } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePaymentWebSocket } from "@/hooks/usePaymentWebSocket";
-import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
-import RateLimitModal from "@/components/ui/RateLimitModal";
+import AuthRequiredModal from "@/components/ui/auth-required-modal";
+import RateLimitModal from "@/components/ui/rate-limit-modal";
 import { subscriptionPlanService } from "@/services/subscription-plan.service";
 import { userSubscriptionService } from "@/services/user-subscription.service";
 import { SubscriptionPlan } from "@/types/subscription";
@@ -201,11 +201,11 @@ export default function PricingPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-background text-foreground pt-2">
+      <main className="min-h-screen bg-[#F8F8F8] dark:bg-background text-foreground pt-2">
         {/* Hero Section */}
         <section className="pt-5 pb-5 px-4">
           <div className="max-w-3xl mx-auto text-center space-y-2">
-            <span className="inline-block px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full border border-accent/20">
+            <span className="inline-block px-3 py-1 bg-[#FF5A1F]/10 text-[#FF5A1F] text-xs font-semibold rounded-full border border-[#FF5A1F]/20">
               {t("pricingPage.heroBadge")}
             </span>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
@@ -221,15 +221,15 @@ export default function PricingPage() {
         <section className="pb-8 px-4">
           <div className="max-w-5xl mx-auto">
             {isLoading ? (
-              <div className="grid md:grid-cols-3 gap-4 sm:gap-5 animate-pulse">
+              <div className="grid md:grid-cols-3 gap-4 sm:gap-5 ">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-4">
+                  <div key={i} className="bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl p-4 sm:p-5 space-y-4 shadow-xs">
                     <div className="space-y-1.5">
                       <div className="h-5 bg-muted rounded w-1/3" />
                       <div className="h-3.5 bg-muted rounded w-2/3" />
                     </div>
                     <div className="h-8 bg-muted rounded w-1/2" />
-                    <div className="space-y-2 pt-3 border-t border-border">
+                    <div className="space-y-2 pt-3 border-t border-[#E8E8E8] dark:border-border">
                       {[1, 2, 3, 4].map((j) => (
                         <div key={j} className="flex items-center gap-2">
                           <div className="w-3.5 h-3.5 rounded-full bg-muted" />
@@ -246,14 +246,14 @@ export default function PricingPage() {
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative bg-card text-card-foreground border rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 ${plan.popular
-                        ? "border-accent ring-1 ring-accent/20 shadow-lg scale-[1.01] md:scale-[1.02] z-10"
-                        : "border-border hover:border-accent/40 hover:shadow-sm"
+                    className={`relative bg-white dark:bg-surface text-card-foreground border rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 ${plan.popular
+                        ? "border-[#FF5A1F] ring-1 ring-[#FF5A1F]/20 shadow-lg scale-[1.01] md:scale-[1.02] z-10"
+                        : "border-[#E8E8E8] dark:border-border hover:shadow-md"
                       }`}
                   >
                     {plan.popular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="bg-accent text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md">
+                        <span className="bg-[#FF5A1F] text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md">
                           {t("pricingPage.popularBadge")}
                         </span>
                       </div>
@@ -308,11 +308,11 @@ export default function PricingPage() {
                       <button
                         onClick={() => handleSubscribe(plan)}
                         disabled={plan.disabled || loadingPlan === plan.id}
-                        className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${plan.disabled
+                        className={`w-full py-2.5 px-3 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${plan.disabled
                             ? "bg-muted text-muted-foreground cursor-not-allowed"
                             : plan.popular
-                              ? "bg-accent hover:bg-accent-600 text-white shadow-md shadow-accent/20 hover:shadow-lg"
-                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                              ? "bg-[#FF5A1F] hover:bg-[#e04b16] text-white shadow-md shadow-[#FF5A1F]/25 hover:shadow-lg"
+                              : "bg-gray-100 hover:bg-gray-200 dark:bg-[#222938] dark:hover:bg-[#2a3346] text-gray-900 dark:text-white border border-[#E8E8E8] dark:border-border"
                           }`}
                       >
                         {loadingPlan === plan.id ? (
@@ -336,7 +336,7 @@ export default function PricingPage() {
         </section>
 
         {/* Benefits Section */}
-        <section className="py-10 px-4 border-t border-border/50 bg-muted/20">
+        <section className="py-10 px-4 border-t border-[#E8E8E8] dark:border-border bg-white/50 dark:bg-surface/30">
           <div className="max-w-5xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full border border-amber-500/20">
@@ -354,8 +354,8 @@ export default function PricingPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-2.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-[#FF5A1F]/10 text-[#FF5A1F] flex items-center justify-center">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">
@@ -368,7 +368,7 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-2.5 shadow-xs">
                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                   <Zap className="w-5 h-5" />
                 </div>
@@ -382,7 +382,7 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-2.5 shadow-xs">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                   <MessageSquare className="w-5 h-5" />
                 </div>
@@ -396,7 +396,7 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-2.5 shadow-xs">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-2.5 shadow-xs">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
@@ -417,7 +417,7 @@ export default function PricingPage() {
         <section className="py-10 px-4">
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-1.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full border border-accent/20">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FF5A1F]/10 text-[#FF5A1F] text-xs font-semibold rounded-full border border-[#FF5A1F]/20">
                 <HelpCircle className="w-3.5 h-3.5" />
                 {locale === "vi" ? "Giải Đáp Thắc Mắc" : "FAQ"}
               </span>
@@ -427,9 +427,9 @@ export default function PricingPage() {
             </div>
 
             <div className="grid gap-3.5">
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-1.5">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-1.5 shadow-xs">
                 <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  <span className="w-2 h-2 rounded-full bg-[#FF5A1F]" />
                   {locale === "vi"
                     ? "Gói Premium khác gì so với việc mua lẻ từng khóa học?"
                     : "How does Premium differ from buying single courses?"}
@@ -441,9 +441,9 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-1.5">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-1.5 shadow-xs">
                 <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  <span className="w-2 h-2 rounded-full bg-[#FF5A1F]" />
                   {locale === "vi"
                     ? "Trong thời gian Premium, tôi có được học các khóa học mới không?"
                     : "Can I access newly released courses during my Premium period?"}
@@ -455,9 +455,9 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 bg-card border border-border rounded-2xl space-y-1.5">
+              <div className="p-4 sm:p-5 bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl space-y-1.5 shadow-xs">
                 <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  <span className="w-2 h-2 rounded-full bg-[#FF5A1F]" />
                   {locale === "vi"
                     ? "Hệ thống thanh toán và kích hoạt gói như thế nào?"
                     : "How does payment and plan activation work?"}
@@ -488,13 +488,13 @@ export default function PricingPage() {
 
       {/* Payment Modal */}
       {paymentModal.isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 flex items-center justify-center p-4">
-          <div className="relative bg-white dark:bg-slate-800 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-md sm:w-full border border-gray-100 dark:border-slate-700">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="relative bg-white dark:bg-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-md sm:w-full border border-[#E8E8E8] dark:border-border">
             {/* Modal Header */}
-            <div className="px-6 py-5 border-b border-gray-150 dark:border-slate-700/50 bg-white dark:bg-slate-800">
+            <div className="px-6 py-5 border-b border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[#FF5A1F]/10 text-[#FF5A1F] rounded-xl flex items-center justify-center">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
@@ -512,7 +512,7 @@ export default function PricingPage() {
                   <button
                     data-modal-close
                     onClick={() => setPaymentModal({ isOpen: false, isLoading: false, data: null, planName: "" })}
-                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700/50 rounded-xl transition-colors"
+                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#222938] rounded-xl transition-colors cursor-pointer"
                   >
                     <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -528,9 +528,9 @@ export default function PricingPage() {
                 <div className="text-center py-8">
                   {/* Animated Payment Icon */}
                   <div className="relative w-20 h-20 mx-auto mb-6">
-                    <div className="absolute inset-0 bg-accent/10 rounded-full animate-ping" />
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-accent to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-accent/30">
-                      <svg className="w-10 h-10 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="absolute inset-0 bg-[#FF5A1F]/10 rounded-full animate-ping" />
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-[#FF5A1F] to-[#FF9900] rounded-full flex items-center justify-center shadow-lg shadow-[#FF5A1F]/30">
+                      <svg className="w-10 h-10 text-white " fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
@@ -547,7 +547,7 @@ export default function PricingPage() {
                       <span className="text-sm text-gray-600 dark:text-gray-300">{t("pricingPage.confirmInfoStep")}</span>
                     </div>
                     <div className="flex items-center gap-3 text-left">
-                      <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                      <div className="w-6 h-6 bg-[#FF5A1F] rounded-full flex items-center justify-center flex-shrink-0 ">
                         <div className="w-2 h-2 bg-white rounded-full" />
                       </div>
                       <span className="text-sm text-gray-900 dark:text-white font-medium">{t("pricingPage.creatingPaymentStep")}</span>
@@ -567,10 +567,10 @@ export default function PricingPage() {
                   {/* Price Info */}
                   <div className="text-center mb-5">
                     <div className="flex items-center justify-center gap-2">
-                      <span className="text-2xl font-bold text-accent">
+                      <span className="text-2xl font-bold text-[#FF5A1F]">
                         {formatPrice(paymentModal.data.totalPrice)}đ
                       </span>
-                      <span className="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 text-xs font-medium rounded-full">
+                      <span className="px-2.5 py-0.5 bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-xs font-semibold rounded-full">
                         {t("pricingPage.pendingPayment")}
                       </span>
                     </div>
@@ -579,7 +579,7 @@ export default function PricingPage() {
                   {/* QR Code */}
                   {paymentModal.data.qrCode && (
                     <div className="flex justify-center mb-6">
-                      <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                      <div className="p-4 bg-white rounded-2xl border border-[#E8E8E8] dark:border-border shadow-sm">
                         <QRCodeSVG
                           value={paymentModal.data.qrCode}
                           size={200}
@@ -590,7 +590,7 @@ export default function PricingPage() {
                   )}
 
                   {/* Order Info */}
-                  <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg mb-4">
+                  <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-background border border-[#E8E8E8] dark:border-border rounded-xl mb-4">
                     <span className="text-sm text-gray-500 dark:text-gray-400">{t("pricingPage.orderCode")}</span>
                     <span className="font-mono font-semibold text-gray-900 dark:text-white">{paymentModal.data.orderCode}</span>
                   </div>
@@ -601,7 +601,7 @@ export default function PricingPage() {
                       href={paymentModal.data.checkoutUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-medium rounded-xl transition-colors"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 text-white font-semibold rounded-full transition-all shadow-md shadow-[#FF5A1F]/25 cursor-pointer"
                     >
                       {t("pricingPage.payWithPayOS")}
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

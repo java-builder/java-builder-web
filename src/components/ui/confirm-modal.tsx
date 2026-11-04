@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { AlertCircle, AlertTriangle, Info, Trash2, Check } from "lucide-react";
 import { Button } from "./button";
 
 export interface ConfirmModalProps {
@@ -17,6 +18,31 @@ export interface ConfirmModalProps {
   isLoading?: boolean;
 }
 
+function formatConfirmMessage(rawMessage: string): string {
+  // 1. Strip legacy SweetAlert2 inline text-align: center & margin overrides
+  let cleaned = rawMessage
+    .replace(/text-align\s*:\s*center\s*;?/gi, "")
+    .replace(/display\s*:\s*inline-block\s*;?/gi, "")
+    .replace(/max-width\s*:\s*\d+px\s*;?/gi, "");
+
+  // 2. Escape plain text if it doesn't contain HTML tags, then bold quoted target names ("...")
+  const hasHtml = /<[a-z][\s\S]*>/i.test(cleaned);
+  if (!hasHtml) {
+    cleaned = cleaned
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // 3. Automatically wrap quoted target names ("..." or “...”) in <strong> if not already inside a tag attribute
+  cleaned = cleaned.replace(
+    /(^|[^=])"([^"<>]+)"/g,
+    '$1<strong class="font-semibold text-foreground">"$2"</strong>'
+  );
+
+  return cleaned;
+}
+
 export function ConfirmModal({
   isOpen,
   onClose,
@@ -24,7 +50,7 @@ export function ConfirmModal({
   title = "Xác nhận",
   message = "Bạn có chắc chắn muốn thực hiện hành động này?",
   confirmText = "Xác nhận",
-  cancelText = "Hủy",
+  cancelText = "Hủy bỏ",
   variant,
   type,
   loading,
@@ -62,7 +88,7 @@ export function ConfirmModal({
     }
   };
 
-  const isHtml = typeof message === "string" && /<[a-z][\s\S]*>/i.test(message);
+  const formattedHtml = formatConfirmMessage(message);
 
   return (
     <div
@@ -72,42 +98,69 @@ export function ConfirmModal({
       <div
         role="dialog"
         aria-modal="true"
-        className="w-full max-w-md rounded-2xl border border-[#E8E8E8] dark:border-[#262d3d] bg-white dark:bg-[#181d28] text-[#171717] dark:text-slate-100 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="w-full max-w-md rounded-2xl border border-border bg-surface text-foreground text-left shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-5 sm:p-6">
-          <h3 className="text-base font-bold text-[#171717] dark:text-slate-100">
-            {title}
-          </h3>
-          {isHtml ? (
-            <div
-              className="mt-2 text-sm text-[#64748B] dark:text-slate-400 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: message }}
-            />
-          ) : (
-            <p className="mt-2 text-sm text-[#64748B] dark:text-slate-400 leading-relaxed">
-              {message}
-            </p>
-          )}
+          <div className="flex items-start gap-3.5">
+            {actualVariant === "danger" && (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-error-soft text-error border border-error-border">
+                <AlertCircle className="h-5 w-5" />
+              </div>
+            )}
+            {actualVariant === "warning" && (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-warning-soft text-warning border border-warning-border">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+            )}
+            {actualVariant === "info" && (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary border border-primary-soft-border">
+                <Info className="h-5 w-5" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0 text-left">
+              <h3 className="text-base font-bold text-foreground leading-snug text-left">
+                {title}
+              </h3>
+              <div
+                className="mt-1.5 text-sm text-text-muted leading-relaxed text-left [&_div]:!text-left [&_p]:!text-left [&_strong]:font-semibold [&_strong]:text-foreground [&_b]:font-semibold [&_b]:text-foreground"
+                dangerouslySetInnerHTML={{ __html: formattedHtml }}
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-end gap-2.5 border-t border-[#E8E8E8] dark:border-[#262d3d] bg-[#F8F8F8]/60 dark:bg-slate-900/40 px-5 py-3.5">
+        <div className="flex items-center justify-end gap-2.5 border-t border-border bg-background/60 dark:bg-surface px-5 py-3.5">
           <Button
             type="button"
             variant="secondary"
-            size="sm"
+            size="default"
             onClick={onClose}
             disabled={actualLoading}
+            className="h-9 px-4 text-xs sm:text-sm font-medium rounded-full cursor-pointer"
           >
             {cancelText}
           </Button>
           <Button
             type="button"
-            variant={actualVariant === "danger" ? "destructive" : "default"}
-            size="sm"
+            variant={
+              actualVariant === "danger"
+                ? "destructive"
+                : actualVariant === "warning"
+                ? "primary"
+                : "primary"
+            }
+            size="default"
             onClick={handleConfirm}
             loading={actualLoading}
+            className="h-9 px-4 text-xs sm:text-sm font-semibold rounded-full gap-1.5 cursor-pointer"
           >
+            {!actualLoading &&
+              (actualVariant === "danger" ? (
+                <Trash2 className="h-3.5 w-3.5" />
+              ) : (
+                <Check className="h-3.5 w-3.5" />
+              ))}
             {confirmText}
           </Button>
         </div>

@@ -118,7 +118,7 @@ export const ItemRevenueBarChart = ({
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
-                        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 shadow-xl text-foreground w-[220px] space-y-1.5">
+                        <div className="bg-surface border border-border rounded-2xl p-3.5 shadow-xl text-foreground w-[220px] space-y-1.5">
                           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-tight">
                             {data.fullName}
                           </p>

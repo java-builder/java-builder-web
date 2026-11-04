@@ -26,7 +26,7 @@ export default function InterviewClient() {
   }, [topics, searchText, locale]);
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-[#F8F8F8] dark:bg-background transition-colors pb-16">
       <InterviewHeroNew
         badgeLabel={t("interviewPage.heroBadge")}
         titleStart={t("interviewPage.heroTitleStart")}

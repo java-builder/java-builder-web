@@ -75,7 +75,7 @@ export default function SubmissionReviewPage() {
     const wrongCount = result.results.filter((q) => !q.isCorrect).length;
     const answers: QuizAnalysisRequest["answers"] = result.results.map((q) => {
       const sortedOptions = [...q.options].sort(
-        (a, b) => a.orderIndex - b.orderIndex,
+        (a, b) => a.orderIndex - b.orderIndex
       );
       const letterById = new Map<string, string>();
       sortedOptions.forEach((opt, idx) => {
@@ -122,7 +122,6 @@ export default function SubmissionReviewPage() {
 
   const handleOpenAnalysisModal = () => {
     setIsAnalysisModalOpen(true);
-    // Auto-start analysis if idle
     if (aiAnalysisStatus === "idle") {
       handleRunAiAnalysis();
     }
@@ -143,37 +142,45 @@ export default function SubmissionReviewPage() {
   const tone = getScoreTone(scorePercentage);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-4 sm:py-6">
-      <div className="mx-auto max-w-7xl space-y-4 px-3 sm:space-y-6 sm:px-4 lg:px-8">
+    <div className="min-h-screen bg-background text-foreground py-5 sm:py-8">
+      <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         <ReviewHeader onRetry={handleRetry} />
 
-        <SubmissionScoreCard
-          scorePercentage={scorePercentage}
-          accuracyPercentage={accuracyPercentage}
-          totalScore={result.totalScore}
-          maxScore={result.maxScore}
-          submittedAt={result.submittedAt}
-          counts={counts}
-          tone={tone}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Filter Toolbar + Question Cards */}
+          <div className="lg:col-span-8 order-2 lg:order-1">
+            <QuestionListSection
+              questions={result.results}
+              filteredQuestions={filteredQuestions}
+              counts={counts}
+              activeFilter={activeFilter}
+              onChangeFilter={setActiveFilter}
+            />
+          </div>
 
-        <QuestionNavigator
-          questions={result.results}
-          onSelectQuestion={handleSelectQuestion}
-        />
+          {/* Right Sticky Sidebar: Score Summary + AI Coach + Question Map */}
+          <div className="lg:col-span-4 order-1 lg:order-2 lg:sticky lg:top-22 space-y-5">
+            <SubmissionScoreCard
+              scorePercentage={scorePercentage}
+              accuracyPercentage={accuracyPercentage}
+              totalScore={result.totalScore}
+              maxScore={result.maxScore}
+              submittedAt={result.submittedAt}
+              counts={counts}
+              tone={tone}
+            />
 
-        <QuestionListSection
-          questions={result.results}
-          filteredQuestions={filteredQuestions}
-          counts={counts}
-          activeFilter={activeFilter}
-          onChangeFilter={setActiveFilter}
-        />
+            <AiCoachPanel
+              status={aiAnalysisStatus}
+              onOpen={handleOpenAnalysisModal}
+            />
 
-        <AiCoachPanel
-          status={aiAnalysisStatus}
-          onOpen={handleOpenAnalysisModal}
-        />
+            <QuestionNavigator
+              questions={result.results}
+              onSelectQuestion={handleSelectQuestion}
+            />
+          </div>
+        </div>
 
         <QuizAnalysisModal
           isOpen={isAnalysisModalOpen}

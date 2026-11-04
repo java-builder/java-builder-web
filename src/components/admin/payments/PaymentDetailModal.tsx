@@ -134,9 +134,9 @@ export const PaymentDetailModal = ({
         className="relative my-auto w-full max-w-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
           {/* Header */}
-          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-5 py-4">
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-surface px-5 py-4">
             <div className="min-w-0">
               <h2 className="text-base font-semibold text-foreground">
                 Chi tiết thanh toán
@@ -150,7 +150,7 @@ export const PaymentDetailModal = ({
               type="button"
               onClick={onClose}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted dark:hover:bg-muted hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -276,14 +276,14 @@ export const PaymentDetailModal = ({
 
             {/* Footer action if EXPIRED */}
             {payment.paymentStatus === PaymentStatus.EXPIRED && onDelete && (
-              <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/10 px-5 py-3">
+              <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/10 dark:bg-surface px-5 py-3">
                 <button
                   type="button"
                   onClick={() => {
                     onClose();
                     onDelete(payment);
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/50"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/50 cursor-pointer"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Xóa giao dịch hết hạn

@@ -17,11 +17,11 @@ export default function EmailTemplatesSearchBar({
   const hasQuery = searchQuery.length > 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
             Bộ lọc
@@ -32,7 +32,7 @@ export default function EmailTemplatesSearchBar({
             variant="ghost"
             size="sm"
             onClick={onClear}
-            className="gap-1 text-muted-foreground hover:text-foreground h-8"
+            className="gap-1 text-muted-foreground hover:text-foreground h-8 rounded-full cursor-pointer"
           >
             <X className="h-3.5 w-3.5" />
             Xóa lọc
@@ -51,7 +51,7 @@ export default function EmailTemplatesSearchBar({
             value={searchQuery}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Tìm theo tên mẫu thư hoặc tiêu đề email..."
-            className="block w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            className="block w-full rounded-xl border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
       </div>

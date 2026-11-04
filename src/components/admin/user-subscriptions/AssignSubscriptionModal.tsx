@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Mail, Package, X } from "lucide-react";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { Button } from "@/components/ui/button";
-import { FilterSelect } from "@/components/ui/FilterSelect";
+import { FilterSelect } from "@/components/ui/select";
 
 interface AssignSubscriptionModalProps {
   isOpen: boolean;
@@ -60,7 +60,7 @@ export default function AssignSubscriptionModal({
         className="relative w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
             <div>
@@ -76,7 +76,7 @@ export default function AssignSubscriptionModal({
               onClick={onClose}
               disabled={isAssigning}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:opacity-50"
+              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted dark:hover:bg-muted hover:text-foreground disabled:opacity-50"
             >
               <X className="h-4 w-4" />
             </button>
@@ -95,7 +95,7 @@ export default function AssignSubscriptionModal({
                   value={email}
                   onChange={(e) => onEmailChange(e.target.value)}
                   placeholder="user@example.com"
-                  className="block w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="block w-full rounded-xl border border-border bg-background py-2 pl-8 pr-3 text-sm text-foreground placeholder-muted-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -118,12 +118,13 @@ export default function AssignSubscriptionModal({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-2 border-t border-border bg-muted/20 px-5 py-3">
+          <div className="flex items-center justify-end gap-2 border-t border-border bg-muted/20 dark:bg-surface px-5 py-3">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isAssigning}
+              className="rounded-full cursor-pointer"
             >
               Hủy
             </Button>
@@ -132,6 +133,7 @@ export default function AssignSubscriptionModal({
               variant="accent"
               onClick={onSubmit}
               disabled={isDisabled}
+              className="rounded-full cursor-pointer"
             >
               {isAssigning ? "Đang xử lý..." : "Gán gói"}
             </Button>

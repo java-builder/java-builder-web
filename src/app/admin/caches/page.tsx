@@ -7,7 +7,7 @@ import { CacheInfo } from "@/types/cache";
 import { CacheStatsCards } from "@/components/admin/caches/CacheStatsCards";
 import { CacheTable } from "@/components/admin/caches/CacheTable";
 import { CacheKeysModal } from "@/components/admin/caches/CacheKeysModal";
-import ConfirmModal from "@/components/common/ConfirmModal";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Trash2, Search } from "lucide-react";
 import toast from "react-hot-toast";
@@ -112,11 +112,11 @@ export default function AdminCachesPage() {
             <span>{t("admin.caches.refreshBtn")}</span>
           </Button>
           <Button
-            variant="destructive"
+            variant="outline"
             size="sm"
             onClick={() => setShowClearAllModal(true)}
             disabled={isLoading || isActionPending}
-            className="cursor-pointer gap-2"
+            className="cursor-pointer gap-2 border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
           >
             <Trash2 className="w-4 h-4" />
             <span>{t("admin.caches.clearAllBtn")}</span>

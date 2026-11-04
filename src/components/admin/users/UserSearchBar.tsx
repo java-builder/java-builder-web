@@ -2,7 +2,7 @@
 
 import { Loader2, RotateCw, Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DateTimePicker } from "@/components/ui/DateTimePicker";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface UserSearchBarProps {
@@ -75,18 +75,18 @@ export const UserSearchBar = ({
   const { t } = useI18n();
 
   return (
-    <div className="relative z-20 rounded-xl border border-border bg-card shadow-sm">
+    <div className="relative z-20 rounded-2xl border border-border bg-surface shadow-sm">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3 bg-muted/5 rounded-t-xl">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3 bg-muted/5 rounded-t-2xl">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
             {t("admin.common.search")}
           </h3>
           {hasFilters && (
-            <span className="inline-flex items-center rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent">
+            <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
               {activeFilterCount}
             </span>
           )}
@@ -97,21 +97,21 @@ export const UserSearchBar = ({
             <button
               type="button"
               onClick={() => handleQuickRange("today")}
-              className="rounded-md border border-border/80 bg-background px-2 py-0.5 text-xs text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/40 transition-colors cursor-pointer"
+              className="rounded-full border border-border bg-background px-3 py-0.5 text-xs text-foreground hover:bg-primary-soft hover:text-primary dark:hover:bg-orange-950/40 dark:hover:text-orange-400 transition-colors cursor-pointer"
             >
               Hôm nay
             </button>
             <button
               type="button"
               onClick={() => handleQuickRange("7days")}
-              className="rounded-md border border-border/80 bg-background px-2 py-0.5 text-xs text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/40 transition-colors cursor-pointer"
+              className="rounded-full border border-border bg-background px-3 py-0.5 text-xs text-foreground hover:bg-primary-soft hover:text-primary dark:hover:bg-orange-950/40 dark:hover:text-orange-400 transition-colors cursor-pointer"
             >
               {t("admin.userSubscriptions.timeRange7days")}
             </button>
             <button
               type="button"
               onClick={() => handleQuickRange("thisMonth")}
-              className="rounded-md border border-border/80 bg-background px-2 py-0.5 text-xs text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/40 transition-colors cursor-pointer"
+              className="rounded-full border border-border bg-background px-3 py-0.5 text-xs text-foreground hover:bg-primary-soft hover:text-primary dark:hover:bg-orange-950/40 dark:hover:text-orange-400 transition-colors cursor-pointer"
             >
               {t("admin.userSubscriptions.timeRange30days")}
             </button>
@@ -124,7 +124,7 @@ export const UserSearchBar = ({
               variant="ghost"
               size="sm"
               onClick={onClearFilters}
-              className="gap-1 text-muted-foreground hover:text-foreground h-8"
+              className="gap-1 text-muted-foreground hover:text-foreground h-8 rounded-full cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
               {t("admin.users.clearFilter")}
@@ -135,7 +135,7 @@ export const UserSearchBar = ({
             size="sm"
             onClick={onRefresh}
             disabled={isLoading}
-            className="gap-1.5 h-8"
+            className="gap-1.5 h-8 rounded-full cursor-pointer"
           >
             <RotateCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
             {t("admin.questionContributions.refreshBtn")}

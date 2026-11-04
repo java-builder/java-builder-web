@@ -11,8 +11,8 @@ import {
   Save,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import { CustomSelect, SelectOption } from "@/components/ui/select";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 import {
   ChallengeDayResponse,
   ChallengePhaseResponse,
@@ -309,11 +309,11 @@ export default function DayModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-4xl rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
+      <div className="bg-surface border border-border w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border bg-muted/30 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-accent/10 text-accent">
+            <div className="p-2 rounded-xl bg-primary-soft text-primary border border-primary/20">
               <Calendar className="h-5 w-5" />
             </div>
             <div>
@@ -416,7 +416,7 @@ export default function DayModal({
                 Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
               </label>
               {isLoadingDetail && (
-                <span className="flex items-center gap-1 text-[11px] text-primary animate-pulse">
+                <span className="flex items-center gap-1 text-[11px] text-primary ">
                   <Loader2 className="w-3 h-3 animate-spin" />
                   Đang tải nội dung...
                 </span>
@@ -474,7 +474,7 @@ export default function DayModal({
               {tasks.map((task, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-3 transition-colors"
+                  className="rounded-full border border-border bg-muted/20 p-3.5 space-y-3 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="text-xs font-bold text-muted-foreground w-6 text-center shrink-0">
@@ -498,7 +498,7 @@ export default function DayModal({
                           handleToggleTaskExpand(idx);
                         }
                       }}
-                      className={`h-10 px-3 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition cursor-pointer shrink-0 ${
+                      className={`h-10 px-3 rounded-full text-xs font-semibold border flex items-center gap-1.5 transition cursor-pointer shrink-0 ${
                         task.resourceLinks.length > 0
                           ? "bg-accent/10 border-accent/30 text-accent hover:bg-accent/20"
                           : "bg-card border-input text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -684,7 +684,7 @@ export default function DayModal({
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full border border-border"
             >
               Hủy
             </Button>
@@ -692,7 +692,7 @@ export default function DayModal({
               type="submit"
               variant="accent"
               disabled={isSubmitting}
-              className="gap-2 font-semibold cursor-pointer"
+              className="gap-2 font-semibold cursor-pointer rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
             >
               {isSubmitting ? (
                 <>

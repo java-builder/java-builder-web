@@ -21,11 +21,11 @@ export default function EnrollmentsHeader({
   const displaySubtitle = subtitle ?? (courseTitle ? `Khóa học: ${courseTitle}` : "Đang tải thông tin...");
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-6 rounded-2xl shadow-xs">
       <div className="flex items-center gap-4">
         <Link
           href={backHref}
-          className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors border border-border/40"
+          className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-xl transition-colors border border-border cursor-pointer"
           title="Quay lại"
         >
           <ArrowLeft className="h-5 w-5" />

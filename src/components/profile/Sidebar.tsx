@@ -66,16 +66,16 @@ export default function Sidebar({
   ];
 
   return (
-    <aside className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+    <aside className="overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface shadow-xs">
       {/* User Card */}
-      <div className="border-b border-gray-200 p-5 dark:border-slate-700 space-y-3">
+      <div className="border-b border-[#E8E8E8] dark:border-border p-5 space-y-3">
         <button
           type="button"
           onClick={() => onTabChange("profile")}
           className="group flex w-full items-center gap-3 text-left transition"
         >
           <div className="relative flex-shrink-0">
-            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-accent to-accent-600">
+            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#FF5A1F] to-[#FF9900]">
               {user.avatar ? (
                 <Image
                   src={user.avatar}
@@ -102,11 +102,11 @@ export default function Sidebar({
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <h3 className="truncate text-sm font-semibold text-gray-900 transition group-hover:text-accent dark:text-white">
+              <h3 className="truncate text-sm font-semibold text-gray-900 transition group-hover:text-[#FF5A1F] dark:text-white">
                 {user.username || t("profilePage.sidebar.user")}
               </h3>
               {user.experienceLevel && (
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-accent/10 text-accent dark:bg-accent/20">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF5A1F]/10 text-[#FF5A1F] dark:bg-[#FF5A1F]/20 dark:text-[#FF9900]">
                   {user.experienceLevel}
                 </span>
               )}
@@ -115,7 +115,7 @@ export default function Sidebar({
               {user.email}
             </p>
             {user.headline ? (
-              <p className="mt-0.5 truncate text-[11px] font-medium text-accent dark:text-accent-400">
+              <p className="mt-0.5 truncate text-[11px] font-medium text-[#FF5A1F] dark:text-[#FF9900]">
                 {user.headline}
               </p>
             ) : user.specialization ? (
@@ -144,9 +144,9 @@ export default function Sidebar({
                 <button
                   type="button"
                   onClick={() => onTabChange(tab.id)}
-                  className={`group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive
-                      ? "bg-accent text-white font-semibold shadow-sm shadow-accent/30"
-                      : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-slate-700/50"
+                  className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${isActive
+                      ? "bg-[#FF5A1F] text-white font-semibold shadow-xs shadow-[#FF5A1F]/30"
+                      : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#222938]"
                     }`}
                 >
                   <Icon
@@ -164,12 +164,12 @@ export default function Sidebar({
       </nav>
 
       {/* Logout */}
-      <div className="border-t border-gray-200 p-2 dark:border-slate-700">
+      <div className="border-t border-[#E8E8E8] dark:border-border p-2">
         <button
           type="button"
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-50 dark:text-rose-400 dark:hover:bg-rose-900/20"
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-50 dark:text-rose-400 dark:hover:bg-rose-900/20 active:scale-95"
         >
           <LogOut className="h-4 w-4 flex-shrink-0" />
           <span className="truncate">

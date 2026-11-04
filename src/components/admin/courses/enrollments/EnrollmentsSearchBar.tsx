@@ -23,7 +23,7 @@ export default function EnrollmentsSearchBar({
   const showSpinner = isDebouncing || isLoading;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-4 rounded-xl shadow-sm">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-4 rounded-2xl shadow-xs">
       <div className="relative flex-1 max-w-md w-full">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
@@ -31,10 +31,10 @@ export default function EnrollmentsSearchBar({
           value={search}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Tìm theo tên học viên hoặc email..."
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-9 pr-9 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
+          className="flex h-9 w-full rounded-xl border border-border bg-transparent px-3 py-1 pl-9 pr-9 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
         />
         {showSpinner && (
-          <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-accent" />
+          <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
         )}
       </div>
       {hasQuery && (
@@ -42,7 +42,7 @@ export default function EnrollmentsSearchBar({
           variant="outline"
           size="sm"
           onClick={onClear}
-          className="gap-1.5 shrink-0 self-end sm:self-auto cursor-pointer"
+          className="gap-1.5 shrink-0 self-end sm:self-auto cursor-pointer rounded-full"
         >
           <X className="h-3.5 w-3.5" />
           Xóa lọc

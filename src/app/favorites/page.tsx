@@ -7,8 +7,7 @@ import { favoriteService } from "@/services/favorite.service";
 import { FavoriteTargetType, FavoriteResponse } from "@/types/favorite";
 import { CourseLevel } from "@/types/course";
 import toast from "react-hot-toast";
-import Breadcrumbs from "@/components/common/Breadcrumbs";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { formatShortDate } from "@/utils/dateUtils";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -175,16 +174,8 @@ export default function FavoritesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl space-y-4 p-4 sm:space-y-6 sm:p-6">
-        {/* Breadcrumb */}
-        <Breadcrumbs
-          items={[
-            { label: t("common.home"), href: "/" },
-            { label: t("favoritesPage.title") },
-          ]}
-        />
-
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
@@ -233,7 +224,7 @@ export default function FavoritesPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl overflow-hidden p-6 space-y-4">
                 <div className="aspect-video bg-muted rounded-lg w-full" />
@@ -264,7 +255,7 @@ export default function FavoritesPage() {
             </p>
             <Link
               href={activeTab === FavoriteTargetType.COURSE ? "/courses" : "/blogs"}
-              className="inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent/90 text-white font-semibold rounded-lg transition-colors text-sm shadow-sm"
+              className="inline-flex items-center px-6 py-2.5 bg-[#FF5A1F] hover:bg-[#e04b16] text-white font-semibold rounded-full transition-colors text-sm shadow-sm active:scale-95 shadow-[#FF5A1F]/25"
             >
               {activeTab === FavoriteTargetType.COURSE ? t("favoritesPage.exploreCourses") : t("favoritesPage.exploreBlogs")}
             </Link>
@@ -273,7 +264,7 @@ export default function FavoritesPage() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {favorites.map((item) => (
-                <div key={item.id} className="bg-white dark:bg-slate-800/50 rounded-lg shadow-sm border border-gray-200/80 dark:border-slate-700/60 hover:shadow-lg hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden group flex flex-col h-full">
+                <div key={item.id} className="bg-white dark:bg-surface rounded-2xl shadow-sm border border-[#E8E8E8] dark:border-border hover:shadow-lg hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden group flex flex-col h-full">
                   <Link href={getItemUrl(item)}>
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-50 dark:bg-slate-900/50">
                       {item.thumbnailUrl ? (

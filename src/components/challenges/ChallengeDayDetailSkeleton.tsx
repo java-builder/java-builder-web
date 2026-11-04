@@ -2,7 +2,7 @@
 
 export function ChallengeDayDetailSkeleton() {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-7 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-6 animate-pulse">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-7 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-6 ">
       {/* 1. Header Skeleton */}
       <div className="space-y-3 border-b border-gray-100 dark:border-slate-800 pb-5">
         {/* Badges */}

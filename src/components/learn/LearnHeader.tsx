@@ -1,6 +1,17 @@
 "use client";
 
+import Link from "next/link";
+import ThemeToggle from "@/components/header-components/ThemeToggle";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  PanelLeft,
+} from "lucide-react";
+
 interface LearnHeaderProps {
+  courseSlug?: string;
   chapterName?: string;
   lessonName?: string;
   canPrev: boolean;
@@ -13,8 +24,8 @@ interface LearnHeaderProps {
 }
 
 export default function LearnHeader({
+  courseSlug,
   chapterName,
-  lessonName,
   canPrev,
   canNext,
   completedCount = 0,
@@ -23,86 +34,98 @@ export default function LearnHeader({
   onPrev,
   onNext,
 }: LearnHeaderProps) {
-  const percent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+  const percent =
+    totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
   return (
-    <header className="relative h-14 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-700/60 flex items-center px-4 justify-between flex-shrink-0 transition-all duration-250 z-30">
-      
-      {/* Left: Lesson Info */}
-      {lessonName && (
-        <div className="flex-1 min-w-0 pr-4">
-          {chapterName && (
-            <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider leading-none truncate hidden sm:block mb-1">
+    <header className="relative h-15 bg-surface/95 backdrop-blur-md border-b border-border flex items-center px-4 sm:px-6 justify-between gap-3 shrink-0 transition-colors z-30">
+      {/* Left: Sidebar Toggle + Back Link + Chapter Name */}
+      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          title="Đóng/Mở danh mục bài học"
+          className="flex items-center justify-center w-9 h-9 text-text-muted hover:text-primary hover:bg-primary-soft rounded-full transition-colors cursor-pointer shrink-0"
+          aria-label="Toggle menu"
+        >
+          <PanelLeft className="w-4.5 h-4.5" />
+        </button>
+
+        <Link
+          href={courseSlug ? `/courses/${courseSlug}` : "/my-courses"}
+          className="inline-flex items-center gap-1.5 h-8.5 px-3 rounded-full text-xs font-semibold text-text-muted hover:text-primary hover:bg-primary-soft border border-border transition-all shrink-0"
+          title="Quay lại khóa học"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Khóa học</span>
+        </Link>
+
+        {chapterName && (
+          <>
+            <div className="h-4 w-px bg-border shrink-0 hidden sm:block" />
+            <h1
+              className="text-sm font-bold text-foreground truncate leading-tight pr-2"
+              title={chapterName}
+            >
               {chapterName}
-            </p>
-          )}
-          <h1 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate leading-tight" title={lessonName}>
-            {lessonName}
-          </h1>
-        </div>
-      )}
+            </h1>
+          </>
+        )}
+      </div>
 
       {/* Right Controls Group */}
-      <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
-        
-        {/* Progress Text Indicator */}
+      <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        {/* Progress Pill */}
         {totalLessons > 0 && (
-          <div className="hidden md:flex flex-col items-end justify-center mr-2">
-            <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">
-              Tiến độ khóa học
-            </p>
-            <p className="text-xs font-extrabold text-accent mt-1 leading-none">
-              {completedCount}/{totalLessons} bài học ({percent}%)
-            </p>
+          <div
+            className="hidden md:flex items-center gap-1.5 h-8 px-3 rounded-full bg-background border border-border text-xs font-medium text-text-muted"
+            title={`Đã hoàn thành ${completedCount}/${totalLessons} bài học (${percent}%)`}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+            <span className="tabular-nums font-semibold text-foreground">
+              {completedCount}/{totalLessons}
+            </span>
+            <span className="text-[11px] text-text-muted hidden xl:inline">
+              ({percent}%)
+            </span>
           </div>
         )}
 
         {/* Prev / Next Navigation Buttons */}
-        <div className="flex items-center bg-gray-50 dark:bg-slate-900/60 border border-gray-200/60 dark:border-slate-700/50 rounded-xl p-1 gap-1">
+        <div className="flex items-center bg-background border border-border rounded-full p-0.5 gap-0.5">
           <button
+            type="button"
             onClick={onPrev}
             disabled={!canPrev}
             title="Bài học trước"
-            className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-white dark:hover:bg-slate-800 rounded-lg transition-all disabled:opacity-20 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 cursor-pointer"
+            className="inline-flex items-center gap-1 h-7 px-2.5 text-xs font-semibold text-text-muted hover:text-primary hover:bg-primary-soft rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-text-muted cursor-pointer"
             aria-label="Previous lesson"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-            </svg>
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Bài trước</span>
           </button>
+          <div className="h-3.5 w-px bg-border" />
           <button
+            type="button"
             onClick={onNext}
             disabled={!canNext}
             title="Bài học tiếp theo"
-            className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-white dark:hover:bg-slate-800 rounded-lg transition-all disabled:opacity-20 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 cursor-pointer"
+            className="inline-flex items-center gap-1 h-7 px-2.5 text-xs font-semibold text-text-muted hover:text-primary hover:bg-primary-soft rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-text-muted cursor-pointer"
             aria-label="Next lesson"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-            </svg>
+            <span className="hidden lg:inline">Bài tiếp</span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="h-5 w-px bg-gray-200 dark:bg-slate-700/80 hidden sm:block" />
-
-        {/* Sidebar Toggle Button */}
-        <button
-          onClick={onToggleSidebar}
-          title="Mở/Đóng danh mục bài học"
-          className="p-2 text-gray-600 dark:text-gray-400 hover:text-accent hover:bg-gray-100 dark:hover:bg-slate-700/60 rounded-xl transition-all cursor-pointer"
-          aria-label="Toggle menu"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        <ThemeToggle />
       </div>
 
-      {/* Bottom Thin Accent Progress Bar */}
+      {/* Bottom Thin Primary Progress Bar */}
       {totalLessons > 0 && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100 dark:bg-slate-700/60 overflow-hidden">
-          <div 
-            className="h-full bg-accent rounded-r-full transition-all duration-500 ease-out"
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-muted overflow-hidden">
+          <div
+            className="h-full bg-primary rounded-r-full transition-all duration-500 ease-out"
             style={{ width: `${percent}%` }}
           />
         </div>

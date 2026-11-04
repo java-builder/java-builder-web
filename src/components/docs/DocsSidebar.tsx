@@ -1,6 +1,14 @@
 "use client";
 
-import { BookOpen, ChevronDown, ChevronLeft } from "lucide-react";
+import { useState, useMemo } from "react";
+import {
+  BookOpen,
+  ChevronDown,
+  CheckCircle2,
+  Circle,
+  Search,
+  X,
+} from "lucide-react";
 
 interface Topic {
   id: string;
@@ -25,34 +33,7 @@ interface DocsSidebarProps {
   isOpen: boolean;
   loadedChapters?: Set<string>;
   selectedLessonId?: string | null;
-}
-
-function toRoman(num: number): string {
-  const romanNumerals: [number, string][] = [
-    [1000, 'M'],
-    [900, 'CM'],
-    [500, 'D'],
-    [400, 'CD'],
-    [100, 'C'],
-    [90, 'XC'],
-    [50, 'L'],
-    [40, 'XL'],
-    [10, 'X'],
-    [9, 'IX'],
-    [5, 'V'],
-    [4, 'IV'],
-    [1, 'I']
-  ];
-
-  let result = '';
-  let tempNum = num;
-  for (const [value, numeral] of romanNumerals) {
-    while (tempNum >= value) {
-      result += numeral;
-      tempNum -= value;
-    }
-  }
-  return result;
+  showOverview?: boolean;
 }
 
 export default function DocsSidebar({
@@ -61,11 +42,36 @@ export default function DocsSidebar({
   onCategoryToggle,
   onOverviewClick,
   onLessonClick,
-  onBackClick,
   isOpen,
   loadedChapters = new Set(),
-  selectedLessonId = null
+  selectedLessonId = null,
+  showOverview = false,
 }: DocsSidebarProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const isOverviewActive = showOverview || !selectedLessonId;
+
+  const filteredCategories = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return categories;
+    return categories
+      .map((cat) => {
+        if (cat.id === "overview") return cat;
+        const matchedTopics = cat.topics.filter((t) =>
+          t.title.toLowerCase().includes(q)
+        );
+        if (
+          cat.title.toLowerCase().includes(q) ||
+          matchedTopics.length > 0
+        ) {
+          return {
+            ...cat,
+            topics: matchedTopics.length > 0 ? matchedTopics : cat.topics,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean) as Category[];
+  }, [categories, searchQuery]);
 
   const handleCategoryClick = (categoryId: string) => {
     if (categoryId === "overview" && onOverviewClick) {
@@ -82,124 +88,171 @@ export default function DocsSidebar({
     }
   };
 
-  const isOverviewActive = !selectedLessonId;
-
   return (
-    <aside className={`
-      fixed lg:sticky top-16 left-0 lg:left-auto h-[calc(100vh-4rem)] w-72 
-      bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700/60
-      transition-transform duration-300 z-40 flex flex-col
-      ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-    `}>
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 scrollbar-thin">
+    <aside
+      className={`fixed lg:sticky top-15 left-0 h-[calc(100vh-3.75rem)] w-80 xl:w-84 shrink-0 bg-surface border-r border-border transition-transform duration-300 z-40 flex flex-col ${
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}
+    >
+      {/* Top Search Box */}
+      <div className="p-3.5 border-b border-border bg-surface">
+        <div className="relative">
+          <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm kiếm bài học..."
+            className="w-full h-9 pl-9 pr-8 rounded-xl bg-background border border-border text-xs font-medium text-foreground placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Syllabus List */}
+      <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
         <nav className="space-y-1.5">
-          {categories.map((category, categoryIndex) => {
+          {filteredCategories.map((category, categoryIndex) => {
             const isOverview = category.id === "overview";
 
-            // Determine if this chapter is currently active (contains the active lesson)
-            const isCategoryActive = isOverview
-              ? isOverviewActive
-              : category.topics.some(t => t.id === selectedLessonId);
+            const isExpanded =
+              Boolean(searchQuery.trim()) ||
+              openCategories.includes(category.id);
 
-            const isExpanded = openCategories.includes(category.id);
-
-            // Calculate Roman numeral index for chapters
-            const chapterIndex = isOverview ? -1 : categoryIndex;
-            const romanNumeral = chapterIndex > 0 ? toRoman(chapterIndex) : null;
-
-            // Strip emoji from overview title for clean typography
             const cleanTitle = isOverview
-              ? category.title.replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, "").trim()
-              : category.title;
+              ? category.title
+                  .replace(
+                    /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}]/gu,
+                    ""
+                  )
+                  .trim()
+              : category.title.replace(/^Chương\s+\d+\s*[:.-]\s*/i, "");
+
+            if (isOverview) {
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => handleCategoryClick(category.id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-full text-[13px] transition-all cursor-pointer ${
+                    isOverviewActive
+                      ? "bg-primary-soft text-primary font-semibold"
+                      : "text-foreground/80 hover:bg-muted/70 hover:text-foreground font-medium"
+                  }`}
+                >
+                  <BookOpen
+                    className={`w-4 h-4 shrink-0 ${
+                      isOverviewActive ? "text-primary" : "text-text-muted"
+                    }`}
+                  />
+                  <span className="truncate">
+                    {cleanTitle || "Tổng quan khóa học"}
+                  </span>
+                </button>
+              );
+            }
+
+            const completedInChapter = category.topics.filter(
+              (t) => t.completed
+            ).length;
 
             return (
-              <div key={category.id} className="space-y-1">
-                {/* Chapter Header / Overview Button */}
+              <div
+                key={category.id}
+                className="pt-2 first:pt-0 border-t border-border/60 first:border-t-0 space-y-1"
+              >
+                {/* Chapter Group Header */}
                 <button
+                  type="button"
                   onClick={() => handleCategoryClick(category.id)}
                   title={cleanTitle}
-                  className={`w-full flex items-start justify-between gap-2 px-3 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer group ${isCategoryActive
-                    ? "bg-accent/5 dark:bg-accent/10 text-accent dark:text-sky-400 border-l-2 border-accent rounded-r-xl rounded-l-none"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/40 hover:text-gray-900 dark:hover:text-white rounded-xl"
-                    }`}
+                  className="group w-full flex items-start justify-between gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-muted/70 transition-colors cursor-pointer"
                 >
-                  <span className="flex items-start gap-2 min-w-0 flex-1">
-                    {isOverview ? (
-                      <BookOpen className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
-                        }`} />
-                    ) : (
-                      romanNumeral && (
-                        <span className={`font-bold flex-shrink-0 text-xs mt-0.5 ${isCategoryActive ? "text-accent dark:text-sky-400" : "text-gray-400 dark:text-slate-500"
-                          }`}>{romanNumeral}.</span>
-                      )
-                    )}
-                    <span className="line-clamp-2 leading-tight text-left">{cleanTitle}</span>
-                  </span>
+                  <div className="flex items-start gap-2 min-w-0 flex-1">
+                    <span className="text-[13px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug shrink-0">
+                      {categoryIndex}.
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                        {cleanTitle}
+                      </p>
+                      {category.topics.length > 0 && (
+                        <p className="text-[11px] font-medium text-text-muted mt-0.5">
+                          Đã học {completedInChapter}/{category.topics.length} bài
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-                  {!isOverview && (
-                    <ChevronDown
-                      className={`w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-250 flex-shrink-0 mt-0.5 ${isExpanded ? 'rotate-180 text-accent dark:text-sky-400' : 'group-hover:text-gray-600 dark:group-hover:text-slate-350'
-                        }`}
-                    />
-                  )}
+                  <ChevronDown
+                    className={`w-4 h-4 text-text-muted group-hover:text-primary transition-transform duration-200 shrink-0 mt-1 ${
+                      isExpanded ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
-                {/* Lessons Nested Timeline List */}
-                {isExpanded && !isOverview && (
-                  <ul className="relative mt-1 ml-4 pl-3.5 border-l border-gray-150 dark:border-slate-700/60 space-y-1 animate-in fade-in duration-200">
+                {/* Chapter Lessons */}
+                {isExpanded && (
+                  <ul className="ml-3.5 pl-2.5 border-l border-border space-y-1 py-0.5">
                     {!loadedChapters.has(category.id) ? (
-                      <li className="px-3 py-2 text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2">
-                        <svg className="animate-spin h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Đang tải bài học...
+                      <li className="px-3 py-2 text-xs text-text-muted flex items-center gap-2">
+                        <div className="h-3.5 w-3.5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                        <span>Đang tải bài học...</span>
                       </li>
                     ) : category.topics.length > 0 ? (
                       category.topics.map((topic, index) => {
                         const isTopicActive = selectedLessonId === topic.id;
+                        const strippedTitle = topic.title.replace(
+                          /^\s*\d+[\.\)]\s*/,
+                          ""
+                        );
 
                         return (
-                          <li key={topic.id} id={`lesson-${topic.id}`} className="relative group/item">
-                            {/* Inner bullet timeline dot */}
-                            <div className={`absolute top-3.5 -translate-y-1/2 rounded-full transition-all duration-200 z-10 ${isTopicActive
-                              ? "w-2.5 h-2.5 -left-[19px] bg-accent dark:bg-sky-400 ring-4 ring-accent/25 dark:ring-sky-400/25 shadow-sm shadow-accent/50"
-                              : topic.completed
-                                ? "w-1.5 h-1.5 -left-[18px] bg-emerald-500 dark:bg-emerald-400 scale-110 shadow-sm"
-                                : "w-1.5 h-1.5 -left-[18px] bg-gray-300 dark:bg-slate-600 group-hover/item:bg-accent/60"
-                              }`} />
-
+                          <li key={topic.id} id={`lesson-${topic.id}`}>
                             <button
+                              type="button"
                               onClick={(e) => handleTopicClick(e, topic.id)}
                               title={topic.title}
-                              className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg transition-all duration-200 flex items-start gap-2 cursor-pointer ${isTopicActive
-                                ? "text-accent dark:text-sky-400 font-bold"
-                                : topic.completed
-                                  ? "text-emerald-600 dark:text-emerald-450 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/10"
-                                  : "text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/30"
-                                }`}
+                              className={`w-full text-left px-3 py-2 rounded-xl text-[13px] transition-all flex items-start gap-2.5 cursor-pointer group/item ${
+                                isTopicActive
+                                  ? "bg-primary-soft text-primary font-semibold"
+                                  : "text-foreground/80 hover:bg-muted/70 hover:text-foreground font-medium"
+                              }`}
                             >
-                              <span className={`mt-0.5 flex-shrink-0 ${isTopicActive
-                                ? "text-accent dark:text-sky-400 font-bold"
-                                : topic.completed
-                                  ? "text-emerald-500 dark:text-emerald-400 font-semibold"
-                                  : "text-gray-400 dark:text-slate-500 font-semibold"
-                                }`}>{index + 1}.</span>
-                              <span className="leading-tight text-left mt-0.5 flex-1 break-words [overflow-wrap:anywhere] min-w-0">{topic.title}</span>
-                              {isTopicActive && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-accent dark:bg-sky-400 flex-shrink-0 mt-1.5 animate-pulse" />
+                              {topic.completed ? (
+                                <CheckCircle2
+                                  className={`w-4 h-4 shrink-0 mt-0.5 ${
+                                    isTopicActive
+                                      ? "text-primary"
+                                      : "text-success"
+                                  }`}
+                                />
+                              ) : (
+                                <Circle
+                                  className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
+                                    isTopicActive
+                                      ? "text-primary fill-primary/20"
+                                      : "text-text-muted/50 group-hover/item:text-primary"
+                                  }`}
+                                />
                               )}
-                              {topic.completed && !isTopicActive && (
-                                <svg className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-450 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                </svg>
-                              )}
+                              <span className="flex-1 leading-snug break-words min-w-0">
+                                {index + 1}. {strippedTitle}
+                              </span>
                             </button>
                           </li>
                         );
                       })
                     ) : (
-                      <li className="px-3 py-1.5 text-xs text-gray-400 dark:text-gray-500 italic">
+                      <li className="px-3 py-1.5 text-xs text-text-muted italic">
                         Chưa có bài học nào
                       </li>
                     )}
@@ -209,17 +262,6 @@ export default function DocsSidebar({
             );
           })}
         </nav>
-      </div>
-
-      {/* Back button - Fixed at bottom */}
-      <div className="p-4 border-t border-gray-200 dark:border-slate-700/60 bg-gray-50/50 dark:bg-slate-900/40">
-        <button
-          onClick={onBackClick}
-          className="w-full flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-white dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-750 rounded-xl shadow-xs hover:shadow-sm transition-all duration-200 cursor-pointer"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Quay lại
-        </button>
       </div>
     </aside>
   );

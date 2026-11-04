@@ -30,7 +30,7 @@ export default function MyCertificatesHeader() {
           <Button
             type="button"
             variant="outline"
-            className="h-10 px-4 rounded-xl border-accent/30 bg-accent/5 hover:bg-accent/15 text-accent font-semibold text-xs sm:text-sm gap-2 cursor-pointer transition-all shadow-xs shrink-0"
+            className="h-10 px-4 rounded-full border-accent/30 bg-accent/5 hover:bg-accent/15 text-accent font-semibold text-xs sm:text-sm gap-2 cursor-pointer transition-all shadow-xs shrink-0"
           >
             <ShieldCheck className="w-4 h-4" />
             <span>Tra Cứu &amp; Bảo Chứng</span>

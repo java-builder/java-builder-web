@@ -34,7 +34,7 @@ export default function EmailPreviewPanel({
       : "Toàn bộ thành viên JavaBuilder";
 
   return (
-    <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+    <div className="bg-surface border border-border rounded-2xl shadow-xs overflow-hidden">
       <style
         dangerouslySetInnerHTML={{
           __html: `

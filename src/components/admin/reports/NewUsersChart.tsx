@@ -34,7 +34,7 @@ export const NewUsersChart = ({ data, isDark }: NewUsersChartProps) => {
       return (
         <div className="bg-card px-4 py-3 shadow-xl rounded-xl border border-border text-foreground">
           <p className="text-sm font-medium text-muted-foreground mb-1">📅 {label}</p>
-          <p className="text-lg font-bold text-emerald-500">
+          <p className="text-lg font-bold text-primary">
             👤 {payload[0].value} người dùng mới
           </p>
         </div>
@@ -53,22 +53,22 @@ export const NewUsersChart = ({ data, isDark }: NewUsersChartProps) => {
       <div>
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <span className="w-1 h-6 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full"></span>
+            <span className="w-1.5 h-5 bg-primary rounded-full"></span>
             Người dùng mới
           </h3>
-          <p className="text-sm text-muted-foreground mt-1 ml-4">
+          <p className="text-sm text-muted-foreground mt-1 ml-3.5">
             Số lượng người dùng đăng ký mới theo ngày
           </p>
         </div>
 
         <div className="flex items-center space-x-4 mb-4">
-          <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded bg-[#10b981]"></div>
-            <span className="text-xs text-muted-foreground">Người dùng</span>
+          <div className="flex items-center space-x-1.5">
+            <div className="w-3 h-3 rounded bg-primary"></div>
+            <span className="text-xs text-muted-foreground font-medium">Người dùng</span>
           </div>
-          <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded-full bg-[#f59e0b]"></div>
-            <span className="text-xs text-muted-foreground">Xu hướng</span>
+          <div className="flex items-center space-x-1.5">
+            <div className="w-3 h-3 rounded-full bg-warning"></div>
+            <span className="text-xs text-muted-foreground font-medium">Xu hướng</span>
           </div>
         </div>
 
@@ -78,8 +78,8 @@ export const NewUsersChart = ({ data, isDark }: NewUsersChartProps) => {
               <ComposedChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                 <defs>
                   <linearGradient id="userBarGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.85} />
-                    <stop offset="100%" stopColor="#059669" stopOpacity={0.4} />
+                    <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="var(--primary-hover)" stopOpacity={0.45} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} vertical={false} />
@@ -107,9 +107,9 @@ export const NewUsersChart = ({ data, isDark }: NewUsersChartProps) => {
                   type="monotone"
                   dataKey="trend"
                   name="Xu hướng"
-                  stroke="#f59e0b"
+                  stroke="var(--secondary)"
                   strokeWidth={2.5}
-                  dot={{ fill: "#f59e0b", stroke: "#fff", strokeWidth: 2, r: 4 }}
+                  dot={{ fill: "var(--secondary)", stroke: "#fff", strokeWidth: 2, r: 4 }}
                   activeDot={{ r: 6 }}
                 />
               </ComposedChart>
@@ -129,13 +129,13 @@ export const NewUsersChart = ({ data, isDark }: NewUsersChartProps) => {
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-6 pt-5 border-t border-border">
           <div className="text-center min-w-0">
             <p className="text-[11px] sm:text-xs text-muted-foreground mb-1 truncate">Tổng người dùng mới</p>
-            <p className="text-xs sm:text-sm md:text-base font-bold text-emerald-600 tabular-nums truncate">
+            <p className="text-xs sm:text-sm md:text-base font-bold text-primary tabular-nums truncate">
               {totalUsers.toLocaleString()}
             </p>
           </div>
           <div className="text-center border-l border-r border-border min-w-0">
             <p className="text-[11px] sm:text-xs text-muted-foreground mb-1 truncate">Trung bình/ngày</p>
-            <p className="text-xs sm:text-sm md:text-base font-bold text-blue-600 tabular-nums truncate">
+            <p className="text-xs sm:text-sm md:text-base font-bold text-warning tabular-nums truncate">
               {avgUsersPerDay.toLocaleString()}
             </p>
           </div>
@@ -150,4 +150,3 @@ export const NewUsersChart = ({ data, isDark }: NewUsersChartProps) => {
     </div>
   );
 };
-

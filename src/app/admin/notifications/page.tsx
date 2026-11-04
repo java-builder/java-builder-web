@@ -7,7 +7,7 @@ import { NotificationItem } from "@/types/notification";
 import { useNotifications } from "@/hooks/useNotifications";
 import { notificationApi } from "@/services/notification.service";
 import AdminNotificationList from "@/components/notifications/AdminNotificationList";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import {
   NotificationListHeader,
   NotificationsToolbar,
@@ -178,11 +178,11 @@ export default function AdminNotificationsPage() {
         />
 
         {/* List card */}
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-xs sm:p-5">
           {isLoading && allNotifications.length === 0 ? (
             <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
                 Đang tải thông báo...
               </div>
             </div>

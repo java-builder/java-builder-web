@@ -3,8 +3,8 @@
 import { Hash, RotateCw, Search, SlidersHorizontal, X } from "lucide-react";
 import { PaymentStatus } from "@/types/payment";
 import { Button } from "@/components/ui/button";
-import { DateTimePicker } from "@/components/ui/DateTimePicker";
-import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { CustomSelect, SelectOption } from "@/components/ui/select";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface PaymentSearchBarProps {
@@ -73,18 +73,18 @@ export const PaymentSearchBar = ({
 
 
   return (
-    <div className="relative z-20 rounded-xl border border-border bg-card shadow-sm">
+    <div className="relative z-20 rounded-2xl border border-border bg-surface shadow-sm">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3 bg-muted/5 rounded-t-xl">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3 bg-muted/5 rounded-t-2xl">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
             {t("admin.userSubscriptions.filterAllStatus")}
           </h3>
           {hasFilters && (
-            <span className="inline-flex items-center rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent">
+            <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
               {activeFilterCount}
             </span>
           )}
@@ -96,7 +96,7 @@ export const PaymentSearchBar = ({
               variant="ghost"
               size="sm"
               onClick={onClearFilters}
-              className="gap-1 text-muted-foreground hover:text-foreground h-8 cursor-pointer"
+              className="gap-1 text-muted-foreground hover:text-foreground h-8 rounded-full cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
               {t("admin.payments.clearFilters")}
@@ -107,7 +107,7 @@ export const PaymentSearchBar = ({
             size="sm"
             onClick={onRefresh}
             disabled={isLoading}
-            className="gap-1.5 h-8 cursor-pointer"
+            className="gap-1.5 h-8 rounded-full cursor-pointer"
           >
             <RotateCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
             {t("admin.questionContributions.refreshBtn")}

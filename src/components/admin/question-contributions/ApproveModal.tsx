@@ -7,9 +7,9 @@ import {
   InterviewQuestionTranslation,
 } from "@/types/interview";
 import { useI18n } from "@/contexts/I18nContext";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
-import Swal from "sweetalert2";
+import { confirmDialog } from "@/hooks/useConfirm";
 import { Button } from "@/components/ui/button";
 import { Check, X, FileText, Globe, Info, AlertCircle } from "lucide-react";
 
@@ -84,30 +84,14 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
 
     if (missingLocales.length > 0) {
       const missingList = missingLocales.map((l) => `${l.flag} ${l.label}`).join(", ");
-      const result = await Swal.fire({
+      const isConfirmed = await confirmDialog({
         title: t("admin.interviewTopics.partialLocaleTitle"),
-        html: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: t("admin.interviewTopics.partialLocaleConfirm"),
-        cancelButtonText: t("admin.interviewTopics.partialLocaleCancel"),
-        reverseButtons: true,
-        focusCancel: true,
-        width: "440px",
-        padding: "2rem",
-        backdrop: "rgba(0,0,0,0.4)",
-        customClass: {
-          popup: "swal-modern-popup",
-          title: "swal-modern-title",
-          htmlContainer: "swal-modern-text",
-          confirmButton: "swal-modern-confirm",
-          cancelButton: "swal-modern-cancel",
-          actions: "swal-modern-actions",
-          icon: "swal-modern-icon",
-        },
-        buttonsStyling: false,
+        message: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
+        type: "warning",
+        confirmText: t("admin.interviewTopics.partialLocaleConfirm"),
+        cancelText: t("admin.interviewTopics.partialLocaleCancel"),
       });
-      if (!result.isConfirmed) {
+      if (!isConfirmed) {
         setActiveLocale(missingLocales[0].code);
         return;
       }
@@ -132,11 +116,11 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
         />
 
         {/* Modal Window */}
-        <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-border animate-in zoom-in-95 duration-200 z-10 overflow-hidden">
+        <div className="relative bg-surface rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-border animate-in zoom-in-95 duration-200 z-10 overflow-hidden">
           {/* Header */}
-          <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
+          <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between z-10">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <div className="h-9 w-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                 <Check className="h-5 w-5" />
               </div>
               <div>
@@ -153,7 +137,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-lg"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-full cursor-pointer"
             >
               <X className="h-4.5 w-4.5" />
             </Button>
@@ -168,7 +152,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                 onClick={() => setModalTab("translate")}
                 className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer ${
                   modalTab === "translate"
-                    ? "border-accent text-accent"
+                    ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -262,7 +246,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
                           key={l.code}
                           type="button"
                           onClick={() => setActiveLocale(l.code)}
-                          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                          className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                             isActive
                               ? "bg-accent text-accent-foreground shadow-xs"
                               : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground"
@@ -332,12 +316,12 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
           </div>
 
           {/* Sticky Footer */}
-          <div className="sticky bottom-0 bg-card border-t border-border px-6 py-3.5 flex items-center justify-end gap-2.5">
+          <div className="sticky bottom-0 bg-surface border-t border-border px-6 py-3.5 flex items-center justify-end gap-2.5">
             <Button
               variant="outline"
               size="sm"
               onClick={onClose}
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full border border-border"
             >
               Hủy
             </Button>
@@ -345,7 +329,7 @@ export default function ApproveModal({ contribution, onClose, onApprove }: Appro
               variant="accent"
               size="sm"
               onClick={handleSubmit}
-              className="cursor-pointer gap-1.5"
+              className="cursor-pointer gap-1.5 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
             >
               <Check className="h-4 w-4" />
               <span>Xác nhận duyệt câu hỏi</span>

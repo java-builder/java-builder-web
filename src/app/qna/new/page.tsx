@@ -10,7 +10,7 @@ import { CreatePostRequest, CreatePostResponse } from "@/types/post";
 import { ApiResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import AuthRequiredModal from "@/components/ui/auth-required-modal";
 import { authApi } from "@/services/auth.service";
 
 export default function NewPostPage() {
@@ -81,8 +81,8 @@ export default function NewPostPage() {
           <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-6 text-center">
             <p className="text-gray-600 dark:text-gray-400">Bạn cần đăng nhập để đặt câu hỏi.</p>
             <div className="mt-4 flex justify-center gap-3">
-              <Link href="/login" className="py-2 px-4 bg-accent text-white rounded-lg">Đăng nhập</Link>
-              <Link href="/qna" className="py-2 px-4 bg-gray-100 rounded-lg">Quay lại</Link>
+              <Link href="/login" className="py-2 px-4 bg-accent text-white rounded-full">Đăng nhập</Link>
+              <Link href="/qna" className="py-2 px-4 bg-gray-100 rounded-full">Quay lại</Link>
             </div>
           </div>
         )}

@@ -262,7 +262,7 @@ export default function VerifyCertificateClient() {
 
       {error && !isLoading && (
         <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center shadow-xs no-print-area max-w-xl mx-auto my-6">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent">
             <Search className="h-7 w-7" />
           </div>
 
@@ -356,7 +356,7 @@ export default function VerifyCertificateClient() {
             )}
           </div>
 
-          <div className="print-certificate-box bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-10 md:p-12 shadow-xl relative overflow-hidden text-center space-y-6 sm:space-y-8 select-none">
+          <div className="print-certificate-box bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-10 md:p-12 shadow-xl relative overflow-hidden text-center space-y-6 sm:space-y-8 select-none">
             <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
 
             <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 w-3.5 h-3.5 sm:w-5 sm:h-5 border-t-2 border-l-2 border-amber-500/35 rounded-tl-md pointer-events-none" />

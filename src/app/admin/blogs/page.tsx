@@ -9,7 +9,7 @@ import BlogSuccessToast from "@/components/admin/blogs/BlogSuccessToast";
 import BlogPreviewModal from "@/components/admin/blogs/BlogPreviewModal";
 import { Blog } from "@/types/blog";
 import { blogService } from "@/services/blog.service";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { Plus, Newspaper, CheckCircle2, Pencil, Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/contexts/I18nContext";
@@ -208,7 +208,7 @@ export default function BlogsPage() {
 
       {/* Loading overlay */}
       {isLoading && (
-        <div className="mb-4 p-3 bg-accent/5 border border-accent/15 rounded-lg animate-pulse">
+        <div className="mb-4 p-3 bg-accent/5 border border-accent/15 rounded-lg ">
           <div className="flex items-center">
             <span className="text-sm font-medium text-accent">
               Đang cập nhật dữ liệu...

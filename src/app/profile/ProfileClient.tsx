@@ -17,12 +17,12 @@ function ProfileLoadingState() {
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
       <div className="space-y-2">
-        <div className="h-6 w-56 animate-pulse rounded bg-gray-200 dark:bg-slate-700" />
-        <div className="h-4 w-72 animate-pulse rounded bg-gray-100 dark:bg-slate-700/60" />
+        <div className="h-6 w-56  rounded bg-gray-200 dark:bg-slate-700" />
+        <div className="h-4 w-72  rounded bg-gray-100 dark:bg-slate-700/60" />
       </div>
       <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-        <div className="h-96 w-full animate-pulse rounded-2xl bg-white shadow-sm dark:bg-slate-800 lg:w-72" />
-        <div className="h-96 flex-1 animate-pulse rounded-2xl bg-white shadow-sm dark:bg-slate-800" />
+        <div className="h-96 w-full  rounded-2xl bg-white shadow-sm dark:bg-slate-800 lg:w-72" />
+        <div className="h-96 flex-1  rounded-2xl bg-white shadow-sm dark:bg-slate-800" />
       </div>
     </div>
   );
@@ -83,7 +83,7 @@ function ProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
         <div className="mx-auto max-w-7xl">
           <ProfileLoadingState />
         </div>
@@ -93,9 +93,9 @@ function ProfileContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
         <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
-          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center dark:border-rose-900/40 dark:bg-rose-900/20">
+          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center dark:border-rose-900/40 dark:bg-rose-900/20 shadow-xs">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-900/40">
               <AlertTriangle className="h-6 w-6" />
             </div>
@@ -108,7 +108,7 @@ function ProfileContent() {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-4 py-2 text-sm font-semibold text-white shadow-xs transition"
             >
               {t("profilePage.retry")}
             </button>
@@ -120,10 +120,10 @@ function ProfileContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
         <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
-          <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-14">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+          <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface p-10 text-center shadow-xs sm:p-14">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10 text-[#FF5A1F]">
               <UserX className="h-7 w-7" />
             </div>
             <h2 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
@@ -134,7 +134,7 @@ function ProfileContent() {
             </p>
             <a
               href="/login"
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#FF5A1F]/25 transition"
             >
               {t("profilePage.loginBtn")}
             </a>
@@ -145,7 +145,7 @@ function ProfileContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
       <div className="mx-auto max-w-7xl space-y-4 p-4 sm:space-y-6 sm:p-6">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">

@@ -410,7 +410,7 @@ export default function ChallengeContentTab({
                                   <button
                                     type="button"
                                     onClick={() => toggleDayTasks(day)}
-                                    className={`px-2 py-1 text-xs rounded-lg border transition-colors flex items-center gap-1 cursor-pointer ${
+                                    className={`px-2 py-1 text-xs rounded-full border transition-colors flex items-center gap-1 cursor-pointer ${
                                       isTasksExpanded
                                         ? "bg-accent/10 text-accent border-accent/30 font-semibold"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted border-border/40"
@@ -502,7 +502,7 @@ export default function ChallengeContentTab({
                                       {dayTasks.map((task, tIdx) => (
                                         <div
                                           key={task.id}
-                                          className="flex items-center justify-between p-2.5 rounded-lg bg-card border border-border/80 hover:border-accent/40 transition-colors gap-3"
+                                          className="flex items-center justify-between p-2.5 rounded-lg bg-card border border-border/80 transition-colors gap-3"
                                         >
                                           <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                             <span className="w-5 h-5 rounded text-[10px] font-bold bg-accent/10 text-accent flex items-center justify-center shrink-0">

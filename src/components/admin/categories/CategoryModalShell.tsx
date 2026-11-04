@@ -11,6 +11,7 @@ interface CategoryModalShellProps {
   children: ReactNode;
   footer?: ReactNode;
   isLocked?: boolean;
+  maxWidth?: string;
 }
 
 export default function CategoryModalShell({
@@ -21,6 +22,7 @@ export default function CategoryModalShell({
   children,
   footer,
   isLocked,
+  maxWidth = "max-w-2xl",
 }: CategoryModalShellProps) {
   useEffect(() => {
     if (!isOpen) return;
@@ -44,22 +46,22 @@ export default function CategoryModalShell({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-gray-900/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-xs transition-all"
       onClick={() => !isLocked && onClose()}
     >
       <div
-        className="relative w-full max-w-lg"
+        className={`relative w-full ${maxWidth}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
           {/* Header */}
-          <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-slate-700">
+          <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-4 dark:border-border">
             <div className="min-w-0">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-base sm:text-lg font-bold text-foreground">
                 {title}
               </h2>
               {subtitle && (
-                <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                <p className="mt-0.5 text-xs text-text-muted">
                   {subtitle}
                 </p>
               )}
@@ -69,20 +71,20 @@ export default function CategoryModalShell({
               onClick={onClose}
               disabled={isLocked}
               aria-label="Đóng"
-              className="-mr-1 -mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50 dark:hover:bg-slate-700 dark:hover:text-gray-200"
+              className="-mr-1 -mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-text-muted transition hover:bg-primary-soft hover:text-primary disabled:opacity-50 dark:hover:bg-muted dark:hover:text-white cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
           {/* Body */}
-          <div className="max-h-[calc(100vh-220px)] overflow-y-auto px-5 py-5">
+          <div className="max-h-[calc(100vh-220px)] overflow-y-auto px-6 py-5">
             {children}
           </div>
 
           {/* Footer */}
           {footer && (
-            <div className="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50/50 px-5 py-3 dark:border-slate-700 dark:bg-slate-900/30">
+            <div className="flex items-center justify-end gap-2.5 border-t border-border bg-slate-50/50 px-6 py-3.5 dark:border-border dark:bg-surface">
               {footer}
             </div>
           )}

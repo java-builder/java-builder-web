@@ -1,7 +1,8 @@
 import { ExerciseSubmissionResponse, QuestionResultResponse } from '@/types/submission';
 import { ExerciseDetailResponse } from '@/types/exercise';
-import { CheckCircle, XCircle, Trophy, Clock, Target } from 'lucide-react';
+import { CheckCircle2, XCircle, Trophy, Clock, Target } from 'lucide-react';
 import PublicMarkdownRenderer from '@/components/blogs/PublicMarkdownRenderer';
+import { Button } from '@/components/ui/button';
 
 interface ExerciseResultScreenProps {
   exercise: ExerciseDetailResponse;
@@ -12,169 +13,263 @@ interface ExerciseResultScreenProps {
 export default function ExerciseResultScreen({
   exercise,
   result,
-  onExit
+  onExit,
 }: ExerciseResultScreenProps) {
-  const scorePercentage = result.maxScore > 0 
-    ? Math.round(((result.totalScore || 0) / result.maxScore) * 100) 
-    : 0;
+  const scorePercentage =
+    result.maxScore > 0 ? Math.round(((result.totalScore || 0) / result.maxScore) * 100) : 0;
 
   const getScoreColor = (percentage: number) => {
-    if (percentage >= 80) return 'text-green-600 dark:text-green-400';
-    if (percentage >= 50) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-red-600 dark:text-red-400';
-  };
-
-  const getScoreBgColor = (percentage: number) => {
-    if (percentage >= 80) return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700';
-    if (percentage >= 50) return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700';
-    return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700';
+    if (percentage >= 80) return 'text-success';
+    if (percentage >= 50) return 'text-warning';
+    return 'text-error';
   };
 
   const getResultMessage = (percentage: number) => {
-    if (percentage >= 80) return 'Xuất sắc! 🎉';
-    if (percentage >= 50) return 'Khá tốt! 👍';
-    return 'Cần cố gắng thêm! 💪';
+    if (percentage >= 80) return 'Xuất sắc! Bạn nắm rất vững kiến thức';
+    if (percentage >= 50) return 'Khá tốt! Hãy ôn lại các câu chưa chính xác';
+    return 'Cần cố gắng thêm! Hãy xem kỹ giải thích bên dưới';
   };
 
   const getQuestionResult = (questionId: string): QuestionResultResponse | undefined => {
-    return result.results?.find(r => r.questionId === questionId);
+    return result.results?.find((r) => r.questionId === questionId);
   };
 
   const getOptionLabel = (questionId: string, optionId: string): string => {
-    const question = exercise.questions.find(q => q.id === questionId);
-    const option = question?.options.find(o => o.id === optionId);
+    const question = exercise.questions.find((q) => q.id === questionId);
+    const option = question?.options.find((o) => o.id === optionId);
     return option?.content || '';
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header - Kết quả tổng quan */}
-        <div className={`bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 mb-6 border-2 ${getScoreBgColor(scorePercentage)}`}>
-          <div className="text-center mb-6">
-            <Trophy className={`w-16 h-16 mx-auto mb-4 ${getScoreColor(scorePercentage)}`} />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {getResultMessage(scorePercentage)}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">{exercise.title}</p>
-          </div>
+  const scrollToQuestion = (index: number) => {
+    const el = document.getElementById(`result-question-${index}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Điểm số */}
-            <div className="bg-white dark:bg-slate-700 rounded-lg p-4 border border-gray-200 dark:border-slate-600">
-              <div className="flex items-center gap-2 mb-2">
-                <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-300">Điểm số</span>
-              </div>
-              <p className={`text-2xl font-bold ${getScoreColor(scorePercentage)}`}>
-                {result.totalScore}/{result.maxScore}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{scorePercentage}%</p>
-            </div>
+  const renderNavigatorCard = () => (
+    <div className="bg-surface rounded-2xl border border-border p-5 shadow-xs space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-border">
+        <h3 className="text-sm font-bold text-foreground">
+          Tổng quan câu hỏi
+        </h3>
+        <span className="text-xs font-semibold text-text-secondary">
+          Đúng {result.correctCount}/{result.totalQuestions}
+        </span>
+      </div>
 
-            {/* Số câu đúng */}
-            <div className="bg-white dark:bg-slate-700 rounded-lg p-4 border border-gray-200 dark:border-slate-600">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-300">Câu đúng</span>
-              </div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {result.correctCount}/{result.totalQuestions}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {result.totalQuestions && result.correctCount 
-                  ? Math.round((result.correctCount / result.totalQuestions) * 100)
-                  : 0}% chính xác
-              </p>
-            </div>
+      <div className="grid grid-cols-5 gap-2">
+        {exercise.questions.map((q, idx) => {
+          const qr = getQuestionResult(q.id);
+          const isCorrect = qr?.isCorrect || false;
+          return (
+            <button
+              key={q.id}
+              type="button"
+              onClick={() => scrollToQuestion(idx)}
+              className={`h-9 rounded-lg border font-semibold text-xs transition-colors cursor-pointer ${
+                isCorrect
+                  ? 'bg-success-soft text-success border-success/30'
+                  : 'bg-error-soft text-error border-error/30'
+              }`}
+            >
+              {idx + 1}
+            </button>
+          );
+        })}
+      </div>
 
-            {/* Thời gian */}
-            <div className="bg-white dark:bg-slate-700 rounded-lg p-4 border border-gray-200 dark:border-slate-600">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-300">Thời gian</span>
-              </div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {exercise.timeLimit} phút
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Giới hạn</p>
-            </div>
-          </div>
+      <div className="pt-3 border-t border-border flex items-center gap-4 text-xs font-medium text-text-secondary">
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded bg-success-soft border border-success/30" />
+          <span>Trả lời đúng</span>
         </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded bg-error-soft border border-error/30" />
+          <span>Trả lời sai</span>
+        </div>
+      </div>
 
-        {/* Chi tiết từng câu hỏi */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Chi tiết bài làm</h2>
-          
-          {exercise.questions.map((question, index) => {
-            const questionResult = getQuestionResult(question.id);
-            const isCorrect = questionResult?.isCorrect || false;
-            const userSelectedIds = questionResult?.userSelectedOptionIds || [];
-            const correctIds = questionResult?.correctOptionIds || [];
+      <Button
+        type="button"
+        size="lg"
+        onClick={onExit}
+        className="w-full mt-2"
+      >
+        Quay lại danh sách bài tập
+      </Button>
+    </div>
+  );
 
-            return (
-              <div
-                key={question.id}
-                className={`bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border-2 ${
-                  isCorrect ? 'border-green-200 dark:border-green-700' : 'border-red-200 dark:border-red-700'
-                }`}
-              >
-                {/* Question header */}
-                <div className="flex items-start gap-3 mb-4">
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    isCorrect ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
-                  }`}>
-                    {isCorrect ? (
-                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-                    ) : (
-                      <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-                    )}
+  return (
+    <div className="min-h-screen bg-background py-5 sm:py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 items-start">
+          {/* Left Column: Summary Banner + Detailed Review (2 cols) */}
+          <div className="lg:col-span-2 space-y-5 sm:space-y-6">
+            {/* Summary Card */}
+            <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-xs">
+              <div className="p-5 sm:p-8 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-soft text-primary border border-primary/20 mb-2">
+                    <Trophy className="w-3.5 h-3.5" />
+                    Kết quả bài làm
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        Câu {index + 1}
-                      </h3>
-                      <span className={`text-sm font-medium ${
-                        isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                      }`}>
+                  <h1 className="text-lg sm:text-2xl font-bold text-foreground tracking-tight">
+                    {getResultMessage(scorePercentage)}
+                  </h1>
+                  <p className="text-sm text-text-secondary mt-1">{exercise.title}</p>
+                </div>
+
+                <div className="flex items-baseline gap-1.5 shrink-0">
+                  <span
+                    className={`text-3xl sm:text-4xl font-extrabold ${getScoreColor(
+                      scorePercentage
+                    )}`}
+                  >
+                    {scorePercentage}%
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 divide-x divide-border bg-muted/25">
+                <div className="p-3.5 sm:p-5">
+                  <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-text-muted mb-1">
+                    <Target className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span className="truncate">Điểm số</span>
+                  </div>
+                  <div
+                    className={`text-base sm:text-2xl font-bold ${getScoreColor(
+                      scorePercentage
+                    )}`}
+                  >
+                    {result.totalScore}/{result.maxScore}
+                  </div>
+                </div>
+
+                <div className="p-3.5 sm:p-5">
+                  <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-text-muted mb-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                    <span className="truncate">Số câu đúng</span>
+                  </div>
+                  <div className="text-base sm:text-2xl font-bold text-foreground">
+                    {result.correctCount}/{result.totalQuestions}
+                  </div>
+                </div>
+
+                <div className="p-3.5 sm:p-5">
+                  <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-text-muted mb-1">
+                    <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span className="truncate">Thời gian</span>
+                  </div>
+                  <div className="text-base sm:text-2xl font-bold text-foreground">
+                    {exercise.timeLimit}{' '}
+                    <span className="text-xs sm:text-sm font-medium text-text-secondary">
+                      phút
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Question Result Navigator (< lg) */}
+            <div className="lg:hidden">{renderNavigatorCard()}</div>
+
+            {/* Detailed Question Review */}
+            <div className="space-y-4">
+              <h2 className="text-base sm:text-lg font-bold text-foreground">
+                Chi tiết bài làm
+              </h2>
+
+              {exercise.questions.map((question, index) => {
+                const questionResult = getQuestionResult(question.id);
+                const isCorrect = questionResult?.isCorrect || false;
+                const userSelectedIds = questionResult?.userSelectedOptionIds || [];
+                const correctIds = questionResult?.correctOptionIds || [];
+
+                return (
+                  <div
+                    key={question.id}
+                    id={`result-question-${index}`}
+                    className="bg-surface rounded-2xl border border-border p-4 sm:p-6 shadow-2xs scroll-mt-24"
+                  >
+                    {/* Question Header */}
+                    <div className="flex items-center justify-between gap-3 mb-3.5 pb-3 border-b border-border">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold ${
+                            isCorrect
+                              ? 'bg-success-soft text-success'
+                              : 'bg-error-soft text-error'
+                          }`}
+                        >
+                          {isCorrect ? (
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                          ) : (
+                            <XCircle className="w-3.5 h-3.5" />
+                          )}
+                          Câu {index + 1}
+                        </span>
+                      </div>
+
+                      <span
+                        className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                          isCorrect
+                            ? 'bg-success-soft text-success'
+                            : 'bg-error-soft text-error'
+                        }`}
+                      >
                         {isCorrect ? `+${questionResult?.score || 0}` : '0'} điểm
                       </span>
                     </div>
-                    <div className="text-gray-700 dark:text-gray-300 mb-4">
-                      <PublicMarkdownRenderer content={question.content} className="prose-sm sm:prose max-w-none text-gray-700 dark:text-gray-300 [&>p]:my-1" />
+
+                    {/* Question Content */}
+                    <div className="text-foreground mb-4">
+                      <PublicMarkdownRenderer
+                        content={question.content}
+                        className="prose prose-slate dark:prose-invert max-w-none text-foreground [&>p]:font-semibold [&>p]:my-1.5"
+                      />
                     </div>
 
                     {/* Options */}
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {question.options.map((option) => {
                         const isUserSelected = userSelectedIds.includes(option.id);
                         const isCorrectOption = correctIds.includes(option.id);
-                        
-                        let optionClass = 'bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-600';
+                        const hasCodeBlock = option.content.includes('```');
+
+                        let optionClass =
+                          'bg-background/40 border-border text-text-secondary';
                         if (isCorrectOption) {
-                          optionClass = 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700';
+                          optionClass =
+                            'bg-success-soft/50 border-success/40 text-foreground';
                         } else if (isUserSelected && !isCorrectOption) {
-                          optionClass = 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700';
+                          optionClass =
+                            'bg-error-soft/50 border-error/40 text-foreground';
                         }
 
                         return (
                           <div
                             key={option.id}
-                            className={`p-3 rounded-lg border-2 ${optionClass}`}
+                            className={`p-3.5 rounded-xl border ${optionClass}`}
                           >
-                            <div className="flex items-center gap-2">
-                              {isCorrectOption && (
-                                <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                            <div className={`flex ${hasCodeBlock ? 'items-start' : 'items-center'} gap-2.5`}>
+                              {isCorrectOption ? (
+                                <CheckCircle2 className={`w-4 h-4 text-success shrink-0 ${hasCodeBlock ? 'mt-1.5' : ''}`} />
+                              ) : isUserSelected ? (
+                                <XCircle className={`w-4 h-4 text-error shrink-0 ${hasCodeBlock ? 'mt-1.5' : ''}`} />
+                              ) : (
+                                <span className="w-4 h-4 shrink-0" />
                               )}
-                              {isUserSelected && !isCorrectOption && (
-                                <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
-                              )}
-                              <div className={`text-sm flex-1 min-w-0 ${
-                                isCorrectOption ? 'text-green-900 dark:text-green-300 font-medium' : 
-                                isUserSelected ? 'text-red-900 dark:text-red-300' : 'text-gray-700 dark:text-gray-300'
-                              }`}>
-                                <PublicMarkdownRenderer content={option.content} className="prose-sm sm:prose max-w-none [&>p]:mb-0 [&>p]:inline" />
+                              <div className="text-sm flex-1 min-w-0">
+                                <PublicMarkdownRenderer
+                                  content={option.content}
+                                  className={`prose prose-slate dark:prose-invert max-w-none ${
+                                    hasCodeBlock
+                                      ? '[&>div]:my-0'
+                                      : '[&>p]:mb-0 [&>p]:inline'
+                                  }`}
+                                />
                               </div>
                             </div>
                           </div>
@@ -182,30 +277,27 @@ export default function ExerciseResultScreen({
                       })}
                     </div>
 
-                    {/* Explanation */}
+                    {/* Correct Answer Summary if wrong */}
                     {!isCorrect && (
-                      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
-                        <p className="text-sm text-blue-900 dark:text-blue-300">
-                          <span className="font-medium">Đáp án đúng: </span>
-                          {correctIds.map(id => getOptionLabel(question.id, id)).join(', ')}
-                        </p>
+                      <div className="mt-3.5 p-3 bg-muted/50 border border-border rounded-xl text-xs sm:text-sm text-text-secondary">
+                        <span className="font-semibold text-foreground">
+                          Đáp án đúng:{' '}
+                        </span>
+                        {correctIds
+                          .map((id) => getOptionLabel(question.id, id))
+                          .join(', ')}
                       </div>
                     )}
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </div>
 
-        {/* Actions */}
-        <div className="mt-8 flex justify-center gap-4">
-          <button
-            onClick={onExit}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            Quay lại danh sách
-          </button>
+          {/* Right Column: Sticky Question Result Navigator & Actions (Desktop) */}
+          <div className="hidden lg:block lg:col-span-1 lg:sticky lg:top-20">
+            {renderNavigatorCard()}
+          </div>
         </div>
       </div>
     </div>

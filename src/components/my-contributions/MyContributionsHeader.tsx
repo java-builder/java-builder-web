@@ -29,7 +29,7 @@ export default function MyContributionsHeader({
 
       <Link
         href={contributeHref}
-        className="inline-flex flex-shrink-0 items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+        className="inline-flex flex-shrink-0 items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
       >
         <Plus className="h-4 w-4" />
         {contributeLabel}

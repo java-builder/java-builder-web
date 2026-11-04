@@ -114,7 +114,7 @@ export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRo
           {(user.authorities || []).map((role) => (
             <span
               key={role}
-              className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-md border ${getRoleClass(role)}`}
+              className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full border ${getRoleClass(role)}`}
             >
               {role}
             </span>
@@ -138,17 +138,17 @@ export const UserTableRow = ({ user, isDeleting, onEdit, onDelete }: UserTableRo
             variant="outline"
             size="sm"
             onClick={() => onEdit(user)}
-            className="h-8 gap-1 px-2.5 text-xs font-medium"
+            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
           >
             <Pencil className="h-3.5 w-3.5" />
             Sửa
           </Button>
           <Button
-            variant="destructive"
+            variant="outline"
             size="sm"
             onClick={() => onDelete(user.id, user.username)}
             disabled={isDeleting}
-            className="h-8 gap-1 px-2.5 text-xs font-medium"
+            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
           >
             {isDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />

@@ -13,7 +13,7 @@ export const CourseStatsCards = ({ stats, formatRevenue, isLoading = false }: Co
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
-          <Card key={i} className="border-border bg-card animate-pulse">
+          <Card key={i} className="border-border bg-card ">
             <CardContent className="flex items-center justify-between p-6">
               <div className="space-y-2 flex-1">
                 <div className="h-4 bg-muted rounded w-24"></div>

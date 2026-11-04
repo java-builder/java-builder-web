@@ -284,7 +284,7 @@ export default function ChatWindow({
 
   return (
     <div className="flex-1 h-full flex flex-col bg-background/50 relative overflow-hidden">
-      <div className="h-14 sm:h-16 px-3 sm:px-6 border-b border-border bg-card/80 backdrop-blur-md flex items-center justify-between z-10 shadow-xs shrink-0">
+      <div className="h-14 sm:h-16 px-3 sm:px-6 bg-card/80 backdrop-blur-md flex items-center justify-between z-10 shrink-0">
         <div className="flex items-center gap-2.5 min-w-0">
           {onBackToList && (
             <button
@@ -301,7 +301,7 @@ export default function ChatWindow({
             <button
               type="button"
               onClick={onToggleSidebar}
-              className="hidden md:flex p-2 -ml-1 rounded-xl text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors cursor-pointer shrink-0"
+              className="hidden md:flex p-2 -ml-1 rounded-full text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors cursor-pointer shrink-0"
               title={isSidebarCollapsed ? "Mở danh sách trò chuyện" : "Thu gọn danh sách trò chuyện"}
             >
               {isSidebarCollapsed ? (
@@ -333,7 +333,7 @@ export default function ChatWindow({
             <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 min-w-0">
               <span className="truncate">{conversation.name}</span>
               {conversation.courseTag && conversation.courseTag !== "Thành viên" && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent font-bold shrink-0 whitespace-nowrap">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 font-mono font-bold shrink-0 whitespace-nowrap">
                   {conversation.courseTag}
                 </span>
               )}
@@ -396,7 +396,7 @@ export default function ChatWindow({
                     onToggleMute(conversation.id);
                     setShowHeaderMenu(false);
                   }}
-                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
                   {isMuted ? (
                     <Bell className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -414,7 +414,7 @@ export default function ChatWindow({
                     onTogglePin(conversation);
                     setShowHeaderMenu(false);
                   }}
-                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
                   <Pin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                   <span>{conversation.isPinned ? "Bỏ ghim trò chuyện" : "Ghim trò chuyện lên đầu"}</span>
@@ -428,7 +428,7 @@ export default function ChatWindow({
                     onToggleUnread(conversation);
                     setShowHeaderMenu(false);
                   }}
-                  className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
                   {conversation.unreadCount > 0 ? (
                     <MailOpen className="w-3.5 h-3.5 text-accent shrink-0" />
@@ -448,7 +448,7 @@ export default function ChatWindow({
                       setShowHeaderMenu(false);
                       onDeleteConversation(conversation.id);
                     }}
-                    className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
+                    className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
                     <span>Xóa trò chuyện</span>
@@ -528,7 +528,7 @@ export default function ChatWindow({
           </div>
         )}
 
-        <form onSubmit={handleSend} className="relative rounded-2xl border border-input bg-background p-2.5 focus-within:ring-2 focus-within:ring-accent focus-within:border-accent transition-all shadow-2xs">
+        <form onSubmit={handleSend} className="relative rounded-xl border border-input bg-background p-2.5 focus-within:ring-2 focus-within:ring-accent focus-within:border-accent transition-all shadow-2xs">
           <textarea
             value={inputText}
             onChange={(e) => handleTextChange(e.target.value)}

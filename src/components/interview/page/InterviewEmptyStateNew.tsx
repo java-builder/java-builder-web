@@ -12,8 +12,8 @@ export default function InterviewEmptyStateNew({
   description,
 }: InterviewEmptyStateNewProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-14">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-14">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent">
         <SearchX className="h-7 w-7" />
       </div>
       <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">

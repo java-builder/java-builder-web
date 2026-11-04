@@ -22,7 +22,8 @@ export default function CategoryTable({
 }: CategoryTableProps) {
   const { t, locale } = useI18n();
 
-  const columnHeaders: { label: string; align?: "left" | "right" }[] = [
+  const columnHeaders: { label: string; align?: "left" | "right" | "center" }[] = [
+    { label: "#" },
     { label: t("admin.categories.colCategory") },
     { label: t("admin.categories.colType") },
     { label: t("admin.categories.colDescription") },
@@ -31,7 +32,7 @@ export default function CategoryTable({
   ];
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
@@ -42,7 +43,7 @@ export default function CategoryTable({
           </p>
         </div>
         {categories.length > 0 && (
-          <span className="whitespace-nowrap rounded-full bg-accent/10 border border-accent/20 px-2.5 py-0.5 text-xs font-semibold text-accent">
+          <span className="whitespace-nowrap rounded-full bg-primary-soft border border-primary/20 px-2.5 py-0.5 text-xs font-semibold text-primary dark:bg-orange-950/40">
             {categories.length.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")} {t("admin.categories.colCategory").toLowerCase()}
           </span>
         )}
@@ -56,7 +57,7 @@ export default function CategoryTable({
                 <th
                   key={i}
                   className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ${
-                    col.align === "right" ? "text-right" : "text-left"
+                    col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"
                   }`}
                 >
                   {col.label}
@@ -67,12 +68,18 @@ export default function CategoryTable({
           <tbody className="divide-y divide-border bg-transparent">
             {isLoading && categories.length === 0 ? (
               Array.from({ length: 5 }).map((_, idx) => (
-                <tr key={idx} className="animate-pulse">
+                <tr key={idx} className="">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-6" />
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-32" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-24" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-muted rounded w-32" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-16" />

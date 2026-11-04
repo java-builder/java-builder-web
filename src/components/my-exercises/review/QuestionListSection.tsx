@@ -25,10 +25,10 @@ export default function QuestionListSection({
   onChangeFilter,
 }: QuestionListSectionProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
-      {/* Toolbar */}
-      <div className="border-b border-gray-200 dark:border-slate-700 px-4 py-3 sm:px-5">
-        <div className="-mx-1 flex items-center gap-1 overflow-x-auto px-1">
+    <div className="space-y-4">
+      {/* Filter Toolbar Card */}
+      <div className="rounded-2xl border border-border bg-surface px-4 py-3 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-1.5 overflow-x-auto">
           {(Object.keys(QUESTION_FILTER_LABELS) as QuestionFilter[]).map((key) => {
             const isActive = activeFilter === key;
             const count = counts[key];
@@ -37,18 +37,18 @@ export default function QuestionListSection({
                 key={key}
                 type="button"
                 onClick={() => onChangeFilter(key)}
-                className={`inline-flex flex-shrink-0 items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition whitespace-nowrap ${
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold transition whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? "bg-accent/10 text-accent"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700"
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "border border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
                 }`}
               >
-                {QUESTION_FILTER_LABELS[key]}
+                <span>{QUESTION_FILTER_LABELS[key]}</span>
                 <span
-                  className={`inline-flex items-center justify-center rounded-full px-1.5 text-[11px] font-semibold ${
+                  className={`inline-flex items-center justify-center rounded-full px-1.5 py-0.2 text-[10px] font-bold tabular-nums ${
                     isActive
-                      ? "bg-accent/20 text-accent"
-                      : "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400"
+                      ? "bg-white/20 text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {count}
@@ -59,32 +59,32 @@ export default function QuestionListSection({
         </div>
       </div>
 
-      {/* List */}
-      <div className="divide-y divide-gray-200 dark:divide-slate-700">
-        {filteredQuestions.length === 0 && (
-          <div className="px-5 py-12 text-center">
-            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
-              <ListChecks className="h-5 w-5 text-gray-400" />
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Không có câu hỏi nào trong bộ lọc này.
-            </p>
+      {/* Empty Filter State */}
+      {filteredQuestions.length === 0 ? (
+        <div className="rounded-2xl border border-border bg-surface px-5 py-12 text-center shadow-xs">
+          <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-soft border border-primary/15 text-primary">
+            <ListChecks className="h-5 w-5" />
           </div>
-        )}
-
-        {filteredQuestions.map((questionResult) => {
-          const originalIndex = questions.findIndex(
-            (q) => q.questionId === questionResult.questionId
-          );
-          return (
-            <QuestionItem
-              key={questionResult.questionId}
-              questionResult={questionResult}
-              questionNumber={originalIndex + 1}
-            />
-          );
-        })}
-      </div>
+          <p className="text-sm font-medium text-muted-foreground">
+            Không có câu hỏi nào trong bộ lọc này.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredQuestions.map((questionResult) => {
+            const originalIndex = questions.findIndex(
+              (q) => q.questionId === questionResult.questionId
+            );
+            return (
+              <QuestionItem
+                key={questionResult.questionId}
+                questionResult={questionResult}
+                questionNumber={originalIndex + 1}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -34,14 +34,14 @@ export const FilterSelect = <T = string | number, O = T>({
   value,
   onChange,
   options,
-  placeholder = "Táº¥t cáº£...",
+  placeholder = "Tất cả...",
   icon,
   className = "",
   triggerClassName = "",
   align = "left",
   size = "md",
   searchable,
-  searchPlaceholder = "TÃ¬m kiáº¿m...",
+  searchPlaceholder = "Tìm kiếm...",
   disabled = false,
   clearable = false,
   error = false,
@@ -118,12 +118,12 @@ export const FilterSelect = <T = string | number, O = T>({
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         data-invalid={error ? "true" : undefined}
-        className={`flex w-full items-center justify-between rounded-[8px] border bg-white dark:bg-[#181d28] text-[#171717] dark:text-slate-100 shadow-xs transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${heightClass} ${
+        className={`flex w-full items-center justify-between rounded-xl border bg-surface text-foreground shadow-xs transition-colors hover:bg-slate-50 dark:hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${heightClass} ${
           error
             ? "border-red-500 focus:ring-red-500 dark:border-red-500"
             : isOpen
-              ? "ring-2 ring-[#FF5A1F]/30 border-[#FF5A1F]"
-              : "border-[#E8E8E8] dark:border-[#262d3d]"
+              ? "ring-2 ring-primary/30 border-primary"
+              : "border-border"
         } ${triggerClassName}`}
       >
         <div className="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -147,8 +147,8 @@ export const FilterSelect = <T = string | number, O = T>({
           {clearable && value !== "" && value !== undefined && value !== null && (
             <span
               onClick={handleClear}
-              className="flex h-4 w-4 items-center justify-center rounded-[4px] text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
-              title="XÃ³a"
+              className="flex h-4 w-4 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-muted hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
+              title="Xóa"
             >
               <X className="h-3 w-3" />
             </span>
@@ -166,7 +166,7 @@ export const FilterSelect = <T = string | number, O = T>({
         <div
           className={`absolute ${
             align === "right" ? "right-0 left-auto" : "left-0 sm:left-0 max-sm:right-0"
-          } top-full z-50 mt-1.5 min-w-full w-max max-w-[calc(100vw-2rem)] sm:max-w-[320px] rounded-[6px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-1 shadow-lg animate-in fade-in-50 zoom-in-95`}
+          } top-full z-50 mt-1.5 min-w-full w-max max-w-[calc(100vw-2rem)] sm:max-w-[320px] rounded-xl border border-border bg-surface p-1.5 shadow-lg animate-in fade-in-50 zoom-in-95`}
         >
           {/* Optional Live Search Box */}
           {isSearchEnabled && (
@@ -178,7 +178,7 @@ export const FilterSelect = <T = string | number, O = T>({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full rounded-[6px] border border-slate-200 dark:border-slate-800 bg-transparent py-1 pl-8 pr-3 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 dark:focus-visible:ring-slate-300"
+                className="w-full rounded-lg border border-border bg-white dark:bg-background py-1 pl-8 pr-3 text-xs text-foreground placeholder:text-text-muted dark:placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
           )}
@@ -192,12 +192,12 @@ export const FilterSelect = <T = string | number, O = T>({
                   <div
                     key={String(opt.value)}
                     onClick={() => handleSelect(opt.value, opt.disabled)}
-                    className={`flex items-center justify-between gap-3 px-2.5 py-1.5 text-xs font-medium rounded-[6px] transition-colors whitespace-nowrap ${
+                    className={`flex items-center justify-between gap-3 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
                       opt.disabled
                         ? "opacity-50 cursor-not-allowed"
                         : isSelected
-                          ? "bg-[#FFF0E8] text-[#FF5A1F] dark:bg-orange-950/40 dark:text-orange-400 font-semibold"
-                          : "text-[#171717] dark:text-slate-200 hover:bg-[#FFF0E8]/50 dark:hover:bg-slate-800 hover:text-[#FF5A1F] dark:hover:text-white cursor-pointer"
+                          ? "bg-primary-soft text-primary dark:bg-primary/15 dark:text-primary font-semibold"
+                          : "text-foreground hover:bg-primary-soft/50 dark:hover:bg-muted hover:text-primary dark:hover:text-white cursor-pointer"
                     }`}
                   >
                     <div className="flex items-center gap-2 overflow-hidden truncate">
@@ -206,21 +206,21 @@ export const FilterSelect = <T = string | number, O = T>({
                       <div className="flex flex-col truncate">
                         <span className="truncate whitespace-nowrap">{opt.label}</span>
                         {opt.description && (
-                          <span className="text-[10px] text-[#64748B] dark:text-slate-500 font-normal truncate">
+                          <span className="text-[10px] text-text-muted dark:text-slate-500 font-normal truncate">
                             {opt.description}
                           </span>
                         )}
                       </div>
                     </div>
                     {isSelected && (
-                      <Check className="h-3.5 w-3.5 text-[#FF5A1F] dark:text-orange-400 shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                     )}
                   </div>
                 );
               })
             ) : (
               <div className="py-4 text-center text-xs text-slate-400 dark:text-slate-500">
-                KhÃ´ng tÃ¬m tháº¥y káº¿t quáº£
+                Không tìm thấy kết quả
               </div>
             )}
           </div>

@@ -266,7 +266,7 @@ export default function PostList({
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-5 sm:p-6 animate-pulse space-y-4 shadow-sm"
+            className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-5 sm:p-6  space-y-4 shadow-sm"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -528,7 +528,7 @@ export default function PostList({
       {/* Empty State */}
       {filtered.length === 0 && (
         <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-10 text-center shadow-sm">
-          <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto mb-4 border border-accent/20">
+          <div className="w-16 h-16 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-4 border border-accent/20">
             <HelpCircle className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">

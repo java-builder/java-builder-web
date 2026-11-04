@@ -24,7 +24,7 @@ export function CacheTable({
 
   if (isLoading) {
     return (
-      <div className="bg-card border border-border rounded-xl p-8 text-center">
+      <div className="bg-surface border border-border rounded-2xl p-8 text-center">
         <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-3"></div>
         <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
       </div>
@@ -33,7 +33,7 @@ export function CacheTable({
 
   if (caches.length === 0) {
     return (
-      <div className="bg-card border border-border rounded-xl p-12 text-center">
+      <div className="bg-surface border border-border rounded-2xl p-12 text-center">
         <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-3 text-muted-foreground">
           <Database className="w-6 h-6" />
         </div>
@@ -48,7 +48,7 @@ export function CacheTable({
   }
 
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-xs">
+    <div className="bg-surface border border-border rounded-2xl overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-muted/50 border-b border-border text-xs uppercase font-semibold text-muted-foreground tracking-wider">
@@ -131,11 +131,11 @@ export function CacheTable({
                         <span>{t("admin.caches.viewKeysBtn")}</span>
                       </Button>
                       <Button
-                        variant="destructive"
+                        variant="outline"
                         size="xs"
                         onClick={() => onClearCache(cache)}
                         disabled={isClearing}
-                        className="cursor-pointer gap-1"
+                        className="cursor-pointer gap-1 border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
                         title={t("admin.caches.clearCacheBtn")}
                       >
                         <Trash2 className="w-3.5 h-3.5" />

@@ -36,7 +36,7 @@ export const getLevelTone = (level?: CourseLevel): LevelTone => {
 
 export const getProgressTone = (progress: number): string => {
   if (progress >= 100) return "bg-emerald-500";
-  if (progress >= 50) return "bg-accent";
+  if (progress >= 50) return "bg-[#FF5A1F]";
   if (progress > 0) return "bg-amber-500";
   return "bg-gray-300 dark:bg-slate-600";
 };

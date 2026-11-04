@@ -68,16 +68,16 @@ export default function BlogPreviewModal({
         />
 
         {/* Modal */}
-        <div className="relative flex flex-col w-full max-w-4xl bg-card border border-border text-foreground rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
+        <div className="relative flex flex-col w-full max-w-4xl bg-surface border border-border text-foreground rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-border bg-muted/20">
             <div className="flex items-center space-x-3">
               {blog && (
                 <>
-                  <div className="p-2 bg-accent/10 rounded-lg">
+                  <div className="p-2 bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 rounded-xl">
                     <BlogTypeIcon
                       blogType={blog.blogType}
-                      className="w-5 h-5 text-accent"
+                      className="w-5 h-5 text-primary"
                     />
                   </div>
                   <div>
@@ -124,7 +124,7 @@ export default function BlogPreviewModal({
               <article className="p-6 text-foreground">
                 {/* Featured Image */}
                 {blog.thumbnailUrl && (
-                  <div className="mb-6 relative w-full h-64 bg-muted rounded-lg overflow-hidden border border-border">
+                  <div className="mb-6 relative w-full h-64 bg-muted rounded-full overflow-hidden border border-border">
                     <Image
                       src={blog.thumbnailUrl}
                       alt={blog.title}
@@ -185,7 +185,7 @@ export default function BlogPreviewModal({
                 {mounted ? (
                   <PublicMarkdownRenderer content={blog.content} className="text-foreground leading-relaxed" />
                 ) : (
-                  <div className="animate-pulse space-y-4">
+                  <div className=" space-y-4">
                     <div className="h-4 bg-muted rounded w-full"></div>
                     <div className="h-4 bg-muted rounded w-5/6"></div>
                     <div className="h-4 bg-muted rounded w-4/6"></div>
@@ -205,6 +205,7 @@ export default function BlogPreviewModal({
               <Button
                 onClick={onClose}
                 variant="outline"
+                className="rounded-full border border-border cursor-pointer"
               >
                 Đóng
               </Button>

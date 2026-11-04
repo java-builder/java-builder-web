@@ -131,10 +131,10 @@ export default function EditUserModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/40 dark:bg-black/60">
       {/* Modal Box */}
-      <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 border border-gray-150 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300">
+      <div className="relative w-full max-w-xl bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-slate-800">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
           <div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
               Chỉnh sửa người dùng
@@ -274,7 +274,7 @@ export default function EditUserModal({
                           </p>
                         </div>
 
-                        <div className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isSelected ? "bg-accent" : "bg-gray-200 dark:bg-slate-800"
+                        <div className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isSelected ? "bg-accent" : "bg-gray-200 dark:bg-muted"
                           }`}>
                           <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isSelected ? "translate-x-4" : "translate-x-0"
                             }`} />
@@ -348,13 +348,13 @@ export default function EditUserModal({
                 <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                   Xác thực 2 yếu tố (2FA)
                 </label>
-                <div className="flex items-center space-x-3 px-3 h-10 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-slate-800 dark:bg-slate-900/30 cursor-not-allowed select-none">
+                <div className="flex items-center space-x-3 px-3 h-10 rounded-full border border-gray-200 bg-gray-50/50 dark:border-slate-800 dark:bg-slate-900/30 cursor-not-allowed select-none">
                   <input
                     type="checkbox"
                     id="mftEnable"
                     disabled
                     checked={formData.mftEnable || false}
-                    className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent dark:bg-slate-800 disabled:opacity-50 cursor-not-allowed"
+                    className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent dark:border-border dark:bg-background disabled:opacity-50 cursor-not-allowed"
                   />
                   <label htmlFor="mftEnable" className="text-sm font-medium text-gray-500 dark:text-slate-400 cursor-not-allowed">
                     {formData.mftEnable ? "Đã kích hoạt" : "Chưa kích hoạt"}
@@ -371,12 +371,12 @@ export default function EditUserModal({
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/40">
+          <div className="flex items-center justify-end gap-2 px-5 py-3.5 border-t border-border bg-gray-50/50 dark:bg-surface">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
-              className="text-xs font-medium"
+              className="text-xs font-medium rounded-full cursor-pointer"
             >
               Hủy bỏ
             </Button>
@@ -384,7 +384,7 @@ export default function EditUserModal({
               type="submit"
               variant="accent"
               disabled={isLoading}
-              className="text-xs font-semibold"
+              className="text-xs font-semibold rounded-full cursor-pointer"
             >
               {isLoading ? (
                 <>

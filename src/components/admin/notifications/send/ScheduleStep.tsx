@@ -3,7 +3,7 @@
 import StepCard from "./StepCard";
 import StepFooter from "./StepFooter";
 import { ICON_TONE, SCHEDULE_OPTIONS } from "./helpers";
-import { DateTimePicker } from "@/components/ui/DateTimePicker";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 interface ScheduleStepProps {
   scheduleType: "now" | "schedule";
@@ -64,7 +64,7 @@ export default function ScheduleStep({
                 className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${
                   isActive
                     ? "border-accent bg-accent/5 ring-1 ring-accent/30"
-                    : "border-border bg-card hover:border-accent/50 hover:bg-muted"
+                    : "border-border bg-card hover:bg-muted"
                 }`}
               >
                 <span

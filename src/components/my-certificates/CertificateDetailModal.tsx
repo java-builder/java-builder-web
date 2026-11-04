@@ -83,7 +83,7 @@ export default function CertificateDetailModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-card text-card-foreground border border-border shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-4xl overflow-hidden relative flex flex-col max-h-[95vh] sm:max-h-[90vh]">
+      <div className="bg-card text-card-foreground border border-border shadow-2xl rounded-2xl w-full max-w-4xl overflow-hidden relative flex flex-col max-h-[95vh] sm:max-h-[90vh]">
 
         {/* Modal Header */}
         <div className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-border shrink-0">
@@ -105,7 +105,7 @@ export default function CertificateDetailModal({
           {/* World-Class Executive Certificate Canvas */}
           <div
             id="certificate-modal-content"
-            className="w-full aspect-[1.414/1] min-w-0 max-w-[820px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800 rounded-xl sm:rounded-2xl p-3 sm:p-7 md:p-9 flex flex-col justify-between relative shadow-xl select-none overflow-hidden my-auto"
+            className="w-full aspect-[1.414/1] min-w-0 max-w-[820px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 sm:p-7 md:p-9 flex flex-col justify-between relative shadow-xl select-none overflow-hidden my-auto"
           >
             {/* Subtle Ambient Background Gradient */}
             <div className="absolute inset-0 bg-radial from-amber-500/5 via-transparent to-transparent opacity-80 pointer-events-none" />
@@ -243,7 +243,7 @@ export default function CertificateDetailModal({
           <Link
             href={`/verify-certificate?code=${encodeURIComponent(cert.certificateCode)}`}
             target="_blank"
-            className="inline-flex items-center justify-center gap-1.5 h-9 sm:h-8.5 px-3.5 rounded-lg border border-accent/20 bg-accent/10 text-accent hover:bg-accent/20 font-semibold text-xs sm:text-[0.8rem] transition-all cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 h-9 sm:h-8.5 px-3.5 rounded-full border border-accent/20 bg-accent/10 text-accent hover:bg-accent/20 font-semibold text-xs sm:text-[0.8rem] transition-all cursor-pointer shrink-0"
             title="Mở trang tra cứu bảo chứng công khai"
           >
             <ShieldCheck className="w-3.5 h-3.5" />

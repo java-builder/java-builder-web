@@ -62,7 +62,7 @@ export default function MyCertificateCard({
   };
 
   return (
-    <div className="bg-card border border-border hover:border-accent/40 rounded-3xl p-4 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col group space-y-4">
+    <div className="bg-card border border-border rounded-2xl p-4 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col group space-y-4">
       {/* Mini Certificate Preview Header */}
       <div className="w-full aspect-[1.414/1] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-2xs select-none">
         {/* Subtle Ambient Background Gradient */}
@@ -137,7 +137,7 @@ export default function MyCertificateCard({
         <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2 pt-2.5 border-t border-border/60 relative">
           <button
             onClick={() => onView(cert)}
-            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 sm:px-3.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer flex-1 sm:flex-initial"
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 sm:px-3.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer flex-1 sm:flex-initial"
           >
             <Eye className="w-3.5 h-3.5 text-muted-foreground" />
             <span>{t("certificatesPage.viewBtn")}</span>
@@ -146,7 +146,7 @@ export default function MyCertificateCard({
           <div className="relative">
             <button
               onClick={() => setShowShare(!showShare)}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
               title="Chia sẻ chứng chỉ"
             >
               <Share2 className="w-3.5 h-3.5 text-amber-500" />
@@ -178,7 +178,7 @@ export default function MyCertificateCard({
 
           <button
             onClick={() => onPrint(cert)}
-            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-lg border border-input bg-background hover:bg-muted text-foreground font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-semibold text-xs active:scale-[0.98] transition-all cursor-pointer"
             title={t("certificatesPage.downloadBtn")}
           >
             <Download className="w-3.5 h-3.5 text-muted-foreground" />

@@ -40,9 +40,9 @@ export default function MyCoursesStats({
   learningLabel,
 }: MyCoursesStatsProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="flex flex-col divide-y divide-gray-200 dark:divide-slate-700 sm:flex-row sm:divide-x sm:divide-y-0">
-        <StatCell label={totalLabel} value={total} dotColor="bg-accent" />
+    <div className="overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface shadow-xs">
+      <div className="flex flex-col divide-y divide-[#E8E8E8] dark:divide-border sm:flex-row sm:divide-x sm:divide-y-0">
+        <StatCell label={totalLabel} value={total} dotColor="bg-[#FF5A1F]" />
         <StatCell
           label={completedLabel}
           value={completed}

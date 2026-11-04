@@ -19,29 +19,29 @@ export default function StudyEmptyState({
   doExercisesLabel,
 }: StudyEmptyStateProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-14">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+    <div className="rounded-2xl border border-border bg-surface p-10 text-center shadow-xs sm:p-14">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary border border-primary/15">
         <Inbox className="h-7 w-7" />
       </div>
-      <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="mt-4 text-lg font-bold text-foreground">
         {title}
       </h3>
-      <p className="mx-auto mt-2 max-w-md text-sm text-gray-600 dark:text-gray-400">
+      <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground leading-relaxed">
         {description}
       </p>
 
       {!hasDateFilter && (
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+            className="inline-flex items-center gap-2 rounded-full bg-primary hover:bg-primary-hover px-5 py-2.5 text-sm font-semibold text-primary-foreground transition shadow-xs active:scale-95"
           >
             <BookOpen className="h-4 w-4" />
             {exploreCoursesLabel}
           </Link>
           <Link
             href="/exercises"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-accent hover:text-accent dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface hover:border-primary/40 hover:text-primary text-foreground px-5 py-2.5 text-sm font-semibold transition active:scale-95"
           >
             <ClipboardList className="h-4 w-4" />
             {doExercisesLabel}

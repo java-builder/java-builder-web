@@ -7,18 +7,13 @@ export enum CategoryType {
 export interface CreateCategoryRequest {
   name: string;
   description?: string;
-  icon?: string;
-  color?: string;
   categoryType: CategoryType;
-  displayOrder?: number;
 }
 
 export interface UpdateCategoryRequest {
   name?: string;
   description?: string;
   slug?: string;
-  icon?: string;
-  color?: string;
   displayOrder?: number;
   categoryType?: CategoryType;
 }
@@ -27,8 +22,6 @@ export interface CreateCategoryResponse {
   id: string;
   name: string;
   description?: string;
-  icon?: string;
-  color?: string;
   categoryType: CategoryType;
   displayOrder: number;
   createdAt: string;
@@ -39,8 +32,6 @@ export interface CategoryDetailResponse {
   name: string;
   slug: string;
   description?: string;
-  icon?: string;
-  color?: string;
   categoryType: CategoryType;
   displayOrder: number;
   createdAt: string;
@@ -51,5 +42,3 @@ export interface CategorySummaryResponse {
   name: string;
   slug: string;
 }
-
-

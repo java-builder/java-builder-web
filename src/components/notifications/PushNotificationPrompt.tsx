@@ -55,7 +55,7 @@ export default function PushNotificationPrompt() {
 
   return (
     <div className="fixed bottom-5 right-5 z-50 max-w-sm w-full animate-in fade-in slide-in-from-bottom-5 duration-300">
-      <div className="bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 p-4 space-y-3.5 backdrop-blur-xl">
+      <div className="bg-card text-card-foreground border border-border rounded-2xl shadow-xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 p-4 space-y-3.5 backdrop-blur-xl">
         {/* Top Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2.5">

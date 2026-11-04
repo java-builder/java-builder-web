@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { UserSummaryResponse } from "@/types/user";
 
@@ -8,40 +9,46 @@ interface CourseInstructorProps {
 }
 
 export default function CourseInstructor({ instructor }: CourseInstructorProps) {
+  const [imgError, setImgError] = useState(false);
   const username = instructor?.username || "JavaBuilder";
   const avatarUrl = instructor?.avatarUrl || "/logos/java-logo.png";
 
   return (
     <div className="space-y-6">
       {/* Instructor Profile */}
-      <div className="flex items-start space-x-4 p-6 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-        <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-white">
-          <Image
-            src={avatarUrl}
-            alt={username}
-            width={64}
-            height={64}
-            className="w-full h-full object-cover"
-          />
+      <div className="flex items-start gap-4 p-5 sm:p-6 bg-background/60 border border-border rounded-2xl">
+        <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 bg-primary-soft border border-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+          {!imgError ? (
+            <Image
+              src={avatarUrl}
+              alt={username}
+              width={56}
+              height={56}
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span>{username.charAt(0).toUpperCase()}</span>
+          )}
         </div>
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-bold text-foreground mb-0.5">
             {username}
           </h3>
-          <p className="text-accent font-medium mb-2">
-            Backend Developer
+          <p className="text-primary text-xs font-semibold mb-2">
+            Backend Developer &amp; Instructor
           </p>
-          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+          <p className="text-text-muted text-sm leading-relaxed">
             Chuyên gia phát triển backend với kinh nghiệm sâu về Java, Spring
-            Boot và các công nghệ cloud. Tôi đam mê chia sẻ kiến thức và giúp
-            đỡ các bạn trẻ phát triển kỹ năng lập trình backend.
+            Boot và các công nghệ cloud. Đam mê chia sẻ kiến thức thực chiến và
+            đồng hành cùng học viên trên lộ trình trở thành Backend Developer chuyên nghiệp.
           </p>
         </div>
       </div>
 
       {/* Skills */}
       <div>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+        <h4 className="font-bold text-sm text-foreground mb-3">
           Kỹ năng chuyên môn
         </h4>
         <div className="flex flex-wrap gap-2">
@@ -56,25 +63,12 @@ export default function CourseInstructor({ instructor }: CourseInstructorProps) 
           ].map((skill) => (
             <span
               key={skill}
-              className="px-3 py-1 bg-accent/10 dark:bg-accent/20 text-accent rounded-full text-sm font-medium border border-accent/20"
+              className="px-3 py-1 bg-primary-soft text-primary rounded-full text-xs font-semibold border border-primary/20"
             >
               {skill}
             </span>
           ))}
         </div>
-      </div>
-
-      {/* Contact */}
-      <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/20">
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-          Liên hệ với giảng viên
-        </h4>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-          Có câu hỏi về khóa học? Hãy liên hệ trực tiếp với tôi!
-        </p>
-        <button className="bg-accent hover:bg-accent/90 text-white font-bold py-2 px-4.5 rounded-lg shadow-xs hover:shadow transition-all active:scale-98 text-sm cursor-pointer">
-          Gửi tin nhắn
-        </button>
       </div>
     </div>
   );

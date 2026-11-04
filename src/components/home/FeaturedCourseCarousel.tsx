@@ -93,8 +93,8 @@ export default function FeaturedCourseCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Chá»‰ khi courses cÃ³ dá»¯ liá»‡u tá»« API thÃ¬ map cÃ¡c khÃ³a há»c tá»« API
-  // CÃ²n khi courses bá»‹ null hoáº·c rá»—ng thÃ¬ má»›i hiá»ƒn thá»‹ data set máº·c Ä‘á»‹nh hiá»‡n táº¡i
+  // Chỉ khi courses có dữ liệu từ API thì map các khóa học từ API
+  // Còn khi courses bị null hoặc rỗng thì mới hiển thị data set mặc định hiện tại
   const hasApiCourses = Boolean(courses && Array.isArray(courses) && courses.length > 0);
 
   const slides: FeaturedCourseSlide[] = useMemo(() => {
@@ -105,7 +105,7 @@ export default function FeaturedCourseCarousel({
             ? `/docs/${course.slug}`
             : `/courses/${course.slug}`;
 
-        let levelLabel = "Thá»±c chiáº¿n";
+        let levelLabel = "Thực chiến";
         if (course.level) {
           switch (course.level) {
             case CourseLevel.BEGINNER:
@@ -127,8 +127,8 @@ export default function FeaturedCourseCarousel({
 
         const formatLabel =
           course.courseFormat === CourseFormat.TEXT
-            ? (t("sidebar.documents") || "TÃ i liá»‡u")
-            : (t("sidebar.courses") || "KhÃ³a há»c");
+            ? (t("sidebar.documents") || "Tài liệu")
+            : (t("sidebar.courses") || "Khóa học");
 
         const bannerImage =
           course.thumbnailUrl || FALLBACK_BANNERS[idx % FALLBACK_BANNERS.length];
@@ -139,7 +139,7 @@ export default function FeaturedCourseCarousel({
           badge: `${levelLabel} • ${formatLabel}`,
           description:
             course.description ||
-            "Há»c táº­p vÃ  phÃ¡t triá»ƒn ká»¹ nÄƒng láº­p trÃ¬nh Java Backend tá»« cÆ¡ báº£n Ä‘áº¿n chuyÃªn sÃ¢u cÃ¹ng JavaBuilder.",
+            "Học tập và phát triển kỹ năng lập trình Java Backend từ cơ bản đến chuyên sâu cùng JavaBuilder.",
           imageUrl: bannerImage,
           authorName: "JavaBuilder",
           authorAvatar: "/logos/java-logo.png",
@@ -148,7 +148,7 @@ export default function FeaturedCourseCarousel({
       });
     }
 
-    // Courses mÃ  null hoáº·c rá»—ng -> má»›i hiá»‡n data set hiá»‡n táº¡i
+    // Courses mà null hoặc rỗng -> mới hiện data set hiện tại
     return DEFAULT_FEATURED_SLIDES;
   }, [courses, hasApiCourses, t]);
 
@@ -185,7 +185,7 @@ export default function FeaturedCourseCarousel({
 
   if (isLoading) {
     return (
-      <div className="relative flex flex-col h-full bg-white dark:bg-slate-800/90 rounded-[6px] border border-slate-200 dark:border-slate-800/80 dark:border-slate-700/60 shadow-sm overflow-hidden ">
+      <div className="relative flex flex-col h-full bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-800/80 dark:border-slate-700/60 shadow-sm overflow-hidden ">
         <div className="aspect-[16/9] w-full bg-gray-200 dark:bg-slate-700" />
         <div className="p-4 sm:p-5 space-y-3">
           <div className="h-3 w-1/3 bg-gray-200 dark:bg-slate-700 rounded-sm" />
@@ -205,7 +205,7 @@ export default function FeaturedCourseCarousel({
   return (
     <div className="space-y-2.5 max-w-[420px] mx-auto lg:max-w-none">
       <div
-        className="relative flex flex-col h-full bg-white dark:bg-[#181d28] rounded-2xl border border-[#E8E8E8] dark:border-[#262d3d] shadow-sm hover:border-[#FF5A1F]/30 transition-all duration-200 overflow-hidden"
+        className="relative flex flex-col h-full bg-white dark:bg-surface rounded-2xl border border-[#E8E8E8] dark:border-border shadow-sm transition-all duration-200 overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >

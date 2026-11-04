@@ -94,11 +94,11 @@ export function CacheKeysModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-      <div className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full flex flex-col max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-200">
+      <div className="bg-surface border border-border rounded-2xl shadow-2xl max-w-2xl w-full flex flex-col max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-200 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center">
               <KeyRound className="w-5 h-5" />
             </div>
             <div>
@@ -112,14 +112,14 @@ export function CacheKeysModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors cursor-pointer"
+            className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Search Bar */}
-        <div className="p-4 border-b border-border bg-muted/20">
+        <div className="p-4 border-b border-border bg-muted/20 dark:bg-surface">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
@@ -127,7 +127,7 @@ export function CacheKeysModal({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("admin.caches.searchKeyPlaceholder")}
-              className="w-full pl-9 pr-4 py-2 text-sm bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground"
+              className="w-full pl-9 pr-4 py-2 text-sm bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground"
             />
           </div>
         </div>
@@ -147,7 +147,7 @@ export function CacheKeysModal({
             filteredKeys.map((key) => (
               <div
                 key={key}
-                className="flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-muted/40 transition-colors gap-3 group"
+                className="flex items-center justify-between p-3 rounded-xl border border-border bg-card hover:bg-muted/40 transition-colors gap-3 group"
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <code className="text-xs font-mono font-medium text-foreground bg-muted px-2 py-1 rounded truncate">
@@ -159,7 +159,7 @@ export function CacheKeysModal({
                     variant="ghost"
                     size="icon-xs"
                     onClick={() => handleCopy(key)}
-                    className="text-muted-foreground hover:text-foreground cursor-pointer"
+                    className="text-muted-foreground hover:text-foreground cursor-pointer rounded-full"
                     title="Copy key"
                   >
                     {copiedKey === key ? (
@@ -173,7 +173,7 @@ export function CacheKeysModal({
                     size="xs"
                     onClick={() => handleEvict(key)}
                     disabled={deletingKey === key}
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-full"
                   >
                     {deletingKey === key ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -191,11 +191,11 @@ export function CacheKeysModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border flex items-center justify-between bg-muted/20">
+        <div className="p-4 border-t border-border flex items-center justify-between bg-muted/20 dark:bg-surface">
           <span className="text-xs text-muted-foreground">
             {filteredKeys.length} / {keys.length} keys
           </span>
-          <Button variant="outline" size="sm" onClick={onClose} className="cursor-pointer">
+          <Button variant="outline" size="sm" onClick={onClose} className="cursor-pointer rounded-full px-4">
             {t("admin.caches.closeBtn")}
           </Button>
         </div>

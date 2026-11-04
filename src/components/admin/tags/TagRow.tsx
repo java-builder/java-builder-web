@@ -1,6 +1,7 @@
 import { Hash, Loader2, Pencil, Trash2 } from "lucide-react";
 import { formatReadableDate } from "@/utils/dateUtils";
 import type { TagDetailResponse } from "@/types/tag";
+import { Button } from "@/components/ui/button";
 
 interface TagRowProps {
   tag: TagDetailResponse;
@@ -14,7 +15,7 @@ export default function TagRow({ tag, isDeleting, onEdit, onDelete }: TagRowProp
     <tr className="transition hover:bg-muted/25">
       {/* Name */}
       <td className="px-4 py-3">
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2 py-0.5 text-sm font-semibold text-accent">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary">
           <Hash className="h-3 w-3" />
           {tag.name}
         </span>
@@ -32,28 +33,32 @@ export default function TagRow({ tag, isDeleting, onEdit, onDelete }: TagRowProp
 
       {/* Actions */}
       <td className="whitespace-nowrap px-4 py-3 text-right">
-        <div className="inline-flex items-center gap-1">
-          <button
+        <div className="inline-flex items-center gap-1.5">
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onEdit(tag)}
-            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground transition hover:border-accent hover:text-accent cursor-pointer"
+            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
           >
             <Pencil className="h-3.5 w-3.5" />
             Sửa
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onDelete(tag.id, tag.name)}
             disabled={isDeleting}
-            className="inline-flex items-center gap-1 rounded-lg border border-destructive/20 bg-card px-2.5 py-1 text-xs font-semibold text-destructive transition hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
           >
             {isDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
               <Trash2 className="h-3.5 w-3.5" />
             )}
-            {isDeleting ? "Đang xoá..." : "Xoá"}
-          </button>
+            {isDeleting ? "Đang xóa..." : "Xóa"}
+          </Button>
         </div>
       </td>
     </tr>

@@ -71,7 +71,7 @@ export default function CommentCard({
   };
 
   return (
-    <div className={`bg-card rounded-xl border border-border shadow-sm transition-all duration-200 ${
+    <div className={`bg-surface rounded-2xl border border-border shadow-sm transition-all duration-200 ${
       comment.status === "DELETED" 
         ? "border-destructive/30 bg-destructive/5" 
         : "hover:shadow-md"
@@ -160,7 +160,7 @@ export default function CommentCard({
 
       {/* Replies Section */}
       {showReplies && replies.length > 0 && (
-        <div className="border-t border-border bg-muted/20">
+        <div className="border-t border-border bg-gray-50/50 dark:bg-surface/50">
           <div className="p-4 pl-8 sm:pl-16 space-y-3">
             {replies.map((reply, index) => (
               <div key={reply.id} className="relative">

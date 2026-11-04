@@ -7,8 +7,8 @@ import CertificateDetailModal from "@/components/my-certificates/CertificateDeta
 import GrantCertificateModal from "@/components/admin/certificates/GrantCertificateModal";
 import { CertificatesHeader } from "@/components/admin/certificates/CertificatesHeader";
 import { CertificatesTable } from "@/components/admin/certificates/CertificatesTable";
-import { Pagination } from "@/components/ui/Pagination";
-import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
+import { Pagination } from "@/components/ui/pagination";
+import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
 import { useDebounce } from "@/hooks/useDebounce";

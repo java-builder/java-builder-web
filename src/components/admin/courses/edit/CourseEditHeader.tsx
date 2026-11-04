@@ -16,11 +16,11 @@ export default function CourseEditHeader({
   onSave,
 }: CourseEditHeaderProps) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-6 rounded-2xl shadow-xs">
       <div className="flex items-center gap-4">
         <Link 
           href="/admin/courses" 
-          className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors border border-border/40"
+          className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-xl transition-colors border border-border cursor-pointer"
           title="Quay lại danh sách khóa học"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -39,7 +39,7 @@ export default function CourseEditHeader({
           variant="accent"
           onClick={onSave}
           disabled={isSaving}
-          className="gap-2 font-medium"
+          className="gap-2 font-medium rounded-full cursor-pointer"
         >
           {isSaving ? (
             <Loader2 className="animate-spin w-4 h-4" />

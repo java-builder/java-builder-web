@@ -23,9 +23,9 @@ export default function VideoPreviewModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70" onClick={onClose} />
-      <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-surface border border-[#E8E8E8] dark:border-border rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-start sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700 gap-3">
+        <div className="flex items-start sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-[#E8E8E8] dark:border-border gap-3">
           <div className="min-w-0 flex-1">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">
               {lesson.lessonName}
@@ -107,7 +107,7 @@ export default function VideoPreviewModal({
               </p>
               <button
                 onClick={onEnroll}
-                className="w-full sm:w-auto px-5 py-2 bg-accent hover:bg-accent/90 text-white text-sm font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 text-white text-sm font-bold rounded-full shadow-xs hover:shadow transition-all cursor-pointer"
               >
                 Đăng ký ngay
               </button>

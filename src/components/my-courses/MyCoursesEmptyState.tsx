@@ -15,8 +15,8 @@ export default function MyCoursesEmptyState({
   exploreLabel,
 }: MyCoursesEmptyStateProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-14">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+    <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface p-10 text-center shadow-xs sm:p-14">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10 text-[#FF5A1F]">
         <BookOpen className="h-7 w-7" />
       </div>
       <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
@@ -27,7 +27,7 @@ export default function MyCoursesEmptyState({
       </p>
       <Link
         href="/courses"
-        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+        className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#FF5A1F]/25 active:scale-95 transition-all"
       >
         <Compass className="h-4 w-4" />
         {exploreLabel}

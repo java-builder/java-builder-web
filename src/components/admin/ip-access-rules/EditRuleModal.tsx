@@ -50,7 +50,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="relative w-full max-w-xl max-h-[90vh] bg-card border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden flex flex-col transform animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-xl max-h-[90vh] bg-surface border border-border text-foreground rounded-2xl shadow-2xl overflow-hidden flex flex-col transform animate-in fade-in zoom-in-95 duration-150">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border shrink-0">
@@ -63,7 +63,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
           <button
             onClick={onClose}
             type="button"
-            className="p-1.5 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors"
+            className="p-1.5 hover:bg-muted text-muted-foreground hover:text-foreground rounded-xl transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -74,7 +74,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
           <div className="flex-1 overflow-y-auto p-6 space-y-5">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Mục tiêu chỉnh sửa</label>
-              <div className="px-4 py-2.5 bg-muted/50 text-muted-foreground border border-input rounded-lg text-sm font-mono select-all">
+              <div className="px-4 py-2.5 bg-muted/50 text-muted-foreground border border-input rounded-full text-sm font-mono select-all">
                 {formData.value} ({formData.target})
               </div>
             </div>
@@ -88,7 +88,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
                   onClick={() => {
                     setIsEditModeDropdownOpen(!isEditModeDropdownOpen);
                   }}
-                  className="w-full flex items-center justify-between px-4 py-2.5 bg-background border border-input rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-ring transition-all text-foreground cursor-pointer"
+                  className="w-full flex items-center justify-between px-4 py-2.5 bg-background border border-input rounded-full text-sm text-left focus:outline-none focus:ring-2 focus:ring-ring transition-all text-foreground cursor-pointer"
                 >
                   <span className="font-semibold text-sm">{MODE_OPTIONS.find(o => o.value === formData.mode)?.label}</span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
@@ -133,7 +133,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
                 placeholder="Ghi chú chi tiết lý do..."
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-full text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
               />
               <div className="mt-2.5 flex flex-wrap gap-2">
                 <span className="text-xs text-muted-foreground w-full block mb-0.5 font-medium">Gợi ý nhanh:</span>
@@ -148,7 +148,7 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
                     key={tpl}
                     type="button"
                     onClick={() => setFormData({ ...formData, notes: tpl })}
-                    className="text-xs px-2.5 py-1 bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-md transition-colors border border-border font-medium cursor-pointer"
+                    className="text-xs px-2.5 py-1 bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-full transition-colors border border-border font-medium cursor-pointer"
                   >
                     {tpl}
                   </button>
@@ -158,18 +158,18 @@ export function EditRuleModal({ isOpen, onClose, rule, isSubmitting, onSubmit }:
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end gap-2 border-t border-border bg-muted/30 px-6 py-4 shrink-0">
+          <div className="flex justify-end gap-2 border-t border-border bg-gray-50/50 dark:bg-surface/50 px-6 py-4 shrink-0">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-semibold border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-semibold border border-border bg-surface hover:bg-muted text-foreground rounded-full transition-colors cursor-pointer"
             >
               Huỷ
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+              className="px-4 py-2 text-sm font-semibold bg-primary hover:bg-primary-hover text-white rounded-full transition-colors disabled:opacity-50 shadow-sm cursor-pointer"
             >
               {isSubmitting ? "Đang cập nhật..." : "Lưu thay đổi"}
             </button>

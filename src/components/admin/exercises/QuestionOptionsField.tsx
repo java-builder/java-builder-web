@@ -35,10 +35,10 @@ export default function QuestionOptionsField({
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-5">
+    <div className="bg-surface rounded-2xl border border-border p-5 shadow-xs">
       <div className="flex justify-between items-center mb-4">
         <label className="flex items-center space-x-2 text-sm font-bold text-foreground">
-          <ListChecks className="w-4 h-4 text-accent" />
+          <ListChecks className="w-4 h-4 text-primary" />
           <span>Các lựa chọn</span>
         </label>
         <Button
@@ -46,7 +46,7 @@ export default function QuestionOptionsField({
           variant="ghost"
           size="sm"
           onClick={handleAddOption}
-          className="gap-1 text-accent hover:text-accent font-semibold h-8"
+          className="gap-1 text-primary hover:text-primary-hover font-semibold h-8 rounded-full cursor-pointer"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Thêm lựa chọn</span>

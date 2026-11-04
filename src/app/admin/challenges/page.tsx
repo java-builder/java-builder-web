@@ -23,7 +23,7 @@ import { useConfirm } from "@/hooks/useConfirm";
 import toast from "react-hot-toast";
 import { Layers, RefreshCw, LayoutList, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function AdminChallengesPage() {
   const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
@@ -176,13 +176,13 @@ export default function AdminChallengesPage() {
 
           <div className="flex items-center gap-2">
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-muted/60 p-0.5 rounded-lg border border-border/60">
+            <div className="flex items-center bg-muted/60 p-1 rounded-full border border-border">
               <button
                 type="button"
                 onClick={() => handleSetViewMode("table")}
-                className={`p-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                className={`p-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                   viewMode === "table"
-                    ? "bg-card text-foreground shadow-xs"
+                    ? "bg-surface text-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Chế độ bảng (chuẩn quản trị)"
@@ -192,9 +192,9 @@ export default function AdminChallengesPage() {
               <button
                 type="button"
                 onClick={() => handleSetViewMode("grid")}
-                className={`p-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                className={`p-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                   viewMode === "grid"
-                    ? "bg-card text-foreground shadow-xs"
+                    ? "bg-surface text-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Chế độ thẻ lưới"
@@ -208,7 +208,7 @@ export default function AdminChallengesPage() {
               size="sm"
               onClick={() => refetch()}
               disabled={isFetching}
-              className="h-8 gap-1 text-xs cursor-pointer"
+              className="h-8 gap-1 text-xs cursor-pointer rounded-full"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
               <span>Làm mới</span>
@@ -248,18 +248,18 @@ export default function AdminChallengesPage() {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="h-72 bg-card border border-border rounded-xl animate-pulse p-6 space-y-4"
+              className="h-72 bg-surface border border-border rounded-2xl p-6 space-y-4"
             >
-              <div className="h-4 bg-muted rounded w-1/3" />
-              <div className="h-6 bg-muted rounded w-3/4" />
-              <div className="h-16 bg-muted rounded w-full" />
-              <div className="h-10 bg-muted rounded w-full mt-4" />
+              <div className="h-4 bg-muted rounded-full w-1/3" />
+              <div className="h-6 bg-muted rounded-full w-3/4" />
+              <div className="h-16 bg-muted rounded-xl w-full" />
+              <div className="h-10 bg-muted rounded-xl w-full mt-4" />
             </div>
           ))}
         </div>
       ) : filteredChallenges.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-border border-dashed rounded-xl p-8">
-          <div className="mx-auto w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-4">
+        <div className="text-center py-16 bg-surface border border-border border-dashed rounded-2xl p-8">
+          <div className="mx-auto w-12 h-12 rounded-full bg-primary-soft flex items-center justify-center text-primary mb-4">
             <Layers className="h-6 w-6" />
           </div>
           <h3 className="text-base font-semibold text-foreground">
@@ -270,11 +270,11 @@ export default function AdminChallengesPage() {
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
             {(search || statusFilter || levelFilter) && (
-              <Button variant="outline" size="sm" onClick={handleResetFilters}>
+              <Button variant="outline" size="sm" onClick={handleResetFilters} className="rounded-full">
                 Xóa bộ lọc
               </Button>
             )}
-            <Button variant="accent" size="sm" onClick={handleOpenCreate}>
+            <Button variant="accent" size="sm" onClick={handleOpenCreate} className="rounded-full">
               Tạo thử thách ngay
             </Button>
           </div>

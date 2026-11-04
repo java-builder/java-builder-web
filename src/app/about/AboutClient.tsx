@@ -184,11 +184,11 @@ export default function AboutClient() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch">
 
-          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-xs hover:border-accent/30 transition-all flex flex-col justify-between">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-2xl p-5 sm:p-6 lg:p-7 shadow-xs transition-all flex flex-col justify-between">
             <div>
               <div className="flex items-start sm:items-center justify-between gap-2.5 mb-3.5 sm:mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-muted/60 border border-border flex items-center justify-center shrink-0">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-muted/60 border border-border flex items-center justify-center shrink-0">
                     <Image
                       src="/logos/java-logo.png"
                       alt="JavaBuilder Logo"
@@ -275,14 +275,14 @@ export default function AboutClient() {
                   <span>Ủng hộ dự án</span>
                 </a>
                 <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 " />
                   Active
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-xs hover:border-accent/30 transition-all flex flex-col justify-between">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-2xl p-5 sm:p-6 lg:p-7 shadow-xs transition-all flex flex-col justify-between">
             <div>
               <div className="flex items-start justify-between gap-2.5 mb-3.5 sm:mb-4">
                 <div className="flex items-center gap-3">
@@ -351,7 +351,7 @@ export default function AboutClient() {
                 href={credlyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-lg bg-accent text-white font-medium shadow-xs hover:bg-accent-600 transition-all duration-200 active:scale-[0.98] text-xs cursor-pointer w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full bg-accent text-white font-medium shadow-xs hover:bg-accent-600 transition-all duration-200 active:scale-[0.98] text-xs cursor-pointer w-full sm:w-auto"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Xác thực trên Credly</span>
@@ -378,7 +378,7 @@ export default function AboutClient() {
             </span>
           </div>
 
-          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl divide-y divide-border overflow-hidden shadow-xs">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-2xl divide-y divide-border overflow-hidden shadow-xs">
             {skillRows.map((row, idx) => (
               <div
                 key={idx}
@@ -412,7 +412,7 @@ export default function AboutClient() {
 
         {/* 3. DONATE & SUPPORT SECTION - Tiếp sức cho tác giả & JavaBuilder */}
         <div id="donate" className="pt-4 sm:pt-6 scroll-mt-20">
-          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl shadow-accent/5 relative overflow-hidden">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl sm:rounded-2xl p-6 sm:p-8 lg:p-10 shadow-xl shadow-accent/5 relative overflow-hidden">
             {/* Ambient Background Accent Glow */}
             <div className="absolute -top-24 -right-24 w-60 h-60 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -463,13 +463,13 @@ export default function AboutClient() {
 
               {/* Right Column: Payment Station Card */}
               <div className="w-full lg:w-7/12 max-w-lg mx-auto lg:max-w-none">
-                <div className="bg-muted/30 dark:bg-muted/20 border border-border/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs">
+                <div className="bg-muted/30 dark:bg-muted/20 border border-border/80 rounded-2xl sm:rounded-2xl p-5 sm:p-7 shadow-xs">
                   {/* Method Tabs */}
                   <div className="flex items-center justify-center p-1 bg-muted/80 dark:bg-muted/50 rounded-2xl border border-border max-w-xs mx-auto mb-5">
                     <button
                       type="button"
                       onClick={() => setMethod("mb")}
-                      className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                      className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                         method === "mb"
                           ? "bg-card text-foreground shadow-xs border border-border/60"
                           : "text-muted-foreground hover:text-foreground"
@@ -483,7 +483,7 @@ export default function AboutClient() {
                     <button
                       type="button"
                       onClick={() => setMethod("momo")}
-                      className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                      className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                         method === "momo"
                           ? "bg-card text-foreground shadow-xs border border-border/60"
                           : "text-muted-foreground hover:text-foreground"
@@ -562,7 +562,7 @@ export default function AboutClient() {
                             key={tier.amount}
                             type="button"
                             onClick={() => setSelectedTier(tier)}
-                            className={`text-center p-2 rounded-xl border transition-all text-xs cursor-pointer ${
+                            className={`text-center p-2 rounded-full border transition-all text-xs cursor-pointer ${
                               isSelected
                                 ? "bg-accent/10 border-accent/50 text-foreground ring-1 ring-accent/30 shadow-xs font-semibold"
                                 : "bg-card hover:bg-muted/60 border-border text-muted-foreground hover:text-foreground"

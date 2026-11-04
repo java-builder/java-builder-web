@@ -170,9 +170,9 @@ export default function UpdateQuestionSetModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border">
+      <div className="bg-surface border border-border rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 z-10">
+        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 z-10">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-foreground">
@@ -198,26 +198,26 @@ export default function UpdateQuestionSetModal({
         <form onSubmit={handleSubmit} className="relative p-6 space-y-5 min-h-[400px]">
           {/* Skeleton loading overlay */}
           {isLoadingData && (
-            <div className="absolute inset-0 z-20 bg-card rounded-b-xl p-6 space-y-5">
+            <div className="absolute inset-0 z-20 bg-surface rounded-b-2xl p-6 space-y-5">
               <div className="space-y-2">
-                <div className="h-4 w-32 bg-muted rounded animate-pulse" />
+                <div className="h-4 w-32 bg-muted rounded " />
                 <div className="flex gap-2">
                   {LOCALES.map((l) => (
-                    <div key={l.code} className="h-10 w-28 bg-muted rounded animate-pulse" />
+                    <div key={l.code} className="h-10 w-28 bg-muted rounded " />
                   ))}
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="h-4 w-40 bg-muted rounded animate-pulse" />
-                <div className="h-11 w-full bg-muted rounded animate-pulse" />
+                <div className="h-4 w-40 bg-muted rounded " />
+                <div className="h-11 w-full bg-muted rounded " />
               </div>
               <div className="space-y-2">
-                <div className="h-4 w-28 bg-muted rounded animate-pulse" />
-                <div className="h-20 w-full bg-muted rounded animate-pulse" />
+                <div className="h-4 w-28 bg-muted rounded " />
+                <div className="h-20 w-full bg-muted rounded " />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="h-11 bg-muted rounded animate-pulse" />
-                <div className="h-11 bg-muted rounded animate-pulse" />
+                <div className="h-11 bg-muted rounded " />
+                <div className="h-11 bg-muted rounded " />
               </div>
             </div>
           )}
@@ -294,7 +294,7 @@ export default function UpdateQuestionSetModal({
                 type="text"
                 value={currentTrans?.title || ""}
                 onChange={(e) => updateTranslation(activeLocale, "title", e.target.value)}
-                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
+                className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
                 disabled={isSubmitting}
               />
               {touched && !currentTrans?.title?.trim() && (
@@ -313,7 +313,7 @@ export default function UpdateQuestionSetModal({
                 onChange={(e) => updateTranslation(activeLocale, "description", e.target.value)}
                 placeholder="Mô tả ngắn về bộ câu hỏi..."
                 rows={3}
-                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
+                className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
                 disabled={isSubmitting}
               />
             </div>
@@ -385,7 +385,7 @@ export default function UpdateQuestionSetModal({
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`px-2 py-1 text-xs rounded-md transition-colors ${
+                    className={`px-2 py-1 text-xs rounded-full transition-colors ${
                       isTagSelected(tag)
                         ? "bg-accent text-white"
                         : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -407,7 +407,7 @@ export default function UpdateQuestionSetModal({
                   min="1"
                   value={formData.displayOrder}
                   onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
-                  className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                  className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-full focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
                 />
               </div>
               <div>
@@ -417,7 +417,7 @@ export default function UpdateQuestionSetModal({
                 <select
                   value={formData.active ? "true" : "false"}
                   onChange={(e) => setFormData({ ...formData, active: e.target.value === "true" })}
-                  className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                  className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-full focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
                 >
                   <option value="true">Hoạt động</option>
                   <option value="false">Ẩn</option>

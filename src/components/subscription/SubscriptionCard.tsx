@@ -49,7 +49,7 @@ export default function SubscriptionCard({
         : labels.statusCancelled;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
       {/* Header */}
       <div className="flex flex-col gap-3 border-b border-gray-200 px-5 py-4 dark:border-slate-700 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3 min-w-0">
@@ -77,7 +77,7 @@ export default function SubscriptionCard({
             <button
               type="button"
               onClick={onRenew}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-accent-600"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-accent-600"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               {labels.renewBtn}

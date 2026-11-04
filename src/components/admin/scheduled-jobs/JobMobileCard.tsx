@@ -27,7 +27,7 @@ export default function JobMobileCard({ job, onClick }: JobMobileCardProps) {
   return (
     <div
       onClick={() => onClick(job)}
-      className="group relative cursor-pointer rounded-xl border border-border bg-card p-4 shadow-sm transition hover:border-accent/50 hover:shadow-md active:scale-[0.99]"
+      className="group relative cursor-pointer rounded-xl border border-border bg-card p-4 shadow-sm transition hover:shadow-md active:scale-[0.99]"
     >
       {/* Top row: Title + Status + Type */}
       <div className="flex items-start justify-between gap-3">

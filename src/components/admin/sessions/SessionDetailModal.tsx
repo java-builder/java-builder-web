@@ -64,7 +64,7 @@ export const SessionDetailModal = ({
         className="relative w-full max-w-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-border bg-card text-foreground shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-2xl">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
             <div className="min-w-0">
@@ -79,7 +79,7 @@ export const SessionDetailModal = ({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground rounded-full"
               aria-label="Đóng"
             >
               <X className="h-4 w-4" />
@@ -89,7 +89,7 @@ export const SessionDetailModal = ({
           {/* Body */}
           <div className="max-h-[calc(100vh-220px)] overflow-y-auto">
             {/* User card */}
-            <div className="border-b border-border bg-muted/20 px-5 py-4">
+            <div className="border-b border-border bg-muted/20 dark:bg-surface px-5 py-4">
               <div className="flex items-center gap-3">
                 {session.avatar && !imageErrors.has(session.sessionId) ? (
                   <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border border-border">
@@ -171,16 +171,17 @@ export const SessionDetailModal = ({
           </div>
 
           {/* Footer */}
-          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-muted/20 px-5 py-3.5">
+          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-muted/20 dark:bg-surface px-5 py-3.5">
             {onBlockIp && (
               <Button
                 type="button"
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   onBlockIp(session.ipAddress);
                   onClose();
                 }}
-                className="gap-1.5 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white border-transparent cursor-pointer"
+                className="gap-1.5 border-destructive/25 text-destructive hover:bg-destructive/10 cursor-pointer rounded-full"
               >
                 <Ban className="w-4 h-4" />
                 Chặn IP
@@ -196,20 +197,20 @@ export const SessionDetailModal = ({
                     onRevokeAllSessions(session.userId, session.username);
                     onClose();
                   }}
-                  className="gap-1.5"
+                  className="gap-1.5 rounded-full cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />
                   Thu hồi tất cả
                 </Button>
                 <Button
                   type="button"
-                  variant="destructive"
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     onRevokeSession(session);
                     onClose();
                   }}
-                  className="gap-1.5"
+                  className="gap-1.5 border-destructive/25 text-destructive hover:bg-destructive/10 cursor-pointer rounded-full"
                 >
                   <X className="h-4 w-4" />
                   Thu hồi phiên này

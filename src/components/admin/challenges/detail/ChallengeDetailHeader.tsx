@@ -43,21 +43,21 @@ export default function ChallengeDetailHeader({
             size="sm"
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="gap-2 cursor-pointer"
+            className="gap-2 cursor-pointer rounded-full border border-border"
           >
             <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
             <span>Làm mới</span>
           </Button>
 
           <Link href={`/admin/challenges/${challenge.id}/enrollments`}>
-            <Button variant="outline" size="sm" className="gap-2 cursor-pointer">
-              <Users className="h-4 w-4 text-accent" />
+            <Button variant="outline" size="sm" className="gap-2 cursor-pointer rounded-full border border-border">
+              <Users className="h-4 w-4 text-primary" />
               <span>Học viên</span>
             </Button>
           </Link>
 
           <Link href={`/challenges/${challenge.slug}`} target="_blank">
-            <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
+            <Button variant="ghost" size="sm" className="gap-2 cursor-pointer rounded-full">
               <ExternalLink className="h-4 w-4" />
               <span>Xem trang học viên</span>
             </Button>
@@ -66,20 +66,20 @@ export default function ChallengeDetailHeader({
       </div>
 
       {/* Challenge Header Card */}
-      <div className="relative bg-card border border-border rounded-2xl overflow-hidden shadow-xs">
+      <div className="relative bg-surface border border-border rounded-2xl overflow-hidden shadow-xs">
         {/* Top Banner Gradient */}
         <div
           className="h-2.5 w-full"
           style={{
             background:
-              challenge.colorGradient || "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+              challenge.colorGradient || "linear-gradient(135deg, #FF5A1F 0%, #FF9900 100%)",
           }}
         />
 
         <div className="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 flex-1 min-w-0">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="px-2.5 py-0.5 text-xs font-bold rounded-md bg-accent/10 text-accent border border-accent/20">
+              <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20">
                 {challenge.level}
               </span>
               <span
@@ -111,23 +111,23 @@ export default function ChallengeDetailHeader({
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center shrink-0">
-            <div className="p-3 bg-muted/30 border border-border rounded-xl min-w-[90px]">
+            <div className="p-3 bg-background/40 border border-border rounded-xl min-w-[90px]">
               <span className="text-[11px] text-muted-foreground font-medium block">Tổng ngày</span>
               <p className="text-lg font-bold text-foreground mt-0.5">{challenge.totalDays} ngày</p>
             </div>
-            <div className="p-3 bg-muted/30 border border-border rounded-xl min-w-[90px]">
+            <div className="p-3 bg-background/40 border border-border rounded-xl min-w-[90px]">
               <span className="text-[11px] text-muted-foreground font-medium block">Học thử</span>
               <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
                 {challenge.freePreviewDays} ngày
               </p>
             </div>
-            <div className="p-3 bg-muted/30 border border-border rounded-xl min-w-[90px]">
+            <div className="p-3 bg-background/40 border border-border rounded-xl min-w-[90px]">
               <span className="text-[11px] text-muted-foreground font-medium block">Giai đoạn</span>
               <p className="text-lg font-bold text-foreground mt-0.5">{phasesCount} giai đoạn</p>
             </div>
-            <div className="p-3 bg-muted/30 border border-border rounded-xl min-w-[90px]">
+            <div className="p-3 bg-background/40 border border-border rounded-xl min-w-[90px]">
               <span className="text-[11px] text-muted-foreground font-medium block">Đã soạn</span>
-              <p className="text-lg font-bold text-accent mt-0.5">{daysCount} ngày</p>
+              <p className="text-lg font-bold text-primary mt-0.5">{daysCount} ngày</p>
             </div>
           </div>
         </div>

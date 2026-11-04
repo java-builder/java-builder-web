@@ -5,7 +5,7 @@ import { exerciseInputClassName } from './constants';
 import QuestionOptionsField, { ExerciseFormData } from './QuestionOptionsField';
 import { Eye, Edit2, Trash2, HelpCircle, ListChecks, Star } from "lucide-react";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
-import { FilterSelect } from "@/components/ui/FilterSelect";
+import { FilterSelect } from "@/components/ui/select";
 
 interface ExerciseQuestionBlockProps {
   questionIndex: number;
@@ -29,10 +29,10 @@ export default function ExerciseQuestionBlock({
   });
 
   return (
-    <div className="border border-border rounded-2xl p-6 bg-card hover:border-accent/40 transition-all duration-250 shadow-sm">
+    <div className="border border-border rounded-2xl p-6 bg-surface transition-all duration-250 shadow-xs">
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center shadow-sm select-none">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-warning rounded-xl flex items-center justify-center shadow-xs select-none">
             <span className="text-white font-extrabold text-sm">{questionIndex + 1}</span>
           </div>
           <h3 className="text-lg font-bold text-foreground">Câu hỏi {questionIndex + 1}</h3>
@@ -61,7 +61,7 @@ export default function ExerciseQuestionBlock({
               <button
                 type="button"
                 onClick={() => setIsPreview(false)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
                   !isPreview
                     ? "bg-background text-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
@@ -73,7 +73,7 @@ export default function ExerciseQuestionBlock({
               <button
                 type="button"
                 onClick={() => setIsPreview(true)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
                   isPreview
                     ? "bg-background text-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"

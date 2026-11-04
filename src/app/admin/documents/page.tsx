@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import ConfirmModal from "@/components/ui/ConfirmModal";
-import { FilterSelect } from "@/components/ui/FilterSelect";
+import ConfirmModal from "@/components/ui/confirm-modal";
+import { FilterSelect } from "@/components/ui/select";
 import { Document, DocumentType } from "@/types/document";
 import { documentApi } from "@/services/document.service";
 import { fileApi } from "@/services/course.service";
@@ -43,7 +43,7 @@ const TypeBadge = ({ type }: { type: DocumentType }) => {
     [DocumentType.OTHER]: "bg-muted text-muted-foreground border border-border",
   };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${colorMap[type]}`}>
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold ${colorMap[type]}`}>
       <span>{config.icon}</span>
       <span>{config.label}</span>
     </span>
@@ -243,7 +243,7 @@ export default function AdminDocumentsPage() {
             <Button
               onClick={() => handleOpenModal()}
               variant="accent"
-              className="gap-2 h-9.5 cursor-pointer"
+              className="gap-2 h-9.5 cursor-pointer rounded-full"
             >
               <Plus className="h-4 w-4" />
               {t("admin.documents.createBtn")}
@@ -252,7 +252,7 @@ export default function AdminDocumentsPage() {
               onClick={fetchDocuments}
               disabled={isLoading}
               variant="outline"
-              className="gap-2 h-9.5 cursor-pointer"
+              className="gap-2 h-9.5 cursor-pointer rounded-full"
             >
               <RotateCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
               {t("admin.questionContributions.refreshBtn")}
@@ -263,12 +263,12 @@ export default function AdminDocumentsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-sm">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tổng</p>
           <p className="text-2xl font-bold text-foreground mt-1">{documents.length}</p>
         </div>
         {documentTypes.map((t) => (
-          <div key={t.type} className="bg-card rounded-xl p-4 border border-border shadow-sm">
+          <div key={t.type} className="bg-surface rounded-2xl p-4 border border-border shadow-sm">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
               {t.icon} {t.label}
             </p>
@@ -280,7 +280,7 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-muted/30 rounded-xl p-6 border border-border">
+      <div className="bg-surface rounded-2xl p-6 border border-border shadow-sm">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <input
@@ -288,7 +288,7 @@ export default function AdminDocumentsPage() {
               placeholder={t("admin.documents.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="block w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-foreground placeholder-muted-foreground text-sm transition-colors duration-200"
+              className="block w-full pl-10 pr-4 py-2 bg-transparent border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-foreground placeholder-muted-foreground text-sm transition-colors duration-200"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-muted-foreground" />
@@ -312,11 +312,11 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
+      <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-muted/50 border-b border-border">
+              <tr className="bg-muted/40 border-b border-border">
                 <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Tài liệu</th>
                 <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Loại</th>
                 <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase">Ngày tạo</th>
@@ -326,7 +326,7 @@ export default function AdminDocumentsPage() {
             <tbody className="divide-y divide-border">
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, idx) => (
-                  <tr key={idx} className="animate-pulse">
+                  <tr key={idx} className="">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-20 rounded bg-muted shrink-0" />
@@ -385,26 +385,26 @@ export default function AdminDocumentsPage() {
                       <div className="flex items-center justify-end gap-1.5">
                         <Button
                           onClick={() => handleOpenModal(doc)}
-                          variant="ghost"
-                          size="icon-sm"
-                          className="hover:text-accent text-muted-foreground"
-                          title="Chỉnh sửa"
+                          variant="outline"
+                          size="sm"
+                          className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
                         >
-                          <Pencil className="w-4 h-4" />
+                          <Pencil className="w-3.5 h-3.5" />
+                          <span>Sửa</span>
                         </Button>
                         <Button
                           onClick={() => handleDelete(doc.id, doc.title)}
                           disabled={isDeleting === doc.id}
-                          variant="ghost"
-                          size="icon-sm"
-                          className="hover:text-destructive hover:bg-destructive/10 text-muted-foreground"
-                          title="Xóa"
+                          variant="outline"
+                          size="sm"
+                          className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
                         >
                           {isDeleting === doc.id ? (
-                            <Loader2 className="animate-spin w-4 h-4" />
+                            <Loader2 className="animate-spin w-3.5 h-3.5" />
                           ) : (
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           )}
+                          <span>Xóa</span>
                         </Button>
                       </div>
                     </td>
@@ -421,7 +421,7 @@ export default function AdminDocumentsPage() {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-start sm:items-center justify-center p-4 pt-16 sm:pt-4">
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-            <div className="relative bg-card border border-border rounded-xl shadow-xl w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+            <div className="relative bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
               <h2 className="text-xl font-bold text-foreground mb-6">
                 {editingDoc ? "Chỉnh sửa tài liệu" : "Thêm tài liệu mới"}
               </h2>
@@ -432,7 +432,7 @@ export default function AdminDocumentsPage() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm"
+                    className="w-full px-4 py-2 bg-transparent border border-border rounded-xl text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm"
                     required
                   />
                 </div>
@@ -442,7 +442,7 @@ export default function AdminDocumentsPage() {
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm resize-y"
+                    className="w-full px-4 py-2 bg-transparent border border-border rounded-xl text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm resize-y"
                   />
                 </div>
                 <div>
@@ -450,7 +450,7 @@ export default function AdminDocumentsPage() {
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value as DocumentType })}
-                    className="w-full px-4 py-2 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 text-sm"
+                    className="w-full px-4 py-2 bg-transparent border border-border rounded-xl text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm"
                   >
                     {documentTypes.map((t) => (
                       <option key={t.type} value={t.type}>{t.icon} {t.label}</option>
@@ -491,7 +491,7 @@ export default function AdminDocumentsPage() {
                   ) : (
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full h-48 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-accent hover:bg-accent/5 transition-all"
+                      className="w-full h-48 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-accent/5 transition-all"
                     >
                       <Upload className="w-10 h-10 text-muted-foreground mb-2" />
                       <p className="text-foreground text-sm font-medium">Nhấn để chọn ảnh</p>
@@ -513,6 +513,7 @@ export default function AdminDocumentsPage() {
                     onClick={() => setIsModalOpen(false)}
                     disabled={isSubmitting}
                     variant="outline"
+                    className="rounded-full cursor-pointer"
                   >
                     Hủy
                   </Button>
@@ -520,7 +521,7 @@ export default function AdminDocumentsPage() {
                     type="submit"
                     disabled={isSubmitting}
                     variant="accent"
-                    className="gap-2"
+                    className="gap-2 rounded-full cursor-pointer"
                   >
                     {isSubmitting ? (
                       <>

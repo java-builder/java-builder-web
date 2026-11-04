@@ -39,8 +39,13 @@ export default function Providers({ children, initialLocale = "en" }: { children
   const [queryClient] = useState(() => getQueryClient());
  
   useEffect(() => {
-    const accentTheme = localStorage.getItem("accent-theme") || "blue";
-    document.documentElement.dataset.accentTheme = accentTheme;
+    const accentTheme = localStorage.getItem("accent-theme");
+    if (!accentTheme || accentTheme === "purple" || accentTheme === "blue") {
+      localStorage.setItem("accent-theme", "orange");
+      document.documentElement.dataset.accentTheme = "orange";
+    } else {
+      document.documentElement.dataset.accentTheme = accentTheme;
+    }
   }, []);
  
   return (

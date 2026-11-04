@@ -16,22 +16,22 @@ export default function CoursesErrorState({
   onRetry,
 }: CoursesErrorStateProps) {
   return (
-    <div className="rounded-2xl border border-rose-200 bg-rose-50 p-10 text-center shadow-sm dark:border-rose-900/40 dark:bg-rose-900/20">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400">
+    <div className="rounded-2xl border border-red-200 dark:border-red-950/40 bg-red-50/50 dark:bg-red-950/20 p-10 text-center shadow-xs sm:p-14">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400">
         <AlertTriangle className="h-6 w-6" />
       </div>
-      <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="mt-4 text-base font-bold text-[#171717] dark:text-white">
         {title}
       </h3>
-      <p className="mx-auto mt-2 max-w-md text-sm text-gray-600 dark:text-gray-300">
+      <p className="mx-auto mt-2 max-w-md text-xs sm:text-sm text-[#64748B] dark:text-slate-400">
         {description}
       </p>
       <button
         type="button"
         onClick={onRetry}
-        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
+        className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] px-5 py-2.5 text-xs font-semibold text-white transition active:scale-[0.98] cursor-pointer shadow-xs"
       >
-        <RotateCw className="h-4 w-4" />
+        <RotateCw className="h-3.5 w-3.5" />
         {retryLabel}
       </button>
     </div>

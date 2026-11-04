@@ -119,7 +119,7 @@ export default function EditCoursePage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6 animate-pulse max-w-5xl bg-gray-50 min-h-screen">
+      <div className="p-6 space-y-6  max-w-5xl bg-gray-50 min-h-screen">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-muted" />
           <div className="space-y-2 flex-1">
@@ -152,7 +152,7 @@ export default function EditCoursePage() {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-6 space-y-6 bg-background min-h-screen">
       {/* Header */}
       <CourseEditHeader
         courseTitle={course?.title}
@@ -161,9 +161,9 @@ export default function EditCoursePage() {
       />
 
       {/* Main Content Card */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Thông tin cơ bản</h2>
+      <div className="bg-surface rounded-2xl border border-border shadow-sm">
+        <div className="p-6 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-bold text-foreground">Thông tin cơ bản</h2>
           <Link href={`/admin/courses/${courseId}/content`}>
             <Button variant="outline" size="sm" className="gap-2 cursor-pointer">
               <BookOpen className="w-4 h-4 text-accent" />
@@ -195,7 +195,7 @@ export default function EditCoursePage() {
         </div>
 
         {/* Bottom Actions */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50 rounded-b-xl">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-gray-50/50 dark:bg-surface/50 rounded-b-2xl">
           <Link href="/admin/courses">
             <Button variant="outline" type="button" className="px-5 cursor-pointer">
               Hủy bỏ

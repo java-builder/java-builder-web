@@ -1,146 +1,131 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
 import ThemeToggle from "@/components/header-components/ThemeToggle";
 import { CourseDetailResponse } from "@/types/course";
 import {
+  ArrowLeft,
   BookOpen,
-  LogIn,
-  Menu
+  Heart,
+  Menu,
+  CheckCircle2,
 } from "lucide-react";
 
 interface DocsHeaderProps {
   onMenuClick?: () => void;
   showMenuButton?: boolean;
   course?: CourseDetailResponse | null;
+  onOverviewClick?: () => void;
+  showOverview?: boolean;
+  isFavorite?: boolean;
+  favoriteLoading?: boolean;
+  onToggleFavorite?: () => void;
+  completedCount?: number;
+  totalCount?: number;
+  canAccessLesson?: boolean;
+  onOpenAi?: () => void;
+  onOpenNotes?: () => void;
 }
 
 export default function DocsHeader({
   onMenuClick,
   showMenuButton = false,
-  course
+  course,
+  onOverviewClick,
+  isFavorite = false,
+  favoriteLoading = false,
+  onToggleFavorite,
+  completedCount = 0,
+  totalCount = 0,
 }: DocsHeaderProps) {
-  const { data: currentUser, isLoading } = useCurrentUser();
+  const progressPercent =
+    totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-gray-200 dark:border-slate-700/60 shadow-sm transition-all duration-250">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 h-15 bg-surface/95 backdrop-blur-md border-b border-border transition-colors">
+      <div className="w-full h-full px-4 sm:px-6 flex items-center justify-between gap-3">
+        {/* Left: Mobile menu + Back to courses + Course title */}
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          {showMenuButton && (
+            <button
+              onClick={onMenuClick}
+              className="lg:hidden flex items-center justify-center w-9 h-9 text-text-muted hover:text-primary hover:bg-primary-soft rounded-full transition-colors cursor-pointer shrink-0"
+              aria-label="Mở danh mục bài học"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
 
-          {/* Left: Hamburger menu (mobile), Logo & Branding */}
-          <div className="flex items-center gap-3">
-            {showMenuButton && (
-              <>
-                <button
-                  onClick={onMenuClick}
-                  className="lg:hidden flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-100 dark:hover:bg-slate-700/60 rounded-lg transition-colors focus:outline-none cursor-pointer"
-                  aria-label="Mở mục lục"
-                >
-                  <Menu className="w-5 h-5" />
-                </button>
-                <div className="lg:hidden h-5 w-px bg-gray-200 dark:bg-slate-700" />
-              </>
-            )}
+          <Link
+            href="/courses"
+            className="inline-flex items-center gap-1.5 h-8.5 px-3 rounded-full text-xs font-semibold text-text-muted hover:text-primary hover:bg-primary-soft border border-border transition-all shrink-0"
+            title="Quay lại danh sách khóa học"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Khóa học</span>
+          </Link>
 
-            <Link href="/docs" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent dark:text-sky-400 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                <BookOpen className="w-4 h-4" />
-              </div>
-              <h1 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-accent dark:group-hover:text-sky-400 transition-colors duration-150">
-                Tài liệu hướng dẫn
-              </h1>
-            </Link>
-          </div>
-
-          {/* Center: Current Course Title */}
           {course && (
-            <div className="hidden md:flex items-center gap-2.5 flex-1 max-w-md lg:max-w-lg xl:max-w-2xl mx-6 px-4 py-1.5 bg-gray-50/50 dark:bg-slate-900/30 border border-gray-100 dark:border-slate-750/50 rounded-2xl">
-              <span className="relative flex h-2 w-2 flex-shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 dark:bg-emerald-300 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
-              </span>
-              <div className="text-left min-w-0">
-                <p className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider leading-none">
-                  Khóa học đang học
-                </p>
-                <h2 className="text-xs sm:text-sm font-bold text-gray-800 dark:text-slate-200 truncate mt-1 leading-tight" title={course.title}>
+            <>
+              <div className="h-4 w-px bg-border shrink-0 hidden sm:block" />
+              <button
+                type="button"
+                onClick={onOverviewClick}
+                className="flex items-center gap-2 min-w-0 text-left group cursor-pointer"
+                title="Xem tổng quan khóa học"
+              >
+                <div className="w-7 h-7 rounded-lg bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                  <BookOpen className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">
                   {course.title}
-                </h2>
-              </div>
+                </span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Right: Progress badge, Favorite & Theme */}
+        <div className="flex items-center gap-2 shrink-0">
+          {course && totalCount > 0 && (
+            <div
+              className="hidden md:flex items-center gap-1.5 h-8 px-3 rounded-full bg-background border border-border text-xs font-medium text-text-muted"
+              title={`Đã hoàn thành ${completedCount}/${totalCount} bài học (${progressPercent}%)`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+              <span className="tabular-nums font-semibold text-foreground">
+                {completedCount}/{totalCount}
+              </span>
+              <span className="text-[11px] text-text-muted hidden xl:inline">
+                ({progressPercent}%)
+              </span>
             </div>
           )}
 
-          {/* Right: Navigation links, Theme toggle & User profile */}
-          <div className="flex items-center gap-3">
-            {/* Global Nav Links - hidden on mobile */}
-            <nav className="hidden lg:flex items-center gap-1 mr-2 border-r border-gray-200 dark:border-slate-700/80 pr-4">
-              <Link
-                href="/"
-                className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
-              >
-                Trang chủ
-              </Link>
-              <Link
-                href="/courses"
-                className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
-              >
-                Khóa học
-              </Link>
-              <Link
-                href="/exercises"
-                className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
-              >
-                Bài tập
-              </Link>
-              <Link
-                href="/blogs"
-                className="px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-sky-400 hover:bg-gray-50 dark:hover:bg-slate-700/40 rounded-lg transition-colors"
-              >
-                Blog
-              </Link>
-            </nav>
+          {course && onToggleFavorite && (
+            <button
+              type="button"
+              onClick={onToggleFavorite}
+              disabled={favoriteLoading}
+              title={isFavorite ? "Bỏ yêu thích" : "Yêu thích khóa học"}
+              className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                isFavorite
+                  ? "bg-error/10 border-error/25 text-error"
+                  : "bg-background border-border text-text-muted hover:text-primary"
+              }`}
+            >
+              <Heart
+                className={`w-3.5 h-3.5 ${
+                  isFavorite ? "fill-current text-error" : ""
+                }`}
+              />
+              <span className="hidden xl:inline">
+                {isFavorite ? "Đã lưu" : "Yêu thích"}
+              </span>
+            </button>
+          )}
 
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-
-              {/* User Profile Info */}
-              {currentUser ? (
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-2 p-1 pr-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-750 hover:border-accent hover:shadow-sm rounded-full transition-all duration-200"
-                  title="Xem hồ sơ cá nhân"
-                >
-                  {currentUser.avatar ? (
-                    <Image
-                      src={currentUser.avatar}
-                      alt={currentUser.username}
-                      width={26}
-                      height={26}
-                      className="w-6.5 h-6.5 rounded-full object-cover border border-gray-150 dark:border-slate-700"
-                    />
-                  ) : (
-                    <div className="w-6.5 h-6.5 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold text-[10px]">
-                      {(currentUser.username || "U").charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <span className="hidden sm:inline text-xs font-bold text-gray-700 dark:text-slate-200 max-w-[90px] truncate">
-                    {currentUser.username}
-                  </span>
-                </Link>
-              ) : !isLoading ? (
-                <Link
-                  href="/login"
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-accent-600 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  <span className="hidden xs:inline">Đăng nhập</span>
-                </Link>
-              ) : null}
-            </div>
-          </div>
-
+          <ThemeToggle />
         </div>
       </div>
     </header>

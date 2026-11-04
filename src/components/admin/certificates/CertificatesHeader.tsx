@@ -42,7 +42,7 @@ export const CertificatesHeader = ({
       </div>
       <div className="flex items-center gap-3">
         {!searchTerm && totalCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent dark:text-accent-on-dark">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-soft border border-primary/20 px-3 py-1 text-xs font-medium text-primary dark:bg-orange-950/40 dark:text-orange-400">
             Tổng chứng chỉ:{" "}
             <span className="font-bold tabular-nums">
               {totalCount.toLocaleString()}

@@ -169,7 +169,7 @@ export default function ConversationItem({
                 e.stopPropagation();
                 onToggleMute(conv.id);
               }}
-              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+              className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
             >
               {isMuted ? (
                 <Bell className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -185,7 +185,7 @@ export default function ConversationItem({
                 e.stopPropagation();
                 onTogglePin(conv);
               }}
-              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+              className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
             >
               <Pin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
               <span>{conv.isPinned ? "Bỏ ghim nhóm" : "Ghim lên đầu"}</span>
@@ -197,7 +197,7 @@ export default function ConversationItem({
                 e.stopPropagation();
                 onToggleUnread(conv);
               }}
-              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
+              className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-foreground hover:bg-muted transition-colors cursor-pointer"
             >
               {conv.unreadCount > 0 ? (
                 <MailOpen className="w-3.5 h-3.5 text-accent shrink-0" />
@@ -215,7 +215,7 @@ export default function ConversationItem({
                 e.stopPropagation();
                 onDeleteConversation(conv.id);
               }}
-              className="w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
+              className="w-full px-2.5 py-2 rounded-full flex items-center gap-2 text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer font-semibold"
             >
               <Trash2 className="w-3.5 h-3.5 text-red-500 shrink-0" />
               <span>Xóa trò chuyện</span>

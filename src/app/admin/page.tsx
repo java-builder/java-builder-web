@@ -24,7 +24,7 @@ function AdminDashboardContent() {
       value: loading ? "..." : formatNumber(overview?.totalUsersNewToday || 0),
       badge: !loading && overview?.totalUsersNewToday ? t("admin.dashboard.badgeNew") : undefined,
       badgeColor: "emerald" as const,
-      icon: <UserPlus className="w-full h-full text-emerald-600" />,
+      icon: <UserPlus className="w-full h-full" />,
     },
     {
       name: t("admin.dashboard.activeCourses"),

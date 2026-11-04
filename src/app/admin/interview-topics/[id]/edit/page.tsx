@@ -174,7 +174,7 @@ export default function EditInterviewTopicPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6 animate-pulse max-w-5xl bg-gray-50 min-h-screen">
+      <div className="p-6 space-y-6  max-w-5xl bg-gray-50 min-h-screen">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-muted" />
           <div className="space-y-2 flex-1">
@@ -349,7 +349,7 @@ export default function EditInterviewTopicPage() {
                     return (
                       <div
                         key={set.id}
-                        className="group border border-border rounded-xl p-5 hover:border-accent/60 hover:shadow-sm transition-all bg-card"
+                        className="group border border-border rounded-xl p-5 hover:shadow-sm transition-all bg-card"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0 space-y-3">

@@ -105,17 +105,17 @@ export default function AdminNotificationDropdown() {
       </button>
 
       {isNotifOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-50">
+        <div className="absolute right-0 mt-2 w-80 bg-surface rounded-2xl shadow-xl border border-border z-50 overflow-hidden">
           {/* Header with tabs */}
-          <div className="border-b border-gray-200 dark:border-slate-700">
+          <div className="border-b border-border">
             <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300">
               {t("admin.notificationDropdown.title")}
             </div>
-            <div className="flex border-t border-gray-100 dark:border-slate-700">
+            <div className="flex border-t border-border">
               <button
                 onClick={() => handleTabChange("all")}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${activeTab === "all"
-                  ? "text-accent border-b-2 border-accent"
+                  ? "text-primary border-b-2 border-primary"
                   : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
                   }`}
               >
@@ -124,13 +124,13 @@ export default function AdminNotificationDropdown() {
               <button
                 onClick={() => handleTabChange("unread")}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors relative ${activeTab === "unread"
-                  ? "text-accent border-b-2 border-accent"
+                  ? "text-primary border-b-2 border-primary"
                   : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
                   }`}
               >
                 {t("admin.notificationDropdown.tabUnread")}
                 {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-2 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] leading-[18px] rounded-full text-center font-semibold">
+                  <span className="absolute top-1.5 right-2 min-w-[18px] h-[18px] px-1 bg-primary text-white text-[10px] leading-[18px] rounded-full text-center font-semibold">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
@@ -140,7 +140,7 @@ export default function AdminNotificationDropdown() {
           <div className="max-h-80 overflow-auto">
             {filteredNotifications.length === 0 ? (
               <div className="px-4 py-6 text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center mb-3">
+                <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 dark:bg-muted flex items-center justify-center mb-3">
                   <BellOff className="w-6 h-6 text-gray-400 dark:text-gray-300" />
                 </div>
                 <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -159,10 +159,10 @@ export default function AdminNotificationDropdown() {
                 <Link
                   key={n.id}
                   href={n.link || "#"}
-                  className={`flex items-start gap-3 px-4 py-3 transition-colors ${!n.isRead ? "bg-blue-50/50 dark:bg-accent/10 hover:bg-blue-50 dark:hover:bg-accent/20" : "hover:bg-gray-50 dark:hover:bg-slate-700/50"}`}
+                  className={`flex items-start gap-3 px-4 py-3 transition-colors ${!n.isRead ? "bg-primary-soft/50 dark:bg-primary/10 hover:bg-primary-soft dark:hover:bg-primary/20" : "hover:bg-gray-50 dark:hover:bg-muted/50"}`}
                   onClick={() => setIsNotifOpen(false)}
                 >
-                  <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-100 dark:bg-muted flex items-center justify-center">
                     {n.avatar ? (
                       <Image
                         src={n.avatar}
@@ -199,11 +199,11 @@ export default function AdminNotificationDropdown() {
 
           {/* Load More Button */}
           {currentPage < totalPages && (
-            <div className="px-4 py-2.5 border-t border-gray-100 dark:border-slate-700">
+            <div className="px-4 py-2.5 border-t border-border">
               <button
                 onClick={handleLoadMore}
                 disabled={isFetching}
-                className="w-full text-sm text-accent hover:text-blue-700 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+                className="w-full text-sm text-primary hover:text-primary-hover font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
               >
                 {isFetching ? (
                   <>

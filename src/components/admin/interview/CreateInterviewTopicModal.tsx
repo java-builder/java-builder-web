@@ -5,7 +5,7 @@ import { interviewService } from "@/services/interview.service";
 import { CreateInterviewTopicRequest, Locale, TopicTranslation } from "@/types/interview";
 import { fileApi } from "@/services/course.service";
 import { useI18n } from "@/contexts/I18nContext";
-import Swal from "sweetalert2";
+import { confirmDialog } from "@/hooks/useConfirm";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { X, AlertCircle, Trash2, UploadCloud, Loader2, Plus } from "lucide-react";
@@ -160,31 +160,15 @@ export default function CreateInterviewTopicModal({
     // Nếu chưa đủ 4 ngôn ngữ → confirm
     if (missingLocales.length > 0) {
       const missingList = missingLocales.map((l) => `${l.flag} ${l.label}`).join(", ");
-      const result = await Swal.fire({
+      const isConfirmed = await confirmDialog({
         title: t("admin.interviewTopics.partialLocaleTitle"),
-        html: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: t("admin.interviewTopics.partialLocaleConfirm"),
-        cancelButtonText: t("admin.interviewTopics.partialLocaleCancel"),
-        reverseButtons: true,
-        focusCancel: true,
-        width: "440px",
-        padding: "2rem",
-        backdrop: "rgba(0,0,0,0.4)",
-        customClass: {
-          popup: "swal-modern-popup",
-          title: "swal-modern-title",
-          htmlContainer: "swal-modern-text",
-          confirmButton: "swal-modern-confirm",
-          cancelButton: "swal-modern-cancel",
-          actions: "swal-modern-actions",
-          icon: "swal-modern-icon",
-        },
-        buttonsStyling: false,
+        message: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
+        type: "warning",
+        confirmText: t("admin.interviewTopics.partialLocaleConfirm"),
+        cancelText: t("admin.interviewTopics.partialLocaleCancel"),
       });
 
-      if (!result.isConfirmed) {
+      if (!isConfirmed) {
         // User chọn "điền tiếp" → jump tới locale thiếu đầu tiên
         setActiveLocale(missingLocales[0].code);
         return;
@@ -215,9 +199,9 @@ export default function CreateInterviewTopicModal({
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-2xl bg-card border border-border rounded-xl shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
+        <div className="relative w-full max-w-2xl bg-surface border border-border rounded-2xl shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
+          <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-surface z-10">
             <div>
               <h3 className="text-xl font-semibold text-foreground">
                 {t("admin.interviewTopics.createModalTitle")}
@@ -312,7 +296,7 @@ export default function CreateInterviewTopicModal({
                       ? "例: データベース"
                       : "예: 데이터베이스"
                   }
-                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
+                  className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
                   disabled={isSubmitting}
                 />
               </div>
@@ -326,7 +310,7 @@ export default function CreateInterviewTopicModal({
                   onChange={(e) => updateTranslation(activeLocale, "description", e.target.value)}
                   placeholder={t("admin.interviewTopics.descriptionPlaceholder")}
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
+                  className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
                   disabled={isSubmitting}
                 />
               </div>
@@ -415,7 +399,7 @@ export default function CreateInterviewTopicModal({
                   setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })
                 }
                 min={1}
-                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground transition-colors"
+                className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground transition-colors"
                 disabled={isSubmitting}
               />
             </div>

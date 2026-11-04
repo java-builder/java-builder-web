@@ -274,14 +274,14 @@ export default function ExplainQuestionModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="explain-modal-title"
-            className="relative my-4 w-full max-w-3xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800 sm:my-8"
+            className="relative my-4 w-full max-w-3xl overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white shadow-2xl dark:bg-surface sm:my-8"
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 20 }}
             transition={{ type: "spring", damping: 24, stiffness: 280 }}
           >
             {/* Header */}
-            <div className="sticky top-0 z-10 border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+            <div className="sticky top-0 z-10 border-b border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
               <div className="flex items-start justify-between gap-3 px-5 py-4 sm:px-6 sm:py-5">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 sm:h-12 sm:w-12">
@@ -412,7 +412,7 @@ export default function ExplainQuestionModal({
                 <div className="flex items-center justify-end">
                   <button
                     onClick={onClose}
-                    className="ml-auto w-full sm:w-auto rounded-lg border border-gray-200 bg-white px-6 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700"
+                    className="ml-auto w-full sm:w-auto rounded-full border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 px-6 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700"
                   >
                     Đóng
                   </button>
@@ -468,7 +468,7 @@ function LoadingState() {
       <div className="relative mb-5 flex h-16 w-16 items-center justify-center">
         <span className="absolute inset-0 animate-ping rounded-full bg-accent/20 opacity-75" />
         <span className="absolute inset-0 rounded-full bg-accent/10" />
-        <Sparkles className="relative h-7 w-7 animate-pulse text-accent" />
+        <Sparkles className="relative h-7 w-7  text-accent" />
       </div>
       <h4 className="text-base font-semibold text-gray-900 dark:text-white">
         AI đang phân tích câu hỏi...
@@ -478,7 +478,7 @@ function LoadingState() {
       </p>
       <div className="mt-6 w-full max-w-xs">
         <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
-          <div className="h-full w-3/5 animate-pulse rounded-full bg-gradient-to-r from-accent to-accent-600" />
+          <div className="h-full w-3/5  rounded-full bg-gradient-to-r from-accent to-accent-600" />
         </div>
         <p className="mt-2 text-[11px] text-gray-400 dark:text-gray-500">
           Thường mất vài giây...
@@ -508,7 +508,7 @@ function ErrorState({
       </p>
       <button
         onClick={onRetry}
-        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
+        className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
       >
         <RotateCcw className="h-4 w-4" />
         Thử lại

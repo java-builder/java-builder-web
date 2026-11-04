@@ -105,7 +105,7 @@ export default function PushNotificationsTable({
                   </TableCell>
 
                   <TableCell className="px-4 py-3 whitespace-nowrap">
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent dark:text-accent-on-dark">
+                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 font-mono">
                       {item.targetAudience}
                     </span>
                   </TableCell>
@@ -123,32 +123,36 @@ export default function PushNotificationsTable({
                     {item.sentAt}
                   </TableCell>
 
-                  <TableCell className="px-4 py-3 whitespace-nowrap text-right space-x-1">
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      onClick={() => onView(item)}
-                      title="Xem chi tiết"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      onClick={() => onReuse(item)}
-                      title="Dùng lại nội dung này"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      onClick={() => onDelete(item.id)}
-                      className="text-destructive hover:bg-destructive/10"
-                      title="Xóa"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
+                  <TableCell className="px-4 py-3 whitespace-nowrap text-right">
+                    <div className="inline-flex items-center justify-end gap-1.5">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onView(item)}
+                        className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Xem</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onReuse(item)}
+                        className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Dùng lại</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onDelete(item.id)}
+                        className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Xóa</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

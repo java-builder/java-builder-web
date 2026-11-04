@@ -15,7 +15,7 @@ export function HealthHistoryWidget({ history }: HealthHistoryWidgetProps) {
   if (!history || history.length === 0) return null;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
+    <div className="bg-surface border border-border rounded-2xl p-5 shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-lg bg-primary/10 text-primary">

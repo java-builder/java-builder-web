@@ -49,9 +49,9 @@ export default function ModalShell({
         className="relative my-6 w-full max-w-4xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
           {/* Header */}
-          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-5 py-4">
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-surface px-5 py-4">
             <div className="min-w-0">
               <h2 className="text-base font-semibold text-foreground">
                 {title}

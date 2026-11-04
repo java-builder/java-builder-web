@@ -85,7 +85,7 @@ export const ContributionStatsCards = ({
                   {item.label}
                 </p>
                 {isLoading ? (
-                  <div className="h-7 w-12 animate-pulse rounded bg-muted mt-1" />
+                  <div className="h-7 w-12  rounded bg-muted mt-1" />
                 ) : (
                   <p className={`text-2xl font-bold tracking-tight tabular-nums ${item.valueClass}`}>
                     {item.value.toLocaleString()}

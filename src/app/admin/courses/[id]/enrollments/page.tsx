@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { courseApi } from "@/services/course.service";
 import { EnrolledStudentResponse } from "@/types/enrollment";
-import { Pagination } from "@/components/ui/Pagination";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import { Pagination } from "@/components/ui/pagination";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
   EnrollmentsHeader,

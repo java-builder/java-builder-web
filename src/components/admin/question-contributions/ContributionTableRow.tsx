@@ -254,14 +254,14 @@ export const ContributionTableRow = ({
 
                 <Button
                   type="button"
-                  variant="destructive"
+                  variant="ghost"
                   size="sm"
                   onClick={() => {
                     setIsMenuOpen(false);
                     onDelete();
                   }}
                   disabled={isDeleting}
-                  className="w-full justify-start text-xs font-medium h-8.5 px-2.5 gap-2 cursor-pointer"
+                  className="w-full justify-start text-xs font-medium h-8.5 px-2.5 gap-2 cursor-pointer text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
                   <span>{t("admin.questionContributions.deleteBtn")}</span>

@@ -43,7 +43,7 @@ export const SessionsTable = ({
     { id: "device", label: t("admin.sessions.colDevice"), defaultWidth: 140, minWidth: 110 },
     { id: "ip", label: t("admin.sessions.colIp"), defaultWidth: 140, minWidth: 110 },
     { id: "lastActive", label: t("admin.sessions.colLastActive"), defaultWidth: 170, minWidth: 140 },
-    { id: "actions", label: t("admin.sessions.colActions"), align: "right", defaultWidth: 90, minWidth: 80 },
+    { id: "actions", label: t("admin.sessions.colActions"), align: "right", defaultWidth: 115, minWidth: 100 },
   ];
 
   const {
@@ -75,7 +75,7 @@ export const SessionsTable = ({
             <button
               type="button"
               onClick={resetAllWidths}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
               title="Đặt lại độ rộng các cột về mặc định"
             >
               <RotateCcw className="w-3 h-3" />
@@ -141,7 +141,7 @@ export const SessionsTable = ({
         <TableBody>
           {isLoading && sessions.length === 0 ? (
             Array.from({ length: 5 }).map((_, idx) => (
-              <TableRow key={idx} className="animate-pulse">
+              <TableRow key={idx} className="">
                 <TableCell className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-muted shrink-0" />

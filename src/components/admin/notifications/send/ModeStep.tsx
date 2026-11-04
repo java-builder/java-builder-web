@@ -122,7 +122,7 @@ export default function ModeStep({
             className={`group relative flex cursor-pointer flex-col justify-between rounded-xl border p-4 text-left transition-all duration-150 ${
               isTemplateMode
                 ? "border-accent bg-accent/5 ring-1 ring-accent/30 shadow-xs"
-                : "border-border bg-card hover:border-accent/40 hover:bg-muted/30"
+                : "border-border bg-card hover:bg-muted/30"
             }`}
           >
             <div>
@@ -154,7 +154,7 @@ export default function ModeStep({
             role="button"
             tabIndex={0}
             onKeyDown={(e) => e.key === "Enter" && onSelectCustom()}
-            className="group relative flex cursor-pointer flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all duration-150 hover:border-accent/50 hover:bg-muted/30 hover:shadow-xs"
+            className="group relative flex cursor-pointer flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all duration-150 hover:bg-muted/30 hover:shadow-xs"
           >
             <div>
               <div className="flex items-center justify-between gap-2">
@@ -183,7 +183,7 @@ export default function ModeStep({
 
       {/* DYNAMIC TEMPLATE SELECTION: Clean enterprise list, no emojis, instant advance */}
       {isTemplateMode && (
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm space-y-3.5 animate-in fade-in duration-150">
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-xs space-y-3.5 animate-in fade-in duration-150">
           {/* Header row with search and title */}
           <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -216,7 +216,7 @@ export default function ModeStep({
                   key={cat}
                   type="button"
                   onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition cursor-pointer ${
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition cursor-pointer ${
                     selectedCategory === cat
                       ? "bg-accent text-white"
                       : "bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -251,7 +251,7 @@ export default function ModeStep({
                     className={`group flex flex-col justify-between rounded-xl border p-3 text-left transition-all overflow-hidden cursor-pointer ${
                       isSelected
                         ? "border-accent bg-accent/5 ring-1 ring-accent/30 shadow-xs"
-                        : "border-border bg-background hover:border-accent/40 hover:bg-muted/30 hover:shadow-xs"
+                        : "border-border bg-background hover:bg-muted/30 hover:shadow-xs"
                     }`}
                   >
                     <div className="min-w-0 w-full">

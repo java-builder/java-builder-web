@@ -1,102 +1,145 @@
-import Swal from "sweetalert2";
+import { createElement } from "react";
+import { createRoot } from "react-dom/client";
 import toast from "react-hot-toast";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 
-interface ConfirmOptions {
+export interface ConfirmOptions {
   title?: string;
   message?: string;
   confirmText?: string;
   cancelText?: string;
-  type?: "warning" | "error" | "info" | "success";
+  type?: "warning" | "error" | "info" | "success" | "danger";
 }
+
+const stripLeadingEmoji = (text: string): string => {
+  return text
+    .replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\s]+/gu, "")
+    .trim();
+};
+
+const resolveVariant = (
+  type?: ConfirmOptions["type"],
+  title?: string,
+  confirmText?: string
+): "danger" | "warning" | "info" => {
+  if (type === "error" || type === "danger") return "danger";
+  if (type === "info" || type === "success") return "info";
+  const combined = `${title || ""} ${confirmText || ""}`.toLowerCase();
+  if (
+    combined.includes("xóa") ||
+    combined.includes("delete") ||
+    combined.includes("thu hồi") ||
+    combined.includes("chặn")
+  ) {
+    return "danger";
+  }
+  return "warning";
+};
+
+export const confirmDialog = (options: ConfirmOptions = {}): Promise<boolean> => {
+  if (typeof document === "undefined") {
+    return Promise.resolve(false);
+  }
+
+  const rawTitle = options.title || "Xác nhận";
+  const rawConfirmText = options.confirmText || "Xác nhận";
+  const rawCancelText = options.cancelText || "Hủy";
+
+  const title = stripLeadingEmoji(rawTitle) || rawTitle;
+  const confirmText = stripLeadingEmoji(rawConfirmText) || rawConfirmText;
+  const cancelText = stripLeadingEmoji(rawCancelText) || rawCancelText;
+  const message =
+    options.message || "Bạn có chắc chắn muốn thực hiện hành động này?";
+  const variant = resolveVariant(options.type, title, confirmText);
+
+  return new Promise<boolean>((resolve) => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    let settled = false;
+    const cleanup = (result: boolean) => {
+      if (settled) return;
+      settled = true;
+      resolve(result);
+      setTimeout(() => {
+        root.unmount();
+        container.remove();
+      }, 0);
+    };
+
+    root.render(
+      createElement(ConfirmModal, {
+        isOpen: true,
+        title,
+        message,
+        confirmText,
+        cancelText,
+        variant,
+        onClose: () => cleanup(false),
+        onConfirm: () => cleanup(true),
+      })
+    );
+  });
+};
 
 export const useConfirm = () => {
   const confirm = async (
     onConfirm: () => void | Promise<void>,
-    options: ConfirmOptions = {},
+    options: ConfirmOptions = {}
   ): Promise<void> => {
-    const {
-      title = "Xác nhận",
-      message = "Bạn có chắc chắn muốn thực hiện hành động này?",
-      confirmText = "Xác nhận",
-      cancelText = "Hủy",
-      type = "warning",
-    } = options;
+    if (typeof document === "undefined") return;
 
-    try {
-      const result = await Swal.fire({
-        title,
-        html: message,
-        icon: type,
-        showCancelButton: true,
-        confirmButtonText: confirmText,
-        cancelButtonText: cancelText,
-        reverseButtons: true,
-        focusCancel: true,
-        width: "400px",
-        padding: "2rem",
-        backdrop: "rgba(0,0,0,0.4)",
-        showClass: {
-          popup: "animate__animated animate__fadeIn animate__faster",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOut animate__faster",
-        },
-        customClass: {
-          popup: "swal-modern-popup",
-          title: "swal-modern-title",
-          htmlContainer: "swal-modern-text",
-          confirmButton: "swal-modern-confirm",
-          cancelButton: "swal-modern-cancel",
-          actions: "swal-modern-actions",
-          icon: "swal-modern-icon",
-        },
-        buttonsStyling: false,
-        allowOutsideClick: true,
-        allowEscapeKey: true,
-      });
+    const rawTitle = options.title || "Xác nhận";
+    const rawConfirmText = options.confirmText || "Xác nhận";
+    const rawCancelText = options.cancelText || "Hủy";
 
-      if (result.isConfirmed) {
-        const loadingToast = toast.loading("Đang xử lý...", {
-          style: {
-            borderRadius: "10px",
-            background: "#1f2937",
-            color: "#fff",
-            fontSize: "14px",
-            padding: "12px 16px",
+    const title = stripLeadingEmoji(rawTitle) || rawTitle;
+    const confirmText = stripLeadingEmoji(rawConfirmText) || rawConfirmText;
+    const cancelText = stripLeadingEmoji(rawCancelText) || rawCancelText;
+    const message =
+      options.message || "Bạn có chắc chắn muốn thực hiện hành động này?";
+    const variant = resolveVariant(options.type, title, confirmText);
+
+    await new Promise<void>((resolve) => {
+      const container = document.createElement("div");
+      document.body.appendChild(container);
+      const root = createRoot(container);
+
+      let settled = false;
+      const cleanup = () => {
+        if (settled) return;
+        settled = true;
+        resolve();
+        setTimeout(() => {
+          root.unmount();
+          container.remove();
+        }, 0);
+      };
+
+      root.render(
+        createElement(ConfirmModal, {
+          isOpen: true,
+          title,
+          message,
+          confirmText,
+          cancelText,
+          variant,
+          onClose: () => cleanup(),
+          onConfirm: async () => {
+            try {
+              await onConfirm();
+              cleanup();
+              toast.success("Thành công!");
+            } catch (error) {
+              cleanup();
+              toast.error("Có lỗi xảy ra!");
+              throw error;
+            }
           },
-        });
-
-        try {
-          await onConfirm();
-          toast.dismiss(loadingToast);
-          toast.success("Thành công!", {
-            duration: 2500,
-            style: {
-              borderRadius: "10px",
-              background: "#10b981",
-              color: "#fff",
-              fontSize: "14px",
-              padding: "12px 16px",
-            },
-          });
-        } catch (error) {
-          toast.dismiss(loadingToast);
-          toast.error("Có lỗi xảy ra!", {
-            duration: 3000,
-            style: {
-              borderRadius: "10px",
-              background: "#ef4444",
-              color: "#fff",
-              fontSize: "14px",
-              padding: "12px 16px",
-            },
-          });
-          throw error;
-        }
-      }
-    } catch (error) {
-      console.error("Confirm dialog error:", error);
-    }
+        })
+      );
+    });
   };
 
   return { confirm };

@@ -98,7 +98,7 @@ export default function AITrainingClient() {
         </div>
 
         {/* Upload Card */}
-        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+        <div className="bg-surface rounded-2xl border border-border p-6 shadow-sm">
           <div className="space-y-6">
             {/* Drag & Drop Area */}
             <div
@@ -106,10 +106,10 @@ export default function AITrainingClient() {
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`relative border-2 border-dashed rounded-xl p-8 transition-all ${
+              className={`relative border-2 border-dashed rounded-2xl p-8 transition-all ${
                 dragActive
-                  ? "border-accent bg-accent/5 dark:bg-accent/10"
-                  : "border-border hover:border-accent/50"
+                  ? "border-primary bg-primary-soft/50 dark:bg-orange-950/20"
+                  : "border-border"
               }`}
             >
               <input
@@ -121,8 +121,8 @@ export default function AITrainingClient() {
               />
               
               <div className="text-center">
-                <div className="mx-auto w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-accent/10 dark:bg-accent/20">
-                  <UploadCloud className="w-8 h-8 text-accent" />
+                <div className="mx-auto w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-primary-soft text-primary">
+                  <UploadCloud className="w-8 h-8 text-primary" />
                 </div>
                 
                 <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -134,7 +134,7 @@ export default function AITrainingClient() {
                 
                 <button
                   onClick={() => document.getElementById("file-input")?.click()}
-                  className="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg font-medium transition-colors"
+                  className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-full font-medium transition-colors cursor-pointer"
                 >
                   Chọn file
                 </button>
@@ -147,11 +147,11 @@ export default function AITrainingClient() {
 
             {/* Selected File Info */}
             {selectedFile && (
-              <div className="bg-muted rounded-lg p-4 border border-border">
+              <div className="bg-muted/20 rounded-xl p-4 border border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 bg-accent/10 dark:bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5 text-accent" />
+                    <div className="w-10 h-10 bg-primary-soft rounded-xl flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
@@ -164,7 +164,7 @@ export default function AITrainingClient() {
                   </div>
                   <button
                     onClick={handleRemoveFile}
-                    className="ml-4 p-2 text-muted-foreground hover:text-red-500 transition-colors"
+                    className="ml-4 p-2 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer rounded-lg"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -177,14 +177,14 @@ export default function AITrainingClient() {
               <button
                 onClick={handleRemoveFile}
                 disabled={!selectedFile || isUploading}
-                className="px-6 py-2.5 border border-input text-foreground rounded-lg font-medium hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-transparent"
+                className="px-6 py-2.5 border border-border text-foreground rounded-full font-medium hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-transparent cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 onClick={handleUpload}
                 disabled={!selectedFile || isUploading}
-                className="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-full font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
               >
                 {isUploading ? (
                   <>

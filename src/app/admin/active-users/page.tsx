@@ -88,7 +88,7 @@ export default function ActiveUsersPage() {
       </div>
 
       {/* Control Panel: Search & Refresh */}
-      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between bg-card border border-border/50 p-2.5 rounded-xl shadow-none">
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-3 rounded-2xl shadow-xs">
         <div className="relative flex-1 max-w-sm w-full">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
           <input
@@ -96,7 +96,7 @@ export default function ActiveUsersPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("admin.activeUsers.searchPlaceholder")}
-            className="flex h-9 w-full rounded-lg border border-input bg-background/50 px-3 pl-9 text-xs shadow-none transition-all placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500/40"
+            className="flex h-9 w-full rounded-xl border border-border bg-background/50 px-3 pl-9 text-xs shadow-none transition-all placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
           />
         </div>
 
@@ -109,7 +109,7 @@ export default function ActiveUsersPage() {
             size="sm"
             onClick={handleRefresh}
             disabled={isRefreshing || isLoading}
-            className="gap-1.5 rounded-lg h-9 px-3 hover:bg-muted/50 border-border/60 transition-colors text-xs cursor-pointer"
+            className="gap-1.5 rounded-full h-9 px-3 hover:bg-muted/50 border border-border transition-colors text-xs cursor-pointer"
           >
             <RotateCw className={`h-3.5 w-3.5 ${isRefreshing || isLoading ? "animate-spin" : ""}`} />
             {t("admin.questionContributions.refreshBtn")}
@@ -119,19 +119,19 @@ export default function ActiveUsersPage() {
 
       {/* Compact Active Users Horizontal Row Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 animate-pulse">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 ">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-none min-w-0">
+            <div key={i} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-3 shadow-none min-w-0">
               <div className="w-11 h-11 rounded-full bg-muted shrink-0" />
               <div className="flex-1 space-y-2 py-1">
-                <div className="h-3.5 bg-muted rounded w-2/3" />
-                <div className="h-3 bg-muted rounded w-5/6" />
+                <div className="h-3.5 bg-muted rounded-full w-2/3" />
+                <div className="h-3 bg-muted rounded-full w-5/6" />
               </div>
             </div>
           ))}
         </div>
       ) : filteredUsers.length === 0 ? (
-        <Card className="border border-dashed border-border bg-card/20 py-16 text-center shadow-none rounded-2xl">
+        <Card className="border border-dashed border-border bg-white/50 dark:bg-surface/50 py-16 text-center shadow-none rounded-2xl">
           <CardContent className="flex flex-col items-center justify-center gap-3">
             <div className="p-3 bg-muted/50 dark:bg-muted/10 rounded-xl">
               <Users className="h-6 w-6 text-muted-foreground/60" />
@@ -148,7 +148,7 @@ export default function ActiveUsersPage() {
           {filteredUsers.map((user) => (
             <div
               key={user.id}
-              className="group flex items-center gap-3 rounded-xl border border-border/80 bg-card p-3 shadow-none transition-all duration-200 hover:shadow-sm hover:border-emerald-500/20 dark:hover:border-emerald-500/10 min-w-0"
+              className="group flex items-center gap-3 rounded-2xl border border-border bg-surface p-3 shadow-none transition-all duration-200 hover:shadow-sm min-w-0"
             >
               {/* Avatar on the left */}
               <div className="relative flex-shrink-0">

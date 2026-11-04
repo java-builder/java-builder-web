@@ -38,12 +38,12 @@ export default function ChapterModal({
 
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal content */}
-        <div className="relative w-full max-w-md bg-card text-card-foreground border border-border rounded-xl shadow-2xl overflow-hidden mx-4 z-10">
+        <div className="relative w-full max-w-md bg-surface text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden mx-4 z-10">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-xl">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40">
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-                <BookOpen className="h-5 w-5 text-accent dark:text-accent-on-dark" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 shadow-xs">
+                <BookOpen className="h-5 w-5" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-foreground">
@@ -54,7 +54,7 @@ export default function ChapterModal({
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 p-1.5 rounded-lg"
+              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 p-1.5 rounded-lg cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
@@ -68,7 +68,7 @@ export default function ChapterModal({
                 type="text"
                 value={chapterName}
                 onChange={(e) => onChapterNameChange(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                className="flex h-10 w-full rounded-xl border border-border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
                 placeholder="Nhập tên chương"
                 autoFocus
                 disabled={isSubmitting}
@@ -79,7 +79,7 @@ export default function ChapterModal({
               <textarea
                 value={description}
                 onChange={(e) => onDescriptionChange(e.target.value)}
-                className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground resize-none"
+                className="flex w-full rounded-xl border border-border bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground resize-none"
                 placeholder="Nhập mô tả chương (tùy chọn)"
                 rows={3}
                 disabled={isSubmitting}
@@ -88,11 +88,12 @@ export default function ChapterModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-xl">
+          <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40">
             <Button
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
+              className="rounded-full border border-border cursor-pointer"
             >
               Hủy
             </Button>
@@ -100,10 +101,10 @@ export default function ChapterModal({
               variant="accent"
               onClick={onSave}
               disabled={isSubmitting}
-              className="gap-2 font-medium"
+              className="gap-2 font-medium rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
             >
               {isSubmitting && (
-                <Loader2 className="animate-spin w-4 h-4 text-background" />
+                <Loader2 className="animate-spin w-4 h-4 text-white" />
               )}
               {editId ? "Cập nhật" : "Thêm chương"}
             </Button>

@@ -9,10 +9,11 @@ export default function AppearanceTab() {
   const { t } = useI18n();
   const { theme, setTheme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [accentTheme, setAccentTheme] = useState("blue");
+  const [accentTheme, setAccentTheme] = useState("orange");
 
   useEffect(() => {
-    const savedAccentTheme = localStorage.getItem("accent-theme") || "blue";
+    const saved = localStorage.getItem("accent-theme");
+    const savedAccentTheme = (!saved || saved === "purple" || saved === "blue") ? "orange" : saved;
     document.documentElement.dataset.accentTheme = savedAccentTheme;
     setAccentTheme(savedAccentTheme);
     setMounted(true);
@@ -20,8 +21,8 @@ export default function AppearanceTab() {
 
   if (!mounted) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-12 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
+      <div className="bg-surface rounded-2xl shadow-xs border border-border p-12 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
       </div>
     );
   }
@@ -59,6 +60,7 @@ export default function AppearanceTab() {
   ];
 
   const accentThemes = [
+    { id: "orange", name: "AWS Orange (Brand)", description: "Màu cam AWS Cloud Tech chuẩn JavaBuilder", preview: "from-orange-500 to-orange-600" },
     { id: "blue", name: t("themePage.blueName"), description: t("themePage.blueDesc"), preview: "from-blue-600 to-blue-800" },
     { id: "emerald", name: t("themePage.emeraldName"), description: t("themePage.emeraldDesc"), preview: "from-emerald-600 to-emerald-800" },
     { id: "purple", name: t("themePage.purpleName"), description: t("themePage.purpleDesc"), preview: "from-purple-600 to-purple-800" },
@@ -72,7 +74,7 @@ export default function AppearanceTab() {
   ];
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-sm text-foreground">
+    <div className="bg-surface rounded-2xl border border-border shadow-sm text-foreground">
       {/* Header */}
       <div className="px-6 py-4 border-b border-border">
         <h2 className="text-lg font-semibold text-foreground">
@@ -90,15 +92,15 @@ export default function AppearanceTab() {
             <button
               key={themeOption.id}
               onClick={() => setTheme(themeOption.id)}
-              className={`relative p-4 rounded-xl border transition-all duration-200 text-left group ${
+              className={`relative p-4 rounded-xl border transition-all duration-200 text-left group cursor-pointer ${
                 theme === themeOption.id
-                  ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-sm"
-                  : "border-border hover:border-accent/50 bg-card hover:shadow-sm"
+                  ? "border-primary bg-primary-soft/50 dark:bg-orange-950/20 shadow-sm"
+                  : "border-border bg-surface hover:shadow-sm"
               }`}
             >
               {theme === themeOption.id && (
                 <div className="absolute top-3 right-3">
-                  <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                     <Check className="w-3 h-3 text-white" strokeWidth={3} />
                   </div>
                 </div>
@@ -106,7 +108,7 @@ export default function AppearanceTab() {
 
               <div className="flex flex-col items-center text-center">
                 <div className={`mb-3 transition-colors ${
-                  theme === themeOption.id ? "text-accent" : "text-muted-foreground group-hover:text-accent"
+                  theme === themeOption.id ? "text-primary" : "text-muted-foreground group-hover:text-primary"
                 }`}>
                   {themeOption.icon}
                 </div>
@@ -127,9 +129,9 @@ export default function AppearanceTab() {
 
         {/* Current Status (system) */}
         {theme === "system" && (
-          <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/20">
+          <div className="p-4 bg-primary-soft/50 dark:bg-orange-950/20 rounded-xl border border-primary/20">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-accent/10 dark:bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
                 <Info className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
@@ -166,7 +168,7 @@ export default function AppearanceTab() {
                 className={`relative overflow-hidden p-4 rounded-xl border transition-all duration-200 text-left group bg-card ${
                   accentTheme === item.id
                     ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-sm"
-                    : "border-border hover:border-accent/50 hover:shadow-sm"
+                    : "border-border hover:shadow-sm"
                 }`}
               >
                 <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br ${item.preview} opacity-10 transition-opacity duration-300 group-hover:opacity-20`} />

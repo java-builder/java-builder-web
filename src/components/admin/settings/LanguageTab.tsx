@@ -16,8 +16,8 @@ export default function LanguageTab() {
 
   if (!mounted) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-12 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
+      <div className="bg-surface rounded-2xl shadow-xs border border-border p-12 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
       </div>
     );
   }
@@ -38,7 +38,7 @@ export default function LanguageTab() {
   };
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-sm text-foreground">
+    <div className="bg-surface rounded-2xl border border-border shadow-sm text-foreground">
       {/* Header */}
       <div className="px-6 py-4 border-b border-border">
         <h2 className="text-lg font-semibold text-foreground">
@@ -60,17 +60,17 @@ export default function LanguageTab() {
               <button
                 key={loc}
                 onClick={() => setLocale(loc)}
-                className={`relative overflow-hidden p-5 rounded-2xl border transition-all duration-300 text-left group bg-card ${
+                className={`relative overflow-hidden p-5 rounded-2xl border transition-all duration-300 text-left group bg-surface cursor-pointer ${
                   isSelected
-                    ? "border-accent bg-accent/5 dark:bg-accent/10 shadow-sm"
-                    : "border-border hover:border-accent/50 hover:shadow-sm"
+                    ? "border-primary bg-primary-soft/50 dark:bg-orange-950/20 shadow-sm"
+                    : "border-border hover:shadow-sm"
                 }`}
               >
-                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-accent opacity-5 transition-opacity duration-300 group-hover:opacity-10" />
+                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary opacity-5 transition-opacity duration-300 group-hover:opacity-10" />
 
                 {isSelected && (
                   <div className="absolute top-4 right-4">
-                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-sm">
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-sm">
                       <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                     </div>
                   </div>
@@ -82,13 +82,13 @@ export default function LanguageTab() {
                     alt={option.flag}
                     width={48}
                     height={32}
-                    className="object-cover rounded-md border border-border/40 shadow-sm transition-transform duration-300 group-hover:scale-105 flex-shrink-0"
+                    className="object-cover rounded-xl border border-border/40 shadow-sm transition-transform duration-300 group-hover:scale-105 flex-shrink-0"
                   />
 
                   <div className="min-w-0 pr-6">
                     <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                       {option.nativeLabel}
-                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/40">
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border/40">
                         {loc}
                       </span>
                     </h3>

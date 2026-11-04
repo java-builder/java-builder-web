@@ -33,16 +33,16 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
   const osArch = osData?.arch || appInfo?.os?.arch || "amd64";
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-xs">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/60">
+    <div className="bg-surface border border-border rounded-2xl p-4 sm:p-5 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
+          <div className="w-10 h-10 rounded-xl bg-primary-soft border border-primary/20 flex items-center justify-center flex-shrink-0 text-primary dark:bg-orange-950/40">
             <Server className="w-5 h-5" />
           </div>
           <div>
             <h3 className="font-bold text-sm sm:text-base text-foreground flex flex-wrap items-center gap-2">
               <span>Môi trường máy chủ & Ứng dụng</span>
-              <span className="text-[11px] font-semibold font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span className="text-[11px] font-semibold font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 AWS EC2
               </span>
             </h3>
@@ -54,7 +54,7 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
 
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground font-medium">Profile:</span>
-          <span className="uppercase text-xs font-bold px-2.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+          <span className="uppercase text-xs font-bold px-3 py-1 rounded-full bg-primary-soft text-primary border border-primary/20 dark:bg-orange-950/40">
             {activeProfile}
           </span>
         </div>

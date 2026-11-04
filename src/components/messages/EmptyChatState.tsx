@@ -17,14 +17,14 @@ export default function EmptyChatState({
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="absolute top-4 left-4 p-2 rounded-xl bg-card border border-border text-foreground hover:text-accent hover:border-accent/40 shadow-xs transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center justify-center"
+          className="absolute top-4 left-4 p-2 rounded-xl bg-card border border-border text-foreground hover:text-accent shadow-xs transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center justify-center"
           title="Mở danh sách trò chuyện"
         >
           <PanelLeftOpen className="w-5 h-5 text-accent shrink-0" />
         </button>
       )}
 
-      <div className="p-4 rounded-3xl bg-accent/10 text-accent mb-4">
+      <div className="p-4 rounded-2xl bg-accent/10 text-accent mb-4">
         <MessageSquare className="w-12 h-12" />
       </div>
       <h3 className="text-lg font-bold text-foreground">

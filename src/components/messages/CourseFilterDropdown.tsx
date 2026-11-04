@@ -53,7 +53,7 @@ export default function CourseFilterDropdown({
           <button
             type="button"
             onClick={onToggleDropdown}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-input bg-background/90 text-foreground text-xs font-semibold hover:border-accent hover:text-accent focus:outline-none transition-all shadow-2xs max-w-[170px] cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-input bg-background/90 text-foreground text-xs font-semibold hover:text-accent focus:outline-none transition-all shadow-2xs max-w-[170px] cursor-pointer"
           >
             <span className="truncate">
               {selectedCourseId === "ALL"
@@ -77,7 +77,7 @@ export default function CourseFilterDropdown({
               <GraduationCap className="w-4 h-4 text-accent shrink-0" />
               Khóa học đã đăng ký
             </span>
-            <span className="px-2 py-0.5 rounded-full bg-accent/10 text-accent font-extrabold shrink-0">
+            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 font-mono font-extrabold shrink-0">
               {myCourses.length} khóa
             </span>
           </div>
@@ -145,10 +145,10 @@ export default function CourseFilterDropdown({
                   key={course.id}
                   type="button"
                   onClick={() => onSelectCourse(course.id)}
-                  className={`w-full p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex items-start justify-between gap-2.5 ${
+                  className={`w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-start justify-between gap-2.5 ${
                     isSelected
                       ? "bg-accent border-accent text-white shadow-lg shadow-accent/25"
-                      : "bg-card border-border/70 hover:border-accent/50 hover:bg-accent/5 text-foreground"
+                      : "bg-card border-border/70 hover:bg-accent/5 text-foreground"
                   }`}
                 >
                   <div className="flex items-start gap-3 min-w-0 flex-1">

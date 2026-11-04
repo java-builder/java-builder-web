@@ -47,7 +47,7 @@ export default function ForgotPasswordClient() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
       <div className="w-full max-w-md">
-        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
+        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-xs p-5 sm:p-8 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -139,7 +139,7 @@ export default function ForgotPasswordClient() {
                   autoComplete="email"
                   disabled={isLoading}
                   placeholder={t("profilePage.profileTab.email")}
-                  className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex h-11 w-full rounded-full border border-slate-200 dark:border-slate-800 bg-transparent px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300 dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   {...register("email", {
                     required: t("auth.emailRequired"),
                     pattern: {
@@ -158,7 +158,7 @@ export default function ForgotPasswordClient() {
               <button
                 type="submit"
                 disabled={!isValid || isLoading}
-                className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
+                className="inline-flex items-center justify-center gap-2 w-full h-11 bg-slate-950 text-white font-medium rounded-full hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 shadow-xs focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300 disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
               >
                 {isLoading ? t("auth.sending") : t("auth.sendResetLinkBtn")}
               </button>
@@ -176,7 +176,7 @@ export default function ForgotPasswordClient() {
                   setEmailSent(false);
                   reset();
                 }}
-                className="inline-flex items-center justify-center gap-2 w-full h-11 border border-input bg-background hover:bg-muted text-foreground font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm shadow-xs cursor-pointer active:scale-[0.99]"
+                className="inline-flex items-center justify-center gap-2 w-full h-11 border border-input bg-background hover:bg-muted text-foreground font-semibold rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300 disabled:opacity-50 transition-all duration-200 text-sm shadow-xs cursor-pointer active:scale-[0.99]"
               >
                 {t("auth.resendEmailBtn")}
               </button>

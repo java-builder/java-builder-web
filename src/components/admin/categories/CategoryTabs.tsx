@@ -28,18 +28,18 @@ export default function CategoryTabs({
   ];
 
   return (
-    <div className="relative z-20 rounded-xl border border-border bg-card p-4 shadow-sm">
+    <div className="relative z-20 rounded-2xl border border-border bg-surface p-4 shadow-sm">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 pr-2 border-r border-border/80 hidden sm:flex">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+        <div className="flex items-center gap-2 pr-2 border-r border-border hidden sm:flex">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary-soft">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
           </div>
           <span className="text-sm font-semibold text-foreground whitespace-nowrap">
             {t("admin.categories.colType")}
           </span>
         </div>
 
-        <div className="flex h-9 items-center gap-1 rounded-md border border-input bg-muted/40 p-1 shadow-xs">
+        <div className="flex h-9 items-center gap-1 rounded-full border border-border bg-muted/40 p-1 shadow-xs">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -48,22 +48,22 @@ export default function CategoryTabs({
                 key={tab.id}
                 type="button"
                 onClick={() => onChange(tab.id)}
-                className={`flex h-7 items-center gap-1.5 px-3 text-sm font-medium rounded transition-all duration-150 cursor-pointer ${
+                className={`flex h-7 items-center gap-1.5 px-3 text-sm font-medium rounded-full transition-all duration-150 cursor-pointer ${
                   isActive
-                    ? "bg-background text-foreground shadow-xs ring-1 ring-border/80 font-semibold"
+                    ? "bg-surface text-foreground shadow-xs ring-1 ring-primary/30 font-semibold"
                     : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                 }`}
               >
                 <Icon
                   className={`h-4 w-4 transition-colors ${
-                    isActive ? "text-accent" : "text-muted-foreground/70"
+                    isActive ? "text-primary" : "text-muted-foreground/70"
                   }`}
                 />
                 <span className="whitespace-nowrap">{tab.label}</span>
                 <span
                   className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                     isActive
-                      ? "bg-accent/10 text-accent"
+                      ? "bg-primary-soft text-primary"
                       : "bg-muted text-muted-foreground"
                   }`}
                 >

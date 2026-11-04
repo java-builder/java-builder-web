@@ -84,7 +84,7 @@ export const CourseCard = ({
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
                           course.courseStatus === CourseStatus.DELETED
-                            ? "bg-rose-500 animate-pulse"
+                            ? "bg-rose-500 "
                             : course.courseStatus === CourseStatus.INACTIVE
                             ? "bg-amber-500"
                             : "bg-emerald-500"

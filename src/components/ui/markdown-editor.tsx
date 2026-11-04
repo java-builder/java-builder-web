@@ -95,7 +95,7 @@ export function MarkdownEditor({
       type="button"
       onClick={onClick}
       disabled={readOnly}
-      className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-[4px] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+      className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       title={tooltip}
       aria-label={tooltip}
     >
@@ -107,7 +107,7 @@ export function MarkdownEditor({
     <div className={cn("w-full flex flex-col space-y-1.5", className)}>
       <div
         className={cn(
-          "w-full flex flex-col rounded-[6px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-xs overflow-hidden transition-colors",
+          "w-full flex flex-col rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-xs overflow-hidden transition-colors",
           error && "border-red-500 dark:border-red-500"
         )}
       >

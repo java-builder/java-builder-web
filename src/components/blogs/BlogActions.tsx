@@ -22,7 +22,7 @@ export default function BlogActions({
           <div className="flex gap-2 sm:gap-3">
             <button
               onClick={onShareFacebook}
-              className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 px-4 py-2 sm:py-2.5 bg-[#1877F2]/10 text-[#1877F2] rounded-lg hover:bg-[#1877F2]/20 transition-colors text-sm font-medium"
+              className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 px-4 py-2 sm:py-2.5 bg-[#1877F2]/10 text-[#1877F2] rounded-full hover:bg-[#1877F2]/20 transition-colors text-sm font-medium"
               aria-label="Chia sẻ Facebook"
             >
               <svg
@@ -37,7 +37,7 @@ export default function BlogActions({
             </button>
             <button
               onClick={onShareLinkedIn}
-              className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 px-4 py-2 sm:py-2.5 bg-[#0A66C2]/10 text-[#0A66C2] rounded-lg hover:bg-[#0A66C2]/20 transition-colors text-sm font-medium"
+              className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 px-4 py-2 sm:py-2.5 bg-[#0A66C2]/10 text-[#0A66C2] rounded-full hover:bg-[#0A66C2]/20 transition-colors text-sm font-medium"
               aria-label="Chia sẻ LinkedIn"
             >
               <svg

@@ -29,23 +29,23 @@ export const UserStreakReminderModal = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-card border border-border rounded-2xl shadow-xl max-w-lg w-full p-5 space-y-4">
+      <div className="bg-surface border border-border rounded-2xl shadow-2xl max-w-lg w-full p-5 space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-3">
           <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-            <Send className="w-4 h-4 text-orange-500" />
+            <Send className="w-4 h-4 text-primary" />
             Gửi Push Notification Giữ Chuỗi
           </h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="p-1 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {targetUser ? (
-          <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-xs flex items-center justify-between">
-            <span className="text-orange-700 dark:text-orange-300">
+          <div className="p-3 rounded-xl bg-primary-soft border border-primary/20 text-xs flex items-center justify-between">
+            <span className="text-primary dark:text-orange-300">
               Gửi riêng tới: <strong>{targetUser.username || targetUser.userId}</strong> ({targetUser.email})
             </span>
           </div>
@@ -63,7 +63,7 @@ export const UserStreakReminderModal = ({
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full h-9 rounded-xl border border-input bg-background px-3 text-xs focus:ring-1 focus:ring-orange-500/40"
+              className="w-full h-9 rounded-xl border border-border bg-background px-3 text-xs focus:ring-1 focus:ring-primary"
             />
           </div>
 
@@ -73,7 +73,7 @@ export const UserStreakReminderModal = ({
               rows={3}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-input bg-background text-xs focus:ring-1 focus:ring-orange-500/40"
+              className="w-full p-2.5 rounded-xl border border-border bg-background text-xs focus:ring-1 focus:ring-primary"
             />
           </div>
         </div>
@@ -83,7 +83,7 @@ export const UserStreakReminderModal = ({
             variant="outline"
             size="sm"
             onClick={onClose}
-            className="rounded-xl h-9 text-xs px-4"
+            className="rounded-full h-9 text-xs px-4 border border-border cursor-pointer"
           >
             Hủy
           </Button>
@@ -91,7 +91,7 @@ export const UserStreakReminderModal = ({
             size="sm"
             onClick={() => onSend({ userIds: targetUser ? [targetUser.userId] : undefined, title, body })}
             disabled={isSending}
-            className="rounded-xl h-9 text-xs px-4 bg-orange-500 hover:bg-orange-600 text-white"
+            className="rounded-full h-9 text-xs px-4 bg-primary hover:bg-primary-hover text-white cursor-pointer shadow-xs"
           >
             {isSending ? "Đang gửi..." : "Gửi ngay FCM"}
           </Button>

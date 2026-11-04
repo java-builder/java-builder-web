@@ -8,7 +8,7 @@ import { categoryService } from "@/services/category.service";
 import { tagService } from "@/services/tag.service";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { Tag as TagType } from "@/types/tag";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 
 interface CreateQnAModalProps {
   isOpen: boolean;
@@ -184,7 +184,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-card border border-border rounded-xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-surface border border-border rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/30">
           <div className="flex items-center gap-3">
@@ -230,7 +230,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                     key={key}
                     type="button"
                     onClick={() => applyTemplate(key)}
-                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
                       isSelected
                         ? "bg-accent text-white shadow-sm"
                         : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-transparent"
@@ -256,7 +256,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Nhập tiêu đề bài viết..."
-                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm shadow-sm transition-colors"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-full text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm shadow-sm transition-colors"
               />
             </div>
 
@@ -269,7 +269,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                 type="button"
                 onClick={() => setIsCatDropdownOpen(!isCatDropdownOpen)}
                 disabled={isLoadingCategories}
-                className="w-full px-3.5 py-2.5 bg-background border border-input rounded-lg text-foreground flex items-center justify-between text-sm hover:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent shadow-sm transition-colors"
+                className="w-full px-3.5 py-2.5 bg-background border border-input rounded-full text-foreground flex items-center justify-between text-sm focus:outline-none focus:ring-2 focus:ring-accent shadow-sm transition-colors"
               >
                 <span className="truncate">
                   {isLoadingCategories
@@ -336,7 +336,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                   }
                 }}
                 placeholder="Nhập tag kỹ thuật (ví dụ: java, spring-boot, microservices) và nhấn Enter..."
-                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm shadow-sm transition-colors"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-full text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm shadow-sm transition-colors"
               />
               {isLoadingTags && (
                 <div className="absolute right-3 top-3">
@@ -350,7 +350,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                       key={t.id}
                       type="button"
                       onClick={() => handleAddTag(t.name)}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-lg text-left text-foreground hover:bg-muted transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-full text-left text-foreground hover:bg-muted transition-colors"
                     >
                       <TagIcon className="w-3.5 h-3.5 text-accent shrink-0" />
                       <span>{t.name}</span>
@@ -367,7 +367,7 @@ export default function CreateQnAModal({ isOpen, onClose, onSuccess }: CreateQnA
                 {tags.map((t) => (
                   <span
                     key={t}
-                    className="inline-flex items-center px-3 py-1 bg-accent/15 border border-accent/20 text-accent rounded-lg text-xs font-semibold shadow-sm"
+                    className="inline-flex items-center px-3 py-1 bg-accent/15 border border-accent/20 text-accent rounded-full text-xs font-semibold shadow-sm"
                   >
                     <TagIcon className="w-3 h-3 mr-1.5" />
                     {t}

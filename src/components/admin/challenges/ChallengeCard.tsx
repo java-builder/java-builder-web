@@ -64,14 +64,14 @@ export default function ChallengeCard({
   const isActive = challenge.status === "ACTIVE";
 
   return (
-    <div className="group relative bg-card border border-border rounded-xl shadow-xs hover:shadow-md hover:border-accent/40 transition-all duration-200 overflow-hidden flex flex-col justify-between">
+    <div className="group relative bg-surface border border-border rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between">
       {/* Top Accent Gradient Bar */}
       <div
         className="h-1.5 w-full shrink-0"
         style={{
           background:
             challenge.colorGradient ||
-            "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+            "linear-gradient(135deg, #FF5A1F 0%, #ea580c 100%)",
         }}
       />
 
@@ -81,12 +81,12 @@ export default function ChallengeCard({
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${levelCfg.className}`}
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${levelCfg.className}`}
               >
                 {levelCfg.label}
               </span>
               {challenge.category && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-muted text-muted-foreground border border-border/60">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-muted text-muted-foreground border border-border">
                   {challenge.category.name}
                 </span>
               )}
@@ -102,7 +102,7 @@ export default function ChallengeCard({
               <span
                 className={`h-1.5 w-1.5 rounded-full ${
                   isActive
-                    ? "bg-emerald-500 animate-pulse"
+                    ? "bg-emerald-500 "
                     : "bg-muted-foreground"
                 }`}
               />
@@ -132,10 +132,10 @@ export default function ChallengeCard({
         </div>
 
         {/* Clean Metrics Strip */}
-        <div className="mt-4 pt-3.5 border-t border-border/80 grid grid-cols-3 divide-x divide-border/60 text-center">
+        <div className="mt-4 pt-3.5 border-t border-border grid grid-cols-3 divide-x divide-border text-center">
           <div className="px-1">
             <span className="text-[10px] uppercase font-semibold text-muted-foreground flex items-center justify-center gap-1 tracking-wider">
-              <Calendar className="h-3 w-3 text-accent" /> Lộ trình
+              <Calendar className="h-3 w-3 text-primary" /> Lộ trình
             </span>
             <p className="text-xs font-bold text-foreground mt-1">
               {challenge.totalDays} ngày
@@ -165,14 +165,14 @@ export default function ChallengeCard({
       </div>
 
       {/* Action Footer */}
-      <div className="px-4 py-3 bg-muted/20 border-t border-border flex items-center justify-between gap-2">
+      <div className="px-4 py-3 bg-background/50 dark:bg-surface/50 border-t border-border flex items-center justify-between gap-2">
         <Link href={`/admin/challenges/${challenge.id}`} className="flex-1">
           <Button
             variant="outline"
             size="sm"
-            className="w-full h-8 text-xs font-semibold gap-1.5 justify-center hover:border-accent hover:text-accent hover:bg-accent/5 cursor-pointer"
+            className="w-full h-8 text-xs font-semibold gap-1.5 justify-center hover:text-primary hover:bg-primary-soft/50 dark:hover:bg-orange-950/20 rounded-full cursor-pointer"
           >
-            <Layers className="h-3.5 w-3.5 text-accent" />
+            <Layers className="h-3.5 w-3.5 text-primary" />
             <span>Chi tiết & Lộ trình</span>
             <ArrowRight className="h-3 w-3 opacity-60 ml-auto" />
           </Button>
@@ -183,7 +183,7 @@ export default function ChallengeCard({
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 text-muted-foreground hover:text-accent cursor-pointer"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-primary rounded-full cursor-pointer"
               title="Danh sách học viên tham gia"
             >
               <Users className="h-3.5 w-3.5" />
@@ -195,7 +195,7 @@ export default function ChallengeCard({
               variant="ghost"
               size="sm"
               onClick={() => onEnroll(challenge.id, challenge.title)}
-              className="h-8 w-8 p-0 text-muted-foreground hover:text-emerald-500 cursor-pointer"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-emerald-500 rounded-full cursor-pointer"
               title="Thêm học viên vào thử thách"
             >
               <UserPlus className="h-3.5 w-3.5" />
@@ -206,7 +206,7 @@ export default function ChallengeCard({
             variant="ghost"
             size="sm"
             onClick={() => onEdit(challenge)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground cursor-pointer"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground rounded-full cursor-pointer"
             title="Chỉnh sửa thử thách"
           >
             <Edit2 className="h-3.5 w-3.5" />
@@ -216,7 +216,7 @@ export default function ChallengeCard({
             variant="ghost"
             size="sm"
             onClick={() => onDelete(challenge.id, challenge.title)}
-            className="h-8 w-8 p-0 text-destructive/80 hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+            className="h-8 w-8 p-0 text-destructive/80 hover:text-destructive hover:bg-destructive/10 rounded-full cursor-pointer"
             title="Xóa thử thách"
           >
             <Trash2 className="h-3.5 w-3.5" />

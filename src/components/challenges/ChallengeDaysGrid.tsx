@@ -25,7 +25,7 @@ export function ChallengeDaysGrid({
 }: ChallengeDaysGridProps) {
   if (isLoading) {
     return (
-      <div className="p-4 sm:p-5 rounded-b-xl animate-pulse">
+      <div className="p-4 sm:p-5 rounded-b-xl ">
         <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
           {Array.from({ length: 14 }).map((_, idx) => (
             <div
@@ -65,7 +65,7 @@ export function ChallengeDaysGrid({
 
           if (isSelected) {
             buttonClass =
-              "bg-accent border-accent text-white shadow-md scale-105 z-10 ring-2 ring-accent/40 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 font-extrabold";
+              "bg-[#FF5A1F] border-[#FF5A1F] text-white shadow-md shadow-[#FF5A1F]/25 scale-105 z-10 ring-2 ring-[#FF5A1F]/40 ring-offset-2 ring-offset-white dark:ring-offset-[#181D28] font-extrabold";
             textClass = "text-white font-black";
             iconColor = "text-white";
           } else if (isCompleted) {
@@ -80,15 +80,15 @@ export function ChallengeDaysGrid({
             iconColor = "text-emerald-600 dark:text-emerald-400";
           } else if (isLockedByPaywall) {
             buttonClass =
-              "bg-gray-50/80 border-gray-200 text-gray-400 dark:bg-slate-900/70 dark:border-slate-800 dark:text-slate-500 hover:bg-gray-100/80 dark:hover:bg-slate-850 opacity-80 hover:opacity-100";
+              "bg-[#F8F8F8] border-[#E8E8E8] text-gray-400 dark:bg-background dark:border-border dark:text-slate-500 hover:bg-[#FFF0E8]/30 dark:hover:bg-muted/50 opacity-80 hover:opacity-100";
             textClass = "text-gray-500 dark:text-slate-400 font-medium";
             iconColor = "text-amber-500/80 dark:text-amber-500";
           } else {
             // Đã mở khóa thông thường (mua hoặc có gói Premium)
             buttonClass =
-              "bg-blue-50/70 border-blue-200 hover:bg-blue-100/80 dark:bg-blue-950/30 dark:border-blue-900/60 dark:hover:bg-blue-950/50 shadow-2xs font-bold";
-            textClass = "text-blue-700 dark:text-blue-300 font-bold";
-            iconColor = "text-blue-600 dark:text-blue-400";
+              "bg-[#FFF0E8]/70 border-[#FFD8C7] hover:bg-[#FFF0E8] dark:bg-[#FF5A1F]/15 dark:border-[#FF5A1F]/30 dark:hover:bg-[#FF5A1F]/25 shadow-2xs font-bold";
+            textClass = "text-[#FF5A1F] dark:text-orange-300 font-bold";
+            iconColor = "text-[#FF5A1F]";
           }
 
           return (

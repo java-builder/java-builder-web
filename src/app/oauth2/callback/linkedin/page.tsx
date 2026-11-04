@@ -96,7 +96,7 @@ const LinkedinCallbackContent = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Đăng nhập thất bại</h2>
           <p className="text-gray-600 mb-6">{error}</p>
-          <button onClick={() => router.push("/login")} className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+          <button onClick={() => router.push("/login")} className="w-full bg-[#FF5A1F] text-white py-3 px-4 rounded-full font-medium hover:bg-[#e04b16] transition-colors cursor-pointer shadow-md shadow-[#FF5A1F]/25">
             Quay lại đăng nhập
           </button>
         </div>

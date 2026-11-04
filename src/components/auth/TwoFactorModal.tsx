@@ -139,7 +139,7 @@ export default function TwoFactorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/40 dark:bg-black/60">
-      <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-slate-800 animate-in fade-in-0 zoom-in-95 duration-300">
+      <div className="relative bg-white dark:bg-surface rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-[#E8E8E8] dark:border-border animate-in fade-in-0 zoom-in-95 duration-300">
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
@@ -185,7 +185,7 @@ export default function TwoFactorModal({
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 disabled={isLoading}
-                className="w-12 h-12 text-center text-xl font-bold border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800 rounded-xl focus:border-accent focus:ring-2 focus:ring-accent/15 focus:outline-none transition-all disabled:opacity-50 text-gray-950 dark:text-white"
+                className="w-12 h-12 text-center text-xl font-bold border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800 rounded-xl focus:border-accent focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300/15 focus:outline-none transition-all disabled:opacity-50 text-gray-950 dark:text-white"
               />
             ))}
           </div>
@@ -194,7 +194,7 @@ export default function TwoFactorModal({
             <button
               onClick={() => onSubmit()}
               disabled={isLoading || otp.join("").length !== 6}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-8 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] px-8 py-2.5 text-sm font-semibold text-white transition active:scale-95 shadow-sm shadow-[#FF5A1F]/25 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>

@@ -12,7 +12,7 @@ export default function SubscriptionBenefits({
   items,
 }: SubscriptionBenefitsProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="flex items-center gap-2 border-b border-gray-200 px-5 py-3 dark:border-slate-700">
         <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
           <Sparkles className="h-3.5 w-3.5 text-accent" />

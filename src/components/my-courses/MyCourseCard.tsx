@@ -72,7 +72,7 @@ export default function MyCourseCard({
   return (
     <Link
       href={href}
-      className="group flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface shadow-xs transition hover:shadow-md"
     >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-slate-700">
@@ -102,7 +102,7 @@ export default function MyCourseCard({
               {statusCompletedLabel}
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-semibold text-accent shadow-sm ring-1 ring-accent/20 dark:bg-slate-900/90">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-semibold text-[#FF5A1F] shadow-sm ring-1 ring-[#FF5A1F]/20 dark:bg-slate-900/90">
               <PlayCircle className="h-3 w-3" />
               {statusLearningLabel}
             </span>
@@ -115,7 +115,7 @@ export default function MyCourseCard({
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
           {course.level && (
             <span
-              className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${levelTone.pill}`}
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${levelTone.pill}`}
             >
               {levelLabel}
             </span>
@@ -126,7 +126,7 @@ export default function MyCourseCard({
           </span>
         </div>
 
-        <h3 className="line-clamp-2 text-base font-semibold leading-snug text-gray-900 transition group-hover:text-accent dark:text-white">
+        <h3 className="line-clamp-2 text-base font-semibold leading-snug text-gray-900 transition group-hover:text-[#FF5A1F] dark:text-white">
           {course.title}
         </h3>
 
@@ -172,7 +172,7 @@ export default function MyCourseCard({
 
         {/* Action button */}
         <div className="mt-auto pt-4">
-          <span className="flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-accent-600">
+          <span className="flex items-center justify-center gap-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-4 py-2 text-sm font-semibold text-white shadow-xs transition">
             <ButtonIcon className="h-4 w-4" />
             {buttonLabel}
           </span>

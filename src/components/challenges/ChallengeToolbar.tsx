@@ -1,7 +1,7 @@
 "use client";
 
 import { RotateCcw, X, Layers, CalendarDays } from "lucide-react";
-import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
+import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { Challenge } from "@/app/challenges/types";
 
 interface ChallengeToolbarProps {
@@ -31,21 +31,21 @@ export function ChallengeToolbar({
       : null;
 
   return (
-    <div className="relative z-20 rounded-t-xl border-b border-gray-100 bg-white p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-900 transition-colors">
+    <div className="relative z-20 rounded-t-xl border-b border-[#E8E8E8] bg-white p-4 sm:p-5 dark:border-border dark:bg-surface transition-colors">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Left: Title & Day Count */}
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-[#FFF0E8] dark:bg-primary/15 text-[#FF5A1F] flex items-center justify-center shrink-0">
             <CalendarDays className="w-4 h-4" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">
+              <h2 className="text-sm sm:text-base font-bold text-[#171717] dark:text-white leading-tight">
                 Lộ trình ngày học
               </h2>
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200/60 dark:border-slate-700 whitespace-nowrap">
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F8F8F8] dark:bg-background text-[#64748B] dark:text-slate-300 border border-[#E8E8E8] dark:border-border whitespace-nowrap">
                 {isLoading ? (
-                  <span className="inline-block w-14 h-3 bg-gray-300/80 dark:bg-slate-600 rounded animate-pulse" />
+                  <span className="inline-block w-14 h-3 bg-gray-300/80 dark:bg-slate-600 rounded " />
                 ) : (
                   `${filteredCount ?? challenge.days.length} ngày đã phát hành`
                 )}
@@ -65,10 +65,10 @@ export function ChallengeToolbar({
                 }
                 options={phaseOptions}
                 placeholder="Chọn giai đoạn..."
-                icon={<Layers className="h-4 w-4 text-accent shrink-0" />}
+                icon={<Layers className="h-4 w-4 text-[#FF5A1F] shrink-0" />}
                 size="md"
                 align="right"
-                triggerClassName="h-10 bg-gray-50/90 dark:bg-slate-800/90 border-gray-200 dark:border-slate-700 rounded-lg text-xs sm:text-sm px-3 shadow-2xs hover:bg-gray-100/90 dark:hover:bg-slate-800"
+                triggerClassName="h-10 bg-white dark:bg-surface border-[#E8E8E8] dark:border-border rounded-xl text-xs sm:text-sm px-3 shadow-2xs hover:bg-[#FFF0E8]/50"
               />
             </div>
           )}
@@ -77,7 +77,7 @@ export function ChallengeToolbar({
             <button
               type="button"
               onClick={onResetProgress}
-              className="h-10 px-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50/70 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800/60 transition cursor-pointer shrink-0 shadow-2xs"
+              className="h-10 px-3 inline-flex items-center gap-1.5 rounded-full border border-[#E8E8E8] bg-white text-xs font-medium text-muted-foreground hover:text-[#FF5A1F] dark:border-border dark:bg-surface rounded-full transition cursor-pointer shrink-0 shadow-2xs"
               title="Làm mới hiển thị tiến độ"
             >
               <RotateCcw className="h-3.5 w-3.5" />
@@ -89,12 +89,12 @@ export function ChallengeToolbar({
 
       {/* Active Phase Info Banner */}
       {currentPhase && (
-        <div className="mt-3.5 pt-3 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs">
+        <div className="mt-3.5 pt-3 border-t border-[#E8E8E8] dark:border-border flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="px-2 py-0.5 rounded bg-accent/10 text-accent font-bold text-[11px] shrink-0">
+            <span className="px-2 py-0.5 rounded bg-[#FFF0E8] dark:bg-primary/15 text-[#FF5A1F] font-bold text-[11px] shrink-0">
               {currentPhase.badge}
             </span>
-            <span className="font-semibold text-gray-900 dark:text-white truncate">
+            <span className="font-semibold text-[#171717] dark:text-white truncate">
               {currentPhase.title}
             </span>
             {currentPhase.daysNumber && currentPhase.daysNumber.length > 0 && (

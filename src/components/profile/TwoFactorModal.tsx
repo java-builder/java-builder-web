@@ -97,9 +97,9 @@ export default function TwoFactorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/50">
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-gray-200 dark:border-slate-800 animate-in fade-in-0 zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-surface rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-[#E8E8E8] dark:border-border animate-in fade-in-0 zoom-in-95 duration-200 overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
+        <div className="px-6 py-4 border-b border-[#E8E8E8] dark:border-border">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-gray-900 dark:text-white">
               {t("profilePage.twoFactorModal.modalTitle")}
@@ -130,7 +130,7 @@ export default function TwoFactorModal({
           <div className="space-y-5">
             {isLoading && !setupData ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF5A1F] mx-auto"></div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
                   {t("profilePage.twoFactorModal.settingUp")}
                 </p>
@@ -251,29 +251,29 @@ export default function TwoFactorModal({
                       }
                     }}
                     placeholder="000000"
-                    className="w-full px-4 py-3 text-center text-xl font-mono tracking-[0.2em] border border-gray-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark focus:border-transparent transition-all duration-200 bg-gray-50 dark:bg-slate-950/40 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 shadow-sm"
+                    className="w-full px-4 py-3 text-center text-xl font-mono tracking-[0.2em] border border-[#E8E8E8] dark:border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30 focus:border-[#FF5A1F] transition-all duration-200 bg-gray-50 dark:bg-background text-[#171717] dark:text-white placeholder-gray-400 dark:placeholder-gray-600 shadow-xs"
                     maxLength={6}
                     autoFocus
                   />
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-red-50 dark:bg-red-950/10 border border-red-200 dark:border-red-900/30 rounded-lg">
+                  <div className="p-3 bg-red-50 dark:bg-red-950/10 border border-red-200 dark:border-red-900/30 rounded-xl">
                     <p className="text-xs text-red-600 dark:text-red-400 font-medium">{error}</p>
                   </div>
                 )}
 
-                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-gray-100 dark:border-slate-800">
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#E8E8E8] dark:border-border">
                   <button
                     onClick={handleClose}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-350 bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-755 border border-gray-200 dark:border-slate-750 rounded-lg transition-colors cursor-pointer"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white hover:bg-gray-50 dark:bg-surface dark:hover:bg-[#222938] border border-[#E8E8E8] dark:border-border rounded-full transition-colors cursor-pointer shadow-xs active:scale-95"
                   >
                     {t("profilePage.securityTab.cancelBtn")}
                   </button>
                   <button
                     onClick={handleVerify}
                     disabled={isLoading || verificationCode.length !== 6}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg shadow-blue-500/10 cursor-pointer"
+                    className="px-4 py-2 text-sm font-medium text-white bg-[#FF5A1F] hover:bg-[#e04b16] rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#FF5A1F]/25 active:scale-95 cursor-pointer"
                   >
                     {isLoading ? t("profilePage.twoFactorModal.verifying") : t("profilePage.twoFactorModal.verifyBtn")}
                   </button>

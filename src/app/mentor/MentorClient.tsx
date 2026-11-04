@@ -125,8 +125,8 @@ export default function MentorClient() {
       <section className="relative py-12 md:py-16 px-4 bg-gradient-to-r from-white to-blue-50/60 dark:from-slate-900 dark:to-slate-850 border-b border-border/80 text-center">
         <div className="max-w-4xl mx-auto space-y-5">
           {/* Tech Stack Pills Banner */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-slate-800 border border-blue-200/60 dark:border-slate-700 text-xs font-semibold">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+          <div className="inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-slate-800 border border-blue-200/60 dark:border-slate-700 text-xs font-semibold">
+            <span className="w-2 h-2 rounded-full bg-accent shrink-0" />
             <span className="text-muted-foreground font-normal">Chương trình đào tạo:</span>
             <span className="font-semibold text-foreground">Java 25</span>
             <span className="text-muted-foreground/50">•</span>
@@ -147,26 +147,6 @@ export default function MentorClient() {
           <p className="max-w-3xl mx-auto text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
             Chương trình đồng hành 1-1 chuyên sâu: Thiết kế RESTful API chuẩn quốc tế, tối ưu Redis Caching, Spring Security, Spring AI, kỹ năng Git & PR thực tế doanh nghiệp đến triển khai 24/7 trên Cloud AWS.
           </p>
-
-          {/* Value Props Row */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs font-semibold">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-slate-800 border border-blue-200/60 dark:border-slate-700 text-blue-700 dark:text-blue-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-              Mentor 1-1 trực tiếp
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-slate-800 border border-emerald-200/60 dark:border-slate-700 text-emerald-700 dark:text-emerald-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Review 100% Pull Request
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-slate-800 border border-purple-200/60 dark:border-slate-700 text-purple-700 dark:text-purple-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-              RESTful API & Redis Caching
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-slate-800 border border-amber-200/60 dark:border-slate-700 text-amber-700 dark:text-amber-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-              1 Dự án Capstone thực tế
-            </span>
-          </div>
 
           {/* CTAs */}
           <div className="pt-2 flex justify-center gap-3 flex-wrap">
@@ -211,7 +191,7 @@ export default function MentorClient() {
             {modules.map((mod, idx) => (
               <div
                 key={idx}
-                className="bg-card text-card-foreground border border-border/80 rounded-xl p-6 space-y-5 shadow-xs hover:border-accent/40 hover:shadow-sm transition-all flex flex-col justify-between"
+                className="bg-card text-card-foreground border border-border/80 rounded-xl p-6 space-y-5 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   {/* Card Header: Module label & Period */}

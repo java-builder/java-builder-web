@@ -135,13 +135,13 @@ export default function EmailTemplateEditorModal({
       onClick={() => !isSubmitting && onClose()}
     >
       <div
-        className="relative bg-card rounded-2xl max-w-6xl w-full shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-border"
+        className="relative bg-surface rounded-2xl max-w-6xl w-full shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-5 border-b border-border flex items-center justify-between bg-muted/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 flex items-center justify-center shadow-xs">
               <Edit3 className="w-5 h-5" />
             </div>
             <div>
@@ -182,7 +182,7 @@ export default function EmailTemplateEditorModal({
                 placeholder="Ví dụ: verify-otp, course-activation"
                 value={templateName}
                 onChange={(e) => setTemplateName(e.target.value.replace(/\s+/g, "-"))}
-                className="w-full px-4 py-2 bg-background disabled:bg-muted/40 disabled:text-muted-foreground border border-border focus:border-accent focus:ring-2 focus:ring-accent/20 rounded-xl text-sm transition outline-none font-mono"
+                className="w-full px-4 py-2 bg-background disabled:bg-muted/40 disabled:text-muted-foreground border border-border focus:border-accent focus:ring-2 focus:ring-accent/20 rounded-full text-sm transition outline-none font-mono"
               />
               <p className="text-[11px] text-muted-foreground/85 mt-1">
                 Mã định danh duy nhất để gọi API gửi từ backend. Không chứa khoảng trắng (tự động chuyển thành dấu gạch ngang).
@@ -213,7 +213,7 @@ export default function EmailTemplateEditorModal({
                   <button
                     type="button"
                     onClick={() => setActiveEditorTab("html")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
                       activeEditorTab === "html"
                         ? "bg-accent text-white"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
@@ -224,7 +224,7 @@ export default function EmailTemplateEditorModal({
                   <button
                     type="button"
                     onClick={() => setActiveEditorTab("text")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
                       activeEditorTab === "text"
                         ? "bg-accent text-white"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
@@ -242,7 +242,7 @@ export default function EmailTemplateEditorModal({
                       type="button"
                       disabled={isSubmitting}
                       onClick={() => insertVariable("${username}")}
-                      className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-md text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95"
+                      className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-full text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95"
                     >
                       username
                     </button>
@@ -250,7 +250,7 @@ export default function EmailTemplateEditorModal({
                       type="button"
                       disabled={isSubmitting}
                       onClick={() => insertVariable("${email}")}
-                      className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-md text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95"
+                      className="px-2.5 py-1 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-full text-[10px] font-mono text-accent transition flex items-center gap-1 active:scale-95"
                     >
                       email
                     </button>
@@ -309,7 +309,7 @@ export default function EmailTemplateEditorModal({
                 <button
                   type="button"
                   onClick={() => setEditorTab("edit")}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition ${
                     editorTab === "edit"
                       ? "bg-accent/15 text-accent"
                       : "text-muted-foreground hover:bg-muted/40"
@@ -320,7 +320,7 @@ export default function EmailTemplateEditorModal({
                 <button
                   type="button"
                   onClick={() => setEditorTab("preview")}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition ${
                     editorTab === "preview"
                       ? "bg-accent/15 text-accent"
                       : "text-muted-foreground hover:bg-muted/40"
@@ -334,7 +334,7 @@ export default function EmailTemplateEditorModal({
             {/* Email visual browser mockup */}
             <div className="flex-1 flex flex-col justify-start min-h-[300px]">
               {editorTab === "edit" ? (
-                <div className="bg-white rounded-xl overflow-hidden flex flex-col shadow-md w-full max-w-[550px] mx-auto">
+                <div className="bg-surface rounded-2xl border border-border overflow-hidden flex flex-col shadow-md w-full max-w-[550px] mx-auto">
                   {/* MacOS controls mockup */}
                   <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-150 flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 bg-red-400 rounded-full"></span>
@@ -359,13 +359,13 @@ export default function EmailTemplateEditorModal({
                     />
                   ) : (
                     <div className="w-full h-[520px] bg-white flex flex-col items-center justify-center text-center p-6 text-gray-400 text-sm">
-                      <Mail className="w-12 h-12 text-gray-300 mb-3 animate-pulse" />
+                      <Mail className="w-12 h-12 text-gray-300 mb-3 " />
                       <p>Nhập mã HTML vào khung bên trái để xem giao diện xem thử...</p>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="bg-card p-5 rounded-xl border border-border w-full max-w-[550px] mx-auto shadow-md font-mono text-xs text-foreground whitespace-pre-wrap leading-relaxed h-[600px] overflow-y-auto">
+                <div className="bg-card p-5 rounded-2xl border border-border w-full max-w-[550px] mx-auto shadow-md font-mono text-xs text-foreground whitespace-pre-wrap leading-relaxed h-[600px] overflow-y-auto">
                   {textContent || "(Nhập bản văn bản thuần ở ô bên trái)"}
                 </div>
               )}
@@ -381,6 +381,7 @@ export default function EmailTemplateEditorModal({
             variant="outline"
             size="sm"
             disabled={isSubmitting}
+            className="rounded-full border border-border cursor-pointer"
           >
             Đóng
           </Button>
@@ -390,7 +391,7 @@ export default function EmailTemplateEditorModal({
             disabled={isSubmitting}
             variant="accent"
             size="sm"
-            className="gap-1.5"
+            className="gap-1.5 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
           >
             {isSubmitting ? (
               <>

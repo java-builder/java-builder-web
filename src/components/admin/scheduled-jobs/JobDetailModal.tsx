@@ -45,7 +45,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
         className="relative w-full max-w-xl sm:max-w-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-2xl border border-border bg-card text-foreground shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-2xl">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-4">
             <div className="min-w-0">
@@ -61,7 +61,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 hover:bg-muted text-muted-foreground hover:text-foreground rounded-full"
               aria-label="Đóng"
             >
               <X className="h-4 w-4" />
@@ -71,7 +71,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           {/* Body */}
           <div className="max-h-[calc(100vh-220px)] overflow-y-auto">
             {/* Job Summary Hero card */}
-            <div className="border-b border-border bg-muted/20 px-6 py-4">
+            <div className="border-b border-border bg-muted/20 dark:bg-surface px-6 py-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3.5 min-w-0 flex-1">
                   <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent font-semibold">
@@ -204,13 +204,13 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end border-t border-border bg-muted/20 px-6 py-3.5">
+          <div className="flex items-center justify-end border-t border-border bg-muted/20 dark:bg-surface px-6 py-3.5">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={onClose}
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full"
             >
               Đóng
             </Button>

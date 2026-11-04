@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { isAxiosError } from "axios";
 import toast from "react-hot-toast";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import { CourseDeleteType } from "@/types/admin";
 import CreateCourseModal from "@/components/admin/courses/CreateCourseModal";
 import EnrollUserModal from "@/components/admin/courses/EnrollUserModal";
@@ -176,7 +176,7 @@ export default function CoursesPage() {
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-6 rounded-2xl shadow-xs">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {t("admin.courses.pageTitle")}
@@ -189,7 +189,7 @@ export default function CoursesPage() {
           <Button
             variant="accent"
             onClick={() => setIsCreateModalOpen(true)}
-            className="gap-2 font-medium cursor-pointer"
+            className="gap-2 font-medium cursor-pointer rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
           >
             <Plus className="w-4.5 h-4.5" />
             {t("admin.courses.createCourseBtn")}
@@ -198,7 +198,7 @@ export default function CoursesPage() {
             variant="outline"
             onClick={() => refetch()}
             disabled={isLoading}
-            className="gap-2 text-muted-foreground hover:text-foreground font-medium cursor-pointer"
+            className="gap-2 text-muted-foreground hover:text-foreground font-medium cursor-pointer rounded-full border border-border"
           >
             <RotateCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
             {t("admin.questionContributions.refreshBtn")}
@@ -224,7 +224,7 @@ export default function CoursesPage() {
 
       {/* Error State */}
       {error && !isLoading && (
-        <div className="bg-destructive/10 border border-destructive/25 text-destructive rounded-xl p-4 flex items-center gap-3 text-sm">
+        <div className="bg-destructive/10 border border-destructive/25 text-destructive rounded-2xl p-4 flex items-center gap-3 text-sm">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           <span className="font-semibold">{(error as Error).message}</span>
         </div>
@@ -232,18 +232,18 @@ export default function CoursesPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-card border border-border rounded-xl p-6 space-y-4">
-              <div className="aspect-video bg-muted rounded-lg w-full" />
-              <div className="h-5 bg-muted rounded w-2/3" />
+            <div key={i} className="bg-surface border border-border rounded-2xl p-6 space-y-4">
+              <div className="aspect-video bg-muted rounded-xl w-full" />
+              <div className="h-5 bg-muted rounded-full w-2/3" />
               <div className="space-y-2">
-                <div className="h-4 bg-muted rounded w-full" />
-                <div className="h-4 bg-muted rounded w-5/6" />
+                <div className="h-4 bg-muted rounded-full w-full" />
+                <div className="h-4 bg-muted rounded-full w-5/6" />
               </div>
               <div className="flex justify-between pt-4 border-t border-border">
-                <div className="h-4 bg-muted rounded w-16" />
-                <div className="h-4 bg-muted rounded w-20" />
+                <div className="h-4 bg-muted rounded-full w-16" />
+                <div className="h-4 bg-muted rounded-full w-20" />
               </div>
             </div>
           ))}
@@ -253,9 +253,9 @@ export default function CoursesPage() {
       {/* Courses Grid */}
       <div className="space-y-4">
         {!isLoading && filteredCourses.length === 0 && (
-          <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 border border-border">
-              <BookOpen className="w-8 h-8 text-muted-foreground" />
+          <div className="bg-surface rounded-2xl border border-border p-12 text-center shadow-xs">
+            <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20 text-primary">
+              <BookOpen className="w-8 h-8" />
             </div>
             <h3 className="text-base font-semibold text-foreground mb-1">Chưa có khóa học nào</h3>
             <p className="text-sm text-muted-foreground mb-4">
@@ -265,7 +265,7 @@ export default function CoursesPage() {
               <Button
                 variant="accent"
                 onClick={() => setIsCreateModalOpen(true)}
-                className="gap-2 font-medium"
+                className="gap-2 font-medium rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
               >
                 <Plus className="w-4 h-4" />
                 Tạo khóa học mới

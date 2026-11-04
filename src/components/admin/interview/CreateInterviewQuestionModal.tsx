@@ -9,8 +9,8 @@ import {
   Difficulty,
 } from "@/types/interview-question";
 import { useI18n } from "@/contexts/I18nContext";
-import Swal from "sweetalert2";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import { confirmDialog } from "@/hooks/useConfirm";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 import { X } from "lucide-react";
 
 interface CreateInterviewQuestionModalProps {
@@ -127,30 +127,14 @@ export default function CreateInterviewQuestionModal({
 
     if (missingLocales.length > 0) {
       const missingList = missingLocales.map((l) => `${l.flag} ${l.label}`).join(", ");
-      const result = await Swal.fire({
+      const isConfirmed = await confirmDialog({
         title: t("admin.interviewTopics.partialLocaleTitle"),
-        html: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: t("admin.interviewTopics.partialLocaleConfirm"),
-        cancelButtonText: t("admin.interviewTopics.partialLocaleCancel"),
-        reverseButtons: true,
-        focusCancel: true,
-        width: "440px",
-        padding: "2rem",
-        backdrop: "rgba(0,0,0,0.4)",
-        customClass: {
-          popup: "swal-modern-popup",
-          title: "swal-modern-title",
-          htmlContainer: "swal-modern-text",
-          confirmButton: "swal-modern-confirm",
-          cancelButton: "swal-modern-cancel",
-          actions: "swal-modern-actions",
-          icon: "swal-modern-icon",
-        },
-        buttonsStyling: false,
+        message: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
+        type: "warning",
+        confirmText: t("admin.interviewTopics.partialLocaleConfirm"),
+        cancelText: t("admin.interviewTopics.partialLocaleCancel"),
       });
-      if (!result.isConfirmed) {
+      if (!isConfirmed) {
         setActiveLocale(missingLocales[0].code);
         return;
       }
@@ -165,8 +149,8 @@ export default function CreateInterviewQuestionModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-5xl w-full max-h-[95vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 z-10">
+      <div className="bg-surface border border-border rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-y-auto">
+        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 z-10">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
               Thêm câu hỏi mới
@@ -200,7 +184,7 @@ export default function CreateInterviewQuestionModal({
               </span>
             </label>
 
-            <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
+            <div className="flex gap-2 border-b border-border overflow-x-auto">
               {LOCALES.map((l) => {
                 const filled = isLocaleFilled(l.code);
                 const isActive = activeLocale === l.code;
@@ -216,7 +200,7 @@ export default function CreateInterviewQuestionModal({
                         : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
                     }`}
                   >
-                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-semibold bg-gray-100 dark:bg-muted text-gray-600 dark:text-gray-300 rounded">
                       {l.flag}
                     </span>
                     <span>{l.label}</span>
@@ -243,7 +227,7 @@ export default function CreateInterviewQuestionModal({
                 value={currentTrans?.question || ""}
                 onChange={(e) => updateTranslation(activeLocale, "question", e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none"
+                className="w-full px-4 py-2.5 border border-gray-300 dark:border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-background text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors resize-none"
                 placeholder="Nhập câu hỏi..."
                 disabled={isSubmitting}
               />
@@ -261,7 +245,7 @@ export default function CreateInterviewQuestionModal({
                 height={500}
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-                💡 Hỗ trợ Markdown: Dùng <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">```java</code> để format code
+                💡 Hỗ trợ Markdown: Dùng <code className="px-1 py-0.5 bg-gray-100 dark:bg-muted rounded">```java</code> để format code
               </p>
             </div>
 
@@ -290,7 +274,7 @@ export default function CreateInterviewQuestionModal({
                 onChange={(e) =>
                   setFormData({ ...formData, difficulty: e.target.value as Difficulty })
                 }
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-background text-gray-900 dark:text-white"
               >
                 <option value="EASY">Dễ</option>
                 <option value="MEDIUM">Trung bình</option>
@@ -307,7 +291,7 @@ export default function CreateInterviewQuestionModal({
                 min="1"
                 value={formData.displayOrder}
                 onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-background text-gray-900 dark:text-white"
               />
             </div>
           </div>
@@ -319,7 +303,7 @@ export default function CreateInterviewQuestionModal({
               id="isPremiumQuestionCreate"
               checked={formData.isPremium || false}
               onChange={(e) => setFormData({ ...formData, isPremium: e.target.checked })}
-              className="w-4 h-4 text-accent border-gray-300 dark:border-gray-600 rounded focus:ring-accent bg-white dark:bg-gray-700 cursor-pointer"
+              className="w-4 h-4 text-accent border-gray-300 dark:border-border rounded focus:ring-accent bg-white dark:bg-background cursor-pointer"
             />
             <label htmlFor="isPremiumQuestionCreate" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer select-none">
               Câu hỏi Premium (yêu cầu tài khoản Premium để xem đáp án)
@@ -327,19 +311,19 @@ export default function CreateInterviewQuestionModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm font-medium"
+              className="px-5 py-2 border border-gray-300 dark:border-border text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-muted transition-colors disabled:opacity-50 text-sm font-medium"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+              className="px-5 py-2 bg-accent hover:bg-accent/90 text-white rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             >
               {isSubmitting ? "Đang tạo..." : "Thêm câu hỏi"}
             </button>

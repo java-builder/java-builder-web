@@ -69,7 +69,7 @@ export const ContributionSearchBar = ({
                   key={tab.value}
                   type="button"
                   onClick={() => onStatusChange(tab.value)}
-                  className={`flex h-7.5 items-center gap-1.5 px-3 text-xs font-medium rounded-md transition-all duration-150 cursor-pointer ${
+                  className={`flex h-7.5 items-center gap-1.5 px-3 text-xs font-medium rounded-full transition-all duration-150 cursor-pointer ${
                     isActive
                       ? "bg-background text-foreground shadow-xs ring-1 ring-border/80 font-semibold"
                       : "text-muted-foreground hover:text-foreground hover:bg-background/50"

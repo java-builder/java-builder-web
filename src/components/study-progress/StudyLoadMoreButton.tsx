@@ -23,11 +23,11 @@ export default function StudyLoadMoreButton({
         type="button"
         onClick={onClick}
         disabled={isLoading}
-        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary/40 hover:text-primary disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer shadow-xs"
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
             <span>{loadingLabel}</span>
           </>
         ) : (
@@ -37,7 +37,7 @@ export default function StudyLoadMoreButton({
           </>
         )}
       </button>
-      <p className="text-[11px] tabular-nums text-gray-500 dark:text-gray-400">
+      <p className="text-xs tabular-nums text-muted-foreground font-medium">
         {pageInfo}
       </p>
     </div>

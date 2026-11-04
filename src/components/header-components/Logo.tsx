@@ -35,15 +35,15 @@ export default function Logo({ hideText = false }: LogoProps) {
           alt={appName}
           width={36}
           height={36}
-          className="object-contain"
+          className="object-contain [filter:hue-rotate(16deg)_saturate(1.25)_brightness(1.05)]"
         />
       </div>
       {!hideText && (
         <>
           {(!rawAppName && clientTitle === null) ? (
-            <span className="w-32 h-4 rounded bg-gray-200 dark:bg-slate-700 animate-pulse inline-block" />
+            <span className="w-32 h-4 rounded bg-gray-200 dark:bg-slate-700  inline-block" />
           ) : (
-            <span className="text-[0.65rem] font-semibold text-gray-500 dark:text-white tracking-wider uppercase leading-tight">
+            <span className="text-[0.65rem] font-semibold text-foreground tracking-wider uppercase leading-tight">
               {appName}
             </span>
           )}

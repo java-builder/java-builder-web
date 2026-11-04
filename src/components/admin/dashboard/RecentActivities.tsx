@@ -46,12 +46,12 @@ export const RecentActivities = () => {
           <h3 className="text-sm font-semibold text-foreground">
             {t("admin.dashboard.recentActivitiesTitle")}
           </h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="mt-0.5 text-xs text-text-muted">
             {t("admin.dashboard.recentActivitiesSubtitle")}
           </p>
         </div>
         {!loading && activities.length > 0 && (
-          <span className="whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent dark:text-accent-on-dark">
+          <span className="whitespace-nowrap rounded-full bg-muted border border-border px-2.5 py-0.5 text-xs font-semibold text-text-muted">
             {t("admin.dashboard.activitiesCount").replace("{count}", String(activities.length))}
           </span>
         )}
@@ -61,13 +61,13 @@ export const RecentActivities = () => {
       <div className="p-0">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <Loader2 className="h-5 w-5 animate-spin text-accent" />
-            <span className="text-xs text-muted-foreground">{t("admin.dashboard.loadingActivities")}</span>
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            <span className="text-xs text-text-muted">{t("admin.dashboard.loadingActivities")}</span>
           </div>
         ) : activities.length === 0 ? (
           <div className="text-center py-12">
-            <Inbox className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="text-xs text-muted-foreground">{t("admin.dashboard.noActivities")}</p>
+            <Inbox className="w-10 h-10 text-text-muted mx-auto mb-3" />
+            <p className="text-xs text-text-muted">{t("admin.dashboard.noActivities")}</p>
           </div>
         ) : (
           <Table>
@@ -76,7 +76,7 @@ export const RecentActivities = () => {
                 {COLUMN_HEADERS.map((col, idx) => (
                   <TableHead
                     key={idx}
-                    className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${col.className}`}
+                    className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-muted ${col.className}`}
                   >
                     {col.key}
                   </TableHead>
@@ -100,7 +100,7 @@ export const RecentActivities = () => {
                             unoptimized
                           />
                         ) : (
-                          <div className="w-8 h-8 bg-gradient-to-r from-accent to-accent-600 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-sm">
+                          <div className="w-8 h-8 bg-primary-soft border border-primary-soft-border rounded-full flex items-center justify-center text-[10px] font-bold text-primary uppercase">
                             {getInitials(activity.userName)}
                           </div>
                         )}
@@ -113,10 +113,10 @@ export const RecentActivities = () => {
 
                   {/* Content */}
                   <TableCell className="px-4 py-3.5 align-middle max-w-[200px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[500px] whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium w-full">
-                      <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[9px] font-bold ring-1 ring-inset shrink-0 ${activity.transactionType === TransactionType.PAYIN
-                        ? "bg-emerald-50 text-emerald-700 ring-emerald-600/10 dark:bg-emerald-950/20 dark:text-emerald-450 dark:ring-emerald-900/30"
-                        : "bg-blue-50 text-blue-700 ring-blue-600/10 dark:bg-blue-950/20 dark:text-blue-450 dark:ring-blue-900/30"
+                    <div className="flex items-center gap-2 text-xs text-text-muted font-medium w-full">
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border shrink-0 ${activity.transactionType === TransactionType.PAYIN
+                        ? "bg-secondary-soft text-secondary border-secondary-soft-border"
+                        : "bg-primary-soft text-primary border-primary-soft-border"
                         }`}>
                         {activity.transactionType === TransactionType.PAYIN ? t("admin.dashboard.buyCourse") : t("admin.dashboard.subscribePlan")}
                       </span>
@@ -127,19 +127,19 @@ export const RecentActivities = () => {
                   </TableCell>
 
                   {/* Amount */}
-                  <TableCell className="px-4 py-3.5 align-middle text-right text-xs font-bold text-accent dark:text-accent-on-dark whitespace-nowrap">
+                  <TableCell className="px-4 py-3.5 align-middle text-right text-xs font-bold text-foreground whitespace-nowrap">
                     {formatCurrency(activity.price)}
                   </TableCell>
 
                   {/* Time */}
-                  <TableCell className="px-4 py-3.5 align-middle text-right text-xs text-muted-foreground font-medium whitespace-nowrap">
+                  <TableCell className="px-4 py-3.5 align-middle text-right text-xs text-text-muted font-medium whitespace-nowrap">
                     {activity.timeAgo}
                   </TableCell>
 
                   {/* Status */}
                   <TableCell className="px-4 py-3.5 align-middle text-right whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50/60 dark:bg-emerald-950/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 ring-1 ring-inset ring-emerald-600/10 dark:ring-emerald-900/30">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-0.5 text-[10px] font-semibold text-success border border-success-border">
+                      <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
                       {t("admin.dashboard.statusSuccess")}
                     </span>
                   </TableCell>

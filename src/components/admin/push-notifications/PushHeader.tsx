@@ -17,7 +17,7 @@ export default function PushHeader({ totalCount, onOpenCreate }: PushHeaderProps
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl flex items-center gap-2.5">
-          <Radio className="h-7 w-7 text-accent" />
+          <Radio className="h-7 w-7 text-primary" />
           {t("admin.pushNotifications.pageTitle")}
         </h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
@@ -26,7 +26,7 @@ export default function PushHeader({ totalCount, onOpenCreate }: PushHeaderProps
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent dark:text-accent-on-dark">
+        <span className="whitespace-nowrap rounded-full bg-primary-soft border border-primary/20 px-3 py-1 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
           {totalCount} {t("admin.pushNotifications.colTitle")}
         </span>
 

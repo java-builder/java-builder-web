@@ -35,12 +35,12 @@ export default function CourseContentTab({
 }: CourseContentTabProps) {
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center bg-card border border-border p-4 rounded-xl shadow-sm">
+      <div className="flex justify-between items-center bg-surface border border-border p-4 rounded-2xl shadow-xs">
         <h3 className="font-bold text-foreground">Danh sách chương ({chapters.length})</h3>
         <Button
           variant="accent"
           onClick={onAddChapter}
-          className="gap-2 font-medium"
+          className="gap-2 font-medium rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
         >
           <Plus className="w-4.5 h-4.5" />
           Thêm chương
@@ -48,7 +48,7 @@ export default function CourseContentTab({
       </div>
 
       {chapters.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl bg-card">
+        <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-2xl bg-surface">
           <BookOpen className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" />
           <p className="font-semibold text-foreground">Chưa có chương nào</p>
           <p className="text-sm">Nhấn &quot;Thêm chương&quot; để thiết lập bài giảng khóa học</p>
@@ -56,7 +56,7 @@ export default function CourseContentTab({
       ) : (
         <div className="space-y-3">
           {chapters.map((chapter, index) => (
-            <div key={chapter.id} className="border border-border rounded-xl overflow-hidden bg-card">
+            <div key={chapter.id} className="border border-border rounded-2xl overflow-hidden bg-surface">
               <div
                 className="flex items-center justify-between px-4 py-3.5 bg-muted/20 cursor-pointer hover:bg-muted/40 transition-colors"
                 onClick={() => onToggleChapter(chapter.id)}
@@ -65,7 +65,7 @@ export default function CourseContentTab({
                   <ChevronRight
                     className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${expandedChapters.has(chapter.id) ? "rotate-90" : ""}`}
                   />
-                  <span className="text-xs font-bold text-accent dark:text-accent-on-dark uppercase tracking-wider whitespace-nowrap bg-accent/10 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold text-primary uppercase tracking-wider whitespace-nowrap bg-primary-soft px-2.5 py-0.5 rounded-full">
                     Chương {index + 1}
                   </span>
                   <span className="font-semibold text-foreground truncate" title={chapter.chapterName}>

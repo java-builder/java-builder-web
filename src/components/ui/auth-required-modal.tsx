@@ -35,11 +35,11 @@ export default function AuthRequiredModal({
       onClick={showLater ? onClose : undefined}
     >
       <div
-        className="w-full max-w-sm overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-[#262d3d] bg-white shadow-2xl dark:bg-[#181d28]"
+        className="w-full max-w-sm overflow-hidden rounded-2xl border border-border bg-white shadow-2xl dark:bg-surface"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF0E8] text-[#FF5A1F]">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-soft text-primary">
             <UserCircle2 className="h-6 w-6" />
           </div>
 
@@ -55,14 +55,14 @@ export default function AuthRequiredModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-xl border border-[#E8E8E8] bg-white px-3 py-2 text-sm font-medium text-[#171717] transition hover:bg-[#FFF0E8]/50 dark:border-[#262d3d] dark:bg-[#181d28] dark:text-slate-200 dark:hover:bg-slate-800"
+                className="flex-1 rounded-full border border-border bg-white px-3 py-2 text-sm font-medium text-foreground transition hover:bg-primary-soft/50 dark:border-border dark:bg-surface dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 {t("common.later")}
               </button>
             )}
             <Link
               href={loginHref}
-              className="flex-1 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white border border-transparent transition hover:bg-accent-600 text-center"
+              className="flex-1 rounded-full bg-accent px-3 py-2 text-sm font-semibold text-white border border-transparent transition hover:bg-accent-600 text-center"
             >
               {t("auth.login")}
             </Link>

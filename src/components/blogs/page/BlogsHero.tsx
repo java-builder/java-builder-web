@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, Compass, Sparkles } from "lucide-react";
+import { BookOpen, Compass, ArrowRight } from "lucide-react";
 
 interface BlogsHeroProps {
   badgeLabel: string;
@@ -22,47 +22,48 @@ export default function BlogsHero({
   tagLabels,
 }: BlogsHeroProps) {
   return (
-    <section className="relative overflow-hidden border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+    <section className="relative overflow-hidden border-b border-border bg-surface">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--accent-rgb),0.08),transparent_60%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,90,31,0.08),transparent_60%)]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-7">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/20">
-              <Sparkles className="h-3 w-3" />
-              {badgeLabel}
+          <div className="lg:col-span-7 space-y-3.5 sm:space-y-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary-soft text-primary border border-primary/20 shadow-2xs">
+              <svg className="w-2.5 h-2.5 fill-current shrink-0" viewBox="0 0 24 24">
+                <polygon points="6,3 20,12 6,21" />
+              </svg>
+              <span>{badgeLabel}</span>
             </span>
 
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl">
+            <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl leading-tight">
               {titleStart}{" "}
-              <span className="bg-gradient-to-r from-accent to-accent-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-purple-400">
-                {titleAccent}
-              </span>
+              <span className="text-primary">{titleAccent}</span>
             </h1>
 
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:text-lg">
+            <p className="max-w-2xl text-sm sm:text-base leading-relaxed text-text-muted">
               {description}
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="pt-1 sm:pt-2 flex flex-wrap gap-3">
               <Link
                 href="#blogs-list"
-                className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary-hover px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-primary/25 transition active:scale-95 cursor-pointer whitespace-nowrap"
               >
                 <Compass className="h-4 w-4" />
-                {exploreLabel}
+                <span>{exploreLabel}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
             {tagLabels.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-1.5">
+              <div className="pt-2 sm:pt-3 flex flex-wrap gap-2">
                 {tagLabels.map((label) => (
                   <span
                     key={label}
-                    className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:border-slate-700 dark:bg-slate-700/60 dark:text-gray-200"
+                    className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground hover:text-primary transition-colors"
                   >
                     {label}
                   </span>
@@ -72,18 +73,18 @@ export default function BlogsHero({
           </div>
 
           <div className="hidden lg:col-span-5 lg:block">
-            <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 dark:border-slate-700 dark:bg-slate-900/40">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-slate-900 shadow-lg">
               <Image
                 src="/banners/banner-blog.jpg"
-                alt=""
+                alt="JavaBuilder Blogs"
                 width={600}
                 height={360}
                 className="h-64 w-full object-cover"
                 priority
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-accent/10 via-transparent to-transparent" />
-              <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 backdrop-blur dark:bg-slate-900/80 dark:text-gray-200 dark:ring-slate-700">
-                <BookOpen className="h-3 w-3 text-accent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/15 via-transparent to-transparent" />
+              <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-surface/95 px-3 py-1 text-[11px] font-semibold text-foreground shadow-xs border border-border backdrop-blur">
+                <BookOpen className="h-3.5 w-3.5 text-primary" />
                 JavaBuilder
               </span>
             </div>

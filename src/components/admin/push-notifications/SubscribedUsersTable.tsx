@@ -99,7 +99,7 @@ export default function SubscribedUsersTable({
                   {/* User Info */}
                   <TableCell className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-sm border border-accent/20 shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 font-bold flex items-center justify-center text-sm shrink-0">
                         {user.avatarUrl ? (
                           <Image
                             src={user.avatarUrl}

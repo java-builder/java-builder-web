@@ -13,7 +13,7 @@ import {
   BlogsHero,
   BlogsLoadingState,
 } from "@/components/blogs/page";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { useI18n } from "@/contexts/I18nContext";
 
 const PAGE_SIZE = 20;
@@ -119,7 +119,7 @@ export default function BlogsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-[#F8F8F8] dark:bg-background transition-colors pb-16">
       <BlogsHero
         badgeLabel={t("blogsPage.heroBadge")}
         titleStart={t("blogsPage.heroTitleStart")}

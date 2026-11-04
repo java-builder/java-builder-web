@@ -11,7 +11,7 @@ import {
   Save,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import { CustomSelect, SelectOption } from "@/components/ui/select";
 import {
   ChallengeTaskResponse,
   CreateChallengeTaskRequest,
@@ -158,11 +158,11 @@ export default function TaskModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-2xl rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
+      <div className="bg-surface border border-border w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border bg-muted/30 shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="p-2 rounded-lg bg-accent/10 text-accent shrink-0">
+            <div className="p-2 rounded-xl bg-primary-soft text-primary border border-primary/20 shrink-0">
               <CheckSquare className="h-5 w-5" />
             </div>
             <div className="min-w-0">
@@ -240,7 +240,7 @@ export default function TaskModal({
             </div>
 
             {resourceLinks.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-border/80 bg-muted/20 p-3.5 text-center text-xs text-muted-foreground">
+              <div className="rounded-full border border-dashed border-border/80 bg-muted/20 p-3.5 text-center text-xs text-muted-foreground">
                 {t("taskResourceLinks.ui.emptyState" as TranslationKey)}
               </div>
             ) : (
@@ -376,7 +376,7 @@ export default function TaskModal({
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full border border-border"
             >
               Hủy
             </Button>
@@ -384,7 +384,7 @@ export default function TaskModal({
               type="submit"
               variant="accent"
               disabled={isSubmitting}
-              className="gap-2 font-semibold cursor-pointer"
+              className="gap-2 font-semibold cursor-pointer rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
             >
               {isSubmitting ? (
                 <>

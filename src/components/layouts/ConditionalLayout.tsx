@@ -3,11 +3,16 @@
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { useSidebar } from "@/contexts/SidebarContext";
+import TopHeader from "./TopHeader";
 
-export default function ConditionalLayout({ children }: { children: ReactNode }) {
+export default function ConditionalLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const pathname = usePathname();
   const { isCollapsed } = useSidebar();
-  
+
   const noMarginRoutes = [
     "/admin",
     "/login",
@@ -19,13 +24,19 @@ export default function ConditionalLayout({ children }: { children: ReactNode })
     "/oauth2/callback",
     "/learn",
     "/docs",
-    "/courses/",
   ];
-  
-  const shouldRemoveMargin = noMarginRoutes.some(route => pathname?.startsWith(route));
-  
+
+  const shouldRemoveMargin = noMarginRoutes.some((route) =>
+    pathname?.startsWith(route)
+  );
+
   return (
-    <div className={`transition-all duration-300 ${shouldRemoveMargin ? "" : isCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>
+    <div
+      className={`transition-all duration-300 ${
+        shouldRemoveMargin ? "" : isCollapsed ? "lg:ml-20" : "lg:ml-64"
+      }`}
+    >
+      {!shouldRemoveMargin && <TopHeader />}
       {children}
     </div>
   );

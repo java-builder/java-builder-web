@@ -4,30 +4,36 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-[8px] text-sm font-medium whitespace-nowrap transition-all outline-none select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]/30 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
+      shape: {
+        default: "rounded-full",
+        form: "rounded-full",
+        pill: "rounded-full",
+        square: "rounded-xl",
+      },
       variant: {
         default:
-          "bg-[#FF5A1F] text-white hover:bg-[#e04b16] shadow-xs active:scale-[0.98]",
+          "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/25 active:scale-95",
         primary:
-          "bg-[#FF5A1F] text-white hover:bg-[#e04b16] shadow-xs active:scale-[0.98]",
+          "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/25 active:scale-95",
         secondary:
-          "border border-[#E8E8E8] bg-white text-[#171717] hover:bg-[#FFF0E8]/60 dark:border-[#262d3d] dark:bg-[#181d28] dark:text-slate-100 dark:hover:bg-slate-800 shadow-xs",
+          "border border-border bg-surface text-foreground hover:bg-muted shadow-xs active:scale-95",
         outline:
-          "border border-[#E8E8E8] bg-transparent text-[#171717] hover:bg-[#FFF0E8]/60 dark:border-[#262d3d] dark:text-slate-100 dark:hover:bg-slate-800",
+          "border border-border bg-transparent text-foreground hover:bg-muted active:scale-95",
         ghost:
-          "text-[#171717] hover:bg-[#FFF0E8]/60 dark:text-slate-300 dark:hover:bg-slate-800",
+          "text-foreground hover:bg-muted active:scale-95",
         destructive:
-          "bg-red-600 text-white hover:bg-red-700 shadow-xs",
+          "bg-error text-white hover:opacity-90 shadow-sm shadow-error/20 active:scale-95",
         link:
-          "text-[#FF5A1F] underline-offset-4 hover:underline",
+          "text-primary underline-offset-4 hover:underline",
         accent:
-          "bg-[#FF5A1F] text-white hover:bg-[#e04b16] shadow-xs active:scale-[0.98]",
+          "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/25 active:scale-95",
         navy:
-          "bg-[#26344D] text-white hover:bg-[#1c273a] shadow-xs active:scale-[0.98]",
+          "bg-secondary text-secondary-foreground hover:bg-secondary-hover shadow-sm shadow-secondary/20 active:scale-95",
         orange:
-          "bg-[#FF9900] text-white hover:bg-[#e68a00] shadow-xs active:scale-[0.98]",
+          "bg-warning text-white hover:opacity-90 shadow-sm shadow-warning/20 active:scale-95",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -43,6 +49,7 @@ const buttonVariants = cva(
     },
     defaultVariants: {
       variant: "default",
+      shape: "default",
       size: "default",
     },
   }
@@ -60,6 +67,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     {
       className,
       variant = "default",
+      shape = "default",
       size = "default",
       loading = false,
       asChild = false,
@@ -82,7 +90,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         "aria-disabled":
           child.props?.["aria-disabled"] ?? (isDisabled ? true : undefined),
         className: cn(
-          buttonVariants({ variant, size, className }),
+          buttonVariants({ variant, shape, size, className }),
           child.props?.className
         ),
         children: (
@@ -99,7 +107,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         data-slot="button"
         disabled={isDisabled}
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, shape, size, className }))}
         {...props}
       >
         {loading && <Loader2 className="animate-spin h-4 w-4 shrink-0" />}

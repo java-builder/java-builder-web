@@ -70,11 +70,11 @@ export default function PhaseModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-surface border border-border w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-accent/10 text-accent">
+            <div className="p-2 rounded-xl bg-primary-soft text-primary border border-primary/20">
               <Layers className="h-5 w-5" />
             </div>
             <div>
@@ -89,7 +89,7 @@ export default function PhaseModal({
           <button
             onClick={onClose}
             type="button"
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -107,7 +107,7 @@ export default function PhaseModal({
               required
               value={phaseNumber}
               onChange={(e) => setPhaseNumber(parseInt(e.target.value) || 1)}
-              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+              className="flex h-10 w-full rounded-xl border border-border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
             />
           </div>
 
@@ -121,7 +121,7 @@ export default function PhaseModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="VD: Nền tảng & Khởi động Spring Boot 3"
-              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+              className="flex h-10 w-full rounded-xl border border-border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
             />
           </div>
 
@@ -132,6 +132,7 @@ export default function PhaseModal({
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
+              className="rounded-full border border-border cursor-pointer"
             >
               Hủy
             </Button>
@@ -139,7 +140,7 @@ export default function PhaseModal({
               type="submit"
               variant="accent"
               disabled={isSubmitting}
-              className="gap-2 font-semibold"
+              className="gap-2 font-semibold rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
             >
               {isSubmitting ? (
                 <>

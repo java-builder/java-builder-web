@@ -8,7 +8,7 @@ interface StepCardProps {
 
 export default function StepCard({ title, description, children }: StepCardProps) {
   return (
-    <div className="relative z-20 rounded-2xl border border-border bg-card shadow-sm">
+    <div className="relative z-20 rounded-2xl border border-border bg-surface shadow-xs">
       <div className="border-b border-border px-5 py-3 rounded-t-2xl">
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>
         {description && (

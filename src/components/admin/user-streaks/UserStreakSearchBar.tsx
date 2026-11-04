@@ -23,7 +23,7 @@ export const UserStreakSearchBar = ({
   const isDebouncing = search !== debouncedSearch;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-4 rounded-xl shadow-sm">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-4 rounded-2xl shadow-xs">
       {/* Search Input */}
       <div className="relative flex-1 max-w-md w-full">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -32,10 +32,10 @@ export const UserStreakSearchBar = ({
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           placeholder={t("admin.userStreaks.searchPlaceholder")}
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-9 pr-9 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="flex h-9 w-full rounded-xl border border-border bg-transparent px-3 py-1 pl-9 pr-9 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
         />
         {isDebouncing ? (
-          <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-accent" />
+          <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
         ) : search ? (
           <button
             onClick={() => onSearch("")}
@@ -47,7 +47,7 @@ export const UserStreakSearchBar = ({
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-0.5 bg-muted/60 p-1 rounded-xl border border-border/50 text-xs overflow-x-auto max-w-full shrink-0">
+      <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-full border border-border text-xs overflow-x-auto max-w-full shrink-0">
         {(
           [
             { label: t("admin.documents.filterAllTypes"), value: "ALL" },
@@ -59,9 +59,9 @@ export const UserStreakSearchBar = ({
           <button
             key={tab.value}
             onClick={() => onStatusChange(tab.value)}
-            className={`px-3 py-1 rounded-lg transition-all font-medium cursor-pointer ${
+            className={`px-3 py-1 rounded-full transition-all font-medium cursor-pointer ${
               selectedStatus === tab.value
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 font-semibold shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

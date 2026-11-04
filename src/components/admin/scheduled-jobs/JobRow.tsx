@@ -26,7 +26,7 @@ export default function JobRow({ job, onClick }: JobRowProps) {
 
       {/* Type */}
       <td className="whitespace-nowrap px-4 py-3">
-        <span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-[11px] font-semibold text-foreground/80 border border-border/40">
+        <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-semibold text-foreground/80 border border-border/40">
           {job.type ?? job.jobType}
         </span>
       </td>

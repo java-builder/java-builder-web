@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { CourseDetailResponse, ChapterDetailResponse, LessonDetailResponse } from "@/types/course";
 import { LessonFormat } from "@/types/lesson";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import VideoPlayer from "@/components/common/VideoPlayer";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 import { ChapterModal, LessonModal, CourseEditHeader, CourseContentTab } from "@/components/admin/courses/edit";
@@ -314,7 +314,7 @@ export default function CourseContentPage() {
   if (isLoading) {
     return (
       <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 animate-pulse">
+        <div className="bg-white rounded-xl p-6 border border-gray-200 ">
           <div className="h-8 bg-muted rounded w-48 mb-4" />
           <div className="space-y-4">
             <div className="h-4 bg-muted rounded w-32" />
@@ -459,8 +459,8 @@ export default function CourseContentPage() {
       {/* Preview Modal */}
       {previewModal.isOpen && previewModal.lesson && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-slate-700">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-700">
+          <div className="bg-surface rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-border">
+            <div className="flex items-center justify-between p-4 border-b border-border">
               <div>
                 <h3 className="font-bold text-lg text-gray-900 dark:text-white">
                   {previewModal.lesson.lessonName}
@@ -471,14 +471,14 @@ export default function CourseContentPage() {
               </div>
               <button
                 onClick={() => setPreviewModal({ isOpen: false, lesson: null })}
-                className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 rounded-lg transition-colors cursor-pointer"
+                className="p-1.5 hover:bg-gray-100 dark:hover:bg-muted text-gray-500 rounded-lg transition-colors cursor-pointer"
               >
                 ✕
               </button>
             </div>
             <div className="p-6 overflow-y-auto flex-1 space-y-4">
               {previewModal.lesson.description && (
-                <div className="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg text-sm text-gray-700 dark:text-gray-300">
+                <div className="p-3 bg-gray-50 dark:bg-muted/50 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                   {previewModal.lesson.description}
                 </div>
               )}
@@ -488,7 +488,7 @@ export default function CourseContentPage() {
                     <VideoPlayer src={previewModal.lesson.videoUrl} className="w-full h-full" />
                   </div>
                 ) : (
-                  <div className="aspect-video w-full rounded-lg bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-gray-400">
+                  <div className="aspect-video w-full rounded-lg bg-gray-100 dark:bg-muted flex items-center justify-center text-gray-400">
                     Chưa có video
                   </div>
                 )

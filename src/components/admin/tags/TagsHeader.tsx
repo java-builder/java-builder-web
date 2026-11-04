@@ -23,7 +23,7 @@ export default function TagsHeader({ totalCount, onCreate }: TagsHeaderProps) {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-soft border border-primary/20 px-3 py-1 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
           {totalCount.toLocaleString()} {t("admin.tags.colName")}
         </span>
         <Button

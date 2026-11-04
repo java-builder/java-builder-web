@@ -8,7 +8,7 @@ import {
   Locale,
 } from "@/types/question-set";
 import { useI18n } from "@/contexts/I18nContext";
-import Swal from "sweetalert2";
+import { confirmDialog } from "@/hooks/useConfirm";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -147,30 +147,14 @@ export default function CreateQuestionSetModal({
 
     if (missingLocales.length > 0) {
       const missingList = missingLocales.map((l) => `${l.flag} ${l.label}`).join(", ");
-      const result = await Swal.fire({
+      const isConfirmed = await confirmDialog({
         title: t("admin.interviewTopics.partialLocaleTitle"),
-        html: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: t("admin.interviewTopics.partialLocaleConfirm"),
-        cancelButtonText: t("admin.interviewTopics.partialLocaleCancel"),
-        reverseButtons: true,
-        focusCancel: true,
-        width: "440px",
-        padding: "2rem",
-        backdrop: "rgba(0,0,0,0.4)",
-        customClass: {
-          popup: "swal-modern-popup",
-          title: "swal-modern-title",
-          htmlContainer: "swal-modern-text",
-          confirmButton: "swal-modern-confirm",
-          cancelButton: "swal-modern-cancel",
-          actions: "swal-modern-actions",
-          icon: "swal-modern-icon",
-        },
-        buttonsStyling: false,
+        message: t("admin.interviewTopics.partialLocaleMessage").replace("{missing}", missingList),
+        type: "warning",
+        confirmText: t("admin.interviewTopics.partialLocaleConfirm"),
+        cancelText: t("admin.interviewTopics.partialLocaleCancel"),
       });
-      if (!result.isConfirmed) {
+      if (!isConfirmed) {
         setActiveLocale(missingLocales[0].code);
         return;
       }
@@ -185,8 +169,8 @@ export default function CreateQuestionSetModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border">
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 z-10">
+      <div className="bg-surface border border-border rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 z-10">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-foreground">
@@ -272,7 +256,7 @@ export default function CreateQuestionSetModal({
                         ? "例: OOPの基礎"
                         : "예: OOP 기초"
                 }
-                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
+                className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors"
                 disabled={isSubmitting}
               />
             </div>
@@ -286,7 +270,7 @@ export default function CreateQuestionSetModal({
                 onChange={(e) => updateTranslation(activeLocale, "description", e.target.value)}
                 placeholder="Mô tả ngắn về bộ câu hỏi..."
                 rows={3}
-                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
+                className="w-full px-4 py-2.5 border border-border rounded-full focus:ring-2 focus:ring-accent focus:border-transparent bg-background text-foreground placeholder-muted-foreground transition-colors resize-none"
                 disabled={isSubmitting}
               />
             </div>
@@ -358,7 +342,7 @@ export default function CreateQuestionSetModal({
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`px-2 py-1 text-xs rounded-md transition-colors ${isTagSelected(tag)
+                    className={`px-2 py-1 text-xs rounded-full transition-colors ${isTagSelected(tag)
                       ? "bg-accent text-white"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                       }`}
@@ -378,7 +362,7 @@ export default function CreateQuestionSetModal({
                 min="1"
                 value={formData.displayOrder}
                 onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
-                className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                className="w-full px-4 py-2 bg-background border border-border text-foreground rounded-full focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
               />
             </div>
           </div>

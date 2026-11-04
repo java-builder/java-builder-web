@@ -322,7 +322,7 @@ export default function ConversationList({
                 <span>Thành viên</span>
               </span>
               {isSearchingApi ? (
-                <span className="flex items-center gap-1 text-[10px] text-accent font-semibold animate-pulse">
+                <span className="flex items-center gap-1 text-[10px] text-accent font-semibold ">
                   <Loader2 className="w-3 h-3 animate-spin" /> Đang tìm...
                 </span>
               ) : (
@@ -337,7 +337,7 @@ export default function ConversationList({
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 p-2.5 rounded-2xl bg-muted/30 border border-border/40 animate-pulse"
+                    className="flex items-center gap-3 p-2.5 rounded-2xl bg-muted/30 border border-border/40 "
                   >
                     <div className="w-9 h-9 rounded-full bg-muted/80 shrink-0" />
                     <div className="flex-1 space-y-1.5">
@@ -375,7 +375,7 @@ export default function ConversationList({
                       type="button"
                       onClick={handleLoadMoreSearch}
                       disabled={isLoadingMoreSearch}
-                      className="w-full py-2 px-3 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      className="w-full py-2 px-3 rounded-full bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
                     >
                       {isLoadingMoreSearch ? (
                         <>
@@ -402,7 +402,7 @@ export default function ConversationList({
             </div>
 
             {isLoadingAdmin ? (
-              <div className="p-3 flex items-center gap-3 animate-pulse">
+              <div className="p-3 flex items-center gap-3 ">
                 <div className="w-11 h-11 rounded-full bg-muted/80 shrink-0" />
                 <div className="flex-1 space-y-1.5">
                   <div className="h-3.5 bg-muted/80 rounded-md w-32" />

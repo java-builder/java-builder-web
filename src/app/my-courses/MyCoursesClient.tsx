@@ -11,7 +11,7 @@ import {
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { formatShortDate } from "@/utils/dateUtils";
 import { useI18n } from "@/contexts/I18nContext";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import {
   MyCourseCard,
   MyCoursesEmptyState,
@@ -112,9 +112,9 @@ export default function MyCoursesClient() {
 
   if (!mounted || userLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
         <div className="flex min-h-screen items-center justify-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-accent" />
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#FF5A1F]" />
         </div>
       </div>
     );
@@ -122,7 +122,7 @@ export default function MyCoursesClient() {
 
   if (isLoading && courses.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
         <div className="mx-auto max-w-6xl">
           <MyCoursesLoadingState />
         </div>
@@ -131,7 +131,7 @@ export default function MyCoursesClient() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-[#F8F8F8] dark:bg-background">
       <div className="mx-auto max-w-6xl space-y-4 p-4 sm:space-y-6 sm:p-6">
         <MyCoursesHeader
           title={t("myCoursesPage.title")}
@@ -167,7 +167,7 @@ export default function MyCoursesClient() {
             exploreLabel={t("myCoursesPage.exploreCourses")}
           />
         ) : filteredCourses.length === 0 ? (
-          <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-800">
+          <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface p-12 text-center shadow-xs">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {t("myCoursesPage.noResultsForFilter")}
             </p>

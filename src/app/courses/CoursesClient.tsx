@@ -9,7 +9,7 @@ import {
   CoursesHero,
   CoursesLoadingState,
 } from "@/components/courses/page";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { courseApi } from "@/services/course.service";
 import { CourseDetailResponse, CourseLevel } from "@/types/course";
 import { useI18n } from "@/contexts/I18nContext";
@@ -81,7 +81,7 @@ export default function CoursesPage() {
   }, [fetchCourses]);
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-[#F8F8F8] dark:bg-background">
       <CoursesHero
         badgeLabel={t("coursesPage.heroBadge")}
         titleStart={t("coursesPage.heroTitleStart")}

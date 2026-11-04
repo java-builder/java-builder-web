@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Loader2, Sparkles, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import { CustomSelect, SelectOption } from "@/components/ui/select";
 import {
   ChallengeLevel,
   ChallengeResponse,
@@ -177,11 +177,11 @@ export default function ChallengeModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-surface border border-border w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-accent/10 text-accent">
+            <div className="p-2 rounded-xl bg-primary-soft text-primary border border-primary/20">
               <Flame className="h-5 w-5" />
             </div>
             <div>
@@ -285,7 +285,7 @@ export default function ChallengeModal({
                   setPriceDisplay("");
                 }
               }}
-              className="w-4 h-4 rounded-[4px] accent-emerald-600 cursor-pointer shrink-0"
+              className="w-4 h-4 rounded border-border accent-accent cursor-pointer shrink-0"
             />
           </div>
 
@@ -411,6 +411,7 @@ export default function ChallengeModal({
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
+              className="rounded-full border border-border cursor-pointer"
             >
               Hủy
             </Button>
@@ -418,7 +419,7 @@ export default function ChallengeModal({
               type="submit"
               variant="accent"
               disabled={isSubmitting}
-              className="gap-2 font-semibold"
+              className="gap-2 font-semibold rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
             >
               {isSubmitting ? (
                 <>

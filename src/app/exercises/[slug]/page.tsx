@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { exerciseApi } from '@/services/exercise.service';
 import { ExerciseDetailResponse, Difficulty, ExerciseType } from '@/types/exercise';
-import ConfirmModal from '@/components/ui/ConfirmModal';
+import ConfirmModal from '@/components/ui/confirm-modal';
 import ExerciseStartScreen from '@/components/exercises/ExerciseStartScreen';
 import QuestionCard from '@/components/exercises/QuestionCard';
 import ExerciseFooter from '@/components/exercises/ExerciseFooter';
@@ -49,14 +49,14 @@ export default function ExerciseDetailPage() {
 
   const submitExercise = useCallback(async () => {
     if (!submission) return;
-    
+
     setShowSubmitConfirm(false);
     const answers = getAnswersArray();
     await submitExerciseApi(submission.submissionId, answers);
   }, [submission, getAnswersArray, submitExerciseApi]);
 
   const handleToggleMark = useCallback((questionId: string) => {
-    setMarkedQuestions(prev => {
+    setMarkedQuestions((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(questionId)) {
         newSet.delete(questionId);
@@ -152,62 +152,67 @@ export default function ExerciseDetailPage() {
 
   const getDifficultyColor = (difficulty: Difficulty): string => {
     switch (difficulty) {
-      case 'EASY': return 'text-green-700 bg-green-50 border border-green-200/60 dark:text-green-400 dark:bg-green-500/10 dark:border-green-500/20';
-      case 'MEDIUM': return 'text-amber-700 bg-amber-50 border border-amber-200/60 dark:text-amber-400 dark:bg-amber-500/10 dark:border-amber-500/20';
-      case 'HARD': return 'text-rose-700 bg-rose-50 border border-rose-200/60 dark:text-rose-400 dark:bg-rose-500/10 dark:border-rose-500/20';
-      default: return 'text-slate-750 bg-slate-50 border border-slate-200/60 dark:text-slate-400 dark:bg-slate-500/10 dark:border-slate-500/20';
+      case 'EASY':
+        return 'bg-success-soft text-success border-success/20';
+      case 'MEDIUM':
+        return 'bg-warning-soft text-warning border-warning/20';
+      case 'HARD':
+        return 'bg-error-soft text-error border-error/20';
+      default:
+        return 'bg-muted text-text-secondary border-border';
     }
   };
 
   const getDifficultyLabel = (difficulty: Difficulty): string => {
     switch (difficulty) {
-      case 'EASY': return 'Dễ';
-      case 'MEDIUM': return 'Trung bình';
-      case 'HARD': return 'Khó';
-      default: return difficulty;
+      case 'EASY':
+        return 'Dễ';
+      case 'MEDIUM':
+        return 'Trung bình';
+      case 'HARD':
+        return 'Khó';
+      default:
+        return difficulty;
     }
   };
 
   const getExerciseTypeLabel = (type: ExerciseType): string => {
     switch (type) {
-      case 'MULTIPLE_CHOICE': return 'Trắc nghiệm';
-      case 'ESSAY': return 'Tự luận';
-      case 'CODING': return 'Lập trình';
-      default: return type;
+      case 'MULTIPLE_CHOICE':
+        return 'Trắc nghiệm';
+      case 'ESSAY':
+        return 'Tự luận';
+      case 'CODING':
+        return 'Lập trình';
+      default:
+        return type;
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-accent/5 via-purple-500/5 to-blue-500/5 dark:from-accent/10 dark:via-purple-500/10 dark:to-blue-500/10 dark:bg-slate-900 py-6 px-4">
-        <div className="max-w-2xl mx-auto">
-          {/* Back button skeleton */}
-          <div className="h-5 w-24 bg-muted rounded animate-pulse mb-4" />
-
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 sm:p-8 border border-gray-100 dark:border-slate-700 space-y-6">
-            {/* Header skeleton */}
-            <div className="flex flex-col items-center mb-5 space-y-3">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-muted animate-pulse" />
-              <div className="h-8 bg-muted rounded animate-pulse w-3/4" />
-              <div className="h-4 bg-muted rounded animate-pulse w-5/6" />
-              <div className="flex gap-2">
-                <div className="h-5 w-16 bg-muted rounded-full animate-pulse" />
-                <div className="h-5 w-24 bg-muted rounded-full animate-pulse" />
+      <div className="min-h-[calc(100vh-4rem)] bg-background py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-surface rounded-2xl border border-border overflow-hidden">
+              <div className="p-6 sm:p-8 border-b border-border space-y-3">
+                <div className="flex gap-2">
+                  <div className="h-6 w-16 bg-muted rounded-full animate-pulse" />
+                  <div className="h-6 w-24 bg-muted rounded-full animate-pulse" />
+                </div>
+                <div className="h-8 bg-muted rounded-lg w-2/3 animate-pulse" />
+                <div className="h-4 bg-muted rounded w-5/6 animate-pulse" />
+              </div>
+              <div className="grid grid-cols-3 divide-x divide-border bg-muted/25">
+                <div className="h-24 p-5 animate-pulse" />
+                <div className="h-24 p-5 animate-pulse" />
+                <div className="h-24 p-5 animate-pulse" />
               </div>
             </div>
-
-            {/* Stats skeleton */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-4">
-              <div className="h-24 bg-muted rounded-xl animate-pulse" />
-              <div className="h-24 bg-muted rounded-xl animate-pulse" />
-              <div className="h-24 bg-muted rounded-xl animate-pulse" />
-            </div>
-
-            {/* Instructions skeleton */}
-            <div className="h-32 bg-muted rounded-lg animate-pulse" />
-
-            {/* Button skeleton */}
-            <div className="h-12 bg-muted rounded-xl animate-pulse w-full" />
+            <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 h-64 animate-pulse" />
+          </div>
+          <div className="lg:col-span-1">
+            <div className="bg-surface rounded-2xl border border-border p-6 h-80 animate-pulse" />
           </div>
         </div>
       </div>
@@ -228,7 +233,6 @@ export default function ExerciseDetailPage() {
     );
   }
 
-  // Start screen
   if (!isStarted) {
     return (
       <ExerciseStartScreen
@@ -242,12 +246,10 @@ export default function ExerciseDetailPage() {
     );
   }
 
-  // Exercise screen
   return (
     <>
       {submitting && <SubmittingOverlay />}
-      
-      {/* Mobile Question Navigator - Top */}
+
       <MobileQuestionNav
         title={exercise.title}
         difficulty={exercise.difficulty}
@@ -259,44 +261,43 @@ export default function ExerciseDetailPage() {
         currentQuestion={currentQuestion}
         answeredQuestions={getAnsweredQuestionsSet()}
         markedQuestions={markedQuestions}
-        questionIds={exercise.questions.map(q => q.id)}
+        questionIds={exercise.questions.map((q) => q.id)}
         onQuestionClick={handleQuestionClick}
         onExit={handleExit}
       />
-      
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-4 md:py-4 pt-32 md:pt-4">
-        <div className="flex gap-4">
-          {/* Main content */}
-          <div className="flex-1 min-w-0 px-4">
-            <div className="max-w-4xl mx-auto">
-              {/* Questions */}
-              <div className="space-y-4 mb-20 md:mb-4">
-                {exercise.questions.map((question, index) => (
-                  <QuestionCard
-                    key={question.id}
-                    question={question}
-                    index={index}
-                    selectedOptions={userAnswers.get(question.id) || []}
-                    isSubmitted={isSubmitted}
-                    isMarked={markedQuestions.has(question.id)}
-                    onAnswerChange={handleAnswerChange}
-                    onToggleMark={handleToggleMark}
-                  />
-                ))}
-              </div>
 
-              <ExerciseFooter
-                answeredCount={getAnsweredCount()}
-                totalQuestions={exercise.questions.length}
-                isSubmitting={submitting}
-                isSubmitted={isSubmitted}
-                onSubmit={handleSubmit}
-              />
+      <div className="min-h-screen bg-background py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
+          {/* Main content */}
+          <div className="flex-1 min-w-0 w-full">
+            <div className="space-y-4 mb-20 md:mb-4">
+              {exercise.questions.map((question, index) => (
+                <QuestionCard
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  isCurrent={currentQuestion === index}
+                  selectedOptions={userAnswers.get(question.id) || []}
+                  isSubmitted={isSubmitted}
+                  isMarked={markedQuestions.has(question.id)}
+                  onAnswerChange={handleAnswerChange}
+                  onToggleMark={handleToggleMark}
+                  onFocusQuestion={setCurrentQuestion}
+                />
+              ))}
             </div>
+
+            <ExerciseFooter
+              answeredCount={getAnsweredCount()}
+              totalQuestions={exercise.questions.length}
+              isSubmitting={submitting}
+              isSubmitted={isSubmitted}
+              onSubmit={handleSubmit}
+            />
           </div>
 
           {/* Question Navigator Sidebar - Desktop */}
-          <div className="hidden lg:block w-96 pr-4 flex-shrink-0">
+          <div className="hidden lg:block w-80 xl:w-88 shrink-0 sticky top-20">
             <QuestionNavigator
               title={exercise.title}
               difficulty={exercise.difficulty}
@@ -308,9 +309,12 @@ export default function ExerciseDetailPage() {
               currentQuestion={currentQuestion}
               answeredQuestions={getAnsweredQuestionsSet()}
               markedQuestions={markedQuestions}
-              questionIds={exercise.questions.map(q => q.id)}
+              questionIds={exercise.questions.map((q) => q.id)}
               onQuestionClick={handleQuestionClick}
               onExit={handleExit}
+              onSubmit={handleSubmit}
+              isSubmitting={submitting}
+              isSubmitted={isSubmitted}
             />
           </div>
         </div>

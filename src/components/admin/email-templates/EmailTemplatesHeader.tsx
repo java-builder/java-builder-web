@@ -20,11 +20,11 @@ export default function EmailTemplatesHeader({
       <div>
         <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="text-xl font-bold text-foreground sm:text-2xl flex items-center gap-2">
-            <Mail className="h-6 w-6 text-accent" />
+            <Mail className="h-6 w-6 text-primary" />
             {t("admin.emailTemplates.pageTitle")}
           </h1>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-sm mt-0.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 "></span>
             AWS SES Active
           </span>
         </div>
@@ -33,7 +33,7 @@ export default function EmailTemplatesHeader({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-soft border border-primary/20 px-3 py-1 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
           {totalCount.toLocaleString()} {t("admin.emailTemplates.colName")}
         </span>
         <Button onClick={onCreate} variant="accent" className="gap-1.5 h-9 cursor-pointer">

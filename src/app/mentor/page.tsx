@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function MentorPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 animate-pulse space-y-10 py-12 px-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900  space-y-10 py-12 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-4">
           <div className="h-6 bg-muted rounded-md w-28 mx-auto" />
           <div className="h-10 bg-muted rounded-lg w-3/4 mx-auto" />

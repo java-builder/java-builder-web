@@ -56,29 +56,29 @@ export default function CoursesFilterBar({
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-slate-700">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+    <div className="overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface shadow-xs">
+      <div className="flex items-center justify-between border-b border-[#E8E8E8] dark:border-border px-5 py-3.5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FFF0E8] dark:bg-orange-950/40 text-[#FF5A1F]">
+            <SlidersHorizontal className="h-3.5 w-3.5" />
           </div>
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-sm font-bold text-[#171717] dark:text-white">
             {filterLabel}
           </h3>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-700 dark:bg-slate-700 dark:text-gray-200">
-            <span className="tabular-nums">
+          <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-[#F8F8F8] dark:bg-slate-800 border border-[#E8E8E8] dark:border-border px-3 py-0.5 text-xs font-semibold text-[#171717] dark:text-slate-200">
+            <span className="tabular-nums font-bold">
               {totalElements.toLocaleString("vi-VN")}
             </span>
-            <span>{totalLabel}</span>
+            <span className="text-[#64748B] dark:text-slate-400">{totalLabel}</span>
           </span>
           {hasFilter && (
             <button
               type="button"
               onClick={handleClear}
-              className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700"
+              className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-[#64748B] transition hover:bg-[#FFF0E8] dark:bg-primary/15 hover:text-[#FF5A1F] dark:hover:bg-slate-800 cursor-pointer"
               title="Clear"
             >
               <X className="h-3.5 w-3.5" />
@@ -95,18 +95,18 @@ export default function CoursesFilterBar({
           }}
         >
           <label className="relative block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
             <input
               type="search"
               value={searchText}
               onChange={(e) => onSearchTextChange(e.target.value)}
               placeholder={searchPlaceholder}
-              className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-gray-700 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-200 dark:placeholder:text-gray-500"
+              className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-background py-2.5 pl-10 pr-3 text-sm text-[#171717] dark:text-slate-100 placeholder:text-[#64748B] transition focus:border-[#FF5A1F] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/20 shadow-2xs"
             />
           </label>
         </form>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           {options.map((option) => {
             const isActive = level === option.id;
             return (
@@ -114,10 +114,10 @@ export default function CoursesFilterBar({
                 key={option.id || "all"}
                 type="button"
                 onClick={() => onLevelChange(option.id)}
-                className={`inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? "bg-accent text-white shadow-sm"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-200 dark:hover:bg-slate-600"
+                    ? "bg-[#FF5A1F] text-white shadow-xs font-bold"
+                    : "bg-[#F8F8F8] dark:bg-slate-800 text-[#171717] dark:text-slate-200 border border-[#E8E8E8] dark:border-border hover:bg-[#FFF0E8] hover:text-[#FF5A1F] dark:hover:bg-slate-700"
                 }`}
               >
                 {option.label}

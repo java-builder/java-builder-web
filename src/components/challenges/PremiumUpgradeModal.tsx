@@ -164,12 +164,12 @@ export default function PremiumUpgradeModal({
         <div
           className={`relative w-full ${
             view === "PAYMENT" ? "max-w-lg" : "max-w-2xl"
-          } max-h-[94vh] flex flex-col transform overflow-hidden rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-200`}
+          } max-h-[94vh] flex flex-col transform overflow-hidden rounded-2xl bg-surface text-left shadow-2xl transition-all border border-border animate-in zoom-in-95 duration-200`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Bar for PAYMENT View */}
           {view === "PAYMENT" ? (
-            <div className="px-6 py-4 sm:py-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div className="px-6 py-4 sm:py-5 border-b border-border bg-surface">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-accent/10 text-accent rounded-lg flex items-center justify-center">
@@ -235,7 +235,7 @@ export default function PremiumUpgradeModal({
 
               {/* Plans Loading Skeleton */}
               {isLoadingPlans ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 animate-pulse py-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4  py-2">
                   {[1, 2].map((i) => (
                     <div
                       key={i}
@@ -247,7 +247,7 @@ export default function PremiumUpgradeModal({
                 /* FALLBACK: Exactly 2 cards like reference photo (Standalone vs Month Premium 100.000đ) */
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-stretch">
                   {/* Left Option: Mua lẻ khóa học / thử thách này */}
-                  <div className="relative rounded-lg border border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/40 p-3.5 sm:p-4 flex flex-col justify-between hover:border-gray-300 dark:hover:border-slate-700 transition-all">
+                  <div className="relative rounded-2xl border border-border bg-background/60 p-4 flex flex-col justify-between transition-all">
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
@@ -304,7 +304,7 @@ export default function PremiumUpgradeModal({
                             onClose();
                           }
                         }}
-                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg font-semibold text-xs bg-white dark:bg-slate-800 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs"
+                        className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full font-semibold text-xs bg-surface text-foreground border border-slate-300 dark:border-slate-600 hover:bg-muted dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs"
                       >
                         <span>Mua lẻ khóa học</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -313,7 +313,7 @@ export default function PremiumUpgradeModal({
                   </div>
 
                   {/* Right Option: Nâng cấp gói Premium (100.000đ/tháng - Default Recommended) */}
-                  <div className="relative rounded-lg border-2 border-accent/80 dark:border-accent/60 bg-gradient-to-b from-accent/[0.04] to-accent/[0.08] dark:from-accent/[0.12] dark:to-accent/[0.05] p-3.5 sm:p-4 flex flex-col justify-between shadow-md shadow-accent/5">
+                  <div className="relative rounded-2xl border-2 border-primary/80 dark:border-primary/70 bg-gradient-to-b from-primary/[0.05] to-primary/[0.1] dark:from-primary/[0.14] dark:to-primary/[0.06] p-4 flex flex-col justify-between shadow-md shadow-primary/5">
                     {/* Best Value Badge */}
                     <div className="absolute -top-2.5 right-3">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs">
@@ -376,7 +376,7 @@ export default function PremiumUpgradeModal({
                       <button
                         type="button"
                         onClick={handleSelectFallbackMonthPlan}
-                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg font-bold text-xs bg-accent hover:bg-accent-600 text-white shadow-sm shadow-accent/20 hover:shadow-md transition-all cursor-pointer"
+                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-full font-bold text-xs bg-accent hover:bg-accent-600 text-white shadow-sm shadow-accent/20 hover:shadow-md transition-all cursor-pointer"
                       >
                         <span>Nâng cấp Premium ngay</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -422,10 +422,10 @@ export default function PremiumUpgradeModal({
                     return (
                       <div
                         key={plan.id}
-                        className={`relative rounded-lg p-3.5 sm:p-4 flex flex-col justify-between transition-all ${
+                        className={`relative rounded-2xl p-4 flex flex-col justify-between transition-all ${
                           isRecommended
-                            ? "border-2 border-accent/80 dark:border-accent/60 bg-gradient-to-b from-accent/[0.04] to-accent/[0.08] dark:from-accent/[0.12] dark:to-accent/[0.05] shadow-md shadow-accent/5"
-                            : "border border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/40 hover:border-gray-300 dark:hover:border-slate-700"
+                            ? "border-2 border-primary/80 dark:border-primary/70 bg-gradient-to-b from-primary/[0.05] to-primary/[0.1] dark:from-primary/[0.14] dark:to-primary/[0.06] shadow-md shadow-primary/5"
+                            : "border border-border bg-background/60"
                         }`}
                       >
                         {/* Recommended Badge only on Month Plan */}
@@ -519,10 +519,10 @@ export default function PremiumUpgradeModal({
                           <button
                             type="button"
                             onClick={() => handleSelectPlan(plan)}
-                            className={`w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+                            className={`w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full font-bold text-xs transition-all cursor-pointer ${
                               isRecommended
-                                ? "bg-accent hover:bg-accent-600 text-white shadow-sm shadow-accent/20 hover:shadow-md"
-                                : "bg-white dark:bg-slate-800 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700 shadow-2xs"
+                                ? "bg-primary hover:bg-primary/90 text-white shadow-sm shadow-primary/20 hover:shadow-md"
+                                : "bg-surface text-foreground border border-slate-300 dark:border-slate-600 hover:bg-muted dark:hover:bg-slate-700 shadow-2xs"
                             }`}
                           >
                             <span>
@@ -548,7 +548,7 @@ export default function PremiumUpgradeModal({
                     <div className="absolute inset-0 rounded-full border-4 border-accent/20"></div>
                     <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-accent border-r-accent animate-spin"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-3 h-3 bg-accent rounded-full animate-pulse"></div>
+                      <div className="w-3 h-3 bg-accent rounded-full "></div>
                     </div>
                   </div>
                   <p className="text-gray-700 dark:text-gray-200 font-semibold text-lg mb-2">
@@ -600,7 +600,7 @@ export default function PremiumUpgradeModal({
                       href={paymentData.checkoutUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-lg shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-full shadow-xs hover:shadow active:scale-98 transition-all cursor-pointer text-sm"
                     >
                       <span>Thanh toán qua PayOS</span>
                       <ArrowRight className="w-4 h-4" />

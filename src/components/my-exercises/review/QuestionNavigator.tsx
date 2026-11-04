@@ -8,11 +8,11 @@ interface QuestionNavigatorProps {
 
 const STATUS_BUTTON_CLASSES: Record<"correct" | "incorrect" | "skipped", string> = {
   correct:
-    "bg-emerald-50 text-emerald-700 ring-emerald-200 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800",
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20",
   incorrect:
-    "bg-rose-50 text-rose-700 ring-rose-200 hover:bg-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:ring-rose-800",
+    "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20",
   skipped:
-    "bg-amber-50 text-amber-700 ring-amber-200 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:ring-amber-800",
+    "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20",
 };
 
 const STATUS_LABEL: Record<"correct" | "incorrect" | "skipped", string> = {
@@ -21,65 +21,54 @@ const STATUS_LABEL: Record<"correct" | "incorrect" | "skipped", string> = {
   skipped: "Bỏ qua",
 };
 
-function Legend() {
-  return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400">
-      <span className="inline-flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded bg-emerald-400" />
-        Đúng
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded bg-rose-400" />
-        Sai
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded bg-amber-400" />
-        Bỏ qua
-      </span>
-    </div>
-  );
-}
-
 export default function QuestionNavigator({
   questions,
   onSelectQuestion,
 }: QuestionNavigatorProps) {
+  const correctCount = questions.filter((q) => q.isCorrect).length;
+
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-200 dark:border-slate-700 px-4 sm:px-5 py-3">
-        <div className="min-w-0">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-            Bản đồ câu hỏi
-          </h3>
-          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-            Bấm vào số để chuyển nhanh đến câu hỏi tương ứng
-          </p>
-        </div>
-        <div className="hidden sm:block">
-          <Legend />
-        </div>
+    <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+      <div className="flex items-center justify-between gap-2 mb-3.5">
+        <h3 className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground">
+          Danh sách câu hỏi
+        </h3>
+        <span className="text-xs font-bold text-foreground tabular-nums">
+          {correctCount}/{questions.length} đúng
+        </span>
       </div>
-      <div className="p-3 sm:p-4">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(2.25rem,1fr))] gap-1.5">
-          {questions.map((q, idx) => {
-            const hasAnswer = (q.userSelectedOptionIds || []).length > 0;
-            const status = getQuestionStatus(q.isCorrect, hasAnswer);
-            return (
-              <button
-                key={q.questionId}
-                type="button"
-                onClick={() => onSelectQuestion(q.questionId)}
-                className={`flex h-9 w-full items-center justify-center rounded-md text-xs font-semibold ring-1 transition ${STATUS_BUTTON_CLASSES[status]}`}
-                title={`Câu ${idx + 1} — ${STATUS_LABEL[status]}`}
-              >
-                {idx + 1}
-              </button>
-            );
-          })}
-        </div>
-        <div className="mt-3 flex sm:hidden">
-          <Legend />
-        </div>
+
+      <div className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-2">
+        {questions.map((q, idx) => {
+          const hasAnswer = (q.userSelectedOptionIds || []).length > 0;
+          const status = getQuestionStatus(q.isCorrect, hasAnswer);
+          return (
+            <button
+              key={q.questionId}
+              type="button"
+              onClick={() => onSelectQuestion(q.questionId)}
+              className={`flex h-9 w-full items-center justify-center rounded-xl border text-xs font-bold tabular-nums transition cursor-pointer ${STATUS_BUTTON_CLASSES[status]}`}
+              title={`Câu ${idx + 1} — ${STATUS_LABEL[status]}`}
+            >
+              {idx + 1}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 pt-3.5 border-t border-border flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground font-medium">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
+          Đúng
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm bg-rose-500" />
+          Sai
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm bg-amber-500" />
+          Bỏ qua
+        </span>
       </div>
     </div>
   );

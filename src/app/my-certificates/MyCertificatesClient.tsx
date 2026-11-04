@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { certificateApi } from "@/services/certificate.service";
 import { CertificateDetailResponse } from "@/types/certificate";
 import {
@@ -182,7 +182,7 @@ export default function MyCertificatesClient() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-64 animate-pulse rounded-3xl border border-border bg-card p-5"
+                className="h-64  rounded-2xl border border-border bg-card p-5"
               >
                 <div className="h-36 rounded-xl bg-muted mb-4" />
                 <div className="h-5 w-3/4 rounded bg-muted mb-2" />

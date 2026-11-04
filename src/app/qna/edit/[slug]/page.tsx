@@ -70,7 +70,7 @@ export default function EditPostPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
         {loading ? (
-          <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-6 space-y-6 animate-pulse">
+          <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-6 space-y-6 ">
             <div className="space-y-2">
               <div className="h-4 bg-muted rounded w-24" />
               <div className="h-10 bg-muted rounded w-full" />

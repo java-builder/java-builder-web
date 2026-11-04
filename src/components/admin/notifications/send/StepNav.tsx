@@ -15,7 +15,7 @@ export default function StepNav({ activeTab, onChange, canAccessTab }: StepNavPr
   const activeStep = STEPS[activeIndex];
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:px-5">
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-xs sm:px-5">
       <nav aria-label="Tiến trình" className="flex items-center">
         {STEPS.map((step, idx) => {
           const isActive = activeTab === step.id;
@@ -38,20 +38,20 @@ export default function StepNav({ activeTab, onChange, canAccessTab }: StepNavPr
                     ? "Vui lòng hoàn thành bước trước đó để tiếp tục"
                     : undefined
                 }
-                className={`group flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 p-1.5 focus:outline-none rounded-xl transition-all ${
+                className={`group flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 p-1.5 focus:outline-none rounded-full transition-all ${
                   isAccessible
-                    ? "cursor-pointer hover:bg-accent/5"
+                    ? "cursor-pointer hover:bg-primary-soft dark:hover:bg-orange-950/30"
                     : "cursor-not-allowed opacity-40 hover:bg-transparent"
                 }`}
               >
                 <span
                   className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums transition ${
                     isActive
-                      ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
+                      ? "bg-primary text-white shadow-xs ring-2 ring-primary/30"
                       : isCompleted
                       ? "bg-emerald-500 text-white"
                       : isAccessible
-                      ? "bg-muted text-muted-foreground ring-1 ring-border group-hover:border-accent"
+                      ? "bg-muted text-muted-foreground ring-1 ring-border"
                       : "bg-muted/50 text-muted-foreground/50 ring-1 ring-border/50"
                   }`}
                 >
@@ -66,7 +66,7 @@ export default function StepNav({ activeTab, onChange, canAccessTab }: StepNavPr
                 <span
                   className={`hidden truncate text-xs font-semibold transition sm:inline ${
                     isActive
-                      ? "text-accent"
+                      ? "text-primary"
                       : isCompleted
                       ? "text-foreground"
                       : isAccessible

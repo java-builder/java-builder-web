@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { userStreakService } from "@/services/user-streak.service";
 import { AdminUserStreak, StreakStatus } from "@/types/user-streak";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 
 import { UserStreakHeader } from "@/components/admin/user-streaks/UserStreakHeader";
 import { UserStreakStatsCards } from "@/components/admin/user-streaks/UserStreakStatsCards";

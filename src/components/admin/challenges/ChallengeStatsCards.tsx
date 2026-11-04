@@ -22,7 +22,7 @@ export default function ChallengeStatsCards({
     return (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border-border bg-card animate-pulse">
+          <Card key={i} className="border-border bg-card ">
             <CardContent className="flex items-center justify-between p-5">
               <div className="space-y-2 flex-1">
                 <div className="h-3.5 bg-muted rounded w-20" />

@@ -149,11 +149,11 @@ export default function CodeSnippetModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-2xl bg-card text-card-foreground rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="w-full max-w-2xl bg-card text-card-foreground rounded-2xl shadow-2xl border border-[#E8E8E8] dark:border-border overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/40">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-accent/10 text-accent">
+            <div className="p-2.5 rounded-xl bg-accent/10 text-accent">
               <Code2 className="w-5 h-5" />
             </div>
             <div>
@@ -190,7 +190,7 @@ export default function CodeSnippetModal({
               <button
                 type="button"
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background hover:bg-muted/40 text-foreground text-sm flex items-center justify-between transition-all shadow-2xs focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background hover:bg-muted/40 text-foreground text-sm flex items-center justify-between transition-all shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300 cursor-pointer"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   {(() => {
@@ -274,7 +274,7 @@ export default function CodeSnippetModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ví dụ: UserService.java"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300"
               />
             </div>
           </div>
@@ -289,7 +289,7 @@ export default function CodeSnippetModal({
                 <button
                   type="button"
                   onClick={() => setActiveTab("edit")}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === "edit"
                       ? "bg-background text-foreground shadow-xs"
                       : "text-muted-foreground hover:text-foreground"
@@ -300,7 +300,7 @@ export default function CodeSnippetModal({
                 <button
                   type="button"
                   onClick={() => setActiveTab("preview")}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === "preview"
                       ? "bg-background text-foreground shadow-xs"
                       : "text-muted-foreground hover:text-foreground"
@@ -312,7 +312,7 @@ export default function CodeSnippetModal({
             </div>
 
             {activeTab === "edit" ? (
-              <div className="relative rounded-2xl border border-border overflow-hidden">
+              <div className="relative rounded-xl border border-border overflow-hidden">
                 <textarea
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
@@ -324,7 +324,7 @@ export default function CodeSnippetModal({
                 />
               </div>
             ) : (
-              <div className="rounded-2xl border border-border p-4 bg-card max-h-[300px] overflow-y-auto">
+              <div className="rounded-xl border border-border p-4 bg-card max-h-[300px] overflow-y-auto">
                 <PublicMarkdownRenderer content={markdownPreviewContent} />
               </div>
             )}
@@ -340,7 +340,7 @@ export default function CodeSnippetModal({
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Nhập ghi chú hoặc câu hỏi về đoạn code này..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300"
             />
           </div>
 
@@ -349,14 +349,14 @@ export default function CodeSnippetModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={!code.trim()}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 disabled:opacity-50 text-sm font-semibold shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2 rounded-full bg-accent text-white hover:bg-accent/90 disabled:opacity-50 text-sm font-semibold shadow-xs transition-all cursor-pointer"
             >
               <Send className="w-4 h-4" />
               Gửi

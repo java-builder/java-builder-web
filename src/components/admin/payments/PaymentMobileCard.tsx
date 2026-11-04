@@ -63,7 +63,7 @@ export const PaymentMobileCard = ({ payment, onClick, onDelete }: PaymentMobileC
   return (
     <div
       onClick={() => onClick(payment)}
-      className="cursor-pointer block w-full rounded-xl border border-border bg-card p-4 text-left transition hover:border-accent hover:shadow-sm"
+      className="cursor-pointer block w-full rounded-xl border border-border bg-card p-4 text-left transition hover:shadow-sm"
     >
       {/* Top row: order code + status */}
       <div className="flex items-start justify-between gap-3">

@@ -11,8 +11,8 @@ import { ContributionSearchBar } from "@/components/admin/question-contributions
 import ContributionDetailModal from "@/components/admin/question-contributions/ContributionDetailModal";
 import RejectModal from "@/components/admin/question-contributions/RejectModal";
 import ApproveModal from "@/components/admin/question-contributions/ApproveModal";
-import ConfirmModal from "@/components/ui/ConfirmModal";
-import { Pagination } from "@/components/ui/Pagination";
+import ConfirmModal from "@/components/ui/confirm-modal";
+import { Pagination } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { RotateCw, HelpCircle } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
@@ -178,7 +178,7 @@ export default function QuestionContributionsPage() {
 
         <div className="flex items-center gap-3">
           {stats.total > 0 && (
-            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 px-3 py-1 text-xs font-semibold">
               {t("admin.questionContributions.totalContributions")}:{" "}
               <span className="font-bold tabular-nums">
                 {stats.total.toLocaleString()}
@@ -194,7 +194,7 @@ export default function QuestionContributionsPage() {
               fetchOverallStats();
             }}
             disabled={isLoading}
-            className="gap-1.5 font-medium cursor-pointer"
+            className="gap-1.5 font-medium cursor-pointer rounded-full border border-border"
           >
             <RotateCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
             <span>{t("admin.questionContributions.refreshBtn")}</span>
@@ -258,30 +258,30 @@ export default function QuestionContributionsPage() {
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div
                   key={i}
-                  className="bg-card rounded-2xl border border-border p-5 space-y-4 animate-pulse shadow-xs h-64"
+                  className="bg-surface rounded-2xl border border-border p-5 space-y-4 shadow-xs h-64"
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-muted" />
                       <div className="space-y-1.5">
-                        <div className="h-3.5 bg-muted rounded w-24" />
-                        <div className="h-3 bg-muted rounded w-32" />
+                        <div className="h-3.5 bg-muted rounded-full w-24" />
+                        <div className="h-3 bg-muted rounded-full w-32" />
                       </div>
                     </div>
                     <div className="h-5 bg-muted rounded-full w-20" />
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-muted rounded w-3/4" />
-                    <div className="h-4 bg-muted rounded w-1/2" />
+                    <div className="h-4 bg-muted rounded-full w-3/4" />
+                    <div className="h-4 bg-muted rounded-full w-1/2" />
                   </div>
                   <div className="h-10 bg-muted/40 rounded-xl" />
                 </div>
               ))}
             </div>
           ) : contributions.length === 0 ? (
-            <div className="bg-card rounded-2xl border border-border p-12 text-center shadow-xs">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                <HelpCircle className="h-6 w-6 text-muted-foreground/60" />
+            <div className="bg-surface rounded-2xl border border-border p-12 text-center shadow-xs">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400">
+                <HelpCircle className="h-6 w-6" />
               </div>
               <h3 className="text-base font-semibold text-foreground">
                 {t("admin.questionContributions.noContributionsFound")}

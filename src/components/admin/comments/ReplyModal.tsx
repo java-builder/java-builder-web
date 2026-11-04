@@ -52,7 +52,7 @@ export default function ReplyModal({
         />
 
         {/* Modal - Clean & Professional */}
-        <div className="relative w-full max-w-2xl bg-card rounded-xl border border-border shadow-xl">
+        <div className="relative w-full max-w-2xl bg-surface rounded-2xl border border-border shadow-xl">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <div>
@@ -63,18 +63,18 @@ export default function ReplyModal({
             </div>
             <button
               onClick={handleClose}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              className="p-2 hover:bg-muted rounded-xl transition-colors cursor-pointer"
             >
               <X className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
 
           {/* Original Comment */}
-          <div className="px-6 py-4 bg-muted/30">
+          <div className="px-6 py-4 bg-muted/10">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
               Bình luận gốc
             </p>
-            <div className="bg-background rounded-lg px-4 py-3 border border-border">
+            <div className="bg-background rounded-xl px-4 py-3 border border-border">
               <p className="text-sm text-foreground/90 leading-relaxed">{commentContent}</p>
             </div>
           </div>
@@ -83,14 +83,14 @@ export default function ReplyModal({
           <form onSubmit={handleSubmit} className="p-6">
             <div className="mb-6">
               <label className="block text-sm font-medium text-foreground/90 mb-2">
-                Nội dung phản hồi <span className="text-red-500">*</span>
+                Nội dung phản hồi <span className="text-primary">*</span>
               </label>
               <textarea
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 placeholder="Nhập nội dung phản hồi..."
                 rows={5}
-                className="w-full px-4 py-3 text-sm bg-background border border-input rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors resize-none text-foreground placeholder-muted-foreground"
+                className="w-full px-4 py-3 text-sm bg-transparent border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none text-foreground placeholder-muted-foreground"
                 required
               />
               <p className="text-xs text-muted-foreground mt-2">
@@ -103,14 +103,14 @@ export default function ReplyModal({
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium border border-border text-foreground rounded-md hover:bg-muted transition-colors"
+                className="px-4 py-2 text-sm font-medium border border-border text-foreground rounded-full hover:bg-muted transition-colors cursor-pointer"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !replyContent.trim()}
-                className="px-4 py-2 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {isSubmitting ? "Đang gửi..." : "Gửi phản hồi"}
               </button>

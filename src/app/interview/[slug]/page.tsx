@@ -13,6 +13,7 @@ import {
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 import { useQuestionSets } from "@/hooks/useQuestionSets";
 import { useI18n } from "@/contexts/I18nContext";
+import { Button } from "@/components/ui/button";
 import {
   LevelFilterBar,
   QuestionSetEmptyState,
@@ -80,7 +81,7 @@ export default function InterviewCategoryPage() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-7xl">
           <QuestionSetLoadingState />
         </div>
@@ -90,19 +91,18 @@ export default function InterviewCategoryPage() {
 
   if (!topic || !topicDisplay) {
     return (
-      <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
-          <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-14">
-            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="rounded-2xl border border-border bg-surface p-10 text-center shadow-xs sm:p-14">
+            <h1 className="text-lg font-semibold text-foreground mb-5">
               {t("interviewPage.noTopicFound")}
             </h1>
-            <Link
-              href="/interview"
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              {t("interviewPage.back")}
-            </Link>
+            <Button asChild>
+              <Link href="/interview">
+                <ArrowLeft className="h-4 w-4" />
+                {t("interviewPage.back")}
+              </Link>
+            </Button>
           </div>
         </div>
       </main>
@@ -110,7 +110,7 @@ export default function InterviewCategoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl space-y-4 p-4 sm:space-y-6 sm:p-6 lg:px-8">
         <TopicHeaderCard
           topicId={topic.id}

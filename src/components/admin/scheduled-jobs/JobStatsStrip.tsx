@@ -25,8 +25,8 @@ export default function JobStatsStrip({
   onStatusToggle,
 }: JobStatsStripProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-      <div className="grid grid-cols-2 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-border lg:grid-cols-6 lg:divide-y-0">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+      <div className="grid grid-cols-2 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-border sm:dark:divide-border lg:grid-cols-6 lg:divide-y-0">
         {/* Total */}
         <div className="px-5 py-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -48,12 +48,12 @@ export default function JobStatsStrip({
               onClick={() => onStatusToggle(status)}
               className={`group relative px-5 py-4 text-left transition focus:outline-none ${
                 isActive
-                  ? "bg-accent/5"
+                  ? "bg-primary-soft/50 dark:bg-primary/10"
                   : "hover:bg-muted/50"
               }`}
             >
               {isActive && (
-                <span className="absolute inset-x-0 top-0 h-0.5 bg-accent" />
+                <span className="absolute inset-x-0 top-0 h-0.5 bg-primary" />
               )}
               <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 <span className={`h-1.5 w-1.5 rounded-full ${TONE_DOT[tone]}`} />

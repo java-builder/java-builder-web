@@ -29,20 +29,20 @@ export default function EmailTemplatesGrid({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-card border border-border rounded-2xl p-5 space-y-4 animate-pulse">
+          <div key={i} className="bg-surface border border-border rounded-2xl p-5 space-y-4">
             <div className="flex justify-between items-center">
-              <div className="h-5 bg-muted rounded w-1/3"></div>
+              <div className="h-5 bg-muted rounded-md w-1/3"></div>
               <div className="h-6 bg-muted rounded-full w-12"></div>
             </div>
-            <div className="h-6 bg-muted rounded w-3/4"></div>
+            <div className="h-6 bg-muted rounded-md w-3/4"></div>
             <div className="space-y-2">
-              <div className="h-4 bg-muted/80 rounded w-full"></div>
-              <div className="h-4 bg-muted/80 rounded w-5/6"></div>
+              <div className="h-4 bg-muted/80 rounded-md w-full"></div>
+              <div className="h-4 bg-muted/80 rounded-md w-5/6"></div>
             </div>
             <div className="h-[1px] bg-border"></div>
             <div className="flex justify-end gap-3 pt-2">
-              <div className="h-8 bg-muted rounded w-16"></div>
-              <div className="h-8 bg-muted rounded w-16"></div>
+              <div className="h-8 bg-muted rounded-xl w-16"></div>
+              <div className="h-8 bg-muted rounded-xl w-16"></div>
             </div>
           </div>
         ))}
@@ -52,8 +52,8 @@ export default function EmailTemplatesGrid({
 
   if (templates.length === 0) {
     return (
-      <div className="bg-card border border-border rounded-2xl p-12 text-center shadow-sm max-w-xl mx-auto mt-6">
-        <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">
+      <div className="bg-surface border border-border rounded-2xl p-12 text-center shadow-sm max-w-xl mx-auto mt-6">
+        <div className="w-16 h-16 bg-primary-soft text-primary rounded-xl flex items-center justify-center mx-auto mb-5 shadow-sm">
           <Inbox className="w-8 h-8" />
         </div>
         <h3 className="text-lg font-bold text-foreground">Không tìm thấy mẫu email nào</h3>
@@ -90,13 +90,13 @@ export default function EmailTemplatesGrid({
       {templates.map((tpl) => (
         <div
           key={tpl.templateName}
-          className="bg-card border border-border hover:border-accent/40 rounded-2xl shadow-sm hover:shadow-md transition duration-300 flex flex-col group overflow-hidden"
+          className="bg-surface border border-border rounded-2xl shadow-sm hover:shadow-md transition duration-300 flex flex-col group overflow-hidden"
         >
           {/* Header card info */}
           <div className="p-5 flex-1 flex flex-col">
             <div className="mb-3">
               <span
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 text-accent text-xs font-bold rounded-lg border border-accent/20 max-w-full truncate"
+                className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-soft text-primary text-xs font-bold rounded-full border border-primary/20 dark:bg-orange-950/40 dark:text-orange-400 max-w-full truncate"
                 title={tpl.templateName}
               >
                 <FileCode className="w-3.5 h-3.5 shrink-0" />
@@ -114,7 +114,7 @@ export default function EmailTemplatesGrid({
           </div>
 
           {/* Bottom quick actions */}
-          <div className="px-5 py-3 bg-muted/40 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+          <div className="px-5 py-3 bg-muted/40 dark:bg-surface/60 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/70">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               AWS SES Template
@@ -124,7 +124,7 @@ export default function EmailTemplatesGrid({
                 type="button"
                 onClick={() => onPreview(tpl)}
                 title="Xem trước mẫu email"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background text-muted-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/40 transition-colors cursor-pointer shadow-2xs"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/80 bg-background text-muted-foreground hover:bg-primary-soft hover:text-primary dark:hover:bg-orange-950/40 dark:hover:text-orange-400 transition-colors cursor-pointer shadow-2xs"
               >
                 <Eye className="w-4 h-4" />
               </button>
@@ -132,7 +132,7 @@ export default function EmailTemplatesGrid({
                 type="button"
                 onClick={() => onEdit(tpl)}
                 title="Chỉnh sửa mẫu email"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500 hover:border-blue-500/40 transition-colors cursor-pointer shadow-2xs"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border/80 bg-background text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500 hover:border-blue-500/40 transition-colors cursor-pointer shadow-2xs"
               >
                 <Edit3 className="w-4 h-4" />
               </button>
@@ -140,7 +140,7 @@ export default function EmailTemplatesGrid({
                 type="button"
                 onClick={() => onDelete(tpl.templateName)}
                 title="Xóa mẫu email"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/40 transition-colors cursor-pointer shadow-2xs"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border/80 bg-background text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/40 transition-colors cursor-pointer shadow-2xs"
               >
                 <Trash2 className="w-4 h-4" />
               </button>

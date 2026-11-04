@@ -17,7 +17,7 @@ import { ExerciseSubmissionFilters, SubmissionStatus } from "@/types/exercise-su
 import { ExerciseSummarySection } from "@/components/admin/exercises/ExerciseSummarySection";
 import { ExerciseTable } from "@/components/admin/exercises/ExerciseTable";
 import { LearnerPerformanceTable } from "@/components/admin/exercises/LearnerPerformanceTable";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 
 interface TabButtonProps {
@@ -295,7 +295,7 @@ export default function ExercisesPage() {
               </div>
 
               {isLoadingSubmissions ? (
-                <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm animate-pulse mt-4">
+                <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm  mt-4">
                   <table className="w-full divide-y divide-border">
                     <thead className="bg-muted/40">
                       <tr>

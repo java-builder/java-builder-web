@@ -40,7 +40,7 @@ export default function MyContributionsStats({
   pendingLabel,
 }: MyContributionsStatsProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="flex flex-col divide-y divide-gray-200 dark:divide-slate-700 sm:flex-row sm:divide-x sm:divide-y-0">
         <StatCell label={totalLabel} value={total} dotColor="bg-accent" />
         <StatCell

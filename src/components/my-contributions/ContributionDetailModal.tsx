@@ -62,7 +62,7 @@ export default function ContributionDetailModal({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white shadow-2xl dark:bg-surface"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

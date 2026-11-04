@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { postService } from "@/services/post.service";
 import { PostDetail } from "@/types/post";
 import PostList from "@/components/posts/PostList";
-import ConfirmModal from "@/components/common/ConfirmModal";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import { useI18n } from "@/contexts/I18nContext";
 import SectionCard from "./SectionCard";
 
@@ -99,7 +99,7 @@ export default function MyPostsTab() {
                   type="button"
                   onClick={() => setPage((p) => p + 1)}
                   disabled={isLoading}
-                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-accent hover:text-accent disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:text-accent disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
                 >
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

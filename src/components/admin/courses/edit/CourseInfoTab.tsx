@@ -4,7 +4,7 @@ import { RefObject } from "react";
 import Image from "next/image";
 import { CourseLevel, CourseFormat, CourseStatus } from "@/types/course";
 import { UploadCloud } from "lucide-react";
-import { CustomSelect } from "@/components/ui/CustomSelect";
+import { CustomSelect } from "@/components/ui/select";
 
 const levelOptions = [
   { value: CourseLevel.BEGINNER, label: "Cơ bản" },
@@ -64,7 +64,7 @@ export default function CourseInfoTab({
   onImageChange,
 }: CourseInfoTabProps) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-card border border-border p-6 rounded-xl shadow-sm">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-surface border border-border p-6 rounded-2xl shadow-xs">
       {/* Left Column - Form */}
       <div className="lg:col-span-2 space-y-5">
         <div className="space-y-1.5">
@@ -137,7 +137,7 @@ export default function CourseInfoTab({
         <label className="text-sm font-semibold text-foreground">Ảnh bìa</label>
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="relative aspect-video bg-muted/30 rounded-lg border-2 border-dashed border-border hover:border-accent/40 cursor-pointer overflow-hidden transition-all duration-200"
+          className="relative aspect-video bg-muted/30 rounded-lg border-2 border-dashed border-border cursor-pointer overflow-hidden transition-all duration-200"
         >
           {imagePreview ? (
             <Image src={imagePreview} alt="Cover" fill className="object-contain" unoptimized />

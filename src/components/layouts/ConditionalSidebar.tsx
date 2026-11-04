@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/sidebar";
 
 export default function ConditionalSidebar() {
   const pathname = usePathname();
-  
+
   const hideOnRoutes = [
     "/admin",
     "/login",
@@ -17,14 +17,15 @@ export default function ConditionalSidebar() {
     "/oauth2/callback",
     "/learn",
     "/docs",
-    "/courses/"
   ];
-  
-  const shouldHideSidebar = hideOnRoutes.some(route => pathname?.startsWith(route));
-  
+
+  const shouldHideSidebar = hideOnRoutes.some((route) =>
+    pathname?.startsWith(route)
+  );
+
   if (shouldHideSidebar) {
     return null;
   }
-  
+
   return <Sidebar />;
 }

@@ -22,11 +22,11 @@ export function ChallengeHeader({
   return (
     <>
       {/* 1. TOP BREADCRUMB */}
-      <div className="border-b border-gray-200 bg-white/80 dark:border-slate-700 dark:bg-slate-800/80 backdrop-blur-sm py-2.5 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white/95 dark:bg-surface/95 backdrop-blur-sm py-2.5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
           <Link
             href="/challenges"
-            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-accent font-semibold transition-colors"
+            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-[#FF5A1F] font-semibold transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Quay lại danh sách thử thách</span>
@@ -35,7 +35,7 @@ export function ChallengeHeader({
       </div>
 
       {/* 2. HERO HEADER (Matches CoursesHero JavaBuilder Style) */}
-      <section className="relative overflow-hidden border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+      <section className="relative overflow-hidden border-b border-[#E8E8E8] bg-white dark:border-border dark:bg-surface">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--accent-rgb),0.08),transparent_60%)]"
@@ -46,7 +46,7 @@ export function ChallengeHeader({
             {/* Title & Info */}
             <div className="max-w-3xl space-y-3">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/20">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A1F]/10 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/20">
                   <Flame className="h-3 w-3 text-amber-500 fill-amber-500" />
                   Thử Thách {challenge.totalDays} Ngày
                 </span>
@@ -63,18 +63,18 @@ export function ChallengeHeader({
                 )}
               </div>
 
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#171717] dark:text-white">
                 {challenge.title}
               </h1>
 
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#64748B] dark:text-slate-300 leading-relaxed">
                 {challenge.description}
               </p>
             </div>
 
             {/* Right Panel: Stats if enrolled */}
             {isEnrolled && (
-              <div className="p-4 rounded-xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800/80 shrink-0 min-w-[260px] space-y-2 shadow-xs">
+              <div className="p-4 rounded-2xl border border-[#E8E8E8] bg-[#F8F8F8] dark:border-border dark:bg-background shrink-0 min-w-[260px] space-y-2 shadow-xs">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1.5">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] border border-emerald-500/20">
@@ -83,17 +83,17 @@ export function ChallengeHeader({
                     </span>
                     <span className="font-medium text-gray-600 dark:text-gray-400">Tiến độ</span>
                   </div>
-                  <span className="font-semibold tabular-nums text-gray-900 dark:text-white">
+                  <span className="font-semibold tabular-nums text-[#171717] dark:text-white">
                     {progressPercent}%
                   </span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-700">
+                <div className="h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-muted">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       progressPercent >= 100
                         ? "bg-emerald-500"
                         : progressPercent >= 50
-                          ? "bg-accent"
+                          ? "bg-[#FF5A1F]"
                           : progressPercent > 0
                             ? "bg-amber-500"
                             : "bg-gray-300 dark:bg-slate-600"

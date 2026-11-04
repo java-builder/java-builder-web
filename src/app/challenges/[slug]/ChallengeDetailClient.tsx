@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowUp, AlertCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
-import { FilterOption } from "@/components/ui/FilterSelect";
+import { FilterOption } from "@/components/ui/select";
 import { Challenge, DayChallenge } from "../types";
 import { adaptChallengeDetailResponseToUi } from "../data/challengeAdapter";
 import { useChallengeBySlug } from "@/hooks/useChallenges";
@@ -16,7 +16,7 @@ import { challengeService } from "@/services/challenge.service";
 import { paymentApi } from "@/services/payment.service";
 import { CreatePaymentResponse } from "@/types/payment";
 import PaymentModal from "@/components/courses/PaymentModal";
-import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import AuthRequiredModal from "@/components/ui/auth-required-modal";
 import {
   ChallengeHeader,
   ChallengeToolbar,
@@ -595,7 +595,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         </p>
         <Link
           href="/challenges"
-          className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors"
+          className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF5A1F] text-white text-sm font-semibold hover:bg-[#e04b16] shadow-md shadow-[#FF5A1F]/25 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Quay lại danh sách
         </Link>
@@ -629,7 +629,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
     (isFetching && (!activeDay || !activeDay.content));
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+    <main className="min-h-screen bg-[#F8F8F8] dark:bg-background transition-colors duration-300">
       {/* 1. Header (Breadcrumb, Hero, Progress or CTA) */}
       <ChallengeHeader
         challenge={challenge}
@@ -648,7 +648,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             {/* LEFT COLUMN (2 COLS): Bản đồ n ngày học + Lộ trình chi tiết theo Phase */}
             <div className="lg:col-span-2 space-y-6">
               {/* 1. Bản đồ N ngày học (Roadmap Navigator Card chuẩn style hệ thống) */}
-              <div className="relative z-20 rounded-xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+              <div className="relative z-20 rounded-xl border border-[#E8E8E8] bg-white shadow-xs dark:border-border dark:bg-surface">
                 <ChallengeToolbar
                   challenge={challenge}
                   activePhaseFilter={activePhaseFilter}
@@ -716,7 +716,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
           /* ENROLLED / FULL ACCESS LEARNING WORKSPACE */
           <>
             {/* Roadmap Navigator (Unified Single Card) */}
-            <div className="relative z-20 rounded-xl border border-gray-200/90 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="relative z-20 rounded-xl border border-[#E8E8E8] bg-white shadow-xs dark:border-border dark:bg-surface">
               <ChallengeToolbar
                 challenge={challenge}
                 activePhaseFilter={activePhaseFilter}
@@ -770,7 +770,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         <button
           type="button"
           onClick={() => setIsSideDrawerOpen(true)}
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-accent hover:bg-accent/90 text-white pl-2.5 pr-2 py-3 rounded-l-lg shadow-lg hover:pl-3.5 transition-all flex flex-col items-center gap-1.5 cursor-pointer group border border-r-0 border-white/20 active:scale-95"
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-[#FF5A1F] hover:bg-[#e04b16] text-white pl-2.5 pr-2 py-3 rounded-l-xl shadow-lg hover:pl-3.5 transition-all flex flex-col items-center gap-1.5 cursor-pointer group border border-r-0 border-white/20 active:scale-95"
           title="Mở danh sách nhiệm vụ"
         >
           <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
@@ -831,7 +831,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-40 p-3 bg-accent hover:bg-accent-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center group"
+          className="fixed bottom-8 right-8 z-40 p-3 bg-[#FF5A1F] hover:bg-[#e04b16] text-white rounded-full shadow-lg shadow-[#FF5A1F]/30 transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center group"
           aria-label="Cuộn lên đầu trang"
           title="Cuộn lên đầu trang"
         >

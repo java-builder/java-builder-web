@@ -2,21 +2,16 @@ import { Loader2 } from 'lucide-react';
 
 export default function SubmittingOverlay() {
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm mx-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center">
+      <div className="bg-surface border border-border rounded-2xl p-8 shadow-xl max-w-sm mx-4">
         <div className="flex flex-col items-center text-center">
-          <Loader2 className="w-16 h-16 text-blue-600 animate-spin mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+          <h3 className="text-lg font-bold text-foreground mb-1">
             Đang chấm bài...
           </h3>
-          <p className="text-gray-600 text-sm">
+          <p className="text-text-secondary text-sm">
             Vui lòng đợi trong giây lát
           </p>
-          <div className="mt-4 flex gap-1">
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-          </div>
         </div>
       </div>
     </div>

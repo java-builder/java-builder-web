@@ -26,93 +26,79 @@ export default function QuestionItem({
   const userSelectedIds = questionResult.userSelectedOptionIds || [];
   const hasAnswer = userSelectedIds.length > 0;
 
-  const numberBadge = isCorrect
-    ? "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800"
+  const statusBadge = isCorrect
+    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
     : hasAnswer
-    ? "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/20 dark:text-rose-400 dark:ring-rose-800"
-    : "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:ring-amber-800";
+      ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+      : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
 
   const StatusIcon = isCorrect ? CheckCircle2 : hasAnswer ? XCircle : MinusCircle;
   const statusLabel = isCorrect ? "Đúng" : hasAnswer ? "Sai" : "Bỏ qua";
 
   return (
-    <div id={`question-${questionResult.questionId}`} className="scroll-mt-6">
-      {/* Header */}
-      <div className="px-4 pt-4 sm:px-5">
-        <div className="flex items-start gap-3 sm:gap-4">
-          <div className="flex flex-shrink-0 items-center pt-0.5">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold tabular-nums ring-1 ${numberBadge}`}
-            >
-              <StatusIcon className="h-3 w-3" />
-              <span className="font-mono opacity-70">
-                {String(questionNumber).padStart(2, "0")}
-              </span>
-              <span className="h-2.5 w-px bg-current opacity-30" />
-              <span className="uppercase tracking-wide">{statusLabel}</span>
-            </span>
-          </div>
+    <div
+      id={`question-${questionResult.questionId}`}
+      className="scroll-mt-24 rounded-2xl border border-border bg-surface p-5 sm:p-6 shadow-xs transition-colors"
+    >
+      {/* Card Top Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-border">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center rounded-lg bg-primary-soft border border-primary/15 px-2.5 py-1 text-xs font-extrabold text-primary">
+            Câu {questionNumber}
+          </span>
 
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-              <div className="flex-1 min-w-0 font-semibold text-gray-900 dark:text-white">
-                <PublicMarkdownRenderer
-                  content={questionResult.content}
-                  className="prose-sm sm:prose max-w-none text-gray-900 dark:text-white [&>p]:my-1"
-                />
-              </div>
+          <span
+            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusBadge}`}
+          >
+            <StatusIcon className="h-3.5 w-3.5" />
+            <span>{statusLabel}</span>
+          </span>
 
-              <span className="flex-shrink-0 rounded-md border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 px-2 py-0.5 text-xs font-semibold text-gray-700 dark:text-gray-300">
-                {questionResult.score} điểm
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Body — always visible */}
-      <div className="px-4 pb-4 pt-3 sm:px-5">
-        <div className="space-y-2">
-          {questionResult.options
-            .slice()
-            .sort((a, b) => a.orderIndex - b.orderIndex)
-            .map((option, optionIndex) => (
-              <OptionRow
-                key={option.id}
-                optionIndex={optionIndex}
-                content={option.content}
-                isCorrectOption={option.isCorrect}
-                isUserSelected={userSelectedIds.includes(option.id)}
-              />
-            ))}
+          <span className="inline-flex items-center rounded-full border border-border bg-background px-2.5 py-0.5 text-xs font-semibold text-muted-foreground tabular-nums">
+            {questionResult.score} điểm
+          </span>
         </div>
 
-        {!hasAnswer && (
-          <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-400">
-            <MinusCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
-            <span>Bạn chưa trả lời câu hỏi này.</span>
-          </div>
-        )}
-
-        {!isCorrect && (
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={() => setIsExplainOpen(true)}
-              className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-lg bg-gradient-to-r from-accent to-accent-600 px-3.5 py-1.5 text-[13px] font-semibold text-white shadow-sm ring-1 ring-white/10 transition hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-accent/40"
-            >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-              <span className="relative flex h-4 w-4 items-center justify-center">
-                <Sparkles className="h-4 w-4" />
-                <span className="absolute -right-0.5 -top-0.5 flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
-                </span>
-              </span>
-              <span className="relative">Giải thích với AI</span>
-            </button>
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={() => setIsExplainOpen(true)}
+          className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary-soft hover:bg-primary hover:text-primary-foreground px-3.5 py-1 text-xs font-semibold text-primary transition cursor-pointer active:scale-95"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Giải thích với AI</span>
+        </button>
       </div>
+
+      {/* Question Content */}
+      <div className="mt-4 font-semibold text-foreground">
+        <PublicMarkdownRenderer
+          content={questionResult.content}
+          className="prose-sm sm:prose max-w-none text-foreground [&>p]:my-1.5"
+        />
+      </div>
+
+      {/* Options */}
+      <div className="mt-4 space-y-2.5">
+        {questionResult.options
+          .slice()
+          .sort((a, b) => a.orderIndex - b.orderIndex)
+          .map((option, optionIndex) => (
+            <OptionRow
+              key={option.id}
+              optionIndex={optionIndex}
+              content={option.content}
+              isCorrectOption={option.isCorrect}
+              isUserSelected={userSelectedIds.includes(option.id)}
+            />
+          ))}
+      </div>
+
+      {!hasAnswer && (
+        <div className="mt-3.5 flex items-center gap-2 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3.5 py-2.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+          <MinusCircle className="h-4 w-4 shrink-0" />
+          <span>Bạn đã bỏ qua câu hỏi này.</span>
+        </div>
+      )}
 
       <ExplainQuestionModal
         isOpen={isExplainOpen}
@@ -138,53 +124,58 @@ function OptionRow({
 }: OptionRowProps) {
   const optionLetter = String.fromCharCode(65 + optionIndex);
 
-  let containerClass =
-    "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800";
-  let letterClass = "text-gray-400 dark:text-gray-500";
-  let textClass = "text-gray-700 dark:text-gray-300";
+  let containerClass = "border-border bg-background/50";
+  let letterBadgeClass =
+    "border-border bg-surface text-muted-foreground";
+  let textClass = "text-foreground/85";
   let badge: { label: string; className: string; correct: boolean } | null = null;
 
   if (isCorrectOption) {
     containerClass =
-      "border-emerald-200 bg-emerald-50/60 dark:border-emerald-800 dark:bg-emerald-900/10";
-    letterClass = "text-emerald-700 dark:text-emerald-400";
-    textClass = "text-gray-900 dark:text-white font-medium";
+      "border-emerald-500/40 bg-emerald-500/10";
+    letterBadgeClass =
+      "border-emerald-500 bg-emerald-500 text-white";
+    textClass = "text-foreground font-semibold";
     badge = {
-      label: isUserSelected ? "Bạn chọn (đúng)" : "Đáp án đúng",
+      label: isUserSelected ? "Bạn chọn • Đúng" : "Đáp án đúng",
       correct: true,
       className:
-        "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+        "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25",
     };
   } else if (isUserSelected) {
     containerClass =
-      "border-rose-200 bg-rose-50/60 dark:border-rose-800 dark:bg-rose-900/10";
-    letterClass = "text-rose-700 dark:text-rose-400";
-    textClass = "text-gray-900 dark:text-white";
+      "border-rose-500/40 bg-rose-500/10";
+    letterBadgeClass =
+      "border-rose-500 bg-rose-500 text-white";
+    textClass = "text-foreground font-medium";
     badge = {
-      label: "Bạn đã chọn",
+      label: "Bạn chọn • Sai",
       correct: false,
-      className: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
+      className:
+        "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25",
     };
   }
 
   return (
     <div
-      className={`flex flex-wrap items-start gap-x-3 gap-y-2 rounded-lg border p-3 sm:flex-nowrap sm:items-center ${containerClass}`}
+      className={`flex flex-wrap items-start gap-3 rounded-xl border p-3.5 sm:flex-nowrap sm:items-center transition-colors ${containerClass}`}
     >
       <span
-        className={`font-mono text-xs font-semibold tracking-wide ${letterClass}`}
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border text-xs font-bold ${letterBadgeClass}`}
       >
-        {optionLetter}.
+        {optionLetter}
       </span>
+
       <div className={`min-w-0 flex-1 text-sm leading-relaxed ${textClass}`}>
         <PublicMarkdownRenderer
           content={content}
           className="prose-sm sm:prose max-w-none [&>p]:mb-0 [&>p]:inline"
         />
       </div>
+
       {badge && (
         <span
-          className={`inline-flex flex-shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${badge.className}`}
+          className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${badge.className}`}
         >
           {badge.correct ? (
             <CheckCircle2 className="h-3 w-3" />

@@ -66,25 +66,25 @@ export default function ContributionCard({
     switch (difficulty) {
       case "EASY":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
             {t("admin.questionContributions.difficultyEasy")}
           </span>
         );
       case "MEDIUM":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
             {t("admin.questionContributions.difficultyMedium")}
           </span>
         );
       case "HARD":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
             {t("admin.questionContributions.difficultyHard")}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-muted text-muted-foreground">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-muted text-muted-foreground">
             {difficulty}
           </span>
         );
@@ -110,7 +110,7 @@ export default function ContributionCard({
   return (
     <div
       onClick={onViewDetail}
-      className="bg-card rounded-xl border border-border shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group cursor-pointer"
+      className="bg-surface rounded-2xl border border-border shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group cursor-pointer"
     >
       <div className="p-5 space-y-4 flex-1">
         {/* Header: Contributor Profile & Status Badge */}
@@ -151,7 +151,7 @@ export default function ContributionCard({
 
         {/* Tags Row: Topic / Difficulty / Level */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-muted text-muted-foreground border border-border px-2.5 py-0.5 rounded-md">
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-muted text-muted-foreground border border-border px-2.5 py-0.5 rounded-full">
             <FolderGit2 className="h-3.5 w-3.5" />
             <span className="truncate max-w-[180px]">
               {contribution.questionSetTitle || t("admin.questionContributions.unassigned")}
@@ -161,7 +161,7 @@ export default function ContributionCard({
           {getDifficultyBadge(contribution.difficulty)}
 
           {contribution.level && (
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-muted text-muted-foreground border border-border uppercase">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-muted text-muted-foreground border border-border uppercase">
               {contribution.level}
             </span>
           )}
@@ -259,13 +259,13 @@ export default function ContributionCard({
 
                 <Button
                   type="button"
-                  variant="destructive"
+                  variant="ghost"
                   size="sm"
                   onClick={() => {
                     setIsMenuOpen(false);
                     onDelete();
                   }}
-                  className="w-full justify-start text-xs font-medium h-8.5 px-2.5 gap-2 cursor-pointer"
+                  className="w-full justify-start text-xs font-medium h-8.5 px-2.5 gap-2 cursor-pointer text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
                   <span>{t("admin.questionContributions.deleteBtn")}</span>

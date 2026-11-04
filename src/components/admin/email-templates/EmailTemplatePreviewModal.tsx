@@ -48,13 +48,13 @@ export default function EmailTemplatePreviewModal({
       onClick={onClose}
     >
       <div
-        className="relative bg-card rounded-2xl max-w-3xl w-full shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-border"
+        className="relative bg-surface rounded-2xl max-w-3xl w-full shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal header */}
         <div className="p-4 border-b border-border flex items-center justify-between bg-muted/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 flex items-center justify-center shadow-xs">
               <Mail className="w-5 h-5" />
             </div>
             <div>
@@ -114,7 +114,7 @@ export default function EmailTemplatePreviewModal({
         {/* Preview content area inside Mac-like Wrapper */}
         <div className="flex-1 overflow-y-auto p-6 bg-muted/20 flex flex-col justify-center min-h-[300px]">
           {tab === "html" ? (
-            <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col max-w-[620px] mx-auto w-full">
+            <div className="bg-surface rounded-2xl border border-border shadow-md overflow-hidden flex flex-col max-w-[620px] mx-auto w-full">
               {/* MacOS style window controls */}
               <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-150 flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 bg-red-400 rounded-full"></span>
@@ -129,7 +129,7 @@ export default function EmailTemplatePreviewModal({
               />
             </div>
           ) : (
-            <div className="bg-card p-6 rounded-xl border border-border max-w-[620px] mx-auto w-full shadow-md font-mono text-sm text-foreground whitespace-pre-wrap leading-relaxed h-[520px] overflow-y-auto">
+            <div className="bg-card p-6 rounded-2xl border border-border max-w-[620px] mx-auto w-full shadow-md font-mono text-sm text-foreground whitespace-pre-wrap leading-relaxed h-[520px] overflow-y-auto">
               {template.textContent}
             </div>
           )}
@@ -141,6 +141,7 @@ export default function EmailTemplatePreviewModal({
             onClick={onClose}
             variant="outline"
             size="sm"
+            className="rounded-full border border-border cursor-pointer"
           >
             Đóng
           </Button>
@@ -151,6 +152,7 @@ export default function EmailTemplatePreviewModal({
             }}
             variant="accent"
             size="sm"
+            className="rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
           >
             Chỉnh sửa mẫu này
           </Button>

@@ -24,7 +24,7 @@ export const SessionsHeader = ({ totalCount }: SessionsHeaderProps) => {
       </div>
       <div className="flex items-center gap-3">
         {totalCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent dark:text-accent-on-dark">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary dark:bg-orange-950/40 dark:text-orange-400">
             {t("admin.sessionsAnalytics.totalSessions")}:{" "}
             <span className="font-bold tabular-nums">
               {totalCount.toLocaleString()}
@@ -33,7 +33,7 @@ export const SessionsHeader = ({ totalCount }: SessionsHeaderProps) => {
         )}
         <Link
           href="/admin/sessions/analytics"
-          className={buttonVariants({ variant: "outline", size: "sm" })}
+          className={buttonVariants({ variant: "outline", size: "sm", className: "rounded-full" })}
         >
           <BarChart3 className="h-4 w-4 mr-1.5" />
           {t("admin.sessions.analyticsBtn")}

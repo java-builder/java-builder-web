@@ -16,10 +16,10 @@ export default function CommentsPage() {
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card border border-border p-6 rounded-xl shadow-sm">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-surface border border-border p-6 rounded-2xl shadow-xs">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-accent" />
+            <MessageSquare className="h-6 w-6 text-primary" />
             <span>{t("admin.comments.pageTitle")}</span>
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -29,15 +29,15 @@ export default function CommentsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-card rounded-xl shadow-sm border border-border mb-6">
+      <div className="bg-surface rounded-2xl shadow-xs border border-border mb-6">
         <div className="border-b border-border overflow-x-auto">
           <nav className="flex -mb-px">
             <button
               onClick={() => setActiveTab("blogs")}
-              className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+              className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                 activeTab === "blogs"
-                  ? "border-accent text-accent font-semibold"
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                  ? "border-primary text-primary font-semibold"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:hover:border-border"
               }`}
             >
               <div className="flex items-center justify-center sm:justify-start space-x-1 sm:space-x-2">
@@ -48,10 +48,10 @@ export default function CommentsPage() {
 
             <button
               onClick={() => setActiveTab("courses")}
-              className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+              className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                 activeTab === "courses"
-                  ? "border-accent text-accent font-semibold"
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                  ? "border-primary text-primary font-semibold"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:hover:border-border"
               }`}
             >
               <div className="flex items-center justify-center sm:justify-start space-x-1 sm:space-x-2">
@@ -62,10 +62,10 @@ export default function CommentsPage() {
 
             <button
               onClick={() => setActiveTab("docs")}
-              className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+              className={`flex-1 sm:flex-none px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                 activeTab === "docs"
-                  ? "border-accent text-accent font-semibold"
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                  ? "border-primary text-primary font-semibold"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:hover:border-border"
               }`}
             >
               <div className="flex items-center justify-center sm:justify-start space-x-1 sm:space-x-2">

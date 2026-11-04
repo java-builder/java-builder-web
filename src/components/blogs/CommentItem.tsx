@@ -341,7 +341,7 @@ export default function CommentItem({
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder={`Trả lời ${comment.username}...`}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-600 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-600 rounded-xl resize-none focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300/50 focus:border-accent text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all"
                     rows={2}
                     maxLength={500}
                     disabled={isSubmittingReply}
@@ -352,14 +352,14 @@ export default function CommentItem({
                       <button
                         onClick={() => { setShowReplyForm(false); setReplyContent(""); }}
                         disabled={isSubmittingReply}
-                        className="px-5 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-5 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Hủy
                       </button>
                       <button
                         onClick={handleReply}
                         disabled={!replyContent.trim() || isSubmittingReply}
-                        className="px-5 py-2 text-sm font-medium bg-accent text-white hover:bg-accent-600 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-300 dark:disabled:bg-slate-600"
+                        className="px-5 py-2 text-sm font-medium bg-accent text-white hover:bg-accent-600 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-300 dark:disabled:bg-slate-600"
                       >
                         {isSubmittingReply ? "Đang gửi..." : "Gửi"}
                       </button>

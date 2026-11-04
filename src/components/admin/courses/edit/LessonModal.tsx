@@ -2,11 +2,11 @@
 
 import { useRef } from "react";
 import { LessonFormat } from "@/types/lesson";
-import MarkdownEditor from "@/components/admin/blogs/MarkdownEditor";
+import MarkdownEditor from "@/components/ui/markdown-editor";
 import VideoPlayer from "@/components/common/VideoPlayer";
 import { X, Loader2, UploadCloud, Film, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CustomSelect } from "@/components/ui/CustomSelect";
+import { CustomSelect } from "@/components/ui/select";
 
 const lessonFormatOptions = [
   { value: LessonFormat.VIDEO, label: "Video - Học qua video" },
@@ -75,12 +75,12 @@ export default function LessonModal({
 
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal content */}
-        <div className="relative bg-card text-card-foreground border border-border rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col mx-4 z-10">
+        <div className="relative bg-surface text-card-foreground border border-border rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col mx-4 z-10">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-xl">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40">
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-                <BookOpen className="h-5 w-5 text-accent dark:text-accent-on-dark" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 shadow-xs">
+                <BookOpen className="h-5 w-5" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-foreground">
@@ -91,7 +91,7 @@ export default function LessonModal({
             <button
               onClick={() => !isSubmitting && !isUploading && onClose()}
               disabled={isSubmitting || isUploading}
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 p-1.5 rounded-lg"
+              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 p-1.5 rounded-lg cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
@@ -180,7 +180,7 @@ export default function LessonModal({
                   ) : (
                     <div
                       onClick={() => !isSubmitting && videoInputRef.current?.click()}
-                      className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg hover:border-accent/40 hover:bg-accent/5 cursor-pointer transition-all duration-200 bg-muted/30"
+                      className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg hover:bg-accent/5 cursor-pointer transition-all duration-200 bg-muted/30"
                       style={{ minHeight: '220px' }}
                     >
                       <UploadCloud className="w-10 h-10 text-muted-foreground mb-2" />
@@ -270,7 +270,7 @@ export default function LessonModal({
                     ) : (
                       <div
                         onClick={() => !isSubmitting && videoInputRef.current?.click()}
-                        className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-lg hover:border-accent/40 hover:bg-accent/5 cursor-pointer transition-all duration-200 bg-muted/30"
+                        className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-lg hover:bg-accent/5 cursor-pointer transition-all duration-200 bg-muted/30"
                       >
                         <UploadCloud className="w-10 h-10 text-muted-foreground mb-2" />
                         <p className="text-sm font-semibold text-foreground">Nhấn để tải lên video</p>
@@ -306,11 +306,12 @@ export default function LessonModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-xl">
+          <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40">
             <Button
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting || isUploading}
+              className="rounded-full border border-border cursor-pointer"
             >
               Hủy
             </Button>
@@ -318,7 +319,7 @@ export default function LessonModal({
               variant="accent"
               onClick={onSave}
               disabled={isSubmitting || isUploading}
-              className="gap-2 font-medium"
+              className="gap-2 font-medium rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs cursor-pointer"
             >
               {(isSubmitting || isUploading) && (
                 <Loader2 className="animate-spin w-4 h-4" />

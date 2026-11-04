@@ -80,20 +80,20 @@ export default function ChallengeTable({
 
   if (isLoading) {
     return (
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-xs">
         <div className="p-4 border-b border-border bg-muted/20">
-          <div className="h-4 bg-muted rounded w-32 animate-pulse" />
+          <div className="h-4 bg-muted rounded-full w-32 " />
         </div>
         <div className="divide-y divide-border">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="p-4 flex items-center justify-between gap-4 animate-pulse">
+            <div key={i} className="p-4 flex items-center justify-between gap-4 ">
               <div className="space-y-2 flex-1">
-                <div className="h-4 bg-muted rounded w-1/3" />
-                <div className="h-3 bg-muted rounded w-1/4" />
+                <div className="h-4 bg-muted rounded-full w-1/3" />
+                <div className="h-3 bg-muted rounded-full w-1/4" />
               </div>
-              <div className="h-6 bg-muted rounded w-20" />
-              <div className="h-6 bg-muted rounded w-24" />
-              <div className="h-8 bg-muted rounded w-28" />
+              <div className="h-6 bg-muted rounded-full w-20" />
+              <div className="h-6 bg-muted rounded-full w-24" />
+              <div className="h-8 bg-muted rounded-xl w-28" />
             </div>
           ))}
         </div>
@@ -103,8 +103,8 @@ export default function ChallengeTable({
 
   if (challenges.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card/50 py-16 text-center">
-        <div className="mx-auto w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-4">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface py-16 text-center">
+        <div className="mx-auto w-12 h-12 rounded-full bg-primary-soft flex items-center justify-center text-primary mb-4">
           <Layers className="h-6 w-6" />
         </div>
         <h3 className="text-base font-semibold text-foreground">
@@ -114,7 +114,7 @@ export default function ChallengeTable({
           Tạo lộ trình thử thách đầu tiên để học viên có thể rèn luyện kiến thức mỗi ngày.
         </p>
         {onCreateNew && (
-          <Button onClick={onCreateNew} variant="accent" size="sm" className="mt-5 gap-1.5">
+          <Button onClick={onCreateNew} variant="accent" size="sm" className="mt-5 gap-1.5 rounded-full">
             + Tạo thử thách mới
           </Button>
         )}
@@ -123,7 +123,7 @@ export default function ChallengeTable({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card shadow-xs">
+    <div className="rounded-2xl border border-border bg-surface shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-xs uppercase font-semibold text-muted-foreground">
@@ -181,7 +181,7 @@ export default function ChallengeTable({
                             {c.title}
                           </Link>
                           {c.category && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-muted text-muted-foreground border border-border/60">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-muted text-muted-foreground border border-border/60">
                               {c.category.name}
                             </span>
                           )}
@@ -228,7 +228,7 @@ export default function ChallengeTable({
                         {c.price.toLocaleString("vi-VN")} đ
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                         Miễn phí
                       </span>
                     )}
@@ -246,7 +246,7 @@ export default function ChallengeTable({
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${
                           isActive
-                            ? "bg-emerald-500 animate-pulse"
+                            ? "bg-emerald-500 "
                             : "bg-muted-foreground"
                         }`}
                       />
@@ -276,7 +276,7 @@ export default function ChallengeTable({
                           right: Math.max(16, window.innerWidth - rect.right),
                         });
                       }}
-                      className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+                      className="h-8 w-8 p-0 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
                       title="Thao tác"
                     >
                       <MoreVertical className="h-4 w-4" />
@@ -304,20 +304,20 @@ export default function ChallengeTable({
               top: `${openMenu.top}px`,
               right: `${openMenu.right}px`,
             }}
-            className="w-52 bg-card rounded-lg shadow-xl border border-border py-1.5 z-50 text-left animate-in fade-in zoom-in-95 duration-100"
+            className="w-52 bg-surface rounded-2xl shadow-xl border border-border py-1.5 z-50 text-left animate-in fade-in zoom-in-95 duration-100"
           >
             <Link
               href={`/admin/challenges/${openMenu.challenge.id}`}
-              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
               onClick={() => setOpenMenu(null)}
             >
-              <Layers className="w-4 h-4 text-accent" />
+              <Layers className="w-4 h-4 text-primary" />
               <span>Chi tiết & Lộ trình</span>
             </Link>
 
             <Link
               href={`/admin/challenges/${openMenu.challenge.id}/enrollments`}
-              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
               onClick={() => setOpenMenu(null)}
             >
               <Users className="w-4 h-4 text-blue-500" />
@@ -333,7 +333,7 @@ export default function ChallengeTable({
                   setOpenMenu(null);
                   onEnroll(target.id, target.title);
                 }}
-                className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
+                className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer rounded-lg"
               >
                 <UserPlus className="w-4 h-4 text-emerald-500" />
                 <span>Thêm học viên</span>
@@ -344,7 +344,7 @@ export default function ChallengeTable({
               <Link
                 href={`/challenges/${openMenu.challenge.slug}`}
                 target="_blank"
-                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
                 onClick={() => setOpenMenu(null)}
               >
                 <ExternalLink className="w-4 h-4 text-muted-foreground" />

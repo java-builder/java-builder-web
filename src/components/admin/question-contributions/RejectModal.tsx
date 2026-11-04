@@ -25,7 +25,7 @@ export default function RejectModal({
       />
       
       {/* Dialog container */}
-      <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md border border-border overflow-hidden animate-in zoom-in-95 duration-200 z-10">
+      <div className="relative bg-surface rounded-2xl shadow-2xl w-full max-w-md border border-border overflow-hidden animate-in zoom-in-95 duration-200 z-10">
         {/* Header */}
         <div className="flex items-start justify-between p-6 pb-4 border-b border-border">
           <div className="flex gap-3">
@@ -60,7 +60,7 @@ export default function RejectModal({
               onChange={(e) => setRejectReason(e.target.value)}
               rows={4}
               placeholder="Nhập lý do từ chối chi tiết..."
-              className="flex w-full rounded-xl border border-input bg-background/50 p-3 text-sm shadow-2xs transition-all placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500 focus-visible:border-rose-500 resize-none text-foreground leading-relaxed"
+              className="flex w-full rounded-xl border border-border bg-background/50 p-3 text-sm shadow-2xs transition-all placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500 focus-visible:border-rose-500 resize-none text-foreground leading-relaxed"
             />
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function RejectModal({
             variant="outline"
             size="sm"
             onClick={onClose}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-full border border-border"
           >
             Hủy
           </Button>
@@ -80,7 +80,7 @@ export default function RejectModal({
             size="sm"
             onClick={onConfirm}
             disabled={!rejectReason.trim()}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-full"
           >
             Xác nhận từ chối
           </Button>

@@ -126,7 +126,7 @@ export default function EditQuestionSetPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6 animate-pulse max-w-5xl">
+      <div className="p-6 space-y-6  max-w-5xl">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-muted" />
           <div className="space-y-2 flex-1">
@@ -225,7 +225,7 @@ export default function EditQuestionSetPage() {
                                 Premium 💎
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/30 text-gray-500 dark:text-gray-400">
+                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full border border-border bg-gray-50 dark:bg-surface text-gray-500 dark:text-gray-400">
                                 Miễn phí
                               </span>
                             )}

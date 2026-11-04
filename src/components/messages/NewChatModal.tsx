@@ -179,11 +179,11 @@ export default function NewChatModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-card text-card-foreground rounded-2xl sm:rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="w-full max-w-lg bg-card text-card-foreground rounded-2xl shadow-2xl border border-[#E8E8E8] dark:border-border overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/40">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-accent/10 text-accent">
+            <div className="p-2.5 rounded-xl bg-accent/10 text-accent">
               {chatType === "GROUP" ? <Users className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
             </div>
             <div>
@@ -251,7 +251,7 @@ export default function NewChatModal({
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="Ví dụ: Nhóm Lập Trình Java Core K16..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export default function NewChatModal({
                 <label className="block text-xs font-bold text-foreground mb-1.5">
                   Ảnh đại diện nhóm
                 </label>
-                <div className="flex items-center gap-3.5 p-3 rounded-2xl border border-dashed border-border bg-muted/20 hover:border-accent/50 transition-all">
+                <div className="flex items-center gap-3.5 p-3 rounded-xl border border-dashed border-border bg-muted/20 transition-all">
                   {/* Selected Avatar Preview */}
                   <div
                     onClick={() => avatarInputRef.current?.click()}
@@ -289,7 +289,7 @@ export default function NewChatModal({
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
-                      className="mt-1.5 px-3 py-1 rounded-xl bg-accent/10 hover:bg-accent/20 text-xs font-bold text-accent flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="mt-1.5 px-3 py-1 rounded-full bg-accent/10 hover:bg-accent/20 text-xs font-bold text-accent flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       <span>{groupAvatar !== DEFAULT_GROUP_AVATAR ? "Đổi ảnh khác" : "Chọn ảnh từ máy"}</span>
@@ -350,7 +350,7 @@ export default function NewChatModal({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Tìm theo tên người dùng..."
-                  className="w-full pl-9.5 pr-8 py-2 rounded-xl border border-input bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full pl-9.5 pr-8 py-2 rounded-xl border border-input bg-background text-foreground text-xs focus:outline-none focus:ring-1 focus:ring-slate-950 dark:focus:ring-slate-300"
                 />
                 {isSearchingApi && (
                   <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-accent animate-spin" />
@@ -371,7 +371,7 @@ export default function NewChatModal({
                     <div
                       key={contact.id}
                       onClick={() => toggleSelectUser(contact.id)}
-                      className={`flex items-center justify-between gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${isSelected
+                      className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isSelected
                         ? "border-accent bg-accent/10"
                         : "border-border hover:bg-muted/60"
                         }`}
@@ -437,7 +437,7 @@ export default function NewChatModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
             >
               Hủy
             </button>
@@ -446,7 +446,7 @@ export default function NewChatModal({
               disabled={
                 selectedUserIds.length === 0 || (chatType === "GROUP" && !groupName.trim()) || isSubmitting
               }
-              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 disabled:opacity-50 text-sm font-semibold shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2 rounded-full bg-accent text-white hover:bg-accent/90 disabled:opacity-50 text-sm font-semibold shadow-xs transition-all cursor-pointer"
             >
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

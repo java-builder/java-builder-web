@@ -43,9 +43,9 @@ export default function RolesTable({
 
   if (isLoading && roles.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-2xl border border-border bg-card">
+      <div className="flex h-64 items-center justify-center rounded-2xl border border-border bg-surface">
         <div className="flex flex-col items-center gap-2">
-          <Loader2 className="h-8 w-8 animate-spin text-accent" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">
             {t("admin.common.loading")}
           </p>
@@ -56,7 +56,7 @@ export default function RolesTable({
 
   if (roles.length === 0) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+      <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
           <Shield className="h-6 w-6" />
         </div>
@@ -68,13 +68,13 @@ export default function RolesTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       {isCustomized && (
         <div className="flex justify-end border-b border-border px-5 py-2.5 bg-muted/20">
           <button
             type="button"
             onClick={resetAllWidths}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
             title="Đặt lại độ rộng các cột về mặc định"
           >
             <RotateCcw className="w-3 h-3" />
@@ -100,7 +100,7 @@ export default function RolesTable({
             ))}
           </colgroup>
           <thead>
-            <tr className="border-b border-border bg-muted/50 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <tr className="border-b border-border bg-background dark:bg-surface/60 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {columns.map((col) => (
                 <th
                   key={col.id}

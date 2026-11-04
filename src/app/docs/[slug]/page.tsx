@@ -11,7 +11,7 @@ import CourseOverview from "@/components/docs/CourseOverview";
 import ReviewSection from "@/components/courses/ReviewSection";
 import PaymentModal from "@/components/courses/PaymentModal";
 import CourseUnlockModal from "@/components/courses/CourseUnlockModal";
-import AuthRequiredModal from "@/components/ui/AuthRequiredModal";
+import AuthRequiredModal from "@/components/ui/auth-required-modal";
 import { courseApi, lessonApi } from "@/services/course.service";
 import { enrollmentApi } from "@/services/enrollment.service";
 import { CourseDetailResponse, LessonDetailResponse } from "@/types/course";
@@ -24,7 +24,7 @@ import { FavoriteTargetType } from "@/types/favorite";
 import { useCreatePaymentLink } from "@/hooks/usePayment";
 import { CreatePaymentResponse } from "@/types/payment";
 import toast from "react-hot-toast";
-import { Heart } from "lucide-react";
+import { ChevronRight, Lock, FileQuestion } from "lucide-react";
 
 export default function DocsDetailPage() {
   const params = useParams();
@@ -41,13 +41,21 @@ export default function DocsDetailPage() {
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState<string | null>(null);
-  const lessonIdFromUrl = searchParams.get('lessonId');
+  const lessonIdFromUrl = searchParams.get("lessonId");
   const [showOverview, setShowOverview] = useState(!lessonIdFromUrl);
   const [chapterLessons, setChapterLessons] = useState<Record<string, LessonDetailResponse[]>>({});
   const [loadedChapters, setLoadedChapters] = useState<Set<string>>(new Set());
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
   const [isLoadingLesson, setIsLoadingLesson] = useState(!!lessonIdFromUrl);
   const lessonCacheRef = useRef<Record<string, LessonDetailResponse>>({});
+
+  const [drawerState, setDrawerState] = useState<{
+    isOpen: boolean;
+    tab: "notes" | "ai";
+  }>({
+    isOpen: false,
+    tab: "notes",
+  });
 
   const hasAccess = Boolean(course?.isEnrolled || course?.isPremiumUser);
 
@@ -120,7 +128,7 @@ export default function DocsDetailPage() {
     try {
       const result = await enrollmentApi.enrollFreeCourse(course.id);
       if (result.code === 200) {
-        setCourse(prev => prev ? { ...prev, isEnrolled: true } : null);
+        setCourse((prev) => (prev ? { ...prev, isEnrolled: true } : null));
         toast.success("Đăng ký tham gia khóa học thành công!");
         lessonCacheRef.current = {};
         if (selectedChapter) {
@@ -175,9 +183,8 @@ export default function DocsDetailPage() {
           setCourse(courseData);
           setIsFavorite(courseData.isFavorite ?? false);
 
-
-
           if (courseData.chapters && courseData.chapters.length > 0) {
+            setOpenCategories([courseData.chapters[0].id]);
             const fetchAllLessonNames = async () => {
               const lessonsMap: Record<string, LessonDetailResponse[]> = {};
               const loadedIds = new Set<string>();
@@ -186,7 +193,7 @@ export default function DocsDetailPage() {
                   try {
                     const lessonsResponse = await lessonApi.getByChapterId(chapter.id);
                     if (lessonsResponse.data) {
-                      lessonsMap[chapter.id] = lessonsResponse.data.map(lesson => ({
+                      lessonsMap[chapter.id] = lessonsResponse.data.map((lesson) => ({
                         ...lesson,
                         content: undefined,
                       }));
@@ -219,33 +226,36 @@ export default function DocsDetailPage() {
     }
   }, [slug, currentUser, isLoadingUser]);
 
-  const loadLessonContent = useCallback(async (lessonId: string) => {
-    if (lessonCacheRef.current[lessonId]) {
-      setSelectedLesson(lessonCacheRef.current[lessonId]);
-      return lessonCacheRef.current[lessonId];
-    }
-
-    const response = await lessonApi.getById(lessonId);
-    if (response.data) {
-      const lesson = response.data;
-      if (lesson.content) {
-        if (course?.description) {
-          lesson.content = lesson.content.replace(course.description, '').trim();
-        }
-        lesson.content = lesson.content.replace(/\n*\*Tiếp theo:[\s\S]*?\*\s*$/, '').trim();
+  const loadLessonContent = useCallback(
+    async (lessonId: string) => {
+      if (lessonCacheRef.current[lessonId]) {
+        setSelectedLesson(lessonCacheRef.current[lessonId]);
+        return lessonCacheRef.current[lessonId];
       }
-      lessonCacheRef.current[lessonId] = lesson;
-      setSelectedLesson(lesson);
-      return lesson;
-    }
-    return null;
-  }, [course?.description]);
+
+      const response = await lessonApi.getById(lessonId);
+      if (response.data) {
+        const lesson = response.data;
+        if (lesson.content) {
+          if (course?.description) {
+            lesson.content = lesson.content.replace(course.description, "").trim();
+          }
+          lesson.content = lesson.content.replace(/\n*\*Tiếp theo:[\s\S]*?\*\s*$/, "").trim();
+        }
+        lessonCacheRef.current[lessonId] = lesson;
+        setSelectedLesson(lesson);
+        return lesson;
+      }
+      return null;
+    },
+    [course?.description]
+  );
 
   useEffect(() => {
     const handlePaymentSuccess = async () => {
       setUnlockModalOpen(false);
       setPaymentModal({ isOpen: false, isLoading: false, data: null });
-      setCourse(prev => prev ? { ...prev, isEnrolled: true, isPremiumUser: true } : null);
+      setCourse((prev) => (prev ? { ...prev, isEnrolled: true, isPremiumUser: true } : null));
       lessonCacheRef.current = {};
       if (selectedChapter) {
         setIsLoadingLesson(true);
@@ -254,9 +264,9 @@ export default function DocsDetailPage() {
       }
     };
 
-    window.addEventListener('payment:success', handlePaymentSuccess);
+    window.addEventListener("payment:success", handlePaymentSuccess);
     return () => {
-      window.removeEventListener('payment:success', handlePaymentSuccess);
+      window.removeEventListener("payment:success", handlePaymentSuccess);
     };
   }, [selectedChapter, loadLessonContent]);
 
@@ -264,14 +274,14 @@ export default function DocsDetailPage() {
     if (!course || !chapterLessons || Object.keys(chapterLessons).length === 0) return;
     if (currentLessonIdRef.current) return;
 
-    const lessonId = searchParams.get('lessonId');
+    const lessonId = searchParams.get("lessonId");
     if (!lessonId) return;
 
     const loadInitialLesson = async () => {
       for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
-        const targetLesson = lessons.find(l => l.id === lessonId);
+        const targetLesson = lessons.find((l) => l.id === lessonId);
         if (targetLesson) {
-          setOpenCategories(prev => {
+          setOpenCategories((prev) => {
             if (!prev.includes(chapterId)) {
               return [...prev, chapterId];
             }
@@ -295,105 +305,146 @@ export default function DocsDetailPage() {
     loadInitialLesson();
   }, [course, chapterLessons, searchParams, loadLessonContent]);
 
-  const handleLessonClick = useCallback(async (lessonId: string) => {
-    if (currentLessonIdRef.current === lessonId || isLoadingLesson) {
-      return;
-    }
-
-    try {
-      currentLessonIdRef.current = lessonId;
-
-      setSelectedChapter(lessonId);
-      setShowOverview(false);
-      setIsLoadingLesson(true);
-
-      // Find the chapter containing the lesson and expand it in the sidebar
-      let parentChapterId: string | null = null;
-      for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
-        if (lessons.some(l => l.id === lessonId)) {
-          parentChapterId = chapterId;
-          break;
-        }
+  const handleLessonClick = useCallback(
+    async (lessonId: string) => {
+      if (currentLessonIdRef.current === lessonId || isLoadingLesson) {
+        return;
       }
 
-      if (parentChapterId) {
-        setOpenCategories(prev => {
-          if (!prev.includes(parentChapterId!)) {
-            return [...prev, parentChapterId!];
+      try {
+        currentLessonIdRef.current = lessonId;
+
+        setSelectedChapter(lessonId);
+        setShowOverview(false);
+        setIsLoadingLesson(true);
+        setIsSidebarOpen(false);
+
+        let parentChapterId: string | null = null;
+        for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
+          if (lessons.some((l) => l.id === lessonId)) {
+            parentChapterId = chapterId;
+            break;
           }
-          return prev;
-        });
+        }
+
+        if (parentChapterId) {
+          setOpenCategories((prev) => {
+            if (!prev.includes(parentChapterId!)) {
+              return [...prev, parentChapterId!];
+            }
+            return prev;
+          });
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("lessonId", lessonId);
+        window.history.replaceState({}, "", url.pathname + url.search);
+
+        await loadLessonContent(lessonId);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (error) {
+        console.error("Error fetching lesson:", error);
+        currentLessonIdRef.current = null;
+      } finally {
+        setIsLoadingLesson(false);
       }
-
-      const url = new URL(window.location.href);
-      url.searchParams.set('lessonId', lessonId);
-      window.history.replaceState({}, '', url.pathname + url.search);
-
-      await loadLessonContent(lessonId);
-    } catch (error) {
-      console.error("Error fetching lesson:", error);
-      currentLessonIdRef.current = null;
-    } finally {
-      setIsLoadingLesson(false);
-    }
-  }, [isLoadingLesson, loadLessonContent, chapterLessons]);
+    },
+    [isLoadingLesson, loadLessonContent, chapterLessons]
+  );
 
   const handleOverviewClick = () => {
     const url = new URL(window.location.href);
-    url.searchParams.delete('lessonId');
-    window.history.replaceState({}, '', url.pathname + url.search);
+    url.searchParams.delete("lessonId");
+    window.history.replaceState({}, "", url.pathname + url.search);
 
     setShowOverview(true);
     setSelectedChapter(null);
     setSelectedLesson(null);
     setIsLoadingLesson(false);
+    setIsSidebarOpen(false);
     currentLessonIdRef.current = null;
   };
 
   const handleCategoryToggle = (categoryId: string) => {
-    const newOpenCategories = openCategories.includes(categoryId)
-      ? openCategories.filter(id => id !== categoryId)
-      : [...openCategories, categoryId];
-
-    setOpenCategories(newOpenCategories);
+    setOpenCategories((prev) =>
+      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]
+    );
   };
 
-  const categories = useMemo(() => [
-    {
-      id: "overview",
-      title: "📋 Tổng quan",
-      topics: []
-    },
-    ...(course?.chapters?.map(chapter => ({
-      id: chapter.id,
-      title: chapter.chapterName,
-      topics: chapterLessons[chapter.id]?.map(lesson => ({
-        id: lesson.id,
-        title: lesson.lessonName,
-        slug: lesson.id,
-        completed: lesson.completed,
-      })) || []
-    })) || [])
-  ], [course?.chapters, chapterLessons]);
+  const categories = useMemo(
+    () => [
+      {
+        id: "overview",
+        title: "Tổng quan khóa học",
+        topics: [],
+      },
+      ...(course?.chapters?.map((chapter) => ({
+        id: chapter.id,
+        title: chapter.chapterName,
+        topics:
+          chapterLessons[chapter.id]?.map((lesson) => ({
+            id: lesson.id,
+            title: lesson.lessonName,
+            slug: lesson.id,
+            completed: lesson.completed,
+          })) || [],
+      })) || []),
+    ],
+    [course?.chapters, chapterLessons]
+  );
+
+  const flatLessons = useMemo(() => {
+    const list: { id: string; title: string; chapterName: string; completed?: boolean }[] = [];
+    for (const chapter of course?.chapters || []) {
+      const lessons = chapterLessons[chapter.id] || [];
+      for (const lesson of lessons) {
+        list.push({
+          id: lesson.id,
+          title: lesson.lessonName,
+          chapterName: chapter.chapterName,
+          completed: lesson.completed,
+        });
+      }
+    }
+    return list;
+  }, [course?.chapters, chapterLessons]);
+
+  const { prevLesson, nextLesson } = useMemo(() => {
+    if (!selectedChapter || flatLessons.length === 0) {
+      return { prevLesson: null, nextLesson: null };
+    }
+    const idx = flatLessons.findIndex((l) => l.id === selectedChapter);
+    if (idx === -1) return { prevLesson: null, nextLesson: null };
+    return {
+      prevLesson: idx > 0 ? flatLessons[idx - 1] : null,
+      nextLesson: idx < flatLessons.length - 1 ? flatLessons[idx + 1] : null,
+    };
+  }, [selectedChapter, flatLessons]);
+
+  const { completedCount, totalCount } = useMemo(() => {
+    const total = flatLessons.length;
+    const completed = flatLessons.filter((l) => l.completed).length;
+    return { completedCount: completed, totalCount: total };
+  }, [flatLessons]);
 
   const currentLesson = selectedLesson;
 
-  const currentChapter = useMemo(() =>
-    course?.chapters?.find(c =>
-      chapterLessons[c.id]?.some(l => l.id === selectedChapter)
-    ), [course?.chapters, chapterLessons, selectedChapter]
+  const currentChapter = useMemo(
+    () => course?.chapters?.find((c) => chapterLessons[c.id]?.some((l) => l.id === selectedChapter)),
+    [course?.chapters, chapterLessons, selectedChapter]
   );
 
-  const tocItems = useMemo(() =>
-    showOverview ? [] : extractHeadings(currentLesson?.content || ""),
-    [showOverview, currentLesson?.content]
-  );
+  const tocItems = useMemo(() => {
+    if (showOverview || !currentLesson?.content) return [];
+    const cleaned = currentLesson.content.replace(/^\s*#\s+[^\n]+\n*/, "").trim();
+    return extractHeadings(cleaned);
+  }, [showOverview, currentLesson?.content]);
 
   const isCurrentLessonCompleted = useMemo(() => {
     const lessonId = selectedChapter;
     if (!lessonId) return false;
     for (const lessons of Object.values(chapterLessons)) {
-      const found = lessons.find(l => l.id === lessonId);
+      const found = lessons.find((l) => l.id === lessonId);
       if (found) return !!found.completed;
     }
     return false;
@@ -406,7 +457,7 @@ export default function DocsDetailPage() {
     let isCompleted = false;
     let targetChapterId = "";
     for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
-      const found = lessons.find(l => l.id === lessonId);
+      const found = lessons.find((l) => l.id === lessonId);
       if (found) {
         isCompleted = !!found.completed;
         targetChapterId = chapterId;
@@ -419,13 +470,13 @@ export default function DocsDetailPage() {
     try {
       await lessonApi.updateProgress({
         lessonId,
-        completed: nextCompletedState
+        completed: nextCompletedState,
       });
 
-      setChapterLessons(prev => {
+      setChapterLessons((prev) => {
         const updated = { ...prev };
         if (updated[targetChapterId]) {
-          updated[targetChapterId] = updated[targetChapterId].map(l =>
+          updated[targetChapterId] = updated[targetChapterId].map((l) =>
             l.id === lessonId ? { ...l, completed: nextCompletedState } : l
           );
         }
@@ -433,7 +484,6 @@ export default function DocsDetailPage() {
       });
     } catch (error) {
       console.error("Error updating lesson progress:", error);
-      const { default: toast } = await import("react-hot-toast");
       toast.error("Không thể cập nhật tiến độ bài học");
     }
   }, [selectedChapter, chapterLessons]);
@@ -445,7 +495,7 @@ export default function DocsDetailPage() {
     let isCompleted = false;
     let targetChapterId = "";
     for (const [chapterId, lessons] of Object.entries(chapterLessons)) {
-      const found = lessons.find(l => l.id === lessonId);
+      const found = lessons.find((l) => l.id === lessonId);
       if (found) {
         isCompleted = !!found.completed;
         targetChapterId = chapterId;
@@ -458,13 +508,13 @@ export default function DocsDetailPage() {
     try {
       await lessonApi.updateProgress({
         lessonId,
-        completed: true
+        completed: true,
       });
 
-      setChapterLessons(prev => {
+      setChapterLessons((prev) => {
         const updated = { ...prev };
         if (updated[targetChapterId]) {
-          updated[targetChapterId] = updated[targetChapterId].map(l =>
+          updated[targetChapterId] = updated[targetChapterId].map((l) =>
             l.id === lessonId ? { ...l, completed: true } : l
           );
         }
@@ -486,9 +536,7 @@ export default function DocsDetailPage() {
       if (result.code === 200) {
         setIsFavorite(result.data ?? false);
         toast.success(
-          result.data
-            ? "Đã thêm vào danh sách yêu thích"
-            : "Đã xóa khỏi danh sách yêu thích"
+          result.data ? "Đã thêm vào danh sách yêu thích" : "Đã xóa khỏi danh sách yêu thích"
         );
       }
     } catch (error) {
@@ -501,10 +549,10 @@ export default function DocsDetailPage() {
 
   if (isLoadingUser || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Đang tải tài liệu...</p>
+          <div className="animate-spin rounded-full h-11 w-11 border-2 border-primary border-t-transparent mx-auto mb-3.5" />
+          <p className="text-text-muted text-sm font-medium">Đang tải nội dung bài học...</p>
         </div>
       </div>
     );
@@ -512,40 +560,41 @@ export default function DocsDetailPage() {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <DocsHeader
-          showMenuButton={false}
-          onMenuClick={() => { }}
-        />
-        <div className="flex items-center justify-center py-20">
-          <div className="max-w-md text-center">
-            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+      <div className="min-h-screen bg-background">
+        <DocsHeader showMenuButton={false} onMenuClick={() => {}} />
+        <div className="flex items-center justify-center py-20 px-4">
+          <div className="max-w-md w-full text-center p-8 rounded-2xl border border-border bg-surface shadow-sm">
+            <div className="w-14 h-14 bg-primary-soft rounded-2xl flex items-center justify-center mx-auto mb-5 text-primary">
+              <Lock className="w-7 h-7" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Yêu cầu đăng nhập</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Bạn cần đăng nhập để xem nội dung này
+            <h3 className="text-xl font-bold text-foreground mb-2">Yêu cầu đăng nhập</h3>
+            <p className="text-text-muted text-sm mb-6">
+              Bạn cần đăng nhập để xem nội dung khóa học và tài liệu này.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => {
-                  const target = typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : `/docs/${slug}`;
+                  const target =
+                    typeof window !== "undefined"
+                      ? window.location.pathname + window.location.search
+                      : `/docs/${slug}`;
                   router.push(`/login?redirect=${encodeURIComponent(target)}`);
                 }}
-                className="px-5 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors text-sm"
+                className="px-6 py-2.5 bg-primary hover:bg-primary/90 active:scale-95 text-white font-semibold rounded-full shadow-sm transition-all text-sm cursor-pointer"
               >
                 Đăng nhập
               </button>
               <button
                 onClick={() => {
-                  const target = typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : `/docs/${slug}`;
+                  const target =
+                    typeof window !== "undefined"
+                      ? window.location.pathname + window.location.search
+                      : `/docs/${slug}`;
                   router.push(`/register?redirect=${encodeURIComponent(target)}`);
                 }}
-                className="px-5 py-2.5 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors text-sm"
+                className="px-6 py-2.5 bg-surface border border-border text-foreground hover:text-primary hover:bg-primary-soft/50 font-semibold rounded-full transition-all text-sm cursor-pointer"
               >
-                Đăng ký
+                Đăng ký tài khoản
               </button>
             </div>
           </div>
@@ -556,174 +605,175 @@ export default function DocsDetailPage() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="min-h-screen bg-background">
         <DocsHeader />
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center">
-            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Không tìm thấy khóa học</h3>
-            <p className="text-gray-600 dark:text-gray-400">Khóa học này không tồn tại hoặc đã bị xóa</p>
+        <div className="flex items-center justify-center py-20 px-4">
+          <div className="text-center p-8 rounded-2xl border border-border bg-surface shadow-sm max-w-md w-full">
+            <div className="w-14 h-14 bg-background border border-border rounded-2xl flex items-center justify-center mx-auto mb-4 text-text-muted">
+              <FileQuestion className="w-7 h-7" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground mb-2">Không tìm thấy khóa học</h3>
+            <p className="text-text-muted text-sm mb-6">
+              Khóa học này không tồn tại hoặc đã bị xóa khỏi hệ thống.
+            </p>
+            <Link
+              href="/courses"
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
+            >
+              Quay lại danh sách khóa học
+            </Link>
           </div>
         </div>
       </div>
     );
   }
 
+  const canAccessCurrentLesson = Boolean(
+    currentLesson && currentLesson.canAccess !== false
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-background text-foreground">
       <DocsHeader
         showMenuButton={true}
         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
         course={course}
+        onOverviewClick={handleOverviewClick}
+        showOverview={showOverview}
+        isFavorite={isFavorite}
+        favoriteLoading={favoriteLoading}
+        onToggleFavorite={handleToggleFavorite}
+        completedCount={completedCount}
+        totalCount={totalCount}
+        canAccessLesson={canAccessCurrentLesson}
+        onOpenAi={() => setDrawerState({ isOpen: true, tab: "ai" })}
+        onOpenNotes={() => setDrawerState({ isOpen: true, tab: "notes" })}
       />
 
-      <div className="flex w-full px-4 sm:px-6 lg:px-8">
+      <div className="flex w-full min-h-[calc(100vh-3.75rem)]">
         <DocsSidebar
           categories={categories}
           openCategories={openCategories}
           onCategoryToggle={handleCategoryToggle}
           onOverviewClick={handleOverviewClick}
           onLessonClick={handleLessonClick}
-          onBackClick={() => window.history.back()}
+          onBackClick={() => router.push("/courses")}
           isOpen={isSidebarOpen}
           loadedChapters={loadedChapters}
           selectedLessonId={selectedChapter}
+          showOverview={showOverview}
         />
 
-        <main className="flex-1 min-w-0 transition-opacity duration-200">
+        <main className="flex-1 min-w-0 bg-surface transition-opacity duration-200">
           {showOverview ? (
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-              <nav className="flex flex-wrap items-center text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">
-                <svg className="w-3.5 h-3.5 mr-1 text-slate-400 dark:text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <Link href="/docs" className="hover:text-accent dark:hover:text-accent-400 transition-colors duration-150">Tài liệu</Link>
-                <svg className="w-3 h-3 text-slate-300 dark:text-slate-600 mx-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-                <span className="text-slate-800 dark:text-slate-200 font-semibold truncate" title={course?.title || ""}>{course?.title || ""}</span>
+            <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8 animate-in fade-in duration-300">
+              <nav className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-text-muted mb-5">
+                <Link href="/courses" className="hover:text-primary transition-colors">
+                  Khóa học
+                </Link>
+                <ChevronRight className="w-3.5 h-3.5 text-border shrink-0" />
+                <span className="text-foreground font-semibold truncate" title={course.title || ""}>
+                  {course.title || ""}
+                </span>
               </nav>
 
-              <header className="mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-4 flex flex-wrap items-center gap-x-3.5 gap-y-2">
-                  <span>{course?.title || ""}</span>
-                  <button
-                    onClick={handleToggleFavorite}
-                    disabled={favoriteLoading}
-                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-semibold rounded-xl border transition-all duration-150 cursor-pointer shrink-0 ${isFavorite
-                      ? "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-450 dark:hover:bg-rose-950/40"
-                      : "bg-white border-gray-205 text-gray-755 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-750"
-                      }`}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? "fill-rose-500 text-rose-500" : ""}`} />
-                    <span className="font-semibold">{isFavorite ? "Đã yêu thích" : "Thêm yêu thích"}</span>
-                  </button>
-                </h1>
+              <CourseOverview
+                course={{ ...course, isEnrolled: hasAccess }}
+                chapterLessons={chapterLessons}
+                onLessonClick={handleLessonClick}
+                onEnrollClick={handleEnrollClick}
+                selectedLessonId={selectedChapter}
+                isFavorite={isFavorite}
+                favoriteLoading={favoriteLoading}
+                onToggleFavorite={handleToggleFavorite}
+              />
 
-                {course?.updatedAt && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-6">
-                    Cập nhật {formatDate(course.updatedAt)}
-                  </div>
-                )}
-
-                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {course?.description || ""}
-                </p>
-              </header>
-
-              {course && (
-                <>
-                  <CourseOverview
-                    course={{ ...course, isEnrolled: hasAccess }}
-                    chapterLessons={chapterLessons}
-                    onLessonClick={handleLessonClick}
-                    onEnrollClick={handleEnrollClick}
-                    selectedLessonId={selectedChapter}
-                  />
-
-                  <div className="mt-12 pt-10 border-t border-border space-y-6">
-                    <div className="space-y-1">
-                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                        Đánh giá khóa học
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        Ý kiến và đánh giá từ những học viên tham gia học tập
-                      </p>
-                    </div>
-                    <ReviewSection
-                      courseId={course.id}
-                      isEnrolled={hasAccess}
-                    />
-                  </div>
-                </>
-              )}
+              <div className="mt-10 pt-8 border-t border-border space-y-5">
+                <div className="space-y-1">
+                  <h2 className="text-base sm:text-lg font-bold text-foreground">
+                    Đánh giá khóa học
+                  </h2>
+                  <p className="text-xs sm:text-sm text-text-muted">
+                    Ý kiến và đánh giá từ những học viên tham gia học tập
+                  </p>
+                </div>
+                <ReviewSection courseId={course.id} isEnrolled={hasAccess} />
+              </div>
             </div>
           ) : isLoadingLesson ? (
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
+            <div className="w-full max-w-4xl 2xl:max-w-5xl mx-auto px-6 sm:px-10 lg:px-14 py-8 lg:py-10 animate-pulse">
               <div className="flex items-center gap-2 mb-6">
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-32"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-40"></div>
+                <div className="h-4 bg-border rounded w-20" />
+                <div className="h-4 bg-border rounded w-4" />
+                <div className="h-4 bg-border rounded w-32" />
+                <div className="h-4 bg-border rounded w-4" />
+                <div className="h-4 bg-border rounded w-40" />
               </div>
 
-              <div className="mb-6">
-                <div className="h-10 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-4"></div>
+              <div className="mb-8 pb-6 border-b border-border">
+                <div className="h-9 bg-border rounded-lg w-3/4 mb-4" />
                 <div className="flex items-center gap-4 text-sm">
-                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-32"></div>
+                  <div className="h-4 bg-border rounded w-24" />
+                  <div className="h-4 bg-border rounded w-32" />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4/6"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-2/3"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-4/5"></div>
+                <div className="h-4 bg-border rounded w-full" />
+                <div className="h-4 bg-border rounded w-5/6" />
+                <div className="h-4 bg-border rounded w-4/6" />
+                <div className="h-4 bg-border rounded w-full" />
+                <div className="h-4 bg-border rounded w-3/4" />
+                <div className="h-4 bg-border rounded w-5/6" />
+                <div className="h-4 bg-border rounded w-2/3" />
               </div>
             </div>
           ) : (
-            <div key={currentLesson?.id || 'overview'} className="animate-in fade-in duration-300">
+            <div key={currentLesson?.id || "overview"} className="animate-in fade-in duration-300">
               <DocsArticle
-                title={currentLesson?.lessonName || course?.title || ""}
+                title={currentLesson?.lessonName || course.title || ""}
                 description={currentLesson?.description || ""}
-                readTime="15 phút"
-                lastUpdated={formatDate(course?.updatedAt || course?.createdAt || "")}
+                readTime="15 phút đọc"
+                lastUpdated={formatDate(course.updatedAt || course.createdAt || "")}
                 content={currentLesson?.content || ""}
                 lessonId={currentLesson?.id}
                 canAccess={currentLesson?.canAccess}
                 isFreePreview={currentLesson?.isFreePreview}
-                courseSlug={course?.slug}
-                coursePrice={course?.price}
+                courseSlug={course.slug}
+                coursePrice={course.price}
                 onEnrollClick={handleEnrollClick}
                 isEnrollingFree={isEnrollingFree}
                 completed={isCurrentLessonCompleted}
                 onToggleComplete={handleToggleComplete}
                 onAutoComplete={handleAutoComplete}
+                prevLesson={prevLesson}
+                nextLesson={nextLesson}
+                onNavigateLesson={handleLessonClick}
+                drawerState={drawerState}
+                onOpenDrawer={(tab) => setDrawerState({ isOpen: true, tab })}
+                onCloseDrawer={() => setDrawerState((prev) => ({ ...prev, isOpen: false }))}
                 breadcrumbs={[
-                  { label: "Tài liệu", href: "/docs" },
+                  { label: "Khóa học", href: "/courses" },
+                  { label: course.title, onClick: handleOverviewClick },
                   ...(currentChapter ? [{ label: currentChapter.chapterName }] : []),
-                  ...(currentLesson ? [{ label: currentLesson.lessonName }] : [])
+                  ...(currentLesson ? [{ label: currentLesson.lessonName }] : []),
                 ]}
               />
             </div>
           )}
         </main>
 
-        <DocsTableOfContents items={tocItems} />
+        <DocsTableOfContents
+          items={tocItems}
+          showTools={!showOverview && canAccessCurrentLesson}
+          onOpenAi={() => setDrawerState({ isOpen: true, tab: "ai" })}
+          onOpenNotes={() => setDrawerState({ isOpen: true, tab: "notes" })}
+        />
       </div>
 
       {isSidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-30"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
@@ -731,8 +781,8 @@ export default function DocsDetailPage() {
       <CourseUnlockModal
         isOpen={unlockModalOpen}
         onClose={() => setUnlockModalOpen(false)}
-        courseTitle={course?.title || ""}
-        coursePrice={course?.price}
+        courseTitle={course.title || ""}
+        coursePrice={course.price}
         onBuySingleCourse={async () => {
           setUnlockModalOpen(false);
           await handlePayment();
@@ -744,7 +794,7 @@ export default function DocsDetailPage() {
         isOpen={paymentModal.isOpen}
         isLoading={paymentModal.isLoading}
         data={paymentModal.data}
-        courseTitle={course?.title || ""}
+        courseTitle={course.title || ""}
         onClose={() => setPaymentModal({ isOpen: false, isLoading: false, data: null })}
       />
 

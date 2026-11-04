@@ -25,7 +25,7 @@ export default function BlogGrid({
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             key={index}
-            className="bg-card rounded-xl border border-border overflow-hidden animate-pulse"
+            className="bg-card rounded-xl border border-border overflow-hidden "
           >
             <div className="aspect-video bg-muted"></div>
             <div className="p-6">

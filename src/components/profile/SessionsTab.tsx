@@ -17,7 +17,7 @@ import { formatReadableDate } from "@/utils/dateUtils";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useRevokeSession, useUserSessions } from "@/hooks/useUserSessions";
 import { useI18n } from "@/contexts/I18nContext";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import SectionCard from "./SectionCard";
 
 const PAGE_SIZE = 10;
@@ -125,7 +125,7 @@ export default function SessionsTab() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-24 animate-pulse rounded-xl bg-gray-100 dark:bg-slate-700/40"
+              className="h-24  rounded-xl bg-gray-100 dark:bg-slate-700/40"
             />
           ))}
         </div>
@@ -165,7 +165,7 @@ export default function SessionsTab() {
                       </h4>
                       {isActive ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800/40">
-                          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                          <span className="h-1.5 w-1.5  rounded-full bg-emerald-500" />
                           {t("profilePage.sessionsTab.activeStatus")}
                         </span>
                       ) : (
@@ -211,7 +211,7 @@ export default function SessionsTab() {
                   <button
                     type="button"
                     onClick={() => handleRevokeSession(session.sessionId)}
-                    className="inline-flex flex-shrink-0 items-center rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/5 dark:text-rose-400 dark:hover:bg-rose-500/20 cursor-pointer"
+                    className="inline-flex flex-shrink-0 items-center rounded-full border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/5 dark:text-rose-400 dark:hover:bg-rose-500/20 cursor-pointer"
                   >
                     {t("profilePage.sessionsTab.revokeBtn")}
                   </button>

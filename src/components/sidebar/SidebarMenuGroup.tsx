@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronDown, Flame, Sparkles } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { MenuItem, MenuGroup } from "./types";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -26,30 +26,27 @@ export default function SidebarMenuGroup({
     if (item.tag) {
       if (item.tagVariant === "hot") {
         return (
-          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-extrabold rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 text-white shadow-xs tracking-wider animate-pulse uppercase leading-none">
-            <Flame className="w-2.5 h-2.5 fill-current" />
+          <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground uppercase leading-none shadow-xs">
             {item.tag}
           </span>
         );
       }
       if (item.tagVariant === "pro") {
         return (
-          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs tracking-wider uppercase leading-none">
-            <Sparkles className="w-2.5 h-2.5 text-amber-300 fill-amber-300" />
+          <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-secondary-soft text-secondary border border-secondary-soft-border uppercase leading-none">
             {item.tag}
           </span>
         );
       }
       if (item.tagVariant === "new") {
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 tracking-wider uppercase leading-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-warning-soft text-warning border border-warning-border uppercase leading-none">
             {item.tag}
           </span>
         );
       }
       return (
-        <span className="inline-flex items-center px-1.5 py-0.5 text-[9.5px] font-bold rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase leading-none">
+        <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold rounded-full bg-primary-soft text-primary border border-primary-soft-border uppercase leading-none">
           {item.tag}
         </span>
       );
@@ -57,7 +54,7 @@ export default function SidebarMenuGroup({
 
     if (item.highlight) {
       return (
-        <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white animate-pulse">
+        <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-warning-soft text-warning border border-warning-border uppercase leading-none">
           NEW
         </span>
       );
@@ -67,13 +64,13 @@ export default function SidebarMenuGroup({
   };
 
   return (
-    <div className={`space-y-1 ${isCollapsed ? "pt-2.5 mt-2.5" : "pt-3.5 mt-3.5"} border-t border-slate-100 dark:border-slate-800/80 first:border-t-0 first:pt-0 first:mt-0`}>
+    <div className={`space-y-1 ${isCollapsed ? "pt-2.5 mt-2.5" : "pt-3.5 mt-3.5"} border-t border-border first:border-t-0 first:pt-0 first:mt-0`}>
       {!isCollapsed && (
         group.collapsible === false ? (
-          <div className="w-full flex items-center justify-between px-2.5 py-1.5 text-[10.5px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase select-none">
-            <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-extrabold tracking-wider text-slate-900 dark:text-slate-100 uppercase select-none">
+            <div className="flex items-center gap-2 min-w-0">
               {group.icon && (
-                <span className="w-5 h-5 flex-shrink-0 flex items-center justify-center opacity-80 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:flex-shrink-0">
+                <span className="w-5 h-5 rounded-md bg-primary-soft dark:bg-primary/15 text-primary shrink-0 flex items-center justify-center [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:shrink-0 [&_svg]:!text-primary">
                   {group.icon}
                 </span>
               )}
@@ -86,11 +83,11 @@ export default function SidebarMenuGroup({
           <button
             type="button"
             onClick={onToggle}
-            className="group w-full flex items-center justify-between px-2.5 py-1.5 text-[10.5px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase select-none rounded-lg hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+            className="group w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-extrabold tracking-wider text-slate-900 dark:text-slate-100 uppercase select-none rounded-xl hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800/70 transition-colors cursor-pointer"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               {group.icon && (
-                <span className="w-5 h-5 flex-shrink-0 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-200 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:flex-shrink-0">
+                <span className="w-5 h-5 rounded-md bg-primary-soft dark:bg-primary/15 text-primary shrink-0 flex items-center justify-center transition-all duration-200 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:shrink-0 [&_svg]:!text-primary">
                   {group.icon}
                 </span>
               )}
@@ -99,15 +96,16 @@ export default function SidebarMenuGroup({
               </span>
             </div>
             <ChevronDown
-              className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""
-                }`}
+              className={`w-4 h-4 text-slate-700 dark:text-slate-300 group-hover:text-primary transition-transform duration-200 shrink-0 ${
+                isOpen ? "rotate-180" : ""
+              }`}
             />
           </button>
         )
       )}
 
       {(isCollapsed || group.collapsible === false || isOpen) && (
-        <ul className="space-y-0.5">
+        <ul className="space-y-1">
           {group.items.map((item) => {
             if (!shouldShowItem(item)) return null;
 
@@ -118,62 +116,52 @@ export default function SidebarMenuGroup({
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg transition-all duration-150 group relative ${isCollapsed ? "justify-center py-2.5" : ""
-                    } ${item.highlight
-                      ? "bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-purple-600 dark:text-purple-300 hover:from-purple-500/20 hover:to-blue-500/20 border border-purple-500/30"
-                      : active
-                        ? "bg-blue-50/60 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 font-semibold"
-                        : "text-slate-650 dark:text-slate-300 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-100"
-                    }`}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group relative ${
+                    isCollapsed ? "justify-center py-2.5" : ""
+                  } ${
+                    item.highlight || active
+                      ? "bg-primary-soft dark:bg-primary/15 text-primary font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-5 before:rounded-r-full before:bg-primary"
+                      : "text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium"
+                  } ${isCollapsed && (item.highlight || active) ? "before:hidden" : ""}`}
                   title={isCollapsed ? displayedLabel : undefined}
                 >
                   <span
-                    className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all duration-200 [&_svg]:w-5 [&_svg]:h-5 [&_svg]:flex-shrink-0 relative ${item.highlight
-                      ? "text-purple-600 dark:text-purple-300"
-                      : active
-                        ? "text-blue-600 dark:text-blue-400 scale-105"
-                        : `${item.color || "text-slate-400 dark:text-slate-500"} opacity-70 group-hover:opacity-100 group-hover:scale-105`
-                      }`}
+                    className={`w-[18px] h-[18px] shrink-0 flex items-center justify-center transition-colors [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg]:stroke-[2] [&_svg]:shrink-0 relative ${
+                      active || item.highlight
+                        ? "text-primary"
+                        : "text-slate-700 dark:text-slate-300 group-hover:text-slate-950 dark:group-hover:text-white"
+                    }`}
                   >
                     {item.icon}
                     {item.badge && (
-                      <span className="absolute -top-1 -right-1.5 min-w-[13px] h-[13px] px-0.5 p-0 flex items-center justify-center text-[8.5px] font-bold text-center leading-none rounded-full bg-red-500 text-white dark:bg-red-600 border border-white dark:border-slate-900 select-none shadow-xs">
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-0.5 flex items-center justify-center text-[8.5px] font-bold text-center leading-none rounded-full bg-primary text-primary-foreground border border-surface select-none shadow-xs">
                         {item.badge}
                       </span>
                     )}
                   </span>
                   {!isCollapsed && (
                     <>
-                      <span className={`flex-1 text-[13px] font-medium transition-colors ${active ? "text-blue-600 dark:text-blue-400 font-semibold" : ""
-                        }`}>
+                      <span
+                        className={`flex-1 text-[14px] leading-snug transition-colors truncate ${
+                          active || item.highlight
+                            ? "text-primary font-semibold"
+                            : "text-slate-800 dark:text-slate-200 font-medium group-hover:text-slate-950 dark:group-hover:text-white"
+                        }`}
+                      >
                         {displayedLabel}
                       </span>
                       {renderTag(item)}
                     </>
                   )}
                   {isCollapsed && (
-                    <div className="absolute left-full ml-6 px-3 py-2 bg-gray-900 dark:bg-slate-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center gap-2">
+                    <div className="absolute left-full ml-6 px-3 py-2 bg-slate-900 dark:bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center gap-2">
                       <span>{displayedLabel}</span>
                       {item.tag && (
-                        <span
-                          className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${item.tagVariant === "hot"
-                            ? "bg-gradient-to-r from-rose-500 to-amber-500 text-white"
-                            : item.tagVariant === "pro"
-                              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-                              : item.tagVariant === "new"
-                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
-                                : "bg-blue-500/20 text-blue-300"
-                            }`}
-                        >
+                        <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-slate-800 text-slate-300 border border-slate-700 uppercase">
                           {item.tag}
                         </span>
                       )}
-                      {!item.tag && item.highlight && (
-                        <span className="px-1.5 py-0.5 text-xs font-bold rounded bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                          NEW
-                        </span>
-                      )}
-                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-slate-700"></div>
+                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900 dark:border-r-slate-800"></div>
                     </div>
                   )}
                 </Link>

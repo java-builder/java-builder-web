@@ -59,7 +59,7 @@ export const UsersTable = ({
   });
 
   return (
-    <Card>
+    <Card className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
@@ -74,7 +74,7 @@ export const UsersTable = ({
             <button
               type="button"
               onClick={resetAllWidths}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
               title="Đặt lại độ rộng các cột về mặc định"
             >
               <RotateCcw className="w-3 h-3" />
@@ -82,7 +82,7 @@ export const UsersTable = ({
             </button>
           )}
           {totalElements > 0 && (
-            <span className="whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent dark:text-accent-on-dark">
+            <span className="whitespace-nowrap rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
               {totalElements.toLocaleString()} {t("admin.users.totalUsers")}
             </span>
           )}

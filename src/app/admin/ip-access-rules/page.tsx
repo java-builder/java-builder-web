@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useIpAccessRules } from "@/hooks/use-ip-access-rules";
 import { CreateRuleModal } from "@/components/admin/ip-access-rules/CreateRuleModal";
 import { EditRuleModal } from "@/components/admin/ip-access-rules/EditRuleModal";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import ConfirmModal from "@/components/ui/confirm-modal";
+import { Button } from "@/components/ui/button";
 import { CloudflareAccessRule } from "@/types/cloudflare";
 import { ChevronDown, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
@@ -62,13 +63,13 @@ export default function AdminIpAccessRulesPage() {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 transition-all cursor-pointer"
+          className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-full bg-primary text-white hover:bg-primary-hover transition-all cursor-pointer"
         >
           {t("admin.ipAccessRules.addRuleBtn")}
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 border border-gray-255 dark:border-slate-700 rounded-xl p-5 mb-6 shadow-xs">
+      <div className="bg-surface border border-border rounded-2xl p-5 mb-6 shadow-xs">
         <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Bộ lọc danh sách</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
@@ -77,7 +78,7 @@ export default function AdminIpAccessRulesPage() {
               <select
                 value={filterTarget}
                 onChange={(e) => handleFilterChange(setFilterTarget, e.target.value)}
-                className="appearance-none w-full pl-3 pr-8 py-2 bg-gray-55 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20 text-slate-800 dark:text-slate-100 cursor-pointer"
+                className="appearance-none w-full pl-3 pr-8 py-2 bg-transparent border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground cursor-pointer"
               >
                 <option value="">Tất cả mục tiêu</option>
                 <option value="ip">IP đơn lẻ (ip)</option>
@@ -98,7 +99,7 @@ export default function AdminIpAccessRulesPage() {
               placeholder={filterTarget ? getValuePlaceholder(filterTarget) : "Chọn mục tiêu để xem gợi ý..."}
               value={filterValue}
               onChange={(e) => handleFilterChange(setFilterValue, e.target.value)}
-              className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20"
+              className="w-full px-3 py-2 bg-transparent border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground"
             />
           </div>
 
@@ -108,7 +109,7 @@ export default function AdminIpAccessRulesPage() {
               <select
                 value={filterMode}
                 onChange={(e) => handleFilterChange(setFilterMode, e.target.value)}
-                className="appearance-none w-full pl-3 pr-8 py-2 bg-gray-55 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20 text-slate-800 dark:text-slate-100 cursor-pointer"
+                className="appearance-none w-full pl-3 pr-8 py-2 bg-transparent border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground cursor-pointer"
               >
                 <option value="">Tất cả hành vi</option>
                 <option value="block">Block</option>
@@ -130,22 +131,22 @@ export default function AdminIpAccessRulesPage() {
               placeholder="Từ khóa ghi chú..."
               value={filterNotes}
               onChange={(e) => handleFilterChange(setFilterNotes, e.target.value)}
-              className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20"
+              className="w-full px-3 py-2 bg-transparent border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="py-20 text-center text-muted-foreground animate-pulse text-sm">
+            <div className="py-20 text-center text-muted-foreground text-sm">
               Đang tải danh sách IP Access Rules từ Cloudflare...
             </div>
           ) : (
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="bg-gray-55/60 dark:bg-slate-700/30 border-b border-gray-200 dark:border-slate-700 text-xs font-semibold uppercase tracking-wider text-muted-foreground select-none">
+                <tr className="bg-muted/40 border-b border-border text-xs font-semibold uppercase tracking-wider text-muted-foreground select-none">
                   <th className="py-4 px-5">Target</th>
                   <th className="py-4 px-5">Giá trị chặn</th>
                   <th className="py-4 px-5">Chế độ hành vi</th>
@@ -153,14 +154,14 @@ export default function AdminIpAccessRulesPage() {
                   <th className="py-4 px-5 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-slate-700 text-sm">
+              <tbody className="divide-y divide-border text-sm">
                 {rules.length > 0 ? (
                   rules.map((rule) => (
-                    <tr key={rule.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-700/10 transition-colors">
+                    <tr key={rule.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-4 px-5 font-mono text-xs uppercase text-muted-foreground select-none">
                         {rule.configuration.target}
                       </td>
-                      <td className="py-4 px-5 font-semibold font-mono tracking-tight text-slate-800 dark:text-slate-100">
+                      <td className="py-4 px-5 font-semibold font-mono tracking-tight text-foreground">
                         {rule.configuration.value}
                       </td>
                       <td className="py-4 px-5">
@@ -169,23 +170,31 @@ export default function AdminIpAccessRulesPage() {
                         </span>
                       </td>
                       <td className="py-4 px-5 text-muted-foreground max-w-xs truncate">
-                        {rule.notes || <span className="text-gray-400 italic">Không có ghi chú</span>}
+                        {rule.notes || <span className="text-muted-foreground/60 italic">Không có ghi chú</span>}
                       </td>
                       <td className="py-4 px-5 text-right whitespace-nowrap">
-                        <button
-                          onClick={() => handleEditClick(rule)}
-                          className="inline-flex items-center p-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-md transition-colors mr-2.5"
-                          title="Chỉnh sửa rule"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setRuleToDelete(rule)}
-                          className="inline-flex items-center p-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 rounded-md transition-colors"
-                          title="Bỏ chặn / Xóa rule"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="inline-flex items-center justify-end gap-1.5">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditClick(rule)}
+                            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                            <span>Sửa</span>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setRuleToDelete(rule)}
+                            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Xóa</span>
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -202,7 +211,7 @@ export default function AdminIpAccessRulesPage() {
         </div>
 
         {totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 border-t border-gray-250 dark:border-slate-700 gap-4 text-xs select-none">
+          <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-background dark:bg-surface border-t border-border gap-4 text-xs select-none">
             <span className="text-muted-foreground">
               Hiển thị <span className="font-semibold text-foreground">{(page - 1) * perPage + 1}</span> - <span className="font-semibold text-foreground">{Math.min(page * perPage, totalCount)}</span> trong tổng số <span className="font-semibold text-foreground">{totalCount}</span> rules
             </span>
@@ -210,7 +219,7 @@ export default function AdminIpAccessRulesPage() {
               <button
                 disabled={page <= 1}
                 onClick={() => setPage(page - 1)}
-                className="inline-flex items-center justify-center p-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg hover:bg-gray-150 disabled:opacity-50 transition-colors"
+                className="inline-flex items-center justify-center p-2 bg-surface border border-border rounded-xl hover:bg-muted disabled:opacity-50 transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -222,10 +231,11 @@ export default function AdminIpAccessRulesPage() {
                     <button
                       key={pageNum}
                       onClick={() => setPage(pageNum)}
-                      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-semibold border transition-all ${page === pageNum
-                          ? "bg-red-600 dark:bg-red-700 border-red-600 text-white shadow-xs"
-                          : "bg-white dark:bg-slate-700 border-gray-200 dark:border-slate-600 hover:bg-gray-100"
-                        }`}
+                      className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                        page === pageNum
+                          ? "bg-primary border-primary text-white shadow-xs"
+                          : "bg-surface border-border hover:bg-muted text-foreground"
+                      }`}
                     >
                       {pageNum}
                     </button>
@@ -239,7 +249,7 @@ export default function AdminIpAccessRulesPage() {
               <button
                 disabled={page >= totalPages}
                 onClick={() => setPage(page + 1)}
-                className="inline-flex items-center justify-center p-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg hover:bg-gray-150 disabled:opacity-50 transition-colors"
+                className="inline-flex items-center justify-center p-2 bg-surface border border-border rounded-xl hover:bg-muted disabled:opacity-50 transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -250,7 +260,7 @@ export default function AdminIpAccessRulesPage() {
                   setPerPage(Number(e.target.value));
                   setPage(1);
                 }}
-                className="ml-2.5 px-2 py-1.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg"
+                className="ml-2.5 px-2 py-1.5 bg-surface border border-border rounded-xl text-foreground cursor-pointer"
               >
                 <option value={10}>10 / trang</option>
                 <option value={20}>20 / trang</option>

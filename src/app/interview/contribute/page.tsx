@@ -1,16 +1,52 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import { Plus, Trash2, Info, Tag, CheckCircle2 } from "lucide-react";
 import { questionContributionService } from "@/services/question-contribution.service";
 import { useInterviewTopics } from "@/hooks/useInterviewTopics";
 import { pickTopicTranslation } from "@/types/interview";
 import { useI18n } from "@/contexts/I18nContext";
-import MarkdownRenderer from "@/components/admin/blogs/MarkdownRenderer";
+import MarkdownRenderer from "@/components/ui/markdown-viewer";
+import { Button } from "@/components/ui/button";
+import { Select, type SelectOption } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 type DifficultyType = "EASY" | "MEDIUM" | "HARD";
 type LevelType = "INTERN" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
+
+const DIFFICULTY_OPTIONS: { value: DifficultyType; label: string; activeClass: string }[] = [
+  {
+    value: "EASY",
+    label: "Dễ",
+    activeClass: "bg-success-soft text-success border-success/30",
+  },
+  {
+    value: "MEDIUM",
+    label: "Trung bình",
+    activeClass: "bg-warning-soft text-warning border-warning/30",
+  },
+  {
+    value: "HARD",
+    label: "Khó",
+    activeClass: "bg-error-soft text-error border-error/30",
+  },
+];
+
+const LEVEL_SELECT_OPTIONS: SelectOption<LevelType>[] = [
+  { value: "INTERN", label: "Intern" },
+  { value: "FRESHER", label: "Fresher" },
+  { value: "JUNIOR", label: "Junior" },
+  { value: "MIDDLE", label: "Middle" },
+  { value: "SENIOR", label: "Senior" },
+];
+
+const DIFFICULTY_SELECT_OPTIONS: SelectOption<DifficultyType>[] = [
+  { value: "EASY", label: "Dễ" },
+  { value: "MEDIUM", label: "Trung bình" },
+  { value: "HARD", label: "Khó" },
+];
 
 function ContributeQuestionForm() {
   const router = useRouter();
@@ -40,12 +76,23 @@ function ContributeQuestionForm() {
     { question: "", answer: "", tips: "", difficulty: "MEDIUM" as DifficultyType },
   ]);
 
-  // Auto-fill topic when coming from topic page
   useEffect(() => {
     if (topicId) {
-      setNewSetForm(prev => ({ ...prev, interviewTopicId: topicId }));
+      setNewSetForm((prev) => ({ ...prev, interviewTopicId: topicId }));
     }
   }, [topicId]);
+
+  const topicSelectOptions = useMemo<SelectOption<string>[]>(
+    () =>
+      topics.map((topic) => {
+        const tr = pickTopicTranslation(topic.translations, locale);
+        return {
+          value: topic.id,
+          label: tr?.name || topic.slug,
+        };
+      }),
+    [topics, locale]
+  );
 
   const addQuestion = () => {
     setQuestionsList([
@@ -115,407 +162,444 @@ function ContributeQuestionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <button
-            onClick={() => router.back()}
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-accent mb-4 text-sm"
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Quay lại
-          </button>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+              Đóng góp câu hỏi phỏng vấn
+            </h1>
+            <p className="text-xs sm:text-sm text-text-secondary mt-1">
+              Chia sẻ câu hỏi thực tế và kinh nghiệm trả lời của bạn cùng cộng đồng
+            </p>
+          </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Đề xuất câu hỏi mới
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Chia sẻ câu hỏi phỏng vấn bạn biết với cộng đồng
-          </p>
           {topicName && (
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-accent/10 text-accent rounded-lg text-sm">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-soft text-primary border border-primary/20 rounded-full text-xs font-semibold shrink-0">
+              <Tag className="w-3.5 h-3.5" />
               <span>Chủ đề: {topicName}</span>
             </div>
           )}
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+        {/* Form Container */}
+        <div className="bg-surface rounded-2xl border border-border p-5 sm:p-7 space-y-6 shadow-xs">
           {/* Type Selection */}
           {questionSetId && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Câu hỏi của bạn thuộc chủ đề nào?
+            <div className="space-y-3">
+              <label className="block text-sm font-semibold text-foreground">
+                Bộ câu hỏi áp dụng
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-accent/50">
-                  <input
-                    type="radio"
-                    name="contributeType"
-                    checked={contributeType === "existing"}
-                    onChange={() => setContributeType("existing")}
-                    className="mt-0.5 w-4 h-4 text-accent"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 dark:text-white mb-1">
-                      {questionSetTitle}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setContributeType("existing")}
+                  className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                    contributeType === "existing"
+                      ? "border-primary bg-primary-soft/30"
+                      : "border-border bg-surface hover:bg-muted/50"
+                  }`}
+                >
+                  <div
+                    className={`mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
+                      contributeType === "existing"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border-hover bg-background"
+                    }`}
+                  >
+                    {contributeType === "existing" && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-foreground truncate">
+                      {questionSetTitle || "Bộ câu hỏi hiện tại"}
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      Câu hỏi của bạn phù hợp với chủ đề này
+                    <div className="text-xs text-text-muted mt-0.5">
+                      Thêm câu hỏi vào bộ câu hỏi này
                     </div>
                   </div>
-                </label>
+                </button>
 
-                <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-accent/50">
-                  <input
-                    type="radio"
-                    name="contributeType"
-                    checked={contributeType === "new"}
-                    onChange={() => setContributeType("new")}
-                    className="mt-0.5 w-4 h-4 text-accent"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 dark:text-white mb-1">
-                      Đề xuất chủ đề mới
+                <button
+                  type="button"
+                  onClick={() => setContributeType("new")}
+                  className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                    contributeType === "new"
+                      ? "border-primary bg-primary-soft/30"
+                      : "border-border bg-surface hover:bg-muted/50"
+                  }`}
+                >
+                  <div
+                    className={`mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
+                      contributeType === "new"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border-hover bg-background"
+                    }`}
+                  >
+                    {contributeType === "new" && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-foreground">
+                      Đề xuất bộ câu hỏi mới
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      Câu hỏi của bạn không thuộc chủ đề nào đang có
+                    <div className="text-xs text-text-muted mt-0.5">
+                      Tạo một bộ câu hỏi mới cho chủ đề khác
                     </div>
                   </div>
-                </label>
+                </button>
               </div>
             </div>
           )}
 
           {/* New Set Form */}
           {contributeType === "new" && (
-            <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800 rounded-lg space-y-4">
-              <div className="flex items-start gap-2 text-sm text-purple-900 dark:text-purple-200">
-                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p>Chủ đề mới sẽ được admin xem xét trước khi xuất bản.</p>
+            <div className="p-5 bg-muted/30 border border-border rounded-xl space-y-4">
+              <div className="flex items-center gap-2 text-xs font-medium text-text-secondary bg-surface px-3 py-2 rounded-lg border border-border">
+                <Info className="w-4 h-4 text-primary shrink-0" />
+                <span>Bộ câu hỏi mới sẽ được đội ngũ quản trị xem xét trước khi xuất bản.</span>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Chủ đề <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={newSetForm.interviewTopicId}
-                  onChange={(e) =>
-                    setNewSetForm({ ...newSetForm, interviewTopicId: e.target.value })
-                  }
-                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">Chọn chủ đề</option>
-                  {topics.map((topic) => {
-                    const tr = pickTopicTranslation(topic.translations, locale);
-                    return (
-                      <option key={topic.id} value={topic.id}>
-                        {tr?.name || topic.slug}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Tên bộ câu hỏi <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={newSetForm.title}
-                  onChange={(e) => setNewSetForm({ ...newSetForm, title: e.target.value })}
-                  placeholder="Ví dụ: Spring Security Basics"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Chủ đề <span className="text-error">*</span>
+                  </label>
+                  <Select
+                    value={newSetForm.interviewTopicId}
+                    onChange={(val) =>
+                      setNewSetForm({ ...newSetForm, interviewTopicId: String(val) })
+                    }
+                    options={topicSelectOptions}
+                    placeholder="Chọn chủ đề"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Tên bộ câu hỏi <span className="text-error">*</span>
+                  </label>
+                  <Input
+                    type="text"
+                    value={newSetForm.title}
+                    onChange={(e) => setNewSetForm({ ...newSetForm, title: e.target.value })}
+                    placeholder="Ví dụ: Spring Security Basics"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
                     Cấp độ
                   </label>
-                  <select
+                  <Select
                     value={newSetForm.level}
-                    onChange={(e) => setNewSetForm({ ...newSetForm, level: e.target.value as LevelType })}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="INTERN">Intern</option>
-                    <option value="FRESHER">Fresher</option>
-                    <option value="JUNIOR">Junior</option>
-                    <option value="MIDDLE">Middle</option>
-                    <option value="SENIOR">Senior</option>
-                  </select>
+                    onChange={(val) =>
+                      setNewSetForm({ ...newSetForm, level: val as LevelType })
+                    }
+                    options={LEVEL_SELECT_OPTIONS}
+                    searchable={false}
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Độ khó
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Độ khó chung
                   </label>
-                  <select
+                  <Select
                     value={newSetForm.difficulty}
-                    onChange={(e) =>
-                      setNewSetForm({ ...newSetForm, difficulty: e.target.value as DifficultyType })
+                    onChange={(val) =>
+                      setNewSetForm({
+                        ...newSetForm,
+                        difficulty: val as DifficultyType,
+                      })
                     }
-                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="EASY">Dễ</option>
-                    <option value="MEDIUM">Trung bình</option>
-                    <option value="HARD">Khó</option>
-                  </select>
+                    options={DIFFICULTY_SELECT_OPTIONS}
+                    searchable={false}
+                  />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Topics (phân cách bằng dấu phẩy)
-                </label>
-                <input
-                  type="text"
-                  value={newSetForm.topics}
-                  onChange={(e) => setNewSetForm({ ...newSetForm, topics: e.target.value })}
-                  placeholder="Spring, Security, JWT, Authentication"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                />
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Tags (phân cách bằng dấu phẩy)
+                  </label>
+                  <Input
+                    type="text"
+                    value={newSetForm.topics}
+                    onChange={(e) => setNewSetForm({ ...newSetForm, topics: e.target.value })}
+                    placeholder="Spring, Security, JWT"
+                  />
+                </div>
               </div>
             </div>
           )}
 
           {/* Questions List */}
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Danh sách câu hỏi ({questionsList.length})
-            </label>
-
-            {questionsList.map((q, index) => (
-              <div
-                key={index}
-                className="p-4 border border-gray-200 dark:border-slate-600 rounded-lg space-y-3"
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold text-foreground">
+                Danh sách câu hỏi ({questionsList.length})
+              </label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addQuestion}
+                className="gap-1.5"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Câu hỏi #{index + 1}
-                  </span>
-                  {questionsList.length > 1 && (
-                    <button
-                      onClick={() => removeQuestion(index)}
-                      className="text-red-500 hover:text-red-600 text-sm"
-                    >
-                      Xóa
-                    </button>
-                  )}
-                </div>
+                <Plus className="w-3.5 h-3.5" />
+                Thêm câu hỏi
+              </Button>
+            </div>
 
-                <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
-                    Câu hỏi <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    value={q.question}
-                    onChange={(e) => updateQuestion(index, "question", e.target.value)}
-                    rows={2}
-                    placeholder="Nhập câu hỏi..."
-                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Câu trả lời gợi ý (không bắt buộc)
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    Nếu bạn đã gặp câu hỏi này trong phỏng vấn và biết cách trả lời tốt, hãy chia sẻ để giúp cộng đồng! Hỗ trợ Markdown.
-                  </p>
-                  <div className="border border-gray-300 dark:border-slate-600 rounded-lg overflow-hidden">
-                    <div className="flex border-b border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-700">
-                      <button
-                        type="button"
-                        onClick={() => setPreviewTabs({ ...previewTabs, [`answer-${index}`]: "write" })}
-                        className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          (previewTabs[`answer-${index}`] || "write") === "write"
-                            ? "bg-white dark:bg-slate-800 text-accent border-b-2 border-accent"
-                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                        }`}
-                      >
-                        Viết
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewTabs({ ...previewTabs, [`answer-${index}`]: "preview" })}
-                        className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          previewTabs[`answer-${index}`] === "preview"
-                            ? "bg-white dark:bg-slate-800 text-accent border-b-2 border-accent"
-                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                        }`}
-                      >
-                        Xem trước
-                      </button>
-                    </div>
-                    {(previewTabs[`answer-${index}`] || "write") === "write" ? (
-                      <textarea
-                        value={q.answer}
-                        onChange={(e) => updateQuestion(index, "answer", e.target.value)}
-                        rows={12}
-                        placeholder="Ví dụ: ArrayList sử dụng mảng động, truy cập nhanh O(1) nhưng chèn/xóa chậm O(n)..."
-                        className="w-full px-3 py-2 text-sm border-0 focus:ring-0 bg-white dark:bg-slate-800 text-gray-900 dark:text-white resize-none"
-                      />
-                    ) : (
-                      <div className="px-3 py-2 min-h-[300px] bg-white dark:bg-slate-800 overflow-y-auto max-h-[500px]">
-                        {q.answer ? (
-                          <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <MarkdownRenderer content={q.answer} />
-                          </div>
-                        ) : (
-                          <div className="text-sm text-gray-400 dark:text-gray-500 italic">
-                            Chưa có nội dung để xem trước
-                          </div>
-                        )}
+            <div className="space-y-5">
+              {questionsList.map((q, index) => (
+                <div
+                  key={index}
+                  className="p-4 sm:p-5 border border-border rounded-2xl bg-background/40 space-y-4"
+                >
+                  {/* Card Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-primary-soft text-primary text-xs font-bold">
+                        Câu #{index + 1}
+                      </span>
+                      <div className="flex items-center gap-1 ml-2">
+                        {DIFFICULTY_OPTIONS.map((diff) => {
+                          const isSelected = q.difficulty === diff.value;
+                          return (
+                            <button
+                              key={diff.value}
+                              type="button"
+                              onClick={() => updateQuestion(index, "difficulty", diff.value)}
+                              className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
+                                isSelected
+                                  ? diff.activeClass
+                                  : "bg-surface text-text-muted border-border hover:text-foreground"
+                              }`}
+                            >
+                              {diff.label}
+                            </button>
+                          );
+                        })}
                       </div>
+                    </div>
+
+                    {questionsList.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeQuestion(index)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-error hover:bg-error-soft transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Xóa
+                      </button>
                     )}
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Mẹo trả lời tốt (không bắt buộc)
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    Chia sẻ kinh nghiệm của bạn: Nên nhấn mạnh điểm gì? Tránh sai lầm nào? Interviewer thường hỏi thêm gì? Hỗ trợ Markdown.
-                  </p>
-                  <div className="border border-gray-300 dark:border-slate-600 rounded-lg overflow-hidden">
-                    <div className="flex border-b border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-700">
-                      <button
-                        type="button"
-                        onClick={() => setPreviewTabs({ ...previewTabs, [`tips-${index}`]: "write" })}
-                        className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          (previewTabs[`tips-${index}`] || "write") === "write"
-                            ? "bg-white dark:bg-slate-800 text-accent border-b-2 border-accent"
-                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                        }`}
-                      >
-                        Viết
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewTabs({ ...previewTabs, [`tips-${index}`]: "preview" })}
-                        className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          previewTabs[`tips-${index}`] === "preview"
-                            ? "bg-white dark:bg-slate-800 text-accent border-b-2 border-accent"
-                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                        }`}
-                      >
-                        Xem trước
-                      </button>
-                    </div>
-                    {(previewTabs[`tips-${index}`] || "write") === "write" ? (
-                      <textarea
-                        value={q.tips}
-                        onChange={(e) => updateQuestion(index, "tips", e.target.value)}
-                        rows={5}
-                        placeholder="Ví dụ:&#10;• Nên so sánh cả về performance và use case thực tế&#10;• Đưa ví dụ cụ thể khi nào dùng ArrayList, khi nào dùng LinkedList"
-                        className="w-full px-3 py-2 text-sm border-0 focus:ring-0 bg-white dark:bg-slate-800 text-gray-900 dark:text-white resize-none"
-                      />
-                    ) : (
-                      <div className="px-3 py-2 min-h-[125px] bg-white dark:bg-slate-800 overflow-y-auto max-h-[300px]">
-                        {q.tips ? (
-                          <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <MarkdownRenderer content={q.tips} />
-                          </div>
-                        ) : (
-                          <div className="text-sm text-gray-400 dark:text-gray-500 italic">
-                            Chưa có nội dung để xem trước
-                          </div>
-                        )}
-                      </div>
-                    )}
+                  {/* Question input */}
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Nội dung câu hỏi <span className="text-error">*</span>
+                    </label>
+                    <textarea
+                      value={q.question}
+                      onChange={(e) => updateQuestion(index, "question", e.target.value)}
+                      rows={2}
+                      placeholder="Nhập câu hỏi phỏng vấn..."
+                      className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-foreground placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-y"
+                    />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    Độ khó
-                  </label>
-                  <div className="flex gap-4">
-                    {[
-                      { value: "EASY", label: "Dễ" },
-                      { value: "MEDIUM", label: "Trung bình" },
-                      { value: "HARD", label: "Khó" },
-                    ].map((diff) => (
-                      <label
-                        key={diff.value}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name={`difficulty-${index}`}
-                          value={diff.value}
-                          checked={q.difficulty === diff.value}
-                          onChange={(e) => updateQuestion(index, "difficulty", e.target.value)}
-                          className="w-4 h-4 text-accent border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-accent cursor-pointer"
+                  {/* Suggested Answer */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div>
+                        <label className="block text-xs font-semibold text-foreground">
+                          Câu trả lời gợi ý{" "}
+                          <span className="text-text-muted font-normal">
+                            (không bắt buộc, hỗ trợ Markdown)
+                          </span>
+                        </label>
+                      </div>
+                      <div className="inline-flex rounded-lg bg-muted p-0.5 border border-border">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewTabs({ ...previewTabs, [`answer-${index}`]: "write" })
+                          }
+                          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+                            (previewTabs[`answer-${index}`] || "write") === "write"
+                              ? "bg-surface text-foreground shadow-2xs"
+                              : "text-text-muted hover:text-foreground"
+                          }`}
+                        >
+                          Viết
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewTabs({ ...previewTabs, [`answer-${index}`]: "preview" })
+                          }
+                          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+                            previewTabs[`answer-${index}`] === "preview"
+                              ? "bg-surface text-foreground shadow-2xs"
+                              : "text-text-muted hover:text-foreground"
+                          }`}
+                        >
+                          Xem trước
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="border border-border rounded-xl overflow-hidden bg-surface">
+                      {(previewTabs[`answer-${index}`] || "write") === "write" ? (
+                        <textarea
+                          value={q.answer}
+                          onChange={(e) => updateQuestion(index, "answer", e.target.value)}
+                          rows={8}
+                          placeholder="Ví dụ: ArrayList sử dụng mảng động, truy cập nhanh O(1) nhưng chèn/xóa chậm O(n)..."
+                          className="w-full px-3.5 py-3 text-sm border-0 focus:outline-none bg-surface text-foreground placeholder:text-text-muted resize-y"
                         />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                          {diff.label}
-                        </span>
+                      ) : (
+                        <div className="px-4 py-3 min-h-[180px] max-h-[420px] overflow-y-auto bg-surface">
+                          {q.answer ? (
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                              <MarkdownRenderer content={q.answer} />
+                            </div>
+                          ) : (
+                            <div className="text-xs text-text-muted italic py-6 text-center">
+                              Chưa có nội dung để xem trước
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Tips */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-semibold text-foreground">
+                        Mẹo trả lời ghi điểm{" "}
+                        <span className="text-text-muted font-normal">(không bắt buộc)</span>
                       </label>
-                    ))}
+                      <div className="inline-flex rounded-lg bg-muted p-0.5 border border-border">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewTabs({ ...previewTabs, [`tips-${index}`]: "write" })
+                          }
+                          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+                            (previewTabs[`tips-${index}`] || "write") === "write"
+                              ? "bg-surface text-foreground shadow-2xs"
+                              : "text-text-muted hover:text-foreground"
+                          }`}
+                        >
+                          Viết
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewTabs({ ...previewTabs, [`tips-${index}`]: "preview" })
+                          }
+                          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+                            previewTabs[`tips-${index}`] === "preview"
+                              ? "bg-surface text-foreground shadow-2xs"
+                              : "text-text-muted hover:text-foreground"
+                          }`}
+                        >
+                          Xem trước
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="border border-border rounded-xl overflow-hidden bg-surface">
+                      {(previewTabs[`tips-${index}`] || "write") === "write" ? (
+                        <textarea
+                          value={q.tips}
+                          onChange={(e) => updateQuestion(index, "tips", e.target.value)}
+                          rows={3}
+                          placeholder="Nên nhấn mạnh điểm gì? Tránh sai lầm nào? Người phỏng vấn thường hỏi xoáy thêm gì?"
+                          className="w-full px-3.5 py-2.5 text-sm border-0 focus:outline-none bg-surface text-foreground placeholder:text-text-muted resize-y"
+                        />
+                      ) : (
+                        <div className="px-4 py-3 min-h-[90px] max-h-[260px] overflow-y-auto bg-surface">
+                          {q.tips ? (
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                              <MarkdownRenderer content={q.tips} />
+                            </div>
+                          ) : (
+                            <div className="text-xs text-text-muted italic py-4 text-center">
+                              Chưa có nội dung để xem trước
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
-            <button
-              onClick={addQuestion}
-              className="inline-flex items-center gap-1 px-3 py-2 text-sm text-accent hover:text-accent-600 font-medium border border-accent rounded-lg hover:bg-accent/5 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Thêm câu hỏi
-            </button>
+            {questionsList.length > 1 && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addQuestion}
+                className="gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Thêm câu hỏi khác
+              </Button>
+            )}
           </div>
 
-          {/* Submit */}
-          <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-slate-700">
-            <button
+          {/* Actions Footer */}
+          <div className="flex items-center justify-end gap-3 pt-5 border-t border-border">
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => router.back()}
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50"
             >
               Hủy
-            </button>
-            <button
+            </Button>
+            <Button
+              type="button"
+              variant="default"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="px-6 py-2 text-sm font-medium bg-accent hover:bg-accent-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="gap-1.5"
             >
+              <CheckCircle2 className="w-4 h-4" />
               {isSubmitting ? "Đang gửi..." : "Gửi câu hỏi"}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
-
     </div>
   );
 }
 
 export default function ContributeQuestionPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">        <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-gray-500">Đang tải...</div>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+            <div className="flex items-center justify-center h-64">
+              <div className="text-sm text-text-muted">Đang tải...</div>
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <ContributeQuestionForm />
     </Suspense>
   );

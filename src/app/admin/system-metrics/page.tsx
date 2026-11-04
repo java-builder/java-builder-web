@@ -7,7 +7,7 @@ import { SystemHealthResponse, HealthCheckHistoryItem } from "@/types/system-met
 import { ComponentCardsGrid } from "@/components/admin/system-metrics/ComponentCardsGrid";
 import { ServerEnvironmentCard } from "@/components/admin/system-metrics/ServerEnvironmentCard";
 import { HealthHistoryWidget } from "@/components/admin/system-metrics/HealthHistoryWidget";
-import { CustomSelect, SelectOption } from "@/components/ui/CustomSelect";
+import { CustomSelect, SelectOption } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
@@ -168,7 +168,7 @@ export default function AdminSystemMetricsPage() {
       </div>
 
       {isLoading && !metrics && (
-        <div className="space-y-6 animate-pulse">
+        <div className="space-y-6 ">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="h-64 rounded-xl bg-card border border-border" />

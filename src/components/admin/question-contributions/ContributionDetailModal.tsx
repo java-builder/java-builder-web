@@ -148,11 +148,11 @@ export default function ContributionDetailModal({
 
       {/* Modal Dialog */}
       <div
-        className="relative z-10 flex flex-col w-full max-w-3xl max-h-[90vh] rounded-xl border border-border bg-card shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative z-10 flex flex-col w-full max-w-3xl max-h-[90vh] rounded-2xl border border-border bg-surface shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border bg-card px-5 py-4">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border bg-surface px-5 py-4">
           <div className="min-w-0">
             <h2 className="text-base font-semibold text-foreground">
               {t("admin.questionContributions.pageTitle")}

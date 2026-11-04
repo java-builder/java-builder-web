@@ -127,20 +127,13 @@ export default function LoginClient() {
     } else if (message === "password-reset-success") {
       setSuccessMessage(t("auth.resetPasswordSuccess"));
     }
-
-    // Auto reset Turnstile widget on soft navigation (e.g. after logout redirect)
-    const timer = setTimeout(() => {
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
-      }
-    }, 300);
-    return () => clearTimeout(timer);
   }, [t]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
       setError("");
+      setSuccessMessage("");
 
       const result = await authApi.login({
         email: data.email,
@@ -158,16 +151,25 @@ export default function LoginClient() {
           await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
           navigateAfterLogin(result.data?.authorities);
         }
+      } else {
+        setError(result.message || t("auth.loginFailed"));
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : t("auth.loginFailed"));
       turnstileRef.current?.reset();
+      setTurnstileToken("");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleTwoFactorSuccess = async (data?: { authorities?: string[]; accessToken?: string; userId?: string }) => {
+    setShowTwoFactorModal(false);
+    if (data) {
+      setAuthFromLogin(data);
+    }
     await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     navigateAfterLogin(data?.authorities);
   };
@@ -177,66 +179,68 @@ export default function LoginClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-3 sm:px-4 transition-colors duration-300">
-      <div className="w-full max-w-[480px]">
+    <div className="min-h-screen bg-[#F8F8F8] dark:bg-background flex items-center justify-center px-4 py-8 sm:py-12 transition-colors duration-300">
+      <div className="w-full max-w-[500px]">
         {/* Login Card */}
-        <div className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm p-5 sm:p-8 transition-colors duration-300">
+        <div className="bg-white dark:bg-surface rounded-2xl border border-[#E8E8E8] dark:border-border shadow-sm p-6 sm:p-8 md:p-9 transition-colors duration-300">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-between items-center mb-4 sm:mb-6">
               <Link
                 href="/"
-                className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-accent dark:hover:text-accent-on-dark transition-colors text-xs sm:text-sm"
+                className="flex items-center gap-1 text-[#64748B] hover:text-[#FF5A1F] transition-colors text-xs sm:text-sm font-medium"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span className="hidden sm:inline">{t("auth.home")}</span>
+                <span>{t("auth.home")}</span>
               </Link>
               <Link href="/" className="inline-flex flex-col items-center">
                 <Image
                   src="/logos/java-logo.png"
                   alt="JavaBuilder"
-                  width={36}
-                  height={36}
+                  width={38}
+                  height={38}
                   className="object-contain mb-1.5"
                 />
                 <div className="flex flex-col items-center -space-y-0.5">
-                  <span className="text-[0.6rem] font-bold text-gray-900 dark:text-white tracking-wider uppercase">
+                  <span className="text-[0.7rem] font-black text-[#171717] dark:text-white tracking-wider uppercase">
                     JavaBuilder
                   </span>
-                  <span className="text-[0.6rem] font-semibold text-gray-500 dark:text-gray-400 tracking-wider uppercase">
+                  <span className="text-[0.62rem] font-bold text-[#FF5A1F] tracking-wider uppercase">
                     Learning Platform
                   </span>
                 </div>
               </Link>
-              <div className="w-10 sm:w-16"></div> {/* Spacer for balance */}
+              <div className="w-10 sm:w-16" />
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#171717] dark:text-white mb-2">
               {t("auth.welcomeBack")}
             </h2>
-            <p className="text-gray-600 dark:text-slate-400 text-xs sm:text-sm">
+            <p className="text-[#64748B] dark:text-slate-400 text-xs sm:text-sm">
               {t("auth.loginSubtitle")}
             </p>
           </div>
 
           {/* Success Message */}
           {successMessage && (
-            <div className="mb-4 p-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50 rounded-lg">
+            <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
               <div className="flex items-center">
-                <CheckCircle2 className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 mr-2 flex-shrink-0" />
+                <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">{successMessage}</p>
               </div>
             </div>
           )}
 
           {/* Error Message */}
           {error && (
-            <p className="mb-4 text-sm text-red-500 text-center">{error}</p>
+            <p className="mb-4 text-center text-sm font-medium text-red-500 dark:text-red-400">
+              {error}
+            </p>
           )}
 
           {/* Form */}
           <form
-            className="space-y-3 sm:space-y-4"
+            className="space-y-3.5 sm:space-y-4"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div>
@@ -246,7 +250,7 @@ export default function LoginClient() {
                 autoComplete="email"
                 disabled={isLoading}
                 placeholder={t("profilePage.profileTab.email")}
-                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-11 w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-background px-4 py-2 text-sm text-[#171717] dark:text-slate-100 placeholder:text-[#64748B] focus:outline-none focus:border-[#FF5A1F] focus:ring-2 focus:ring-[#FF5A1F]/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
                 {...register("email", {
                   required: t("auth.emailRequired"),
                   pattern: {
@@ -269,7 +273,7 @@ export default function LoginClient() {
                 autoComplete="current-password"
                 disabled={isLoading}
                 placeholder={t("userMenu.password")}
-                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 sm:px-4 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-accent-on-dark text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-11 w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-background px-4 py-2 pr-10 text-sm text-[#171717] dark:text-slate-100 placeholder:text-[#64748B] focus:outline-none focus:border-[#FF5A1F] focus:ring-2 focus:ring-[#FF5A1F]/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
                 {...register("password", {
                   required: t("auth.passwordRequired"),
                   minLength: {
@@ -281,12 +285,12 @@ export default function LoginClient() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[50%] -translate-y-[50%] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 flex items-center justify-center"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#171717] dark:hover:text-white flex items-center justify-center cursor-pointer"
               >
                 {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <EyeOff className="w-4 h-4" />
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <Eye className="w-4 h-4" />
                 )}
               </button>
             </div>
@@ -299,7 +303,7 @@ export default function LoginClient() {
             <div className="flex items-center justify-start text-sm">
               <Link
                 href="/forgot-password"
-                className="text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                className="text-xs font-semibold text-[#FF5A1F] hover:text-[#e04b16] transition-colors"
               >
                 {t("auth.forgotPasswordLink")}
               </Link>
@@ -331,7 +335,7 @@ export default function LoginClient() {
             <button
               type="submit"
               disabled={!isValid || isLoading || isPasskeyLoading || !turnstileToken}
-              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-white font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow text-sm cursor-pointer active:scale-[0.99]"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-[#FF5A1F] hover:bg-[#e04b16] text-white font-bold rounded-full shadow-md shadow-[#FF5A1F]/25 hover:shadow-lg hover:shadow-[#FF5A1F]/30 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 text-sm cursor-pointer"
             >
               {isLoading ? t("auth.loggingIn") : t("auth.loginBtn")}
             </button>
@@ -340,16 +344,16 @@ export default function LoginClient() {
               type="button"
               disabled={isLoading || isPasskeyLoading}
               onClick={handlePasskeyLogin}
-              className="inline-flex items-center justify-center gap-2 w-full h-11 border border-input bg-background hover:bg-muted text-foreground font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 transition-all duration-200 text-sm shadow-xs cursor-pointer active:scale-[0.99]"
+              className="inline-flex items-center justify-center gap-2 w-full h-11 border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface hover:bg-[#FFF0E8] hover:text-[#FF5A1F] text-[#171717] dark:text-slate-100 font-semibold rounded-full focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/20 disabled:opacity-50 transition-all duration-200 text-sm shadow-2xs cursor-pointer active:scale-95"
             >
               {isPasskeyLoading ? (
                 <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#FF5A1F] border-t-transparent" />
                   {t("auth.authenticating")}
                 </>
               ) : (
                 <>
-                  <Key className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                  <Key className="w-4 h-4 text-[#FF5A1F]" />
                   {t("auth.loginWithPasskey")}
                 </>
               )}
@@ -358,19 +362,19 @@ export default function LoginClient() {
             {/* Social Login */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
+                <div className="w-full border-t border-[#E8E8E8] dark:border-border" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-card text-muted-foreground">{t("auth.or")}</span>
+                <span className="px-3 bg-white dark:bg-surface text-[#64748B] font-medium">{t("auth.or")}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="grid grid-cols-3 gap-2.5">
               <button
                 type="button"
                 disabled={isLoading}
                 onClick={handleGoogleLogin}
-                className="flex h-10 items-center justify-center gap-2 border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99] font-medium text-xs sm:text-sm shadow-xs"
+                className="flex h-10 items-center justify-center gap-2 border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface hover:bg-[#FFF0E8] hover:text-[#FF5A1F] text-[#171717] dark:text-slate-100 rounded-full transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-95 font-semibold text-xs shadow-2xs"
               >
                 <Image src="/social/google.webp" alt="Google" width={18} height={18} className="w-4.5 h-4.5 object-contain" />
                 <span>Google</span>
@@ -379,7 +383,7 @@ export default function LoginClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateGithubAuthUrl())}
-                className="flex h-10 items-center justify-center gap-2 border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99] font-medium text-xs sm:text-sm shadow-xs"
+                className="flex h-10 items-center justify-center gap-2 border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface hover:bg-[#FFF0E8] hover:text-[#FF5A1F] text-[#171717] dark:text-slate-100 rounded-full transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-95 font-semibold text-xs shadow-2xs"
               >
                 <Image src="/social/github.png" alt="GitHub" width={18} height={18} className="w-4.5 h-4.5 object-contain dark:invert" />
                 <span>GitHub</span>
@@ -388,18 +392,18 @@ export default function LoginClient() {
                 type="button"
                 disabled={isLoading}
                 onClick={() => (window.location.href = generateLinkedinAuthUrl())}
-                className="flex h-10 items-center justify-center gap-2 border border-input bg-background hover:bg-muted text-foreground rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99] font-medium text-xs sm:text-sm shadow-xs"
+                className="flex h-10 items-center justify-center gap-2 border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface hover:bg-[#FFF0E8] hover:text-[#FF5A1F] text-[#171717] dark:text-slate-100 rounded-full transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-95 font-semibold text-xs shadow-2xs"
               >
                 <Image src="/social/linkedin.webp" alt="LinkedIn" width={18} height={18} className="w-4.5 h-4.5 object-contain" />
                 <span>LinkedIn</span>
               </button>
             </div>
 
-            <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-slate-400 mt-4 sm:mt-6">
+            <p className="text-center text-xs sm:text-sm text-[#64748B] dark:text-slate-400 mt-4 sm:mt-6">
               {t("auth.dontHaveAccount")}{" "}
               <Link
                 href="/register"
-                className="font-semibold text-accent dark:text-accent-on-dark hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="font-bold text-[#FF5A1F] hover:text-[#e04b16] transition-colors"
               >
                 {t("auth.registerNow")}
               </Link>

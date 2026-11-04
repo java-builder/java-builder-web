@@ -4,7 +4,7 @@ import { ChallengeDayDetailSkeleton } from "./ChallengeDayDetailSkeleton";
 
 export function ChallengePageSkeleton() {
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors animate-pulse">
+    <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors ">
       {/* 1. Header Skeleton */}
       <section className="relative overflow-hidden border-b border-gray-200 bg-white dark:border-slate-800 dark:bg-slate-900/80">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
@@ -36,7 +36,7 @@ export function ChallengePageSkeleton() {
 
             {/* Right Card / CTA */}
             <div className="lg:col-span-4">
-              <div className="h-32 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/40 p-5 space-y-3" />
+              <div className="h-32 rounded-2xl border border-slate-200 dark:border-slate-800 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/40 p-5 space-y-3" />
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ export function ChallengePageSkeleton() {
 
           {/* Right Column (1 col): Purchase Sidebar Skeleton */}
           <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-gray-200/90 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 space-y-5">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800/90 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 space-y-5">
               <div className="h-6 w-32 rounded bg-gray-200 dark:bg-slate-800" />
               <div className="h-10 w-28 rounded-lg bg-gray-200 dark:bg-slate-800" />
               <div className="space-y-2.5 pt-2">

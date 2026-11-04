@@ -312,7 +312,7 @@ export default function AdminConversationList({
                       type="button"
                       onClick={handleLoadMoreSearch}
                       disabled={isLoadingMoreSearch}
-                      className="w-full py-1.5 px-3 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-1.5 px-3 rounded-full bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       {isLoadingMoreSearch ? (
                         <>
@@ -365,7 +365,7 @@ export default function AdminConversationList({
               ))
             ) : (
               <div className="p-8 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-muted/60 flex items-center justify-center mx-auto mb-3 text-muted-foreground">
+                <div className="w-12 h-12 rounded-2xl bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 flex items-center justify-center mx-auto mb-3">
                   <Users className="w-6 h-6" />
                 </div>
                 <p className="text-xs font-semibold text-foreground">Chưa có cuộc trò chuyện nào</p>

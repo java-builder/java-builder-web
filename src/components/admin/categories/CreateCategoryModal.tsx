@@ -1,51 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Loader2, Plus } from "lucide-react";
 import toast from "react-hot-toast";
-import {
-  CategoryType,
-  CreateCategoryRequest,
-} from "@/types/category";
+import { CategoryType } from "@/types/category";
 import { categoryService } from "@/services/category.service";
 import CategoryModalShell from "./CategoryModalShell";
 import CategoryFormFields from "./CategoryFormFields";
-import { DEFAULT_COLOR, DEFAULT_ICON } from "./helpers";
 
 interface CreateCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess: () => void;
   defaultCategoryType?: CategoryType;
+  defaultType?: CategoryType;
 }
 
 export default function CreateCategoryModal({
   isOpen,
   onClose,
   onSuccess,
-  defaultCategoryType = CategoryType.BLOG,
+  defaultCategoryType,
+  defaultType,
 }: CreateCategoryModalProps) {
+  const initialType = defaultCategoryType || defaultType || CategoryType.POST;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState(DEFAULT_ICON);
-  const [color, setColor] = useState(DEFAULT_COLOR);
-  const [categoryType, setCategoryType] = useState<CategoryType>(
-    defaultCategoryType
-  );
+  const [categoryType, setCategoryType] = useState<CategoryType>(initialType);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      setCategoryType(defaultCategoryType);
-    }
-  }, [isOpen, defaultCategoryType]);
 
   const resetForm = () => {
     setName("");
     setDescription("");
-    setIcon(DEFAULT_ICON);
-    setColor(DEFAULT_COLOR);
-    setCategoryType(defaultCategoryType);
+    setCategoryType(initialType);
   };
 
   const handleClose = () => {
@@ -63,20 +50,20 @@ export default function CreateCategoryModal({
 
     setIsSubmitting(true);
     try {
-      const payload: CreateCategoryRequest = {
+      await categoryService.create({
         name: name.trim(),
         description: description.trim() || undefined,
-        icon,
-        color,
         categoryType,
-      };
-      await categoryService.create(payload);
+      });
+
       toast.success("Tạo danh mục thành công");
       resetForm();
-      onSuccess?.();
+      onSuccess();
       onClose();
-    } catch (err) {
-      const apiError = err as { response?: { data?: { message?: string } } };
+    } catch (err: unknown) {
+      const apiError = err as {
+        response?: { data?: { message?: string } };
+      };
       const errorMsg =
         apiError?.response?.data?.message || "Tạo danh mục thất bại";
       toast.error(errorMsg);
@@ -98,7 +85,7 @@ export default function CreateCategoryModal({
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
+            className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-primary-soft/50 hover:text-primary disabled:opacity-50 cursor-pointer"
           >
             Huỷ
           </button>
@@ -106,7 +93,7 @@ export default function CreateCategoryModal({
             type="submit"
             form="create-category-form"
             disabled={isSubmitting || !name.trim()}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary hover:bg-primary-hover px-5 py-2 text-sm font-semibold text-white shadow-md shadow-primary/25 active:scale-95 transition-all disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
               <>
@@ -127,15 +114,11 @@ export default function CreateCategoryModal({
         <CategoryFormFields
           name={name}
           description={description}
-          icon={icon}
-          color={color}
           categoryType={categoryType}
           isLocked={isSubmitting}
           onChange={(patch) => {
             if (patch.name !== undefined) setName(patch.name);
             if (patch.description !== undefined) setDescription(patch.description);
-            if (patch.icon !== undefined) setIcon(patch.icon);
-            if (patch.color !== undefined) setColor(patch.color);
             if (patch.categoryType !== undefined) setCategoryType(patch.categoryType);
           }}
         />

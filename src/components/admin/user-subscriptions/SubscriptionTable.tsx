@@ -19,7 +19,7 @@ const COLUMN_HEADERS: { label: string; align?: "left" | "right" }[] = [
 
 export default function SubscriptionTable({ subscriptions }: SubscriptionTableProps) {
   return (
-    <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
+    <div className="hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-sm md:block">
       <div className="overflow-x-auto">
         <table className="w-full table-fixed divide-y divide-border">
           <colgroup>

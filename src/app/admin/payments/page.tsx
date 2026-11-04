@@ -10,8 +10,8 @@ import { PaymentSearchBar } from "@/components/admin/payments/PaymentSearchBar";
 import { PaymentTableRow } from "@/components/admin/payments/PaymentTableRow";
 import { PaymentMobileCard } from "@/components/admin/payments/PaymentMobileCard";
 import { PaymentDetailModal } from "@/components/admin/payments/PaymentDetailModal";
-import { Pagination } from "@/components/ui/Pagination";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import { Pagination } from "@/components/ui/pagination";
+import ConfirmModal from "@/components/ui/confirm-modal";
 import { Button } from "@/components/ui/button";
 import { PaymentDetailResponse, PaymentStatus } from "@/types/payment";
 import { Trash2, CreditCard, RotateCcw } from "lucide-react";
@@ -138,7 +138,7 @@ export default function PaymentsPage() {
             <button
               type="button"
               onClick={resetAllWidths}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full border border-dashed border-border hover:bg-muted/60 transition-colors cursor-pointer"
               title="Đặt lại độ rộng các cột về mặc định"
             >
               <RotateCcw className="w-3 h-3" />
@@ -157,7 +157,7 @@ export default function PaymentsPage() {
             variant="outline"
             size="sm"
             onClick={() => setIsBulkDeleteModalOpen(true)}
-            className="gap-1.5 h-8 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/20 dark:text-rose-400 dark:hover:bg-rose-950/40 cursor-pointer"
+            className="gap-1.5 h-8 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/20 dark:text-rose-400 dark:hover:bg-rose-950/40 rounded-full cursor-pointer"
           >
             <Trash2 className="h-3.5 w-3.5" />
             {t("admin.payments.deleteAllBtn")}
@@ -181,20 +181,20 @@ export default function PaymentsPage() {
 
       {/* Loading inline notice */}
       {isLoading && data && (
-        <div className="flex items-center gap-2 rounded-lg border border-accent/15 bg-accent/5 px-3 py-2 text-sm text-accent animate-pulse">
+        <div className="flex items-center gap-2 rounded-xl border border-primary/15 bg-primary-soft px-3 py-2 text-sm text-primary dark:bg-orange-950/40 dark:text-orange-400">
           Đang cập nhật dữ liệu...
         </div>
       )}
 
       {/* Initial loading */}
       {isLoading && !data && (
-        <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
-          <table className="w-full divide-y divide-border animate-pulse">
-            <thead className="bg-muted/40">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-sm">
+          <table className="w-full divide-y divide-border">
+            <thead className="bg-background dark:bg-surface/60">
               <tr>
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <th key={i} className="px-6 py-3 text-left">
-                    <div className="h-4 bg-muted rounded w-16" />
+                    <div className="h-4 bg-muted rounded-md w-16" />
                   </th>
                 ))}
               </tr>
@@ -203,23 +203,23 @@ export default function PaymentsPage() {
               {[1, 2, 3, 4, 5].map((i) => (
                 <tr key={i}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-muted rounded w-16" />
+                    <div className="h-4 bg-muted rounded-md w-16" />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="h-4 bg-muted rounded w-36 mb-2" />
-                    <div className="h-3 bg-muted rounded w-24" />
+                    <div className="h-4 bg-muted rounded-md w-36 mb-2" />
+                    <div className="h-3 bg-muted rounded-md w-24" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-muted rounded w-16" />
+                    <div className="h-4 bg-muted rounded-md w-16" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-muted rounded w-20" />
+                    <div className="h-4 bg-muted rounded-md w-20" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-5 bg-muted rounded w-16" />
+                    <div className="h-5 bg-muted rounded-md w-16" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-muted rounded w-28" />
+                    <div className="h-4 bg-muted rounded-md w-28" />
                   </td>
                 </tr>
               ))}
@@ -230,7 +230,7 @@ export default function PaymentsPage() {
 
       {/* Empty state */}
       {!isLoading && !hasData && (
-        <div className="rounded-xl border border-border bg-card p-10 text-center">
+        <div className="rounded-2xl border border-border bg-surface p-10 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
             <CreditCard className="h-6 w-6 text-muted-foreground" />
           </div>
@@ -259,7 +259,7 @@ export default function PaymentsPage() {
 
       {/* Desktop table (hiển thị >= md) */}
       {hasData && (
-        <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
+        <div className="hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-sm md:block">
           <div className="overflow-x-auto">
             <table
               className="w-full divide-y divide-border border-collapse text-left"
@@ -277,7 +277,7 @@ export default function PaymentsPage() {
                   />
                 ))}
               </colgroup>
-              <thead className="bg-muted/40">
+              <thead className="bg-background dark:bg-surface/60">
                 <tr>
                   {columns.map((col) => (
                     <th

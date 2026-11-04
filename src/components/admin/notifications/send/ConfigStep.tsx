@@ -54,7 +54,7 @@ export default function ConfigStep({
                 className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition ${
                   isActive
                     ? "border-accent bg-accent/5 ring-1 ring-accent/30"
-                    : "border-border bg-card hover:border-accent/50 hover:bg-muted"
+                    : "border-border bg-card hover:bg-muted"
                 }`}
               >
                 <span

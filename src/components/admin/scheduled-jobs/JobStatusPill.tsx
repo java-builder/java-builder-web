@@ -17,7 +17,7 @@ export default function JobStatusPill({ status, size = "md" }: JobStatusPillProp
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${TONE_DOT[tone]} ${
-          status === "RUNNING" ? "animate-pulse" : ""
+          status === "RUNNING" ? "" : ""
         }`}
       />
       {STATUS_LABELS[status]}

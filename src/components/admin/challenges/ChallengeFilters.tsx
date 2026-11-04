@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, SlidersHorizontal, RotateCcw, X } from "lucide-react";
-import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
+import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { ChallengeLevel, ChallengeStatus } from "@/types/challenge";
 
 interface ChallengeFiltersProps {
@@ -41,13 +41,13 @@ export default function ChallengeFilters({
   const hasFilter = Boolean(search.trim()) || Boolean(status) || Boolean(level);
 
   return (
-    <div className="relative z-20 rounded-xl border border-border bg-card p-4 shadow-sm space-y-3">
+    <div className="relative z-20 rounded-2xl border border-border bg-surface p-4 shadow-sm space-y-3">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         {/* Left: Filter header & Search */}
         <div className="flex flex-1 flex-wrap items-center gap-3 min-w-0">
-          <div className="flex items-center gap-2 pr-3 border-r border-border/80 shrink-0">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-accent" />
+          <div className="flex items-center gap-2 pr-3 border-r border-border shrink-0">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary-soft">
+              <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
             </div>
             <span className="text-sm font-semibold text-foreground whitespace-nowrap">
               Bộ lọc
@@ -62,7 +62,7 @@ export default function ChallengeFilters({
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Tìm kiếm theo tên thử thách..."
-              className="flex h-9 w-full rounded-md border border-input bg-transparent py-1 pl-9 pr-8 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+              className="flex h-9 w-full rounded-xl border border-border bg-transparent py-1 pl-9 pr-8 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
             />
             {search && (
               <button
@@ -102,7 +102,7 @@ export default function ChallengeFilters({
             <button
               type="button"
               onClick={onReset}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors cursor-pointer"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               <span>Đặt lại</span>

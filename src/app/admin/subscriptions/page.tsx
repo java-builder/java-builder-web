@@ -141,7 +141,7 @@ export default function AdminSubscriptionsPage() {
   if (isLoading) {
     return (
       <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
-        <div className="flex justify-between items-center animate-pulse">
+        <div className="flex justify-between items-center ">
           <div className="space-y-2">
             <div className="h-7 bg-muted rounded w-48" />
             <div className="h-4 bg-muted rounded w-72" />
@@ -150,7 +150,7 @@ export default function AdminSubscriptionsPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-card border border-border rounded-xl p-6 space-y-4 animate-pulse">
+            <div key={i} className="bg-card border border-border rounded-xl p-6 space-y-4 ">
               <div className="h-6 bg-muted rounded w-2/3 mx-auto" />
               <div className="h-10 bg-muted rounded w-1/2 mx-auto my-4" />
               <div className="space-y-2">
@@ -180,8 +180,8 @@ export default function AdminSubscriptionsPage() {
 
         <div className="flex items-center gap-2">
           <Link href="/admin/user-subscriptions">
-            <Button variant="outline" size="sm" className="gap-1.5 h-9">
-              <Users className="h-4 w-4 text-accent" />
+            <Button variant="outline" size="sm" className="gap-1.5 h-9 rounded-full cursor-pointer">
+              <Users className="h-4 w-4 text-primary" />
               <span>Người dùng đăng ký</span>
             </Button>
           </Link>
@@ -189,7 +189,7 @@ export default function AdminSubscriptionsPage() {
             variant="accent"
             size="sm"
             onClick={() => handleOpenModal()}
-            className="gap-1.5 h-9"
+            className="gap-1.5 h-9 rounded-full cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             <span>Thêm gói</span>
@@ -206,15 +206,15 @@ export default function AdminSubscriptionsPage() {
           return (
             <div
               key={plan.id}
-              className={`relative flex flex-col justify-between rounded-xl bg-card p-6 transition-all duration-200 ${
+              className={`relative flex flex-col justify-between rounded-2xl bg-surface p-6 transition-all duration-200 ${
                 isPopular
-                  ? "border-2 border-accent shadow-md"
-                  : "border border-border shadow-sm hover:border-border/80"
+                  ? "border-2 border-primary shadow-md"
+                  : "border border-border shadow-sm"
               }`}
             >
               {/* Popular Badge */}
               {isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 rounded-full bg-accent px-3 py-0.5 text-xs font-semibold text-white shadow-sm">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 rounded-full bg-primary px-3 py-0.5 text-xs font-semibold text-white shadow-sm">
                   <Sparkles className="h-3 w-3" />
                   <span>Phổ biến nhất</span>
                 </div>
@@ -256,7 +256,7 @@ export default function AdminSubscriptionsPage() {
                         variant="outline"
                         size="xs"
                         onClick={() => handleOpenModal(plan as SubscriptionPlan)}
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-accent"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-primary rounded-full cursor-pointer"
                         title="Chỉnh sửa"
                       >
                         <Pencil className="h-3.5 w-3.5" />
@@ -265,7 +265,7 @@ export default function AdminSubscriptionsPage() {
                         variant="outline"
                         size="xs"
                         onClick={() => handleDelete(plan.id, plan.name)}
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:border-destructive/40"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:border-destructive/40 rounded-full cursor-pointer"
                         title="Xóa gói"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -316,11 +316,11 @@ export default function AdminSubscriptionsPage() {
             className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
             onClick={() => setShowModal(false)}
           />
-          <div className="relative bg-card rounded-xl w-full max-w-lg shadow-xl border border-border text-foreground overflow-hidden animate-in fade-in-50 zoom-in-95">
+          <div className="relative bg-surface rounded-2xl w-full max-w-lg shadow-2xl border border-border text-foreground overflow-hidden animate-in fade-in-50 zoom-in-95">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border bg-muted/20">
+            <div className="flex items-center justify-between p-4 border-b border-border bg-muted/20 dark:bg-surface">
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent/10 text-accent">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary">
                   <Crown className="h-4 w-4" />
                 </div>
                 <h3 className="font-semibold text-foreground text-sm">
@@ -330,7 +330,7 @@ export default function AdminSubscriptionsPage() {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted dark:hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -421,7 +421,7 @@ export default function AdminSubscriptionsPage() {
                   variant="outline"
                   size="default"
                   onClick={() => setShowModal(false)}
-                  className="flex-1"
+                  className="flex-1 rounded-full cursor-pointer"
                 >
                   Hủy
                 </Button>
@@ -430,7 +430,7 @@ export default function AdminSubscriptionsPage() {
                   variant="accent"
                   size="default"
                   disabled={isSubmitting}
-                  className="flex-1 font-semibold"
+                  className="flex-1 font-semibold rounded-full cursor-pointer"
                 >
                   {isSubmitting
                     ? "Đang lưu..."

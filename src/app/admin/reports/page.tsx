@@ -109,10 +109,10 @@ export default function ReportsPage() {
 
       {/* Loading inline bar indicator */}
       {isLoading && (
-        <div className="bg-accent/10 border border-accent/20 rounded-lg p-3">
+        <div className="bg-primary-soft border border-primary/30 rounded-lg p-3">
           <div className="flex items-center">
-            <Loader2 className="animate-spin h-4 w-4 text-accent mr-2" />
-            <span className="text-sm text-accent font-medium">Đang tải báo cáo...</span>
+            <Loader2 className="animate-spin h-4 w-4 text-primary mr-2" />
+            <span className="text-sm text-primary font-medium">Đang tải báo cáo...</span>
           </div>
         </div>
       )}
@@ -146,11 +146,11 @@ export default function ReportsPage() {
           items={topCourses}
           itemUnit="khóa học"
           ownerLabel="Học viên"
-          accentGradient="bg-gradient-to-b from-amber-500 to-amber-600"
-          barColor="#9fd3c4"
+          accentGradient="bg-primary"
+          barColor="var(--primary)"
           emptyIcon={<BookOpen className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" />}
           emptyText="Chưa có dữ liệu khóa học"
-          tooltipValueColor="text-amber-500"
+          tooltipValueColor="text-primary"
           isDark={isDark}
         />
 
@@ -160,11 +160,11 @@ export default function ReportsPage() {
           items={topChallenges}
           itemUnit="thử thách"
           ownerLabel="Người tham gia"
-          accentGradient="bg-gradient-to-b from-orange-500 to-orange-600"
-          barColor="#f59e0b"
+          accentGradient="bg-warning"
+          barColor="var(--secondary)"
           emptyIcon={<Trophy className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" />}
           emptyText="Chưa có dữ liệu thử thách"
-          tooltipValueColor="text-orange-500"
+          tooltipValueColor="text-warning"
           isDark={isDark}
         />
       </div>

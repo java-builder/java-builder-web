@@ -130,9 +130,9 @@ export default function EnrollUserModal({
 
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Modal content */}
-        <div className="relative w-full max-w-xl bg-card text-card-foreground border border-border rounded-xl shadow-2xl z-10 transition-all duration-300">
+        <div className="relative w-full max-w-xl bg-surface text-foreground border border-border rounded-2xl shadow-2xl z-10 transition-all duration-300">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-xl">
+          <div className="flex items-center justify-between p-6 border-b border-border bg-muted/40 rounded-t-2xl">
             <div className="flex items-center space-x-3.5">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 border border-accent/15">
                 <UserPlus className="h-5.5 w-5.5 text-accent dark:text-accent-on-dark" />
@@ -201,7 +201,7 @@ export default function EnrollUserModal({
                     {isSearching && searchResults.length === 0 ? (
                       <div className="p-2 space-y-1">
                         {[1, 2, 3].map((i) => (
-                          <div key={i} className="flex items-start gap-3.5 p-3.5 rounded-lg animate-pulse">
+                          <div key={i} className="flex items-start gap-3.5 p-3.5 rounded-lg ">
                             <div className="w-10 h-10 rounded-full bg-muted shrink-0 mt-0.5" />
                             <div className="flex-1 space-y-2">
                               <div className="h-4 bg-muted rounded w-1/3" />
@@ -235,7 +235,7 @@ export default function EnrollUserModal({
                               unoptimized
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold text-sm border border-accent/20 mt-0.5">
+                            <div className="w-10 h-10 rounded-full bg-primary-soft text-primary dark:bg-orange-950/40 dark:text-orange-400 border border-primary/20 flex items-center justify-center font-bold text-sm mt-0.5 shrink-0">
                               {user.username.charAt(0).toUpperCase()}
                             </div>
                           )}
@@ -282,7 +282,7 @@ export default function EnrollUserModal({
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-xl">
+            <div className="flex justify-end space-x-3 p-4 border-t border-border bg-muted/40 rounded-b-2xl">
               <Button
                 type="button"
                 variant="outline"

@@ -8,7 +8,7 @@ import {
   ScheduledJobResponse,
 } from "@/types/scheduled-job";
 import { PageResponse } from "@/types/api";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import {
   JobFilters,
   JobStatsStrip,

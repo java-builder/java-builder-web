@@ -61,15 +61,15 @@ export const SessionTableRow = ({ session, imageErrors, onImageError, onViewDeta
       <TableCell className="px-4 py-3 align-middle text-muted-foreground text-xs whitespace-nowrap overflow-hidden">
         {formatLocaleString(session.createdAt)}
       </TableCell>
-      <TableCell className="px-4 py-3 align-middle text-center overflow-hidden">
+      <TableCell className="px-4 py-3 align-middle text-right overflow-hidden">
         <Button
           variant="outline"
-          size="icon"
+          size="sm"
           onClick={() => onViewDetails(session)}
-          className="h-8 w-8 text-accent hover:text-accent hover:bg-accent/10 border-border dark:text-accent-on-dark"
-          title="Xem chi tiết"
+          className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
         >
-          <Info className="w-4 h-4" />
+          <Info className="w-3.5 h-3.5" />
+          <span>Chi tiết</span>
         </Button>
       </TableCell>
     </TableRow>

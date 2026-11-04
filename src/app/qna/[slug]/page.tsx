@@ -45,7 +45,7 @@ export default function PostDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
-          <div className="animate-pulse">
+          <div className="">
             <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-1/3 mb-4"></div>
             <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4 mb-8"></div>
             <div className="space-y-4">
@@ -65,7 +65,7 @@ export default function PostDetailPage() {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Không tìm thấy bài viết</h1>
             <p className="text-gray-600 dark:text-gray-400 mb-6">{error || "Bài viết này không tồn tại."}</p>
-            <Link href="/qna" className="inline-flex items-center px-6 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent-600 transition-colors duration-200">
+            <Link href="/qna" className="inline-flex items-center px-6 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent-600 transition-colors duration-200">
               Quay lại danh sách
             </Link>
           </div>
@@ -96,7 +96,7 @@ export default function PostDetailPage() {
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100 dark:ring-slate-800"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-sm ring-2 ring-gray-100 dark:ring-slate-800">
+                <div className="w-10 h-10 rounded-full bg-[#FFF0E8] text-[#FF5A1F] border border-[#FF5A1F]/20 dark:bg-orange-950/40 dark:text-orange-400 dark:border-orange-900/30 font-mono font-bold flex items-center justify-center text-sm ring-2 ring-gray-100 dark:ring-slate-800">
                   {post.author?.username?.charAt(0)?.toUpperCase() || "U"}
                 </div>
               )}

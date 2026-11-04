@@ -2,7 +2,7 @@
 
 import { Search, SlidersHorizontal, Video, FileText, Layers, X, LayoutGrid } from "lucide-react";
 import { CourseFormat } from "@/types/course";
-import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
+import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/contexts/I18nContext";
 

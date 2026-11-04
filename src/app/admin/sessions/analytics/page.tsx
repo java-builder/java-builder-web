@@ -136,7 +136,7 @@ export default function SessionAnalyticsPage() {
 
   if (isLoading && !sessionStats) {
     return (
-      <div className="p-6 space-y-6 animate-pulse bg-card min-h-screen">
+      <div className="p-6 space-y-6  bg-card min-h-screen">
         <div className="flex justify-between items-center mb-6">
           <div className="space-y-2 flex-grow">
             <div className="h-7 bg-muted rounded w-1/4" />
@@ -156,7 +156,7 @@ export default function SessionAnalyticsPage() {
   return (
     <div className="p-6 space-y-6 text-foreground min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-r from-card to-card/60 rounded-xl p-6 border border-border shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-surface rounded-2xl p-6 border border-border shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground mb-1">
             {t("admin.sessionsAnalytics.pageTitle")}
@@ -169,7 +169,7 @@ export default function SessionAnalyticsPage() {
           variant="accent"
           onClick={fetchSessionStats}
           disabled={isLoading}
-          className="gap-2 self-start sm:self-auto cursor-pointer"
+          className="gap-2 self-start sm:self-auto cursor-pointer rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs"
         >
           {t("admin.questionContributions.refreshBtn")}
         </Button>
@@ -191,7 +191,7 @@ export default function SessionAnalyticsPage() {
               <p className="text-rose-100 text-xs font-medium uppercase tracking-wider mb-2">{t("admin.sessionsAnalytics.revokedSessions")}</p>
               <p className="text-4xl font-bold">{sessionStats.revokedSessions.toLocaleString()}</p>
             </div>
-            <div className="relative bg-card rounded-2xl p-5 border border-border shadow-sm overflow-hidden">
+            <div className="relative bg-surface rounded-2xl p-5 border border-border shadow-xs overflow-hidden">
               <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider mb-3">Tỷ lệ hoạt động</p>
               <div className="flex items-center gap-4">
                 <div className="relative w-16 h-16 flex-shrink-0">
@@ -221,7 +221,7 @@ export default function SessionAnalyticsPage() {
           {/* Charts Row 1: Status Donut + Provider Bar */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
             {/* Status Donut - 2 cols */}
-            <div className="lg:col-span-2 bg-card rounded-2xl border border-border shadow-sm p-6">
+            <div className="lg:col-span-2 bg-surface rounded-2xl border border-border shadow-xs p-6">
               <div className="mb-2">
                 <h3 className="text-base font-semibold text-foreground">Tình trạng phiên</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">Phân bổ trạng thái hoạt động</p>
@@ -280,7 +280,7 @@ export default function SessionAnalyticsPage() {
             </div>
 
             {/* Provider Donut + Legend - 3 cols */}
-            <div className="lg:col-span-3 bg-card rounded-2xl border border-border shadow-sm p-6">
+            <div className="lg:col-span-3 bg-surface rounded-2xl border border-border shadow-xs p-6">
               <div className="mb-2">
                 <h3 className="text-base font-semibold text-foreground">Nguồn đăng nhập</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">Phân bổ theo phương thức xác thực</p>
@@ -348,7 +348,7 @@ export default function SessionAnalyticsPage() {
           {/* Charts Row 2: Device Radial + Browser Bar */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
             {/* Device Radial Chart - 2 cols */}
-            <div className="lg:col-span-2 bg-card rounded-2xl border border-border shadow-sm p-6">
+            <div className="lg:col-span-2 bg-surface rounded-2xl border border-border shadow-xs p-6">
               <div className="mb-2">
                 <h3 className="text-base font-semibold text-foreground">Thiết bị truy cập</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">Phân bổ theo loại thiết bị</p>
@@ -399,13 +399,13 @@ export default function SessionAnalyticsPage() {
             </div>
 
             {/* Browser Bar Chart - 3 cols */}
-            <div className="lg:col-span-3 bg-card rounded-2xl border border-border shadow-sm p-6">
+            <div className="lg:col-span-3 bg-surface rounded-2xl border border-border shadow-xs p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-base font-semibold text-foreground">Trình duyệt</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">Top 8 trình duyệt phổ biến nhất</p>
                 </div>
-                <span className="text-xs bg-purple-500/10 text-purple-500 px-2.5 py-1 rounded-full font-medium">
+                <span className="text-xs bg-primary-soft text-primary px-2.5 py-1 rounded-full font-medium">
                   Top 8
                 </span>
               </div>
@@ -413,8 +413,8 @@ export default function SessionAnalyticsPage() {
                 <BarChart data={sessionBrowserData} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
                   <defs>
                     <linearGradient id="browserGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#a78bfa" stopOpacity={1} />
-                      <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.85} />
+                      <stop offset="0%" stopColor="#FF9900" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#FF5A1F" stopOpacity={0.85} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
@@ -433,7 +433,7 @@ export default function SessionAnalyticsPage() {
                   />
                   <Tooltip
                     contentStyle={{ backgroundColor: chartColors.tooltipBg, border: "none", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)", color: chartColors.tooltipText, padding: "10px 14px" }}
-                    cursor={{ fill: "rgba(139,92,246,0.06)" }}
+                    cursor={{ fill: "rgba(255,90,31,0.08)" }}
                     formatter={(value: number | string | readonly (number | string)[] | undefined) => [`${value} phiên`, "Số lượng"]}
                   />
                   <Bar dataKey="value" fill="url(#browserGradient)" radius={[8, 8, 0, 0]} maxBarSize={48} animationDuration={800} />

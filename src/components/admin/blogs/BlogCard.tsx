@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Blog, BlogTypeDisplayNames } from "@/types/blog";
 import BlogTypeIcon from "./BlogTypeIcon";
-import MarkdownRenderer from "./MarkdownRenderer";
+import MarkdownRenderer from "@/components/ui/markdown-viewer";
 import { formatApiDate } from "@/utils/dateUtils";
 import { Button } from "@/components/ui/button";
 
@@ -33,7 +33,7 @@ export default function BlogCard({
   const tags = blog.tags ?? [];
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:shadow-md">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-xs transition hover:shadow-md">
       {/* Thumbnail */}
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
         {blog.thumbnailUrl ? (
@@ -56,7 +56,7 @@ export default function BlogCard({
           <span className="inline-flex items-center gap-1.5 rounded-full bg-background/95 px-2.5 py-0.5 text-[11px] font-semibold text-foreground shadow-sm ring-1 ring-border backdrop-blur-sm dark:bg-background/90">
             <BlogTypeIcon
               blogType={blog.blogType}
-              className="h-3 w-3 text-accent"
+              className="h-3 w-3 text-primary"
             />
             {BlogTypeDisplayNames[blog.blogType]}
           </span>

@@ -2,6 +2,7 @@ import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { CategoryDetailResponse, CategoryType } from "@/types/category";
 import { useI18n } from "@/contexts/I18nContext";
+import { Button } from "@/components/ui/button";
 
 interface CategoryRowProps {
   category: CategoryDetailResponse;
@@ -10,14 +11,6 @@ interface CategoryRowProps {
   onDelete: (id: string, name: string) => void;
 }
 
-// Emoji thường có ký tự non-ASCII và <= 4 grapheme.
-// Slug text như "spring", "java"... thì pure ASCII.
-const isEmojiLike = (value: string) => {
-  if (!value) return false;
-  if (/^[\x00-\x7F]+$/.test(value)) return false;
-  return [...value].length <= 4;
-};
-
 export default function CategoryRow({
   category,
   isDeleting,
@@ -25,27 +18,22 @@ export default function CategoryRow({
   onDelete,
 }: CategoryRowProps) {
   const { t } = useI18n();
-  const fallbackColor = "#374151";
-  const color = category.color || fallbackColor;
   const isBlog = category.categoryType === CategoryType.BLOG;
-  const iconValue = category.icon ?? "";
-  const isEmoji = isEmojiLike(iconValue);
-  const initialChar =
-    (iconValue || category.name || "?").trim().charAt(0).toUpperCase();
+  const isChallenge = category.categoryType === CategoryType.CHALLENGE;
+  const initialChar = (category.name || "?").trim().charAt(0).toUpperCase();
 
   return (
     <tr className="transition hover:bg-muted/25">
-      {/* Name + icon */}
+      {/* Display Order */}
+      <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold tabular-nums text-muted-foreground">
+        {category.displayOrder}
+      </td>
+
+      {/* Name */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <span
-            className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg text-base font-semibold"
-            style={{
-              background: `${color}1a`,
-              color,
-            }}
-          >
-            {isEmoji ? iconValue : initialChar}
+          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary-soft text-base font-semibold text-primary">
+            {initialChar}
           </span>
           <div className="min-w-0">
             <div className="truncate text-sm font-semibold text-foreground">
@@ -64,15 +52,21 @@ export default function CategoryRow({
           className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${
             isBlog
               ? "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:ring-blue-800"
+              : isChallenge
+              ? "bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:ring-orange-800"
               : "bg-violet-50 text-violet-700 ring-violet-200 dark:bg-violet-900/20 dark:text-violet-400 dark:ring-violet-800"
           }`}
         >
           <span
             className={`h-1.5 w-1.5 rounded-full ${
-              isBlog ? "bg-blue-500" : "bg-violet-500"
+              isBlog ? "bg-blue-500" : isChallenge ? "bg-orange-500" : "bg-violet-500"
             }`}
           />
-          {isBlog ? t("admin.categories.tabBlog") : t("admin.categories.tabPost")}
+          {isBlog
+            ? t("admin.categories.tabBlog")
+            : isChallenge
+            ? "Thử thách"
+            : t("admin.categories.tabPost")}
         </span>
       </td>
 
@@ -94,20 +88,24 @@ export default function CategoryRow({
 
       {/* Actions */}
       <td className="whitespace-nowrap px-4 py-3 text-right">
-        <div className="inline-flex items-center gap-1">
-          <button
+        <div className="inline-flex items-center gap-1.5">
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onEdit(category)}
-            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground transition hover:border-accent hover:text-accent cursor-pointer"
+            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer hover:text-primary"
           >
             <Pencil className="h-3.5 w-3.5" />
             {t("admin.common.edit")}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onDelete(category.id, category.name)}
             disabled={isDeleting}
-            className="inline-flex items-center gap-1 rounded-lg border border-destructive/20 bg-card px-2.5 py-1 text-xs font-semibold text-destructive transition hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+            className="h-8 gap-1 px-3 text-xs font-medium rounded-full cursor-pointer border-destructive/25 text-destructive hover:bg-destructive/10 hover:border-destructive/40 hover:text-destructive dark:bg-surface"
           >
             {isDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -115,7 +113,7 @@ export default function CategoryRow({
               <Trash2 className="h-3.5 w-3.5" />
             )}
             {isDeleting ? t("admin.common.deleting") : t("admin.common.delete")}
-          </button>
+          </Button>
         </div>
       </td>
     </tr>

@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Breadcrumbs from "@/components/common/Breadcrumbs";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { formatShortDate } from "@/utils/dateUtils";
 import { useI18n } from "@/contexts/I18nContext";
 import { useMyComments } from "@/hooks/useMyComments";
@@ -102,16 +101,8 @@ export default function MyCommentsClient() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+    <main className="min-h-screen bg-background transition-colors duration-300">
       <div className="mx-auto max-w-6xl space-y-4 p-4 sm:space-y-6 sm:p-6">
-        {/* Breadcrumb */}
-        <Breadcrumbs
-          items={[
-            { label: t("common.home"), href: "/" },
-            { label: t("myCommentsPage.title") },
-          ]}
-        />
-
         {/* Page Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
@@ -195,7 +186,7 @@ export default function MyCommentsClient() {
 
         {/* Content list */}
         {isLoading ? (
-          <div className="space-y-4 animate-pulse">
+          <div className="space-y-4 ">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700/60 rounded-xl p-5 space-y-3">
                 <div className="flex items-center gap-3">
@@ -222,7 +213,7 @@ export default function MyCommentsClient() {
             </p>
             <Link
               href="/blogs"
-              className="inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent/90 text-white font-semibold rounded-lg transition-colors text-sm shadow-sm"
+              className="inline-flex items-center px-6 py-2.5 bg-[#FF5A1F] hover:bg-[#e04b16] text-white font-semibold rounded-full transition-colors text-sm shadow-sm active:scale-95 shadow-[#FF5A1F]/25"
             >
               {t("myCommentsPage.exploreBtn")}
             </Link>

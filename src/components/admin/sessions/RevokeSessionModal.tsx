@@ -16,7 +16,7 @@ export const RevokeSessionModal = ({ session, isRevoking, onConfirm, onClose }: 
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       
       {/* Container */}
-      <div className="relative w-full max-w-md bg-card border border-border text-foreground rounded-2xl shadow-2xl p-6 z-10">
+      <div className="relative w-full max-w-md bg-surface border border-border text-foreground rounded-2xl shadow-2xl p-6 z-10">
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-destructive/10 rounded-full">
           <AlertTriangle className="w-6 h-6 text-destructive" />
         </div>
@@ -26,7 +26,7 @@ export const RevokeSessionModal = ({ session, isRevoking, onConfirm, onClose }: 
           Người dùng sẽ bị đăng xuất khỏi thiết bị này lập tức.
         </p>
         
-        <div className="p-3 bg-muted/50 border border-border rounded-lg mb-6 space-y-2 text-sm">
+        <div className="p-3 bg-muted/50 border border-border rounded-xl mb-6 space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Phiên:</span>
             <span className="font-mono text-xs text-foreground font-semibold">{session.sessionId.slice(0, 8)}...</span>
@@ -46,7 +46,7 @@ export const RevokeSessionModal = ({ session, isRevoking, onConfirm, onClose }: 
             variant="outline"
             onClick={onClose} 
             disabled={isRevoking}
-            className="flex-1"
+            className="flex-1 rounded-full border border-border cursor-pointer"
           >
             Hủy
           </Button>
@@ -54,7 +54,7 @@ export const RevokeSessionModal = ({ session, isRevoking, onConfirm, onClose }: 
             variant="destructive"
             onClick={onConfirm} 
             disabled={isRevoking}
-            className="flex-1 gap-1.5"
+            className="flex-1 gap-1.5 rounded-full cursor-pointer"
           >
             {isRevoking && <Loader2 className="h-4 w-4 animate-spin" />}
             {isRevoking ? "Đang xử lý..." : "Thu hồi"}

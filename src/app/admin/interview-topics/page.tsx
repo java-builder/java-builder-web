@@ -54,7 +54,7 @@ export default function InterviewTopicsPage() {
   }, [locale]);
 
   const handleDelete = async (id: string, name: string) => {
-    const message = t("admin.interviewTopics.deleteConfirmMessage").replace("{name}", name);
+    const message = t("admin.interviewTopics.deleteConfirmMessage").replace("{name}", `<strong>${name}</strong>`);
     await confirm(
       async () => {
         setDeletingId(id);
@@ -106,7 +106,7 @@ export default function InterviewTopicsPage() {
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-card border border-border rounded-xl p-4 sm:p-5 animate-pulse flex items-center justify-between">
+            <div key={i} className="bg-card border border-border rounded-xl p-4 sm:p-5  flex items-center justify-between">
               <div className="space-y-3 flex-1">
                 <div className="h-3.5 bg-muted rounded w-24" />
                 <div className="h-7 bg-muted rounded w-16" />
@@ -171,11 +171,11 @@ export default function InterviewTopicsPage() {
         </div>
       )}
 
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 animate-pulse">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 ">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white dark:bg-slate-800 border border-gray-250 dark:border-slate-700/60 rounded-xl p-5 space-y-4">
+              <div key={i} className="bg-surface border border-border rounded-2xl p-5 space-y-4">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded bg-muted" />
@@ -223,7 +223,7 @@ export default function InterviewTopicsPage() {
               return (
                 <div
                   key={topic.id}
-                  className="bg-card border border-border rounded-lg hover:shadow-md transition-all duration-200 hover:border-accent/50"
+                  className="bg-card border border-border rounded-lg hover:shadow-md transition-all duration-200"
                 >
                   <div className="p-4 sm:p-5">
                     <div className="flex items-start justify-between mb-3">
@@ -287,7 +287,7 @@ export default function InterviewTopicsPage() {
                         </Button>
                         <Link
                           href={`/admin/interview-topics/${topic.id}/edit`}
-                          className="inline-flex items-center justify-center rounded-md h-8 w-8 text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
+                          className="inline-flex items-center justify-center rounded-full h-8 w-8 text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
                           title={t("admin.interviewTopics.viewBtn")}
                         >
                           <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

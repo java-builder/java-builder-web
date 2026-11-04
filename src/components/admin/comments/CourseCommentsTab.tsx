@@ -8,7 +8,7 @@ import CommentFilter from "./CommentFilter";
 import CommentCard from "./CommentCard";
 import { commentApi } from "@/services/comment.service";
 import { CommentDetailResponse } from "@/types/comment";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { MessageSquare } from "lucide-react";
 
 type CommentStatus = "ACTIVE" | "DELETED" | "ALL";
@@ -150,17 +150,17 @@ export default function CourseCommentsTab() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-sm">
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Tổng bình luận</p>
           <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-sm">
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Đang hiển thị</p>
           <p className="text-2xl font-bold text-foreground mt-1">{stats.active}</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 border border-border shadow-sm">
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Đã xóa</p>
           <p className="text-2xl font-bold text-foreground mt-1">{stats.deleted}</p>
         </div>
@@ -176,17 +176,17 @@ export default function CourseCommentsTab() {
 
       {/* Comments List */}
       {loading ? (
-        <div className="space-y-4 py-6 animate-pulse">
+        <div className="space-y-4 py-6 ">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex gap-4 p-5 bg-card border border-border rounded-xl">
+            <div key={i} className="flex gap-4 p-5 bg-surface border border-border rounded-2xl">
               <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
               <div className="flex-1 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-4 bg-muted rounded w-28" />
-                  <div className="h-3.5 bg-muted rounded w-16" />
+                  <div className="h-4 bg-muted rounded-full w-28" />
+                  <div className="h-3.5 bg-muted rounded-full w-16" />
                 </div>
-                <div className="h-4 bg-muted rounded w-full" />
-                <div className="h-4 bg-muted rounded w-5/6" />
+                <div className="h-4 bg-muted rounded-full w-full" />
+                <div className="h-4 bg-muted rounded-full w-5/6" />
               </div>
             </div>
           ))}
@@ -194,7 +194,7 @@ export default function CourseCommentsTab() {
       ) : (
         <div className="space-y-4">
           {filteredComments.length === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
+            <div className="bg-surface rounded-2xl border border-border p-12 text-center shadow-sm">
               <MessageSquare className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
               <p className="text-muted-foreground text-base font-semibold">Không có bình luận nào</p>
               <p className="text-muted-foreground/80 text-xs mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm</p>

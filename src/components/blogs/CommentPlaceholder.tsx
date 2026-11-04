@@ -1,6 +1,6 @@
 export default function CommentPlaceholder() {
   return (
-    <div className="ml-10 animate-pulse">
+    <div className="ml-10 ">
       <div className="flex gap-2">
         <div className="w-7 h-7 bg-gray-200 dark:bg-slate-600 rounded-full flex-shrink-0" />
         

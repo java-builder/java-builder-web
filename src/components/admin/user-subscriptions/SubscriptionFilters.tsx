@@ -2,7 +2,7 @@
 
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FilterSelect, FilterOption } from "@/components/ui/FilterSelect";
+import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface SubscriptionFiltersProps {

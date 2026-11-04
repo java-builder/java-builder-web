@@ -82,7 +82,7 @@ export const ContributionTable = ({
           <TableBody>
             {isLoading ? (
               [1, 2, 3, 4, 5].map((i) => (
-                <TableRow key={i} className="animate-pulse">
+                <TableRow key={i} className="">
                   <TableCell className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="h-9 w-9 rounded-full bg-muted shrink-0" />

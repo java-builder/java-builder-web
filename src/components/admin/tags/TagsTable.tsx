@@ -29,7 +29,7 @@ export default function TagsTable({
   onDelete,
 }: TagsTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground">
@@ -40,7 +40,7 @@ export default function TagsTable({
           </p>
         </div>
         {tags.length > 0 && (
-          <span className="whitespace-nowrap rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
+          <span className="whitespace-nowrap rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary dark:bg-orange-950/40 dark:text-orange-400">
             {tags.length} tag
           </span>
         )}
@@ -48,7 +48,7 @@ export default function TagsTable({
 
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-border">
-          <thead className="bg-muted/40">
+          <thead className="bg-background dark:bg-surface/60">
             <tr>
               {COLUMN_HEADERS.map((col) => (
                 <th
@@ -65,7 +65,7 @@ export default function TagsTable({
           <tbody className="divide-y divide-border bg-transparent">
             {isLoading && tags.length === 0 ? (
               Array.from({ length: 5 }).map((_, idx) => (
-                <tr key={idx} className="animate-pulse">
+                <tr key={idx} className="">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-32" />
                   </td>

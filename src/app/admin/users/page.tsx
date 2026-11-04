@@ -14,7 +14,7 @@ import { UserStatsCards } from "@/components/admin/users/UserStatsCards";
 import { UserSearchBar } from "@/components/admin/users/UserSearchBar";
 import { UsersHeader } from "@/components/admin/users/UsersHeader";
 import { UsersTable } from "@/components/admin/users/UsersTable";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -51,11 +51,7 @@ export default function UsersPage() {
       },
       {
         title: t("admin.users.deleteConfirmTitle"),
-        message: `
-                    <div style="text-align: center; line-height: 1.5;">
-                        <p style="margin-bottom: 8px;">${t("admin.users.deleteConfirmMsg").replace("{name}", userName)}</p>
-                    </div>
-                `,
+        message: t("admin.users.deleteConfirmMsg").replace("{name}", `<strong>${userName}</strong>`),
         confirmText: t("admin.users.deleteConfirmBtn"),
         cancelText: t("admin.users.cancelBtn"),
         type: "error",
@@ -106,7 +102,7 @@ export default function UsersPage() {
 
   if (isLoading && !response) {
     return (
-      <div className="p-4 sm:p-6 space-y-6 animate-pulse bg-gray-50 dark:bg-slate-900 min-h-screen">
+      <div className="p-4 sm:p-6 space-y-6  bg-gray-50 dark:bg-slate-900 min-h-screen">
         <div className="flex justify-between items-center mb-6">
           <div className="space-y-2">
             <div className="h-7 bg-muted rounded w-48" />
@@ -147,8 +143,8 @@ export default function UsersPage() {
 
   if (error && !response) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-slate-900">
-        <div className="max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <div className="max-w-md rounded-2xl border border-border bg-surface p-8 text-center shadow-xs">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-900/20">
             <AlertCircle className="h-6 w-6 text-rose-600 dark:text-rose-400" />
           </div>
@@ -159,7 +155,7 @@ export default function UsersPage() {
           <button
             type="button"
             onClick={refetch}
-            className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600"
+            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xs px-4 py-2 text-sm font-semibold transition cursor-pointer"
           >
             Thử lại
           </button>

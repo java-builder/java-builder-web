@@ -32,7 +32,7 @@ export default function PushPreviewCard({ title, body }: PushPreviewCardProps) {
             <button
               type="button"
               onClick={() => setDevice("desktop")}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 device === "desktop"
                   ? "bg-card text-accent dark:text-accent-on-dark shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -43,7 +43,7 @@ export default function PushPreviewCard({ title, body }: PushPreviewCardProps) {
             <button
               type="button"
               onClick={() => setDevice("mobile")}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 device === "mobile"
                   ? "bg-card text-accent dark:text-accent-on-dark shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
