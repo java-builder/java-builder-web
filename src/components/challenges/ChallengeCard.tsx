@@ -198,9 +198,6 @@ export function ChallengeCard({ challenge, userProgress }: ChallengeCardProps) {
                 <span className="text-[#171717] dark:text-white">
                   {(challenge.price ?? 0).toLocaleString("vi-VN")} đ
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#26344D] text-white font-semibold">
-                  PRO
-                </span>
               </div>
             )}
             <Link

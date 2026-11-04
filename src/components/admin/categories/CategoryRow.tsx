@@ -20,23 +20,17 @@ export default function CategoryRow({
   const { t } = useI18n();
   const isBlog = category.categoryType === CategoryType.BLOG;
   const isChallenge = category.categoryType === CategoryType.CHALLENGE;
-  const initialChar = (category.name || "?").trim().charAt(0).toUpperCase();
 
   return (
     <tr className="transition hover:bg-muted/25">
       {/* Name */}
       <td className="px-4 py-3">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary-soft text-base font-semibold text-primary">
-            {initialChar}
-          </span>
-          <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-foreground">
-              {category.name}
-            </div>
-            <div className="truncate font-mono text-[11px] text-muted-foreground">
-              {category.slug}
-            </div>
+        <div className="min-w-0">
+          <div className="truncate text-sm font-semibold text-foreground">
+            {category.name}
+          </div>
+          <div className="truncate font-mono text-[11px] text-muted-foreground">
+            {category.slug}
           </div>
         </div>
       </td>
