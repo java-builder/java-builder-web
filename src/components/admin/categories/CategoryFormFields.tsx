@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, FileText, Tag } from "lucide-react";
+import { FileText, Tag } from "lucide-react";
 import { CategoryType } from "@/types/category";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -8,13 +8,11 @@ interface CategoryFormFieldsProps {
   name: string;
   description: string;
   categoryType: CategoryType;
-  displayOrder?: number;
   isLocked?: boolean;
   onChange: (patch: {
     name?: string;
     description?: string;
     categoryType?: CategoryType;
-    displayOrder?: number;
   }) => void;
 }
 
@@ -22,7 +20,6 @@ export default function CategoryFormFields({
   name,
   description,
   categoryType,
-  displayOrder,
   isLocked,
   onChange,
 }: CategoryFormFieldsProps) {
@@ -66,29 +63,6 @@ export default function CategoryFormFields({
           />
         </div>
       </div>
-
-      {/* Display Order (shown when updating) */}
-      {displayOrder !== undefined && (
-        <div>
-          <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Thứ tự hiển thị
-          </label>
-          <div className="relative">
-            <ArrowUpDown className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-            <input
-              type="number"
-              min={1}
-              value={displayOrder}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                onChange({ displayOrder: Number.isNaN(val) ? 1 : Math.max(1, val) });
-              }}
-              disabled={isLocked}
-              className="block w-full rounded-xl border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm text-gray-700 placeholder-gray-400 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50 dark:border-border dark:bg-background dark:text-gray-200 dark:placeholder-gray-500"
-            />
-          </div>
-        </div>
-      )}
 
       {/* Type */}
       <div>

@@ -24,11 +24,6 @@ export default function CategoryRow({
 
   return (
     <tr className="transition hover:bg-muted/25">
-      {/* Display Order */}
-      <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold tabular-nums text-muted-foreground">
-        {category.displayOrder}
-      </td>
-
       {/* Name */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2.5">

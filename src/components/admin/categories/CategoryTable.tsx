@@ -22,8 +22,7 @@ export default function CategoryTable({
 }: CategoryTableProps) {
   const { t, locale } = useI18n();
 
-  const columnHeaders: { label: string; align?: "left" | "right" | "center" }[] = [
-    { label: "#" },
+  const columnHeaders: { label: string; align?: "left" | "right" }[] = [
     { label: t("admin.categories.colCategory") },
     { label: t("admin.categories.colType") },
     { label: t("admin.categories.colDescription") },
@@ -57,7 +56,7 @@ export default function CategoryTable({
                 <th
                   key={i}
                   className={`whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ${
-                    col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"
+                    col.align === "right" ? "text-right" : "text-left"
                   }`}
                 >
                   {col.label}
@@ -69,17 +68,11 @@ export default function CategoryTable({
             {isLoading && categories.length === 0 ? (
               Array.from({ length: 5 }).map((_, idx) => (
                 <tr key={idx} className="">
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-muted rounded w-6" />
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-32" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-24" />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-muted rounded w-32" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-4 bg-muted rounded w-16" />

@@ -24,7 +24,6 @@ export default function UpdateCategoryModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [categoryType, setCategoryType] = useState<CategoryType>(CategoryType.POST);
-  const [displayOrder, setDisplayOrder] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export default function UpdateCategoryModal({
       setName(category.name || "");
       setDescription(category.description || "");
       setCategoryType(category.categoryType || CategoryType.POST);
-      setDisplayOrder(category.displayOrder ?? 1);
     }
   }, [category]);
 
@@ -56,7 +54,6 @@ export default function UpdateCategoryModal({
         name: name.trim(),
         description: description.trim() || undefined,
         categoryType,
-        displayOrder,
       });
 
       toast.success("Cập nhật danh mục thành công");
@@ -117,13 +114,11 @@ export default function UpdateCategoryModal({
           name={name}
           description={description}
           categoryType={categoryType}
-          displayOrder={displayOrder}
           isLocked={isSubmitting}
           onChange={(patch) => {
             if (patch.name !== undefined) setName(patch.name);
             if (patch.description !== undefined) setDescription(patch.description);
             if (patch.categoryType !== undefined) setCategoryType(patch.categoryType);
-            if (patch.displayOrder !== undefined) setDisplayOrder(patch.displayOrder);
           }}
         />
       </form>
