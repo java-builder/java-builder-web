@@ -93,8 +93,8 @@ export default function FeaturedCourseCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Chỉ khi courses có dữ liệu từ API thì map các khóa học từ API
-  // Còn khi courses bị null hoặc rỗng thì mới hiển thị data set mặc định hiện tại
+  // Chá»‰ khi courses cÃ³ dá»¯ liá»‡u tá»« API thÃ¬ map cÃ¡c khÃ³a há»c tá»« API
+  // CÃ²n khi courses bá»‹ null hoáº·c rá»—ng thÃ¬ má»›i hiá»ƒn thá»‹ data set máº·c Ä‘á»‹nh hiá»‡n táº¡i
   const hasApiCourses = Boolean(courses && Array.isArray(courses) && courses.length > 0);
 
   const slides: FeaturedCourseSlide[] = useMemo(() => {
@@ -105,7 +105,7 @@ export default function FeaturedCourseCarousel({
             ? `/docs/${course.slug}`
             : `/courses/${course.slug}`;
 
-        let levelLabel = "Thực chiến";
+        let levelLabel = "Thá»±c chiáº¿n";
         if (course.level) {
           switch (course.level) {
             case CourseLevel.BEGINNER:
@@ -127,8 +127,8 @@ export default function FeaturedCourseCarousel({
 
         const formatLabel =
           course.courseFormat === CourseFormat.TEXT
-            ? (t("sidebar.documents") || "Tài liệu")
-            : (t("sidebar.courses") || "Khóa học");
+            ? (t("sidebar.documents") || "TÃ i liá»‡u")
+            : (t("sidebar.courses") || "KhÃ³a há»c");
 
         const bannerImage =
           course.thumbnailUrl || FALLBACK_BANNERS[idx % FALLBACK_BANNERS.length];
@@ -139,7 +139,7 @@ export default function FeaturedCourseCarousel({
           badge: `${levelLabel} • ${formatLabel}`,
           description:
             course.description ||
-            "Học tập và phát triển kỹ năng lập trình Java Backend từ cơ bản đến chuyên sâu cùng JavaBuilder.",
+            "Há»c táº­p vÃ  phÃ¡t triá»ƒn ká»¹ nÄƒng láº­p trÃ¬nh Java Backend tá»« cÆ¡ báº£n Ä‘áº¿n chuyÃªn sÃ¢u cÃ¹ng JavaBuilder.",
           imageUrl: bannerImage,
           authorName: "JavaBuilder",
           authorAvatar: "/logos/java-logo.png",
@@ -148,7 +148,7 @@ export default function FeaturedCourseCarousel({
       });
     }
 
-    // Courses mà null hoặc rỗng -> mới hiện data set hiện tại
+    // Courses mÃ  null hoáº·c rá»—ng -> má»›i hiá»‡n data set hiá»‡n táº¡i
     return DEFAULT_FEATURED_SLIDES;
   }, [courses, hasApiCourses, t]);
 
@@ -166,7 +166,7 @@ export default function FeaturedCourseCarousel({
     setCurrentIndex(index);
   };
 
-  // Reset index nếu slides thay đổi
+  // Reset index náº¿u slides thay Ä‘á»•i
   useEffect(() => {
     setCurrentIndex(0);
   }, [totalSlides]);
@@ -185,7 +185,7 @@ export default function FeaturedCourseCarousel({
 
   if (isLoading) {
     return (
-      <div className="relative flex flex-col h-full bg-white dark:bg-slate-800/90 rounded-2xl border border-gray-200/80 dark:border-slate-700/60 shadow-sm overflow-hidden animate-pulse">
+      <div className="relative flex flex-col h-full bg-white dark:bg-slate-800/90 rounded-[6px] border border-slate-200 dark:border-slate-800/80 dark:border-slate-700/60 shadow-sm overflow-hidden ">
         <div className="aspect-[16/9] w-full bg-gray-200 dark:bg-slate-700" />
         <div className="p-4 sm:p-5 space-y-3">
           <div className="h-3 w-1/3 bg-gray-200 dark:bg-slate-700 rounded-sm" />
@@ -203,11 +203,12 @@ export default function FeaturedCourseCarousel({
   const current = slides[currentIndex] || DEFAULT_FEATURED_SLIDES[0];
 
   return (
-    <div
-      className="relative flex flex-col h-full bg-white dark:bg-slate-800/90 rounded-2xl border border-gray-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
+    <div className="space-y-2.5 max-w-[420px] mx-auto lg:max-w-none">
+      <div
+        className="relative flex flex-col h-full bg-white dark:bg-[#181d28] rounded-2xl border border-[#E8E8E8] dark:border-[#262d3d] shadow-sm hover:border-[#FF5A1F]/30 transition-all duration-200 overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
       {/* Top Banner Image with Carousel Controls */}
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950 group">
         <Link href={current.href} className="block relative w-full h-full">
@@ -223,6 +224,12 @@ export default function FeaturedCourseCarousel({
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none" />
         </Link>
 
+        {/* Featured Tag */}
+        <div className="absolute top-2.5 left-2.5 z-10 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold border border-white/15">
+          <span className="text-[#FF9900]">★</span>
+          <span>Khóa học nổi bật</span>
+        </div>
+
         {/* Previous Button */}
         {totalSlides > 1 && (
           <button
@@ -233,9 +240,9 @@ export default function FeaturedCourseCarousel({
               prevSlide();
             }}
             aria-label="Previous slide"
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-900 text-gray-800 dark:text-gray-100 shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 hover:scale-110 z-10 cursor-pointer"
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-900 text-gray-800 dark:text-gray-100 shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 hover:scale-110 z-10 cursor-pointer"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5" />
           </button>
         )}
 
@@ -249,72 +256,51 @@ export default function FeaturedCourseCarousel({
               nextSlide();
             }}
             aria-label="Next slide"
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-900 text-gray-800 dark:text-gray-100 shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 hover:scale-110 z-10 cursor-pointer"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-900 text-gray-800 dark:text-gray-100 shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 hover:scale-110 z-10 cursor-pointer"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         )}
 
-        {/* Indicator Dots */}
-        {totalSlides > 1 && (
-          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/40 backdrop-blur-xs px-2.5 py-1 rounded-full">
-            {slides.map((slide, index) => (
-              <button
-                key={slide.id + "-" + index}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToSlide(index);
-                }}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentIndex
-                    ? "w-4 h-1.5 bg-accent"
-                    : "w-1.5 h-1.5 bg-white/60 hover:bg-white"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Indicator Dots Underneath Card */}
       </div>
 
       {/* Bottom Info Section */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between">
+      <div className="p-3 sm:p-3.5 flex flex-col flex-1 justify-between">
         <div>
-          <div className="text-[11px] font-semibold text-accent tracking-wide uppercase mb-1">
+          <div className="text-[11px] font-bold text-[#FF5A1F] tracking-wide uppercase mb-0.5">
             {current.badge}
           </div>
           <Link href={current.href}>
-            <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white line-clamp-1 hover:text-accent dark:hover:text-accent transition-colors mb-1.5">
+            <h3 className="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white line-clamp-1 hover:text-slate-600 dark:hover:text-slate-300 transition-colors mb-1">
               {current.title}
             </h3>
           </Link>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
             {current.description}
           </p>
         </div>
 
         {/* Footer row with author and CTA */}
-        <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100 dark:border-slate-700/60">
+        <div className="flex items-center justify-between pt-2 mt-1.5 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full overflow-hidden bg-accent/10 flex items-center justify-center border border-gray-200 dark:border-slate-700">
+            <div className="w-5 h-5 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
               <Image
                 src={current.authorAvatar}
                 alt="JavaBuilder Logo"
-                width={24}
-                height={24}
+                width={20}
+                height={20}
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
               {current.authorName}
             </span>
           </div>
 
           <Link
             href={current.href}
-            className="group/link inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
+            className="group/link inline-flex items-center gap-1 text-xs font-semibold text-[#FF5A1F] hover:text-[#e04b16] transition-colors"
           >
             <span>{t("home.viewDetails")}</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
@@ -322,5 +308,25 @@ export default function FeaturedCourseCarousel({
         </div>
       </div>
     </div>
+
+    {/* AWS Style Pagination Dots */}
+    {totalSlides > 1 && (
+      <div className="flex items-center justify-center gap-1.5 pt-2">
+        {slides.map((slide, index) => (
+          <button
+            key={slide.id + "-" + index}
+            type="button"
+            onClick={() => goToSlide(index)}
+            className={`transition-all duration-300 rounded-full cursor-pointer ${
+              index === currentIndex
+                ? "w-6 h-1.5 bg-[#FF5A1F]"
+                : "w-1.5 h-1.5 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    )}
+  </div>
   );
 }

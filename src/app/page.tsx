@@ -1,14 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import MotionWrapper from "@/components/common/MotionWrapper";
 import CourseCard from "@/components/courses/CourseCard";
 import PublicBlogCard from "@/components/blogs/PublicBlogCard";
 import DocumentCard from "@/components/documents/DocumentCard";
-import ViewAllLink from "@/components/ui/ViewAllLink";
-import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import ViewAllLink from "@/components/ui/view-all-link";
 import FeaturedCourseCarousel from "@/components/home/FeaturedCourseCarousel";
 import { useFeaturedCourses } from "@/hooks/useCourses";
 import { useFeaturedBlogs } from "@/hooks/useBlogs";
@@ -37,125 +34,146 @@ export default function Home() {
 
   return (
     <>
-      <main className="relative bg-gradient-to-r from-white to-blue-50 py-8 md:py-10 lg:py-12">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
+      <main className="relative bg-[#FAFAFA] dark:bg-[#0B0F19] -mt-[54px] pt-[80px] pb-6 md:pb-10 overflow-hidden transition-colors">
+        {/* Modern AWS Cloud Aesthetic Background: Tech Dot Grid + Ambient Orange Aura */}
+        <div
+          className="absolute inset-0 pointer-events-none select-none overflow-hidden"
+          aria-hidden="true"
+        >
+          {/* 1. AWS Primary Orange soft ambient halo behind the course card */}
+          <div className="absolute top-1/2 right-[0%] -translate-y-1/2 w-[550px] h-[460px] bg-[radial-gradient(circle,_rgba(255,90,31,0.13)_0%,_rgba(255,153,0,0.05)_40%,_transparent_70%)] dark:bg-[radial-gradient(circle,_rgba(255,90,31,0.18)_0%,_rgba(255,153,0,0.08)_45%,_transparent_75%)] rounded-full blur-2xl pointer-events-none" />
+
+          {/* 2. Sleek tech dot matrix on the right half */}
+          <div
+            className="absolute top-0 right-0 w-[55%] h-full opacity-40 dark:opacity-20 hidden lg:block pointer-events-none"
+            style={{
+              backgroundImage: "radial-gradient(#94A3B8 1.2px, transparent 1.2px)",
+              backgroundSize: "22px 22px",
+              maskImage:
+                "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 60%, transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 60%, transparent 100%)",
+            }}
+          />
+
+          {/* 3. Subtle angled tech accent glow across top-right */}
+          <div className="absolute -top-16 -right-16 w-80 h-80 bg-gradient-to-br from-[#FF5A1F]/15 via-[#26344D]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.9}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start pt-1">
               {/* Left: Text / CTA */}
               <div className="lg:col-span-7">
-                <div className="space-y-3 md:space-y-4">
+                <div className="space-y-2.5 sm:space-y-3">
+                  {/* Course & Training Badge: AWS style pill */}
                   <div className="inline-block">
-                    <span className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
-                      {t("home.heroBadge")}
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFF0E8] dark:bg-orange-950/40 text-[#171717] dark:text-slate-100 border border-[#FFD8C7] dark:border-orange-900/50 shadow-2xs">
+                      <svg className="w-2.5 h-2.5 fill-[#FF5A1F] flex-shrink-0" viewBox="0 0 24 24">
+                        <polygon points="6,3 20,12 6,21" />
+                      </svg>
+                      <span>{t("home.heroBadge") || "Course & Training"}</span>
                     </span>
                   </div>
 
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                    {t("home.heroTitleStart")}{" "}
-                    <span className="text-accent">
-                      {t("home.heroTitleEnd")}
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] xl:text-[50px] font-black text-[#171717] dark:text-white leading-[1.12] tracking-tight">
+                    {t("home.heroTitleStart") || "Khởi đầu hành trình"}<br />
+                    <span>{t("home.heroTitleEndPrefix") || "lập trình "}</span>
+                    <span className="text-[#FF5A1F] relative inline-block">
+                      {t("home.heroTitleHighlight") || "Java"}
+                      <svg className="absolute -bottom-2.5 left-0 w-full" viewBox="0 0 120 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 10C35 2 85 2 117 10" stroke="#FF5A1F" strokeWidth="4" strokeLinecap="round" />
+                      </svg>
                     </span>
                   </h1>
 
-                  <div className="text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-xl">
-                    <p className="leading-relaxed mb-2 font-medium text-gray-900 dark:text-white">
-                      {t("home.heroDesc1")}
-                    </p>
-                    <p className="leading-relaxed text-gray-600 dark:text-gray-300">
-                      {t("home.heroDesc2")}
-                    </p>
-                  </div>
+                  <p className="text-sm sm:text-base text-[#64748B] dark:text-slate-300 max-w-xl leading-relaxed">
+                    {t("home.heroDesc1") || "Hành trình chinh phục Backend Java toàn diện từ con số 0 đến cấp độ kỹ sư thực chiến cùng JavaBuilder."}
+                  </p>
 
-                  {/* Feature Highlights */}
-                  <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-semibold">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-slate-800 border border-blue-200/60 dark:border-slate-700 text-blue-700 dark:text-blue-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                      {t("home.pillZeroToHero")}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-slate-800 border border-emerald-200/60 dark:border-slate-700 text-emerald-700 dark:text-emerald-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      {t("home.pillRealProjects")}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-slate-800 border border-purple-200/60 dark:border-slate-700 text-purple-700 dark:text-purple-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                      {t("home.pillInterviewPrep")}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-slate-800 border border-amber-200/60 dark:border-slate-700 text-amber-700 dark:text-amber-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                      {t("home.pillQuizzes")}
-                    </span>
+                  {/* 3 Feature Highlights matching exact AWS mockup */}
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-5 pt-0.5 select-none">
+                    {/* Item 1: Học mọi lúc mọi nơi */}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF0E8] flex items-center justify-center flex-shrink-0 text-[#171717] font-extrabold text-sm tracking-tighter">
+                        &lt;/&gt;
+                      </div>
+                      <div className="text-xs sm:text-[13px] font-semibold text-[#171717] dark:text-slate-200 leading-tight">
+                        <p>{t("home.featureLearnAnytime") || "Học mọi lúc"}</p>
+                        <p>{t("home.featureAnywhere") || "mọi nơi"}</p>
+                      </div>
+                    </div>
+
+                    {/* Divider 1 */}
+                    <div className="h-7 w-px bg-slate-200/90 dark:bg-slate-700/80 hidden sm:block" />
+
+                    {/* Item 2: Thực hành thực tế */}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF0E8] flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5 text-[#FF5A1F]" viewBox="0 0 24 24" fill="currentColor">
+                          <rect x="3" y="14" width="4" height="7" rx="1" />
+                          <rect x="10" y="8" width="4" height="13" rx="1" />
+                          <rect x="17" y="3" width="4" height="18" rx="1" />
+                        </svg>
+                      </div>
+                      <div className="text-xs sm:text-[13px] font-semibold text-[#171717] dark:text-slate-200 leading-tight">
+                        <p>{t("home.featurePractice") || "Thực hành"}</p>
+                        <p>{t("home.featureReal") || "thực tế"}</p>
+                      </div>
+                    </div>
+
+                    {/* Divider 2 */}
+                    <div className="h-7 w-px bg-slate-200/90 dark:bg-slate-700/80 hidden sm:block" />
+
+                    {/* Item 3: Cộng đồng hỗ trợ mạnh mẽ */}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF0E8] flex items-center justify-center flex-shrink-0 text-[#FF5A1F]">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                          <path d="M4 22h16" />
+                          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                        </svg>
+                      </div>
+                      <div className="text-xs sm:text-[13px] font-semibold text-[#171717] dark:text-slate-200 leading-tight">
+                        <p>{t("home.featureCommunity") || "Cộng đồng"}</p>
+                        <p>{t("home.featureSupport") || "hỗ trợ mạnh mẽ"}</p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Quick CTAs */}
                   <div className="flex items-center gap-3 pt-2">
                     <Link
                       href="/courses"
-                      className={buttonVariants({ variant: "accent" })}
+                      className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold bg-[#FF5A1F] text-white hover:bg-[#e04b16] transition-all shadow-md shadow-[#FF5A1F]/25 active:scale-95 cursor-pointer"
                     >
-                      {t("home.exploreCourses")}
+                      <span>{t("home.exploreCourses") || "Khám phá khóa học"}</span>
+                      <span className="text-base leading-none">→</span>
                     </Link>
                     <Link
                       href="/interview"
-                      className={buttonVariants({ variant: "outline" })}
+                      className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-[#181d28] border border-[#E8E8E8] dark:border-[#262d3d] text-[#171717] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer shadow-2xs"
                     >
-                      <span>{t("home.prepInterview")}</span>
-                      <ArrowRight className="w-4 h-4 ml-1" />
+                      <svg className="w-2.5 h-2.5 fill-[#171717] dark:fill-white flex-shrink-0" viewBox="0 0 24 24">
+                        <polygon points="6,3 20,12 6,21" />
+                      </svg>
+                      <span>{t("home.prepInterview") || "Ôn tập phỏng vấn"}</span>
+                      <span className="text-base leading-none">→</span>
                     </Link>
                   </div>
                 </div>
               </div>
 
-              {/* Right: Featured Course Carousel & Community Links */}
-              <div className="lg:col-span-5 space-y-3.5">
-                <FeaturedCourseCarousel courses={coursesData?.data} isLoading={isLoadingCourses} />
+              {/* Right: Featured Course Carousel with smooth ambient halo */}
+              <div className="lg:col-span-5 relative max-w-[380px] sm:max-w-[390px] lg:max-w-[400px] mx-auto w-full">
+                {/* Soft ambient orange glow aura behind carousel */}
+                <div className="absolute -inset-2 bg-gradient-to-r from-[#FF5A1F]/15 via-[#FF9900]/10 to-transparent rounded-3xl blur-xl -z-10 pointer-events-none" />
 
-                {/* Compact Community Access */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  <a
-                    href="https://www.facebook.com/groups/779508281889441"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 p-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/60 dark:border-slate-700/60 hover:border-accent hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 group shadow-xs"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 text-accent group-hover:scale-105 transition-transform">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[11px] font-bold text-gray-900 dark:text-white truncate">
-                        {t("home.communityBadge")} Facebook
-                      </div>
-                      <div className="text-[10px] text-gray-500 dark:text-gray-400">
-                        {t("home.fbMembers")}
-                      </div>
-                    </div>
-                  </a>
-
-                  <a
-                    href="https://discord.gg/DfTsStwT"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 p-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-gray-200/60 dark:border-slate-700/60 hover:border-accent hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 group shadow-xs"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
-                      <Image
-                        src="/logos/discord.png"
-                        alt="Discord"
-                        width={20}
-                        height={20}
-                        className="w-4 h-4 object-contain"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[11px] font-bold text-gray-900 dark:text-white truncate">
-                        {t("home.discordStudy")}
-                      </div>
-                      <div className="text-[10px] text-gray-500 dark:text-gray-400">
-                        {t("home.discordReview")}
-                      </div>
-                    </div>
-                  </a>
+                <div className="relative z-10">
+                  <FeaturedCourseCarousel courses={coursesData?.data} isLoading={isLoadingCourses} />
                 </div>
               </div>
             </div>
@@ -165,25 +183,33 @@ export default function Home() {
 
 
       {/* Course Cards Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-12 bg-white dark:bg-[#0f1117] border-b border-[#E8E8E8] dark:border-[#262d3d]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                {t("home.featuredCourses")}
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {t("home.featuredCoursesDesc")}
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="w-1.5 h-6 bg-[#FF5A1F] rounded-full inline-block" />
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#171717] dark:text-white">
+                    {t("home.featuredCourses")}
+                  </h2>
+                </div>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">
+                  {t("home.featuredCoursesDesc")}
+                </p>
+              </div>
+              <ViewAllLink href="/courses" variant="ghost">
+                {t("home.viewAllCourses")}
+              </ViewAllLink>
             </div>
           </MotionWrapper>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Loading State */}
             {isLoadingCourses && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[6px] overflow-hidden p-6 space-y-4 ">
                     <div className="aspect-video bg-muted rounded-xl w-full" />
                     <div className="h-5 bg-muted rounded w-2/3" />
                     <div className="space-y-2">
@@ -261,12 +287,12 @@ export default function Home() {
       </section>
 
       {/* Featured Challenges Section */}
-      <section className="py-14 bg-gradient-to-b from-gray-50/70 to-white dark:from-slate-900/60 dark:to-slate-950 border-t border-gray-100 dark:border-slate-800">
+      <section className="py-14 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="mx-auto mb-12 max-w-3xl text-center">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+              <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1 text-xs font-mono font-medium text-slate-700 dark:text-slate-300 shadow-2xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
                 {t("home.featuredChallengesBadge")}
               </div>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
@@ -284,7 +310,7 @@ export default function Home() {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="h-80 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl animate-pulse p-6 space-y-4"
+                    className="h-80 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[6px]  p-6 space-y-4"
                   >
                     <div className="aspect-video bg-muted rounded-xl w-full" />
                     <div className="h-5 bg-muted rounded w-2/3" />
@@ -294,7 +320,7 @@ export default function Home() {
               </div>
             ) : challenges.length === 0 ? (
               <div className="col-span-full text-center py-12 text-sm text-muted-foreground">
-                Chưa có thử thách nào đang mở.
+                ChÆ°a cÃ³ thá»­ thÃ¡ch nÃ o Ä‘ang má»Ÿ.
               </div>
             ) : (
               challenges.map((challenge, index) => (
@@ -319,7 +345,7 @@ export default function Home() {
       </section>
 
       {/* Featured Blogs Section */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-14 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="text-center mb-16">
@@ -337,7 +363,7 @@ export default function Home() {
             {isLoadingBlogs && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-855 rounded-2xl overflow-hidden p-6 space-y-4 animate-pulse">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-855 rounded-[6px] overflow-hidden p-6 space-y-4 ">
                     <div className="aspect-video bg-muted rounded-xl w-full" />
                     <div className="h-5 bg-muted rounded w-2/3" />
                     <div className="space-y-2">
@@ -423,7 +449,7 @@ export default function Home() {
       </section>
 
       {/* Featured Documents Section */}
-      <section className="relative overflow-hidden py-16 bg-gradient-to-b from-slate-50 via-white to-blue-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <section className="relative overflow-hidden py-16 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-24 right-10 h-72 w-72 rounded-full bg-accent/10 blur-3xl"></div>
           <div className="absolute bottom-10 -left-20 h-72 w-72 rounded-full bg-accent/10 blur-3xl"></div>
@@ -431,8 +457,8 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-6">
           <MotionWrapper animation="fadeInUp" duration={0.8}>
             <div className="mx-auto mb-14 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-white/80 dark:bg-slate-800/80 px-4 py-1.5 text-sm font-semibold text-accent shadow-sm backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-accent"></span>
+              <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1 text-xs font-mono font-medium text-slate-700 dark:text-slate-300 shadow-2xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                 {t("home.featuredDocsBadge")}
               </div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-955 dark:text-white mb-5">
@@ -448,7 +474,7 @@ export default function Home() {
             {isLoadingDocuments && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full col-span-full">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 animate-pulse">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[6px] p-6 space-y-4 ">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-muted" />
                       <div className="h-5 bg-muted rounded w-1/2" />

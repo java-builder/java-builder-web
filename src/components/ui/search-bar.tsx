@@ -89,13 +89,7 @@ export default function SearchBar({
             type="text"
             placeholder={displayPlaceholder}
             className={`
-              w-full ${sizeClasses[size]} rounded-lg border 
-              border-gray-300 dark:border-slate-600 
-              bg-white dark:bg-slate-800 
-              text-gray-900 dark:text-white 
-              placeholder:text-gray-400 dark:placeholder:text-gray-500 
-              pl-11 pr-4 
-              focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent
+              w-full ${sizeClasses[size]} rounded-[8px] border border-[#E8E8E8] dark:border-[#262d3d] bg-white dark:bg-[#181d28] text-[#171717] dark:text-slate-100 placeholder:text-[#64748B] dark:placeholder:text-slate-500 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30 focus:border-[#FF5A1F]
               transition-colors
               ${inputClassName}
             `}
@@ -113,12 +107,11 @@ export default function SearchBar({
           onClick={handleSearch}
           className={`
             px-4 sm:px-6 ${sizeClasses[size]} 
-            bg-accent hover:bg-accent-600 
-            text-white rounded-lg font-medium 
+            bg-[#FF5A1F] hover:bg-[#e04b16] text-white rounded-[8px] font-medium shadow-xs 
             transition-colors duration-200 
             flex items-center gap-2
             whitespace-nowrap
-            flex-shrink-0
+            flex-shrink-0 cursor-pointer
           `}
         >
           <svg
