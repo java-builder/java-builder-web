@@ -13,6 +13,7 @@ import {
   FileText,
   CheckSquare,
   Loader2,
+  Lightbulb,
 } from "lucide-react";
 import { FaYoutube } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
@@ -382,6 +383,14 @@ export default function ChallengeContentTab({
                                         <span>{isFree ? "Học thử miễn phí" : "Có phí"}</span>
                                       </button>
 
+                                      {/* Solution badge */}
+                                      {day.hasSolution && (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] rounded-full font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                                          <Lightbulb className="w-3 h-3" />
+                                          <span>Có lời giải</span>
+                                        </span>
+                                      )}
+
                                       {/* Task count badge */}
                                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                                         <CheckSquare className="w-3.5 h-3.5 text-accent/70" />
@@ -644,7 +653,7 @@ export default function ChallengeContentTab({
                           D{day.dayNumber}
                         </span>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-sm font-semibold text-foreground truncate">
                               Ngày {day.dayNumber}: {day.title}
                             </span>
@@ -657,6 +666,12 @@ export default function ChallengeContentTab({
                             >
                               {isFree ? "Học thử miễn phí" : "Có phí"}
                             </span>
+                            {day.hasSolution && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] rounded-full font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                                <Lightbulb className="w-3 h-3" />
+                                <span>Có lời giải</span>
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>

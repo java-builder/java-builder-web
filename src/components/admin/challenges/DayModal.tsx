@@ -9,6 +9,8 @@ import {
   ChevronDown,
   ChevronUp,
   Save,
+  BookOpen,
+  Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomSelect, SelectOption } from "@/components/ui/select";
@@ -65,6 +67,8 @@ export default function DayModal({
   const [coreMission, setCoreMission] = useState("");
   const [whyLearn, setWhyLearn] = useState("");
   const [content, setContent] = useState("");
+  const [contentSolution, setContentSolution] = useState("");
+  const [activeEditorTab, setActiveEditorTab] = useState<"content" | "solution">("content");
   const [phaseId, setPhaseId] = useState("");
   const [keyConceptsText, setKeyConceptsText] = useState("");
   const [tasks, setTasks] = useState<TaskDraft[]>([{ title: "", resourceLinks: [], isExpanded: false }]);
@@ -72,10 +76,15 @@ export default function DayModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [isLoadingSolution, setIsLoadingSolution] = useState(false);
+
   const handleContentChange = useCallback((val: string) => setContent(val), []);
+  const handleSolutionChange = useCallback((val: string) => setContentSolution(val), []);
 
   useEffect(() => {
     if (!isOpen) return;
+
+    setActiveEditorTab("content");
 
     if (initialData) {
       setDayNumber(initialData.dayNumber);
@@ -83,6 +92,7 @@ export default function DayModal({
       setCoreMission(initialData.coreMission || "");
       setWhyLearn(initialData.whyLearn || "");
       setContent(initialData.content || "");
+      setContentSolution("");
       const matchedPhase = phases.find((p) => p.phaseNumber === initialData.phaseNumber);
       setPhaseId(matchedPhase?.id || "");
       setKeyConceptsText(initialData.keyConcepts?.join(", ") || "");
@@ -99,10 +109,11 @@ export default function DayModal({
       }
       setIsFreePreview(Boolean(initialData.freePreview ?? initialData.isFreePreview));
 
+      let isSubscribed = true;
+
       // API list trả về content=null để bảo vệ bài học có phí.
-      // Khi mở modal edit, gọi getDayDetailById (yêu cầu quyền Admin/bản quyền) để lấy full content Markdown:
+      // Khi mở modal edit, gọi getDayDetailById để lấy full content Markdown:
       if (!initialData.content && initialData.id) {
-        let isSubscribed = true;
         setIsLoadingDetail(true);
         challengeService
           .getDayDetailById(initialData.id)
@@ -119,16 +130,38 @@ export default function DayModal({
               setIsLoadingDetail(false);
             }
           });
-        return () => {
-          isSubscribed = false;
-        };
       }
+
+      // Nếu ngày học có lời giải (hasSolution = true), tải contentSolution lên để Admin chỉnh sửa
+      if (initialData.hasSolution && initialData.id) {
+        setIsLoadingSolution(true);
+        challengeService
+          .getDaySolutionById(initialData.id)
+          .then((res) => {
+            if (isSubscribed && res?.data?.contentSolution) {
+              setContentSolution(res.data.contentSolution);
+            }
+          })
+          .catch((err) => {
+            console.error("Lỗi tải lời giải bài học:", err);
+          })
+          .finally(() => {
+            if (isSubscribed) {
+              setIsLoadingSolution(false);
+            }
+          });
+      }
+
+      return () => {
+        isSubscribed = false;
+      };
     } else {
       setDayNumber(nextDayNumber);
       setTitle("");
       setCoreMission("");
       setWhyLearn("");
       setContent("");
+      setContentSolution("");
       setKeyConceptsText("");
       setTasks([{ title: "", resourceLinks: [], isExpanded: false }]);
       setPhaseId(defaultPhaseId || (phases.length > 0 ? phases[0].id : ""));
@@ -282,6 +315,7 @@ export default function DayModal({
           title: title.trim(),
           coreMission: coreMission.trim() || null,
           content: content.trim() || undefined,
+          contentSolution: contentSolution.trim(),
           whyLearn: whyLearn.trim() || null,
           keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : null,
           tasks: validTasks,
@@ -295,6 +329,7 @@ export default function DayModal({
           title: title.trim(),
           coreMission: coreMission.trim() || null,
           content: content.trim() || undefined,
+          contentSolution: contentSolution.trim() || undefined,
           whyLearn: whyLearn.trim() || null,
           keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : null,
           tasks: validTasks.length > 0 ? validTasks : undefined,
@@ -306,6 +341,8 @@ export default function DayModal({
       setIsSubmitting(false);
     }
   };
+
+  const hasSolutionDraft = Boolean(contentSolution.trim());
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
@@ -321,7 +358,7 @@ export default function DayModal({
                 {isEdit ? `Chỉnh sửa Ngày ${dayNumber}` : "Thêm ngày thử thách mới"}
               </h2>
               <p className="text-[11px] sm:text-xs text-muted-foreground">
-                Thiết lập lộ trình học và bài tập thực hành theo từng ngày
+                Thiết lập lộ trình học, bài tập thực hành và lời giải hướng dẫn theo từng ngày
               </p>
             </div>
           </div>
@@ -633,26 +670,90 @@ export default function DayModal({
             </div>
           </div>
 
-          {/* Content (Markdown) */}
-          <div className="space-y-1.5 pt-3 border-t border-border">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-foreground">
-                Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
-              </label>
-              {isLoadingDetail && (
-                <span className="flex items-center gap-1 text-[11px] text-primary ">
+          {/* Content & Solution (Tabbed Markdown Editors) */}
+          <div className="space-y-2.5 pt-3 border-t border-border">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              {/* Segmented Tabs */}
+              <div className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+                <button
+                  type="button"
+                  onClick={() => setActiveEditorTab("content")}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                    activeEditorTab === "content"
+                      ? "bg-surface text-foreground shadow-xs ring-1 ring-primary/30"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <BookOpen
+                    className={`w-3.5 h-3.5 ${
+                      activeEditorTab === "content" ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  />
+                  <span>Nội dung bài học (Bắt buộc)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveEditorTab("solution")}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                    activeEditorTab === "solution"
+                      ? "bg-surface text-foreground shadow-xs ring-1 ring-primary/30"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Lightbulb
+                    className={`w-3.5 h-3.5 ${
+                      activeEditorTab === "solution" ? "text-amber-500" : "text-muted-foreground"
+                    }`}
+                  />
+                  <span>Lời giải / Hướng dẫn giải (Tuỳ chọn)</span>
+                  {hasSolutionDraft && (
+                    <span className="ml-0.5 rounded-full bg-amber-500/15 px-1.5 py-0.2 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                      Đã có
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {(isLoadingDetail || isLoadingSolution) && (
+                <span className="flex items-center gap-1 text-[11px] text-primary">
                   <Loader2 className="w-3 h-3 animate-spin" />
-                  Đang tải nội dung...
+                  <span>
+                    {activeEditorTab === "content"
+                      ? "Đang tải nội dung..."
+                      : "Đang tải lời giải..."}
+                  </span>
                 </span>
               )}
             </div>
-            <MemoizedMarkdownEditor
-              value={content}
-              onChange={handleContentChange}
-              placeholder="Nhập nội dung lý thuyết, hướng dẫn từng bước, code mẫu bằng cú pháp Markdown..."
-              height={320}
-              readOnly={isLoadingDetail}
-            />
+
+            {activeEditorTab === "content" ? (
+              <div className="space-y-1">
+                <p className="text-[11px] text-muted-foreground">
+                  Lý thuyết trọng tâm, yêu cầu bài toán và hướng dẫn bước đầu cho học viên (hiển thị mặc định).
+                </p>
+                <MemoizedMarkdownEditor
+                  value={content}
+                  onChange={handleContentChange}
+                  placeholder="Nhập nội dung lý thuyết, hướng dẫn từng bước, đề bài bằng cú pháp Markdown..."
+                  height={320}
+                  readOnly={isLoadingDetail}
+                />
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <p className="text-[11px] text-muted-foreground">
+                  Lời giải chi tiết hoặc code mẫu tham khảo. Học viên chỉ thấy nút &quot;Xem lời giải&quot; khi trường này có nội dung.
+                </p>
+                <MemoizedMarkdownEditor
+                  value={contentSolution}
+                  onChange={handleSolutionChange}
+                  placeholder="Nhập lời giải chi tiết, giải thích từng bước hoặc code mẫu bằng cú pháp Markdown (để trống nếu bài này không có lời giải)..."
+                  height={320}
+                  readOnly={isLoadingSolution}
+                />
+              </div>
+            )}
           </div>
 
           {/* Học thử miễn phí */}

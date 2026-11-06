@@ -115,6 +115,7 @@ export interface ChallengeDayResponse {
   title: string;
   coreMission?: string;
   content?: string;
+  hasSolution?: boolean;
   whyLearn?: string;
   keyConcepts?: string[];
   phaseId?: string;
@@ -133,6 +134,7 @@ export interface ChallengeDayDetailResponse {
   title: string;
   coreMission?: string | null;
   content?: string | null;
+  hasSolution?: boolean;
   whyLearn?: string | null;
   keyConcepts?: string[] | null;
   phaseId?: string;
@@ -141,6 +143,12 @@ export interface ChallengeDayDetailResponse {
   freePreview?: boolean;
   isFreePreview?: boolean;
   tasks: ChallengeTaskResponse[];
+}
+
+export interface ChallengeDaySolutionResponse {
+  id: string;
+  dayNumber: number;
+  contentSolution?: string | null;
 }
 
 export interface ChallengeDaySummaryResponse {
@@ -240,6 +248,7 @@ export interface CreateChallengeDayRequest {
   title: string;
   coreMission?: string | null;
   content?: string;
+  contentSolution?: string | null;
   whyLearn?: string | null;
   keyConcepts?: string[] | null;
   tasks?: ChallengeDayTaskRequest[];
@@ -252,6 +261,7 @@ export interface UpdateChallengeDayRequest {
   title?: string;
   coreMission?: string | null;
   content?: string;
+  contentSolution?: string | null;
   whyLearn?: string | null;
   keyConcepts?: string[] | null;
   tasks?: ChallengeDayTaskRequest[];

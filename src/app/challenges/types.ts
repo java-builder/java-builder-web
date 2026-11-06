@@ -26,6 +26,8 @@ export interface DayChallenge {
   whyLearn: string;
   coreMission: string;
   content?: string;
+  hasSolution?: boolean;
+  contentSolution?: string;
   isFreePreview?: boolean;
   tasks: TaskItem[];
   keyConcepts: string[];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Terminal, Lock, CheckCircle2 } from "lucide-react";
+import { ChevronDown, Terminal, Lock, CheckCircle2, Lightbulb } from "lucide-react";
 import { Challenge } from "@/app/challenges/types";
 
 interface ChallengeCurriculumProps {
@@ -132,8 +132,18 @@ export function ChallengeCurriculum({
                           </span>
                         </div>
 
-                        {/* Badge Học Thử & Trạng Thái Khóa */}
+                        {/* Badge Học Thử, Lời Giải & Trạng Thái Khóa */}
                         <div className="flex items-center gap-1.5 shrink-0 ml-1">
+                          {day.hasSolution && (
+                            <span
+                              title="Có lời giải & hướng dẫn thực hành"
+                              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/60"
+                            >
+                              <Lightbulb className="w-2.5 h-2.5" />
+                              Giải
+                            </span>
+                          )}
+
                           {isFreeDay && (
                             <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
                               Học thử

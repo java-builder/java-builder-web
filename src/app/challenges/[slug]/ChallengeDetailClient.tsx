@@ -114,6 +114,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             return {
               ...cd,
               content: cd.content || prev.content,
+              hasSolution: Boolean(cd.hasSolution || prev.hasSolution),
+              contentSolution: prev.contentSolution,
               status: prev.status,
               tasks: cd.tasks.map((ft) => {
                 const prevTask = prev.tasks.find((pt) => pt.id === ft.id);
@@ -132,6 +134,8 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
             return {
               ...d,
               ...freshDay,
+              hasSolution: Boolean(freshDay.hasSolution || d.hasSolution),
+              contentSolution: d.contentSolution,
               phaseId: d.phaseId ?? freshDay.phaseId,
               status: d.status,
               tasks: freshDay.tasks.map((ft) => {
@@ -472,6 +476,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 ...d,
                 title: detail.title,
                 content: detail.content || "",
+                hasSolution: Boolean(detail.hasSolution ?? d.hasSolution),
                 tagline: detail.coreMission || "",
                 coreMission: detail.coreMission || "",
                 whyLearn: detail.whyLearn || "",

@@ -318,6 +318,7 @@ export const API = {
     // CHALLENGE DAYS
     CHALLENGE_DAYS: "/api/v1/challenge-days",
     CHALLENGE_DAY_BY_ID: (id: string) => `/api/v1/challenge-days/${id}`,
+    CHALLENGE_DAY_SOLUTION_BY_ID: (id: string) => `/api/v1/challenge-days/${id}/solution`,
     CHALLENGE_DAYS_BY_CHALLENGE: (challengeId: string) => `/api/v1/challenge-days/challenge/${challengeId}`,
 
     // CHALLENGE TASKS
@@ -337,4 +338,3 @@ export const API = {
     CHALLENGE_UNENROLL: (enrollmentId: string) => `/api/v1/challenge-enrollments/${enrollmentId}`,
     CHALLENGE_ENROLL_ADMIN: "/api/v1/challenge-enrollments/admin/enroll",
 };
-

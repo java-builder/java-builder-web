@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Compass,
   Target,
@@ -10,8 +11,15 @@ import {
   Tag,
   ListTodo,
   X,
+  Lightbulb,
+  Eye,
+  EyeOff,
+  Loader2,
+  Sparkles,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import { DayChallenge } from "@/app/challenges/types";
+import { challengeService } from "@/services/challenge.service";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
 
 interface ChallengeDayDetailProps {
@@ -33,6 +41,15 @@ export function ChallengeDayDetail({
   onSelectDay,
   onOpenDrawer,
 }: ChallengeDayDetailProps) {
+  const [isSolutionOpen, setIsSolutionOpen] = useState(false);
+  const [isLoadingSolution, setIsLoadingSolution] = useState(false);
+  const [solutionCache, setSolutionCache] = useState<Record<string, string>>({});
+
+  // Reset solution open state when switching days
+  useEffect(() => {
+    setIsSolutionOpen(false);
+  }, [activeDay?.id, activeDay?.day]);
+
   if (!activeDay) {
     return (
       <div className="rounded-2xl border border-[#E8E8E8] bg-white p-8 text-center shadow-xs dark:border-border dark:bg-surface space-y-3">
@@ -55,6 +72,43 @@ export function ChallengeDayDetail({
     .map((c) => (c || "").trim())
     .filter(Boolean);
 
+  const dayId = activeDay.id || "";
+  const currentSolutionContent =
+    (dayId && solutionCache[dayId]) || activeDay.contentSolution || "";
+
+  const handleToggleSolution = async () => {
+    if (isSolutionOpen) {
+      setIsSolutionOpen(false);
+      return;
+    }
+
+    setIsSolutionOpen(true);
+
+    if (currentSolutionContent || !dayId) {
+      return;
+    }
+
+    setIsLoadingSolution(true);
+    try {
+      const res = await challengeService.getDaySolutionById(dayId);
+      const fetchedSolution = res?.data?.contentSolution?.trim() || "";
+      if (fetchedSolution) {
+        setSolutionCache((prev) => ({
+          ...prev,
+          [dayId]: fetchedSolution,
+        }));
+      } else {
+        toast.error("Chưa có nội dung lời giải cho ngày này.");
+        setIsSolutionOpen(false);
+      }
+    } catch {
+      toast.error("Không thể tải lời giải. Vui lòng thử lại!");
+      setIsSolutionOpen(false);
+    } finally {
+      setIsLoadingSolution(false);
+    }
+  };
+
   return (
     <div className="rounded-2xl border border-[#E8E8E8] bg-white p-5 sm:p-7 shadow-xs dark:border-border dark:bg-surface space-y-6">
       {/* 1. DAY HEADER */}
@@ -70,6 +124,12 @@ export function ChallengeDayDetail({
           {activeDay.isFreePreview && (
             <span className="rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold border border-emerald-500/20">
               {isChallengeFree ? "Miễn phí" : "Học thử miễn phí"}
+            </span>
+          )}
+          {activeDay.hasSolution && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 text-xs font-bold border border-amber-500/25">
+              <Lightbulb className="w-3.5 h-3.5" />
+              <span>Có hướng dẫn giải</span>
             </span>
           )}
         </div>
@@ -204,7 +264,7 @@ export function ChallengeDayDetail({
         </div>
       )}
 
-      {/* 3. DETAILED GUIDE CONTENT (MARKDOWN) - Học sinh đọc và làm theo trước */}
+      {/* 4. DETAILED GUIDE CONTENT (MARKDOWN) - Học sinh đọc và làm theo trước */}
       {activeDay.content && (
         <div className="space-y-3 pt-2">
           <div className="flex items-center gap-2 pb-2 border-b border-[#E8E8E8] dark:border-border text-sm font-bold text-[#171717] dark:text-white uppercase tracking-wider">
@@ -217,9 +277,83 @@ export function ChallengeDayDetail({
         </div>
       )}
 
+      {/* 5. ON-DEMAND SOLUTION SECTION (Chỉ hiển thị khi bài học có contentSolution) */}
+      {activeDay.hasSolution && (
+        <div className="pt-2">
+          <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-gradient-to-br from-[#FFF9F5] via-white to-[#FFF5EE] dark:from-surface dark:via-background dark:to-surface overflow-hidden shadow-2xs transition-all">
+            {/* Banner Header */}
+            <div className="p-4 sm:px-5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+              <div className="flex items-start sm:items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-[#FFF0E8] dark:bg-[#FF5A1F]/15 border border-[#FF5A1F]/25 text-[#FF5A1F] flex items-center justify-center shrink-0">
+                  <Lightbulb className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-sm sm:text-base font-bold text-[#171717] dark:text-white">
+                      Lời giải & Hướng dẫn thực hành Ngày {activeDay.day}
+                    </h3>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFF0E8] text-[#FF5A1F] border border-[#FF5A1F]/25 dark:bg-[#FF5A1F]/15">
+                      <Sparkles className="w-2.5 h-2.5" />
+                      Gợi ý & Đáp án
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Hãy tự mình suy nghĩ và thực hiện các nhiệm vụ trước khi mở xem lời giải chi tiết.
+                  </p>
+                </div>
+              </div>
 
+              <button
+                type="button"
+                onClick={handleToggleSolution}
+                disabled={isLoadingSolution}
+                className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 active:scale-95 ${
+                  isSolutionOpen
+                    ? "border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface text-foreground hover:bg-muted"
+                    : "bg-[#FF5A1F] hover:bg-[#e04b16] text-white shadow-md shadow-[#FF5A1F]/25"
+                }`}
+              >
+                {isLoadingSolution ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Đang tải lời giải...</span>
+                  </>
+                ) : isSolutionOpen ? (
+                  <>
+                    <EyeOff className="w-3.5 h-3.5" />
+                    <span>Ẩn lời giải</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Xem lời giải</span>
+                  </>
+                )}
+              </button>
+            </div>
 
-      {/* 5. NAVIGATION & COMPLETION ACTIONS */}
+            {/* Solution Content Body (Loaded on demand) */}
+            {isSolutionOpen && (
+              <div className="border-t border-[#E8E8E8] dark:border-border bg-white dark:bg-background p-5 sm:p-6 animate-in fade-in slide-in-from-top-1 duration-200">
+                {isLoadingSolution ? (
+                  <div className="py-8 flex flex-col items-center justify-center gap-2.5 text-muted-foreground">
+                    <Loader2 className="w-6 h-6 animate-spin text-[#FF5A1F]" />
+                    <p className="text-xs font-medium">
+                      Đang tải nội dung lời giải chi tiết...
+                    </p>
+                  </div>
+                ) : currentSolutionContent ? (
+                  <div className="text-sm leading-relaxed overflow-hidden">
+                    <PublicMarkdownRenderer content={currentSolutionContent} />
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 6. NAVIGATION & COMPLETION ACTIONS */}
       <div className="pt-4 border-t border-[#E8E8E8] dark:border-border flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button

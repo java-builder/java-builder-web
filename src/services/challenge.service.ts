@@ -8,6 +8,7 @@ import {
   ChallengePhaseResponse,
   ChallengeDayResponse,
   ChallengeDayDetailResponse,
+  ChallengeDaySolutionResponse,
   ChallengeTaskResponse,
   CreateChallengeRequest,
   UpdateChallengeRequest,
@@ -106,6 +107,11 @@ export const challengeService = {
 
   getDayDetailById: async (dayId: string) => {
     const response = await apiClient.get<ApiResponse<ChallengeDayDetailResponse>>(API.CHALLENGE_DAY_BY_ID(dayId));
+    return response.data;
+  },
+
+  getDaySolutionById: async (dayId: string) => {
+    const response = await apiClient.get<ApiResponse<ChallengeDaySolutionResponse>>(API.CHALLENGE_DAY_SOLUTION_BY_ID(dayId));
     return response.data;
   },
 
