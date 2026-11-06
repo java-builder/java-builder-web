@@ -471,13 +471,14 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               return {
                 ...d,
                 title: detail.title,
-                content: detail.content,
-                coreMission: detail.coreMission,
-                whyLearn: detail.whyLearn,
+                content: detail.content || "",
+                tagline: detail.coreMission || "",
+                coreMission: detail.coreMission || "",
+                whyLearn: detail.whyLearn || "",
                 keyConcepts:
                   detail.keyConcepts && detail.keyConcepts.length > 0
                     ? detail.keyConcepts
-                    : d.keyConcepts,
+                    : [],
                 tasks:
                   detail.tasks && detail.tasks.length > 0
                     ? detail.tasks.map((t) => ({

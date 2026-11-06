@@ -21,7 +21,7 @@ import {
 } from "@/types/challenge";
 import { useConfirm } from "@/hooks/useConfirm";
 import toast from "react-hot-toast";
-import { Layers, RefreshCw, LayoutList, LayoutGrid } from "lucide-react";
+import { Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 
@@ -141,11 +141,13 @@ export default function AdminChallengesPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
+    <div className="space-y-6 p-4 sm:p-6">
       {/* Header */}
       <ChallengesHeader
         totalCount={stats.total}
         onCreate={handleOpenCreate}
+        onRefresh={() => refetch()}
+        isRefreshing={isFetching}
       />
 
       {/* Stats Cards */}
@@ -157,65 +159,19 @@ export default function AdminChallengesPage() {
         isLoading={isLoading}
       />
 
-      {/* Filters Bar */}
-      <div className="space-y-3">
-        <ChallengeFilters
-          search={search}
-          onSearchChange={setSearch}
-          status={statusFilter}
-          onStatusChange={setStatusFilter}
-          level={levelFilter}
-          onLevelChange={setLevelFilter}
-          onReset={handleResetFilters}
-        />
-
-        <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-          <span>
-            Hiển thị <strong>{filteredChallenges.length}</strong> thử thách lập trình
-          </span>
-
-          <div className="flex items-center gap-2">
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-muted/60 p-1 rounded-full border border-border">
-              <button
-                type="button"
-                onClick={() => handleSetViewMode("table")}
-                className={`p-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
-                  viewMode === "table"
-                    ? "bg-surface text-foreground shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                title="Chế độ bảng (chuẩn quản trị)"
-              >
-                <LayoutList className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSetViewMode("grid")}
-                className={`p-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
-                  viewMode === "grid"
-                    ? "bg-surface text-foreground shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                title="Chế độ thẻ lưới"
-              >
-                <LayoutGrid className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className="h-8 gap-1 text-xs cursor-pointer rounded-full"
-            >
-              <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-              <span>Làm mới</span>
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* Filters & View Mode Bar */}
+      <ChallengeFilters
+        search={search}
+        onSearchChange={setSearch}
+        status={statusFilter}
+        onStatusChange={setStatusFilter}
+        level={levelFilter}
+        onLevelChange={setLevelFilter}
+        onReset={handleResetFilters}
+        filteredCount={filteredChallenges.length}
+        viewMode={viewMode}
+        onViewModeChange={handleSetViewMode}
+      />
 
       {/* Content Section */}
       {viewMode === "table" ? (
@@ -248,12 +204,15 @@ export default function AdminChallengesPage() {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="h-72 bg-surface border border-border rounded-2xl p-6 space-y-4"
+              className="h-76 bg-surface border border-border rounded-2xl overflow-hidden animate-pulse flex flex-col justify-between"
             >
-              <div className="h-4 bg-muted rounded-full w-1/3" />
-              <div className="h-6 bg-muted rounded-full w-3/4" />
-              <div className="h-16 bg-muted rounded-xl w-full" />
-              <div className="h-10 bg-muted rounded-xl w-full mt-4" />
+              <div className="h-24 bg-muted w-full" />
+              <div className="p-5 space-y-3 flex-1">
+                <div className="h-4 bg-muted rounded-full w-1/4" />
+                <div className="h-4 bg-muted rounded-full w-full" />
+                <div className="h-14 bg-muted rounded-xl w-full mt-2" />
+              </div>
+              <div className="h-12 bg-muted/50 border-t border-border w-full" />
             </div>
           ))}
         </div>
@@ -320,15 +279,15 @@ export default function AdminChallengesPage() {
         initialData={editingChallenge}
       />
 
-      {/* Enroll User to Challenge Modal */}
+      {/* Enroll User Modal */}
       <EnrollChallengeUserModal
         isOpen={enrollModal.isOpen}
+        challengeId={enrollModal.challengeId}
+        challengeTitle={enrollModal.challengeTitle}
         onClose={() =>
           setEnrollModal({ isOpen: false, challengeId: "", challengeTitle: "" })
         }
         onSuccess={() => refetch()}
-        challengeId={enrollModal.challengeId}
-        challengeTitle={enrollModal.challengeTitle}
       />
     </div>
   );

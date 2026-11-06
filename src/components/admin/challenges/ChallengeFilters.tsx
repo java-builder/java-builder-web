@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, SlidersHorizontal, RotateCcw, X } from "lucide-react";
+import { Search, RotateCcw, X, LayoutList, LayoutGrid } from "lucide-react";
 import { FilterSelect, FilterOption } from "@/components/ui/select";
 import { ChallengeLevel, ChallengeStatus } from "@/types/challenge";
 
@@ -12,6 +12,9 @@ interface ChallengeFiltersProps {
   level: ChallengeLevel | "";
   onLevelChange: (val: ChallengeLevel | "") => void;
   onReset: () => void;
+  filteredCount?: number;
+  viewMode?: "table" | "grid";
+  onViewModeChange?: (mode: "table" | "grid") => void;
 }
 
 export default function ChallengeFilters({
@@ -22,6 +25,9 @@ export default function ChallengeFilters({
   level,
   onLevelChange,
   onReset,
+  filteredCount,
+  viewMode = "grid",
+  onViewModeChange,
 }: ChallengeFiltersProps) {
   const statusOptions: FilterOption<ChallengeStatus | "">[] = [
     { value: "", label: "Tất cả trạng thái" },
@@ -41,42 +47,31 @@ export default function ChallengeFilters({
   const hasFilter = Boolean(search.trim()) || Boolean(status) || Boolean(level);
 
   return (
-    <div className="relative z-20 rounded-2xl border border-border bg-surface p-4 shadow-sm space-y-3">
+    <div className="relative z-20 rounded-2xl border border-border bg-surface p-4 shadow-xs">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        {/* Left: Filter header & Search */}
-        <div className="flex flex-1 flex-wrap items-center gap-3 min-w-0">
-          <div className="flex items-center gap-2 pr-3 border-r border-border shrink-0">
-            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary-soft">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
-            </div>
-            <span className="text-sm font-semibold text-foreground whitespace-nowrap">
-              Bộ lọc
-            </span>
-          </div>
-
-          {/* Search Input */}
-          <div className="relative flex-1 min-w-[220px] max-w-md">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Tìm kiếm theo tên thử thách..."
-              className="flex h-9 w-full rounded-xl border border-border bg-transparent py-1 pl-9 pr-8 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => onSearchChange("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+        {/* Left: Search Input */}
+        <div className="relative flex-1 min-w-[240px]">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Tìm theo tên thử thách, slug hoặc mô tả..."
+            className="flex h-10 w-full rounded-xl border border-border bg-background/60 py-2 pl-10 pr-9 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => onSearchChange("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+              title="Xóa từ khóa"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
 
-        {/* Right: Selects & Reset */}
+        {/* Right: Filters + Reset + View Mode Toggle */}
         <div className="flex flex-wrap items-center gap-2.5">
           <div className="w-full sm:w-44">
             <FilterSelect
@@ -84,7 +79,7 @@ export default function ChallengeFilters({
               options={statusOptions}
               onChange={onStatusChange}
               placeholder="Trạng thái"
-              size="sm"
+              size="md"
             />
           </div>
 
@@ -94,7 +89,7 @@ export default function ChallengeFilters({
               options={levelOptions}
               onChange={onLevelChange}
               placeholder="Cấp độ"
-              size="sm"
+              size="md"
             />
           </div>
 
@@ -102,11 +97,48 @@ export default function ChallengeFilters({
             <button
               type="button"
               onClick={onReset}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors cursor-pointer"
+              className="inline-flex h-10 items-center gap-1.5 px-3.5 text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl border border-border transition-colors cursor-pointer"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               <span>Đặt lại</span>
             </button>
+          )}
+
+          {typeof filteredCount === "number" && (
+            <span className="hidden xl:inline-flex items-center px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              Hiển thị <strong className="mx-1 text-foreground">{filteredCount}</strong> kết quả
+            </span>
+          )}
+
+          {onViewModeChange && (
+            <div className="inline-flex h-10 items-center rounded-xl border border-border bg-muted/50 p-1 ml-auto sm:ml-0">
+              <button
+                type="button"
+                onClick={() => onViewModeChange("grid")}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === "grid"
+                    ? "bg-surface text-primary shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="Chế độ thẻ lưới"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Thẻ</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onViewModeChange("table")}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === "table"
+                    ? "bg-surface text-primary shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="Chế độ bảng"
+              >
+                <LayoutList className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Bảng</span>
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -135,10 +135,10 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         phaseId: phaseNumber,
         phaseName,
         title: d?.title || summary.title || `Thử thách Ngày ${dayNum}`,
-        tagline: d?.coreMission || `Thực hành ngày ${dayNum}`,
+        tagline: d?.coreMission || "",
         estimatedMinutes: 60,
-        whyLearn: d?.whyLearn || "Nắm vững kỹ năng thực tế",
-        coreMission: d?.coreMission || d?.title || summary.title || `Nhiệm vụ Ngày ${dayNum}`,
+        whyLearn: d?.whyLearn || "",
+        coreMission: d?.coreMission || "",
         content: d?.content || "",
         isFreePreview: Boolean(isFreePreview),
         tasks:
@@ -153,7 +153,7 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         keyConcepts:
           d?.keyConcepts && d.keyConcepts.length > 0
             ? d.keyConcepts
-            : ["Spring Boot", "Best Practices"],
+            : [],
         mentorTip: "Đọc kỹ yêu cầu trước khi bắt tay vào code.",
         resources: [],
         status: dayNum === 1 ? ("in_progress" as const) : ("locked" as const),
@@ -192,10 +192,10 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         phaseId: phaseNumber,
         phaseName,
         title: d?.title || `Ngày ${dayNum}`,
-        tagline: d?.coreMission || `Thực hành ngày ${dayNum}`,
+        tagline: d?.coreMission || "",
         estimatedMinutes: 60,
-        whyLearn: d?.whyLearn || "Nắm vững kỹ năng thực tế",
-        coreMission: d?.coreMission || d?.title || `Nhiệm vụ Ngày ${dayNum}`,
+        whyLearn: d?.whyLearn || "",
+        coreMission: d?.coreMission || "",
         content: d?.content || "",
         isFreePreview: Boolean(isFreePreview),
         tasks:
@@ -210,7 +210,7 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         keyConcepts:
           d?.keyConcepts && d.keyConcepts.length > 0
             ? d.keyConcepts
-            : ["Architecture", "Best Practices"],
+            : [],
         mentorTip: "Đọc kỹ yêu cầu trước khi bắt tay vào code.",
         resources: [],
         status: dayNum === 1 ? ("in_progress" as const) : ("locked" as const),

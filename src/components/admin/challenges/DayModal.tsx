@@ -252,7 +252,7 @@ export default function DayModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !coreMission.trim()) return;
+    if (!title.trim()) return;
 
     try {
       setIsSubmitting(true);
@@ -280,10 +280,10 @@ export default function DayModal({
           challengePhaseId: phaseId || undefined,
           dayNumber,
           title: title.trim(),
-          coreMission: coreMission.trim(),
-          content: content.trim() || coreMission.trim(),
-          whyLearn: whyLearn.trim() || coreMission.trim(),
-          keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : undefined,
+          coreMission: coreMission.trim() || null,
+          content: content.trim() || undefined,
+          whyLearn: whyLearn.trim() || null,
+          keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : null,
           tasks: validTasks,
           isFreePreview,
         } as UpdateChallengeDayRequest);
@@ -293,10 +293,10 @@ export default function DayModal({
           challengePhaseId: phaseId || undefined,
           dayNumber,
           title: title.trim(),
-          coreMission: coreMission.trim(),
-          content: content.trim() || coreMission.trim(),
-          whyLearn: whyLearn.trim() || coreMission.trim(),
-          keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : undefined,
+          coreMission: coreMission.trim() || null,
+          content: content.trim() || undefined,
+          whyLearn: whyLearn.trim() || null,
+          keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : null,
           tasks: validTasks.length > 0 ? validTasks : undefined,
           isFreePreview,
         } as CreateChallengeDayRequest);
@@ -383,14 +383,13 @@ export default function DayModal({
           {/* Core Mission */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Nhiệm vụ cốt lõi (Core Mission) <span className="text-destructive">*</span>
+              Nhiệm vụ cốt lõi (Core Mission)
             </label>
             <textarea
-              required
               rows={2}
               value={coreMission}
               onChange={(e) => setCoreMission(e.target.value)}
-              placeholder="Tóm tắt 1-2 câu về mục tiêu phải đạt được trong ngày này..."
+              placeholder="Tóm tắt 1-2 câu về mục tiêu phải đạt được trong ngày này (tuỳ chọn)..."
               className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground resize-none"
             />
           </div>
@@ -409,32 +408,10 @@ export default function DayModal({
             />
           </div>
 
-          {/* Content (Markdown) */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-foreground">
-                Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
-              </label>
-              {isLoadingDetail && (
-                <span className="flex items-center gap-1 text-[11px] text-primary ">
-                  <Loader2 className="w-3 h-3 animate-spin" />
-                  Đang tải nội dung...
-                </span>
-              )}
-            </div>
-            <MemoizedMarkdownEditor
-              value={content}
-              onChange={handleContentChange}
-              placeholder="Nhập nội dung lý thuyết, hướng dẫn từng bước, code mẫu bằng cú pháp Markdown..."
-              height={320}
-              readOnly={isLoadingDetail}
-            />
-          </div>
-
           {/* Key Concepts */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
-              Khái niệm then chốt (Key Concepts - phân cách bằng dấu phẩy)
+              Từ khóa trọng tâm (Key Concepts - phân cách bằng dấu phẩy)
             </label>
             <input
               type="text"
@@ -463,7 +440,7 @@ export default function DayModal({
                 variant="outline"
                 size="sm"
                 onClick={handleAddTask}
-                className="h-7 text-xs gap-1 cursor-pointer shrink-0"
+                className="h-7 text-xs gap-1 cursor-pointer shrink-0 rounded-full"
               >
                 <Plus className="h-3 w-3" />
                 <span>Thêm nhiệm vụ</span>
@@ -474,7 +451,7 @@ export default function DayModal({
               {tasks.map((task, idx) => (
                 <div
                   key={idx}
-                  className="rounded-full border border-border bg-muted/20 p-3.5 space-y-3 transition-colors"
+                  className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-3 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="text-xs font-bold text-muted-foreground w-6 text-center shrink-0">
@@ -654,6 +631,28 @@ export default function DayModal({
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Content (Markdown) */}
+          <div className="space-y-1.5 pt-3 border-t border-border">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-foreground">
+                Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown)
+              </label>
+              {isLoadingDetail && (
+                <span className="flex items-center gap-1 text-[11px] text-primary ">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Đang tải nội dung...
+                </span>
+              )}
+            </div>
+            <MemoizedMarkdownEditor
+              value={content}
+              onChange={handleContentChange}
+              placeholder="Nhập nội dung lý thuyết, hướng dẫn từng bước, code mẫu bằng cú pháp Markdown..."
+              height={320}
+              readOnly={isLoadingDetail}
+            />
           </div>
 
           {/* Học thử miễn phí */}

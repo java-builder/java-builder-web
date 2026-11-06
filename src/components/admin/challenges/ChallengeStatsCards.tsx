@@ -1,7 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Flame, CheckCircle2, EyeOff, Calendar } from "lucide-react";
+import { Layers, CheckCircle2, EyeOff, Calendar } from "lucide-react";
 
 interface ChallengeStatsCardsProps {
   total: number;
@@ -22,15 +21,16 @@ export default function ChallengeStatsCards({
     return (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border-border bg-card ">
-            <CardContent className="flex items-center justify-between p-5">
-              <div className="space-y-2 flex-1">
-                <div className="h-3.5 bg-muted rounded w-20" />
-                <div className="h-7 bg-muted rounded w-14" />
-              </div>
-              <div className="w-10 h-10 bg-muted rounded-xl" />
-            </CardContent>
-          </Card>
+          <div
+            key={i}
+            className="rounded-2xl border border-border bg-surface p-5 shadow-xs flex items-center justify-between animate-pulse"
+          >
+            <div className="space-y-2.5 flex-1">
+              <div className="h-3 bg-muted rounded w-24" />
+              <div className="h-7 bg-muted rounded w-14" />
+            </div>
+            <div className="w-10 h-10 bg-muted rounded-xl shrink-0" />
+          </div>
         ))}
       </div>
     );
@@ -38,60 +38,61 @@ export default function ChallengeStatsCards({
 
   const items = [
     {
-      label: "Tổng thử thách theo ngày",
+      label: "Tổng lộ trình",
       value: total.toLocaleString("vi-VN"),
-      icon: <Flame className="h-5 w-5 text-amber-500" />,
-      bg: "bg-amber-50 dark:bg-amber-950/30",
-      accent: "border-amber-100 dark:border-amber-900/30",
+      subtext: "Thử thách trong hệ thống",
+      icon: <Layers className="h-5 w-5 text-primary" />,
+      iconBg: "bg-primary-soft border border-primary/15",
       valueClass: "text-foreground",
     },
     {
-      label: "Đang mở (Active)",
+      label: "Đang hoạt động",
       value: active.toLocaleString("vi-VN"),
+      subtext: "Công khai cho học viên",
       icon: <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
-      accent: "border-emerald-100 dark:border-emerald-900/30",
+      iconBg: "bg-emerald-500/10 border border-emerald-500/20",
       valueClass: "text-emerald-600 dark:text-emerald-400",
     },
     {
-      label: "Tạm ẩn (Inactive)",
+      label: "Đang tạm ẩn",
       value: inactive.toLocaleString("vi-VN"),
-      icon: <EyeOff className="h-5 w-5 text-muted-foreground" />,
-      bg: "bg-muted/40",
-      accent: "border-border",
-      valueClass: "text-muted-foreground",
+      subtext: "Bản nháp / Chưa mở",
+      icon: <EyeOff className="h-5 w-5 text-slate-500 dark:text-slate-400" />,
+      iconBg: "bg-muted border border-border",
+      valueClass: "text-foreground",
     },
     {
-      label: "Tổng ngày lộ trình",
-      value: `${totalDays.toLocaleString("vi-VN")} ngày`,
-      icon: <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
-      bg: "bg-blue-50 dark:bg-blue-950/30",
-      accent: "border-blue-100 dark:border-blue-900/30",
-      valueClass: "text-blue-600 dark:text-blue-400",
+      label: "Tổng số ngày học",
+      value: `${totalDays.toLocaleString("vi-VN")}`,
+      subtext: "Ngày bài học đã thiết kế",
+      icon: <Calendar className="h-5 w-5 text-sky-600 dark:text-sky-400" />,
+      iconBg: "bg-sky-500/10 border border-sky-500/20",
+      valueClass: "text-foreground",
     },
   ];
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {items.map((item) => (
-        <Card
+        <div
           key={item.label}
-          className={`border ${item.accent} hover:shadow-md transition-all duration-200 bg-card`}
+          className="rounded-2xl border border-border bg-surface p-5 shadow-xs hover:shadow-md transition-all duration-200 flex items-start justify-between gap-3"
         >
-          <CardContent className="flex items-center justify-between p-5">
-            <div className="space-y-1">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                {item.label}
-              </p>
-              <p className={`text-2xl font-bold tracking-tight tabular-nums ${item.valueClass}`}>
-                {item.value}
-              </p>
-            </div>
-            <div className={`p-2.5 rounded-xl ${item.bg}`}>
-              {item.icon}
-            </div>
-          </CardContent>
-        </Card>
+          <div className="space-y-1 min-w-0">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
+              {item.label}
+            </p>
+            <p className={`text-2xl font-bold tracking-tight tabular-nums ${item.valueClass}`}>
+              {item.value}
+            </p>
+            <p className="text-[11px] text-muted-foreground truncate">
+              {item.subtext}
+            </p>
+          </div>
+          <div className={`p-2.5 rounded-xl shrink-0 ${item.iconBg}`}>
+            {item.icon}
+          </div>
+        </div>
       ))}
     </div>
   );

@@ -7,7 +7,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
-  Sparkles,
+  Tag,
   ListTodo,
   X,
 } from "lucide-react";
@@ -49,6 +49,12 @@ export function ChallengeDayDetail({
   const completedTasksCount = tasks.filter((t) => t.isCompleted).length;
   const isAllTasksCompleted = tasks.length > 0 && completedTasksCount === tasks.length;
 
+  const whyLearnText = activeDay.whyLearn?.trim() || "";
+  const coreMissionText = activeDay.coreMission?.trim() || "";
+  const validKeyConcepts = (activeDay.keyConcepts || [])
+    .map((c) => (c || "").trim())
+    .filter(Boolean);
+
   return (
     <div className="rounded-2xl border border-[#E8E8E8] bg-white p-5 sm:p-7 shadow-xs dark:border-border dark:bg-surface space-y-6">
       {/* 1. DAY HEADER */}
@@ -59,7 +65,7 @@ export function ChallengeDayDetail({
             NGÀY {activeDay.day}
           </span>
           <span className="rounded-full bg-[#F8F8F8] px-2.5 py-1 text-xs font-medium text-[#171717] dark:bg-background dark:text-slate-200 border border-[#E8E8E8] dark:border-border">
-            Tuần {activeDay.week} • {activeDay.phaseName}
+            Tuần {activeDay.week}{activeDay.phaseName ? ` • ${activeDay.phaseName}` : ""}
           </span>
           {activeDay.isFreePreview && (
             <span className="rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold border border-emerald-500/20">
@@ -68,32 +74,27 @@ export function ChallengeDayDetail({
           )}
         </div>
 
-        {/* Title & Tagline */}
+        {/* Title */}
         <div className="space-y-1">
           <h1 className="text-xl sm:text-2xl font-extrabold text-[#171717] dark:text-white tracking-tight">
             {activeDay.title}
           </h1>
-          {activeDay.tagline && (
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              {activeDay.tagline}
-            </p>
-          )}
         </div>
 
-        {/* Tech Stack Badges (Key Concepts) - Gọn gàng ngay dưới Header */}
-        {activeDay.keyConcepts && activeDay.keyConcepts.length > 0 && (
-          <div className="pt-2 flex items-center gap-2 flex-wrap">
-            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-              <Sparkles className="w-3 text-[#FF5A1F]" />
-              Công nghệ:
+        {/* Key Concepts / Keywords - Chỉ hiển thị khi có dữ liệu */}
+        {validKeyConcepts.length > 0 && (
+          <div className="pt-1.5 flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              <Tag className="w-3.5 h-3.5 text-primary" />
+              <span>Từ khóa trọng tâm:</span>
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {activeDay.keyConcepts.map((concept, idx) => (
+              {validKeyConcepts.map((concept, idx) => (
                 <span
                   key={idx}
-                  className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#FFF0E8] text-[#FF5A1F] border border-[#FF5A1F]/30 dark:bg-[#FF5A1F]/15 transition-colors hover:bg-[#FF5A1F]/20"
+                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-soft text-primary border border-primary/20 transition-colors"
                 >
-                  #{concept}
+                  {concept}
                 </span>
               ))}
             </div>
@@ -101,40 +102,48 @@ export function ChallengeDayDetail({
         )}
       </div>
 
-      {/* 2. WHY LEARN & CORE MISSION - BẢNG ĐỊNH HƯỚNG BÀI HỌC */}
-      <div className="rounded-2xl border border-[#E8E8E8] bg-[#F8F8F8] dark:border-border dark:bg-background overflow-hidden shadow-2xs">
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E8E8E8] dark:divide-border">
+      {/* 2. WHY LEARN & CORE MISSION - Chỉ hiển thị khi có ít nhất 1 trong 2 trường */}
+      {(whyLearnText || coreMissionText) && (
+        <div
+          className={`grid grid-cols-1 gap-4 ${
+            whyLearnText && coreMissionText ? "md:grid-cols-2" : ""
+          }`}
+        >
           {/* Why Learn */}
-          <div className="p-4 sm:p-5 flex items-start gap-3.5">
-            <div className="w-8 h-8 rounded-md bg-[#FFF0E8] text-[#FF5A1F] dark:bg-[#FF5A1F]/15 dark:text-orange-300 flex items-center justify-center shrink-0 mt-0.5">
-              <Compass className="w-4 h-4" />
-            </div>
-            <div className="space-y-1 flex-1 min-w-0">
-              <h3 className="text-sm font-bold text-[#171717] dark:text-white leading-snug">
-                Tại sao quan trọng trong thực tế?
-              </h3>
-              <p className="text-xs sm:text-sm text-foreground/80 dark:text-slate-300 leading-relaxed">
-                {activeDay.whyLearn || "Nắm vững kỹ năng cốt lõi cho dự án thực tế."}
+          {whyLearnText && (
+            <div className="rounded-xl border border-border bg-muted/25 dark:bg-background/60 p-4 sm:p-5 border-l-3 border-l-primary flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wide">
+                  Ý nghĩa thực tế
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                {whyLearnText}
               </p>
             </div>
-          </div>
+          )}
 
           {/* Core Mission */}
-          <div className="p-4 sm:p-5 flex items-start gap-3.5">
-            <div className="w-8 h-8 rounded-md bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-              <Target className="w-4 h-4" />
-            </div>
-            <div className="space-y-1 flex-1 min-w-0">
-              <h3 className="text-sm font-bold text-[#171717] dark:text-white leading-snug">
-                Mục tiêu ngày học này
-              </h3>
-              <p className="text-xs sm:text-sm text-foreground/80 dark:text-slate-300 leading-relaxed">
-                {activeDay.coreMission || "Hoàn thành toàn bộ mục tiêu và yêu cầu bài học trong ngày."}
+          {coreMissionText && (
+            <div className="rounded-xl border border-border bg-muted/25 dark:bg-background/60 p-4 sm:p-5 border-l-3 border-l-emerald-500 flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <Target className="w-4 h-4" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wide">
+                  Mục tiêu ngày học
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                {coreMissionText}
               </p>
             </div>
-          </div>
+          )}
         </div>
-      </div>
+      )}
 
       {/* 3. COMPACT TASK SUMMARY BAR */}
       {tasks.length > 0 && (

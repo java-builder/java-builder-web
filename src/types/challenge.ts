@@ -131,10 +131,10 @@ export interface ChallengeDayDetailResponse {
   challengeSlug: string;
   dayNumber: number;
   title: string;
-  coreMission: string;
-  content: string;
-  whyLearn: string;
-  keyConcepts: string[];
+  coreMission?: string | null;
+  content?: string | null;
+  whyLearn?: string | null;
+  keyConcepts?: string[] | null;
   phaseId?: string;
   phaseNumber?: number;
   phaseTitle?: string;
@@ -238,10 +238,10 @@ export interface CreateChallengeDayRequest {
   challengePhaseId?: string;
   dayNumber: number;
   title: string;
-  coreMission: string;
-  content: string;
-  whyLearn: string;
-  keyConcepts?: string[];
+  coreMission?: string | null;
+  content?: string;
+  whyLearn?: string | null;
+  keyConcepts?: string[] | null;
   tasks?: ChallengeDayTaskRequest[];
   isFreePreview?: boolean;
 }
@@ -250,10 +250,10 @@ export interface UpdateChallengeDayRequest {
   challengePhaseId?: string;
   dayNumber?: number;
   title?: string;
-  coreMission?: string;
+  coreMission?: string | null;
   content?: string;
-  whyLearn?: string;
-  keyConcepts?: string[];
+  whyLearn?: string | null;
+  keyConcepts?: string[] | null;
   tasks?: ChallengeDayTaskRequest[];
   isFreePreview?: boolean;
 }

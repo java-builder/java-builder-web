@@ -3,7 +3,17 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Edit2, Trash2, Calendar, Eye, Layers, Users, MoreVertical, ExternalLink, UserPlus } from "lucide-react";
+import {
+  Edit2,
+  Trash2,
+  Calendar,
+  Eye,
+  Layers,
+  Users,
+  MoreVertical,
+  ExternalLink,
+  UserPlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChallengeLevel, ChallengeResponse } from "@/types/challenge";
 
@@ -18,32 +28,37 @@ interface ChallengeTableProps {
 
 const LEVEL_CONFIG: Record<
   ChallengeLevel,
-  { label: string; className: string }
+  { label: string; className: string; dot: string }
 > = {
   INTERN: {
     label: "Intern",
     className:
-      "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800 dark:bg-sky-950/40 dark:text-sky-300",
+      "border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300",
+    dot: "bg-slate-400",
   },
   FRESHER: {
     label: "Fresher",
     className:
-      "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
+      "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300",
+    dot: "bg-emerald-500",
   },
   JUNIOR: {
     label: "Junior",
     className:
-      "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
+      "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300",
+    dot: "bg-sky-500",
   },
   MIDDLE: {
     label: "Middle",
     className:
-      "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300",
+      "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800/60 dark:bg-orange-950/40 dark:text-orange-300",
+    dot: "bg-orange-500",
   },
   SENIOR: {
     label: "Senior",
     className:
-      "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300",
+      "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-300",
+    dot: "bg-rose-500",
   },
 };
 
@@ -82,11 +97,11 @@ export default function ChallengeTable({
     return (
       <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-xs">
         <div className="p-4 border-b border-border bg-muted/20">
-          <div className="h-4 bg-muted rounded-full w-32 " />
+          <div className="h-4 bg-muted rounded-full w-40 animate-pulse" />
         </div>
         <div className="divide-y divide-border">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="p-4 flex items-center justify-between gap-4 ">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="p-4 flex items-center justify-between gap-4 animate-pulse">
               <div className="space-y-2 flex-1">
                 <div className="h-4 bg-muted rounded-full w-1/3" />
                 <div className="h-3 bg-muted rounded-full w-1/4" />
@@ -123,73 +138,98 @@ export default function ChallengeTable({
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-surface shadow-xs">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-xs">
+      <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">
+            Danh sách lộ trình thử thách
+          </h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Bấm vào tên thử thách hoặc nút Lộ trình để cấu hình giai đoạn (Phase) và bài học từng ngày
+          </p>
+        </div>
+        <span className="whitespace-nowrap rounded-full bg-primary-soft border border-primary/20 px-2.5 py-0.5 text-xs font-semibold text-primary">
+          {challenges.length} thử thách
+        </span>
+      </div>
+
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-border bg-muted/40 text-xs uppercase font-semibold text-muted-foreground">
+        <table className="w-full text-left text-sm divide-y divide-border">
+          <thead className="bg-muted/40 text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
             <tr>
-              <th scope="col" className="px-5 py-3.5 min-w-[280px]">
+              <th scope="col" className="px-5 py-3 min-w-[300px]">
                 Thử thách
               </th>
-              <th scope="col" className="px-4 py-3.5 whitespace-nowrap">
+              <th scope="col" className="px-4 py-3 whitespace-nowrap">
                 Cấp độ
               </th>
-              <th scope="col" className="px-4 py-3.5 whitespace-nowrap">
+              <th scope="col" className="px-4 py-3 whitespace-nowrap">
                 Lộ trình
               </th>
-              <th scope="col" className="px-4 py-3.5 whitespace-nowrap">
+              <th scope="col" className="px-4 py-3 whitespace-nowrap">
                 Học phí
               </th>
-              <th scope="col" className="px-4 py-3.5 whitespace-nowrap">
+              <th scope="col" className="px-4 py-3 whitespace-nowrap">
                 Trạng thái
               </th>
-              <th scope="col" className="px-5 py-3.5 text-right whitespace-nowrap">
+              <th scope="col" className="px-5 py-3 text-right whitespace-nowrap">
                 Thao tác
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border font-normal">
+          <tbody className="divide-y divide-border">
             {challenges.map((c) => {
               const levelCfg =
                 LEVEL_CONFIG[c.level as ChallengeLevel] || LEVEL_CONFIG.JUNIOR;
               const isActive = c.status === "ACTIVE";
+              const isFree =
+                Boolean(c.isFree) ||
+                c.price === undefined ||
+                c.price === null ||
+                Number(c.price) <= 0;
 
               return (
                 <tr
                   key={c.id}
-                  className="hover:bg-muted/30 transition-colors duration-150 group"
+                  className="hover:bg-muted/25 transition-colors duration-150 group"
                 >
                   {/* Name & Metadata */}
                   <td className="px-5 py-4">
-                    <div className="flex items-start gap-3">
-                      {/* Gradient preview indicator */}
+                    <div className="flex items-start gap-3.5">
                       <div
-                        className="w-1.5 h-10 rounded-full shrink-0 mt-0.5"
+                        className="w-10 h-10 rounded-xl shrink-0 mt-0.5 flex items-center justify-center text-white font-bold text-xs shadow-2xs border border-black/10"
                         style={{
                           background:
                             c.colorGradient ||
                             "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                         }}
-                      />
-                      <div className="min-w-0">
+                        title={`${c.totalDays} ngày`}
+                      >
+                        {c.totalDays}d
+                      </div>
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <Link
                             href={`/admin/challenges/${c.id}`}
-                            className="font-semibold text-foreground hover:text-accent transition-colors line-clamp-1 text-sm group-hover:underline"
+                            className="font-bold text-foreground hover:text-primary transition-colors line-clamp-1 text-sm"
                             title={c.title}
                           >
                             {c.title}
                           </Link>
                           {c.category && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-muted text-muted-foreground border border-border/60">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-muted text-muted-foreground border border-border">
                               {c.category.name}
                             </span>
                           )}
                         </div>
 
-                        {c.description && (
-                          <p className="mt-1 text-xs text-muted-foreground line-clamp-1 max-w-lg leading-relaxed">
+                        {c.description ? (
+                          <p className="mt-1 text-xs text-muted-foreground line-clamp-1 max-w-xl leading-relaxed">
                             {c.description}
+                          </p>
+                        ) : (
+                          <p className="mt-1 font-mono text-[11px] text-muted-foreground/70 truncate max-w-md">
+                            /{c.slug}
                           </p>
                         )}
                       </div>
@@ -199,8 +239,9 @@ export default function ChallengeTable({
                   {/* Level */}
                   <td className="px-4 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${levelCfg.className}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${levelCfg.className}`}
                     >
+                      <span className={`h-1.5 w-1.5 rounded-full ${levelCfg.dot}`} />
                       {levelCfg.label}
                     </span>
                   </td>
@@ -208,23 +249,23 @@ export default function ChallengeTable({
                   {/* Schedule */}
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex flex-col text-xs">
-                      <span className="font-semibold text-foreground flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5 text-accent" />
+                      <span className="font-semibold text-foreground flex items-center gap-1.5 tabular-nums">
+                        <Calendar className="h-3.5 w-3.5 text-primary" />
                         {c.totalDays} ngày
                       </span>
                       <span className="text-muted-foreground mt-0.5 flex items-center gap-1">
                         <Eye className="h-3 w-3 text-emerald-500" />
-                        {c.isFree || !c.price || c.price === 0
+                        {isFree
                           ? "Toàn bộ miễn phí"
-                          : `${c.freePreviewDays ?? 0} ngày miễn phí`}
+                          : `${c.freePreviewDays ?? 0} ngày học thử`}
                       </span>
                     </div>
                   </td>
 
                   {/* Price */}
                   <td className="px-4 py-4 whitespace-nowrap">
-                    {c.price && c.price > 0 ? (
-                      <span className="font-semibold text-foreground text-sm">
+                    {!isFree && c.price ? (
+                      <span className="font-bold text-foreground text-sm tabular-nums">
                         {c.price.toLocaleString("vi-VN")} đ
                       </span>
                     ) : (
@@ -245,9 +286,7 @@ export default function ChallengeTable({
                     >
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${
-                          isActive
-                            ? "bg-emerald-500 "
-                            : "bg-muted-foreground"
+                          isActive ? "bg-emerald-500" : "bg-muted-foreground"
                         }`}
                       />
                       {isActive ? "Đang mở" : "Tạm ẩn"}
@@ -256,31 +295,45 @@ export default function ChallengeTable({
 
                   {/* Actions */}
                   <td className="px-5 py-4 text-right whitespace-nowrap">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (openMenu?.id === c.id) {
-                          setOpenMenu(null);
-                          return;
-                        }
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const dropdownHeight = 220;
-                        const spaceBelow = window.innerHeight - rect.bottom;
-                        const showAbove = spaceBelow < dropdownHeight && rect.top > dropdownHeight;
-                        setOpenMenu({
-                          id: c.id,
-                          challenge: c,
-                          top: showAbove ? rect.top - dropdownHeight - 4 : rect.bottom + 4,
-                          right: Math.max(16, window.innerWidth - rect.right),
-                        });
-                      }}
-                      className="h-8 w-8 p-0 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
-                      title="Thao tác"
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
+                    <div className="inline-flex items-center justify-end gap-1.5">
+                      <Link href={`/admin/challenges/${c.id}`}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-8 gap-1.5 px-3 text-xs font-semibold rounded-full bg-primary-soft/60 border-primary/25 text-primary hover:bg-primary hover:text-white cursor-pointer"
+                        >
+                          <Layers className="h-3.5 w-3.5" />
+                          <span>Lộ trình</span>
+                        </Button>
+                      </Link>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (openMenu?.id === c.id) {
+                            setOpenMenu(null);
+                            return;
+                          }
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const dropdownHeight = 230;
+                          const spaceBelow = window.innerHeight - rect.bottom;
+                          const showAbove = spaceBelow < dropdownHeight && rect.top > dropdownHeight;
+                          setOpenMenu({
+                            id: c.id,
+                            challenge: c,
+                            top: showAbove ? rect.top - dropdownHeight - 4 : rect.bottom + 4,
+                            right: Math.max(16, window.innerWidth - rect.right),
+                          });
+                        }}
+                        className="h-8 w-8 p-0 rounded-full text-muted-foreground hover:text-foreground border-border cursor-pointer"
+                        title="Thêm thao tác"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -289,102 +342,104 @@ export default function ChallengeTable({
         </table>
       </div>
 
-      {mounted && openMenu && createPortal(
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpenMenu(null);
-            }}
-          />
-          <div
-            style={{
-              position: "fixed",
-              top: `${openMenu.top}px`,
-              right: `${openMenu.right}px`,
-            }}
-            className="w-52 bg-surface rounded-2xl shadow-xl border border-border py-1.5 z-50 text-left animate-in fade-in zoom-in-95 duration-100"
-          >
-            <Link
-              href={`/admin/challenges/${openMenu.challenge.id}`}
-              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
-              onClick={() => setOpenMenu(null)}
+      {mounted &&
+        openMenu &&
+        createPortal(
+          <>
+            <div
+              className="fixed inset-0 z-40"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenMenu(null);
+              }}
+            />
+            <div
+              style={{
+                position: "fixed",
+                top: `${openMenu.top}px`,
+                right: `${openMenu.right}px`,
+              }}
+              className="w-52 bg-surface rounded-2xl shadow-xl border border-border py-1.5 z-50 text-left animate-in fade-in zoom-in-95 duration-100"
             >
-              <Layers className="w-4 h-4 text-primary" />
-              <span>Chi tiết & Lộ trình</span>
-            </Link>
+              <Link
+                href={`/admin/challenges/${openMenu.challenge.id}`}
+                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
+                onClick={() => setOpenMenu(null)}
+              >
+                <Layers className="w-4 h-4 text-primary" />
+                <span>Chi tiết & Lộ trình</span>
+              </Link>
 
-            <Link
-              href={`/admin/challenges/${openMenu.challenge.id}/enrollments`}
-              className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
-              onClick={() => setOpenMenu(null)}
-            >
-              <Users className="w-4 h-4 text-blue-500" />
-              <span>Danh sách học viên</span>
-            </Link>
+              <Link
+                href={`/admin/challenges/${openMenu.challenge.id}/enrollments`}
+                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
+                onClick={() => setOpenMenu(null)}
+              >
+                <Users className="w-4 h-4 text-sky-500" />
+                <span>Danh sách học viên</span>
+              </Link>
 
-            {onEnroll && (
+              {onEnroll && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const target = openMenu.challenge;
+                    setOpenMenu(null);
+                    onEnroll(target.id, target.title);
+                  }}
+                  className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer rounded-lg"
+                >
+                  <UserPlus className="w-4 h-4 text-emerald-500" />
+                  <span>Ghi danh học viên</span>
+                </button>
+              )}
+
+              {openMenu.challenge.slug && (
+                <Link
+                  href={`/challenges/${openMenu.challenge.slug}`}
+                  target="_blank"
+                  className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
+                  onClick={() => setOpenMenu(null)}
+                >
+                  <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                  <span>Xem trang học viên</span>
+                </Link>
+              )}
+
+              <div className="border-t border-border my-1" />
+
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   const target = openMenu.challenge;
                   setOpenMenu(null);
-                  onEnroll(target.id, target.title);
+                  onEdit(target);
                 }}
-                className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer rounded-lg"
+                className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
               >
-                <UserPlus className="w-4 h-4 text-emerald-500" />
-                <span>Thêm học viên</span>
+                <Edit2 className="w-4 h-4 text-muted-foreground" />
+                <span>Chỉnh sửa thông tin</span>
               </button>
-            )}
 
-            {openMenu.challenge.slug && (
-              <Link
-                href={`/challenges/${openMenu.challenge.slug}`}
-                target="_blank"
-                className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors rounded-lg mx-1"
-                onClick={() => setOpenMenu(null)}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const target = openMenu.challenge;
+                  setOpenMenu(null);
+                  onDelete(target.id, target.title);
+                }}
+                className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors text-left cursor-pointer"
               >
-                <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                <span>Xem trang học viên</span>
-              </Link>
-            )}
-
-            <div className="border-t border-border my-1" />
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                const target = openMenu.challenge;
-                setOpenMenu(null);
-                onEdit(target);
-              }}
-              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors text-left cursor-pointer"
-            >
-              <Edit2 className="w-4 h-4 text-muted-foreground" />
-              <span>Chỉnh sửa thông tin</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                const target = openMenu.challenge;
-                setOpenMenu(null);
-                onDelete(target.id, target.title);
-              }}
-              className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors text-left cursor-pointer"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>Xóa thử thách</span>
-            </button>
-          </div>
-        </>,
-        document.body
-      )}
+                <Trash2 className="w-4 h-4" />
+                <span>Xóa thử thách</span>
+              </button>
+            </div>
+          </>,
+          document.body
+        )}
     </div>
   );
 }
