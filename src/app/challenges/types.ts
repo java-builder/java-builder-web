@@ -28,6 +28,7 @@ export interface DayChallenge {
   content?: string;
   hasSolution?: boolean;
   contentSolution?: string;
+  videoUrl?: string;
   isFreePreview?: boolean;
   tasks: TaskItem[];
   keyConcepts: string[];

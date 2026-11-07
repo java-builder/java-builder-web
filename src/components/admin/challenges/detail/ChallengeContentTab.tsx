@@ -14,6 +14,7 @@ import {
   CheckSquare,
   Loader2,
   Lightbulb,
+  Video,
 } from "lucide-react";
 import { FaYoutube } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
@@ -330,6 +331,7 @@ export default function ChallengeContentTab({
                       <div className="divide-y divide-border/60">
                         {phaseDays.map((day) => {
                           const isFree = Boolean(day.freePreview ?? day.isFreePreview);
+                          const hasVideo = Boolean(day.videoUrl && day.videoUrl.trim());
                           const dayTasks = getTasksForDay(day);
                           const isTasksExpanded = expandedDays.has(day.id);
                           const isLoadingTasks = loadingDayTasks.has(day.id);
@@ -382,6 +384,14 @@ export default function ChallengeContentTab({
                                         )}
                                         <span>{isFree ? "Học thử miễn phí" : "Có phí"}</span>
                                       </button>
+
+                                      {/* Video badge */}
+                                      {hasVideo && (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] rounded-full font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30">
+                                          <Video className="w-3 h-3" />
+                                          <span>Có video</span>
+                                        </span>
+                                      )}
 
                                       {/* Solution badge */}
                                       {day.hasSolution && (
@@ -643,6 +653,7 @@ export default function ChallengeContentTab({
               <div className="divide-y divide-border/60">
                 {unassignedDays.map((day) => {
                   const isFree = Boolean(day.freePreview ?? day.isFreePreview);
+                  const hasVideo = Boolean(day.videoUrl && day.videoUrl.trim());
                   return (
                     <div
                       key={day.id}
@@ -666,6 +677,12 @@ export default function ChallengeContentTab({
                             >
                               {isFree ? "Học thử miễn phí" : "Có phí"}
                             </span>
+                            {hasVideo && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] rounded-full font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30">
+                                <Video className="w-3 h-3" />
+                                <span>Có video</span>
+                              </span>
+                            )}
                             {day.hasSolution && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] rounded-full font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                                 <Lightbulb className="w-3 h-3" />

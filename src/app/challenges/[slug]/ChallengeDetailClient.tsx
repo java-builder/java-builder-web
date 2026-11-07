@@ -116,6 +116,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               content: cd.content || prev.content,
               hasSolution: Boolean(cd.hasSolution || prev.hasSolution),
               contentSolution: prev.contentSolution,
+              videoUrl: cd.videoUrl || prev.videoUrl,
               status: prev.status,
               tasks: cd.tasks.map((ft) => {
                 const prevTask = prev.tasks.find((pt) => pt.id === ft.id);
@@ -136,6 +137,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
               ...freshDay,
               hasSolution: Boolean(freshDay.hasSolution || d.hasSolution),
               contentSolution: d.contentSolution,
+              videoUrl: freshDay.videoUrl || d.videoUrl,
               phaseId: d.phaseId ?? freshDay.phaseId,
               status: d.status,
               tasks: freshDay.tasks.map((ft) => {
@@ -477,6 +479,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
                 title: detail.title,
                 content: detail.content || "",
                 hasSolution: Boolean(detail.hasSolution ?? d.hasSolution),
+                videoUrl: detail.videoUrl || d.videoUrl,
                 tagline: detail.coreMission || "",
                 coreMission: detail.coreMission || "",
                 whyLearn: detail.whyLearn || "",
@@ -800,7 +803,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         />
       )}
 
-      {/* Payment Modal */}
+      {/* Payment Modal (PayOS QR) */}
       <PaymentModal
         isOpen={paymentModal.isOpen}
         isLoading={paymentModal.isLoading}
@@ -813,35 +816,24 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
       <PremiumUpgradeModal
         isOpen={premiumUpgradeModalOpen}
         onClose={() => setPremiumUpgradeModalOpen(false)}
-        challengeTitle={challenge.title}
-        challengePrice={challenge.price}
-        onBuyStandalone={async () => {
-          setPremiumUpgradeModalOpen(false);
-          await handleUnlockStandalone();
-        }}
-        onSuccess={() => {
-          setIsEnrolled(true);
-        }}
       />
 
       {/* Auth Required Modal */}
       <AuthRequiredModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        redirectTo={`/challenges/${slug}`}
         title="Đăng nhập để tham gia thử thách"
-        message="Vui lòng đăng nhập tài khoản JavaBuilder để tham gia thử thách và bắt đầu lộ trình học tập."
+        message="Vui lòng đăng nhập tài khoản JavaBuilder để mở khóa lộ trình và lưu tiến độ thực chiến của bạn."
       />
 
-      {/* Scroll to Top Button */}
+      {/* Back to top button */}
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-40 p-3 bg-[#FF5A1F] hover:bg-[#e04b16] text-white rounded-full shadow-lg shadow-[#FF5A1F]/30 transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center group"
-          aria-label="Cuộn lên đầu trang"
-          title="Cuộn lên đầu trang"
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-[#FF5A1F] text-white shadow-lg hover:bg-[#e04b16] transition-all cursor-pointer"
+          aria-label="Lên đầu trang"
         >
-          <ArrowUp className="w-5 h-5 transition-transform group-hover:-translate-y-0.5" />
+          <ArrowUp className="w-5 h-5" />
         </button>
       )}
     </main>

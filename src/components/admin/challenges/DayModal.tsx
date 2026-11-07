@@ -11,6 +11,7 @@ import {
   Save,
   BookOpen,
   Lightbulb,
+  Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomSelect, SelectOption } from "@/components/ui/select";
@@ -66,6 +67,7 @@ export default function DayModal({
   const [title, setTitle] = useState("");
   const [coreMission, setCoreMission] = useState("");
   const [whyLearn, setWhyLearn] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [content, setContent] = useState("");
   const [contentSolution, setContentSolution] = useState("");
   const [activeEditorTab, setActiveEditorTab] = useState<"content" | "solution">("content");
@@ -91,6 +93,9 @@ export default function DayModal({
       setTitle(initialData.title || "");
       setCoreMission(initialData.coreMission || "");
       setWhyLearn(initialData.whyLearn || "");
+      setVideoUrl(
+        (initialData.videoUrl || "").replace(/#orientation=(vertical|horizontal)$/i, "")
+      );
       setContent(initialData.content || "");
       setContentSolution("");
       const matchedPhase = phases.find((p) => p.phaseNumber === initialData.phaseNumber);
@@ -118,8 +123,15 @@ export default function DayModal({
         challengeService
           .getDayDetailById(initialData.id)
           .then((res) => {
-            if (isSubscribed && res?.data?.content) {
-              setContent(res.data.content);
+            if (isSubscribed && res?.data) {
+              if (res.data.content) {
+                setContent(res.data.content);
+              }
+              if (res.data.videoUrl) {
+                setVideoUrl(
+                  res.data.videoUrl.replace(/#orientation=(vertical|horizontal)$/i, "")
+                );
+              }
             }
           })
           .catch((err) => {
@@ -160,6 +172,7 @@ export default function DayModal({
       setTitle("");
       setCoreMission("");
       setWhyLearn("");
+      setVideoUrl("");
       setContent("");
       setContentSolution("");
       setKeyConceptsText("");
@@ -308,6 +321,8 @@ export default function DayModal({
         }))
         .filter((t) => t.title.length > 0);
 
+      const cleanVideoUrl = videoUrl.trim().replace(/#orientation=(vertical|horizontal)$/i, "");
+
       if (isEdit) {
         await onSubmit({
           challengePhaseId: phaseId || undefined,
@@ -316,6 +331,7 @@ export default function DayModal({
           coreMission: coreMission.trim() || null,
           content: content.trim() || undefined,
           contentSolution: contentSolution.trim(),
+          videoUrl: cleanVideoUrl,
           whyLearn: whyLearn.trim() || null,
           keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : null,
           tasks: validTasks,
@@ -330,6 +346,7 @@ export default function DayModal({
           coreMission: coreMission.trim() || null,
           content: content.trim() || undefined,
           contentSolution: contentSolution.trim() || undefined,
+          videoUrl: cleanVideoUrl || undefined,
           whyLearn: whyLearn.trim() || null,
           keyConcepts: parsedKeyConcepts.length > 0 ? parsedKeyConcepts : null,
           tasks: validTasks.length > 0 ? validTasks : undefined,
@@ -358,7 +375,7 @@ export default function DayModal({
                 {isEdit ? `Chỉnh sửa Ngày ${dayNumber}` : "Thêm ngày thử thách mới"}
               </h2>
               <p className="text-[11px] sm:text-xs text-muted-foreground">
-                Thiết lập lộ trình học, bài tập thực hành và lời giải hướng dẫn theo từng ngày
+                Thiết lập lộ trình học, video bài giảng, bài tập thực hành và lời giải hướng dẫn
               </p>
             </div>
           </div>
@@ -415,6 +432,36 @@ export default function DayModal({
               placeholder="VD: Cài đặt môi trường & Viết chương trình Java đầu tiên"
               className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
             />
+          </div>
+
+          {/* Video URL (Optional) */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <Video className="w-3.5 h-3.5 text-primary" />
+              <span>Video bài học (URL - Tuỳ chọn)</span>
+            </label>
+            <div className="relative">
+              <input
+                type="url"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=... hoặc link video trực tiếp (.mp4, .m3u8)"
+                className="flex h-10 w-full rounded-lg border border-input bg-transparent pl-3 pr-9 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground font-mono"
+              />
+              {videoUrl.trim() && (
+                <button
+                  type="button"
+                  onClick={() => setVideoUrl("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  title="Xóa URL video"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Hỗ trợ link YouTube, Vimeo hoặc link stream/video trực tiếp (.mp4, .m3u8). Để trống nếu bài này không có video.
+            </p>
           </div>
 
           {/* Core Mission */}
@@ -802,7 +849,7 @@ export default function DayModal({
               ) : (
                 <>
                   <Save className="h-4 w-4" />
-                  <span>{isEdit ? "Cập nhật ngày" : "Tạo thử thách ngày"}</span>
+                  <span>{isEdit ? "Lưu thay đổi" : "Tạo ngày học"}</span>
                 </>
               )}
             </Button>

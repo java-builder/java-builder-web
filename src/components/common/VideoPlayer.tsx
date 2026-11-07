@@ -33,13 +33,13 @@ const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
       },
       getCurrentTime: () => {
         if (playerRef.current && !playerRef.current.isDisposed()) {
-          return playerRef.current.currentTime() as number || 0;
+          return (playerRef.current.currentTime() as number) || 0;
         }
         return 0;
       },
       getDuration: () => {
         if (playerRef.current && !playerRef.current.isDisposed()) {
-          return playerRef.current.duration() as number || 0;
+          return (playerRef.current.duration() as number) || 0;
         }
         return 0;
       },
@@ -129,38 +129,89 @@ const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 
     return (
       <div className={className}>
-        <div 
-          ref={videoRef} 
+        <div
+          ref={videoRef}
           data-vjs-player
           onContextMenu={(e) => e.preventDefault()}
         />
         <style jsx global>{`
           .video-js {
             font-family: inherit;
+            font-size: 13px !important;
+            color: #ffffff !important;
           }
           .video-js .vjs-big-play-button {
-            background-color: rgba(0, 0, 0, 0.6);
-            border: none;
+            background-color: rgba(255, 90, 31, 0.92) !important;
+            color: #ffffff !important;
+            border: 2px solid rgba(255, 255, 255, 0.85) !important;
             border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            line-height: 70px;
-            margin-left: -35px;
-            margin-top: -35px;
+            width: 68px;
+            height: 68px;
+            line-height: 64px;
+            margin-left: -34px;
+            margin-top: -34px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+            transition: transform 0.2s ease, background-color 0.2s ease;
           }
+          .video-js:hover .vjs-big-play-button,
           .video-js .vjs-big-play-button:hover {
-            background-color: rgba(59, 130, 246, 0.8);
+            background-color: #ff5a1f !important;
+            transform: scale(1.06);
           }
+          /* Keep height at exactly 3em so all native video.js 3em-centered controls align on one axis */
           .video-js .vjs-control-bar {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-            height: 40px;
+            background: linear-gradient(
+              to top,
+              rgba(0, 0, 0, 0.9) 0%,
+              rgba(0, 0, 0, 0.55) 75%,
+              transparent 100%
+            ) !important;
+            height: 3em !important;
+            color: #ffffff !important;
+          }
+          .video-js .vjs-control,
+          .video-js .vjs-control button,
+          .video-js .vjs-icon-placeholder,
+          .video-js .vjs-icon-placeholder::before,
+          .video-js .vjs-time-control,
+          .video-js .vjs-playback-rate .vjs-playback-rate-value {
+            color: #ffffff !important;
+            opacity: 1 !important;
+          }
+          .video-js .vjs-control:hover .vjs-icon-placeholder::before,
+          .video-js .vjs-control:hover {
+            color: #ff5a1f !important;
           }
           .video-js .vjs-play-progress,
           .video-js .vjs-volume-level {
-            background-color: #3b82f6;
+            background-color: #ff5a1f !important;
+          }
+          .video-js .vjs-play-progress::before,
+          .video-js .vjs-volume-level::before {
+            color: #ffffff !important;
+          }
+          .video-js .vjs-load-progress,
+          .video-js .vjs-load-progress div {
+            background: rgba(255, 255, 255, 0.35) !important;
+          }
+          .video-js .vjs-slider {
+            background-color: rgba(255, 255, 255, 0.25) !important;
           }
           .video-js .vjs-slider:focus {
             box-shadow: none;
+          }
+          .video-js .vjs-menu-button-popup .vjs-menu .vjs-menu-content {
+            background-color: rgba(15, 23, 42, 0.95) !important;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+          }
+          .video-js .vjs-menu li {
+            color: #f8fafc !important;
+          }
+          .video-js .vjs-menu li.vjs-selected {
+            background-color: #ff5a1f !important;
+            color: #ffffff !important;
+            font-weight: 700;
           }
           /* Hide download button if browser adds one */
           video::-webkit-media-controls-enclosure {

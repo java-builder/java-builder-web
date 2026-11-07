@@ -16,11 +16,17 @@ import {
   EyeOff,
   Loader2,
   Sparkles,
+  PlayCircle,
+  Video,
+  ExternalLink,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { DayChallenge } from "@/app/challenges/types";
 import { challengeService } from "@/services/challenge.service";
 import PublicMarkdownRenderer from "@/components/blogs/PublicMarkdownRenderer";
+import VideoPlayer from "@/components/common/VideoPlayer";
 
 interface ChallengeDayDetailProps {
   activeDay?: DayChallenge;
@@ -31,6 +37,95 @@ interface ChallengeDayDetailProps {
   onCompleteDay: (dayNum: number) => void;
   onSelectDay: (dayNum: number) => void;
   onOpenDrawer?: () => void;
+}
+
+type ParsedVideoSource = {
+  type: "iframe" | "direct";
+  srcOrEmbedUrl: string;
+  cleanOriginalUrl: string;
+  providerLabel: string;
+};
+
+function parseVideoUrl(rawUrl: string): ParsedVideoSource | null {
+  const cleanOriginalUrl = rawUrl
+    .trim()
+    .replace(/#orientation=(vertical|horizontal)$/i, "")
+    .trim();
+  if (!cleanOriginalUrl) return null;
+
+  try {
+    const u = new URL(cleanOriginalUrl);
+    const host = u.hostname.toLowerCase();
+
+    // 1. YouTube (watch, youtu.be, embed, shorts, live)
+    if (host.includes("youtube.com") || host.includes("youtu.be") || host.includes("youtube-nocookie.com")) {
+      let videoId = "";
+      if (host.includes("youtu.be")) {
+        videoId = u.pathname.replace(/^\/+/, "").split("/")[0];
+      } else if (u.pathname.startsWith("/watch")) {
+        videoId = u.searchParams.get("v") || "";
+      } else if (
+        u.pathname.startsWith("/embed/") ||
+        u.pathname.startsWith("/shorts/") ||
+        u.pathname.startsWith("/live/")
+      ) {
+        const parts = u.pathname.split("/").filter(Boolean);
+        videoId = parts[1] || "";
+      }
+
+      if (videoId) {
+        return {
+          type: "iframe",
+          srcOrEmbedUrl: `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`,
+          cleanOriginalUrl,
+          providerLabel: "YouTube",
+        };
+      }
+    }
+
+    // 2. Vimeo
+    if (host.includes("vimeo.com")) {
+      const match = u.pathname.match(/\/(?:video\/)?(\d+)/);
+      if (match && match[1]) {
+        return {
+          type: "iframe",
+          srcOrEmbedUrl: `https://player.vimeo.com/video/${match[1]}`,
+          cleanOriginalUrl,
+          providerLabel: "Vimeo",
+        };
+      }
+    }
+
+    // 3. Loom
+    if (host.includes("loom.com") && u.pathname.includes("/share/")) {
+      return {
+        type: "iframe",
+        srcOrEmbedUrl: cleanOriginalUrl.replace("/share/", "/embed/"),
+        cleanOriginalUrl,
+        providerLabel: "Loom",
+      };
+    }
+
+    // 4. Google Drive
+    if (host.includes("drive.google.com") && u.pathname.includes("/file/d/")) {
+      const embedUrl = cleanOriginalUrl.replace(/\/(view|edit)(\?.*)?$/, "/preview");
+      return {
+        type: "iframe",
+        srcOrEmbedUrl: embedUrl,
+        cleanOriginalUrl,
+        providerLabel: "Google Drive",
+      };
+    }
+  } catch {
+    // Fallback if relative URL or non-standard URL
+  }
+
+  return {
+    type: "direct",
+    srcOrEmbedUrl: cleanOriginalUrl,
+    cleanOriginalUrl,
+    providerLabel: "Video bài giảng",
+  };
 }
 
 export function ChallengeDayDetail({
@@ -44,10 +139,15 @@ export function ChallengeDayDetail({
   const [isSolutionOpen, setIsSolutionOpen] = useState(false);
   const [isLoadingSolution, setIsLoadingSolution] = useState(false);
   const [solutionCache, setSolutionCache] = useState<Record<string, string>>({});
+  const [isVideoExpanded, setIsVideoExpanded] = useState(true);
 
-  // Reset solution open state when switching days
+  const rawVideoUrl = activeDay?.videoUrl?.trim() || "";
+  const parsedVideo = rawVideoUrl ? parseVideoUrl(rawVideoUrl) : null;
+
+  // Reset solution open state & expand video when switching days
   useEffect(() => {
     setIsSolutionOpen(false);
+    setIsVideoExpanded(true);
   }, [activeDay?.id, activeDay?.day]);
 
   if (!activeDay) {
@@ -124,6 +224,12 @@ export function ChallengeDayDetail({
           {activeDay.isFreePreview && (
             <span className="rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold border border-emerald-500/20">
               {isChallengeFree ? "Miễn phí" : "Học thử miễn phí"}
+            </span>
+          )}
+          {parsedVideo && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2.5 py-1 text-xs font-bold border border-blue-500/25">
+              <PlayCircle className="w-3.5 h-3.5" />
+              <span>Có video hướng dẫn</span>
             </span>
           )}
           {activeDay.hasSolution && (
@@ -264,7 +370,89 @@ export function ChallengeDayDetail({
         </div>
       )}
 
-      {/* 4. DETAILED GUIDE CONTENT (MARKDOWN) - Học sinh đọc và làm theo trước */}
+      {/* 4. VIDEO LESSON SECTION (Chỉ hiển thị khi bài học có videoUrl) */}
+      {parsedVideo && (
+        <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-[#F8F8F8]/70 dark:bg-background overflow-hidden shadow-2xs">
+          {/* Video Header Bar */}
+          <div className="px-4 py-3 sm:px-5 sm:py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-[#FFF0E8] dark:bg-[#FF5A1F]/15 text-[#FF5A1F] flex items-center justify-center shrink-0">
+                <Video className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-xs sm:text-sm font-bold text-[#171717] dark:text-white uppercase tracking-wider">
+                    Video bài giảng & hướng dẫn
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    {parsedVideo.providerLabel}
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground truncate">
+                  Xem video minh họa trực quan trước khi bắt tay vào thực hành Ngày {activeDay.day}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 ml-auto">
+              {parsedVideo.type === "iframe" && (
+                <a
+                  href={parsedVideo.cleanOriginalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-[#FF5A1F] hover:bg-[#FFF0E8]/60 dark:hover:bg-muted transition-colors border border-[#E8E8E8] dark:border-border"
+                  title="Mở video trong tab mới"
+                >
+                  <span>Mở tab mới</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setIsVideoExpanded((prev) => !prev)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border border-[#E8E8E8] dark:border-border bg-[#F8F8F8] dark:bg-background text-foreground hover:bg-muted transition-colors cursor-pointer"
+              >
+                {isVideoExpanded ? (
+                  <>
+                    <ChevronUp className="w-3.5 h-3.5" />
+                    <span>Thu gọn</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                    <span>Xem video</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Video Player Container (Standard 16:9 Horizontal Cinema Frame) */}
+          {isVideoExpanded && (
+            <div className="p-3 sm:p-4 bg-[#0F172A] dark:bg-slate-950">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black ring-1 ring-white/15 shadow-lg">
+                {parsedVideo.type === "iframe" ? (
+                  <iframe
+                    src={parsedVideo.srcOrEmbedUrl}
+                    title={`Video Ngày ${activeDay.day}: ${activeDay.title}`}
+                    className="absolute inset-0 w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <VideoPlayer
+                    src={parsedVideo.srcOrEmbedUrl}
+                    className="w-full h-full [&_[data-vjs-player]]:w-full [&_[data-vjs-player]]:h-full [&_.video-js]:!w-full [&_.video-js]:!h-full [&_.video-js]:!pt-0"
+                  />
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 5. DETAILED GUIDE CONTENT (MARKDOWN) - Học sinh đọc và làm theo trước */}
       {activeDay.content && (
         <div className="space-y-3 pt-2">
           <div className="flex items-center gap-2 pb-2 border-b border-[#E8E8E8] dark:border-border text-sm font-bold text-[#171717] dark:text-white uppercase tracking-wider">
@@ -277,7 +465,7 @@ export function ChallengeDayDetail({
         </div>
       )}
 
-      {/* 5. ON-DEMAND SOLUTION SECTION (Chỉ hiển thị khi bài học có contentSolution) */}
+      {/* 6. ON-DEMAND SOLUTION SECTION (Chỉ hiển thị khi bài học có contentSolution) */}
       {activeDay.hasSolution && (
         <div className="pt-2">
           <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-gradient-to-br from-[#FFF9F5] via-white to-[#FFF5EE] dark:from-surface dark:via-background dark:to-surface overflow-hidden shadow-2xs transition-all">
@@ -353,7 +541,7 @@ export function ChallengeDayDetail({
         </div>
       )}
 
-      {/* 6. NAVIGATION & COMPLETION ACTIONS */}
+      {/* 7. NAVIGATION & COMPLETION ACTIONS */}
       <div className="pt-4 border-t border-[#E8E8E8] dark:border-border flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button

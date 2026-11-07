@@ -141,6 +141,7 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         coreMission: d?.coreMission || "",
         content: d?.content || "",
         hasSolution: Boolean(d?.hasSolution),
+        videoUrl: d?.videoUrl || undefined,
         isFreePreview: Boolean(isFreePreview),
         tasks:
           d?.tasks && d.tasks.length > 0
@@ -199,6 +200,7 @@ export function adaptChallengeDetailResponseToUi(res: ChallengeDetailResponse): 
         coreMission: d?.coreMission || "",
         content: d?.content || "",
         hasSolution: Boolean(d?.hasSolution),
+        videoUrl: d?.videoUrl || undefined,
         isFreePreview: Boolean(isFreePreview),
         tasks:
           d?.tasks && d.tasks.length > 0
