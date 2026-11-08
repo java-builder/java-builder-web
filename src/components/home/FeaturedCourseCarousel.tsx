@@ -16,6 +16,7 @@ interface FeaturedCourseSlide {
   authorName: string;
   authorAvatar: string;
   href: string;
+  price?: number;
 }
 
 interface FeaturedCourseCarouselProps {
@@ -144,6 +145,7 @@ export default function FeaturedCourseCarousel({
           authorName: "JavaBuilder",
           authorAvatar: "/logos/java-logo.png",
           href: detailHref,
+          price: course.price,
         };
       });
     }
@@ -298,13 +300,26 @@ export default function FeaturedCourseCarousel({
             </span>
           </div>
 
-          <Link
-            href={current.href}
-            className="group/link inline-flex items-center gap-1 text-xs font-semibold text-[#FF5A1F] hover:text-[#e04b16] transition-colors"
-          >
-            <span>{t("home.viewDetails")}</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
-          </Link>
+          <div className="flex items-center gap-3">
+            {current.price !== undefined && (
+              current.price > 0 ? (
+                <span className="text-xs font-bold text-[#171717] dark:text-white">
+                  {current.price.toLocaleString("vi-VN")} đ
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-[#FFF0E8] text-[#FF5A1F] dark:bg-orange-950/40 dark:text-orange-400 font-semibold text-[10px] border border-[#FFD8C7] dark:border-orange-900/50">
+                  Miễn phí
+                </span>
+              )
+            )}
+            <Link
+              href={current.href}
+              className="group/link inline-flex items-center gap-1 text-xs font-semibold text-[#FF5A1F] hover:text-[#e04b16] transition-colors"
+            >
+              <span>{t("home.viewDetails")}</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>

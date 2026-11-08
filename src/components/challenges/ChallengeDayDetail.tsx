@@ -331,7 +331,7 @@ export function ChallengeDayDetail({
                 </span>
               ) : (
                 <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#FFF0E8] text-[#FF5A1F] border border-[#FF5A1F]/30 dark:bg-[#FF5A1F]/15">
-                  {completedTasksCount}/{tasks.length} task
+                  {completedTasksCount}/{tasks.length} nhiệm vụ
                 </span>
               )}
             </div>
@@ -363,7 +363,7 @@ export function ChallengeDayDetail({
               }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] text-white shadow-md shadow-[#FF5A1F]/25 font-bold text-xs shadow-2xs transition-all cursor-pointer group-hover:bg-[#e04b16] active:scale-95"
             >
-              <span>Xem bài tập</span>
+              <span>Xem nhiệm vụ</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>

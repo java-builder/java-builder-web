@@ -506,13 +506,13 @@ export default function DayModal({
             />
           </div>
 
-          {/* Checklist bài tập / nhiệm vụ trong ngày */}
+          {/* Checklist nhiệm vụ trong ngày */}
           <div className="space-y-3 pt-3 border-t border-border">
             <div className="flex items-center justify-between">
               <div>
                 <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-accent" />
-                  <span>Checklist bài tập / nhiệm vụ trong ngày ({tasks.length})</span>
+                  <span>Checklist nhiệm vụ trong ngày ({tasks.length})</span>
                 </label>
                 <p className="text-[11px] text-muted-foreground">
                   Mỗi nhiệm vụ có thể đính kèm tài liệu docs hoặc video YouTube để học viên tham khảo.

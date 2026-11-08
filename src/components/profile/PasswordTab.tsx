@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, KeyRound, Loader2, ShieldAlert } from "lucide-react";
+import {
+  CheckCircle2,
+  Circle,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Loader2,
+  ShieldAlert,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { userApi } from "@/services/user.service";
 import { PasswordStatus } from "@/types/user";
@@ -86,8 +94,8 @@ export default function PasswordTab() {
 
   if (isLoadingStatus) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:border-slate-700 dark:bg-slate-800">
-        <Loader2 className="h-7 w-7 animate-spin text-accent" />
+      <div className="flex min-h-[360px] items-center justify-center rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface">
+        <Loader2 className="h-6 w-6 animate-spin text-[#FF5A1F]" />
       </div>
     );
   }
@@ -96,8 +104,10 @@ export default function PasswordTab() {
 
   const newPasswordVal = formData.newPassword || "";
   const isLengthValid = newPasswordVal.length >= 8;
-  const isCaseValid = /[a-z]/.test(newPasswordVal) && /[A-Z]/.test(newPasswordVal);
-  const isSpecialValid = /[0-9]/.test(newPasswordVal) || /[^a-zA-Z0-9]/.test(newPasswordVal);
+  const isCaseValid =
+    /[a-z]/.test(newPasswordVal) && /[A-Z]/.test(newPasswordVal);
+  const isSpecialValid =
+    /[0-9]/.test(newPasswordVal) || /[^a-zA-Z0-9]/.test(newPasswordVal);
 
   return (
     <SectionCard
@@ -113,11 +123,13 @@ export default function PasswordTab() {
           : t("profilePage.passwordTab.createDesc")
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
         {isPasswordSet && (
           <PasswordField
             label={t("profilePage.passwordTab.currentPassword")}
-            placeholder={t("profilePage.passwordTab.currentPasswordPlaceholder")}
+            placeholder={t(
+              "profilePage.passwordTab.currentPasswordPlaceholder"
+            )}
             value={formData.currentPassword}
             visible={showPasswords.current}
             onToggle={() => togglePasswordVisibility("current")}
@@ -128,62 +140,64 @@ export default function PasswordTab() {
           />
         )}
 
-        <PasswordField
-          label={t("profilePage.passwordTab.newPassword")}
-          placeholder={t("profilePage.passwordTab.newPasswordPlaceholder")}
-          value={formData.newPassword}
-          visible={showPasswords.new}
-          onToggle={() => togglePasswordVisibility("new")}
-          onChange={(v) => setFormData({ ...formData, newPassword: v })}
-          required
-          minLength={8}
-          hint={t("profilePage.passwordTab.passwordLengthTip")}
-        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <PasswordField
+            label={t("profilePage.passwordTab.newPassword")}
+            placeholder={t("profilePage.passwordTab.newPasswordPlaceholder")}
+            value={formData.newPassword}
+            visible={showPasswords.new}
+            onToggle={() => togglePasswordVisibility("new")}
+            onChange={(v) => setFormData({ ...formData, newPassword: v })}
+            required
+            minLength={8}
+            hint={t("profilePage.passwordTab.passwordLengthTip")}
+          />
 
-        <PasswordField
-          label={t("profilePage.passwordTab.confirmNewPassword")}
-          placeholder={t("profilePage.passwordTab.confirmNewPasswordPlaceholder")}
-          value={formData.confirmPassword}
-          visible={showPasswords.confirm}
-          onToggle={() => togglePasswordVisibility("confirm")}
-          onChange={(v) =>
-            setFormData({ ...formData, confirmPassword: v })
-          }
-          required
-        />
+          <PasswordField
+            label={t("profilePage.passwordTab.confirmNewPassword")}
+            placeholder={t(
+              "profilePage.passwordTab.confirmNewPasswordPlaceholder"
+            )}
+            value={formData.confirmPassword}
+            visible={showPasswords.confirm}
+            onToggle={() => togglePasswordVisibility("confirm")}
+            onChange={(v) =>
+              setFormData({ ...formData, confirmPassword: v })
+            }
+            required
+          />
+        </div>
 
-         {/* Requirements */}
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
-          <div className="mb-2 flex items-center gap-2">
-            <ShieldAlert className="h-4 w-4 text-amber-500" />
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+        {/* Password Requirements Card */}
+        <div className="rounded-xl border border-[#E8E8E8] dark:border-border bg-[#F8F8F8]/70 dark:bg-muted/20 p-4">
+          <div className="mb-2.5 flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-[#FF5A1F]" />
+            <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#171717] dark:text-foreground">
               {t("profilePage.passwordTab.passwordReqs")}
             </h4>
           </div>
-          <ul className="space-y-1.5 text-sm">
-            <li className="flex items-center gap-2">
-              <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors duration-200 ${isLengthValid ? "bg-green-500" : "bg-rose-500"}`} />
-              <span className={`transition-colors duration-200 ${isLengthValid ? "text-green-600 dark:text-green-400 font-medium" : "text-gray-900 dark:text-gray-300 font-medium"}`}>
-                <strong>{t("profilePage.passwordTab.reqLength")}</strong>{" "}
-                {t("profilePage.passwordTab.reqRequired")}
-              </span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors duration-200 ${isCaseValid ? "bg-green-500" : "bg-gray-300 dark:bg-slate-600"}`} />
-              <span className={`transition-colors duration-200 ${isCaseValid ? "text-green-600 dark:text-green-400 font-medium" : "text-gray-600 dark:text-gray-300"}`}>
-                {t("profilePage.passwordTab.reqCase")}
-              </span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors duration-200 ${isSpecialValid ? "bg-green-500" : "bg-gray-300 dark:bg-slate-600"}`} />
-              <span className={`transition-colors duration-200 ${isSpecialValid ? "text-green-600 dark:text-green-400 font-medium" : "text-gray-600 dark:text-gray-300"}`}>
-                {t("profilePage.passwordTab.reqNumber")}
-              </span>
-            </li>
+          <ul className="space-y-2 text-xs sm:text-sm">
+            <RequirementRow
+              met={isLengthValid}
+              text={
+                <>
+                  <strong>{t("profilePage.passwordTab.reqLength")}</strong>{" "}
+                  {t("profilePage.passwordTab.reqRequired")}
+                </>
+              }
+            />
+            <RequirementRow
+              met={isCaseValid}
+              text={t("profilePage.passwordTab.reqCase")}
+            />
+            <RequirementRow
+              met={isSpecialValid}
+              text={t("profilePage.passwordTab.reqNumber")}
+            />
           </ul>
         </div>
 
-        <div className="flex justify-end pt-1">
+        <div className="flex justify-end pt-2 border-t border-[#E8E8E8] dark:border-border">
           <button
             type="submit"
             disabled={
@@ -191,7 +205,7 @@ export default function PasswordTab() {
               formData.newPassword !== formData.confirmPassword ||
               !formData.newPassword
             }
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 shadow-md shadow-[#FF5A1F]/25"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-6 py-2 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 shadow-xs"
           >
             {isSubmitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {isSubmitting
@@ -203,6 +217,33 @@ export default function PasswordTab() {
         </div>
       </form>
     </SectionCard>
+  );
+}
+
+function RequirementRow({
+  met,
+  text,
+}: {
+  met: boolean;
+  text: React.ReactNode;
+}) {
+  return (
+    <li className="flex items-center gap-2">
+      {met ? (
+        <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-500" />
+      ) : (
+        <Circle className="h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
+      )}
+      <span
+        className={`transition-colors duration-150 ${
+          met
+            ? "font-medium text-emerald-600 dark:text-emerald-400"
+            : "text-muted-foreground"
+        }`}
+      >
+        {text}
+      </span>
+    </li>
   );
 }
 
@@ -231,7 +272,7 @@ function PasswordField({
 }: PasswordFieldProps) {
   return (
     <div>
-      <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+      <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </label>
       <div className="relative">
@@ -242,25 +283,23 @@ function PasswordField({
           placeholder={placeholder}
           required={required}
           minLength={minLength}
-          className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 pr-10 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30"
+          className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 pr-10 text-sm text-[#171717] dark:text-foreground transition focus:border-[#FF5A1F] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/15"
         />
         <button
           type="button"
           onClick={onToggle}
           aria-label={visible ? "Hide password" : "Show password"}
-          className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-600 dark:hover:text-gray-200"
+          className="absolute right-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-[#F8F8F8] hover:text-[#171717] dark:hover:bg-muted dark:hover:text-foreground"
         >
           {visible ? (
-            <EyeOff className="h-3.5 w-3.5" />
+            <EyeOff className="h-4 w-4" />
           ) : (
-            <Eye className="h-3.5 w-3.5" />
+            <Eye className="h-4 w-4" />
           )}
         </button>
       </div>
       {hint && (
-        <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
-          {hint}
-        </p>
+        <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>
       )}
     </div>
   );

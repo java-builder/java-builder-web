@@ -96,7 +96,7 @@ export function ChallengePurchaseSidebar({
             <li className="flex items-start gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
               <span>
-                Lộ trình <strong>{challenge.totalDays} ngày thực chiến</strong>, checklist bài tập mỗi ngày
+                Lộ trình <strong>{challenge.totalDays} ngày thực chiến</strong>, checklist nhiệm vụ mỗi ngày
               </span>
             </li>
             <li className="flex items-start gap-1.5">

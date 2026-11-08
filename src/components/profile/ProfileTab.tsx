@@ -1,20 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import {
-  Camera,
   Loader2,
   Pencil,
-  User as UserIcon,
-  Code2,
   Globe,
-  Briefcase,
+  ExternalLink,
   X,
   Plus,
   Check,
-  Sparkles,
 } from "lucide-react";
 import { FaGithub as Github, FaLinkedin as Linkedin } from "react-icons/fa";
 import { ProfileDetailResponse, ExperienceLevel } from "@/types/user";
@@ -49,13 +44,41 @@ const JAVA_SUGGESTED_SKILLS = [
 ];
 
 const EXPERIENCE_LEVEL_OPTIONS: CustomSelectOption<ExperienceLevel>[] = [
-  { value: ExperienceLevel.INTERN, label: "Intern (Thực tập sinh)", description: "Đang học hoặc mới bắt đầu" },
-  { value: ExperienceLevel.FRESHER, label: "Fresher (Mới tốt nghiệp)", description: "Dưới 1 năm kinh nghiệm" },
-  { value: ExperienceLevel.JUNIOR, label: "Junior (1-2 năm)", description: "Nắm vững căn bản, làm việc độc lập" },
-  { value: ExperienceLevel.MIDDLE, label: "Middle (2-4 năm)", description: "Kinh nghiệm thực chiến phong phú" },
-  { value: ExperienceLevel.SENIOR, label: "Senior (5+ năm)", description: "Chuyên gia, giải quyết bài toán khó" },
-  { value: ExperienceLevel.LEAD, label: "Tech Lead", description: "Dẫn dắt kỹ thuật, định hướng team" },
-  { value: ExperienceLevel.ARCHITECT, label: "Software Architect", description: "Thiết kế kiến trúc hệ thống tổng thể" },
+  {
+    value: ExperienceLevel.INTERN,
+    label: "Intern (Thực tập sinh)",
+    description: "Đang học hoặc mới bắt đầu",
+  },
+  {
+    value: ExperienceLevel.FRESHER,
+    label: "Fresher (Mới tốt nghiệp)",
+    description: "Dưới 1 năm kinh nghiệm",
+  },
+  {
+    value: ExperienceLevel.JUNIOR,
+    label: "Junior (1-2 năm)",
+    description: "Nắm vững căn bản, làm việc độc lập",
+  },
+  {
+    value: ExperienceLevel.MIDDLE,
+    label: "Middle (2-4 năm)",
+    description: "Kinh nghiệm thực chiến phong phú",
+  },
+  {
+    value: ExperienceLevel.SENIOR,
+    label: "Senior (5+ năm)",
+    description: "Chuyên gia, giải quyết bài toán khó",
+  },
+  {
+    value: ExperienceLevel.LEAD,
+    label: "Tech Lead",
+    description: "Dẫn dắt kỹ thuật, định hướng team",
+  },
+  {
+    value: ExperienceLevel.ARCHITECT,
+    label: "Software Architect",
+    description: "Thiết kế kiến trúc hệ thống tổng thể",
+  },
 ];
 
 interface ProfileTabProps {
@@ -71,8 +94,6 @@ export default function ProfileTab({
 }: ProfileTabProps) {
   const { t } = useI18n();
   const [isEditing, setIsEditing] = useState(false);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const [currentAvatar, setCurrentAvatar] = useState(user.avatar || "");
   const [skillInput, setSkillInput] = useState("");
 
   const [formData, setFormData] = useState({
@@ -88,12 +109,6 @@ export default function ProfileTab({
     linkedinUrl: user.linkedinUrl || "",
     websiteUrl: user.websiteUrl || "",
   });
-
-  useEffect(() => {
-    setCurrentAvatar(user.avatar || "");
-  }, [user.avatar]);
-
-
 
   const handleAddSkill = () => {
     const trimmed = skillInput.trim();
@@ -172,363 +187,300 @@ export default function ProfileTab({
     setIsEditing(false);
   };
 
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(t("profilePage.profileTab.fileTooLarge"));
-      return;
-    }
-    if (!file.type.startsWith("image/")) {
-      toast.error(t("profilePage.profileTab.invalidImage"));
-      return;
-    }
-
-    try {
-      setIsUploadingAvatar(true);
-      const response = await userApi.updateAvatar(file);
-      if (response.data) {
-        setCurrentAvatar(response.data);
-        if (onSave) {
-          await onSave({ avatar: response.data });
-        }
-        toast.success(t("profilePage.profileTab.avatarSuccess"));
-      }
-    } catch (error) {
-      console.error("Error updating avatar:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("profilePage.profileTab.avatarFailed")
-      );
-    } finally {
-      setIsUploadingAvatar(false);
-    }
-  };
+  const experienceLabel =
+    EXPERIENCE_LEVEL_OPTIONS.find((o) => o.value === formData.experienceLevel)
+      ?.label || formData.experienceLevel;
 
   const editAction = !isEditing ? (
     <button
       type="button"
       onClick={() => setIsEditing(true)}
-      className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 transition hover:text-[#FF5A1F] active:scale-95 shadow-xs"
+      className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] px-4 py-1.5 text-xs font-semibold text-white transition active:scale-95 shadow-xs"
     >
       <Pencil className="h-3.5 w-3.5" />
       {t("profilePage.profileTab.editBtn")}
     </button>
-  ) : null;
+  ) : (
+    <button
+      type="button"
+      onClick={handleCancel}
+      className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-1.5 text-xs font-semibold text-muted-foreground hover:text-[#171717] dark:hover:text-foreground transition active:scale-95"
+    >
+      <X className="h-3.5 w-3.5" />
+      {t("profilePage.profileTab.cancelBtn")}
+    </button>
+  );
 
   return (
     <SectionCard
-      icon={UserIcon}
       title={t("profilePage.profileTab.personalInfo")}
       subtitle="Quản lý hồ sơ lập trình viên và thông tin cá nhân của bạn"
       action={editAction}
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Avatar */}
-        <div className="flex flex-col items-start gap-4 border-b border-gray-200 pb-5 dark:border-slate-700 sm:flex-row sm:items-center sm:gap-6">
-          <div className="relative flex-shrink-0">
-            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-accent to-accent-600">
-              {currentAvatar ? (
-                <Image
-                  key={currentAvatar}
-                  src={`${currentAvatar}?t=${Date.now()}`}
-                  alt={user.username || "User"}
-                  width={80}
-                  height={80}
-                  className="h-full w-full object-cover"
-                  unoptimized
-                />
-              ) : (
-                <span className="text-2xl font-semibold text-white">
-                  {user.username?.charAt(0)?.toUpperCase() || "U"}
-                </span>
-              )}
+      <form onSubmit={handleSubmit} className="space-y-7">
+        {/* 1. Thông tin chung & Chuyên môn (Unified Grid in both View & Edit modes) */}
+        <div>
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Thông tin chung & Chuyên môn
+          </h3>
+          <div className="rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface divide-y divide-[#E8E8E8] dark:divide-border">
+            {/* Row 1: Username | Email */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E8] dark:divide-border">
+              <EditableSpecCell
+                label={t("profilePage.profileTab.username")}
+                value={formData.username}
+                isEditing={isEditing}
+                placeholder="Nhập tên hiển thị"
+                onChange={(v) => setFormData({ ...formData, username: v })}
+              />
+              <EditableSpecCell
+                label={t("profilePage.profileTab.email")}
+                value={formData.email}
+                isEditing={isEditing}
+                disabled
+                type="email"
+              />
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              disabled={isUploadingAvatar}
-              className="hidden"
-              id="avatar-upload-icon"
-            />
-            <label
-              htmlFor="avatar-upload-icon"
-              className={`absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-accent text-white shadow-md transition hover:bg-accent-600 dark:border-slate-800 ${isUploadingAvatar ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-                }`}
-            >
-              {isUploadingAvatar ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Camera className="h-3.5 w-3.5" />
-              )}
-            </label>
-          </div>
 
-          <div className="min-w-0 flex-1">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
-              {t("profilePage.profileTab.avatarLabel")}
-            </h4>
-            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-              {t("profilePage.profileTab.avatarTip1")}
-            </p>
-            <p className="text-[11px] text-gray-400 dark:text-gray-500">
-              {t("profilePage.profileTab.avatarTip2")}
-            </p>
-          </div>
-        </div>
-
-        {/* Basic Info */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-accent">
-            Thông tin cơ bản
-          </h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              label={t("profilePage.profileTab.username")}
-              value={formData.username}
-              disabled={!isEditing}
-              onChange={(v) => setFormData({ ...formData, username: v })}
-            />
-            <FormField
-              label={t("profilePage.profileTab.email")}
-              value={formData.email}
-              disabled
-              type="email"
-              onChange={() => { }}
-            />
-          </div>
-          <FormField
-            label={t("profilePage.profileTab.university")}
-            value={formData.university}
-            disabled={!isEditing}
-            placeholder={t("profilePage.profileTab.universityPlaceholder")}
-            onChange={(v) => setFormData({ ...formData, university: v })}
-          />
-        </div>
-
-        {/* Developer Info Section */}
-        <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-slate-700">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
-            <Briefcase className="h-4 w-4" />
-            Hồ sơ Lập trình viên
-          </h3>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              label="Chuyên ngành / Vị trí"
-              value={formData.specialization}
-              disabled={!isEditing}
-              placeholder="VD: Backend Developer, Fullstack Engineer..."
-              onChange={(v) => setFormData({ ...formData, specialization: v })}
-            />
-
-            <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                Trình độ Kinh nghiệm
-              </label>
-              <CustomSelect<ExperienceLevel>
-                disabled={!isEditing}
-                value={formData.experienceLevel}
-                onChange={(val) =>
-                  setFormData({
-                    ...formData,
-                    experienceLevel: val,
-                  })
+            {/* Row 2: Specialization | Experience Level */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E8] dark:divide-border">
+              <EditableSpecCell
+                label="Chuyên ngành / Vị trí"
+                value={formData.specialization}
+                isEditing={isEditing}
+                placeholder="VD: Java Backend Developer..."
+                onChange={(v) =>
+                  setFormData({ ...formData, specialization: v })
                 }
-                options={EXPERIENCE_LEVEL_OPTIONS}
-                placeholder="-- Chọn cấp độ --"
+              />
+              <div className="px-4 py-3.5">
+                <dt className="text-xs font-medium text-muted-foreground">
+                  Trình độ kinh nghiệm
+                </dt>
+                <dd className="mt-1.5">
+                  {isEditing ? (
+                    <CustomSelect<ExperienceLevel>
+                      value={formData.experienceLevel}
+                      onChange={(val) =>
+                        setFormData({
+                          ...formData,
+                          experienceLevel: val,
+                        })
+                      }
+                      options={EXPERIENCE_LEVEL_OPTIONS}
+                      placeholder="-- Chọn cấp độ --"
+                    />
+                  ) : experienceLabel ? (
+                    <span className="inline-flex items-center rounded-md bg-[#FF5A1F]/10 px-2 py-0.5 text-xs font-semibold text-[#FF5A1F]">
+                      {experienceLabel}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground/60">
+                      Chưa cập nhật
+                    </span>
+                  )}
+                </dd>
+              </div>
+            </div>
+
+            {/* Row 3: University | Headline */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E8] dark:divide-border">
+              <EditableSpecCell
+                label={t("profilePage.profileTab.university")}
+                value={formData.university}
+                isEditing={isEditing}
+                placeholder={t("profilePage.profileTab.universityPlaceholder")}
+                onChange={(v) => setFormData({ ...formData, university: v })}
+              />
+              <EditableSpecCell
+                label="Chức danh hiển thị (Headline)"
+                value={formData.headline}
+                isEditing={isEditing}
+                placeholder="VD: Senior Java Backend Engineer"
+                onChange={(v) => setFormData({ ...formData, headline: v })}
               />
             </div>
           </div>
+        </div>
 
-          <FormField
-            label="Chức danh hiển thị (Headline)"
-            value={formData.headline}
-            disabled={!isEditing}
-            placeholder="VD: Senior Java Backend Engineer @ JavaBuilder"
-            onChange={(v) => setFormData({ ...formData, headline: v })}
-          />
-
-          <div>
-            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-              Giới thiệu bản thân (Bio)
-            </label>
+        {/* 2. Giới thiệu bản thân (Bio) */}
+        <div>
+          <h3 className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Giới thiệu bản thân
+          </h3>
+          {isEditing ? (
             <textarea
               rows={3}
-              disabled={!isEditing}
               value={formData.bio}
-              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, bio: e.target.value })
+              }
               placeholder="Viết một đoạn giới thiệu ngắn về kinh nghiệm, định hướng phát triển của bạn..."
-              className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:bg-[#141822]"
+              className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-4 py-3 text-sm text-[#171717] dark:text-foreground transition focus:border-[#FF5A1F] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/15"
             />
+          ) : (
+            <div className="rounded-xl border border-[#E8E8E8] dark:border-border bg-[#F8F8F8]/40 dark:bg-muted/10 px-4 py-3.5">
+              {formData.bio ? (
+                <p className="whitespace-pre-line text-sm leading-relaxed text-[#171717] dark:text-foreground">
+                  {formData.bio}
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground/60">
+                  Chưa có giới thiệu bản thân.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* 3. Kỹ năng & Tech Stack */}
+        <div>
+          <div className="mb-2.5 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Kỹ năng & Tech Stack
+            </h3>
+            {formData.skills.length > 0 && (
+              <span className="text-xs text-muted-foreground">
+                {formData.skills.length} kỹ năng
+              </span>
+            )}
           </div>
 
-          {/* Tech Stack / Skills */}
-          <div>
-            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-              Kỹ năng / Tech Stack
-            </label>
-
-            {isEditing && (
-              <div className="flex gap-2 mb-3">
-                <input
-                  type="text"
-                  value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddSkill();
-                    }
-                  }}
-                  placeholder="Nhập kỹ năng khác (VD: GraphQL, AWS...) rồi nhấn Enter..."
-                  className="block flex-1 rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3 py-1.5 text-sm text-[#171717] dark:text-white focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddSkill}
-                  className="inline-flex items-center gap-1 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-3 py-1.5 text-xs font-semibold text-white transition shadow-xs"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  Thêm
-                </button>
-              </div>
-            )}
-
-            {/* Selected Skills Container */}
-            <div className="mb-3 flex flex-wrap gap-2 min-h-[42px] p-2.5 rounded-xl border border-[#E8E8E8] bg-gray-50 dark:border-border dark:bg-[#141822] items-center">
-              {formData.skills.length === 0 ? (
-                <span className="text-xs text-gray-400 italic px-1">Chưa chọn kỹ năng nào</span>
-              ) : (
-                formData.skills.map((skill) => (
+          <div className="rounded-xl border border-[#E8E8E8] dark:border-border bg-[#F8F8F8]/40 dark:bg-muted/10 p-4 space-y-3.5">
+            {formData.skills.length === 0 ? (
+              <p className="text-sm text-muted-foreground/60">
+                Chưa cập nhật kỹ năng công nghệ.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {formData.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FF5A1F]/15 text-[#FF5A1F] border border-[#FF5A1F]/20 dark:bg-[#FF5A1F]/25 dark:text-[#FF9900]"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3 py-1.5 text-xs font-semibold text-[#171717] dark:text-foreground"
                   >
-                    <Code2 className="h-3.5 w-3.5" />
                     {skill}
                     {isEditing && (
                       <button
                         type="button"
                         onClick={() => handleRemoveSkill(skill)}
-                        className="ml-0.5 rounded-full p-0.5 hover:bg-rose-500/20 hover:text-rose-500 transition"
+                        className="ml-0.5 rounded-full p-0.5 text-muted-foreground hover:bg-rose-500/15 hover:text-rose-500 transition"
                         title="Xóa"
                       >
                         <X className="h-3 w-3" />
                       </button>
                     )}
                   </span>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
 
-            {/* Java Developer Tech Stack Suggestions */}
             {isEditing && (
-              <div className="rounded-xl border border-[#E8E8E8] bg-white p-3.5 dark:border-border dark:bg-surface">
-                <div className="mb-2.5 flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-slate-300">
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500 " />
-                  <span>Gợi ý Tech Stack Java (bấm để thêm/xóa nhanh):</span>
+              <div className="pt-3 border-t border-[#E8E8E8] dark:border-border space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddSkill();
+                      }
+                    }}
+                    placeholder="Nhập kỹ năng khác (VD: GraphQL, AWS...) rồi nhấn Enter..."
+                    className="block flex-1 rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 text-sm text-[#171717] dark:text-foreground focus:border-[#FF5A1F] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/15"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddSkill}
+                    className="inline-flex items-center gap-1 rounded-xl bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-4 py-2 text-xs font-semibold text-white transition shadow-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Thêm
+                  </button>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {JAVA_SUGGESTED_SKILLS.map((skill) => {
-                    const isSelected = formData.skills.includes(skill);
-                    return (
-                      <button
-                        key={skill}
-                        type="button"
-                        onClick={() => handleToggleSuggestedSkill(skill)}
-                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-all ${
-                          isSelected
-                            ? "bg-[#FF5A1F]/20 text-[#FF5A1F] border border-[#FF5A1F]/40 font-semibold shadow-xs"
-                            : "border border-[#E8E8E8] bg-gray-50/80 text-gray-700 hover:bg-[#FF5A1F]/10 hover:text-[#FF5A1F] dark:border-border dark:bg-[#141822] dark:text-slate-300 dark:hover:bg-[#FF5A1F]/20"
-                        }`}
-                      >
-                        {isSelected ? (
-                          <Check className="h-3 w-3 text-accent" />
-                        ) : (
-                          <Plus className="h-3 w-3 text-gray-400" />
-                        )}
-                        {skill}
-                      </button>
-                    );
-                  })}
+
+                <div>
+                  <p className="mb-2 text-xs font-medium text-muted-foreground">
+                    Gợi ý chọn nhanh:
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {JAVA_SUGGESTED_SKILLS.map((skill) => {
+                      const isSelected = formData.skills.includes(skill);
+                      return (
+                        <button
+                          key={skill}
+                          type="button"
+                          onClick={() => handleToggleSuggestedSkill(skill)}
+                          className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-all ${
+                            isSelected
+                              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/30 font-semibold"
+                              : "border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface text-muted-foreground hover:border-[#FF5A1F]/30 hover:text-[#171717] dark:hover:text-foreground"
+                          }`}
+                        >
+                          {isSelected ? (
+                            <Check className="h-3 w-3 text-[#FF5A1F]" />
+                          ) : (
+                            <Plus className="h-3 w-3 text-muted-foreground" />
+                          )}
+                          {skill}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Social / Portfolio Links Section */}
-        <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-slate-700">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
-            <Globe className="h-4 w-4" />
-            Liên kết Developer & Portfolio
+        {/* 4. Liên kết & Portfolio (Unified Rows in both View & Edit modes) */}
+        <div>
+          <h3 className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Liên kết & Portfolio
           </h3>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div>
-              <label className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                <Github className="h-3.5 w-3.5" />
-                GitHub URL
-              </label>
-              <input
-                type="url"
-                disabled={!isEditing}
-                value={formData.githubUrl}
-                onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
-                placeholder="https://github.com/username"
-                className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:bg-[#141822]"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                <Linkedin className="h-3.5 w-3.5" />
-                LinkedIn URL
-              </label>
-              <input
-                type="url"
-                disabled={!isEditing}
-                value={formData.linkedinUrl}
-                onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
-                placeholder="https://linkedin.com/in/username"
-                className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:bg-[#141822]"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                <Globe className="h-3.5 w-3.5" />
-                Website / Portfolio
-              </label>
-              <input
-                type="url"
-                disabled={!isEditing}
-                value={formData.websiteUrl}
-                onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
-                placeholder="https://yourportfolio.dev"
-                className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:bg-[#141822]"
-              />
-            </div>
+          <div className="overflow-hidden rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface divide-y divide-[#E8E8E8] dark:divide-border">
+            <EditableSocialRow
+              icon={Github}
+              label="GitHub"
+              url={formData.githubUrl}
+              isEditing={isEditing}
+              placeholder="https://github.com/username"
+              onChange={(v) => setFormData({ ...formData, githubUrl: v })}
+            />
+            <EditableSocialRow
+              icon={Linkedin}
+              label="LinkedIn"
+              url={formData.linkedinUrl}
+              isEditing={isEditing}
+              placeholder="https://linkedin.com/in/username"
+              onChange={(v) => setFormData({ ...formData, linkedinUrl: v })}
+            />
+            <EditableSocialRow
+              icon={Globe}
+              label="Website / Portfolio"
+              url={formData.websiteUrl}
+              isEditing={isEditing}
+              placeholder="https://yourportfolio.dev"
+              onChange={(v) => setFormData({ ...formData, websiteUrl: v })}
+            />
           </div>
         </div>
 
+        {/* Save / Cancel Footer when editing */}
         {isEditing && (
-          <div className="flex flex-col-reverse items-stretch gap-2 border-t border-[#E8E8E8] pt-5 dark:border-border sm:flex-row sm:items-center sm:justify-end">
+          <div className="flex flex-col-reverse items-stretch gap-2.5 border-t border-[#E8E8E8] dark:border-border pt-5 sm:flex-row sm:items-center sm:justify-end">
             <button
               type="button"
               onClick={handleCancel}
-              className="inline-flex items-center justify-center rounded-full border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 transition hover:bg-gray-50 dark:hover:bg-[#222938] active:scale-95 shadow-xs"
+              className="inline-flex items-center justify-center rounded-full border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-5 py-2 text-sm font-semibold text-[#171717] dark:text-foreground transition hover:bg-[#F8F8F8] dark:hover:bg-muted/30 active:scale-95"
             >
               {t("profilePage.profileTab.cancelBtn")}
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2 text-sm font-semibold text-white transition disabled:opacity-50 shadow-md shadow-[#FF5A1F]/25"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-6 py-2 text-sm font-semibold text-white transition disabled:opacity-50 shadow-xs"
             >
               {isSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {isSaving
@@ -542,42 +494,97 @@ export default function ProfileTab({
   );
 }
 
-interface FormFieldProps {
+interface EditableSpecCellProps {
   label: string;
-  value: string;
+  value?: string;
+  isEditing: boolean;
   disabled?: boolean;
   placeholder?: string;
   type?: string;
-  hint?: string;
-  onChange: (v: string) => void;
+  emptyText?: string;
+  onChange?: (v: string) => void;
 }
 
-function FormField({
+function EditableSpecCell({
   label,
   value,
+  isEditing,
   disabled,
   placeholder,
   type = "text",
-  hint,
+  emptyText = "Chưa cập nhật",
   onChange,
-}: FormFieldProps) {
+}: EditableSpecCellProps) {
   return (
-    <div>
-      <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        placeholder={placeholder}
-        className="block w-full rounded-xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3.5 py-2 text-sm text-[#171717] dark:text-white transition focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]/30 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:bg-[#141822] dark:disabled:text-gray-400"
-      />
-      {hint && (
-        <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
-          {hint}
-        </p>
+    <div className="px-4 py-3.5">
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
+      <dd className="mt-1.5">
+        {isEditing ? (
+          <input
+            type={type}
+            value={value || ""}
+            disabled={disabled}
+            placeholder={placeholder}
+            onChange={(e) => onChange?.(e.target.value)}
+            className="block w-full rounded-lg border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3 py-1.5 text-sm text-[#171717] dark:text-foreground transition focus:border-[#FF5A1F] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/15 disabled:cursor-not-allowed disabled:bg-[#F8F8F8] disabled:text-muted-foreground dark:disabled:bg-muted/20"
+          />
+        ) : value ? (
+          <span className="block truncate text-sm font-semibold text-[#171717] dark:text-foreground">
+            {value}
+          </span>
+        ) : (
+          <span className="text-sm text-muted-foreground/60">{emptyText}</span>
+        )}
+      </dd>
+    </div>
+  );
+}
+
+interface EditableSocialRowProps {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  url?: string;
+  isEditing: boolean;
+  placeholder?: string;
+  onChange: (v: string) => void;
+}
+
+function EditableSocialRow({
+  icon: Icon,
+  label,
+  url,
+  isEditing,
+  placeholder,
+  onChange,
+}: EditableSocialRowProps) {
+  return (
+    <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <div className="flex items-center gap-2.5 text-sm font-medium text-[#171717] dark:text-foreground shrink-0">
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        <span>{label}</span>
+      </div>
+      {isEditing ? (
+        <input
+          type="url"
+          value={url || ""}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="block w-full sm:max-w-sm rounded-lg border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-3 py-1.5 text-sm text-[#171717] dark:text-foreground transition focus:border-[#FF5A1F] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/15"
+        />
+      ) : url ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 truncate text-sm font-medium text-[#FF5A1F] hover:underline"
+        >
+          <span className="truncate max-w-[240px] sm:max-w-[320px]">
+            {url.replace(/^https?:\/\/(www\.)?/, "")}
+          </span>
+          <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" />
+        </a>
+      ) : (
+        <span className="text-sm text-muted-foreground/60">Chưa liên kết</span>
       )}
     </div>
   );

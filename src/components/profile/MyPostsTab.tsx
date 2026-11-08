@@ -72,16 +72,16 @@ export default function MyPostsTab() {
         subtitle={t("profilePage.myPostsTab.subtitle")}
       >
         {isLoading && posts.length === 0 ? (
-          <div className="flex items-center justify-center py-12 text-sm text-gray-500 dark:text-gray-400">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin text-[#FF5A1F]" />
             {t("profilePage.myPostsTab.loading")}
           </div>
         ) : posts.length === 0 ? (
           <div className="py-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
-              <FileText className="h-6 w-6 text-gray-400" />
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F8F8F8] dark:bg-muted/30">
+              <FileText className="h-6 w-6 text-muted-foreground" />
             </div>
-            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-3 text-sm text-muted-foreground">
               {t("profilePage.myPostsTab.subtitle")}
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function MyPostsTab() {
                   type="button"
                   onClick={() => setPage((p) => p + 1)}
                   disabled={isLoading}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:text-accent disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface px-4 py-2 text-sm font-semibold text-[#171717] dark:text-foreground transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F] disabled:opacity-60"
                 >
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

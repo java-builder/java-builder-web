@@ -91,7 +91,7 @@ export default function SessionsTab() {
             height="14"
             fill="currentColor"
             viewBox="0 0 24 24"
-            className="text-gray-900 dark:text-white"
+            className="text-[#171717] dark:text-foreground"
           >
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
           </svg>
@@ -107,7 +107,7 @@ export default function SessionsTab() {
       },
       USERNAME_PASSWORD: {
         name: t("userMenu.password"),
-        icon: <KeyRound className="h-3.5 w-3.5 text-gray-500" />,
+        icon: <KeyRound className="h-3.5 w-3.5 text-muted-foreground" />,
       },
     };
     return map[provider] || { name: provider, icon: null };
@@ -121,25 +121,25 @@ export default function SessionsTab() {
       bodyClassName=""
     >
       {isLoading ? (
-        <div className="space-y-3 p-5">
+        <div className="space-y-3 p-6">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-24  rounded-xl bg-gray-100 dark:bg-slate-700/40"
+              className="h-20 animate-pulse rounded-xl bg-[#F8F8F8] dark:bg-muted/30"
             />
           ))}
         </div>
       ) : sessions.length === 0 ? (
-        <div className="px-5 py-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
-            <MonitorSmartphone className="h-6 w-6 text-gray-400" />
+        <div className="px-6 py-12 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F8F8F8] dark:bg-muted/30">
+            <MonitorSmartphone className="h-6 w-6 text-muted-foreground" />
           </div>
-          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-3 text-sm text-muted-foreground">
             {t("profilePage.sessionsTab.noSessions")}
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-gray-100 dark:divide-slate-700">
+        <div className="divide-y divide-[#E8E8E8] dark:divide-border">
           {sessions.map((session: UserSessionDetailResponse) => {
             const DeviceIcon = getDeviceIcon(session.device);
             const isActive = session.status === "ACTIVE";
@@ -150,41 +150,41 @@ export default function SessionsTab() {
             return (
               <div
                 key={session.sessionId}
-                className="flex flex-col gap-3 px-5 py-4 transition hover:bg-gray-50 dark:hover:bg-slate-700/30 sm:flex-row sm:items-start sm:justify-between"
+                className="flex flex-col gap-3 px-6 py-4 transition hover:bg-[#F8F8F8]/60 dark:hover:bg-muted/15 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex min-w-0 flex-1 items-start gap-3">
-                  <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                <div className="flex min-w-0 flex-1 items-start gap-3.5">
+                  <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#FF5A1F]/10 text-[#FF5A1F]">
                     <DeviceIcon className="h-5 w-5" />
                   </span>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                      <h4 className="truncate text-sm font-bold text-[#171717] dark:text-foreground">
                         {session.browser}
                         {session.browserVersion && ` v${session.browserVersion}`}
                       </h4>
                       {isActive ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-800/40">
-                          <span className="h-1.5 w-1.5  rounded-full bg-emerald-500" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                           {t("profilePage.sessionsTab.activeStatus")}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/20 dark:text-rose-400 dark:ring-rose-800/40">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-rose-600 dark:text-rose-400 border border-rose-500/20">
                           <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
                           {t("profilePage.sessionsTab.revokedStatus")}
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-1.5 grid grid-cols-1 gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400 sm:grid-cols-2">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1.5">
-                        <Globe className="h-3 w-3" />
+                        <Globe className="h-3.5 w-3.5" />
                         <span className="truncate">
                           {session.device} • {session.os}
                         </span>
                       </span>
                       <span className="inline-flex items-center gap-1.5">
-                        <MapPin className="h-3 w-3 text-rose-500" />
+                        <MapPin className="h-3.5 w-3.5 text-[#FF5A1F]" />
                         <span className="tabular-nums">{session.ipAddress}</span>
                       </span>
                       {provider && (
@@ -198,7 +198,7 @@ export default function SessionsTab() {
                         </span>
                       )}
                       <span className="inline-flex items-center gap-1.5">
-                        <Clock className="h-3 w-3 text-blue-500" />
+                        <Clock className="h-3.5 w-3.5 text-blue-500" />
                         <span className="tabular-nums">
                           {formatReadableDate(session.createdAt)}
                         </span>
@@ -211,7 +211,7 @@ export default function SessionsTab() {
                   <button
                     type="button"
                     onClick={() => handleRevokeSession(session.sessionId)}
-                    className="inline-flex flex-shrink-0 items-center rounded-full border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/5 dark:text-rose-400 dark:hover:bg-rose-500/20 cursor-pointer"
+                    className="inline-flex flex-shrink-0 items-center self-end sm:self-center rounded-full border border-rose-200 dark:border-rose-500/30 bg-white dark:bg-surface px-3 py-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 transition hover:bg-rose-50 dark:hover:bg-rose-500/15 cursor-pointer"
                   >
                     {t("profilePage.sessionsTab.revokeBtn")}
                   </button>
@@ -221,7 +221,7 @@ export default function SessionsTab() {
           })}
 
           {totalPages > 1 && (
-            <div className="px-5 py-4">
+            <div className="px-6 py-4">
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}

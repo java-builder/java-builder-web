@@ -15,14 +15,14 @@ import { useI18n } from "@/contexts/I18nContext";
 
 function ProfileLoadingState() {
   return (
-    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
+    <div className="space-y-6 px-4 py-6 sm:px-6 sm:py-8">
       <div className="space-y-2">
-        <div className="h-6 w-56  rounded bg-gray-200 dark:bg-slate-700" />
-        <div className="h-4 w-72  rounded bg-gray-100 dark:bg-slate-700/60" />
+        <div className="h-7 w-56 animate-pulse rounded-lg bg-[#E8E8E8] dark:bg-muted" />
+        <div className="h-4 w-80 animate-pulse rounded-lg bg-[#E8E8E8]/70 dark:bg-muted/60" />
       </div>
-      <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-        <div className="h-96 w-full  rounded-2xl bg-white shadow-sm dark:bg-slate-800 lg:w-72" />
-        <div className="h-96 flex-1  rounded-2xl bg-white shadow-sm dark:bg-slate-800" />
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <div className="h-[420px] w-full animate-pulse rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface lg:w-72 xl:w-80" />
+        <div className="h-[540px] flex-1 animate-pulse rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface" />
       </div>
     </div>
   );
@@ -84,7 +84,7 @@ function ProfileContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-6xl">
           <ProfileLoadingState />
         </div>
       </div>
@@ -94,21 +94,21 @@ function ProfileContent() {
   if (error) {
     return (
       <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
-        <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
-          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center dark:border-rose-900/40 dark:bg-rose-900/20 shadow-xs">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-900/40">
+        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+          <div className="rounded-2xl border border-rose-200 bg-rose-50/80 p-8 text-center dark:border-rose-900/40 dark:bg-rose-950/20 shadow-xs">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400">
               <AlertTriangle className="h-6 w-6" />
             </div>
-            <h2 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 className="mt-4 text-lg font-bold text-[#171717] dark:text-foreground">
               {t("profilePage.errorTitle")}
             </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1.5 text-sm text-muted-foreground">
               {error}
             </p>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-4 py-2 text-sm font-semibold text-white shadow-xs transition"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2 text-sm font-semibold text-white shadow-xs transition"
             >
               {t("profilePage.retry")}
             </button>
@@ -121,20 +121,20 @@ function ProfileContent() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
-        <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
           <div className="rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface p-10 text-center shadow-xs sm:p-14">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10 text-[#FF5A1F]">
               <UserX className="h-7 w-7" />
             </div>
-            <h2 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 className="mt-4 text-lg font-bold text-[#171717] dark:text-foreground">
               {t("profilePage.notFoundUser")}
             </h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-gray-600 dark:text-gray-400">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground">
               {t("profilePage.loginToView")}
             </p>
             <a
               href="/login"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#FF5A1F]/25 transition"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF5A1F] hover:bg-[#e04b16] active:scale-95 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition"
             >
               {t("profilePage.loginBtn")}
             </a>
@@ -146,25 +146,26 @@ function ProfileContent() {
 
   return (
     <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
-      <div className="mx-auto max-w-7xl space-y-4 p-4 sm:space-y-6 sm:p-6">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+      <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
+        {/* Page Header */}
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-bold tracking-tight text-[#171717] dark:text-foreground sm:text-2xl">
             {t("profilePage.title")}
           </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground">
             {t("profilePage.subtitle")}
           </p>
         </div>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-          <div className="w-full flex-shrink-0 lg:w-72 xl:w-80">
-            <div className="lg:sticky lg:top-6">
-              <Sidebar
-                user={user}
-                activeTab={activeTab}
-                onTabChange={handleTabChange}
-              />
-            </div>
+        {/* Main 2-Column Layout */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="w-full flex-shrink-0 lg:w-72 xl:w-80 lg:sticky lg:top-20">
+            <Sidebar
+              user={user}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              onUserUpdate={handleSave}
+            />
           </div>
           <div className="min-w-0 flex-1">{renderTabContent()}</div>
         </div>
@@ -177,8 +178,10 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-          <ProfileLoadingState />
+        <div className="min-h-screen bg-[#F8F8F8] dark:bg-background">
+          <div className="mx-auto max-w-6xl">
+            <ProfileLoadingState />
+          </div>
         </div>
       }
     >

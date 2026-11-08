@@ -72,6 +72,11 @@ const FALLBACK_GRADIENTS = [
   "from-zinc-800 via-slate-900 to-black",
 ];
 
+const formatPrice = (price?: number) => {
+  if (!price || price <= 0) return "Miễn phí";
+  return `${price.toLocaleString("vi-VN")} đ`;
+};
+
 export default function CourseCard({
   course,
   index = 0,
@@ -89,6 +94,7 @@ export default function CourseCard({
   const durationHours = course.duration && course.duration > 0 ? course.duration : 20;
   const difficultyLabel = getDifficultyText(course.level, locale);
   const hoursLabel = locale === "vi" ? "giờ" : locale === "ja" ? "時間" : locale === "ko" ? "시간" : "hrs";
+  const isFree = !course.price || course.price <= 0;
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8E8E8] dark:border-border bg-white dark:bg-surface shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#FF5A1F]/5">
@@ -146,7 +152,7 @@ export default function CourseCard({
         </p>
 
         {/* Footer */}
-        <div className="mt-auto flex items-center justify-between pt-3 border-t border-[#E8E8E8] dark:border-border">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-[#E8E8E8] dark:border-border">
           {/* Duration & Level */}
           <div className="flex items-center gap-3 text-xs text-[#64748B] dark:text-slate-400">
             <span className="inline-flex items-center gap-1">
@@ -159,13 +165,24 @@ export default function CourseCard({
             </span>
           </div>
 
-          {/* Arrow Circle Button */}
+          {/* Price & Action */}
           <Link
             href={detailHref}
             aria-label={course.title}
-            className="w-7 h-7 rounded-full border border-[#E8E8E8] dark:border-border flex items-center justify-center text-[#64748B] group-hover:bg-[#FF5A1F] group-hover:text-white transition-all"
+            className="inline-flex items-center gap-1.5 shrink-0"
           >
-            <ArrowRight className="w-3.5 h-3.5" />
+            {isFree ? (
+              <span className="px-2.5 py-0.5 rounded-full bg-[#FFF0E8] text-[#FF5A1F] dark:bg-orange-950/40 dark:text-orange-400 font-semibold text-[11px] border border-[#FFD8C7] dark:border-orange-900/50">
+                Miễn phí
+              </span>
+            ) : (
+              <span className="text-sm font-bold text-[#FF5A1F]">
+                {formatPrice(course.price)}
+              </span>
+            )}
+            <span className="w-6 h-6 rounded-full border border-[#E8E8E8] dark:border-border flex items-center justify-center text-[#64748B] group-hover:bg-[#FF5A1F] group-hover:border-[#FF5A1F] group-hover:text-white transition-all">
+              <ArrowRight className="w-3 h-3" />
+            </span>
           </Link>
         </div>
       </div>

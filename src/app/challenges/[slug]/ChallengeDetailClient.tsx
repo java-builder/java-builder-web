@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowUp, AlertCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUp, AlertCircle, ListTodo, Check } from "lucide-react";
 import toast from "react-hot-toast";
 import { FilterOption } from "@/components/ui/select";
 import { Challenge, DayChallenge } from "../types";
@@ -343,7 +343,7 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
   const handleToggleTask = async (taskId: string) => {
     if (!activeDay) return;
     if (!currentUser) {
-      toast.error("Vui lòng đăng nhập để lưu tiến độ bài tập!");
+      toast.error("Vui lòng đăng nhập để lưu tiến độ nhiệm vụ!");
       return;
     }
 
@@ -774,21 +774,41 @@ export default function ChallengeDetailClient({ challenge: initialChallenge }: P
         )}
       </div>
 
-      {/* Floating Right Button to Open Drawer (When day is active & not locked) */}
-      {activeDay && !isLockedByPaywall && (
-        <button
-          type="button"
-          onClick={() => setIsSideDrawerOpen(true)}
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-[#FF5A1F] hover:bg-[#e04b16] text-white pl-2.5 pr-2 py-3 rounded-l-xl shadow-lg hover:pl-3.5 transition-all flex flex-col items-center gap-1.5 cursor-pointer group border border-r-0 border-white/20 active:scale-95"
-          title="Mở danh sách nhiệm vụ"
-        >
-          <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
-          <span className="text-[10px] font-bold tracking-wider uppercase [writing-mode:vertical-rl] rotate-180">
-            Nhiệm vụ
-          </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-        </button>
-      )}
+      {/* Floating Right Button to Open Drawer (When day is active, not locked, and has tasks) */}
+      {activeDay && !isLockedByPaywall && activeDay.tasks && activeDay.tasks.length > 0 && (() => {
+        const doneTasks = activeDay.tasks.filter((t) => t.isCompleted).length;
+        const totalTasks = activeDay.tasks.length;
+        const allDone = doneTasks === totalTasks;
+        return (
+          <button
+            type="button"
+            onClick={() => setIsSideDrawerOpen(true)}
+            className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-white dark:bg-surface hover:bg-primary-soft/40 text-foreground p-2 pr-2.5 rounded-l-2xl shadow-lg border border-r-0 border-border hover:border-primary/40 transition-all flex flex-col items-center gap-1.5 cursor-pointer group active:scale-95"
+            title={`Mở danh sách nhiệm vụ (${doneTasks}/${totalTasks})`}
+          >
+            <div
+              className={`w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105 ${
+                allDone ? "bg-emerald-500" : "bg-[#FF5A1F]"
+              }`}
+            >
+              {allDone ? (
+                <Check className="w-4 h-4 stroke-[2.5]" />
+              ) : (
+                <ListTodo className="w-4 h-4" />
+              )}
+            </div>
+            <span
+              className={`text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-md ${
+                allDone
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : "bg-muted text-foreground group-hover:bg-primary-soft group-hover:text-primary"
+              }`}
+            >
+              {doneTasks}/{totalTasks}
+            </span>
+          </button>
+        );
+      })()}
 
       {/* Side-over Right Drawer (Roadmap.sh Style) */}
       {activeDay && (

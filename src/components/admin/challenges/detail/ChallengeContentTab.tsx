@@ -404,7 +404,7 @@ export default function ChallengeContentTab({
                                       {/* Task count badge */}
                                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                                         <CheckSquare className="w-3.5 h-3.5 text-accent/70" />
-                                        <span>{dayTasks.length} bài tập</span>
+                                        <span>{dayTasks.length} nhiệm vụ</span>
                                       </span>
                                     </div>
 
@@ -412,7 +412,7 @@ export default function ChallengeContentTab({
                                     {day.coreMission && (
                                       <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5 font-normal">
                                         <span className="font-medium text-foreground/80">
-                                          Nhiệm vụ:
+                                          Mục tiêu:
                                         </span>{" "}
                                         {day.coreMission}
                                       </p>
@@ -434,9 +434,9 @@ export default function ChallengeContentTab({
                                         ? "bg-accent/10 text-accent border-accent/30 font-semibold"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted border-border/40"
                                     }`}
-                                    title="Xem và quản lý bài tập"
+                                    title="Xem và quản lý nhiệm vụ"
                                   >
-                                    <span>Bài tập</span>
+                                    <span>Nhiệm vụ</span>
                                     <ChevronRight
                                       className={`w-3 h-3 transition-transform ${
                                         isTasksExpanded ? "rotate-90 text-accent" : ""
@@ -450,7 +450,7 @@ export default function ChallengeContentTab({
                                       onAddTask({ id: day.id, dayNumber: day.dayNumber })
                                     }
                                     className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10 rounded-lg transition-colors border border-border/40 cursor-pointer"
-                                    title="Thêm bài tập"
+                                    title="Thêm nhiệm vụ"
                                   >
                                     <Plus className="w-4 h-4" />
                                   </button>
@@ -498,12 +498,12 @@ export default function ChallengeContentTab({
                                   {isLoadingTasks ? (
                                     <div className="py-4 text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
                                       <Loader2 className="w-3.5 h-3.5 animate-spin text-accent" />
-                                      <span>Đang tải danh sách bài tập...</span>
+                                      <span>Đang tải danh sách nhiệm vụ...</span>
                                     </div>
                                   ) : dayTasks.length === 0 ? (
                                     <div className="py-3 text-center border border-dashed border-border/80 rounded-lg bg-card/60 p-3">
                                       <p className="text-xs text-muted-foreground">
-                                        Chưa có bài tập nào cho ngày này.
+                                        Chưa có nhiệm vụ nào cho ngày này.
                                       </p>
                                       <button
                                         type="button"
@@ -513,7 +513,7 @@ export default function ChallengeContentTab({
                                         className="text-xs font-semibold text-accent hover:underline mt-1 cursor-pointer inline-flex items-center gap-1"
                                       >
                                         <Plus className="w-3 h-3" />
-                                        <span>Thêm bài tập đầu tiên</span>
+                                        <span>Thêm nhiệm vụ đầu tiên</span>
                                       </button>
                                     </div>
                                   ) : (
@@ -584,7 +584,7 @@ export default function ChallengeContentTab({
                                                 )
                                               }
                                               className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-                                              title="Sửa bài tập"
+                                              title="Sửa nhiệm vụ"
                                             >
                                               <Edit className="w-3 h-3" />
                                             </button>
@@ -601,7 +601,7 @@ export default function ChallengeContentTab({
                                                 })
                                               }
                                               className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
-                                              title="Xóa bài tập"
+                                              title="Xóa nhiệm vụ"
                                             >
                                               <Trash2 className="w-3 h-3" />
                                             </button>
@@ -618,7 +618,7 @@ export default function ChallengeContentTab({
                                           className="text-xs font-semibold text-accent hover:underline cursor-pointer inline-flex items-center gap-1"
                                         >
                                           <Plus className="w-3 h-3" />
-                                          <span>Thêm bài tập cho Ngày {day.dayNumber}</span>
+                                          <span>Thêm nhiệm vụ cho Ngày {day.dayNumber}</span>
                                         </button>
                                       </div>
                                     </div>

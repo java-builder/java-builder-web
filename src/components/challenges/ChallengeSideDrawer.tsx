@@ -139,7 +139,7 @@ export function ChallengeSideDrawer({
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
-                Danh sách bài tập ({tasks.length})
+                Danh sách nhiệm vụ ({tasks.length})
               </h4>
               <span className="text-[11px] text-muted-foreground">Tích chọn khi hoàn thành</span>
             </div>
@@ -217,7 +217,7 @@ export function ChallengeSideDrawer({
         {/* 3. FOOTER */}
         <div className="p-4 border-t border-border bg-card shrink-0 flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground">
-            {completedTasksCount}/{tasks.length} task đã xong
+            {completedTasksCount}/{tasks.length} nhiệm vụ đã hoàn thành
           </span>
           <span className="text-xs font-semibold text-muted-foreground">
             {progressPercent}%
