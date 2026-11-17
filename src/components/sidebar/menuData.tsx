@@ -17,6 +17,7 @@ import {
   ClipboardCheck,
   Clock,
   Trophy,
+  Route,
 } from "lucide-react";
 
 export const menuGroups: MenuGroup[] = [
@@ -41,6 +42,15 @@ export const menuGroups: MenuGroup[] = [
         labelKey: "sidebar.challenges",
         icon: <Trophy className="w-5 h-5" />,
         color: "text-rose-500 dark:text-rose-400",
+        tag: "HOT",
+        tagVariant: "hot",
+      },
+      {
+        href: "/roadmap",
+        label: "Lộ trình",
+        labelKey: "sidebar.roadmap",
+        icon: <Route className="w-5 h-5" />,
+        color: "text-amber-500 dark:text-amber-400",
         tag: "HOT",
         tagVariant: "hot",
       },
