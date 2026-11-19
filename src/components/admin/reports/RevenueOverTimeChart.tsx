@@ -21,17 +21,17 @@ interface RevenueOverTimeChartProps {
 const getTimeRangeLabel = (timeRange: string) => {
   switch (timeRange) {
     case "7days":
-      return "7 ngày";
+      return "7 ngày qua";
     case "30days":
-      return "30 ngày";
+      return "30 ngày qua";
     case "3months":
-      return "3 tháng";
+      return "3 tháng qua";
     case "6months":
-      return "6 tháng";
+      return "6 tháng qua";
     case "1year":
-      return "1 năm";
+      return "1 năm qua";
     default:
-      return timeRange;
+      return "tháng này";
   }
 };
 
@@ -86,7 +86,7 @@ export const RevenueOverTimeChart = ({
             Doanh thu theo thời gian
           </h3>
           <p className="text-sm text-muted-foreground mt-1 ml-3.5">
-            Biểu đồ doanh thu trong {getTimeRangeLabel(timeRange)} qua
+            Biểu đồ doanh thu trong {getTimeRangeLabel(timeRange)}
           </p>
         </div>
 

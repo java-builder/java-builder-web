@@ -17,7 +17,7 @@ import {
 } from "@/components/admin/reports";
 
 export default function ReportsPage() {
-  const [timeRange, setTimeRange] = useState("30days");
+  const [timeRange, setTimeRange] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -41,7 +41,7 @@ export default function ReportsPage() {
   const fetchReports = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await reportApi.getStats(timeRange);
+      const res = await reportApi.getStats(timeRange || undefined);
       if (res.data) {
         setStats(res.data);
         setTopCourses(res.data.courseRevenues || []);

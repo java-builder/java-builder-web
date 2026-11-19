@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, RefreshCw } from "lucide-react";
 
 export const TIME_RANGE_OPTIONS = [
+  { value: "", label: "Tháng này" },
   { value: "7days", label: "7 ngày qua" },
   { value: "30days", label: "30 ngày qua" },
   { value: "3months", label: "3 tháng qua" },

@@ -48,7 +48,7 @@ export default function AdminUserSubscriptionsPage() {
   });
   const [isAssigning, setIsAssigning] = useState(false);
 
-  const [statsTimeRange, setStatsTimeRange] = useState("30days");
+  const [statsTimeRange, setStatsTimeRange] = useState("");
   const [stats, setStats] = useState<SubscriptionStatsResponse | null>(null);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const { resolvedTheme } = useTheme();
@@ -63,7 +63,9 @@ export default function AdminUserSubscriptionsPage() {
       ? "3 tháng qua"
       : statsTimeRange === "6months"
       ? "6 tháng qua"
-      : "1 năm qua";
+      : statsTimeRange === "1year"
+      ? "1 năm qua"
+      : "tháng này";
   }, [statsTimeRange]);
 
   const chartColors = useMemo(
@@ -93,7 +95,7 @@ export default function AdminUserSubscriptionsPage() {
   const fetchStats = useCallback(async () => {
     setIsStatsLoading(true);
     try {
-      const response = await userSubscriptionService.getSubscriptionStats(statsTimeRange);
+      const response = await userSubscriptionService.getSubscriptionStats(statsTimeRange || undefined);
       if (response && response.data) {
         setStats(response.data);
       }
@@ -309,6 +311,7 @@ export default function AdminUserSubscriptionsPage() {
             value={statsTimeRange}
             onChange={setStatsTimeRange}
             options={[
+              { value: "", label: "Tháng này" },
               { value: "7days", label: "7 ngày qua" },
               { value: "30days", label: "30 ngày qua" },
               { value: "3months", label: "3 tháng qua" },

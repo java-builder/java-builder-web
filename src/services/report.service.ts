@@ -10,10 +10,11 @@ import {
 } from "@/types/report";
 
 export const reportApi = {
-  getStats: async (timeRange: string = "7days") => {
+  getStats: async (timeRange?: string) => {
+    const params = timeRange ? { timeRange } : undefined;
     const response = await apiClient.get<ApiResponse<ReportStatsResponse>>(
       API.REPORT_STATS,
-      { params: { timeRange } }
+      { params }
     );
     return response.data;
   },

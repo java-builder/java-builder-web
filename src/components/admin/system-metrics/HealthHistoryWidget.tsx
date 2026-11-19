@@ -45,7 +45,7 @@ export function HealthHistoryWidget({ history }: HealthHistoryWidgetProps) {
               const isUp = item.status === "UP";
               const isDown = item.status === "DOWN";
               return (
-                <tr key={item.id} className="hover:bg-secondary/40 transition-colors">
+                <tr key={item.id} className="hover:bg-muted/40 transition-colors">
                   <td className="py-2.5 px-3 font-mono text-muted-foreground whitespace-nowrap">
                     {item.timestamp}
                   </td>

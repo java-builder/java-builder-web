@@ -62,8 +62,8 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 text-xs">
         {/* App Info */}
-        <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/50">
-          <div className="p-2 rounded-md bg-blue-500/10 text-blue-500 flex-shrink-0">
+        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/40 dark:bg-muted/20 border border-border">
+          <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex-shrink-0">
             <Layers className="w-4 h-4" />
           </div>
           <div>
@@ -74,8 +74,8 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
         </div>
 
         {/* OS Info */}
-        <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/50">
-          <div className="p-2 rounded-md bg-purple-500/10 text-purple-500 flex-shrink-0">
+        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/40 dark:bg-muted/20 border border-border">
+          <div className="p-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex-shrink-0">
             <Server className="w-4 h-4" />
           </div>
           <div>
@@ -86,8 +86,8 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
         </div>
 
         {/* Java Info */}
-        <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/50">
-          <div className="p-2 rounded-md bg-rose-500/10 text-rose-500 flex-shrink-0">
+        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/40 dark:bg-muted/20 border border-border">
+          <div className="p-2 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex-shrink-0">
             <Cpu className="w-4 h-4" />
           </div>
           <div>
@@ -98,8 +98,8 @@ export function ServerEnvironmentCard({ info, appInfo }: ServerEnvironmentCardPr
         </div>
 
         {/* Virtual Threads / Loom */}
-        <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/50">
-          <div className="p-2 rounded-md bg-emerald-500/10 text-emerald-500 flex-shrink-0">
+        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/40 dark:bg-muted/20 border border-border">
+          <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex-shrink-0">
             <Cpu className="w-4 h-4" />
           </div>
           <div>

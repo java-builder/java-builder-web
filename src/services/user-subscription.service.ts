@@ -89,10 +89,11 @@ export const userSubscriptionService = {
   },
 
   // Admin: Lấy thống kê đăng ký dịch vụ
-  getSubscriptionStats: async (timeRange: string = "30days") => {
-    const response = await apiClient.get<ApiResponse<SubscriptionStatsResponse>>(
-      `${API.USER_SUBSCRIPTION_ADMIN_STATS}?timeRange=${timeRange}`
-    );
+  getSubscriptionStats: async (timeRange?: string) => {
+    const url = timeRange
+      ? `${API.USER_SUBSCRIPTION_ADMIN_STATS}?timeRange=${timeRange}`
+      : API.USER_SUBSCRIPTION_ADMIN_STATS;
+    const response = await apiClient.get<ApiResponse<SubscriptionStatsResponse>>(url);
     return response.data;
   },
 };
