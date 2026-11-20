@@ -192,6 +192,7 @@ export const ko = {
     documents: "도서 & 문서",
     interview: "면접 대비",
     roadmap: "학습 로드맵",
+    architecture: "아키텍처 시뮬레이터",
     mentor: "1-1 멘토링",
     qna: "질문 답변",
     chatbot: "AI 챗봇",

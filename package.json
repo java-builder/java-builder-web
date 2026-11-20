@@ -17,6 +17,7 @@
     "@stomp/stompjs": "^7.2.1",
     "@tanstack/react-query": "^5.86.0",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@xyflow/react": "^13.0.2",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

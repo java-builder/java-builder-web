@@ -192,6 +192,7 @@ export const vi = {
     documents: "Tài liệu & Sách",
     interview: "Ôn tập Phỏng vấn",
     roadmap: "Lộ trình học tập",
+    architecture: "Mô phỏng Kiến trúc",
     mentor: "Đào tạo Mentor 1-1",
     qna: "Hỏi đáp",
     chatbot: "AI Chatbot",

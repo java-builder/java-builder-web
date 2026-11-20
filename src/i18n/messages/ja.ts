@@ -192,6 +192,7 @@ export const ja = {
     documents: "書籍 & ドキュメント",
     interview: "面接対策",
     roadmap: "ロードマップ",
+    architecture: "アーキテクチャ図",
     mentor: "1-1 メンターシップ",
     qna: "質疑応答",
     chatbot: "AIチャットボット",

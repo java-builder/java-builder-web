@@ -192,6 +192,7 @@ export const en = {
     documents: "Books & Docs",
     interview: "Interview Prep",
     roadmap: "Roadmap",
+    architecture: "Architecture Visualizer",
     mentor: "1-1 Mentorship",
     qna: "Q&A",
     chatbot: "AI Chatbot",

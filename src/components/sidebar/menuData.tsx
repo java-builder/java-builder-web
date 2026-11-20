@@ -18,6 +18,7 @@ import {
   Clock,
   Trophy,
   Route,
+  Network,
 } from "lucide-react";
 
 export const menuGroups: MenuGroup[] = [
@@ -53,6 +54,15 @@ export const menuGroups: MenuGroup[] = [
         color: "text-amber-500 dark:text-amber-400",
         tag: "HOT",
         tagVariant: "hot",
+      },
+      {
+        href: "/architecture",
+        label: "Kiến trúc tương tác",
+        labelKey: "sidebar.architecture",
+        icon: <Network className="w-5 h-5" />,
+        color: "text-[#FF5A1F] dark:text-orange-400",
+        tag: "NEW",
+        tagVariant: "new",
       },
       {
         href: "/courses",
